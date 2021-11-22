@@ -29,4 +29,36 @@ export class HomeComponent implements OnInit {
       localStorage.clear();
     });
   }
+
+  // addPatients() {
+  //   this.router.navigate(['/addPatient']);
+  // }
+
+  // addOrganization() {
+  //   this.router.navigate(['/addOrganization']);
+  // }
+
+  // showPatients() {
+  //   this.router.navigate(['/showPatient']);
+  // }
+
+  // showOrganizations() {
+  //   this.router.navigate(['/showOrganization']);
+  // }
+
+  addLocationType() {
+    this.router.navigate(['/addLocationType']);
+  }
+
+  showLocationType() {
+    this.router.navigate(['/showLocationType']);
+  }
+
+  addLocation() {
+    this.router.navigate(['/addLocation']);
+  }
+
+  showLocation() {
+    this.router.navigate(['/showLocation']);
+  }
 }
