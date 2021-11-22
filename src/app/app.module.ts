@@ -19,7 +19,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { HomeComponent } from './root/components/home/home.component';
 import { tempBackendProvider } from './auth/temp-backend';
 import { CommonModule } from '@angular/common';
-import { FhirService } from './root/services/fhir.service';
+// import { FhirService } from './root/services/fhir.service';
 import { ShowLocationTypeComponent } from './root/components/Location/location-type/show-location-type/show-location-type.component';
 import { ShowLocationComponent } from './root/components/Location/location-management/show-location/show-location.component';
 @NgModule({
@@ -49,7 +49,7 @@ import { ShowLocationComponent } from './root/components/Location/location-manag
   providers: [
     AuthenticationService,
     tempBackendProvider,
-    FhirService
+    // FhirService
   ],
   bootstrap: [AppComponent]
 })
