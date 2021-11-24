@@ -1,0 +1,15 @@
+<nav *ngIf="userName" class="navbar navbar-expand navbar-dark bg-dark">
+  <div class="navbar-nav">
+    <a class="nav-item nav-link cursor-pointer float-right" (click)="logout()">Logout</a>
+  </div>
+</nav>
+<div class="container">
+  <div class="card mt-4">
+    <h4 class="card-header">Welcome</h4>
+    <div class="card-body">
+      <ul>
+        <li>{{userName}}</li>
+      </ul>
+    </div>
+  </div>
+</div>
