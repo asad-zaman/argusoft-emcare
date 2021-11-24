@@ -1,0 +1,39 @@
+<div class="container">
+    <div class="row mt-5">
+        <div class="col-2"></div>
+        <div class="col-8">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="mt-3">Show Location</h3>
+                    <button type="submit" class="btn btn-primary my-3" (click)="addLocation()">Add Location</button>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Location Name</th>
+                                <th scope="col">Type</th>
+                                <th scope="col">Parent</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <ng-container *ngFor="let data of locationArr; let i=index">
+                                <tr>
+                                    <th scope="row">{{i+1}}</th>
+                                    <td>{{data.locationName}}</td>
+                                    <td>{{getTypeName(data.locationType)}}</td>
+                                    <td>{{data.parent}}</td>
+                                    <td>
+                                        <button type="submit" class="btn btn-primary mr-3" (click)="editLocation(i)">Edit</button>
+                                        <button type="submit" class="btn btn-primary" (click)="deleteLocation(i)">Delete</button>
+                                    </td>
+                                </tr>
+                            </ng-container>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-2"></div>
+    </div>
+</div>
