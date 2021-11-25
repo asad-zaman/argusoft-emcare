@@ -146,7 +146,6 @@ public class PatientResourceProvider implements IResourceProvider {
         IParser parser = fhirCtx.newJsonParser().setPrettyPrint(false);
         String patientString = parser.encodeResourceToString(thePatient);
 
-        //TODO: Add id later
         String id = thePatient.getId();
 
         EmcareResource emcareResource = new EmcareResource();
