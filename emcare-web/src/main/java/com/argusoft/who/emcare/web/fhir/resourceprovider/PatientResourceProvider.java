@@ -1,12 +1,10 @@
 package com.argusoft.who.emcare.web.fhir.resourceprovider;
 
-import ca.uhn.fhir.rest.annotation.IdParam;
-import ca.uhn.fhir.rest.annotation.Read;
-import ca.uhn.fhir.rest.annotation.RequiredParam;
-import ca.uhn.fhir.rest.annotation.Search;
+import ca.uhn.fhir.rest.annotation.*;
+import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.param.StringParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
-import com.argusoft.who.emcare.web.sample.service.TutorialService;
+import com.google.gson.Gson;
 import org.hl7.fhir.r4.model.Enumerations;
 import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.Identifier;
@@ -81,4 +79,16 @@ public class PatientResourceProvider implements IResourceProvider {
         return Collections.singletonList(patient);
     }
 
+    @Create
+    public MethodOutcome createPatient(@ResourceParam Patient thePatient) {
+
+        Gson gson = new Gson();
+        gson.toJson(thePatient);
+        //WRITE LOGIC TO SAVE DATA TO TABLE
+
+
+        MethodOutcome retVal = new MethodOutcome();
+        retVal.setId(new IdType("Patient", "3746", "1"));
+        return retVal;
+    }
 }
