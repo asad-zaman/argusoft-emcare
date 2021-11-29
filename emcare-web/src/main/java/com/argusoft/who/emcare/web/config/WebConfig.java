@@ -67,6 +67,7 @@ public class WebConfig extends KeycloakWebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 <<<<<<< HEAD
+<<<<<<< HEAD
     	super.configure(http);
         http.authorizeRequests()
                 .antMatchers("/api/user/**").hasRole("user");
@@ -84,6 +85,14 @@ public class WebConfig extends KeycloakWebSecurityConfigurerAdapter {
 =======
                 .antMatchers("/api/user/**").hasRole("user");
 //                .antMatchers("/api/location/**").hasAnyRole("user", "user_admin");
+=======
+    	super.configure(http);
+        http.authorizeRequests()
+                .antMatchers("/api/*")
+                .hasRole("user")
+                .anyRequest()
+                .permitAll();
+>>>>>>> Added emcareResource DAO, model and service, patient create method in Resource Provider, and changed servlet bean structure.
         http.csrf().disable();
 >>>>>>> Add simple location manage api
     }
