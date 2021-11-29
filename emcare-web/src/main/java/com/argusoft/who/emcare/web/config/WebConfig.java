@@ -32,7 +32,11 @@ public class WebConfig extends KeycloakWebSecurityConfigurerAdapter {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**").allowedOrigins("**");
+                registry.addMapping("/**").allowedOrigins("**").allowedMethods("GET", "POST", "OPTIONS", "PUT")
+                        .allowedHeaders("Content-Type", "X-Requested-With", "accept", "Origin", "Access-Control-Request-Method",
+                                "Access-Control-Request-Headers")
+                        .exposedHeaders("Access-Control-Allow-Origin", "Access-Control-Allow-Credentials")
+                        .allowCredentials(true);
             }
         };
     }
@@ -64,9 +68,8 @@ public class WebConfig extends KeycloakWebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         super.configure(http);
         http.authorizeRequests()
-                .antMatchers("/api/user/**")
-                .hasRole("user")
-                .anyRequest()
-                .permitAll();
+                .antMatchers("/api/user/**").hasRole("user");
+//                .antMatchers("/api/location/**").hasAnyRole("user", "user_admin");
+        http.csrf().disable();
     }
 }
