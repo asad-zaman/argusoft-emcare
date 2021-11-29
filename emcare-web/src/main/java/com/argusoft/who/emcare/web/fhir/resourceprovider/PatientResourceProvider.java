@@ -53,7 +53,6 @@ public class PatientResourceProvider implements IResourceProvider {
      * exists.
      */
     @Read()
-
     public Patient getResourceById(@IdParam IdType theId) {
         Patient patient = new Patient();
         patient.addIdentifier();
