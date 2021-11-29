@@ -1,7 +1,15 @@
 package com.argusoft.who.emcare.web.user.controller;
 
+import com.argusoft.who.emcare.web.config.KeyCloakConfig;
+import com.argusoft.who.emcare.web.user.dto.UserDto;
+import java.util.Collections;
+import org.keycloak.admin.client.resource.UsersResource;
+import org.keycloak.representations.idm.CredentialRepresentation;
+import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -15,19 +23,21 @@ public class UserController {
 
     @GetMapping("/user/protected")
     public ResponseEntity<Object> getaAllClient() {
-        System.out.println("-------");
         return ResponseEntity.ok("Success");
     }
 
     @GetMapping("/public")
     public ResponseEntity<Object> accessPublicAPI() {
-        System.out.println("-------");
         return ResponseEntity.ok("Success");
     }
 
-    @GetMapping("/user/add")
-    public ResponseEntity<Object> addUser() {
-        System.out.println("User Add Here");
+    /**
+     *
+     * @param user
+     * @return
+     */
+    @PostMapping("/user/add")
+    public ResponseEntity<Object> addUser(@RequestBody UserDto user) {
 //        UsersResource usersResource = KeyCloakConfig.getInstance().realm(KeyCloakConfig.realm).users();
 //        CredentialRepresentation credentialRepresentation = createPasswordCredentials(user.getPassword());
 //
