@@ -75,10 +75,16 @@ public class WebConfig extends KeycloakWebSecurityConfigurerAdapter {
 =======
         super.configure(http);
         http.authorizeRequests()
+<<<<<<< HEAD
                 .antMatchers("/api/user/**")
                 .hasRole("user")
                 .anyRequest()
                 .permitAll();
 >>>>>>> Implement Keycloak functionality
+=======
+                .antMatchers("/api/user/**").hasRole("user");
+//                .antMatchers("/api/location/**").hasAnyRole("user", "user_admin");
+        http.csrf().disable();
+>>>>>>> Add simple location manage api
     }
 }
