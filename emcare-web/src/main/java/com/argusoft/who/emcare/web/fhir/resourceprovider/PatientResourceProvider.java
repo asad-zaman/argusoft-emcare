@@ -1,16 +1,15 @@
 package com.argusoft.who.emcare.web.fhir.resourceprovider;
 
-import ca.uhn.fhir.rest.annotation.IdParam;
-import ca.uhn.fhir.rest.annotation.Read;
-import ca.uhn.fhir.rest.annotation.RequiredParam;
-import ca.uhn.fhir.rest.annotation.Search;
+import ca.uhn.fhir.rest.annotation.*;
+import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.param.StringParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
-import com.argusoft.who.emcare.web.sample.service.TutorialService;
 import org.hl7.fhir.r4.model.Enumerations;
 import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.Identifier;
 import org.hl7.fhir.r4.model.Patient;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.Collections;
 import java.util.List;
@@ -19,9 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class PatientResourceProvider implements IResourceProvider {
-
-    @Autowired
-    TutorialService tutorialService;
 
     /**
      * The getResourceType method comes from IResourceProvider, and must be
@@ -69,7 +65,7 @@ public class PatientResourceProvider implements IResourceProvider {
      */
     @Search()
     public List<Patient> getPatient(@RequiredParam(name = Patient.SP_FAMILY) StringParam theFamilyName) {
-        Patient patient = new Patient();
+    	Patient patient = new Patient();
         patient.addIdentifier();
         patient.getIdentifier().get(0).setUse(Identifier.IdentifierUse.OFFICIAL);
         patient.getIdentifier().get(0).setSystem("urn:hapitest:mrns");
@@ -80,5 +76,4 @@ public class PatientResourceProvider implements IResourceProvider {
         patient.setGender(Enumerations.AdministrativeGender.MALE);
         return Collections.singletonList(patient);
     }
-
 }
