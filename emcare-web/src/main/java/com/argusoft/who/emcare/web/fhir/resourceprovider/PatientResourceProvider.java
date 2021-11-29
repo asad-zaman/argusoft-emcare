@@ -4,23 +4,29 @@ import ca.uhn.fhir.rest.annotation.*;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.param.StringParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
+
+import com.argusoft.who.emcare.web.fhir.model.EmcareResource;
+import com.argusoft.who.emcare.web.fhir.service.EmcareResourceService;
 import com.google.gson.Gson;
 import org.hl7.fhir.r4.model.Enumerations;
 import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.Identifier;
 import org.hl7.fhir.r4.model.Patient;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.Collections;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController
+@Component
 public class PatientResourceProvider implements IResourceProvider {
-
-    @Autowired
-    TutorialService tutorialService;
-
+	
+	@Autowired
+	private EmcareResourceService emcareResourceService;
+	
+	
     /**
      * The getResourceType method comes from IResourceProvider, and must be
      * overridden to indicate what type of resource this provider supplies.
@@ -67,7 +73,7 @@ public class PatientResourceProvider implements IResourceProvider {
      */
     @Search()
     public List<Patient> getPatient(@RequiredParam(name = Patient.SP_FAMILY) StringParam theFamilyName) {
-        Patient patient = new Patient();
+    	Patient patient = new Patient();
         patient.addIdentifier();
         patient.getIdentifier().get(0).setUse(Identifier.IdentifierUse.OFFICIAL);
         patient.getIdentifier().get(0).setSystem("urn:hapitest:mrns");
@@ -81,14 +87,19 @@ public class PatientResourceProvider implements IResourceProvider {
 
     @Create
     public MethodOutcome createPatient(@ResourceParam Patient thePatient) {
-
+    	
         Gson gson = new Gson();
-        gson.toJson(thePatient);
-        //WRITE LOGIC TO SAVE DATA TO TABLE
-
-
+        String patientString = gson.toJson(thePatient).toString();
+        
+        EmcareResource emcareResource = new EmcareResource();
+        emcareResource.setText(patientString);
+        
+        emcareResourceService.saveResource(emcareResource);
+        
         MethodOutcome retVal = new MethodOutcome();
         retVal.setId(new IdType("Patient", "3746", "1"));
+        retVal.setResource(new Patient());
+        
         return retVal;
     }
 }
