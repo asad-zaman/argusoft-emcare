@@ -11,6 +11,5 @@ class CompanionValues {
         const val KEYCLOAK_SCOPE = "openid"
         const val KEYCLOAK_GRANT_TYPE = "password"
 
-
     }
 }
