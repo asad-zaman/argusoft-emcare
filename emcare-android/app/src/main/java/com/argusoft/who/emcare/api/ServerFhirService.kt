@@ -48,8 +48,10 @@ interface ServerFhirService {
         fun create(parser: IParser): ServerFhirService {
             val logger = HttpLoggingInterceptor()
             logger.level = HttpLoggingInterceptor.Level.BODY
-
-            val client = OkHttpClient.Builder().addInterceptor(logger).build()
+            val client = OkHttpClient.Builder()
+                .addInterceptor(logger)
+                .addInterceptor(HttpRequestInterceptor())
+                .build()
             return Retrofit.Builder()
                 .baseUrl(CompanionValues.BASE_URL)
                 .client(client)
