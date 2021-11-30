@@ -3,15 +3,16 @@
     package="com.argusoft.who.emcare">
 
     <application
-        android:usesCleartextTraffic="true"
-        android:allowBackup="true"
         android:name="com.argusoft.who.emcare.FhirApplication"
+        android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name="com.argusoft.who.emcare.LoginActivity"
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true">
+        <activity
+            android:name="com.argusoft.who.emcare.LoginActivity"
             android:exported="true"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustResize">
@@ -25,8 +26,7 @@
             android:name="com.argusoft.who.emcare.MainActivity"
             android:label="Gandhinagar Registered Patients"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustResize"
-            >
+            android:windowSoftInputMode="adjustResize">
 
         </activity>
     </application>
