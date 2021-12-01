@@ -3,6 +3,7 @@ package com.argusoft.who.emcare.web.location.controller;
 import com.argusoft.who.emcare.web.location.dto.HierarchyMasterDto;
 import com.argusoft.who.emcare.web.location.dto.LocationMasterDto;
 import com.argusoft.who.emcare.web.location.service.LocationConfigService;
+import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,6 +23,9 @@ public class LocationController {
 
     @Autowired
     LocationConfigService locationConfigService;
+
+    @Autowired
+    private HttpServletRequest request;
 
     @RequestMapping(value = "/hierarchy/create", method = RequestMethod.POST)
     public ResponseEntity<Object> createHierarchyMaster(@RequestBody HierarchyMasterDto hierarchyMasterDto) {

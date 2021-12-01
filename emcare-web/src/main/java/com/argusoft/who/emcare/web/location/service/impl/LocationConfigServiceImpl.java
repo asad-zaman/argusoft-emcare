@@ -9,8 +9,10 @@ import com.argusoft.who.emcare.web.location.mapper.LocationMasterMapper;
 import com.argusoft.who.emcare.web.location.model.HierarchyMaster;
 import com.argusoft.who.emcare.web.location.model.LocationMaster;
 import com.argusoft.who.emcare.web.location.service.LocationConfigService;
+import com.argusoft.who.emcare.web.secuirty.EmCareSecurityUser;
 import java.util.LinkedList;
 import java.util.List;
+import org.keycloak.representations.AccessToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,14 +31,20 @@ public class LocationConfigServiceImpl implements LocationConfigService {
     @Autowired
     LocationMasterDao locationMasterDao;
 
+    @Autowired
+    EmCareSecurityUser emCareSecurityUser;
+
     @Override
     public void createHierarchyMaster(HierarchyMasterDto hierarchyMasterDto) {
-        hierarchyMasterDao.save(HierarchyMasterMapper.dtoToEntityForHierarchyMaster(hierarchyMasterDto));
+        String userId = emCareSecurityUser.getLoggedInUser().getSubject();
+        hierarchyMasterDao.save(HierarchyMasterMapper.dtoToEntityForHierarchyMasterCreate(hierarchyMasterDto, userId));
     }
 
     @Override
     public void updateHierarchyMaster(HierarchyMasterDto hierarchyMasterDto) {
-        hierarchyMasterDao.save(HierarchyMasterMapper.dtoToEntityForHierarchyMaster(hierarchyMasterDto));
+        String userId = emCareSecurityUser.getLoggedInUser().getSubject();
+        HierarchyMaster hierarchyMaster = hierarchyMasterDao.findById(hierarchyMasterDto.getHierarchyType()).get();
+        hierarchyMasterDao.save(HierarchyMasterMapper.dtoToEntityForHierarchyMasterUpdate(hierarchyMasterDto,hierarchyMaster, userId));
     }
 
     @Override
@@ -62,12 +70,13 @@ public class LocationConfigServiceImpl implements LocationConfigService {
 
     @Override
     public ResponseEntity<Object> createOrUpdate(LocationMasterDto locationMasterDto) {
+        String userId = emCareSecurityUser.getLoggedInUser().getSubject();
         List<LocationMaster> locations = locationMasterDao.findAll();
         if (locations.isEmpty()) {
-            locationMasterDao.save(LocationMasterMapper.firstEntity(locationMasterDto));
+            locationMasterDao.save(LocationMasterMapper.firstEntity(locationMasterDto, userId));
             return ResponseEntity.ok("Success");
         }
-        LocationMaster locationMaster = LocationMasterMapper.dtoToEntityForLocationMaster(locationMasterDto);
+        LocationMaster locationMaster = LocationMasterMapper.dtoToEntityForLocationMasterCreate(locationMasterDto, userId);
         LocationMaster lm = locationMasterDao.save(locationMaster);
 
         return ResponseEntity.ok(lm);
@@ -75,14 +84,17 @@ public class LocationConfigServiceImpl implements LocationConfigService {
 
     @Override
     public ResponseEntity<Object> getAllLocation() {
+        AccessToken accessToken = emCareSecurityUser.getLoggedInUser();
         return ResponseEntity.ok(locationMasterDao.findAll());
     }
 
     @Override
     public ResponseEntity<Object> updateLocation(LocationMasterDto locationMasterDto) {
-        LocationMaster locationMaster = LocationMasterMapper.dtoToEntityForLocationMaster(locationMasterDto);
-        LocationMaster lm = locationMasterDao.save(locationMaster);
-        return ResponseEntity.ok(lm);
+        String userId = emCareSecurityUser.getLoggedInUser().getSubject();
+        LocationMaster lm = locationMasterDao.findById(locationMasterDto.getId()).get();
+        LocationMaster locationMaster = LocationMasterMapper.dtoToEntityForLocationMasterUpdate(locationMasterDto,lm, userId);
+        LocationMaster updatedLocation = locationMasterDao.save(locationMaster);
+        return ResponseEntity.ok(updatedLocation);
     }
 
     @Override

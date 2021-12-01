@@ -1,0 +1,20 @@
+package com.argusoft.who.emcare.web.device.service;
+
+import com.argusoft.who.emcare.web.device.dto.DeviceDto;
+import org.springframework.http.ResponseEntity;
+
+/**
+ *
+ * @author jay
+ */
+public interface DeviceService {
+
+    public ResponseEntity<Object> addNewDevice(DeviceDto deviceDto);
+
+    public ResponseEntity<Object> updateDeviceDetails(DeviceDto deviceDto);
+
+    public ResponseEntity<Object> getDeviceInfoByImei(String imei, String userId);
+
+    public ResponseEntity<Object> getAllDevice();
+
+}

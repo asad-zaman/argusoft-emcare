@@ -1,13 +1,16 @@
 package com.argusoft.who.emcare.web.config;
 
+import java.util.Collections;
 import org.keycloak.adapters.springboot.KeycloakSpringBootConfigResolver;
 import org.keycloak.adapters.springsecurity.KeycloakSecurityComponents;
 import org.keycloak.adapters.springsecurity.authentication.KeycloakAuthenticationProvider;
 import org.keycloak.adapters.springsecurity.config.KeycloakWebSecurityConfigurerAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -15,8 +18,9 @@ import org.springframework.security.core.authority.mapping.SimpleAuthorityMapper
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 /**
  *
@@ -28,17 +32,18 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebConfig extends KeycloakWebSecurityConfigurerAdapter {
 
     @Bean
-    public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurer() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**").allowedOrigins("**").allowedMethods("GET", "POST", "OPTIONS", "PUT")
-                        .allowedHeaders("Content-Type", "X-Requested-With", "accept", "Origin", "Access-Control-Request-Method",
-                                "Access-Control-Request-Headers")
-                        .exposedHeaders("Access-Control-Allow-Origin", "Access-Control-Allow-Credentials")
-                        .allowCredentials(true);
-            }
-        };
+    public FilterRegistrationBean accessControlFilterRegistrationBean() {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowCredentials(true);
+        config.setAllowedOriginPatterns(Collections.singletonList("*"));
+//        config.addAllowedOrigin("*");
+        config.addAllowedHeader("*");
+        config.addAllowedMethod("*");
+        source.registerCorsConfiguration("/**", config);
+        FilterRegistrationBean bean = new FilterRegistrationBean(new CorsFilter(source));
+        bean.setOrder(Ordered.HIGHEST_PRECEDENCE);
+        return bean;
     }
 
     @Autowired
@@ -66,10 +71,11 @@ public class WebConfig extends KeycloakWebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-    	super.configure(http);
+        super.configure(http);
         http.authorizeRequests()
-                .antMatchers("/api/user/**").hasRole("user");
-//                .antMatchers("/api/location/**").hasAnyRole("user", "user_admin");
+                .antMatchers("/api/user/**").hasRole("user")
+                .antMatchers("/api/location/**").hasAnyRole("user", "user_admin")
+                .antMatchers("/api/device/**").hasAnyRole("user", "user_admin");
         http.csrf().disable();
     }
 }

@@ -1,5 +1,6 @@
 package com.argusoft.who.emcare.web.location.model;
 
+import com.argusoft.who.emcare.web.common.model.EntityAuditInfo;
 import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -17,7 +18,7 @@ import lombok.Data;
 @Data
 @Entity
 @Table(name = "location_master")
-public class LocationMaster implements Serializable {
+public class LocationMaster extends EntityAuditInfo implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

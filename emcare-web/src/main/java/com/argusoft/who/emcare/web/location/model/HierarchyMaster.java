@@ -1,5 +1,6 @@
 package com.argusoft.who.emcare.web.location.model;
 
+import com.argusoft.who.emcare.web.common.model.EntityAuditInfo;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,7 +15,7 @@ import lombok.Data;
 @Data
 @Entity
 @Table(name = "hierarchy_master")
-public class HierarchyMaster implements Serializable {
+public class HierarchyMaster extends EntityAuditInfo implements Serializable {
 
     @Id
     @Column(name = "hierarchy_type", nullable = false)
