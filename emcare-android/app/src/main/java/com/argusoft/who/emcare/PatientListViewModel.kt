@@ -145,7 +145,7 @@ internal fun Patient.toPatientItem(position: Int): PatientListViewModel.PatientI
   val gender = if (hasGenderElement()) genderElement.valueAsString else ""
   val dob = if (hasBirthDateElement()) birthDateElement.valueAsString else ""
   val identifier = if (hasIdentifier()) identifier[0].value else ""
-  val line = if(address[0].line.isNotEmpty()) address[0].line[0].toString() else ""
+  val line = if(hasAddress() && address[0].line.isNotEmpty()) address[0].line[0].toString() else ""
   val city = if (hasAddress()) address[0].city else ""
   val country = if (hasAddress()) address[0].country else ""
   val isActive = active
