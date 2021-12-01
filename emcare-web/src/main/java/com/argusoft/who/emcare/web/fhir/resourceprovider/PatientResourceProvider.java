@@ -53,6 +53,7 @@ public class PatientResourceProvider implements IResourceProvider {
      * exists.
      */
     @Read()
+
     public Patient getResourceById(@IdParam IdType theId) {
         Patient patient = new Patient();
         patient.addIdentifier();
@@ -80,7 +81,7 @@ public class PatientResourceProvider implements IResourceProvider {
      */
     @Search()
     public List<Patient> getPatient(@RequiredParam(name = Patient.SP_FAMILY) StringParam theFamilyName) {
-    	Patient patient = new Patient();
+        Patient patient = new Patient();
         patient.addIdentifier();
         patient.getIdentifier().get(0).setUse(Identifier.IdentifierUse.OFFICIAL);
         patient.getIdentifier().get(0).setSystem("urn:hapitest:mrns");
