@@ -318,6 +318,103 @@
             }
           ]
         }
+      },{
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+            "valueExpression": {
+              "language": "text/fhirpath",
+              "expression": "Patient.address.city",
+              "name": "patientCity"
+            }
+          }
+        ],
+        "linkId": "PR-address-city",
+        "definition": "http://hl7.org/fhir/StructureDefinition/Patient#Patient.address.city",
+        "type": "string",
+        "text": "City",
+        "_text": {
+          "extension": [
+            {
+              "extension": [
+                {
+                  "url": "lang",
+                  "valueCode": "sw"
+                },
+                {
+                  "url": "content",
+                  "valueString": "Mji"
+                }
+              ],
+              "url": "http://hl7.org/fhir/StructureDefinition/translation"
+            }
+          ]
+        }
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+            "valueExpression": {
+              "language": "text/fhirpath",
+              "expression": "Patient.address.country",
+              "name": "patientCity"
+            }
+          }
+        ],
+        "linkId": "PR-address-country",
+        "definition": "http://hl7.org/fhir/StructureDefinition/Patient#Patient.address.country",
+        "type": "string",
+        "text": "Country",
+        "_text": {
+          "extension": [
+            {
+              "extension": [
+                {
+                  "url": "lang",
+                  "valueCode": "sw"
+                },
+                {
+                  "url": "content",
+                  "valueString": "Nchi"
+                }
+              ],
+              "url": "http://hl7.org/fhir/StructureDefinition/translation"
+            }
+          ]
+        }
+      },{
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+            "valueExpression": {
+              "language": "text/fhirpath",
+              "expression": "Patient.address.postalCode",
+              "name": "patientPostalCode"
+            }
+          }
+        ],
+        "linkId": "PR-address-postal-code",
+        "definition": "http://hl7.org/fhir/StructureDefinition/Patient#Patient.address.postalCode",
+        "type": "string",
+        "text": "Postal Code",
+        "_text": {
+          "extension": [
+            {
+              "extension": [
+                {
+                  "url": "lang",
+                  "valueCode": "sw"
+                },
+                {
+                  "url": "content",
+                  "valueString": "Mji"
+                }
+              ],
+              "url": "http://hl7.org/fhir/StructureDefinition/translation"
+            }
+          ]
+        }
       }
     ]
   }, {

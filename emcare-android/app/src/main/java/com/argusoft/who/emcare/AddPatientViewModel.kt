@@ -75,10 +75,6 @@ class AddPatientViewModel(application: Application, private val state: SavedStat
         patient.addExtension(extension)
         //End of location Id
         patient.id = generateUuid()
-        val address: Address = patient.address[0]
-        address.city = "GANDHINAGAR"
-        address.country = "INDIA"
-        patient.address = listOf(address)
         fhirEngine.save(patient)
         isPatientSaved.value = true
         return@launch
