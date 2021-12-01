@@ -14,7 +14,7 @@ class AccessToken (
     private var _scope : String,
 ){
     @SerializedName("access_token")
-    private lateinit var accessToken: String
+    public lateinit var accessToken: String
 
     @SerializedName("expires_in")
     private lateinit var expiresIn: Integer
@@ -51,4 +51,5 @@ class AccessToken (
         this.sessionState = _sessionState
         this.scope = _scope
     }
+
 }

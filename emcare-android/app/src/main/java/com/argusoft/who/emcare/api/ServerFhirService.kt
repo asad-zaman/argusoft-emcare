@@ -42,15 +42,13 @@ interface ServerFhirService {
     suspend fun deleteResource(@Path("type") type: String, @Path("id") id: String): OperationOutcome
 
     companion object {
-        //    const val BASE_URL = "http://10.0.2.2:8080/fhir/" //Localhost url
-        // Hapi FHIR.org API url.
 
         fun create(parser: IParser): ServerFhirService {
             val logger = HttpLoggingInterceptor()
             logger.level = HttpLoggingInterceptor.Level.BODY
             val client = OkHttpClient.Builder()
-                .addInterceptor(logger)
                 .addInterceptor(HttpRequestInterceptor())
+                .addInterceptor(logger)
                 .build()
             return Retrofit.Builder()
                 .baseUrl(CompanionValues.LOCAL_BASE_URL)

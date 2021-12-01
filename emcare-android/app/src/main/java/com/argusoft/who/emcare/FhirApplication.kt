@@ -13,7 +13,6 @@ class FhirApplication : Application() {
 
   override fun onCreate() {
     super.onCreate()
-    Sync.oneTimeSync<FhirPeriodicSyncWorker>(this)
   }
 
 
