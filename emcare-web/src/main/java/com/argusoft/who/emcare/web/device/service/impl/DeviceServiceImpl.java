@@ -27,12 +27,20 @@ public class DeviceServiceImpl implements DeviceService {
     @Override
     public ResponseEntity<Object> addNewDevice(DeviceDto deviceDto) {
         String userId = emCareSecurityUser.getLoggedInUser().getSubject();
-        DeviceMaster newDevice = DeviceMapper.dtoToEntityDeviceMasterCreate(deviceDto, userId);
-        if (deviceRepository.getDeviceByImei(newDevice.getImeiNumber()) == null) {
+        DeviceMaster oldDevice = deviceRepository.getDeviceByImei(deviceDto.getImeiNumber());
+        if (oldDevice == null) {
+            DeviceMaster newDevice = DeviceMapper.dtoToEntityDeviceMasterCreate(deviceDto, userId);
             newDevice = deviceRepository.save(newDevice);
             return ResponseEntity.status(HttpStatus.OK).body(newDevice);
         } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("IMEI Already Exists");
+            DeviceMaster updatedDevice = DeviceMapper.dtoToEntityDeviceMasterUpdate(oldDevice, deviceDto, userId);
+            deviceRepository.updateDevice(
+                    updatedDevice.getAndroidVersion(),
+                    updatedDevice.getLastLoggedInUser(),
+                    updatedDevice.getIsBlocked(),
+                    updatedDevice.getDeviceId()
+            );
+            return ResponseEntity.status(HttpStatus.OK).body(updatedDevice);
         }
     }
 
