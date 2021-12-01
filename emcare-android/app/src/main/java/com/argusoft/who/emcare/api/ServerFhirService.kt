@@ -53,7 +53,7 @@ interface ServerFhirService {
                 .addInterceptor(HttpRequestInterceptor())
                 .build()
             return Retrofit.Builder()
-                .baseUrl(CompanionValues.BASE_URL)
+                .baseUrl(CompanionValues.LOCAL_BASE_URL)
                 .client(client)
                 .addConverterFactory(FhirConverterFactory(parser))
                 .addConverterFactory(GsonConverterFactory.create())
