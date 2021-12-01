@@ -5,7 +5,11 @@ import com.argusoft.who.emcare.web.deviceManagement.model.DeviceManagement;
 import com.argusoft.who.emcare.web.deviceManagement.service.DeviceManagementService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+@Service
+@Transactional
 public class DeviceManagementServiceImpl implements DeviceManagementService{
 
     @Autowired

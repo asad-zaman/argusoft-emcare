@@ -1,5 +1,6 @@
 package com.argusoft.who.emcare.web.deviceManagement.model;
 
+import java.util.Date;
 import javax.persistence.*;
 
 @Entity
@@ -23,6 +24,18 @@ public class DeviceManagement {
     
     @Column(name = "is_blocked")
     private String isBlocked;
+    
+    @Column(name = "created_by")
+    private long createdBy;
+    
+    @Column(name = "created_at")
+    private Date createdAt;
+    
+    @Column(name = "updated_by")
+    private long updatedBy;
+    
+    @Column(name = "updated_at")
+    private Date updatedAt;
 
     public Integer getId() {
         return id;
@@ -70,6 +83,38 @@ public class DeviceManagement {
 
     public void setIsBlocked(String isBlocked) {
         this.isBlocked = isBlocked;
+    }
+    
+    public long getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(long createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public long getUpdatedBy() {
+        return updatedBy;
+    }
+
+    public void setUpdatedBy(long updatedBy) {
+        this.updatedBy = updatedBy;
+    }
+
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
 }
