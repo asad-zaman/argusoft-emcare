@@ -5,15 +5,12 @@ import ca.uhn.fhir.rest.openapi.OpenApiInterceptor;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.RestfulServer;
 import com.argusoft.who.emcare.web.fhir.resourceprovider.PatientResourceProvider;
-import com.argusoft.who.emcare.web.fhir.service.EmcareResourceService;
-import com.argusoft.who.emcare.web.fhir.service.implementation.EmcareResourceServiceImpl;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 
 import java.util.ArrayList;
 import java.util.List;
