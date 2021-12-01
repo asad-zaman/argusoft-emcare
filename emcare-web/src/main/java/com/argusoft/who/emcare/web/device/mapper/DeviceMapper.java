@@ -16,7 +16,7 @@ public class DeviceMapper {
         master.setAndroidVersion(deviceDto.getAndroidVersion());
         master.setImeiNumber(deviceDto.getImeiNumber());
         master.setMacAddress(deviceDto.getMacAddress());
-        master.setUserId(userId);
+        master.setLastLoggedInUser(userId);
         master.setIsBlocked(deviceDto.getIsBlocked());
         master.setCreatedBy(userId);
         master.setCreatedOn(new Date());
@@ -31,7 +31,7 @@ public class DeviceMapper {
         master.setAndroidVersion(deviceDto.getAndroidVersion());
         master.setImeiNumber(deviceMaster.getImeiNumber());
         master.setMacAddress(deviceDto.getMacAddress());
-        master.setUserId(userId);
+        master.setLastLoggedInUser(userId);
         master.setIsBlocked(deviceDto.getIsBlocked());
         master.setCreatedBy(deviceMaster.getCreatedBy());
         master.setCreatedOn(deviceMaster.getCreatedOn());

@@ -43,7 +43,7 @@ public class DeviceServiceImpl implements DeviceService {
         DeviceMaster updatedDevice = DeviceMapper.dtoToEntityDeviceMasterUpdate(oldDeviceDetails, deviceDto, userId);
         deviceRepository.updateDevice(
                 updatedDevice.getAndroidVersion(),
-                updatedDevice.getUserId(),
+                updatedDevice.getLastLoggedInUser(),
                 updatedDevice.getIsBlocked(),
                 updatedDevice.getDeviceId()
         );

@@ -22,11 +22,11 @@ public interface DeviceRepository extends JpaRepository<DeviceMaster, Integer> {
     @Modifying
     @Transactional
     @Query(value = "update device_master set android_version = :android_version,"
-            + " user_id= :user_id, is_blocked = :is_blocked where device_id = :device_id",
+            + " last_logged_in_user= :last_logged_in_user, is_blocked = :is_blocked where device_id = :device_id",
             nativeQuery = true)
     public void updateDevice(
             @Param("android_version") String android_version,
-            @Param("user_id") String user_id,
+            @Param("last_logged_in_user") String last_logged_in_user,
             @Param("is_blocked") Boolean is_blocked,
             @Param("device_id") Integer device_id
     );

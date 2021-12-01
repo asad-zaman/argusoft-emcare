@@ -33,8 +33,8 @@ public class DeviceMaster extends EntityAuditInfo implements Serializable {
     @Column(name = "mac_address", nullable = false)
     private String macAddress;
 
-    @Column(name = "userId", nullable = false)
-    private String userId;
+    @Column(name = "last_logged_in_user", nullable = false)
+    private String lastLoggedInUser;
 
     @Column(name = "is_blocked", nullable = false)
     private Boolean isBlocked;
