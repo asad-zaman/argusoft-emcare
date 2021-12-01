@@ -8,7 +8,9 @@ import org.springframework.stereotype.Service;
 import com.argusoft.who.emcare.web.fhir.dao.EmcareResourceRepository;
 import com.argusoft.who.emcare.web.fhir.model.EmcareResource;
 import com.argusoft.who.emcare.web.fhir.service.EmcareResourceService;
+import java.util.List;
 
+@Transactional
 @Service
 public class EmcareResourceServiceImpl implements EmcareResourceService{
 
@@ -16,9 +18,18 @@ public class EmcareResourceServiceImpl implements EmcareResourceService{
 	EmcareResourceRepository repository;
 	
 	@Override
-	@Transactional
 	public EmcareResource saveResource(EmcareResource emcareResource) {
 		return repository.save(emcareResource);
 	}
+        
+        @Override
+        public List<EmcareResource> retrieveResources() {
+            return repository.findAll();
+        }
+        
+        @Override
+        public List<EmcareResource> retrieveResourcesByType(String type){
+            return repository.findAllByType(type);
+        }
 	
 }
