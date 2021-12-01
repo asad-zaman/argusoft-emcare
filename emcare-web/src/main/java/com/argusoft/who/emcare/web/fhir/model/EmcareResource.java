@@ -12,37 +12,50 @@ import javax.persistence.Table;
 @Table(name = "emcare_resources")
 public class EmcareResource {
 
-	@Id
+    @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
-	
-	@Column(name = "text", columnDefinition="TEXT")
+
+    @Column(name = "text", columnDefinition = "TEXT")
     private String text;
+    
+    @Column(name = "type", columnDefinition = "TEXT")
+    private String type;
 
-	public Integer getId() {
-		return id;
-	}
+    public Integer getId() {
+        return id;
+    }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	public String getText() {
-		return text;
-	}
+    public String getText() {
+        return text;
+    }
 
-	public void setText(String text) {
-		this.text = text;
-	}
+    public void setText(String text) {
+        this.text = text;
+    }
 
-	public EmcareResource(Integer id, String text) {
-		this.id = id;
-		this.text = text;
-	}
+    public String getType() {
+        return type;
+    }
 
-	public EmcareResource() {
-		// Default Constructor
-	}
-	
-	
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    
+    
+    public EmcareResource(Integer id, String text, String type) {
+        this.id = id;
+        this.text = text;
+        this.type = type;
+    }
+
+    public EmcareResource() {
+        // Default Constructor
+    }
+
 }
