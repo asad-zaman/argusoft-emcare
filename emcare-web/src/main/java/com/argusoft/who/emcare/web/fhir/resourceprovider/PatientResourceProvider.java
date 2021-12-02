@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import org.hl7.fhir.r4.model.RelatedPerson;
 
 @Component
 public class PatientResourceProvider implements IResourceProvider {
@@ -157,7 +158,7 @@ public class PatientResourceProvider implements IResourceProvider {
 
         MethodOutcome retVal = new MethodOutcome();
         retVal.setId(new IdType("Patient", id, String.valueOf(versionId)));
-        retVal.setResource(new Patient());
+        retVal.setResource(thePatient);
 
         return retVal;
 
@@ -181,5 +182,44 @@ public class PatientResourceProvider implements IResourceProvider {
         }
 
         return patientsList;
+    }
+
+    /*
+    * Related Person APIs
+     */
+    @Update
+    public MethodOutcome updateRelatedPerson(@IdParam IdType theId, @ResourceParam RelatedPerson theRelatedPerson) {
+        FhirContext fhirCtx = FhirContext.forR4();
+        IParser parser = fhirCtx.newJsonParser().setPrettyPrint(false);
+        String relatedPersonString = parser.encodeResourceToString(theRelatedPerson);
+
+        //Adding meta to the related person resource
+        Meta m = new Meta();
+        m.setVersionId("1");
+        m.setLastUpdated(new Date());
+
+        Integer versionId = 1;
+
+        if (theRelatedPerson.getMeta() == null || theRelatedPerson.getMeta().getVersionId() == null) {
+            theRelatedPerson.setMeta(m);
+        } else {
+            versionId = Integer.parseInt(theRelatedPerson.getMeta().getVersionId()) + 1;
+            m.setVersionId(String.valueOf(versionId));
+        }
+
+        String id = theRelatedPerson.getId();
+
+        EmcareResource emcareResource = new EmcareResource();
+        emcareResource.setText(relatedPersonString);
+        emcareResource.setType("RELATED_PERSON");
+
+        emcareResourceService.saveResource(emcareResource);
+
+        MethodOutcome retVal = new MethodOutcome();
+        retVal.setId(new IdType("RelatedPerson", id, String.valueOf(versionId)));
+        retVal.setResource(theRelatedPerson);
+
+        return retVal;
+
     }
 }

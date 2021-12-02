@@ -38,6 +38,9 @@ class AddPatientViewModel(application: Application, private val state: SavedStat
       val patient = entry.resource as Patient
       if (patient.identifier.isNotEmpty()
       ) {
+        //Adding id
+        patient.id = generateUuid()
+
         //Changing identifier value type from string to identifier object
         val patientIdentifier:Identifier = Identifier()
         patientIdentifier.use = Identifier.IdentifierUse.OFFICIAL
@@ -45,25 +48,36 @@ class AddPatientViewModel(application: Application, private val state: SavedStat
         patient.identifier = listOf(patientIdentifier)
 
         //Adding and saving caregiver details
-        if(!questionnaireResponse.item[7].answer.isNullOrEmpty()) {
+        if(!questionnaireResponse.item[8].answer.isNullOrEmpty()) {
           val caregiver: RelatedPerson = RelatedPerson()
           caregiver.id = generateUuid()
           val caregiverHumanName: HumanName = HumanName()
-          caregiverHumanName.given = listOf(questionnaireResponse.item[7].answerFirstRep.valueStringType)
-          if(!questionnaireResponse.item[8].answer.isNullOrEmpty()){
-            caregiverHumanName.family = questionnaireResponse.item[8].answerFirstRep.valueStringType.toString()
+          caregiverHumanName.given = listOf(questionnaireResponse.item[8].answerFirstRep.valueStringType)
+          if(!questionnaireResponse.item[9].answer.isNullOrEmpty()){
+            caregiverHumanName.family = questionnaireResponse.item[9].answerFirstRep.valueStringType.toString()
           }
+          caregiver.name = listOf(caregiverHumanName)
+
+          //Saving patient reference to the caregiver
+          val patientReference: Reference = Reference()
+          patientReference.identifier = patientIdentifier
+          val relatedPersonLinkComponent: Patient.PatientLinkComponent = Patient.PatientLinkComponent()
+          relatedPersonLinkComponent.other = patientReference
+          caregiver.patient = patientReference
+
+          //Saving Caregiver
+          fhirEngine.save(caregiver)
+
+          //adding caregiver reference to the patient
           val caregiverReference: Reference = Reference()
           val caregiverIdentifier:Identifier = Identifier()
           caregiverIdentifier.use = Identifier.IdentifierUse.OFFICIAL
-          caregiverIdentifier.value = "caregiver-" + patientIdentifier.value
+          caregiverIdentifier.value = patient.id
           caregiver.identifier = listOf(caregiverIdentifier)
           caregiverReference.identifier = caregiverIdentifier
           val patientLinkComponent:Patient.PatientLinkComponent = Patient.PatientLinkComponent()
           patientLinkComponent.other = caregiverReference
           patient.link = listOf(patientLinkComponent)
-
-          fhirEngine.save(caregiver)
         }
         //#Adding locationId
         val locationIdentifier:Identifier = Identifier()
@@ -74,7 +88,7 @@ class AddPatientViewModel(application: Application, private val state: SavedStat
                                     .setUrl("http://hl7.org/fhir/StructureDefinition/patient-locationId")
         patient.addExtension(extension)
         //End of location Id
-        patient.id = generateUuid()
+
         fhirEngine.save(patient)
         isPatientSaved.value = true
         return@launch
