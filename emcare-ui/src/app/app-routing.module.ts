@@ -12,7 +12,8 @@ import {
   LocationTypeComponent,
   LocationManagementComponent,
   ShowLocationComponent,
-  ShowLocationTypeComponent
+  ShowLocationTypeComponent,
+  DeviceListComponent
 } from './root/index';
 
 const routes: Routes = [
@@ -31,6 +32,7 @@ const routes: Routes = [
   { path: 'addLocation', component: LocationManagementComponent, canActivate: [AuthGuard] },
   { path: 'editLocation/:id', component: LocationManagementComponent, canActivate: [AuthGuard] },
   { path: 'showLocation', component: ShowLocationComponent, canActivate: [AuthGuard] },
+  { path: 'showDevices', component: DeviceListComponent, canActivate: [AuthGuard] },
   { path: '**', redirectTo: 'login' }
 ];
 @NgModule({

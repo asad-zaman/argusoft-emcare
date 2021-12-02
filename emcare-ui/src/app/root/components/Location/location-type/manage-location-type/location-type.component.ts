@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { LocationService } from 'src/app/root/services/location.service';
 
 @Component({
   selector: 'app-location-type',
@@ -12,12 +13,12 @@ export class LocationTypeComponent implements OnInit {
   locationTypeForm: FormGroup;
   isEdit: boolean;
   editId: string;
-  locationTypeArr = [];
 
   constructor(
     private readonly formBuilder: FormBuilder,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private readonly locationService: LocationService
   ) { }
 
   ngOnInit(): void {
@@ -26,30 +27,7 @@ export class LocationTypeComponent implements OnInit {
 
   prerequisite() {
     this.initLocationTypeInputForm();
-    this.setLocationTypeArr();
-    this.getAllLocationTypes();
     this.checkEditParam();
-  }
-
-  setLocationTypeArr() {
-    const data = localStorage.getItem('locationType');
-    if (data) {
-      this.locationTypeArr = JSON.parse(data);
-    } else {
-      this.locationTypeArr = [];
-    }
-  }
-
-  getAllLocationTypes() {
-    // this.nameArr = [];
-    // this.fhirService.getAllOrganizations().subscribe(res => {
-    //   if (res && res['entry']) {
-    //     res['entry'].map(entry => {
-    //       const fullName = `${entry['resource']['name']}`;
-    //       this.nameArr.push({ name: fullName, id: entry['resource']['id'] });
-    //     }, () => { });
-    //   }
-    // });
   }
 
   checkEditParam() {
@@ -57,36 +35,46 @@ export class LocationTypeComponent implements OnInit {
     this.editId = routeParams.get('id');
     if (this.editId) {
       this.isEdit = true;
-      this.setCurrentLocationType(this.editId);
-      // this.fhirService.getOrganizationDetailById(this.editId).subscribe(res => {
-      //   this.mapOrganizationData(res);
-      // });
+      this.locationService.getLocationTypeById(this.editId).subscribe(res => {
+        if (res) {
+          const obj = {
+            type: res['code'],
+            name: res['name']
+          }
+          this.locationTypeForm.setValue(obj);
+        }
+      });
     }
-  }
-
-  setCurrentLocationType(index) {
-    const data = this.locationTypeArr[index];
-    this.locationTypeForm.setValue(data);
   }
 
   initLocationTypeInputForm() {
     this.locationTypeForm = this.formBuilder.group({
       type: ['', [Validators.required]],
-      name: ['', [Validators.required]],
-      level: ['', [Validators.required]]
+      name: ['', [Validators.required]]
     });
   }
 
   saveData() {
     if (this.locationTypeForm.valid) {
-      const obj = this.locationTypeForm.value;
       if (this.isEdit) {
-        this.locationTypeArr[this.editId] = obj;
+        const data = {
+          "hierarchyType": this.editId,
+          "name": this.locationTypeForm.get('name').value,
+          "code": this.locationTypeForm.get('type').value
+        };
+        this.locationService.updateLocationTypeById(data).subscribe(() => {
+          this.showLocationType();
+        });
       } else {
-        this.locationTypeArr.push(obj);
+        const data = {
+          "hierarchyType": this.locationTypeForm.get('name').value,
+          "name": this.locationTypeForm.get('name').value,
+          "code": this.locationTypeForm.get('type').value
+        };
+        this.locationService.createLocationType(data).subscribe((res) => {
+          this.showLocationType();
+        });
       }
-      localStorage.setItem('locationType', JSON.stringify(this.locationTypeArr));
-      this.showLocationType();
     }
   }
 

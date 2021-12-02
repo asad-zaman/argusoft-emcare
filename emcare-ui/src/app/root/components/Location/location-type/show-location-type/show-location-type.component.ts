@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { LocationService } from 'src/app/root/services/location.service';
 
 @Component({
   selector: 'app-show-location-type',
@@ -8,10 +9,11 @@ import { Router } from '@angular/router';
 })
 export class ShowLocationTypeComponent implements OnInit {
 
-  locationTypeArr = [];
+  locationTypeArr: any;
 
   constructor(
-    private router: Router
+    private readonly router: Router,
+    private readonly locationService: LocationService
   ) { }
 
   ngOnInit(): void {
@@ -23,13 +25,11 @@ export class ShowLocationTypeComponent implements OnInit {
   }
 
   getLocationTypes() {
-    const data = localStorage.getItem('locationType');
-    if (data) {
-      this.locationTypeArr = JSON.parse(data);
-      console.log(this.locationTypeArr);
-    } else {
-      this.locationTypeArr = [];
-    }
+    this.locationService.getAllLocationTypes().subscribe(res => {
+      if (res) {
+        this.locationTypeArr = res;
+      }
+    });
   }
 
   addLocationType() {
@@ -37,11 +37,12 @@ export class ShowLocationTypeComponent implements OnInit {
   }
 
   editLocationType(index) {
-    this.router.navigate([`editLocationType/${index}`]);
+    this.router.navigate([`editLocationType/${this.locationTypeArr[index]['hierarchyType']}`]);
   }
 
   deleteLocationType(index) {
-    this.locationTypeArr.splice(index, 1);
-    localStorage.setItem('locationType', JSON.stringify(this.locationTypeArr));
+    this.locationService.deleteLocationTypeById(this.locationTypeArr[index]['hierarchyType']).subscribe(res => {
+      this.getLocationTypes();
+    });
   }
 }
