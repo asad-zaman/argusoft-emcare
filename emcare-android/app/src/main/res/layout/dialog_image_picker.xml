@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/llImagePickerParent"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/drawable_rounded_top"
+    android:clickable="true"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvCamera"
+        style="@style/Style_BottomSheet_tv"
+        android:text="@string/label_open_camera" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/colorLightBlack" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvGallery"
+        style="@style/Style_BottomSheet_tv"
+        android:text="@string/label_open_gallery" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/colorLightBlack" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvCancel"
+        style="@style/Style_BottomSheet_tv"
+        android:text="@string/button_cancel"
+        android:textColor="@color/colorPrimary" />
+</LinearLayout>

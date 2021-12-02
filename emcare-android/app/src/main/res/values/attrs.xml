@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="ApiViewStateConstraintLayout">
+        <attr name="circularProgressBarWidth" format="dimension" />
+        <attr name="circularProgressBarHeight" format="dimension" />
+        <attr name="circularProgressBarColor" format="color" />
+
+        <attr name="horizontalProgressBarWidth" format="dimension" />
+        <attr name="horizontalProgressBarHeight" format="dimension" />
+        <attr name="horizontalProgressBarColor" format="color" />
+
+        <attr name="errorImageWidth" format="dimension" />
+        <attr name="errorImageHeight" format="dimension" />
+        <attr name="errorTitleTextSize" format="dimension" />
+        <attr name="errorMessageTextSize" format="dimension" />
+        <attr name="errorTitleTextColor" format="color" />
+        <attr name="errorMessageTextColor" format="color" />
+        <attr name="errorButtonTextColor" format="color" />
+        <attr name="errorButtonBackgroundColor" format="color" />
+
+        <attr name="enableRecyclerView" format="boolean" />
+        <attr name="enableSwipeRefreshLayout" format="boolean" />
+    </declare-styleable>
+</resources>
