@@ -1,0 +1,71 @@
+<div class="container">
+    <div class="row mt-5">
+        <div class="col-2"></div>
+        <div class="col-8">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="mt-3">Manage Device</h3>
+                    <form [formGroup]="deviceForm" name="deviceForm" novalidate>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="imei">IMEI Number</label>
+                                    <input formControlName="imei" type="text" class="form-control" id="imei"
+                                        placeholder="Enter IMEI number">
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="macAddress">MAC Address</label>
+                                    <input formControlName="macAddress" type="text" class="form-control" id="macAddress"
+                                        placeholder="Enter MAC Address">
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="androidVersion">Android Version</label>
+                                    <input formControlName="androidVersion" type="number" class="form-control"
+                                        id="androidVersion" placeholder="Enter Android Version">
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="user">Logged in User</label>
+                                    <input formControlName="user" type="text" class="form-control" id="user"
+                                        placeholder="Enter user">
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="isBlocked" class="mr-4">
+                                        <ng-container *ngIf="this.deviceForm.controls.isBlocked.value; else enable">
+                                            Disable App Usage
+                                        </ng-container>
+                                        <ng-template #enable>
+                                            Enable App Usage
+                                        </ng-template>
+                                    </label>
+                                    <label class="switch">
+                                        <input formControlName="isBlocked" id="isBlocked" type="checkbox" checked>
+                                        <span class="slider round"></span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-2">
+                                <button type="submit" class="btn btn-primary" (click)="saveData()">Submit</button>
+                            </div>
+                            <div class="col-7">
+                                <button type="submit" class="btn btn-primary" (click)="showDevices()">
+                                    Show Devices
+                                </button>
+                                <button type="submit" class="btn btn-primary mx-3"
+                                    [routerLink]="['dashboard']">Home</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-2"></div>
+    </div>
+</div>

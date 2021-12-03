@@ -12,7 +12,6 @@
                                 <th scope="col">#</th>
                                 <th scope="col">Name</th>
                                 <th scope="col">Type</th>
-                                <th scope="col">Level</th>
                                 <th scope="col">Action</th>
                             </tr>
                         </thead>
@@ -20,9 +19,8 @@
                             <ng-container *ngFor="let data of locationTypeArr; let i=index">
                                 <tr>
                                     <th scope="row">{{i+1}}</th>
-                                    <td>{{data.type}}</td>
                                     <td>{{data.name}}</td>
-                                    <td>{{data.level}}</td>
+                                    <td>{{data.code}}</td>
                                     <td>
                                         <button type="submit" class="btn btn-primary mr-3" (click)="editLocationType(i)">Edit</button>
                                         <button type="submit" class="btn btn-primary" (click)="deleteLocationType(i)">Delete</button>
