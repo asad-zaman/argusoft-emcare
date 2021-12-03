@@ -6,6 +6,7 @@ import com.argusoft.who.emcare.web.location.service.LocationConfigService;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * @author jay
  */
+@CrossOrigin(origins = "**")
 @RestController
 @RequestMapping("/api/location")
 public class LocationController {
@@ -29,20 +31,17 @@ public class LocationController {
 
     @RequestMapping(value = "/hierarchy/create", method = RequestMethod.POST)
     public ResponseEntity<Object> createHierarchyMaster(@RequestBody HierarchyMasterDto hierarchyMasterDto) {
-        locationConfigService.createHierarchyMaster(hierarchyMasterDto);
-        return ResponseEntity.ok("Success");
+        return locationConfigService.createHierarchyMaster(hierarchyMasterDto);
     }
 
     @RequestMapping(value = "/hierarchy/update", method = RequestMethod.PUT)
     public ResponseEntity<Object> updateHierarchyMaster(@RequestBody HierarchyMasterDto hierarchyMasterDto) {
-        locationConfigService.updateHierarchyMaster(hierarchyMasterDto);
-        return ResponseEntity.ok("Success");
+        return locationConfigService.updateHierarchyMaster(hierarchyMasterDto);
     }
 
     @RequestMapping(value = "/hierarchy/delete/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity<Object> deleteHierarchyMaster(@PathVariable(value = "id") String id) {
+    public void deleteHierarchyMaster(@PathVariable(value = "id") String id) {
         locationConfigService.deleteHierarchyMaster(id);
-        return ResponseEntity.ok("Success");
     }
 
     @RequestMapping(value = "/hierarchy/{type}", method = RequestMethod.GET)
@@ -74,5 +73,9 @@ public class LocationController {
     public ResponseEntity<Object> deleteLocation(@RequestParam("locationId") Integer locationId) {
         return locationConfigService.deleteLocationById(locationId);
     }
-
+    
+    @RequestMapping(value = "/{locationId}", method = RequestMethod.GET)
+    public ResponseEntity<Object> getLocationById(@PathVariable(value = "locationId") Integer locationId) {
+        return locationConfigService.getLocationById(locationId);
+    }
 }

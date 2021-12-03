@@ -10,9 +10,9 @@ import org.springframework.http.ResponseEntity;
  */
 public interface LocationConfigService {
 
-    public void createHierarchyMaster(HierarchyMasterDto hierarchyMasterDto);
+    public ResponseEntity<Object> createHierarchyMaster(HierarchyMasterDto hierarchyMasterDto);
 
-    public void updateHierarchyMaster(HierarchyMasterDto hierarchyMasterDto);
+    public ResponseEntity<Object> updateHierarchyMaster(HierarchyMasterDto hierarchyMasterDto);
 
     public void deleteHierarchyMaster(String id);
 
@@ -27,4 +27,6 @@ public interface LocationConfigService {
     public ResponseEntity<Object> updateLocation(LocationMasterDto locationMasterDto);
 
     public ResponseEntity<Object> deleteLocationById(Integer locationId);
+
+    public ResponseEntity<Object> getLocationById(Integer locationId);
 }

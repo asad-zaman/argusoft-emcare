@@ -1,6 +1,7 @@
 package com.argusoft.who.emcare.web.device.service;
 
 import com.argusoft.who.emcare.web.device.dto.DeviceDto;
+import javax.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 
 /**
@@ -15,6 +16,6 @@ public interface DeviceService {
 
     public ResponseEntity<Object> getDeviceInfoByImei(String imei, String userId);
 
-    public ResponseEntity<Object> getAllDevice();
+    public ResponseEntity<Object> getAllDevice(HttpServletRequest request);
 
 }

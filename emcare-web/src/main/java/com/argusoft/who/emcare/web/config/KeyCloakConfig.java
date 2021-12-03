@@ -1,6 +1,8 @@
 package com.argusoft.who.emcare.web.config;
 
+import javax.servlet.http.HttpServletRequest;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
+import org.keycloak.KeycloakSecurityContext;
 import org.keycloak.OAuth2Constants;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
@@ -31,10 +33,22 @@ public class KeyCloakConfig {
                     .clientId(clientId)
                     .clientSecret(clientSecret)
                     .resteasyClient(new ResteasyClientBuilder()
-                            .connectionPoolSize(10)
+                            .connectionPoolSize(20)
                             .build())
                     .build();
         }
+        return keycloak;
+    }
+
+    public static Keycloak getInstanceByAuth(HttpServletRequest request) {
+        KeycloakSecurityContext context = (KeycloakSecurityContext) request.getAttribute(KeycloakSecurityContext.class.getName());
+
+        Keycloak keycloak = KeycloakBuilder.builder()
+                .serverUrl(serverUrl)
+                .realm(realm)
+                .authorization(context.getTokenString())
+                .resteasyClient(new ResteasyClientBuilder().connectionPoolSize(20).build())
+                .build();
         return keycloak;
     }
 }

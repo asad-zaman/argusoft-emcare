@@ -73,7 +73,7 @@ public class WebConfig extends KeycloakWebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         super.configure(http);
         http.authorizeRequests()
-                .antMatchers("/api/user/**").hasRole("user")
+                .antMatchers("/api/user/**").hasAnyRole("user","user_admin")
                 .antMatchers("/api/location/**").hasAnyRole("user", "user_admin")
                 .antMatchers("/api/device/**").hasAnyRole("user", "user_admin");
         http.csrf().disable();
