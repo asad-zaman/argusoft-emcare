@@ -12,24 +12,34 @@ import java.util.List;
 
 @Transactional
 @Service
-public class EmcareResourceServiceImpl implements EmcareResourceService{
+public class EmcareResourceServiceImpl implements EmcareResourceService {
 
-	@Autowired
-	EmcareResourceRepository repository;
-	
-	@Override
-	public EmcareResource saveResource(EmcareResource emcareResource) {
-		return repository.save(emcareResource);
-	}
-        
-        @Override
-        public List<EmcareResource> retrieveResources() {
-            return repository.findAll();
-        }
-        
-        @Override
-        public List<EmcareResource> retrieveResourcesByType(String type){
-            return repository.findAllByType(type);
-        }
-	
+    @Autowired
+    EmcareResourceRepository repository;
+
+    @Override
+    public EmcareResource saveResource(EmcareResource emcareResource) {
+        return repository.save(emcareResource);
+    }
+
+    @Override
+    public List<EmcareResource> retrieveResources() {
+        return repository.findAll();
+    }
+
+    @Override
+    public List<EmcareResource> retrieveResourcesByType(String type) {
+        return repository.findAllByType(type);
+    }
+
+    @Override
+    public EmcareResource findByResourceId(String resourceId) {
+        return repository.findByResourceId(resourceId);
+    }
+
+    @Override
+    public void remove(EmcareResource emcareResource) {
+        repository.delete(emcareResource);
+    }
+
 }

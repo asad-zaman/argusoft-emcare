@@ -4,16 +4,13 @@ import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.rest.annotation.*;
 import ca.uhn.fhir.rest.api.MethodOutcome;
-import ca.uhn.fhir.rest.api.SortOrderEnum;
-import ca.uhn.fhir.rest.api.SortSpec;
 import ca.uhn.fhir.rest.param.StringParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
+import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
 
 import com.argusoft.who.emcare.web.fhir.model.EmcareResource;
 import com.argusoft.who.emcare.web.fhir.service.EmcareResourceService;
-import com.google.gson.Gson;
 
-import org.hl7.fhir.r4.model.Address;
 import org.hl7.fhir.r4.model.Enumerations;
 import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.Identifier;
@@ -34,6 +31,9 @@ public class PatientResourceProvider implements IResourceProvider {
 
     @Autowired
     private EmcareResourceService emcareResourceService;
+
+    private final FhirContext fhirCtx = FhirContext.forR4();
+    private final IParser parser = fhirCtx.newJsonParser().setPrettyPrint(false);
 
     /**
      * The getResourceType method comes from IResourceProvider, and must be
@@ -56,13 +56,9 @@ public class PatientResourceProvider implements IResourceProvider {
     @Read()
 
     public Patient getResourceById(@IdParam IdType theId) {
-        Patient patient = new Patient();
-        patient.addIdentifier();
-        patient.getIdentifier().get(0).setSystem("urn:hapitest:mrns");
-        patient.getIdentifier().get(0).setValue("00002");
-        patient.addName().setFamily("Test");
-        patient.getName().get(0).addGiven("PatientOne");
-        patient.setGender(Enumerations.AdministrativeGender.FEMALE);
+
+        EmcareResource emcareResource = emcareResourceService.findByResourceId(theId.getIdPart());
+        Patient patient = parser.parseResource(Patient.class, emcareResource.getText());
         return patient;
     }
 
@@ -104,14 +100,14 @@ public class PatientResourceProvider implements IResourceProvider {
         thePatient.setMeta(m);
 
         //Adding id to the patient
-        thePatient.setId(UUID.randomUUID().toString());
+        String patientId = UUID.randomUUID().toString();
+        thePatient.setId(patientId);
 
-        FhirContext fhirCtx = FhirContext.forR4();
-        IParser parser = fhirCtx.newJsonParser().setPrettyPrint(false);
         String patientString = parser.encodeResourceToString(thePatient);
 
         EmcareResource emcareResource = new EmcareResource();
         emcareResource.setText(patientString);
+        emcareResource.setResourceId(patientId);
         emcareResource.setType("PATIENT");
 
         emcareResourceService.saveResource(emcareResource);
@@ -144,20 +140,20 @@ public class PatientResourceProvider implements IResourceProvider {
             m.setVersionId(String.valueOf(versionId));
         }
 
-        FhirContext fhirCtx = FhirContext.forR4();
-        IParser parser = fhirCtx.newJsonParser().setPrettyPrint(false);
         String patientString = parser.encodeResourceToString(thePatient);
 
-        String id = thePatient.getId();
+        String patientId = thePatient.getId()
+                .substring(thePatient.getId().indexOf("/") + 1); //Getting id part after Patient/
 
         EmcareResource emcareResource = new EmcareResource();
         emcareResource.setText(patientString);
+        emcareResource.setResourceId(patientId);
         emcareResource.setType("PATIENT");
 
         emcareResourceService.saveResource(emcareResource);
 
         MethodOutcome retVal = new MethodOutcome();
-        retVal.setId(new IdType("Patient", id, String.valueOf(versionId)));
+        retVal.setId(new IdType("Patient", patientId, String.valueOf(versionId)));
         retVal.setResource(thePatient);
 
         return retVal;
@@ -175,8 +171,6 @@ public class PatientResourceProvider implements IResourceProvider {
 
         List<EmcareResource> resourcesList = emcareResourceService.retrieveResourcesByType("PATIENT");
         for (EmcareResource emcareResource : resourcesList) {
-            FhirContext fhirCtx = FhirContext.forR4();
-            IParser parser = fhirCtx.newJsonParser().setPrettyPrint(false);
             Patient patient = parser.parseResource(Patient.class, emcareResource.getText());
             patientsList.add(patient);
         }
@@ -184,13 +178,26 @@ public class PatientResourceProvider implements IResourceProvider {
         return patientsList;
     }
 
+    @Delete()
+    public void deletePatient(@IdParam IdType theId) {
+
+        EmcareResource emcareResource = emcareResourceService.findByResourceId(theId.getIdPart());
+
+        if (emcareResource == null) {
+            throw new ResourceNotFoundException("Unknown version");
+        } else {
+            emcareResourceService.remove(emcareResource);
+        }
+
+        return;
+    }
+
     /*
     * Related Person APIs
      */
     @Update
     public MethodOutcome updateRelatedPerson(@IdParam IdType theId, @ResourceParam RelatedPerson theRelatedPerson) {
-        FhirContext fhirCtx = FhirContext.forR4();
-        IParser parser = fhirCtx.newJsonParser().setPrettyPrint(false);
+
         String relatedPersonString = parser.encodeResourceToString(theRelatedPerson);
 
         //Adding meta to the related person resource
@@ -207,16 +214,18 @@ public class PatientResourceProvider implements IResourceProvider {
             m.setVersionId(String.valueOf(versionId));
         }
 
-        String id = theRelatedPerson.getId();
+        String relatedPersonId = theRelatedPerson.getId()
+                .substring(theRelatedPerson.getId().indexOf("/") + 1);
 
         EmcareResource emcareResource = new EmcareResource();
         emcareResource.setText(relatedPersonString);
+        emcareResource.setResourceId(relatedPersonId);
         emcareResource.setType("RELATED_PERSON");
 
         emcareResourceService.saveResource(emcareResource);
 
         MethodOutcome retVal = new MethodOutcome();
-        retVal.setId(new IdType("RelatedPerson", id, String.valueOf(versionId)));
+        retVal.setId(new IdType("RelatedPerson", relatedPersonId, String.valueOf(versionId)));
         retVal.setResource(theRelatedPerson);
 
         return retVal;

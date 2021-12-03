@@ -1,16 +1,24 @@
 package com.argusoft.who.emcare.web.fhir.model;
 
+import java.io.Serializable;
+import java.util.Date;
+import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Lob;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
+@Data
 @Entity
 @Table(name = "emcare_resources")
-public class EmcareResource {
+public class EmcareResource implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -21,41 +29,24 @@ public class EmcareResource {
     
     @Column(name = "type", columnDefinition = "TEXT")
     private String type;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
     
+    @Column(name = "resource_id")
+    private String resourceId;
     
-    public EmcareResource(Integer id, String text, String type) {
-        this.id = id;
-        this.text = text;
-        this.type = type;
-    }
+    @Column(name = "created_by")
+    private UUID createdBy;
 
-    public EmcareResource() {
-        // Default Constructor
-    }
+    @Column(name = "updated_by")
+    private UUID updatedBy;
+
+    @CreationTimestamp
+    @Column(name = "created_at")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createdAt;
+
+    @UpdateTimestamp
+    @Column(name = "updated_at")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date updatedAt;
 
 }

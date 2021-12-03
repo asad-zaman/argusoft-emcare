@@ -10,4 +10,6 @@ import java.util.List;
 public interface EmcareResourceRepository extends JpaRepository<EmcareResource,Long>{
     
     List<EmcareResource> findAllByType(String type);
+    
+    EmcareResource findByResourceId(String resourceId);
 }

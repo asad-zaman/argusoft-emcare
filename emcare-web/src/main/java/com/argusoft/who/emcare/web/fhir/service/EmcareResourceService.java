@@ -10,5 +10,9 @@ public interface EmcareResourceService {
         public List<EmcareResource> retrieveResources();
         
         public List<EmcareResource> retrieveResourcesByType(String type);
+        
+        public EmcareResource findByResourceId(String resourceId);
+        
+        public void remove(EmcareResource emcareResource);
 
 }
