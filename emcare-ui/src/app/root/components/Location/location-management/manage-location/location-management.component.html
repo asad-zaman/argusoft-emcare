@@ -12,7 +12,7 @@
                                     <label for="locationType">Location Type</label>
                                     <select class="form-control" formControlName="locationType" id="locationType">
                                         <ng-container *ngFor="let data of locationTypeArr">
-                                            <option value="{{data.level}}">{{data.name}}</option>
+                                            <option value="{{data.code}}">{{data.name}}</option>
                                         </ng-container>
                                     </select>
                                 </div>
@@ -30,7 +30,7 @@
                                     <ng-container *ngIf="locationArr.length>0; else noLocation">
                                         <select class="form-control" formControlName="parent" id="parent">
                                             <ng-container *ngFor="let data of locationArr">
-                                                <option value="{{data.locationName}}">{{data.locationName}}</option>
+                                                <option value="{{data.id}}">{{data.name}}</option>
                                             </ng-container>
                                         </select>
                                     </ng-container>

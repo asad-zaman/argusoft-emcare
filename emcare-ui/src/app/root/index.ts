@@ -8,3 +8,7 @@ export { LocationTypeComponent } from './components/Location/location-type/manag
 export { LocationManagementComponent } from './components/Location/location-management/manage-location/location-management.component';
 export { ShowLocationComponent } from './components/Location/location-management/show-location/show-location.component';
 export { ShowLocationTypeComponent } from './components/Location/location-type/show-location-type/show-location-type.component';
+export { LocationService } from './services/location.service';
+export { DeviceManagementComponent } from './components/Device-Management/device-management/device-management.component';
+export { DeviceListComponent } from './components/Device-Management/device-list/device-list.component';
+export { DeviceManagementService } from './services/device-management.service';

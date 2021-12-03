@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { LocationService } from 'src/app/root/services/location.service';
 
 @Component({
   selector: 'app-show-location',
@@ -8,11 +9,11 @@ import { Router } from '@angular/router';
 })
 export class ShowLocationComponent implements OnInit {
 
-  locationArr = [];
-  locationTypeArr: any;
+  locationArr: any;
 
   constructor(
-    private router: Router
+    private readonly router: Router,
+    private readonly locationService: LocationService
   ) { }
 
   ngOnInit(): void {
@@ -20,29 +21,16 @@ export class ShowLocationComponent implements OnInit {
   }
 
   prerequisite() {
-    this.getLocationTypes();
     this.getLocations();
   }
 
-  getLocationTypes() {
-    const data = localStorage.getItem('locationType');
-    if (data) {
-      this.locationTypeArr = JSON.parse(data);
-    }
-  }
-
   getLocations() {
-    const data = localStorage.getItem('locations');
-    if (data) {
-      this.locationArr = JSON.parse(data);
-    } else {
-      this.locationArr = [];
-    }
-  }
-
-  getTypeName(index) {
-    const data = this.locationTypeArr.find(el => el.level === index);
-    return data.name;
+    this.locationArr = [];
+    this.locationService.getAllLocations().subscribe(res => {
+      if (res) {
+        this.locationArr = res;
+      }
+    });
   }
 
   addLocation() {
@@ -50,11 +38,14 @@ export class ShowLocationComponent implements OnInit {
   }
 
   editLocation(index) {
-    this.router.navigate([`editLocation/${index}`]);
+    this.router.navigate([`editLocation/${this.locationArr[index]['id']}`]);
   }
 
   deleteLocation(index) {
-    this.locationArr.splice(index, 1);
-    localStorage.setItem('locations', JSON.stringify(this.locationArr));
+    this.locationService.deleteLocationById(this.locationArr[index]['id']).subscribe(res => {
+      this.getLocations();
+    }, (err) => {
+      alert(err.error);
+    });
   }
 }

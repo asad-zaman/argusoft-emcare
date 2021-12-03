@@ -9,7 +9,7 @@
                     <table class="table">
                         <thead>
                             <tr>
-                                <th scope="col">#</th>
+                                <th scope="col">No.</th>
                                 <th scope="col">Location Name</th>
                                 <th scope="col">Type</th>
                                 <th scope="col">Parent</th>
@@ -20,9 +20,9 @@
                             <ng-container *ngFor="let data of locationArr; let i=index">
                                 <tr>
                                     <th scope="row">{{i+1}}</th>
-                                    <td>{{data.locationName}}</td>
-                                    <td>{{getTypeName(data.locationType)}}</td>
-                                    <td>{{data.parent}}</td>
+                                    <td>{{data.name}}</td>
+                                    <td>{{data.type}}</td>
+                                    <td>{{data.parent ? data.parentName : 'NA'}}</td>
                                     <td>
                                         <button type="submit" class="btn btn-primary mr-3" (click)="editLocation(i)">Edit</button>
                                         <button type="submit" class="btn btn-primary" (click)="deleteLocation(i)">Delete</button>

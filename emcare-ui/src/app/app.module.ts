@@ -11,7 +11,10 @@ import {
   // ManageOrganizationComponent,
   // ShowOrganizationComponent,
   LocationManagementComponent,
-  LocationTypeComponent
+  LocationTypeComponent,
+  LocationService,
+  DeviceManagementComponent,
+  DeviceManagementService
 } from './root/index';
 import { AuthenticationService } from './shared';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -22,6 +25,8 @@ import { CommonModule } from '@angular/common';
 // import { FhirService } from './root/services/fhir.service';
 import { ShowLocationTypeComponent } from './root/components/Location/location-type/show-location-type/show-location-type.component';
 import { ShowLocationComponent } from './root/components/Location/location-management/show-location/show-location.component';
+import { DeviceListComponent } from './root/components/Device-Management/device-list/device-list.component';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -35,7 +40,9 @@ import { ShowLocationComponent } from './root/components/Location/location-manag
     LocationTypeComponent,
     LocationManagementComponent,
     ShowLocationTypeComponent,
-    ShowLocationComponent
+    ShowLocationComponent,
+    DeviceManagementComponent,
+    DeviceListComponent
   ],
   imports: [
     BrowserModule,
@@ -49,7 +56,8 @@ import { ShowLocationComponent } from './root/components/Location/location-manag
   providers: [
     AuthenticationService,
     tempBackendProvider,
-    // FhirService
+    LocationService,
+    DeviceManagementService
   ],
   bootstrap: [AppComponent]
 })
