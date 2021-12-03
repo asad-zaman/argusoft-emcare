@@ -14,31 +14,31 @@ class AccessToken (
     private var _scope : String,
 ){
     @SerializedName("access_token")
-    public lateinit var accessToken: String
+    var accessToken: String
 
     @SerializedName("expires_in")
-    private lateinit var expiresIn: Integer
+    private var expiresIn: Integer
 
     @SerializedName("refresh_expires_in")
-    private lateinit var refreshExpiresIn: Integer
+    private var refreshExpiresIn: Integer
 
     @SerializedName("refresh_token")
-    private lateinit var refreshToken: String
+    private var refreshToken: String
 
     @SerializedName("token_type")
-    private lateinit var tokenType: String
+    private var tokenType: String
 
     @SerializedName("id_token")
-    private lateinit var idToken: String
+    private var idToken: String
 
     @SerializedName("not_before_policy")
-    private lateinit var notBeforePolicy: Integer
+    private var notBeforePolicy: Integer
 
     @SerializedName("session_state")
-    private lateinit var sessionState: String
+    private var sessionState: String
 
     @SerializedName("scope")
-    private lateinit var scope: String
+    private var scope: String
 
     init {
         this.accessToken = _accessToken

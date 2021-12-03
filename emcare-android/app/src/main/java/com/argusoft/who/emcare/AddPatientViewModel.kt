@@ -44,17 +44,17 @@ class AddPatientViewModel(application: Application, private val state: SavedStat
         //Changing identifier value type from string to identifier object
         val patientIdentifier:Identifier = Identifier()
         patientIdentifier.use = Identifier.IdentifierUse.OFFICIAL
-        patientIdentifier.value = questionnaireResponse.item[0].answerFirstRep.valueStringType.toString()
+        patientIdentifier.value = questionnaireResponse.item[0].item[0].answerFirstRep.valueStringType.toString()
         patient.identifier = listOf(patientIdentifier)
 
         //Adding and saving caregiver details
-        if(!questionnaireResponse.item[8].answer.isNullOrEmpty()) {
+        if(!questionnaireResponse.item[2].item[0].answer.isNullOrEmpty()) {
           val caregiver: RelatedPerson = RelatedPerson()
           caregiver.id = generateUuid()
           val caregiverHumanName: HumanName = HumanName()
-          caregiverHumanName.given = listOf(questionnaireResponse.item[8].answerFirstRep.valueStringType)
-          if(!questionnaireResponse.item[9].answer.isNullOrEmpty()){
-            caregiverHumanName.family = questionnaireResponse.item[9].answerFirstRep.valueStringType.toString()
+          caregiverHumanName.given = listOf(questionnaireResponse.item[2].item[0].answerFirstRep.valueStringType)
+          if(!questionnaireResponse.item[2].item[1].answer.isNullOrEmpty()){
+            caregiverHumanName.family = questionnaireResponse.item[2].item[1].answerFirstRep.valueStringType.toString()
           }
           caregiver.name = listOf(caregiverHumanName)
 
