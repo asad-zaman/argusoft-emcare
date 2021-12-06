@@ -24,7 +24,7 @@
 
         <activity
             android:name="com.argusoft.who.emcare.MainActivity"
-            android:label="Gandhinagar Registered Patients"
+            android:label="EmCare Patients"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustResize">
 

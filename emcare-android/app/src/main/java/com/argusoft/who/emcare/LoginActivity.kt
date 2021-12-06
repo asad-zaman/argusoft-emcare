@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.argusoft.who.emcare.api.HttpRequestInterceptor
 import com.argusoft.who.emcare.api.KeycloakLoginService
 import com.argusoft.who.emcare.databinding.ActivityLoginBinding
 import com.argusoft.who.emcare.model.AccessToken
@@ -47,6 +48,9 @@ class LoginActivity : AppCompatActivity() {
             override fun onResponse(call: Call<AccessToken>, response: Response<AccessToken>) {
                 if (response.isSuccessful) {
                     val accessToken: AccessToken? = response.body()
+                    if (accessToken != null) {
+                        HttpRequestInterceptor.token = accessToken.accessToken
+                    }
                     Toast.makeText(
                         this@LoginActivity,
                         "You`ve logged in successfully!",
