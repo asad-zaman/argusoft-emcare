@@ -1,7 +1,6 @@
 package com.argusoft.who.emcare.data.remote
 
 import com.argusoft.who.emcare.BuildConfig
-import com.argusoft.who.emcare.ui.common.model.Album
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -28,11 +27,6 @@ class ApiManager : Api {
             .build()
             .create(ApiService::class.java)
     }
-
-    override suspend fun getRepository(request: Any): ApiResponse<List<Album>> {
-        return executeApiHelper { apiService.getRepositories(request) }
-    }
-
 }
 
 

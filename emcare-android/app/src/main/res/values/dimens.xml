@@ -173,5 +173,11 @@
     <dimen name="font_48sp">@dimen/_48ssp</dimen>
     <dimen name="font_49sp">@dimen/_49ssp</dimen>
     <dimen name="font_50sp">@dimen/_50ssp</dimen>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="nav_header_vertical_spacing">8dp</dimen>
+    <dimen name="nav_header_height">176dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
 
 </resources>

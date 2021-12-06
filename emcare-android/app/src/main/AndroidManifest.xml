@@ -28,14 +28,20 @@
             android:name="org.apache.http.legacy"
             android:required="false" />
 
-        <activity android:name=".ui.auth.AuthenticationActivity"
-            android:exported="true">
+        <activity
+            android:name=".ui.auth.AuthenticationActivity"
+            android:exported="true"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".ui.home.HomeActivity"
+            android:exported="true"
+            android:screenOrientation="portrait" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -46,7 +52,6 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
-
     </application>
 
 </manifest>

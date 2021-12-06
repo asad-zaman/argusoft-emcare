@@ -8,5 +8,25 @@
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.argusoft.who.emcare.ui.auth.login.LoginFragment"
-        tools:layout="@layout/fragment_login" />
+        tools:layout="@layout/fragment_login">
+        <action
+            android:id="@+id/action_loginFragment_to_signUpFragment"
+            app:destination="@id/signUpFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/signUpFragment"
+        android:name="com.argusoft.who.emcare.ui.auth.signup.SignUpFragment"
+        tools:layout="@layout/fragment_signup">
+        <action
+            android:id="@+id/action_signUpFragment_to_successFragment"
+            app:destination="@id/successFragment"
+            app:popUpTo="@id/loginFragment"
+            app:popUpToInclusive="false" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/successFragment"
+        android:name="com.argusoft.who.emcare.ui.auth.sucecess.SuccessFragment"
+        tools:layout="@layout/fragment_success" />
 </navigation>

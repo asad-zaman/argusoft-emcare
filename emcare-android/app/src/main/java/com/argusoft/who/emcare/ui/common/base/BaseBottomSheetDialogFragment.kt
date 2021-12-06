@@ -8,6 +8,7 @@ import androidx.viewbinding.ViewBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.data.local.pref.Preference
+import com.argusoft.who.emcare.utils.extention.hideKeyboard
 import com.argusoft.who.emcare.utils.extention.onViewBinding
 import javax.inject.Inject
 
@@ -41,6 +42,7 @@ abstract class BaseBottomSheetDialogFragment<B : ViewBinding> : BottomSheetDialo
     }
 
     override fun onClick(view: View?){
+        hideKeyboard()
     }
 
     override fun onDestroyView() {

@@ -36,8 +36,8 @@ abstract class BaseActivity<B : ViewBinding> : AppCompatActivity(), View.OnClick
         initObserver()
     }
 
-    override fun onClick(v: View?) {
-        hideKeyboard(v)
+    override fun onClick(view: View?) {
+        hideKeyboard(view)
     }
 
     /* Codes for checking the application new update is available in play store,

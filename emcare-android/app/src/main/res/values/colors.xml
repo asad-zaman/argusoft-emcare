@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <color name="horizontalBackground">#6CFAFAFA</color>
-    <color name="colorPrimary">#3BC2F2</color>
-    <color name="colorPrimaryDark">#3BC2F2</color>
-    <color name="colorAccent">#3BC2F2</color>
+    <color name="colorPrimary">#0097DA</color>
+    <color name="colorPrimaryDark">#0097DA</color>
+    <color name="colorAccent">#ffffff</color>
 
     <color name="colorBlackTransparent">#50000000</color>
+    <color name="colorTransparent">#00000000</color>
     <color name="colorLightBlack">#FF4A4A4A</color>
 
     <color name="colorSnackBarErrorBg">#ffa069</color>
@@ -15,5 +16,10 @@
 
     <color name="colorWhite">#FFFFFF</color>
     <color name="colorBlack">#000000</color>
-
+    <color name="textColorWhite">#FFFFFF</color>
+    <color name="textColorWhite80">#CCFFFFFF</color>
+    <color name="textColorBlack">#000000</color>
+    <color name="buttonColor">#00ADEF</color>
+    <color name="textColorLightBlue">#6AA1B6</color>
+    <color name="colorLightGrey">#E3EAF0</color>
 </resources>

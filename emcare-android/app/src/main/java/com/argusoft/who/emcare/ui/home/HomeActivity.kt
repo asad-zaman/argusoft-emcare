@@ -1,33 +1,34 @@
 package com.argusoft.who.emcare.ui.home
 
-import android.location.Location
-import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.view.GravityCompat
 import com.argusoft.who.emcare.databinding.ActivityHomeBinding
 import com.argusoft.who.emcare.ui.common.base.BaseActivity
-import com.argusoft.who.emcare.utils.common.LocationUtils
-import com.argusoft.who.emcare.utils.extention.timber
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class HomeActivity : BaseActivity<ActivityHomeBinding>() {
 
-    private val resolutionForResult =
-        registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { activityResult ->
-            LocationUtils.onActivityResult(LocationUtils.REQUEST_CHECK_SETTINGS, activityResult.resultCode, activityResult.data)
-        }
-
     override fun initView() {
-        // Binding object with view
-        binding.navHostFragment
-        LocationUtils.fetchLocation(this,resolutionForResult, object : LocationUtils.LocationListener {
-            override fun onStartLocationFetch() {
-                "onStartLocationFetch".timber()
-            }
+        /* val drawerLayout: DrawerLayout = binding.drawerLayout
+         val navView: NavigationView = binding.navView
+         val navController = findNavController(R.id.nav_host_fragment_content_main)
+         // Passing each menu ID as a set of Ids because each
+         // menu should be considered as top level destinations.
+         appBarConfiguration = AppBarConfiguration(
+             setOf(
+                 R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow
+             ), drawerLayout
+         )
+         setupActionBarWithNavController(navController, appBarConfiguration)
+         navView.setupWithNavController(navController)*/
+    }
 
-            override fun onLocationChanged(location: Location) {
-                "Location: $location".timber()
-            }
-        })
+    fun openDrawer() {
+        binding.drawerLayout.openDrawer(GravityCompat.END)
+    }
+
+    fun closeDrawer() {
+        binding.drawerLayout.closeDrawer(GravityCompat.END)
     }
 
     override fun initListener() {
@@ -36,13 +37,8 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
     override fun initObserver() {
     }
 
-    override fun onResume() {
-        super.onResume()
-        appInAppUpdateCheck()
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        LocationUtils.onRequestPermissionsResult(requestCode, permissions, grantResults)
-    }
+/*    override fun onSupportNavigateUp(): Boolean {
+        val navController = findNavController(R.id.nav_host_fragment_content_main)
+        return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+    }*/
 }
