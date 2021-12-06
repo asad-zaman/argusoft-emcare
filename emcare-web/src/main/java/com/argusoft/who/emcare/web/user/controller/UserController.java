@@ -3,24 +3,21 @@ package com.argusoft.who.emcare.web.user.controller;
 import com.argusoft.who.emcare.web.config.KeyCloakConfig;
 import com.argusoft.who.emcare.web.secuirty.EmCareSecurityUser;
 import com.argusoft.who.emcare.web.user.dto.UserDto;
-import java.util.Collections;
-import javax.servlet.http.HttpServletRequest;
+import com.argusoft.who.emcare.web.user.service.UserService;
 import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-import com.argusoft.who.emcare.web.user.service.UserService;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.Collections;
 
 /**
- *
  * @author jay
  */
+@CrossOrigin(origins = "**")
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
@@ -41,8 +38,12 @@ public class UserController {
         return ResponseEntity.ok(userService.getAllUserResource(request).list());
     }
 
+    @RequestMapping(value = "/roles", method = RequestMethod.GET)
+    public ResponseEntity<Object> getAllRoles(HttpServletRequest request) {
+        return ResponseEntity.ok(userService.getAllRoles(request).list());
+    }
+
     /**
-     *
      * @param user
      * @return
      */
@@ -58,7 +59,7 @@ public class UserController {
         kcUser.setLastName(user.getLastName());
         kcUser.setEmail(user.getEmail());
         kcUser.setEnabled(true);
-//        kcUser.setRealmRoles(realmRoles);
+//        kcUser.setClientRoles();
         kcUser.setEmailVerified(false);
         usersResource.create(kcUser);
         return ResponseEntity.ok("Success");
