@@ -37,7 +37,7 @@ public class LocationConfigServiceImpl implements LocationConfigService {
 
     @Override
     public ResponseEntity<Object> createHierarchyMaster(HierarchyMasterDto hierarchyMasterDto) {
-        String userId = emCareSecurityUser.getLoggedInUser().getSubject();
+        String userId = emCareSecurityUser.getLoggedInUserId();
         return ResponseEntity.ok(hierarchyMasterDao.save(HierarchyMasterMapper.dtoToEntityForHierarchyMasterCreate(hierarchyMasterDto, userId)));
     }
 
