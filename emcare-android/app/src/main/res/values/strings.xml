@@ -74,4 +74,6 @@
   <string name="login_screen_password_hint">Password</string>
   <string name="login_screen_application_name">Emcare-WHO</string>
   <string name="login_screen_login_button">Login</string>
+  <string name="blocked_device_message">This device is blocked from using the EmCare application.</string>
+  <string name="ok">Ok</string>
 </resources>

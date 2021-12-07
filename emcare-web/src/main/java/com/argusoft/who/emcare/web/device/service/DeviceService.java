@@ -14,7 +14,7 @@ public interface DeviceService {
 
     public ResponseEntity<Object> updateDeviceDetails(DeviceDto deviceDto);
 
-    public ResponseEntity<Object> getDeviceInfoByImei(String imei, String userId);
+    public ResponseEntity<Object> getDeviceInfoByImei(String imei, String macAddress, String userId);
 
     public ResponseEntity<Object> getAllDevice(HttpServletRequest request);
 

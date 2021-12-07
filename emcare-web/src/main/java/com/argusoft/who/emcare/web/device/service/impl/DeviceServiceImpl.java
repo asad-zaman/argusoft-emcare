@@ -68,13 +68,16 @@ public class DeviceServiceImpl implements DeviceService {
     }
 
     @Override
-    public ResponseEntity<Object> getDeviceInfoByImei(String imei, String userId) {
+    public ResponseEntity<Object> getDeviceInfoByImei(String imei, String macAddress, String userId) {
         DeviceMaster device = new DeviceMaster();
         if (imei != null) {
             device = deviceRepository.getDeviceByImei(imei);
         }
         if (userId != null) {
             device = deviceRepository.getDeviceByuserId(userId);
+        }
+        if (macAddress != null) {
+            device = deviceRepository.getDeviceByMacAddress(macAddress);
         }
 
         return ResponseEntity.ok(device);

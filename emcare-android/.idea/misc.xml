@@ -6,6 +6,7 @@
         <entry key="../../../../../layout/custom_preview.xml" value="0.18177083333333333" />
         <entry key="app/src/main/res/drawable/baseline_edit_24.xml" value="0.16354166666666667" />
         <entry key="app/src/main/res/drawable/input_style.xml" value="0.1828125" />
+        <entry key="app/src/main/res/layout/activity_device_blocked.xml" value="0.16" />
         <entry key="app/src/main/res/layout/activity_login.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.10914855072463768" />
         <entry key="app/src/main/res/layout/fragment_login.xml" value="0.1" />

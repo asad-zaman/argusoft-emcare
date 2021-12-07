@@ -15,6 +15,9 @@ public interface DeviceRepository extends JpaRepository<DeviceMaster, Integer> {
 
     @Query(value = "select * from device_master where imei_number = :imei", nativeQuery = true)
     public DeviceMaster getDeviceByImei(@Param("imei") String imei);
+    
+    @Query(value = "select * from device_master where mac_address = :macAddress", nativeQuery = true)
+    public DeviceMaster getDeviceByMacAddress(@Param("macAddress") String macAddress);
 
     @Query(value = "select * from device_master where user_id = :userId", nativeQuery = true)
     public DeviceMaster getDeviceByuserId(@Param("userId") String userId);
