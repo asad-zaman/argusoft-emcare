@@ -37,15 +37,12 @@ public class LocationConfigServiceImpl implements LocationConfigService {
 
     @Override
     public ResponseEntity<Object> createHierarchyMaster(HierarchyMasterDto hierarchyMasterDto) {
-        String userId = emCareSecurityUser.getLoggedInUserId();
-        return ResponseEntity.ok(hierarchyMasterDao.save(HierarchyMasterMapper.dtoToEntityForHierarchyMasterCreate(hierarchyMasterDto, userId)));
+        return ResponseEntity.ok(hierarchyMasterDao.save(HierarchyMasterMapper.dtoToEntityForHierarchyMasterCreate(hierarchyMasterDto)));
     }
 
     @Override
     public ResponseEntity<Object> updateHierarchyMaster(HierarchyMasterDto hierarchyMasterDto) {
-        String userId = emCareSecurityUser.getLoggedInUser().getSubject();
-        HierarchyMaster hierarchyMaster = hierarchyMasterDao.findById(hierarchyMasterDto.getHierarchyType()).get();
-        return ResponseEntity.ok(hierarchyMasterDao.save(HierarchyMasterMapper.dtoToEntityForHierarchyMasterUpdate(hierarchyMasterDto, hierarchyMaster, userId)));
+        return ResponseEntity.ok(hierarchyMasterDao.save(HierarchyMasterMapper.dtoToEntityForHierarchyMasterCreate(hierarchyMasterDto)));
     }
 
     @Override
@@ -56,29 +53,22 @@ public class LocationConfigServiceImpl implements LocationConfigService {
     @Override
     public ResponseEntity<Object> getAllHierarchyMaster() {
         List<HierarchyMaster> hierarchyMasterList = hierarchyMasterDao.findAll();
-
-        List<HierarchyMasterDto> hierarchyMasterDtos = new LinkedList<>();
-        for (HierarchyMaster hierarchyMaster : hierarchyMasterList) {
-            hierarchyMasterDtos.add(HierarchyMasterMapper.entityToDtoForHierarchyMaster(hierarchyMaster));
-        }
-        return ResponseEntity.ok(hierarchyMasterDtos);
+        return ResponseEntity.ok(hierarchyMasterList);
     }
 
     @Override
     public ResponseEntity<Object> getHierarchyMasterById(String type) {
-        return ResponseEntity.ok(HierarchyMasterMapper.entityToDtoForHierarchyMaster(hierarchyMasterDao.findById(type).get()));
+        return ResponseEntity.ok(hierarchyMasterDao.findById(type).get());
     }
 
     @Override
     public ResponseEntity<Object> createOrUpdate(LocationMasterDto locationMasterDto) {
-        String userId = emCareSecurityUser.getLoggedInUser().getSubject();
         List<LocationMaster> locations = locationMasterDao.findAll();
         if (locations.isEmpty()) {
-            return ResponseEntity.ok(locationMasterDao.save(LocationMasterMapper.firstEntity(locationMasterDto, userId)));
+            return ResponseEntity.ok(locationMasterDao.save(LocationMasterMapper.firstEntity(locationMasterDto)));
         }
-        LocationMaster locationMaster = LocationMasterMapper.dtoToEntityForLocationMasterCreate(locationMasterDto, userId);
+        LocationMaster locationMaster = LocationMasterMapper.dtoToEntityForLocationMasterCreate(locationMasterDto);
         LocationMaster lm = locationMasterDao.save(locationMaster);
-
         return ResponseEntity.ok(lm);
     }
 
@@ -98,9 +88,7 @@ public class LocationConfigServiceImpl implements LocationConfigService {
 
     @Override
     public ResponseEntity<Object> updateLocation(LocationMasterDto locationMasterDto) {
-        String userId = emCareSecurityUser.getLoggedInUser().getSubject();
-        LocationMaster lm = locationMasterDao.findById(locationMasterDto.getId()).get();
-        LocationMaster locationMaster = LocationMasterMapper.dtoToEntityForLocationMasterUpdate(locationMasterDto, lm, userId);
+        LocationMaster locationMaster = LocationMasterMapper.dtoToEntityForLocationMasterUpdate(locationMasterDto);
         LocationMaster updatedLocation = locationMasterDao.save(locationMaster);
         return ResponseEntity.ok(updatedLocation);
     }
@@ -110,7 +98,6 @@ public class LocationConfigServiceImpl implements LocationConfigService {
         LocationMaster locationMaster = locationMasterDao.findById(locationId).get();
         List<LocationMaster> childLocations = locationMasterDao.getChildLocation(locationId);
         if (!childLocations.isEmpty()) {
-//            throw new EmCareException("This Location Have Child Location", 400);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("This Location Have Child Location, You Can Not Delete");
         } else {
             locationMasterDao.deleteById(locationId);
