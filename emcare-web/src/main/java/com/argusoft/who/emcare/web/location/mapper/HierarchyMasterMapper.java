@@ -10,31 +10,24 @@ import java.util.Date;
  */
 public class HierarchyMasterMapper {
 
-    public static HierarchyMaster dtoToEntityForHierarchyMasterCreate(HierarchyMasterDto hierarchyMasterDto, String userId) {
+    public static HierarchyMaster dtoToEntityForHierarchyMasterCreate(HierarchyMasterDto hierarchyMasterDto) {
 
         HierarchyMaster hierarchyMaster = new HierarchyMaster();
 
         hierarchyMaster.setCode(hierarchyMasterDto.getCode());
         hierarchyMaster.setHierarchyType(hierarchyMasterDto.getHierarchyType());
         hierarchyMaster.setName(hierarchyMasterDto.getName());
-        hierarchyMaster.setCreatedBy(userId);
-        hierarchyMaster.setCreatedOn(new Date());
 
         return hierarchyMaster;
     }
 
-    public static HierarchyMaster dtoToEntityForHierarchyMasterUpdate(HierarchyMasterDto hierarchyMasterDto, HierarchyMaster hm, String userId) {
+    public static HierarchyMaster dtoToEntityForHierarchyMasterUpdate(HierarchyMasterDto hierarchyMasterDto) {
 
         HierarchyMaster hierarchyMaster = new HierarchyMaster();
 
         hierarchyMaster.setCode(hierarchyMasterDto.getCode());
         hierarchyMaster.setHierarchyType(hierarchyMasterDto.getHierarchyType());
         hierarchyMaster.setName(hierarchyMasterDto.getName());
-        hierarchyMaster.setCreatedBy(hm.getCreatedBy());
-        hierarchyMaster.setCreatedOn(hm.getCreatedOn());
-        hierarchyMaster.setModifiedBy(userId);
-        hierarchyMaster.setModifiedOn(new Date());
-
         return hierarchyMaster;
     }
 

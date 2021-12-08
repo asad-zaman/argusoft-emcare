@@ -20,8 +20,6 @@ public class DeviceMapper {
         master.setMacAddress(deviceDto.getMacAddress());
         master.setLastLoggedInUser(userId);
         master.setIsBlocked(deviceDto.getIsBlocked());
-        master.setCreatedBy(userId);
-        master.setCreatedOn(new Date());
 
         return master;
     }
@@ -35,10 +33,6 @@ public class DeviceMapper {
         master.setMacAddress(deviceDto.getMacAddress());
         master.setLastLoggedInUser(userId);
         master.setIsBlocked(deviceDto.getIsBlocked());
-        master.setCreatedBy(deviceMaster.getCreatedBy());
-        master.setCreatedOn(deviceMaster.getCreatedOn());
-        master.setModifiedOn(new Date());
-        master.setModifiedBy(userId);
 
         return master;
     }

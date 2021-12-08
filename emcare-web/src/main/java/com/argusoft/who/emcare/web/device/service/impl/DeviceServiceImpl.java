@@ -35,12 +35,13 @@ public class DeviceServiceImpl implements DeviceService {
 
     @Override
     public ResponseEntity<Object> addNewDevice(DeviceDto deviceDto) {
-        String userId = emCareSecurityUser.getLoggedInUser().getSubject();
+        String userId = emCareSecurityUser.getLoggedInUserId();
         DeviceMaster oldDevice = deviceRepository.getDeviceByImei(deviceDto.getImeiNumber());
         if (oldDevice == null) {
             DeviceMaster newDevice = DeviceMapper.dtoToEntityDeviceMasterCreate(deviceDto, userId);
             newDevice = deviceRepository.save(newDevice);
             return ResponseEntity.status(HttpStatus.OK).body(newDevice);
+
         } else {
             DeviceMaster updatedDevice = DeviceMapper.dtoToEntityDeviceMasterUpdate(oldDevice, deviceDto, userId);
             deviceRepository.updateDevice(
@@ -49,7 +50,7 @@ public class DeviceServiceImpl implements DeviceService {
                     updatedDevice.getIsBlocked(),
                     updatedDevice.getDeviceId()
             );
-            return ResponseEntity.status(HttpStatus.OK).body(updatedDevice);
+            return ResponseEntity.status(HttpStatus.OK).body(deviceDto);
         }
     }
 
