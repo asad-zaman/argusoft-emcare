@@ -1,4 +1,4 @@
-package com.argusoft.who.emcare
+package com.argusoft.who.emcare.oldstruct
 
 import android.Manifest
 import android.content.Context
@@ -12,16 +12,16 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.argusoft.who.emcare.api.DeviceManagementService
-import com.argusoft.who.emcare.api.HttpRequestInterceptor
-import com.argusoft.who.emcare.api.KeycloakLoginService
+import com.argusoft.who.emcare.oldstruct.api.DeviceManagementService
+import com.argusoft.who.emcare.oldstruct.api.HttpRequestInterceptor
+import com.argusoft.who.emcare.oldstruct.api.KeycloakLoginService
 import com.argusoft.who.emcare.databinding.ActivityLoginBinding
-import com.argusoft.who.emcare.model.AccessToken
-import com.argusoft.who.emcare.model.DeviceInfo
-import com.argusoft.who.emcare.static.CompanionValues.Companion.KEYCLOAK_CLIENT_SECRET
-import com.argusoft.who.emcare.static.CompanionValues.Companion.KEYCLOAK_CLIENT_ID
-import com.argusoft.who.emcare.static.CompanionValues.Companion.KEYCLOAK_GRANT_TYPE
-import com.argusoft.who.emcare.static.CompanionValues.Companion.KEYCLOAK_SCOPE
+import com.argusoft.who.emcare.oldstruct.model.AccessToken
+import com.argusoft.who.emcare.oldstruct.model.DeviceInfo
+import com.argusoft.who.emcare.oldstruct.static.CompanionValues.Companion.KEYCLOAK_CLIENT_SECRET
+import com.argusoft.who.emcare.oldstruct.static.CompanionValues.Companion.KEYCLOAK_CLIENT_ID
+import com.argusoft.who.emcare.oldstruct.static.CompanionValues.Companion.KEYCLOAK_GRANT_TYPE
+import com.argusoft.who.emcare.oldstruct.static.CompanionValues.Companion.KEYCLOAK_SCOPE
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

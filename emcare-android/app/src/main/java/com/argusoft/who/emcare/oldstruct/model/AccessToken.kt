@@ -1,4 +1,4 @@
-package com.argusoft.who.emcare.model
+package com.argusoft.who.emcare.oldstruct.model
 
 import com.google.gson.annotations.SerializedName
 

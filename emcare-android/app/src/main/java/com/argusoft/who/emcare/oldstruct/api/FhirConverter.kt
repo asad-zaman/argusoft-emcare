@@ -1,4 +1,4 @@
-package com.argusoft.who.emcare.api
+package com.argusoft.who.emcare.oldstruct.api
 
 import ca.uhn.fhir.parser.IParser
 import java.lang.reflect.Type

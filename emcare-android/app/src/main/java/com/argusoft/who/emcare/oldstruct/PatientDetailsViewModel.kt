@@ -1,4 +1,4 @@
-package com.argusoft.who.emcare
+package com.argusoft.who.emcare.oldstruct
 import android.app.Application
 import android.content.res.Resources
 import android.os.Build
@@ -9,6 +9,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.argusoft.who.emcare.R
 import com.google.android.fhir.FhirEngine
 import com.google.android.fhir.logicalId
 import com.google.android.fhir.search.search

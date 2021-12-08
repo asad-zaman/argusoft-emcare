@@ -1,6 +1,5 @@
-package com.argusoft.who.emcare.api
+package com.argusoft.who.emcare.oldstruct.api
 
-import com.argusoft.who.emcare.model.AccessToken
 import okhttp3.Interceptor
 import okhttp3.Response
 

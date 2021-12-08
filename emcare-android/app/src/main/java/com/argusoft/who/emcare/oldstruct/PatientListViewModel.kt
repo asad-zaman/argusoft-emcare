@@ -1,4 +1,4 @@
-package com.argusoft.who.emcare
+package com.argusoft.who.emcare.oldstruct
 
 import android.app.Application
 import android.content.ContentValues.TAG
@@ -11,7 +11,6 @@ import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import com.google.android.fhir.FhirEngine
 import com.google.android.fhir.search.Order
-import com.google.android.fhir.search.Search
 import com.google.android.fhir.search.StringFilterModifier
 import com.google.android.fhir.search.count
 import com.google.android.fhir.search.search

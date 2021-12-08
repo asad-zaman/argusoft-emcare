@@ -1,4 +1,4 @@
-package com.argusoft.who.emcare
+package com.argusoft.who.emcare.oldstruct
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -14,13 +14,13 @@ class PatientItemRecyclerViewAdapter(
 
   class PatientItemDiffCallback : DiffUtil.ItemCallback<PatientListViewModel.PatientItem>() {
     override fun areItemsTheSame(
-      oldItem: PatientListViewModel.PatientItem,
-      newItem: PatientListViewModel.PatientItem
+        oldItem: PatientListViewModel.PatientItem,
+        newItem: PatientListViewModel.PatientItem
     ): Boolean = oldItem.resourceId == newItem.resourceId
 
     override fun areContentsTheSame(
-      oldItem: PatientListViewModel.PatientItem,
-      newItem: PatientListViewModel.PatientItem
+        oldItem: PatientListViewModel.PatientItem,
+        newItem: PatientListViewModel.PatientItem
     ): Boolean = oldItem.id == newItem.id && oldItem.risk == newItem.risk
   }
 

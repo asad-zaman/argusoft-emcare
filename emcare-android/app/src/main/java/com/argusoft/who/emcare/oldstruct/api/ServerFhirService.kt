@@ -1,7 +1,7 @@
-package com.argusoft.who.emcare.api
+package com.argusoft.who.emcare.oldstruct.api
 
 import ca.uhn.fhir.parser.IParser
-import com.argusoft.who.emcare.static.CompanionValues
+import com.argusoft.who.emcare.oldstruct.static.CompanionValues
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody
 import okhttp3.logging.HttpLoggingInterceptor

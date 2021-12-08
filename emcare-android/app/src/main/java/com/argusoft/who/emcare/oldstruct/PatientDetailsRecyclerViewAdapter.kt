@@ -1,4 +1,4 @@
-package com.argusoft.who.emcare
+package com.argusoft.who.emcare.oldstruct
 
 import android.content.res.ColorStateList
 import android.graphics.Color

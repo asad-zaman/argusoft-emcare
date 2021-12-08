@@ -1,4 +1,4 @@
-package com.argusoft.who.emcare.static
+package com.argusoft.who.emcare.oldstruct.static
 
 class CompanionValues {
 

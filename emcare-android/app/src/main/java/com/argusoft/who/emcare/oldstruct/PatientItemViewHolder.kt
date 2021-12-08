@@ -1,4 +1,4 @@
-package com.argusoft.who.emcare
+package com.argusoft.who.emcare.oldstruct
 
 import android.content.res.ColorStateList
 import android.content.res.Resources
@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.databinding.PatientListItemViewBinding
 import java.time.LocalDate
 import java.time.Period
@@ -22,8 +23,8 @@ class PatientItemViewHolder(binding: PatientListItemViewBinding) :
 
   @RequiresApi(Build.VERSION_CODES.O)
   fun bindTo(
-    patientItem: PatientListViewModel.PatientItem,
-    onItemClicked: (PatientListViewModel.PatientItem) -> Unit
+      patientItem: PatientListViewModel.PatientItem,
+      onItemClicked: (PatientListViewModel.PatientItem) -> Unit
   ) {
     this.nameView.text = patientItem.name
     this.ageView.text = getFormattedAge(patientItem, ageView.context.resources)
@@ -45,8 +46,8 @@ class PatientItemViewHolder(binding: PatientListItemViewBinding) :
 
   @RequiresApi(Build.VERSION_CODES.O)
   private fun getFormattedAge(
-    patientItem: PatientListViewModel.PatientItem,
-    resources: Resources
+      patientItem: PatientListViewModel.PatientItem,
+      resources: Resources
   ): String {
     if (patientItem.dob.isEmpty()) return ""
     return Period.between(LocalDate.parse(patientItem.dob), LocalDate.now()).let {

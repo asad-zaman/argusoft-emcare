@@ -1,4 +1,4 @@
-package com.argusoft.who.emcare
+package com.argusoft.who.emcare.oldstruct
 
 import android.os.Bundle
 import android.util.Log
@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.lifecycleScope
+import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.databinding.ActivityMainBinding
 import com.google.android.fhir.sync.State
 import kotlinx.coroutines.flow.collect

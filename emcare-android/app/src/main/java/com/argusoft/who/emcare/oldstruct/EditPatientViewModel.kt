@@ -1,12 +1,9 @@
-package com.argusoft.who.emcare
+package com.argusoft.who.emcare.oldstruct
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.liveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import ca.uhn.fhir.context.FhirContext
+import com.argusoft.who.emcare.EmCareApplication
 import com.google.android.fhir.FhirEngine
 import com.google.android.fhir.datacapture.mapping.ResourceMapper
 import kotlinx.coroutines.launch
@@ -21,7 +18,7 @@ import org.hl7.fhir.r4.model.QuestionnaireResponse
  */
 class EditPatientViewModel(application: Application, private val state: SavedStateHandle) :
   AndroidViewModel(application) {
-  private val fhirEngine: FhirEngine = FhirApplication.fhirEngine(application.applicationContext)
+  private val fhirEngine: FhirEngine = EmCareApplication.fhirEngine(application.applicationContext)
 
   private val patientId: String = requireNotNull(state["patient_id"])
   val livePatientData = liveData { emit(prepareEditPatient()) }

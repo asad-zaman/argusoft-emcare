@@ -1,7 +1,7 @@
-package com.argusoft.who.emcare.api
+package com.argusoft.who.emcare.oldstruct.api
 
-import com.argusoft.who.emcare.model.DeviceInfo
-import com.argusoft.who.emcare.static.CompanionValues
+import com.argusoft.who.emcare.oldstruct.model.DeviceInfo
+import com.argusoft.who.emcare.oldstruct.static.CompanionValues
 import okhttp3.OkHttpClient
 import okhttp3.ResponseBody
 import okhttp3.logging.HttpLoggingInterceptor

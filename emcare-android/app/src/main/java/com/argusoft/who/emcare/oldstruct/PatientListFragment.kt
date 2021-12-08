@@ -1,4 +1,4 @@
-package com.argusoft.who.emcare
+package com.argusoft.who.emcare.oldstruct
 
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -16,8 +16,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
+import com.argusoft.who.emcare.EmCareApplication
 import com.google.android.fhir.FhirEngine
-import com.argusoft.who.emcare.PatientListViewModel.PatientListViewModelFactory
+import com.argusoft.who.emcare.oldstruct.PatientListViewModel.PatientListViewModelFactory
 import com.argusoft.who.emcare.databinding.FragmentPatientListBinding
 
 class PatientListFragment : Fragment() {
@@ -44,7 +45,7 @@ class PatientListFragment : Fragment() {
       title = requireActivity().title
       setDisplayHomeAsUpEnabled(true)
     }
-    fhirEngine = FhirApplication.fhirEngine(requireContext())
+    fhirEngine = EmCareApplication.fhirEngine(requireContext())
     patientListViewModel =
       ViewModelProvider(
           this,

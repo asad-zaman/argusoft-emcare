@@ -1,4 +1,4 @@
-package com.argusoft.who.emcare
+package com.argusoft.who.emcare.oldstruct
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import ca.uhn.fhir.context.FhirContext
+import com.argusoft.who.emcare.EmCareApplication
 import com.google.android.fhir.FhirEngine
 import com.google.android.fhir.datacapture.mapping.ResourceMapper
 import java.util.UUID
@@ -22,7 +23,7 @@ class AddPatientViewModel(application: Application, private val state: SavedStat
 
   private val questionnaireResource: Questionnaire
     get() = FhirContext.forR4().newJsonParser().parseResource(questionnaire) as Questionnaire
-  private var fhirEngine: FhirEngine = FhirApplication.fhirEngine(application.applicationContext)
+  private var fhirEngine: FhirEngine = EmCareApplication.fhirEngine(application.applicationContext)
   private var questionnaireJson: String? = null
 
   /**

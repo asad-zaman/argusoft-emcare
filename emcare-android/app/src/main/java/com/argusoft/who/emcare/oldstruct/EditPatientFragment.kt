@@ -1,4 +1,4 @@
-package com.argusoft.who.emcare
+package com.argusoft.who.emcare.oldstruct
 
 import android.os.Bundle
 import android.view.Menu
@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.NavHostFragment
+import com.argusoft.who.emcare.R
 import com.google.android.fhir.datacapture.QuestionnaireFragment
 
 /** A fragment representing Edit Patient screen. This fragment is contained in a [MainActivity]. */

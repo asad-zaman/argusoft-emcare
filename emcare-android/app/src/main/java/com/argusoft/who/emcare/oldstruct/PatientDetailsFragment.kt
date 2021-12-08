@@ -1,4 +1,4 @@
-package com.argusoft.who.emcare
+package com.argusoft.who.emcare.oldstruct
 
 import android.os.Build
 import android.os.Bundle
@@ -17,6 +17,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.argusoft.who.emcare.EmCareApplication
+import com.argusoft.who.emcare.R
 import com.google.android.fhir.FhirEngine
 import com.argusoft.who.emcare.databinding.PatientDetailBinding
 
@@ -49,7 +51,7 @@ class PatientDetailsFragment : Fragment() {
   @RequiresApi(Build.VERSION_CODES.O)
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
-    fhirEngine = FhirApplication.fhirEngine(requireContext())
+    fhirEngine = EmCareApplication.fhirEngine(requireContext())
     patientDetailsViewModel =
       ViewModelProvider(
           this,

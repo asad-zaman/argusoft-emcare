@@ -1,4 +1,4 @@
-package com.argusoft.who.emcare
+package com.argusoft.who.emcare.oldstruct
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
