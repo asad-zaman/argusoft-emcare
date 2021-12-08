@@ -18,9 +18,9 @@
     <color name="colorTransparent">#00000000</color>
     <color name="colorLightBlack">#FF4A4A4A</color>
 
-    <color name="colorSnackBarErrorBg">#ffa069</color>
-    <color name="colorSnackBarErrorText">#c400c6</color>
-    <color name="colorSnackBarSuccessBg">#FFDF5130</color>
+    <color name="colorSnackBarErrorBg">#FFDF5130</color>
+    <color name="colorSnackBarErrorText">#FFFFFF</color>
+    <color name="colorSnackBarSuccessBg">#1DCC25</color>
     <color name="colorSnackBarSuccessText">#FFFFFF</color>
 
     <color name="colorWhite">#FFFFFF</color>

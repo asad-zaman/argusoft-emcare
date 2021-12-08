@@ -23,10 +23,12 @@ android {
 
     buildTypes {
         debug {
+            buildConfigField "String", "KEYCLOAK_BASE_URL", "\"http://10.0.2.2:8180/auth/realms/emcare_demo/protocol/openid-connect/\""
             shrinkResources false
             minifyEnabled false
         }
         release {
+            buildConfigField "String", "KEYCLOAK_BASE_URL", "\"http://10.0.2.2:8180/auth/realms/emcare_demo/protocol/openid-connect/\""
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
@@ -92,7 +94,6 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycleVersion"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycleVersion"
-
 
     // Room dependency
     implementation "androidx.room:room-ktx:$roomVersion"

@@ -52,7 +52,7 @@ class AppModule {
 
     @Singleton
     @Provides
-    fun provideAppApi(): Api {
-        return ApiManager()
+    fun provideAppApi(preference : Preference): Api {
+        return ApiManager(preference)
     }
 }

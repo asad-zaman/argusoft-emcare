@@ -13,6 +13,12 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import com.argusoft.who.emcare.R
 import java.lang.ref.WeakReference
+import android.view.Gravity
+
+import android.widget.FrameLayout
+
+
+
 
 /**
  * USAGE : Alert utils class for basic operations like display Alert.
@@ -102,9 +108,13 @@ fun Context?.showSnackBar(
         val msg = message ?: messageResId?.let { this?.getString(it) } ?: this?.getString(R.string.alert_message_error) ?: ""
         getSnackBarWeekReference(view, msg, if (undoClickListener == null) duration else Snackbar.LENGTH_INDEFINITE)
         val snackBar = snackBarWeekReference!!.get()
-        val snackBarView = snackBar!!.view
+        val snackBarView = snackBar?.view?.apply {
+            /*val params = layoutParams as FrameLayout.LayoutParams
+            params.gravity = Gravity.TOP
+            layoutParams = params*/
+        }
         val textView =
-            snackBarView.findViewById(com.google.android.material.R.id.snackbar_text) as TextView
+            snackBarView?.findViewById(com.google.android.material.R.id.snackbar_text) as TextView
 
         textView.let {
             if (isError) {
