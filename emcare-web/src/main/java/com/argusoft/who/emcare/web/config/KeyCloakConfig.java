@@ -43,12 +43,12 @@ public class KeyCloakConfig {
     public static Keycloak getInstanceByAuth(HttpServletRequest request) {
         KeycloakSecurityContext context = (KeycloakSecurityContext) request.getAttribute(KeycloakSecurityContext.class.getName());
 
-        Keycloak keycloak = KeycloakBuilder.builder()
+        Keycloak keycloakInstance = KeycloakBuilder.builder()
                 .serverUrl(serverUrl)
                 .realm(realm)
                 .authorization(context.getTokenString())
                 .resteasyClient(new ResteasyClientBuilder().connectionPoolSize(20).build())
                 .build();
-        return keycloak;
+        return keycloakInstance;
     }
 }
