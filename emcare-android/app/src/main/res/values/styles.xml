@@ -11,6 +11,38 @@
         <!--        <item name="textInputStyle">@style/TextInputLayout</item>-->
     </style>
 
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style
+        name="AppTheme.AppBarOverlay"
+        parent="ThemeOverlay.AppCompat.Dark.ActionBar"
+        />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="AppCard" parent="Widget.MaterialComponents.CardView">
+        <item name="cardElevation">8dp</item>
+    </style>
+    <style name="AppTheme.PatientDetails">
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:layout_marginStart">8dp</item>
+        <item name="android:layout_marginEnd">8dp</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
+    <style name="AppTheme.PatientDetails.headline">
+        <item name="android:textAppearance">?attr/textAppearanceHeadline6</item>
+        <item name="android:textSize">24sp</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+    <style name="AppTheme.PatientDetails.Subtitle2">
+        <item name="android:textAppearance">?attr/textAppearanceSubtitle2</item>
+    </style>
+    <style name="AppTheme.PatientDetails.body2">
+        <item name="android:textAppearance">?attr/textAppearanceBody2</item>
+    </style>
+
     <style name="AppStyle.ActionMode" parent="Widget.AppCompat.ActionMode">
         <item name="background">@color/colorAccent</item>
         <item name="backgroundSplit">@color/colorAccent</item>
@@ -19,7 +51,7 @@
     <style name="Style_BottomSheet_tv">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:fontFamily">@font/open_sans</item>
+        <item name="android:fontFamily">@font/poppins_regular</item>
         <item name="android:padding">@dimen/dimen_10dp</item>
         <item name="android:textColor">@color/colorBlack</item>
         <item name="android:textSize">@dimen/font_13sp</item>
