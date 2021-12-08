@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { LocationService } from 'src/app/root/services/location.service';
 
 @Component({
   selector: 'app-location-management',
@@ -12,13 +13,14 @@ export class LocationManagementComponent implements OnInit {
   locationForm: FormGroup;
   isEdit: boolean;
   editId: string;
-  locationArr = [];
-  locationTypeArr = [];
+  locationArr: any;
+  locationTypeArr: any;
 
   constructor(
     private readonly formBuilder: FormBuilder,
-    private router: Router,
-    private route: ActivatedRoute
+    private readonly router: Router,
+    private readonly route: ActivatedRoute,
+    private readonly locationService: LocationService
   ) { }
 
   ngOnInit(): void {
@@ -28,34 +30,25 @@ export class LocationManagementComponent implements OnInit {
   prerequisite() {
     this.getLocationTypes();
     this.initLocationInputForm();
-    this.setLocationArr();
     this.getAllLocations();
     this.checkEditParam();
   }
 
   getLocationTypes() {
-    this.locationTypeArr = JSON.parse(localStorage.getItem('locationType'));
-  }
-
-  setLocationArr() {
-    const data = localStorage.getItem('locations');
-    if (data) {
-      this.locationArr = JSON.parse(data);
-    } else {
-      this.locationArr = [];
-    }
+    this.locationService.getAllLocationTypes().subscribe(res => {
+      if (res) {
+        this.locationTypeArr = res;
+      }
+    });
   }
 
   getAllLocations() {
-    // this.nameArr = [];
-    // this.fhirService.getAllOrganizations().subscribe(res => {
-    //   if (res && res['entry']) {
-    //     res['entry'].map(entry => {
-    //       const fullName = `${entry['resource']['name']}`;
-    //       this.nameArr.push({ name: fullName, id: entry['resource']['id'] });
-    //     }, () => { });
-    //   }
-    // });
+    this.locationArr = [];
+    this.locationService.getAllLocations().subscribe(res => {
+      if (res) {
+        this.locationArr = res;
+      }
+    });
   }
 
   checkEditParam() {
@@ -63,16 +56,18 @@ export class LocationManagementComponent implements OnInit {
     this.editId = routeParams.get('id');
     if (this.editId) {
       this.isEdit = true;
-      this.setCurrentLocation(this.editId);
-      // this.fhirService.getOrganizationDetailById(this.editId).subscribe(res => {
-      //   this.mapOrganizationData(res);
-      // });
+      this.locationService.getLocationById(this.editId).subscribe(res => {
+        if (res) {
+          console.log(res);
+          const data = {
+            locationType: res['type'],
+            locationName: res['name'],
+            parent: res['parent']
+          };
+          this.locationForm.patchValue(data);
+        }
+      });
     }
-  }
-
-  setCurrentLocation(index) {
-    const data = this.locationArr[index];
-    this.locationForm.patchValue(data);
   }
 
   initLocationInputForm() {
@@ -85,15 +80,31 @@ export class LocationManagementComponent implements OnInit {
 
   saveData() {
     if (this.locationForm.valid) {
-      const obj = this.locationForm.value;
-      obj['id'] = this.locationArr.length > 0 ? this.locationArr.length : 0;
       if (this.isEdit) {
-        this.locationArr[this.editId] = obj;
+        const data = {
+          "id": this.editId,
+          "name": this.locationForm.get('locationName').value,
+          "type": this.locationForm.get('locationType').value,
+          "parent": this.locationForm.get('parent').value
+        }
+        this.locationService.updateLocationById(data).subscribe(res => {
+          if (res) {
+            console.log(res);
+            this.showLocation();
+          }
+        });
       } else {
-        this.locationArr.push(obj);
+        const data = {
+          "name": this.locationForm.get('locationName').value,
+          "type": this.locationForm.get('locationType').value,
+          "parent": this.locationForm.get('parent').value
+        }
+        this.locationService.createLocation(data).subscribe(res => {
+          if (res) {
+            this.showLocation();
+          }
+        });
       }
-      localStorage.setItem('locations', JSON.stringify(this.locationArr));
-      this.showLocation();
     }
   }
 

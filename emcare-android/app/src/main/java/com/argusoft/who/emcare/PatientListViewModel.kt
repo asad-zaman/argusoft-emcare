@@ -42,7 +42,7 @@ class PatientListViewModel(application: Application, private val fhirEngine: Fhi
   }
 
   private suspend fun count(): Long {
-    return fhirEngine.count<Patient> { filterCity(this) }
+    return fhirEngine.count<Patient> { }
   }
 
   private suspend fun getSearchResults(nameQuery: String = ""): List<PatientItem> {
@@ -57,7 +57,6 @@ class PatientListViewModel(application: Application, private val fhirEngine: Fhi
               value = nameQuery
             }
           )
-        filterCity(this)
         sort(Patient.GIVEN, Order.ASCENDING)
         count = 100
         from = 0
@@ -75,15 +74,6 @@ class PatientListViewModel(application: Application, private val fhirEngine: Fhi
     return patients
   }
 
-  private fun filterCity(search: Search) {
-    search.filter(
-      Patient.ADDRESS_CITY,
-      {
-        modifier = StringFilterModifier.MATCHES_EXACTLY
-        value = "GANDHINAGAR"
-      }
-    )
-  }
 
   private suspend fun getRiskAssessments(): Map<String, RiskAssessment?> {
     return fhirEngine.search<RiskAssessment> {}.groupBy { it.subject.reference }.mapValues { entry
@@ -155,7 +145,7 @@ internal fun Patient.toPatientItem(position: Int): PatientListViewModel.PatientI
   val gender = if (hasGenderElement()) genderElement.valueAsString else ""
   val dob = if (hasBirthDateElement()) birthDateElement.valueAsString else ""
   val identifier = if (hasIdentifier()) identifier[0].value else ""
-  val line = if(address[0].line.isNotEmpty()) address[0].line[0].toString() else ""
+  val line = if(hasAddress() && address[0].line.isNotEmpty()) address[0].line[0].toString() else ""
   val city = if (hasAddress()) address[0].city else ""
   val country = if (hasAddress()) address[0].country else ""
   val isActive = active
