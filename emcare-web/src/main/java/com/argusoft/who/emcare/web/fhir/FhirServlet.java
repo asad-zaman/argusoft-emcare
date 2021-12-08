@@ -4,7 +4,7 @@ import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.openapi.OpenApiInterceptor;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.RestfulServer;
-import com.argusoft.who.emcare.web.fhir.resourceprovider.PatientResourceProvider;
+import com.argusoft.who.emcare.web.fhir.resourceprovider.*;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.ServletException;
@@ -19,7 +19,7 @@ import java.util.List;
 public class FhirServlet extends RestfulServer {
 
     @Autowired
-    PatientResourceProvider patientResourceProvider;
+    private PatientResourceProvider patientResourceProvider;
 
     @Override
     protected void initialize() throws ServletException {
@@ -35,9 +35,6 @@ public class FhirServlet extends RestfulServer {
         List<IResourceProvider> resourceProviders = new ArrayList<>();
         resourceProviders.add(patientResourceProvider);
         setResourceProviders(resourceProviders);
-    }
-
-    public FhirServlet() {
     }
 
 }
