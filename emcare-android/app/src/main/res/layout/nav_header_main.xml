@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorLightGrey"
+    android:gravity="bottom"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/_32sdp"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:theme="@style/ThemeOverlay.AppCompat.Dark">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/userImageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/nav_header_desc"
+        android:paddingTop="@dimen/nav_header_vertical_spacing"
+        android:layout_marginTop="@dimen/_24sdp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@mipmap/ic_launcher_round" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/nameTextView"
+        style="@style/TextView.Medium"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_12sdp"
+        android:paddingTop="@dimen/nav_header_vertical_spacing"
+        android:text="John Doe"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textColor="@color/textColorBlack"
+        android:textSize="@dimen/_18ssp"
+        app:layout_constraintBottom_toTopOf="@+id/emailTextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/userImageView"
+        app:layout_constraintTop_toTopOf="@+id/userImageView"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/emailTextView"
+        style="@style/TextView.Medium"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="johndoe@gmail.com"
+        android:textSize="@dimen/_11ssp"
+        android:textColor="@color/textColorBlack"
+        app:layout_constraintBottom_toBottomOf="@+id/userImageView"
+        app:layout_constraintEnd_toEndOf="@+id/nameTextView"
+        app:layout_constraintStart_toStartOf="@+id/nameTextView"
+        app:layout_constraintTop_toBottomOf="@+id/nameTextView" />
+</androidx.constraintlayout.widget.ConstraintLayout>

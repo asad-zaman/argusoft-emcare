@@ -1,23 +1,9 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<!--
- Copyright 2020 Google LLC
-
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
-      http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
--->
-<resources>
-    <color name="colorPrimary">#175adf</color>
-    <color name="colorPrimaryDark">#3700B3</color>
-    <color name="colorAccent">#175adf</color>
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <color name="horizontalBackground">#6CFAFAFA</color>
+    <color name="colorPrimary">#0097DA</color>
+    <color name="colorPrimaryDark">#0097DA</color>
+    <color name="colorAccent">#ffffff</color>
     <color name="colorStatusBar">#175adf</color>
     <color name="low_risk">#388e3c</color>
     <color name="low_risk_background">#e8f5e9</color>
@@ -27,4 +13,22 @@
     <color name="high_risk_background">#ffebee</color>
     <color name="unknown_risk_background">#10156125</color>
     <color name="unknown_risk">#ffffff</color>
+
+    <color name="colorBlackTransparent">#50000000</color>
+    <color name="colorTransparent">#00000000</color>
+    <color name="colorLightBlack">#FF4A4A4A</color>
+
+    <color name="colorSnackBarErrorBg">#FFDF5130</color>
+    <color name="colorSnackBarErrorText">#FFFFFF</color>
+    <color name="colorSnackBarSuccessBg">#1DCC25</color>
+    <color name="colorSnackBarSuccessText">#FFFFFF</color>
+
+    <color name="colorWhite">#FFFFFF</color>
+    <color name="colorBlack">#000000</color>
+    <color name="textColorWhite">#FFFFFF</color>
+    <color name="textColorWhite80">#CCFFFFFF</color>
+    <color name="textColorBlack">#000000</color>
+    <color name="buttonColor">#00ADEF</color>
+    <color name="textColorLightBlue">#6AA1B6</color>
+    <color name="colorLightGrey">#E3EAF0</color>
 </resources>

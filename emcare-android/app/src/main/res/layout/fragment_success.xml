@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.motion.widget.MotionLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
+    app:layoutDescription="@xml/fragment_signup_scene">
+
+    <include
+        android:id="@+id/headerLayout"
+        layout="@layout/layout_header_transparent" />
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/nestedScrollView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/_52sdp"
+        android:background="@drawable/bg_top_curved_white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/headerLayout">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/_18sdp">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/successImageView"
+                android:layout_width="@dimen/_64sdp"
+                android:layout_height="@dimen/_64sdp"
+                android:layout_marginTop="@dimen/_64sdp"
+                android:background="@drawable/bg_circle"
+                android:padding="@dimen/_10sdp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_check" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/signupTextView"
+                style="@style/TextView.Medium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_8sdp"
+                android:text="@string/label_success"
+                android:textColor="@color/colorPrimary"
+                android:textSize="@dimen/_28ssp"
+                app:layout_constraintEnd_toEndOf="@+id/successImageView"
+                app:layout_constraintStart_toStartOf="@id/successImageView"
+                app:layout_constraintTop_toBottomOf="@+id/successImageView" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/thanksTextView"
+                style="@style/TextView.SemiBold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_12sdp"
+                android:textSize="@dimen/_14ssp"
+                android:text="@string/label_thank_you_for_registration"
+                android:textColor="@color/textColorLightBlue"
+                app:layout_constraintEnd_toEndOf="@+id/successImageView"
+                app:layout_constraintStart_toStartOf="@id/successImageView"
+                app:layout_constraintTop_toBottomOf="@+id/signupTextView" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/successMessageTextView"
+                style="@style/TextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_4sdp"
+                android:gravity="center"
+                app:layout_constraintWidth_percent="0.90"
+                android:text="@string/msg_registration_success"
+                android:textColor="@color/textColorLightBlue"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/thanksTextView" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+</androidx.constraintlayout.motion.widget.MotionLayout>
