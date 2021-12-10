@@ -29,7 +29,12 @@ class HomeAdapter(
 
     inner class ViewHolder(val binding: ListItemDashboardBinding) : RecyclerView.ViewHolder(binding.root) {
 
+        init {
+            binding.itemRootLayout.setOnClickListener(onClickListener)
+        }
+
         fun bind(album: Dashboard) = with(album) {
+            binding.itemRootLayout.tag = bindingAdapterPosition
             binding.iconImageView.setImageResource(icon)
             binding.titleTextView.text = title
             binding.itemRootLayout.setCardBackgroundColor(Color.parseColor(bgColor))

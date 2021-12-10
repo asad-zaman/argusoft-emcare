@@ -30,5 +30,5 @@
     <color name="textColorBlack">#000000</color>
     <color name="buttonColor">#00ADEF</color>
     <color name="textColorLightBlue">#6AA1B6</color>
-    <color name="colorLightGrey">#E3EAF0</color>
+    <color name="colorLightGrey">#FFCCCCCC</color>
 </resources>

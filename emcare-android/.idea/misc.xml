@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="../../../../../../root/.gradle/caches/transforms-3/30d6fc0a40e527c36bd4f5d14854c54c/transformed/jetified-data-capture-0.1.0-alpha05/res/layout/questionnaire_fragment.xml" value="0.1671875" />
+        <entry key="app/src/main/res/drawable/splash_backgorund.xml" value="0.19635416666666666" />
+        <entry key="app/src/main/res/layout-v23/fragment_add_patient.xml" value="0.18020833333333333" />
+        <entry key="app/src/main/res/layout-v23/fragment_patient.xml" value="0.18020833333333333" />
+        <entry key="app/src/main/res/layout-v23/layout_header.xml" value="0.18020833333333333" />
+        <entry key="app/src/main/res/layout/activity_home.xml" value="0.14166666666666666" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.14537037037037037" />
+        <entry key="app/src/main/res/layout/activity_splash.xml" value="0.18020833333333333" />
+        <entry key="app/src/main/res/layout/add_patient_fragment.xml" value="0.18020833333333333" />
+        <entry key="app/src/main/res/layout/fragment_login.xml" value="0.16203703703703703" />
+        <entry key="app/src/main/res/layout/fragment_patient.xml" value="0.2" />
+        <entry key="app/src/main/res/layout/fragment_patient_list.xml" value="0.18020833333333333" />
+        <entry key="app/src/main/res/layout/layout_header.xml" value="0.16203703703703703" />
+        <entry key="app/src/main/res/layout/layout_header_transparent.xml" value="0.14166666666666666" />
+        <entry key="app/src/main/res/layout/list_item_dashboard.xml" value="0.16203703703703703" />
+        <entry key="app/src/main/res/layout/list_item_patient.xml" value="0.18020833333333333" />
+        <entry key="app/src/main/res/layout/patient_list_item_view.xml" value="0.14166666666666666" />
+        <entry key="app/src/main/res/layout/patient_list_view.xml" value="0.18020833333333333" />
+        <entry key="app/src/main/res/menu/add_patient_fragment_menu.xml" value="0.18020833333333333" />
+        <entry key="app/src/main/res/menu/menu_save.xml" value="0.18020833333333333" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK" />
+</project>

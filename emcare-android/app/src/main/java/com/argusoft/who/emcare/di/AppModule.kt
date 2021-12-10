@@ -7,6 +7,8 @@ import com.argusoft.who.emcare.data.local.pref.Preference
 import com.argusoft.who.emcare.data.local.pref.PreferenceManager
 import com.argusoft.who.emcare.data.remote.Api
 import com.argusoft.who.emcare.data.remote.ApiManager
+import com.google.android.fhir.FhirEngine
+import com.google.android.fhir.FhirEngineProvider
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -54,5 +56,11 @@ class AppModule {
     @Provides
     fun provideAppApi(preference : Preference): Api {
         return ApiManager(preference)
+    }
+
+    @Singleton
+    @Provides
+    fun provideAppFhirEngine(@ApplicationContext context: Context): FhirEngine {
+        return FhirEngineProvider.getInstance(context)
     }
 }

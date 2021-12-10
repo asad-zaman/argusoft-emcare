@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">EmCare</string>
 
-    <string name="title_patient_list">Registered Patients</string>
+    <string name="title_patient">Registered Patients</string>
     <string name="title_patient_detail">SamplePatient Detail</string>
     <string name="menu_about">About Fhir Engine</string>
     <string name="menu_load_resource">Load CQL Resources &amp; Patients</string>
@@ -129,4 +129,9 @@
   <string name="ok">Ok</string>
     <string name="error_msg_username">Please enter username</string>
     <string name="error_msg_password">Please enter password</string>
+    <string name="button_add_patient">Add Patient</string>
+    <string name="label_id_with_colon">Id: #---%1$s</string>
+    <string name="title_add_patient">Add Patient</string>
+    <string name="menu_save">Save</string>
+    <string name="msg_logout">Are you sure you want to logout?</string>
 </resources>
