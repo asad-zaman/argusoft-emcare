@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Intent
 import android.view.View
 import androidx.fragment.app.viewModels
+import com.argusoft.who.emcare.BuildConfig
 import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.databinding.FragmentLoginBinding
 import com.argusoft.who.emcare.ui.common.REQUEST_CODE_READ_PHONE_STATE
@@ -66,7 +67,8 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(), EasyPermissions.Perm
                 getDeviceName(),
                 getDeviceOS(),
                 getDeviceModel(),
-                requireContext().getDeviceUUID().toString()
+                requireContext().getDeviceUUID().toString(),
+                BuildConfig.VERSION_NAME
             )
         } else {
             EasyPermissions.requestPermissions(

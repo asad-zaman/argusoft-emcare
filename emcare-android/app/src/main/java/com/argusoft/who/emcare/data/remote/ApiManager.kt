@@ -2,6 +2,7 @@ package com.argusoft.who.emcare.data.remote
 
 import com.argusoft.who.emcare.BuildConfig
 import com.argusoft.who.emcare.data.local.pref.Preference
+import com.argusoft.who.emcare.oldstruct.api.HttpRequestInterceptor
 import com.argusoft.who.emcare.oldstruct.model.DeviceInfo
 import com.argusoft.who.emcare.ui.common.model.DeviceDetails
 import com.argusoft.who.emcare.ui.common.model.User
@@ -19,6 +20,15 @@ class ApiManager(private val preference: Preference) : Api {
             .connectTimeout(60, TimeUnit.SECONDS)
             .readTimeout(60, TimeUnit.SECONDS)
             .writeTimeout(60, TimeUnit.SECONDS)
+            .addInterceptor { chain ->
+                val request = chain.request().newBuilder()
+                    .addHeader(
+                        "Authorization",
+                        "Bearer ${preference.getToken()}"
+                    )
+                    .build()
+                return@addInterceptor chain.proceed(request)
+            }
         if (BuildConfig.DEBUG) {
             okHttpClientBuilder.addInterceptor(HttpLoggingInterceptor().apply {
                 level = HttpLoggingInterceptor.Level.BODY

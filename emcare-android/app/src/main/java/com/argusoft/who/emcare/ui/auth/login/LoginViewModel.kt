@@ -36,8 +36,10 @@ class LoginViewModel @Inject constructor(
         deviceOS: String,
         deviceModel: String,
         deviceUUID: String,
+        androidVersion: String
     ) {
         val deviceDetails = DeviceDetails(
+            androidVersion = androidVersion,
             deviceName = deviceName,
             deviceOs = deviceOS,
             deviceModel = deviceModel,
