@@ -3,6 +3,7 @@ package com.argusoft.who.emcare.ui.common
 import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.ui.common.model.Dashboard
 
+const val REQUEST_CODE_READ_PHONE_STATE = 1
 const val INTENT_EXTRA_ALBUM = "INTENT_EXTRA_ALBUM"
 const val MY_UPDATE_REQUEST_CODE = 50
 

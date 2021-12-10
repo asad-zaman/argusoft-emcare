@@ -19,7 +19,7 @@ import java.io.IOException
  * USAGE : Used to load URL/DrawableRes into ImageView
  * <p>
  * For Better Optimization in RecyclerView, please follow this link{@link http://bumptech.github.io/glide/int/recyclerview.html}.
- * Created by R.S.
+ * Created by
  */
 
 /**

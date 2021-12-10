@@ -8,7 +8,7 @@ import com.argusoft.who.emcare.utils.common.ImagePickerUtils
 
 /**
  * USAGE : To open Camera and Gallery file picker via BottomSheetDialog
- * Created by R.S.
+ * Created by
  */
 class ImagePickerDialog private constructor() : BaseBottomSheetDialogFragment<DialogImagePickerBinding>() {
 

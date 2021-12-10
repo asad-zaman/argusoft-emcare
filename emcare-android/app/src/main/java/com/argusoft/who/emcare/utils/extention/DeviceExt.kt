@@ -2,7 +2,7 @@ package com.argusoft.who.emcare.utils.extention
 
 /**
  * USAGE : To get device related information.
- * Created by R.S.
+ * Created by
  */
 
 import android.Manifest
@@ -17,6 +17,11 @@ import android.util.DisplayMetrics
 import androidx.core.content.ContextCompat
 import java.io.UnsupportedEncodingException
 import java.util.*
+import java.net.SocketException
+
+import java.net.NetworkInterface
+
+import java.util.Collections
 
 
 fun Int.dpToPx(): Int = (this * getDisplayMetrics().density).toInt()
@@ -100,4 +105,34 @@ fun Context.getDeviceUUID(): UUID? {
         prefs.edit().putString("device_id", uuid!!.toString()).apply()
     }
     return uuid
+}
+
+fun Context.getIMEI(): String {
+    val telephonyManager: TelephonyManager = getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        telephonyManager.deviceId
+    } else {
+        telephonyManager.deviceId
+    }
+}
+
+fun getMacAddress(): String {
+    try {
+        val all: List<NetworkInterface> = Collections.list(NetworkInterface.getNetworkInterfaces())
+        for (nif in all) {
+            if (!nif.name.equals("wlan0", ignoreCase = true)) continue
+            val macBytes = nif.hardwareAddress ?: return ""
+            val res1 = StringBuilder()
+            for (b in macBytes) {
+                res1.append(String.format("%02X:", b))
+            }
+            if (res1.length > 0) {
+                res1.deleteCharAt(res1.length - 1)
+            }
+            return res1.toString()
+        }
+    } catch (ex: Exception) {
+        return "02:00:00:00:00:00"
+    }
+    return "02:00:00:00:00:00"
 }
