@@ -16,9 +16,9 @@ public class KeyCloakConfig {
     static Keycloak keycloak = null;
     public final static String serverUrl = "http://localhost:8180/auth";
     public final static String realm = "emcare";
-    public final static String clientId = "login-app";
-    public final static String clientSecret = "50fe2579-ea20-4cf2-b0d2-e219f67dfbb4";
-    public final static String userName = "jay";
+    public final static String clientId = "emcare";
+    public final static String clientSecret = "bd536aad-e5dc-456f-86c5-90b8ea5ae04d";
+    public final static String userName = "emcare";
     public final static String password = "argusadmin";
 
     public static Keycloak getInstance() {
