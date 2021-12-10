@@ -30,6 +30,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(), EasyPermissions.Perm
 
     override fun initObserver() {
         observeNotNull(loginViewModel.errorMessageState) {
+            binding.progressLayout.showContent()
             context?.showSnackBar(
                 view = binding.progressLayout,
                 message = getString(it),
@@ -48,10 +49,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(), EasyPermissions.Perm
         super.onClick(view)
         when (view?.id) {
             R.id.loginButton -> {
-                loginViewModel.login(
-                    binding.usernameEditText.getEnterText(),
-                    binding.passwordEditText.getEnterText()
-                )
+              deviceInfo()
             }
             R.id.signupTextView -> {
                 navigate(R.id.action_loginFragment_to_signUpFragment)
@@ -62,13 +60,14 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(), EasyPermissions.Perm
     @AfterPermissionGranted(REQUEST_CODE_READ_PHONE_STATE)
     fun deviceInfo() {
         if (hasReadPhoneStatePermission()) {
-            try {
-                requireContext().getDeviceUUID().timber()
-                requireContext().getIMEI().timber()
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-            getMacAddress().timber()
+            loginViewModel.login(
+                binding.usernameEditText.getEnterText(),
+                binding.passwordEditText.getEnterText(),
+                getDeviceName(),
+                getDeviceOS(),
+                getDeviceModel(),
+                requireContext().getDeviceUUID().toString()
+            )
         } else {
             EasyPermissions.requestPermissions(
                 requireActivity(),

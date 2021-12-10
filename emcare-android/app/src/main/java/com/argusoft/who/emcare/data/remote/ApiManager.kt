@@ -2,8 +2,9 @@ package com.argusoft.who.emcare.data.remote
 
 import com.argusoft.who.emcare.BuildConfig
 import com.argusoft.who.emcare.data.local.pref.Preference
+import com.argusoft.who.emcare.oldstruct.model.DeviceInfo
+import com.argusoft.who.emcare.ui.common.model.DeviceDetails
 import com.argusoft.who.emcare.ui.common.model.User
-import kotlinx.coroutines.flow.Flow
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -26,7 +27,7 @@ class ApiManager(private val preference: Preference) : Api {
         return@lazy okHttpClientBuilder
     }
 
-    private val keyCloakKeyCloakApiService: KeyCloakApiService by lazy {
+    private val keyCloakApiService: KeyCloakApiService by lazy {
         return@lazy Retrofit.Builder()
             .baseUrl(BuildConfig.KEYCLOAK_BASE_URL)
             .client(okHttpClientBuilder.build())
@@ -35,10 +36,27 @@ class ApiManager(private val preference: Preference) : Api {
             .create(KeyCloakApiService::class.java)
     }
 
+    private val apiService: ApiService by lazy {
+        return@lazy Retrofit.Builder()
+            .baseUrl(BuildConfig.BASE_URL)
+            .client(okHttpClientBuilder.build())
+            .addConverterFactory(MoshiConverterFactory.create())
+            .build()
+            .create(ApiService::class.java)
+    }
+
     override suspend fun login(requestMap: Map<String, String>): ApiResponse<User> {
         return executeApiHelper {
-            keyCloakKeyCloakApiService.getAccessToken(requestMap)
+            keyCloakApiService.getAccessToken(requestMap)
         }
+    }
+
+    override suspend fun addDevice(deviceInfo: DeviceDetails): ApiResponse<DeviceDetails> {
+        return executeApiHelper { apiService.addDevice(deviceInfo) }
+    }
+
+    override suspend fun getDevice(deviceUUID: String): ApiResponse<DeviceDetails> {
+        return executeApiHelper { apiService.getDeviceByMacAddress(deviceUUID) }
     }
 }
 

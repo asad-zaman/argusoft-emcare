@@ -23,13 +23,13 @@ android {
 
     buildTypes {
         debug {
-            buildConfigField "String", "BASE_URL", "\"http://10.0.2.2:8080/fhir/\""
+            buildConfigField "String", "BASE_URL", "\"http://10.0.2.2:8080/fhir/api/\""
             buildConfigField "String", "KEYCLOAK_BASE_URL", "\"http://10.0.2.2:8180/auth/realms/emcare_demo/protocol/openid-connect/\""
             shrinkResources false
             minifyEnabled false
         }
         release {
-            buildConfigField "String", "BASE_URL", "\"http://10.0.2.2:8080/fhir/\""
+            buildConfigField "String", "BASE_URL", "\"http://10.0.2.2:8080/fhir/api/\""
             buildConfigField "String", "KEYCLOAK_BASE_URL", "\"http://10.0.2.2:8180/auth/realms/emcare_demo/protocol/openid-connect/\""
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'

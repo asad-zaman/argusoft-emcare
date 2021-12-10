@@ -1,24 +1,22 @@
 package com.argusoft.who.emcare.data.remote
 
 import com.argusoft.who.emcare.oldstruct.model.DeviceInfo
-import retrofit2.Call
-import retrofit2.http.*
+import com.argusoft.who.emcare.ui.common.model.DeviceDetails
+import retrofit2.Response
+import retrofit2.http.Body
+import retrofit2.http.GET
+import retrofit2.http.POST
+import retrofit2.http.Query
 
 interface ApiService {
 
-
     @POST("/api/device/add")
-    fun addDevice(
-        @Body deviceInfo: DeviceInfo
-    ): Call<DeviceInfo>
+    suspend fun addDevice(
+        @Body deviceInfo: DeviceDetails
+    ): Response<DeviceDetails>
 
-    @PUT("/api/device/update")
-    fun updateDevice(
-        @Body deviceInfo: DeviceInfo
-    ): Call<DeviceInfo>
-
-    @GET("/api/device")
-    fun getDeviceByMacAddress(
-        @Query("macAddress") macAddress: String
-    ): Call<DeviceInfo>
+    @GET("device")
+    suspend fun getDeviceByMacAddress(
+        @Query("deviceUUID") macAddress: String
+    ): Response<DeviceDetails>
 }

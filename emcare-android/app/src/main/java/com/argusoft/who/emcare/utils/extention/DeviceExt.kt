@@ -106,33 +106,3 @@ fun Context.getDeviceUUID(): UUID? {
     }
     return uuid
 }
-
-fun Context.getIMEI(): String {
-    val telephonyManager: TelephonyManager = getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
-    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        telephonyManager.deviceId
-    } else {
-        telephonyManager.deviceId
-    }
-}
-
-fun getMacAddress(): String {
-    try {
-        val all: List<NetworkInterface> = Collections.list(NetworkInterface.getNetworkInterfaces())
-        for (nif in all) {
-            if (!nif.name.equals("wlan0", ignoreCase = true)) continue
-            val macBytes = nif.hardwareAddress ?: return ""
-            val res1 = StringBuilder()
-            for (b in macBytes) {
-                res1.append(String.format("%02X:", b))
-            }
-            if (res1.length > 0) {
-                res1.deleteCharAt(res1.length - 1)
-            }
-            return res1.toString()
-        }
-    } catch (ex: Exception) {
-        return "02:00:00:00:00:00"
-    }
-    return "02:00:00:00:00:00"
-}

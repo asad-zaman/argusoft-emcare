@@ -9,7 +9,9 @@ import com.argusoft.who.emcare.ui.common.KEYCLOAK_CLIENT_ID
 import com.argusoft.who.emcare.ui.common.KEYCLOAK_CLIENT_SECRET
 import com.argusoft.who.emcare.ui.common.KEYCLOAK_GRANT_TYPE
 import com.argusoft.who.emcare.ui.common.KEYCLOAK_SCOPE
+import com.argusoft.who.emcare.ui.common.model.DeviceDetails
 import com.argusoft.who.emcare.ui.common.model.User
+import com.argusoft.who.emcare.utils.extention.whenFailed
 import com.argusoft.who.emcare.utils.extention.whenSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -29,13 +31,23 @@ class LoginViewModel @Inject constructor(
 
     fun login(
         username: String,
-        password: String
+        password: String,
+        deviceName: String,
+        deviceOS: String,
+        deviceModel: String,
+        deviceUUID: String,
     ) {
+        val deviceDetails = DeviceDetails(
+            deviceName = deviceName,
+            deviceOs = deviceOS,
+            deviceModel = deviceModel,
+            deviceUUID = deviceUUID,
+        )
         when {
             username.isEmpty() -> _errorMessageState.value = R.string.error_msg_username
             password.isEmpty() -> _errorMessageState.value = R.string.error_msg_password
             else -> {
-                val requestMap = HashMap<String,String>()
+                val requestMap = HashMap<String, String>()
                 requestMap["client_id"] = KEYCLOAK_CLIENT_ID
                 requestMap["grant_type"] = KEYCLOAK_GRANT_TYPE
                 requestMap["client_secret"] = KEYCLOAK_CLIENT_SECRET
@@ -44,10 +56,28 @@ class LoginViewModel @Inject constructor(
                 requestMap["password"] = password
                 _loginApiState.value = ApiResponse.Loading()
                 viewModelScope.launch {
-                    _loginApiState.value = api.login(requestMap).whenSuccess {
+                    val loginResponse = api.login(requestMap)
+                    loginResponse.whenFailed {
+                        _loginApiState.value = loginResponse
+                    }
+                    loginResponse.whenSuccess { user ->
                         preference.setLogin()
-                        it.accessToken?.let { accessToken -> preference.setToken(accessToken) }
-                        preference.setUser(it)
+                        user.accessToken?.let { accessToken -> preference.setToken(accessToken) }
+                        preference.setUser(user)
+
+                        val getDevice = api.getDevice(deviceUUID)
+                        getDevice.whenSuccess {
+                            api.addDevice(deviceDetails)
+                            if (it.isBlocked == true) {
+                                _errorMessageState.value = R.string.blocked_device_message
+                            } else {
+                                _loginApiState.value = loginResponse
+                            }
+                        }
+                        getDevice.whenFailed {
+                            api.addDevice(deviceDetails)
+                            _loginApiState.value = loginResponse
+                        }
                     }
                 }
             }
