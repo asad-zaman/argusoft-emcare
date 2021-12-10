@@ -43,8 +43,9 @@ public class DeviceController {
     public ResponseEntity<Object> getDeviceByImei(
             @RequestParam(value = "imei", required = false) String imei,
             @RequestParam(value = "macAddress", required = false) String macAddress,
+            @RequestParam(value = "deviceUUID", required = false) String deviceUUID,
             @RequestParam(value = "userId", required = false) String userId
     ) {
-        return deviceService.getDeviceInfoByImei(imei, macAddress, userId);
+        return deviceService.getDeviceInfoByImei(imei, macAddress, userId, deviceUUID);
     }
 }
