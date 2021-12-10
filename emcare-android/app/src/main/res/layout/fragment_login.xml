@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:id="@+id/progressLayout"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimary">
+    android:background="@color/colorWhite">
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/leftGuidLine"
@@ -63,11 +63,11 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/_16sdp"
-        android:backgroundTint="@color/textColorWhite"
+        android:backgroundTint="@color/textColorBlack"
         android:hint="@string/hint_username"
         android:inputType="text"
-        android:textColor="@color/textColorWhite"
-        android:textColorHint="@color/textColorWhite80"
+        android:textColor="@color/textColorBlack"
+        android:textColorHint="@color/textColorBlack80"
         app:layout_constraintEnd_toEndOf="@id/rightGuidLine"
         app:layout_constraintStart_toStartOf="@id/leftGuidLine"
         app:layout_constraintTop_toBottomOf="@+id/detailsTextView" />
@@ -77,12 +77,12 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/_12sdp"
-        android:backgroundTint="@color/textColorWhite"
+        android:backgroundTint="@color/textColorBlack"
         android:hint="@string/hint_password"
         android:inputType="textPassword"
         android:imeOptions="actionDone"
-        android:textColor="@color/textColorWhite"
-        android:textColorHint="@color/textColorWhite80"
+        android:textColor="@color/textColorBlack"
+        android:textColorHint="@color/textColorBlack80"
         app:layout_constraintEnd_toEndOf="@id/rightGuidLine"
         app:layout_constraintStart_toStartOf="@id/leftGuidLine"
         app:layout_constraintTop_toBottomOf="@+id/usernameEditText" />
@@ -115,7 +115,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/label_don_t_have_an_account"
-        android:textColor="@color/textColorWhite80"
+        android:textColor="@color/textColorBlack80"
         app:layout_constraintBottom_toBottomOf="@+id/signupTextView"
         app:layout_constraintEnd_toStartOf="@+id/signupTextView"
         app:layout_constraintHorizontal_chainStyle="packed"

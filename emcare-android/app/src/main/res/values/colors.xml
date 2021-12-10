@@ -3,7 +3,7 @@
     <color name="horizontalBackground">#6CFAFAFA</color>
     <color name="colorPrimary">#0097DA</color>
     <color name="colorPrimaryDark">#0097DA</color>
-    <color name="colorAccent">#ffffff</color>
+    <color name="colorAccent">#0097DA</color>
     <color name="colorStatusBar">#175adf</color>
     <color name="low_risk">#388e3c</color>
     <color name="low_risk_background">#e8f5e9</color>
@@ -28,6 +28,7 @@
     <color name="textColorWhite">#FFFFFF</color>
     <color name="textColorWhite80">#CCFFFFFF</color>
     <color name="textColorBlack">#000000</color>
+    <color name="textColorBlack80">#CC000000</color>
     <color name="buttonColor">#00ADEF</color>
     <color name="textColorLightBlue">#6AA1B6</color>
     <color name="colorLightGrey">#FFCCCCCC</color>

@@ -8,7 +8,7 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="windowActionModeOverlay">true</item>
         <item name="actionModeStyle">@style/AppStyle.ActionMode</item>
-        <!--        <item name="textInputStyle">@style/TextInputLayout</item>-->
+<!--        <item name="questionnaire_theme">@style/AppStyle.ActionMode</item>-->
     </style>
 
     <style name="SplashTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
@@ -16,7 +16,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:statusBarColor">@color/colorAccent</item>
+        <item name="android:statusBarColor">@color/colorWhite</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -90,7 +90,7 @@
 
     <style name="TextView" parent="Widget.MaterialComponents.TextView">
         <item name="android:fontFamily">@font/poppins_regular</item>
-        <item name="android:textColor">@color/textColorWhite</item>
+        <item name="android:textColor">@color/textColorBlack</item>
         <item name="android:includeFontPadding">false</item>
     </style>
 
@@ -141,5 +141,9 @@
         <item name="android:minHeight">@dimen/_42sdp</item>
         <item name="strokeColor">@color/textColorLightBlue</item>
         <item name="strokeWidth">@dimen/_1sdp</item>
+    </style>
+    
+    <style name="Questionnaire" parent="Theme.Questionnaire">
+        <item name="colorAccent">@color/colorPrimary</item>
     </style>
 </resources>

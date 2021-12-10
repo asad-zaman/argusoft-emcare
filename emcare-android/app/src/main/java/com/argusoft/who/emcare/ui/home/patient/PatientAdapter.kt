@@ -44,7 +44,7 @@ class PatientAdapter(
                         RiskProbability.HIGH.toCode() -> R.color.high_risk
                         RiskProbability.MODERATE.toCode() -> R.color.moderate_risk
                         RiskProbability.LOW.toCode() -> R.color.low_risk
-                        else -> R.color.unknown_risk_background
+                        else -> R.color.colorLightGrey
                     }
                 )
             )
