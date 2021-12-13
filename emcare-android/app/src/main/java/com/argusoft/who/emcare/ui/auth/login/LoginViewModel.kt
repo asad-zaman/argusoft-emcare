@@ -44,6 +44,10 @@ class LoginViewModel @Inject constructor(
             deviceOs = deviceOS,
             deviceModel = deviceModel,
             deviceUUID = deviceUUID,
+            isBlocked = false,
+            imeiNumber = "",
+            macAddress = "",
+            lastLoggedInUser = ""
         )
         when {
             username.isEmpty() -> _errorMessageState.value = R.string.error_msg_username
@@ -69,6 +73,7 @@ class LoginViewModel @Inject constructor(
 
                         val getDevice = api.getDevice(deviceUUID)
                         getDevice.whenSuccess {
+                            deviceDetails.isBlocked = it.isBlocked
                             api.addDevice(deviceDetails)
                             if (it.isBlocked == true) {
                                 _errorMessageState.value = R.string.blocked_device_message

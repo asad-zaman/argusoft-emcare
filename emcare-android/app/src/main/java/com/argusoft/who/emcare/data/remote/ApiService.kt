@@ -15,7 +15,7 @@ interface ApiService {
         @Body deviceInfo: DeviceDetails
     ): Response<DeviceDetails>
 
-    @GET("device")
+    @GET("/api/device")
     suspend fun getDeviceByMacAddress(
         @Query("deviceUUID") macAddress: String
     ): Response<DeviceDetails>
