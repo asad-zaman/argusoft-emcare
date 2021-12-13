@@ -49,7 +49,7 @@
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/detailsTextView"
-        style="@style/TextView.Small"
+        style="@style/TextView.Small.Black"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:gravity="center"
@@ -89,7 +89,7 @@
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/forgotPasswordTextView"
-        style="@style/TextView.Small"
+        style="@style/TextView.Small.Black"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/_16sdp"
