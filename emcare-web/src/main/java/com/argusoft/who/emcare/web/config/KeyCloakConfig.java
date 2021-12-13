@@ -21,20 +21,19 @@ public class KeyCloakConfig {
     public final static String userName = "emcare";
     public final static String password = "argusadmin";
 
-    public static Keycloak getInstance() {
+    public static Keycloak getInstance(HttpServletRequest request) {
         if (keycloak == null) {
-
+            KeycloakSecurityContext context = (KeycloakSecurityContext) request.getAttribute(KeycloakSecurityContext.class.getName());
             keycloak = KeycloakBuilder.builder()
-                    .serverUrl(serverUrl)
-                    .realm(realm)
+                    .serverUrl(KeyCloakConfig.serverUrl)
+                    .realm(KeyCloakConfig.realm)
                     .grantType(OAuth2Constants.PASSWORD)
-                    .username(userName)
-                    .password(password)
-                    .clientId(clientId)
-                    .clientSecret(clientSecret)
-                    .resteasyClient(new ResteasyClientBuilder()
-                            .connectionPoolSize(20)
-                            .build())
+                    .username(KeyCloakConfig.userName)
+                    .password(KeyCloakConfig.password)
+                    .clientId(KeyCloakConfig.clientId)
+                    .authorization(context.getTokenString())
+                    .clientSecret(KeyCloakConfig.clientSecret)
+                    .resteasyClient(new ResteasyClientBuilder().connectionPoolSize(10).build())
                     .build();
         }
         return keycloak;

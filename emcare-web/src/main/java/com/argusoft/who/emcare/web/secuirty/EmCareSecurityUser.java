@@ -58,7 +58,7 @@ public class EmCareSecurityUser {
         AccessToken accessToken = session.getToken();
         setLoggedInUserId(accessToken.getSubject());
         setLoggedInUserName(accessToken.getPreferredUsername());
-        setLoggedInUserRole(accessToken.getResourceAccess().get(KeyCloakConfig.clientId).getRoles());
+//        setLoggedInUserRole(accessToken.getResourceAccess().get(KeyCloakConfig.clientId).getRoles());
         return accessToken;
     }
 }
