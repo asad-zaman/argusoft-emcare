@@ -3,6 +3,7 @@
 
     <string name="title_patient">Registered Patients</string>
     <string name="title_patient_detail">SamplePatient Detail</string>
+    <string name="title_patient_details">Patient Details</string>
     <string name="menu_about">About Fhir Engine</string>
     <string name="menu_load_resource">Load CQL Resources &amp; Patients</string>
     <string name="menu_sync_resources">Sync Resources</string>
@@ -134,4 +135,5 @@
     <string name="title_add_patient">Add Patient</string>
     <string name="menu_save">Save</string>
     <string name="msg_logout">Are you sure you want to logout?</string>
+    <string name="msg_delete_patient">Are you sure you want to delete Patient?</string>
 </resources>

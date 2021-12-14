@@ -4,6 +4,8 @@ import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.ui.common.model.Dashboard
 
 const val INTENT_EXTRA_ALBUM = "INTENT_EXTRA_ALBUM"
+const val INTENT_EXTRA_PATIENT_ID = "INTENT_EXTRA_PATIENT_ID"
+const val INTENT_EXTRA_PATIENT_NAME = "INTENT_EXTRA_PATIENT_NAME"
 const val MY_UPDATE_REQUEST_CODE = 50
 
 
