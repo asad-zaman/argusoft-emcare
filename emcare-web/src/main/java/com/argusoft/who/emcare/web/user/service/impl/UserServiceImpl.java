@@ -1,6 +1,7 @@
 package com.argusoft.who.emcare.web.user.service.impl;
 
 import com.argusoft.who.emcare.web.config.KeyCloakConfig;
+import com.argusoft.who.emcare.web.secuirty.EmCareSecurityUser;
 import com.argusoft.who.emcare.web.user.cons.UserConst;
 import com.argusoft.who.emcare.web.user.dao.UserRepository;
 import com.argusoft.who.emcare.web.user.dto.RoleDto;
@@ -9,17 +10,13 @@ import com.argusoft.who.emcare.web.user.dto.UserUpdateDto;
 import com.argusoft.who.emcare.web.user.mapper.UserMapper;
 import com.argusoft.who.emcare.web.user.model.User;
 import com.argusoft.who.emcare.web.user.service.UserService;
-import com.google.gson.Gson;
-import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
-import org.keycloak.KeycloakSecurityContext;
-import org.keycloak.OAuth2Constants;
 import org.keycloak.admin.client.CreatedResponseUtil;
 import org.keycloak.admin.client.Keycloak;
-import org.keycloak.admin.client.KeycloakBuilder;
 import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.admin.client.resource.RolesResource;
 import org.keycloak.admin.client.resource.UserResource;
 import org.keycloak.admin.client.resource.UsersResource;
+import org.keycloak.representations.AccessToken;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
@@ -44,6 +41,17 @@ public class UserServiceImpl implements UserService {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    KeyCloakConfig keyCloakConfig;
+
+    @Autowired
+    EmCareSecurityUser emCareSecurityUser;
+
+    @Override
+    public AccessToken getCurrentUser() {
+        return emCareSecurityUser.getLoggedInUser();
+    }
+
     @Override
     public UsersResource getAllUserResource(HttpServletRequest request) {
         Keycloak keycloak = KeyCloakConfig.getInstanceByAuth(request);
@@ -57,8 +65,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void addUser(UserDto user, HttpServletRequest request) {
-        Keycloak keycloak = KeyCloakConfig.getInstance(request);
+    public void addUser(UserDto user) {
+        Keycloak keycloak = keyCloakConfig.getInstance();
 
 //        Get Realm Resource
         RealmResource realmResource = keycloak.realm(KeyCloakConfig.realm);
@@ -93,8 +101,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void addRealmRole(RoleDto role, HttpServletRequest request) {
-        Keycloak keycloak = KeyCloakConfig.getInstance(request);
+    public void addRealmRole(RoleDto role) {
+        Keycloak keycloak = keyCloakConfig.getInstance();
         RoleRepresentation roleRep = new RoleRepresentation();
         roleRep.setName(role.getRoleName());
         roleRep.setDescription(role.getRoleDescription());
@@ -102,8 +110,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseEntity<Object> updateUserStatus(UserUpdateDto userUpdateDto, HttpServletRequest request) {
-        Keycloak keycloak = KeyCloakConfig.getInstance(request);
+    public ResponseEntity<Object> updateUserStatus(UserUpdateDto userUpdateDto) {
+        Keycloak keycloak = keyCloakConfig.getInstance();
 //        Get Realm Resource
         RealmResource realmResource = keycloak.realm(KeyCloakConfig.realm);
 //        Get User Resource

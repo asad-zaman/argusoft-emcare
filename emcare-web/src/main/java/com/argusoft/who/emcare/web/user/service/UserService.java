@@ -5,6 +5,7 @@ import com.argusoft.who.emcare.web.user.dto.UserDto;
 import com.argusoft.who.emcare.web.user.dto.UserUpdateDto;
 import org.keycloak.admin.client.resource.RolesResource;
 import org.keycloak.admin.client.resource.UsersResource;
+import org.keycloak.representations.AccessToken;
 import org.springframework.http.ResponseEntity;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,13 +15,15 @@ import javax.servlet.http.HttpServletRequest;
  */
 public interface UserService {
 
+    public AccessToken getCurrentUser();
+
     public UsersResource getAllUserResource(HttpServletRequest request);
 
     public RolesResource getAllRoles(HttpServletRequest request);
 
-    public void addUser(UserDto user, HttpServletRequest request);
+    public void addUser(UserDto user);
 
-    public void addRealmRole(RoleDto role, HttpServletRequest request);
+    public void addRealmRole(RoleDto role);
 
-    public ResponseEntity<Object> updateUserStatus(UserUpdateDto userUpdateDto, HttpServletRequest request);
+    public ResponseEntity<Object> updateUserStatus(UserUpdateDto userUpdateDto);
 }

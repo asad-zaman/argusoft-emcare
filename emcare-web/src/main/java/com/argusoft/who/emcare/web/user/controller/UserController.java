@@ -21,14 +21,11 @@ import javax.servlet.http.HttpServletRequest;
 public class UserController {
 
     @Autowired
-    EmCareSecurityUser emCareSecurityUser;
-
-    @Autowired
     UserService userService;
 
     @RequestMapping(value = "", method = RequestMethod.GET)
     public ResponseEntity<Object> getCurrentLoggedInUser() {
-        return ResponseEntity.ok(emCareSecurityUser.getLoggedInUser());
+        return ResponseEntity.ok(userService.getCurrentUser());
     }
 
     @RequestMapping(value = "/all", method = RequestMethod.GET)
@@ -46,19 +43,25 @@ public class UserController {
      * @return
      */
     @PostMapping("/add")
-    public ResponseEntity<Object> addUser(@RequestBody UserDto user, HttpServletRequest request) {
-        userService.addUser(user, request);
+    public ResponseEntity<Object> addUser(@RequestBody UserDto user) {
+        userService.addUser(user);
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 
     @PostMapping("/role/add")
-    public ResponseEntity<Object> addRealmRole(@RequestBody RoleDto role, HttpServletRequest request) {
-        userService.addRealmRole(role, request);
+    public ResponseEntity<Object> addRealmRole(@RequestBody RoleDto role) {
+        userService.addRealmRole(role);
+        return ResponseEntity.status(HttpStatus.OK).body(null);
+    }
+
+    @GetMapping("/role/{userId}")
+    public ResponseEntity<Object> getUserRoleById(@PathVariable String userId) {
+//        userService.addRealmRole(role, request);
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 
     @PostMapping("/status/change")
-    public ResponseEntity<Object> changeUserStatus(@RequestBody UserUpdateDto userUpdateDto, HttpServletRequest request) {
-        return userService.updateUserStatus(userUpdateDto, request);
+    public ResponseEntity<Object> changeUserStatus(@RequestBody UserUpdateDto userUpdateDto) {
+        return userService.updateUserStatus(userUpdateDto);
     }
 }
