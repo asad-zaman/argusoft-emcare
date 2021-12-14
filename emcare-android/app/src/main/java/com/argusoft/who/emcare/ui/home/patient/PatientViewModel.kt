@@ -71,7 +71,6 @@ class PatientViewModel @Inject constructor(
 
     fun savePatient(questionnaireResponse: QuestionnaireResponse, questionnaire: String) {
         val questionnaireResource: Questionnaire = FhirContext.forR4().newJsonParser().parseResource(questionnaire) as Questionnaire
-        _addPatients.value = ApiResponse.Loading()
         viewModelScope.launch {
             val resources = ResourceMapper.extract(questionnaireResource, questionnaireResponse)
             val entry = ResourceMapper.extract(questionnaireResource, questionnaireResponse).entryFirstRep
@@ -79,6 +78,7 @@ class PatientViewModel @Inject constructor(
             val patient = entry.resource as Patient
             if (patient.identifier.isNotEmpty()
             ) {
+                _addPatients.value = ApiResponse.Loading()
                 //Adding id
                 patient.id = UUID.randomUUID().toString()
 

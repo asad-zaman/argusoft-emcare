@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.argusoft.who.emcare.R
+import com.argusoft.who.emcare.data.remote.ApiResponse
 import com.argusoft.who.emcare.ui.common.model.PatientItem
 import com.argusoft.who.emcare.ui.common.model.PatientItemData
 import com.argusoft.who.emcare.utils.extention.navigate
@@ -23,6 +24,11 @@ class PatientDetailsViewModel @Inject constructor(
     private val _patientItem = MutableLiveData<PatientItem>()
     val patientItem : LiveData<PatientItem> = _patientItem
 
+    private val _deletePatientSuccessState = MutableLiveData<Int>()
+    val deletePatientSuccessState : LiveData<Int> = _deletePatientSuccessState
+
+    private val _deletePatientLoadingState = MutableLiveData<ApiResponse<Patient>>()
+    val deletePatientLoadingState: LiveData<ApiResponse<Patient>> = _deletePatientLoadingState
 
 
     fun getPatientDetails(patientId: String?) {
@@ -35,9 +41,11 @@ class PatientDetailsViewModel @Inject constructor(
 
     fun deletePatient(patientId: String?) {
         viewModelScope.launch {
+            _deletePatientLoadingState.value = ApiResponse.Loading()
             if(patientId != null) {
                 fhirEngine.remove(Patient::class.java, patientId)
             }
+            _deletePatientSuccessState.value = 1
         }
     }
 

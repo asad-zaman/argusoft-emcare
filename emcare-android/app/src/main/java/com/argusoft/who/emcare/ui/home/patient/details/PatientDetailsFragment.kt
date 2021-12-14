@@ -8,6 +8,7 @@ import com.argusoft.who.emcare.databinding.FragmentPatientDetailsBinding
 import com.argusoft.who.emcare.ui.common.INTENT_EXTRA_PATIENT_ID
 import com.argusoft.who.emcare.ui.common.INTENT_EXTRA_PATIENT_NAME
 import com.argusoft.who.emcare.ui.common.base.BaseFragment
+import com.argusoft.who.emcare.utils.extention.handleApiView
 import com.argusoft.who.emcare.utils.extention.navigate
 import com.argusoft.who.emcare.utils.extention.observeNotNull
 import dagger.hilt.android.AndroidEntryPoint
@@ -36,14 +37,21 @@ class PatientDetailsFragment : BaseFragment<FragmentPatientDetailsBinding>() {
     }
 
     override fun initListener() {
-        //TODO: Set back in patient fragment
-        //binding.deletePatientButton.setOnClickListener(this)
+        binding.deletePatientButton.setOnClickListener(this)
     }
 
     override fun initObserver() {
         observeNotNull(patientDetailsViewModel.patientItem) {
             patientDetailsAdapter.clearAllItems()
             patientDetailsAdapter.addAll(patientDetailsViewModel.createPatientItemDataListFromPatientItem(it))
+        }
+
+        observeNotNull(patientDetailsViewModel.deletePatientLoadingState){
+            it.handleApiView(binding.patientDetailsLayout)
+        }
+
+        observeNotNull(patientDetailsViewModel.deletePatientSuccessState) {
+            requireActivity().onBackPressed()
         }
     }
 
@@ -52,7 +60,6 @@ class PatientDetailsFragment : BaseFragment<FragmentPatientDetailsBinding>() {
         when (view?.id) {
             R.id.delete_patient_button -> {
                         patientDetailsViewModel.deletePatient(requireArguments().getString(INTENT_EXTRA_PATIENT_ID))
-                        navigate(R.id.patientDetailsFragment_to_patientFragment)
             }
         }
     }

@@ -34,9 +34,5 @@
     <fragment
         android:id="@+id/patientDetailsFragment"
         android:name="com.argusoft.who.emcare.ui.home.patient.details.PatientDetailsFragment"
-        tools:layout="@layout/fragment_patient_details" >
-        <action
-            android:id="@+id/patientDetailsFragment_to_patientFragment"
-            app:destination="@id/patientFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_patient_details" />
 </navigation>
