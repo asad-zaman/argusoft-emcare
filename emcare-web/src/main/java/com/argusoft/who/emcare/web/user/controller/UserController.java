@@ -3,6 +3,7 @@ package com.argusoft.who.emcare.web.user.controller;
 import com.argusoft.who.emcare.web.secuirty.EmCareSecurityUser;
 import com.argusoft.who.emcare.web.user.dto.RoleDto;
 import com.argusoft.who.emcare.web.user.dto.UserDto;
+import com.argusoft.who.emcare.web.user.dto.UserUpdateDto;
 import com.argusoft.who.emcare.web.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -54,5 +55,10 @@ public class UserController {
     public ResponseEntity<Object> addRealmRole(@RequestBody RoleDto role, HttpServletRequest request) {
         userService.addRealmRole(role, request);
         return ResponseEntity.status(HttpStatus.OK).body(null);
+    }
+
+    @PostMapping("/status/change")
+    public ResponseEntity<Object> changeUserStatus(@RequestBody UserUpdateDto userUpdateDto, HttpServletRequest request) {
+        return userService.updateUserStatus(userUpdateDto, request);
     }
 }
