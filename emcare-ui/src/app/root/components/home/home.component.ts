@@ -61,4 +61,8 @@ export class HomeComponent implements OnInit {
   showLocation() {
     this.router.navigate(['/showLocation']);
   }
+
+  showPatients() {
+    this.router.navigate(['/showPatients']);
+  }
 }

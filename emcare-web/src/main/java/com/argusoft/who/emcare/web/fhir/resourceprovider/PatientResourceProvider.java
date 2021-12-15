@@ -145,11 +145,16 @@ public class PatientResourceProvider implements IResourceProvider {
         String patientId = thePatient.getId()
                 .substring(thePatient.getId().indexOf("/") + 1); //Getting id part after Patient/
 
-        EmcareResource emcareResource = new EmcareResource();
+        EmcareResource emcareResource = emcareResourceService.findByResourceId(patientId);
+       
+        if(emcareResource == null) {
+            emcareResource = new EmcareResource(); 
+        }
+        
         emcareResource.setText(patientString);
         emcareResource.setResourceId(patientId);
         emcareResource.setType("PATIENT");
-
+        
         emcareResourceService.saveResource(emcareResource);
 
         MethodOutcome retVal = new MethodOutcome();
