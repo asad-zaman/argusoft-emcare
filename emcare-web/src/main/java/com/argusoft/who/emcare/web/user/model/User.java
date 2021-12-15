@@ -8,7 +8,7 @@ import java.io.Serializable;
 
 @Entity
 @Table(name = "user_master")
-public class User extends EntityAuditInfo implements Serializable {
+public class User implements Serializable {
 
     @Id
     @Column(name = "user_id", nullable = false)

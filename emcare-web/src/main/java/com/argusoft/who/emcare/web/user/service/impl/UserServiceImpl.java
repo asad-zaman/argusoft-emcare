@@ -4,14 +4,18 @@ import com.argusoft.who.emcare.web.config.KeyCloakConfig;
 import com.argusoft.who.emcare.web.secuirty.EmCareSecurityUser;
 import com.argusoft.who.emcare.web.user.cons.UserConst;
 import com.argusoft.who.emcare.web.user.dao.UserRepository;
+import com.argusoft.who.emcare.web.user.dto.AccessTokenForUser;
 import com.argusoft.who.emcare.web.user.dto.RoleDto;
 import com.argusoft.who.emcare.web.user.dto.UserDto;
 import com.argusoft.who.emcare.web.user.dto.UserUpdateDto;
 import com.argusoft.who.emcare.web.user.mapper.UserMapper;
 import com.argusoft.who.emcare.web.user.model.User;
 import com.argusoft.who.emcare.web.user.service.UserService;
+import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
+import org.keycloak.OAuth2Constants;
 import org.keycloak.admin.client.CreatedResponseUtil;
 import org.keycloak.admin.client.Keycloak;
+import org.keycloak.admin.client.KeycloakBuilder;
 import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.admin.client.resource.RolesResource;
 import org.keycloak.admin.client.resource.UserResource;
@@ -21,7 +25,10 @@ import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -66,7 +73,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void addUser(UserDto user) {
-        Keycloak keycloak = keyCloakConfig.getInstance();
+        Keycloak  keycloak = KeycloakBuilder.builder()
+                .serverUrl(KeyCloakConfig.serverUrl)
+                .realm(KeyCloakConfig.realm)
+                .grantType(OAuth2Constants.PASSWORD)
+                .username(KeyCloakConfig.userName)
+                .password(KeyCloakConfig.password)
+                .clientId(KeyCloakConfig.clientId)
+                .authorization(getAccessToken())
+                .clientSecret(KeyCloakConfig.clientSecret)
+                .resteasyClient(new ResteasyClientBuilder().connectionPoolSize(10).build())
+                .build();
 
 //        Get Realm Resource
         RealmResource realmResource = keycloak.realm(KeyCloakConfig.realm);
@@ -134,7 +151,7 @@ public class UserServiceImpl implements UserService {
         return passwordCredentials;
     }
 
-    private static ResponseEntity getAccessToken(){
+    private static String getAccessToken() {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -146,7 +163,9 @@ public class UserServiceImpl implements UserService {
         map.add("client_id", KeyCloakConfig.clientId);
         map.add("client_secret", KeyCloakConfig.clientSecret);
         HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(map, headers);
-        return restTemplate.exchange("http://localhost:8180/auth/realms/emcare/protocol/openid-connect/token", HttpMethod.POST, entity, String.class);
+        AccessTokenForUser response = restTemplate.postForObject("http://localhost:8180/auth/realms/emcare/protocol/openid-connect/token", entity, AccessTokenForUser.class);
+        String token = response.getAccess_token();
+        return token;
     }
 
 }

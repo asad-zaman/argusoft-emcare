@@ -1,27 +1,35 @@
 package com.argusoft.who.emcare.web.config;
 
-import javax.servlet.http.HttpServletRequest;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.keycloak.KeycloakSecurityContext;
 import org.keycloak.OAuth2Constants;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
- *
  * @author jay
  */
+@Component
 public class KeyCloakConfig {
 
     static Keycloak keycloak = null;
     public final static String serverUrl = "http://localhost:8180/auth";
     public final static String realm = "emcare";
     public final static String clientId = "emcare";
-    public final static String clientSecret = "bd536aad-e5dc-456f-86c5-90b8ea5ae04d";
-    public final static String userName = "emcare";
+    public final static String clientSecret = "4d9c181a-e677-49da-99fa-a1bab142dce5";
+    public final static String userName = "jay";
     public final static String password = "argusadmin";
+    public final static String masterUserId = "j@gmail.com";
+    public final static String masterUserPassword = "argusadmin";
 
-    public static Keycloak getInstance(HttpServletRequest request) {
+    @Autowired
+    HttpServletRequest request;
+
+    public Keycloak getInstance() {
         if (keycloak == null) {
             KeycloakSecurityContext context = (KeycloakSecurityContext) request.getAttribute(KeycloakSecurityContext.class.getName());
             keycloak = KeycloakBuilder.builder()

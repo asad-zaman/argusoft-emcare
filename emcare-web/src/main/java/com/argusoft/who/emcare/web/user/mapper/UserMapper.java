@@ -9,7 +9,7 @@ public class UserMapper {
     public static User userDtoToUserEntity(UserDto userDto, String userId) {
         User user = new User();
         user.setUserId(userId);
-        user.setLocationId(userDto.getLocationId());
+        user.setLocationId(null);
         if (userDto.getRegRequestFrom().equalsIgnoreCase(UserConst.MOBILE)) {
             user.setRegRequestFrom(UserConst.MOBILE);
             user.setRegStatus(UserConst.REGISTRATION_PENDING);
