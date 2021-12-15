@@ -1,6 +1,7 @@
 package com.argusoft.who.emcare.web.user.controller;
 
 import com.argusoft.who.emcare.web.user.dto.RoleDto;
+import com.argusoft.who.emcare.web.user.dto.RoleUpdateDto;
 import com.argusoft.who.emcare.web.user.dto.UserDto;
 import com.argusoft.who.emcare.web.user.dto.UserUpdateDto;
 import com.argusoft.who.emcare.web.user.service.UserService;
@@ -43,6 +44,12 @@ public class UserController {
      */
     @PostMapping("/signup")
     public ResponseEntity<Object> addUser(@RequestBody UserDto user) {
+        userService.signUp(user);
+        return ResponseEntity.status(HttpStatus.OK).body(null);
+    }
+
+    @PostMapping("/user/add")
+    public ResponseEntity<Object> addUserFromWeb(@RequestBody UserDto user) {
         userService.addUser(user);
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
@@ -55,8 +62,12 @@ public class UserController {
 
     @GetMapping("/user/role/{userId}")
     public ResponseEntity<Object> getUserRoleById(@PathVariable String userId) {
-//        userService.addRealmRole(role, request);
-        return ResponseEntity.status(HttpStatus.OK).body(null);
+        return userService.getUserRolesById(userId);
+    }
+
+    @PutMapping("/user/role/update")
+    public ResponseEntity<Object> updateRole(@RequestBody RoleUpdateDto roleUpdateDto) {
+        return userService.updateRole(roleUpdateDto);
     }
 
     @PostMapping("/user/status/change")
