@@ -1,5 +1,6 @@
 package com.argusoft.who.emcare.web.secuirty;
 
+import com.argusoft.who.emcare.web.config.KeyCloakConfig;
 import org.keycloak.KeycloakPrincipal;
 import org.keycloak.KeycloakSecurityContext;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
@@ -57,7 +58,7 @@ public class EmCareSecurityUser {
         AccessToken accessToken = session.getToken();
         setLoggedInUserId(accessToken.getSubject());
         setLoggedInUserName(accessToken.getPreferredUsername());
-        setLoggedInUserRole(accessToken.getResourceAccess().get("login-app").getRoles());
+//        setLoggedInUserRole(accessToken.getResourceAccess().get(KeyCloakConfig.clientId).getRoles());
         return accessToken;
     }
 }

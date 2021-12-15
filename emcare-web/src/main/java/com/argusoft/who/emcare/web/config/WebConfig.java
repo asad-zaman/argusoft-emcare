@@ -1,6 +1,5 @@
 package com.argusoft.who.emcare.web.config;
 
-import java.util.Collections;
 import org.keycloak.adapters.springboot.KeycloakSpringBootConfigResolver;
 import org.keycloak.adapters.springsecurity.KeycloakSecurityComponents;
 import org.keycloak.adapters.springsecurity.authentication.KeycloakAuthenticationProvider;
@@ -22,8 +21,9 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
+import java.util.Collections;
+
 /**
- *
  * @author jay
  */
 @Configuration
@@ -47,13 +47,10 @@ public class WebConfig extends KeycloakWebSecurityConfigurerAdapter {
     }
 
     @Autowired
-    public void configureGlobal(
-            AuthenticationManagerBuilder auth) throws Exception {
+    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
 
-        KeycloakAuthenticationProvider keycloakAuthenticationProvider
-                = new KeycloakAuthenticationProvider();
-        keycloakAuthenticationProvider.setGrantedAuthoritiesMapper(
-                new SimpleAuthorityMapper());
+        KeycloakAuthenticationProvider keycloakAuthenticationProvider = new KeycloakAuthenticationProvider();
+        keycloakAuthenticationProvider.setGrantedAuthoritiesMapper(new SimpleAuthorityMapper());
         auth.authenticationProvider(keycloakAuthenticationProvider);
     }
 
@@ -65,18 +62,19 @@ public class WebConfig extends KeycloakWebSecurityConfigurerAdapter {
     @Bean
     @Override
     protected SessionAuthenticationStrategy sessionAuthenticationStrategy() {
-        return new RegisterSessionAuthenticationStrategy(
-                new SessionRegistryImpl());
+        return new RegisterSessionAuthenticationStrategy(new SessionRegistryImpl());
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         super.configure(http);
         http.authorizeRequests()
-                .antMatchers("/api/user/**").hasAnyRole("user","user_admin")
-                .antMatchers("/api/location/**").hasAnyRole("user", "user_admin")
-                .antMatchers("/api/device/**").hasAnyRole("user", "user_admin")
-                .antMatchers("/fhir/**").hasRole("user");   ;
+                .antMatchers("/api/signup").permitAll()
+                .antMatchers("/api/user/**").authenticated()
+                .antMatchers("/api/location/**").authenticated()
+                .antMatchers("/api/device/**").authenticated()
+                .antMatchers("/fhir/**").authenticated()
+                .anyRequest().authenticated();
         http.csrf().disable();
     }
 }

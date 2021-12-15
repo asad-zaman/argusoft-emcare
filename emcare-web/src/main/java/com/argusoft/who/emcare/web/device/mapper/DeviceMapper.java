@@ -3,11 +3,9 @@ package com.argusoft.who.emcare.web.device.mapper;
 import com.argusoft.who.emcare.web.device.dto.DeviceDto;
 import com.argusoft.who.emcare.web.device.dto.DeviceWithUserDetails;
 import com.argusoft.who.emcare.web.device.model.DeviceMaster;
-import java.util.Date;
 import org.keycloak.admin.client.resource.UsersResource;
 
 /**
- *
  * @author jay
  */
 public class DeviceMapper {
@@ -19,6 +17,10 @@ public class DeviceMapper {
         master.setImeiNumber(deviceDto.getImeiNumber());
         master.setMacAddress(deviceDto.getMacAddress());
         master.setLastLoggedInUser(userId);
+        master.setDeviceModel(deviceDto.getDeviceModel());
+        master.setDeviceName(deviceDto.getDeviceName());
+        master.setDeviceUUID(deviceDto.getDeviceUUID());
+        master.setDeviceOs(deviceDto.getDeviceOs());
         master.setIsBlocked(deviceDto.getIsBlocked());
 
         return master;
@@ -46,6 +48,10 @@ public class DeviceMapper {
         deviceWithUserDetails.setMacAddress(deviceMaster.getMacAddress());
         deviceWithUserDetails.setLastLoggedInUser(deviceMaster.getLastLoggedInUser());
         deviceWithUserDetails.setIsBlocked(deviceMaster.getIsBlocked());
+        deviceWithUserDetails.setDeviceOs(deviceMaster.getDeviceOs());
+        deviceWithUserDetails.setDeviceUUID(deviceMaster.getDeviceUUID());
+        deviceWithUserDetails.setDeviceModel(deviceMaster.getDeviceModel());
+        deviceWithUserDetails.setDeviceName(deviceMaster.getDeviceName());
         deviceWithUserDetails.setCreatedBy(deviceMaster.getCreatedBy());
         deviceWithUserDetails.setCreatedOn(deviceMaster.getCreatedOn());
         deviceWithUserDetails.setModifiedOn(deviceMaster.getModifiedOn());
