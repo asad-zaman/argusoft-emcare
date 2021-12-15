@@ -1,10 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.argusoft.who.emcare.widget.ApiViewStateConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
     android:id="@+id/progressLayout"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorWhite">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:src="@drawable/ic_family"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="0.8:1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/signupTextView" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/leftGuidLine"
@@ -28,9 +39,9 @@
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/logoImageView"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/_124sdp"
+        android:layout_height="@dimen/_128sdp"
+        android:layout_marginTop="@dimen/_48sdp"
         android:src="@drawable/emcare_logo"
-        android:layout_marginTop="@dimen/_24sdp"
         app:layout_constraintEnd_toEndOf="@id/rightGuidLine"
         app:layout_constraintStart_toStartOf="@id/leftGuidLine"
         app:layout_constraintTop_toTopOf="parent" />
@@ -38,11 +49,11 @@
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/titleTextView"
         style="@style/TextView.Big"
-        android:elevation="@dimen/_8sdp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="gone"
+        android:elevation="@dimen/_8sdp"
         android:text="@string/app_name"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="@id/rightGuidLine"
         app:layout_constraintStart_toStartOf="@id/leftGuidLine"
         app:layout_constraintTop_toBottomOf="@+id/logoImageView" />
@@ -79,8 +90,8 @@
         android:layout_marginTop="@dimen/_12sdp"
         android:backgroundTint="@color/textColorBlack"
         android:hint="@string/hint_password"
-        android:inputType="textPassword"
         android:imeOptions="actionDone"
+        android:inputType="textPassword"
         android:textColor="@color/textColorBlack"
         android:textColorHint="@color/textColorBlack80"
         app:layout_constraintEnd_toEndOf="@id/rightGuidLine"
@@ -89,13 +100,15 @@
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/forgotPasswordTextView"
-        style="@style/TextView.Small.Black"
+        style="@style/TextView.Medium"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_16sdp"
+        android:layout_marginTop="@dimen/_2sdp"
         android:gravity="center"
         android:text="@string/label_forgot_password"
-        app:layout_constraintStart_toStartOf="@id/leftGuidLine"
+        android:textSize="@dimen/_12ssp"
+        android:textColor="@color/textColorLightBlue"
+        app:layout_constraintEnd_toEndOf="@id/rightGuidLine"
         app:layout_constraintTop_toBottomOf="@+id/passwordEditText" />
 
     <com.google.android.material.button.MaterialButton
@@ -103,7 +116,7 @@
         style="@style/Button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_36sdp"
+        android:layout_marginTop="@dimen/_18sdp"
         android:text="@string/button_login"
         app:layout_constraintEnd_toEndOf="@id/rightGuidLine"
         app:layout_constraintStart_toStartOf="@+id/leftGuidLine"
@@ -127,11 +140,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/_4sdp"
-        android:layout_marginBottom="@dimen/_42sdp"
-        android:textStyle="bold"
         android:text="@string/label_signup"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="@dimen/_12sdp"
+        android:textColor="@color/textColorLightBlue"
         app:layout_constraintEnd_toEndOf="@id/rightGuidLine"
-        app:layout_constraintStart_toEndOf="@id/noAccountTextView" />
+        app:layout_constraintStart_toEndOf="@id/noAccountTextView"
+        app:layout_constraintTop_toBottomOf="@+id/loginButton" />
 
 </com.argusoft.who.emcare.widget.ApiViewStateConstraintLayout>

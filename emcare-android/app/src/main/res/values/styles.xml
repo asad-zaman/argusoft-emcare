@@ -4,10 +4,14 @@
     <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorPrimaryDark">@color/colorTransparent</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="windowActionModeOverlay">true</item>
         <item name="actionModeStyle">@style/AppStyle.ActionMode</item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">false</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
 <!--        <item name="questionnaire_theme">@style/AppStyle.ActionMode</item>-->
     </style>
 
@@ -78,7 +82,7 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="TextInputLayout">
+    <style name="TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.FilledBox">
         <item name="boxBackgroundColor">@color/colorWhite</item>
     </style>
 
@@ -127,7 +131,7 @@
     </style>
 
     <style name="TextView.Small.Black">
-        <item name="android:textColor">@color/textColorBlack</item>
+        <item name="android:textColor">@color/textColorBlack80</item>
     </style>
 
     <style name="TextView.Login" parent="TextView">

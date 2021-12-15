@@ -13,6 +13,7 @@ import com.argusoft.who.emcare.ui.common.model.User
 import com.argusoft.who.emcare.utils.extention.whenSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import java.util.logging.Handler
 import javax.inject.Inject
 
 @HiltViewModel
