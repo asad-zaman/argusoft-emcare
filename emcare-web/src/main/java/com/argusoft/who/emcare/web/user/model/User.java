@@ -1,8 +1,6 @@
 package com.argusoft.who.emcare.web.user.model;
 
 
-import com.argusoft.who.emcare.web.common.model.EntityAuditInfo;
-
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -14,8 +12,7 @@ public class User implements Serializable {
     @Column(name = "user_id", nullable = false)
     private String userId;
 
-    @Basic(optional = false)
-    @Column(name = "location_id", nullable = false)
+    @Column(name = "location_id")
     private Integer locationId;
 
     @Basic(optional = false)
