@@ -1,8 +1,7 @@
 package com.argusoft.who.emcare.data.remote
 
-import com.argusoft.who.emcare.ui.common.model.SignupRequest
-import com.argusoft.who.emcare.oldstruct.model.DeviceInfo
 import com.argusoft.who.emcare.ui.common.model.DeviceDetails
+import com.argusoft.who.emcare.ui.common.model.SignupRequest
 import com.argusoft.who.emcare.ui.common.model.User
 
 interface Api {
@@ -13,5 +12,5 @@ interface Api {
 
     suspend fun getDevice(deviceUUID: String): ApiResponse<DeviceDetails>
 
-//    suspend fun signup(signupRequest: SignupRequest) : ApiResponse<User>
+    suspend fun signup(signupRequest: SignupRequest) : ApiResponse<User>
 }

@@ -67,11 +67,7 @@ class SignUpViewModel @Inject constructor(
                 signupRequest.password = password
                 _signupApiState.value = ApiResponse.Loading()
                 viewModelScope.launch {
-                    /*_signupApiState.value = api.login(requestMap).whenSuccess {
-                        preference.setLogin()
-                        it.accessToken?.let { accessToken -> preference.setToken(accessToken) }
-                        preference.setUser(it)
-                    }*/
+                    _signupApiState.value = api.signup(signupRequest)
                 }
             }
         }
