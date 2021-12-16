@@ -38,6 +38,11 @@ public class UserController {
         return ResponseEntity.ok(userService.getAllRoles(request).list());
     }
 
+    @RequestMapping(value = "/signup/roles", method = RequestMethod.GET)
+    public ResponseEntity<Object> getAllRolesForSignup(HttpServletRequest request) {
+        return ResponseEntity.ok(userService.getAllRolesForSignUp(request).list());
+    }
+
     /**
      * @param user
      * @return
