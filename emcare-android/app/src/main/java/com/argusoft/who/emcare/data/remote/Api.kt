@@ -12,5 +12,5 @@ interface Api {
 
     suspend fun getDevice(deviceUUID: String): ApiResponse<DeviceDetails>
 
-    suspend fun signup(signupRequest: SignupRequest) : ApiResponse<User>
+    suspend fun signup(signupRequest: SignupRequest) : ApiResponse<Any>
 }

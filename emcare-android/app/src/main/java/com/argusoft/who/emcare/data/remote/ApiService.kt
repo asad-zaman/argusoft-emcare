@@ -22,8 +22,8 @@ interface ApiService {
     ): Response<DeviceDetails>
 
 
-    @GET("signup")
+    @POST("signup")
     suspend fun signup(
         @Body signupRequest: SignupRequest
-    ): Response<User>
+    ): Response<Any>
 }

@@ -144,4 +144,5 @@
     <string name="error_msg_location">Please select location</string>
     <string name="error_msg_role">Please select role</string>
     <string name="error_msg_confirm_password">Please enter confirm password</string>
+    <string name="error_msg_password_not_match">Password does\'t match</string>
 </resources>

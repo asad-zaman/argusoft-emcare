@@ -29,8 +29,8 @@ class SignUpViewModel @Inject constructor(
 
     private val signupRequest = SignupRequest()
 
-    private val _signupApiState = MutableLiveData<ApiResponse<User>>()
-    val signupApiState: LiveData<ApiResponse<User>> = _signupApiState
+    private val _signupApiState = MutableLiveData<ApiResponse<Any>>()
+    val signupApiState: LiveData<ApiResponse<Any>> = _signupApiState
 
     fun validateSignup(
         firstname: String,
@@ -63,6 +63,7 @@ class SignUpViewModel @Inject constructor(
         when {
             password.isEmpty() -> _errorMessageState.value = R.string.error_msg_password
             confirmPassword.isEmpty() -> _errorMessageState.value = R.string.error_msg_confirm_password
+            confirmPassword != password -> _errorMessageState.value = R.string.error_msg_password_not_match
             else -> {
                 signupRequest.password = password
                 _signupApiState.value = ApiResponse.Loading()

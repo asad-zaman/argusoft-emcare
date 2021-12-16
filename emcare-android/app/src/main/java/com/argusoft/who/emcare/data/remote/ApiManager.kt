@@ -71,7 +71,7 @@ class ApiManager(private val preference: Preference) : Api {
         return executeApiHelper { apiService.getDeviceByMacAddress(deviceUUID) }
     }
 
-    override suspend fun signup(signupRequest: SignupRequest): ApiResponse<User> {
+    override suspend fun signup(signupRequest: SignupRequest): ApiResponse<Any> {
         return executeApiHelper { apiService.signup(signupRequest) }
     }
 }
