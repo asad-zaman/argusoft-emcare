@@ -84,6 +84,7 @@
     <string name="rationale_camera">This app needs access to your camera to capture and save images</string>
     <string name="rationale_gallery">This app needs access to your gallery to pick images</string>
     <string name="rationale_location">This app needs access to your location to pick current location</string>
+    <string name="rationale_phone_state">This app needs access to phone state</string>
     <string name="alert_error_selecting_image">Error selecting the image, please try again.</string>
     <string name="alert_message_error">Something went wrong please try after sometime.</string>
     <string name="action_ok">OK</string>
