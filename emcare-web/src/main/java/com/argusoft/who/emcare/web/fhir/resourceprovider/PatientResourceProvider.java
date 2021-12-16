@@ -20,10 +20,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.UUID;
+import org.hl7.fhir.r4.model.Extension;
 import org.hl7.fhir.r4.model.RelatedPerson;
 
 @Component
@@ -139,6 +142,15 @@ public class PatientResourceProvider implements IResourceProvider {
             versionId = Integer.parseInt(thePatient.getMeta().getVersionId()) + 1;
             m.setVersionId(String.valueOf(versionId));
         }
+        
+        //Setting Location Extension
+        Extension locationExtension = new Extension();
+        Identifier locationIdentifier = new Identifier();
+        locationIdentifier.setUse(Identifier.IdentifierUse.OFFICIAL);
+        locationIdentifier.setValue("4"); // Change this hardcoded value to dynamic
+        locationExtension.setValue(locationIdentifier);
+        locationExtension.setUrl("http://hl7.org/fhir/StructureDefinition/patient-locationId");
+        thePatient.setExtension(Arrays.asList(locationExtension));
 
         String patientString = parser.encodeResourceToString(thePatient);
 
@@ -146,11 +158,11 @@ public class PatientResourceProvider implements IResourceProvider {
                 .substring(thePatient.getId().indexOf("/") + 1); //Getting id part after Patient/
 
         EmcareResource emcareResource = emcareResourceService.findByResourceId(patientId);
-       
-        if(emcareResource == null) {
-            emcareResource = new EmcareResource(); 
+
+        if (emcareResource == null) {
+            emcareResource = new EmcareResource();
         }
-        
+
         emcareResource.setText(patientString);
         emcareResource.setResourceId(patientId);
         emcareResource.setType("PATIENT");

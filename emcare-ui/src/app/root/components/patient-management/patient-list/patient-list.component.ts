@@ -26,10 +26,7 @@ export class PatientListComponent implements OnInit {
     getPatients() {
         this.fhirService.getAllPatients().subscribe(res => {
             if(res) {
-                this.patients = []
-                res.entry.forEach(entry => {
-                    this.patients.push(<Patient> entry.resource)
-                }) 
+                this.patients = res;
             }
         });
     }
