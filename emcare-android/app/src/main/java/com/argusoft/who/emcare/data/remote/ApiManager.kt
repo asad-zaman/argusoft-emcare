@@ -2,6 +2,7 @@ package com.argusoft.who.emcare.data.remote
 
 import com.argusoft.who.emcare.BuildConfig
 import com.argusoft.who.emcare.data.local.pref.Preference
+import com.argusoft.who.emcare.ui.common.model.SignupRequest
 import com.argusoft.who.emcare.ui.common.model.User
 import kotlinx.coroutines.flow.Flow
 import okhttp3.OkHttpClient

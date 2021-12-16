@@ -136,4 +136,11 @@
     <string name="menu_save">Save</string>
     <string name="msg_logout">Are you sure you want to logout?</string>
     <string name="msg_delete_patient">Are you sure you want to delete Patient?</string>
+    <string name="error_msg_firstname">Please enter first name</string>
+    <string name="error_msg_lastname">Please enter last name</string>
+    <string name="error_msg_email">Please enter email</string>
+    <string name="error_msg_valid_email">Please enter valid email</string>
+    <string name="error_msg_location">Please select location</string>
+    <string name="error_msg_role">Please select role</string>
+    <string name="error_msg_confirm_password">Please enter confirm password</string>
 </resources>

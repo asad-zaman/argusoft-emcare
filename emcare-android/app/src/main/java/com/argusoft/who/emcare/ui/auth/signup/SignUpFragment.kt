@@ -1,14 +1,23 @@
 package com.argusoft.who.emcare.ui.auth.signup
 
+import android.content.Intent
 import android.view.View
 import android.widget.ArrayAdapter
-import androidx.core.view.get
+import androidx.fragment.app.viewModels
 import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.databinding.FragmentSignupBinding
 import com.argusoft.who.emcare.ui.common.base.BaseFragment
+import com.argusoft.who.emcare.ui.home.HomeActivity
+import com.argusoft.who.emcare.utils.extention.handleApiView
 import com.argusoft.who.emcare.utils.extention.navigate
+import com.argusoft.who.emcare.utils.extention.observeNotNull
+import com.argusoft.who.emcare.utils.extention.showSnackBar
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class SignUpFragment : BaseFragment<FragmentSignupBinding>() {
+
+    private val signUpViewModel: SignUpViewModel by viewModels()
 
     override fun initView() {
         setupLocationAutoComplete()
@@ -40,16 +49,31 @@ class SignUpFragment : BaseFragment<FragmentSignupBinding>() {
     }
 
     override fun initObserver() {
+        observeNotNull(signUpViewModel.errorMessageState) {
+            if (it == 0) {
+                binding.viewSwitcher.showNext()
+            } else
+                context?.showSnackBar(
+                    view = binding.progressLayout,
+                    message = getString(it),
+                    isError = true
+                )
+        }
+        observeNotNull(signUpViewModel.signupApiState) {
+            it.handleApiView(binding.progressLayout) {
+                navigate(R.id.action_signUpFragment_to_successFragment)
+            }
+        }
     }
 
     override fun onClick(view: View?) {
         super.onClick(view)
         when (view?.id) {
             R.id.nextButton -> {
-                binding.viewSwitcher.showNext()
+
             }
-            R.id.submitButton->{
-                navigate(R.id.action_signUpFragment_to_successFragment)
+            R.id.submitButton -> {
+
             }
             else -> {
                 if (binding.viewSwitcher.currentView.id != R.id.firstView)
