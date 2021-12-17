@@ -57,7 +57,7 @@ class ApiManager(private val preference: Preference) : Api {
     private val hapiFhirResourceCommonDataSource: HapiFhirResourceDataSource by lazy {
         return@lazy HapiFhirResourceDataSource(
             Retrofit.Builder()
-                .baseUrl(BuildConfig.BASE_URL)
+                .baseUrl(BuildConfig.FHIR_BASE_URL)
                 .client(okHttpClientBuilder.build())
                 .addConverterFactory(FhirConverterFactory(FhirContext.forR4().newJsonParser()))
                 .addConverterFactory(MoshiConverterFactory.create())
