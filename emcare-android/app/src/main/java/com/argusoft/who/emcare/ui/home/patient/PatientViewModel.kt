@@ -1,16 +1,13 @@
 package com.argusoft.who.emcare.ui.home.patient
 
-import android.content.ContentValues
-import android.content.Context
-import android.util.Log
+import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.uhn.fhir.context.FhirContext
+import com.argusoft.who.emcare.data.remote.Api
 import com.argusoft.who.emcare.data.remote.ApiResponse
-import com.argusoft.who.emcare.data.remote.fhirService.FhirPeriodicSyncWorker
-import com.argusoft.who.emcare.oldstruct.toPatientItem
 import com.argusoft.who.emcare.ui.common.model.PatientItem
 import com.argusoft.who.emcare.utils.extention.toPatientItem
 import com.argusoft.who.emcare.utils.listener.SingleLiveEvent
@@ -21,7 +18,6 @@ import com.google.android.fhir.search.StringFilterModifier
 import com.google.android.fhir.search.search
 import com.google.android.fhir.sync.Sync
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.launch
 import org.hl7.fhir.r4.model.*
 import java.util.*
@@ -30,7 +26,8 @@ import javax.inject.Inject
 @HiltViewModel
 class PatientViewModel @Inject constructor(
     private val fhirEngine: FhirEngine,
-    @ApplicationContext private val applicationContext: Context
+    private val api: Api,
+    private val applicationContext: Application
 ) : ViewModel() {
 
     var questionnaireJson: String? = null
@@ -74,8 +71,15 @@ class PatientViewModel @Inject constructor(
         }
     }
 
-    fun syncPatients(){
-        Sync.oneTimeSync<FhirPeriodicSyncWorker>(applicationContext)
+    fun syncPatients() {
+        viewModelScope.launch {
+            Sync.oneTimeSync(
+                applicationContext,
+                fhirEngine,
+                api.getHapiFhirResourceDataSource(),
+                mapOf(ResourceType.Patient to mapOf())
+            )
+        }
     }
 
     fun savePatient(questionnaireResponse: QuestionnaireResponse, questionnaire: String) {

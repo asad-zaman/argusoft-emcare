@@ -1,7 +1,9 @@
 package com.argusoft.who.emcare.data.remote
 
+import ca.uhn.fhir.context.FhirContext
 import com.argusoft.who.emcare.BuildConfig
 import com.argusoft.who.emcare.data.local.pref.Preference
+import com.argusoft.who.emcare.oldstruct.api.FhirConverterFactory
 import com.argusoft.who.emcare.ui.common.model.SignupRequest
 import com.argusoft.who.emcare.ui.common.model.DeviceDetails
 import com.argusoft.who.emcare.ui.common.model.User
@@ -54,6 +56,18 @@ class ApiManager(private val preference: Preference) : Api {
             .create(ApiService::class.java)
     }
 
+    private val hapiFhirResourceCommonDataSource: HapiFhirResourceDataSource by lazy {
+        return@lazy HapiFhirResourceDataSource(
+            Retrofit.Builder()
+                .baseUrl(BuildConfig.BASE_URL)
+                .client(okHttpClientBuilder.build())
+                .addConverterFactory(FhirConverterFactory(FhirContext.forR4().newJsonParser()))
+                .addConverterFactory(MoshiConverterFactory.create())
+                .build()
+                .create(ServerFhirService::class.java)
+        )
+    }
+
     override suspend fun login(requestMap: Map<String, String>): ApiResponse<User> {
         return executeApiHelper {
             keyCloakApiService.getAccessToken(requestMap)
@@ -70,6 +84,10 @@ class ApiManager(private val preference: Preference) : Api {
 
     override suspend fun signup(signupRequest: SignupRequest): ApiResponse<Any> {
         return executeApiHelper { apiService.signup(signupRequest) }
+    }
+
+    override fun getHapiFhirResourceDataSource(): HapiFhirResourceDataSource {
+        return hapiFhirResourceCommonDataSource
     }
 }
 

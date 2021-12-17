@@ -13,7 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.argusoft.who.emcare.oldstruct.api.DeviceManagementService
-import com.argusoft.who.emcare.data.remote.fhirService.HttpRequestInterceptor
+import com.argusoft.who.emcare.oldstruct.api.HttpRequestInterceptor
 import com.argusoft.who.emcare.oldstruct.api.KeycloakLoginService
 import com.argusoft.who.emcare.databinding.ActivityLoginBinding
 import com.argusoft.who.emcare.oldstruct.model.AccessToken

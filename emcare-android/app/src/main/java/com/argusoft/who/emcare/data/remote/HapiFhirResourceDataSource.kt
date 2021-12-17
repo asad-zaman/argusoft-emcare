@@ -1,4 +1,4 @@
-package com.argusoft.who.emcare.data.remote.fhirService
+package com.argusoft.who.emcare.data.remote
 
 import com.google.android.fhir.sync.DataSource
 import okhttp3.MediaType.Companion.toMediaType
@@ -7,7 +7,6 @@ import org.hl7.fhir.r4.model.Bundle
 import org.hl7.fhir.r4.model.OperationOutcome
 import org.hl7.fhir.r4.model.Resource
 
-/** Implementation of the [FhirDataSource] that communicates with hapi fhir. */
 class HapiFhirResourceDataSource(private val service: ServerFhirService) : DataSource {
 
   override suspend fun loadData(path: String): Bundle {

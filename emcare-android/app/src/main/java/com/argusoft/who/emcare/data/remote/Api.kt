@@ -13,4 +13,6 @@ interface Api {
     suspend fun getDevice(deviceUUID: String): ApiResponse<DeviceDetails>
 
     suspend fun signup(signupRequest: SignupRequest) : ApiResponse<Any>
+
+    fun getHapiFhirResourceDataSource() : HapiFhirResourceDataSource
 }

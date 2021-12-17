@@ -1,4 +1,4 @@
-package com.argusoft.who.emcare.data.remote.fhirService
+package com.argusoft.who.emcare.oldstruct.api
 
 import okhttp3.Interceptor
 import okhttp3.Response
