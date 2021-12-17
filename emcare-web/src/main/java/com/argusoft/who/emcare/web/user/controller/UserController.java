@@ -37,7 +37,7 @@ public class UserController {
         return ResponseEntity.ok(userService.getAllUser(request));
     }
 
-    @GetMapping("/user/roles")
+    @GetMapping("/role")
     public ResponseEntity<Object> getAllRoles(HttpServletRequest request) {
         return ResponseEntity.ok(userService.getAllRoles(request));
     }
@@ -67,7 +67,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(null);
     }
 
-    @PostMapping("/user/role/add")
+    @PostMapping("/role/add")
     public ResponseEntity<Object> addRealmRole(@RequestBody RoleDto role) {
         userService.addRealmRole(role);
         return ResponseEntity.status(HttpStatus.OK).body(null);
@@ -90,7 +90,12 @@ public class UserController {
         return userService.updateUser(userDto, userId);
     }
 
-    @PutMapping("/user/role/update")
+    @GetMapping("/role/{roleId}")
+    public ResponseEntity<Object> getRoleById(@PathVariable String roleId, HttpServletRequest request) {
+        return ResponseEntity.status(HttpStatus.OK).body(userService.getRoleByName(roleId, request));
+    }
+
+    @PutMapping("/role/update")
     public ResponseEntity<Object> updateRole(@RequestBody RoleUpdateDto roleUpdateDto) {
         return userService.updateRole(roleUpdateDto);
     }

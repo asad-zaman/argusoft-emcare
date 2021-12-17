@@ -64,9 +64,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public RolesResource getAllRoles(HttpServletRequest request) {
+    public List<RoleRepresentation> getAllRoles(HttpServletRequest request) {
         Keycloak keycloakInstance = KeyCloakConfig.getInstanceByAuth(request);
-        return keycloakInstance.realm(KeyCloakConfig.REALM).roles();
+        return keycloakInstance.realm(KeyCloakConfig.REALM).roles().list();
+    }
+
+    @Override
+    public RoleRepresentation getRoleByName(String roleId, HttpServletRequest request) {
+        Keycloak keycloakInstance = KeyCloakConfig.getInstanceByAuth(request);
+        return keycloakInstance.realm(KeyCloakConfig.REALM).rolesById().getRole(roleId);
     }
 
     @Override
