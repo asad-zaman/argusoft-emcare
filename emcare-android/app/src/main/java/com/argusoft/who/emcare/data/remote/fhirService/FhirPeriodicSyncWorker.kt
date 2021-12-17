@@ -1,8 +1,7 @@
-package com.argusoft.who.emcare.data
+package com.argusoft.who.emcare.data.remote.fhirService
 
 import android.content.Context
 import androidx.work.WorkerParameters
-import com.argusoft.who.emcare.oldstruct.api.ServerFhirService
 import ca.uhn.fhir.context.FhirContext
 import com.argusoft.who.emcare.EmCareApplication
 import com.google.android.fhir.sync.FhirSyncWorker

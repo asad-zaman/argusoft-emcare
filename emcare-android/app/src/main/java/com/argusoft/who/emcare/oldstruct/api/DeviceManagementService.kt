@@ -1,5 +1,6 @@
 package com.argusoft.who.emcare.oldstruct.api
 
+import com.argusoft.who.emcare.data.remote.fhirService.HttpRequestInterceptor
 import com.argusoft.who.emcare.oldstruct.model.DeviceInfo
 import com.argusoft.who.emcare.oldstruct.static.CompanionValues
 import okhttp3.OkHttpClient

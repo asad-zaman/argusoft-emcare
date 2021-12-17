@@ -1,6 +1,7 @@
-package com.argusoft.who.emcare.oldstruct.api
+package com.argusoft.who.emcare.data.remote.fhirService
 
 import ca.uhn.fhir.parser.IParser
+import com.argusoft.who.emcare.oldstruct.api.FhirConverterFactory
 import com.argusoft.who.emcare.oldstruct.static.CompanionValues
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody
