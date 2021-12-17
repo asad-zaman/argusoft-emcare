@@ -76,7 +76,8 @@ public class WebConfig extends KeycloakWebSecurityConfigurerAdapter {
                 .antMatchers("/api/user/**").hasAnyRole("user","user_admin")
                 .antMatchers("/api/location/**").hasAnyRole("user", "user_admin")
                 .antMatchers("/api/device/**").hasAnyRole("user", "user_admin")
-                .antMatchers("/fhir/**").hasRole("user");   ;
+                .antMatchers("/fhir/**").hasAnyRole("user", "user_admin")
+                .antMatchers("/api/emcare/**").hasAnyRole("user", "user_admin");
         http.csrf().disable();
     }
 }
