@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
  *
  * @author jay
  */
-public interface LocationConfigService {
+public interface LocationService {
 
     public ResponseEntity<Object> createHierarchyMaster(HierarchyMasterDto hierarchyMasterDto);
 

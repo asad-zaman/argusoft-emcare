@@ -2,7 +2,7 @@ package com.argusoft.who.emcare.web.location.controller;
 
 import com.argusoft.who.emcare.web.location.dto.HierarchyMasterDto;
 import com.argusoft.who.emcare.web.location.dto.LocationMasterDto;
-import com.argusoft.who.emcare.web.location.service.LocationConfigService;
+import com.argusoft.who.emcare.web.location.service.LocationService;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class LocationController {
 
     @Autowired
-    LocationConfigService locationConfigService;
+    LocationService locationConfigService;
 
     @Autowired
     private HttpServletRequest request;
