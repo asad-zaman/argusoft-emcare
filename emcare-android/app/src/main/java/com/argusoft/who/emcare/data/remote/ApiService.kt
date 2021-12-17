@@ -1,8 +1,9 @@
 package com.argusoft.who.emcare.data.remote
 
 import com.argusoft.who.emcare.ui.common.model.DeviceDetails
+import com.argusoft.who.emcare.ui.common.model.Location
+import com.argusoft.who.emcare.ui.common.model.Role
 import com.argusoft.who.emcare.ui.common.model.SignupRequest
-import com.argusoft.who.emcare.ui.common.model.User
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -21,9 +22,14 @@ interface ApiService {
         @Query("deviceUUID") macAddress: String
     ): Response<DeviceDetails>
 
-
     @POST("signup")
     suspend fun signup(
         @Body signupRequest: SignupRequest
     ): Response<Any>
+
+    @GET("signup/roles")
+    suspend fun getRoles(): Response<List<Role>>
+
+    @GET("signup/location")
+    suspend fun getLocations(): Response<List<Location>>
 }

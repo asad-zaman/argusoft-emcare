@@ -1,8 +1,6 @@
 package com.argusoft.who.emcare.data.remote
 
-import com.argusoft.who.emcare.ui.common.model.DeviceDetails
-import com.argusoft.who.emcare.ui.common.model.SignupRequest
-import com.argusoft.who.emcare.ui.common.model.User
+import com.argusoft.who.emcare.ui.common.model.*
 
 interface Api {
 
@@ -15,4 +13,8 @@ interface Api {
     suspend fun signup(signupRequest: SignupRequest) : ApiResponse<Any>
 
     fun getHapiFhirResourceDataSource() : HapiFhirResourceDataSource
+
+    suspend fun getRoles(): ApiResponse<List<Role>>
+
+    suspend fun getLocations(): ApiResponse<List<Location>>
 }

@@ -17,10 +17,10 @@ inline fun <T> executeApiHelper(responseMethod: () -> Response<T>): ApiResponse<
                     ApiResponse.Success(responseBody)
                 } else ApiResponse.ServerError("The application has encountered an unknown error.")
             }
-            400 -> ApiResponse.ServerError("Invalid syntax for this request was provided.")
-            401 -> {
+//            400 -> ApiResponse.ServerError("Invalid syntax for this request was provided.")
+            400, 401 -> {
                 response.errorBody()?.string()?.fromJson<Error>()?.let {
-                    ApiResponse.ApiError(it.errorDescription ?: "The application has encountered an unknown error.")
+                    ApiResponse.ApiError(it.errorDescription ?: it.errorMessage ?: "The application has encountered an unknown error.")
                 } ?: ApiResponse.UnauthorizedAccess("You are unauthorized to access the requested resource. Please log in.")
             }
             404 -> ApiResponse.ServerError("We could not find the resource you requested. Please refer to the documentation for the list of resources.")

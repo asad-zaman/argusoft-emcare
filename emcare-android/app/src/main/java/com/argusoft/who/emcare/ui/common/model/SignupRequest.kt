@@ -16,6 +16,8 @@ data class SignupRequest(
     var locationId: Int? = null,
     @Json(name = "password")
     var password: String? = null,
+    @Json(name = "roleName")
+    var roleName: String? = null,
     @Json(name = "regRequestFrom")
     var regRequestFrom: String? = "mobile"
 )

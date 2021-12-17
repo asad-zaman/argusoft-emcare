@@ -7,33 +7,36 @@ import androidx.fragment.app.viewModels
 import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.databinding.FragmentSignupBinding
 import com.argusoft.who.emcare.ui.common.base.BaseFragment
+import com.argusoft.who.emcare.ui.common.model.Location
+import com.argusoft.who.emcare.ui.common.model.Role
 import com.argusoft.who.emcare.utils.extention.*
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class SignUpFragment : BaseFragment<FragmentSignupBinding>(), AdapterView.OnItemSelectedListener {
+class SignUpFragment : BaseFragment<FragmentSignupBinding>() {
 
     private val signUpViewModel: SignUpViewModel by viewModels()
 
     override fun initView() {
-        setupLocationAutoComplete()
-        setupRoleAutoComplete()
+
     }
 
-    private fun setupLocationAutoComplete() {
+    private fun setupLocationAutoComplete(locationList: List<Location>) {
+        binding.locationTextInputLayout.tag = locationList
         binding.locationEditText.setAdapter(
             ArrayAdapter(
                 requireContext(), android.R.layout.select_dialog_item,
-                arrayOf("India", "USA", "Singapore", "UK", "UAE")
+                locationList.map { it.name }
             )
         )
     }
 
-    private fun setupRoleAutoComplete() {
+    private fun setupRoleAutoComplete(roleList: List<Role>) {
+        binding.roleTextInputLayout.tag = roleList
         binding.roleEditText.setAdapter(
             ArrayAdapter(
                 requireContext(), android.R.layout.select_dialog_item,
-                arrayOf("Front Line", "Medical Servant")
+                roleList.map { it.name }
             )
         )
     }
@@ -42,22 +45,12 @@ class SignUpFragment : BaseFragment<FragmentSignupBinding>(), AdapterView.OnItem
         binding.nextButton.setOnClickListener(this)
         binding.submitButton.setOnClickListener(this)
         binding.headerLayout.toolbar.setNavigationOnClickListener(this)
-        binding.locationEditText.onItemSelectedListener = this
-        binding.roleEditText.onItemSelectedListener = this
-    }
-
-    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        when (view?.id) {
-            R.id.locationEditText -> {
-                "locationEditText $position".timber()
-            }
-            R.id.roleEditText -> {
-                "roleEditText $position".timber()
-            }
+        binding.locationEditText.setOnItemClickListener { parent, view, position, id ->
+            binding.locationEditText.tag = (binding.locationTextInputLayout.tag as? List<Location>)?.getOrNull(position)?.id
         }
-    }
-
-    override fun onNothingSelected(parent: AdapterView<*>?) {
+        binding.roleEditText.setOnItemClickListener { parent, view, position, id ->
+            binding.roleEditText.tag = (binding.roleTextInputLayout.tag as? List<Role>)?.getOrNull(position)?.name
+        }
     }
 
     override fun initObserver() {
@@ -76,6 +69,14 @@ class SignUpFragment : BaseFragment<FragmentSignupBinding>(), AdapterView.OnItem
                 navigate(R.id.action_signUpFragment_to_successFragment)
             }
         }
+        observeNotNull(signUpViewModel.locationAndRolesApiState) { pair ->
+            pair.first.handleApiView(binding.progressLayout) {
+                it?.let { list -> setupLocationAutoComplete(list) }
+            }
+            pair.second.whenSuccess {
+                setupRoleAutoComplete(it)
+            }
+        }
     }
 
     override fun onClick(view: View?) {
@@ -86,8 +87,8 @@ class SignUpFragment : BaseFragment<FragmentSignupBinding>(), AdapterView.OnItem
                     binding.firstNameEditText.getEnterText(),
                     binding.lastNameEditText.getEnterText(),
                     binding.emailEditText.getEnterText(),
-                    0,
-                    0
+                    binding.locationEditText.tag as? Int,
+                    binding.roleEditText.tag as? String,
                 )
             }
             R.id.submitButton -> {

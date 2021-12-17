@@ -4,9 +4,7 @@ import ca.uhn.fhir.context.FhirContext
 import com.argusoft.who.emcare.BuildConfig
 import com.argusoft.who.emcare.data.local.pref.Preference
 import com.argusoft.who.emcare.oldstruct.api.FhirConverterFactory
-import com.argusoft.who.emcare.ui.common.model.SignupRequest
-import com.argusoft.who.emcare.ui.common.model.DeviceDetails
-import com.argusoft.who.emcare.ui.common.model.User
+import com.argusoft.who.emcare.ui.common.model.*
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -23,12 +21,12 @@ class ApiManager(private val preference: Preference) : Api {
             .writeTimeout(60, TimeUnit.SECONDS)
             .addInterceptor { chain ->
                 val request = chain.request().newBuilder()
-                    .addHeader(
+                if (preference.getToken().isNotEmpty())
+                    request.addHeader(
                         "Authorization",
                         "Bearer ${preference.getToken()}"
                     )
-                    .build()
-                return@addInterceptor chain.proceed(request)
+                return@addInterceptor chain.proceed(request.build())
             }
         if (BuildConfig.DEBUG) {
             okHttpClientBuilder.addInterceptor(HttpLoggingInterceptor().apply {
@@ -88,6 +86,14 @@ class ApiManager(private val preference: Preference) : Api {
 
     override fun getHapiFhirResourceDataSource(): HapiFhirResourceDataSource {
         return hapiFhirResourceCommonDataSource
+    }
+
+    override suspend fun getRoles(): ApiResponse<List<Role>> {
+        return executeApiHelper { apiService.getRoles() }
+    }
+
+    override suspend fun getLocations(): ApiResponse<List<Location>> {
+        return executeApiHelper { apiService.getLocations() }
     }
 }
 
