@@ -65,4 +65,13 @@ export class HomeComponent implements OnInit {
   showPatients() {
     this.router.navigate(['/showPatients']);
   }
+
+  addRole() {
+    this.router.navigate(['/addRole']);
+  }
+
+  showRoles() {
+    this.router.navigate(['/showRoles']);
+  }
+
 }

@@ -1,0 +1,37 @@
+<div class="container">
+    <div class="row mt-5">
+        <div class="col-2"></div>
+        <div class="col-8">
+            <div class="card">
+                <div class="card-body">
+                    <h3 *ngIf="!isEdit" class="mt-3">Create Role</h3>
+                    <h3 *ngIf="!!isEdit" class="mt-3">Update Role</h3>
+                    <form [formGroup]="roleForm" name="roleForm" novalidate>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="name">Role Name</label>
+                                    <input formControlName="name" type="text" class="form-control" id="name"
+                                        placeholder="Enter Role Name">
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="description">Description</label>
+                                    <input formControlName="description" type="text" class="form-control" id="description"
+                                        placeholder="Enter Role Description">
+                                </div>
+                            </div>
+                            <div class="col-2">
+                                <button type="submit" class="btn btn-primary" (click)="saveData()">Submit</button>
+                            </div>
+                            <div class="col-7">
+                                <button type="submit" class="btn btn-primary" (click)="showRoles()">Show Roles</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
