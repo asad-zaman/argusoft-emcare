@@ -8,16 +8,15 @@ import com.argusoft.who.emcare.web.device.model.DeviceMaster;
 import com.argusoft.who.emcare.web.device.service.DeviceService;
 import com.argusoft.who.emcare.web.secuirty.EmCareSecurityUser;
 import com.argusoft.who.emcare.web.user.service.UserService;
-
-import java.util.ArrayList;
-import java.util.List;
-import javax.servlet.http.HttpServletRequest;
-
-import org.keycloak.admin.client.resource.UsersResource;
+import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author jay
@@ -39,12 +38,12 @@ public class DeviceServiceImpl implements DeviceService {
         String userId = emCareSecurityUser.getLoggedInUserId();
         DeviceMaster oldDevice = deviceRepository.getDeviceByImei(deviceDto.getImeiNumber());
         if (oldDevice == null) {
-            DeviceMaster newDevice = DeviceMapper.dtoToEntityDeviceMasterCreate(deviceDto, userId);
+            DeviceMaster newDevice = DeviceMapper.getDeviceMatserFromDto(deviceDto, userId);
             newDevice = deviceRepository.save(newDevice);
             return ResponseEntity.status(HttpStatus.OK).body(newDevice);
 
         } else {
-            DeviceMaster updatedDevice = DeviceMapper.dtoToEntityDeviceMasterUpdate(oldDevice, deviceDto, userId);
+            DeviceMaster updatedDevice = DeviceMapper.getDeviceMaster(oldDevice, deviceDto, userId);
             deviceRepository.updateDevice(
                     updatedDevice.getAndroidVersion(),
                     updatedDevice.getLastLoggedInUser(),
@@ -59,7 +58,7 @@ public class DeviceServiceImpl implements DeviceService {
     public ResponseEntity<Object> updateDeviceDetails(DeviceDto deviceDto) {
         String userId = emCareSecurityUser.getLoggedInUser().getSubject();
         DeviceMaster oldDeviceDetails = deviceRepository.findById(deviceDto.getDeviceId()).get();
-        DeviceMaster updatedDevice = DeviceMapper.dtoToEntityDeviceMasterUpdate(oldDeviceDetails, deviceDto, userId);
+        DeviceMaster updatedDevice = DeviceMapper.getDeviceMaster(oldDeviceDetails, deviceDto, userId);
         deviceRepository.updateDevice(
                 updatedDevice.getAndroidVersion(),
                 updatedDevice.getLastLoggedInUser(),
@@ -85,17 +84,16 @@ public class DeviceServiceImpl implements DeviceService {
             device = deviceRepository.getDeviceByDeviceUUID(deviceUUID);
         }
 
+
         return ResponseEntity.ok(device);
     }
 
     @Override
     public ResponseEntity<Object> getAllDevice(HttpServletRequest request) {
-        UsersResource usersResource = userService.getAllUserResource(request);
+        List<UserRepresentation> allUsers = userService.getAllUser(request);
         List<DeviceWithUserDetails> list = new ArrayList<>();
         List<DeviceMaster> allDevice = deviceRepository.findAll();
-        allDevice.forEach(deviceMaster -> {
-            list.add(DeviceMapper.entityToDtoDeviceWithUser(deviceMaster, usersResource));
-        });
+        allDevice.forEach(deviceMaster -> list.add(DeviceMapper.getDeviceWithUser(deviceMaster, allUsers)));
         return ResponseEntity.ok(list);
     }
 

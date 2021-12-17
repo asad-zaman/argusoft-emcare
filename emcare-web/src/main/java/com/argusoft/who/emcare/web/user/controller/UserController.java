@@ -1,5 +1,6 @@
 package com.argusoft.who.emcare.web.user.controller;
 
+import com.argusoft.who.emcare.web.location.service.LocationService;
 import com.argusoft.who.emcare.web.user.dto.RoleDto;
 import com.argusoft.who.emcare.web.user.dto.RoleUpdateDto;
 import com.argusoft.who.emcare.web.user.dto.UserDto;
@@ -23,24 +24,32 @@ public class UserController {
     @Autowired
     UserService userService;
 
-    @RequestMapping(value = "/user", method = RequestMethod.GET)
+    @Autowired
+    LocationService locationConfigService;
+
+    @GetMapping("/user")
     public ResponseEntity<Object> getCurrentLoggedInUser() {
         return ResponseEntity.ok(userService.getCurrentUser());
     }
 
-    @RequestMapping(value = "/user/all", method = RequestMethod.GET)
+    @GetMapping("/user/all")
     public ResponseEntity<Object> getAllUser(HttpServletRequest request) {
-        return ResponseEntity.ok(userService.getAllUserResource(request).list());
+        return ResponseEntity.ok(userService.getAllUser(request));
     }
 
-    @RequestMapping(value = "/user/roles", method = RequestMethod.GET)
+    @GetMapping("/user/roles")
     public ResponseEntity<Object> getAllRoles(HttpServletRequest request) {
-        return ResponseEntity.ok(userService.getAllRoles(request).list());
+        return ResponseEntity.ok(userService.getAllRoles(request));
     }
 
-    @RequestMapping(value = "/signup/roles", method = RequestMethod.GET)
+    @GetMapping("/signup/roles")
     public ResponseEntity<Object> getAllRolesForSignup(HttpServletRequest request) {
         return ResponseEntity.ok(userService.getAllRolesForSignUp(request).list());
+    }
+
+    @GetMapping("/signup/location")
+    public ResponseEntity<Object> getAllLocation() {
+        return locationConfigService.getAllLocation();
     }
 
     /**
@@ -49,8 +58,7 @@ public class UserController {
      */
     @PostMapping("/signup")
     public ResponseEntity<Object> addUser(@RequestBody UserDto user) {
-        userService.signUp(user);
-        return ResponseEntity.status(HttpStatus.OK).body(null);
+        return userService.signUp(user);
     }
 
     @PostMapping("/user/add")

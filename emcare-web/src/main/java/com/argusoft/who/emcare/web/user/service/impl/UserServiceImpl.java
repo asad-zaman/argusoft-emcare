@@ -1,10 +1,15 @@
 package com.argusoft.who.emcare.web.user.service.impl;
 
+import com.argusoft.who.emcare.web.common.constant.CommonConstant;
+import com.argusoft.who.emcare.web.common.response.Response;
 import com.argusoft.who.emcare.web.config.KeyCloakConfig;
 import com.argusoft.who.emcare.web.secuirty.EmCareSecurityUser;
 import com.argusoft.who.emcare.web.user.cons.UserConst;
 import com.argusoft.who.emcare.web.user.dao.UserRepository;
-import com.argusoft.who.emcare.web.user.dto.*;
+import com.argusoft.who.emcare.web.user.dto.RoleDto;
+import com.argusoft.who.emcare.web.user.dto.RoleUpdateDto;
+import com.argusoft.who.emcare.web.user.dto.UserDto;
+import com.argusoft.who.emcare.web.user.dto.UserUpdateDto;
 import com.argusoft.who.emcare.web.user.mapper.UserMapper;
 import com.argusoft.who.emcare.web.user.model.User;
 import com.argusoft.who.emcare.web.user.service.UserService;
@@ -16,13 +21,12 @@ import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.core.Response;
-import java.util.Arrays;
-import java.util.Collections;
+import java.util.*;
 
 /**
  * @author jay
@@ -45,9 +49,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UsersResource getAllUserResource(HttpServletRequest request) {
+    public List<UserRepresentation> getAllUser(HttpServletRequest request) {
         Keycloak keycloak = KeyCloakConfig.getInstanceByAuth(request);
-        return keycloak.realm(KeyCloakConfig.REALM).users();
+        List<UserRepresentation> userRepresentations = keycloak.realm(KeyCloakConfig.REALM).users().list();
+        for (UserRepresentation representation : userRepresentations) {
+            List<RoleRepresentation> roleRepresentationList = keycloak.realm(KeyCloakConfig.REALM).users().get(representation.getId()).roles().realmLevel().listAll();
+            List<String> roles = new ArrayList<>();
+            for (RoleRepresentation roleRepresentation : roleRepresentationList) {
+                roles.add(roleRepresentation.getName());
+            }
+            representation.setRealmRoles(roles);
+        }
+        return userRepresentations;
     }
 
     @Override
@@ -62,7 +75,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void signUp(UserDto user) {
+    public ResponseEntity<Object> signUp(UserDto user) {
         Keycloak keycloakInstance = getKeyCloakInstance();
 
 //        Get Realm Resource
@@ -81,20 +94,20 @@ public class UserServiceImpl implements UserService {
         kcUser.setEmail(user.getEmail());
         kcUser.setEmailVerified(false);
 
-        if (user.getRegRequestFrom().equalsIgnoreCase(UserConst.WEB)) {
-            kcUser.setEnabled(true);
-        } else {
-            kcUser.setEnabled(false);
-        }
-        Response response = usersResource.create(kcUser);
-
-        String userId = CreatedResponseUtil.getCreatedId(response);
-        userRepository.save(UserMapper.userDtoToUserEntity(user, userId));
-        UserResource userResource = usersResource.get(userId);
+        kcUser.setEnabled(user.getRegRequestFrom().equalsIgnoreCase(UserConst.WEB));
+        try {
+            javax.ws.rs.core.Response response = usersResource.create(kcUser);
+            String userId = CreatedResponseUtil.getCreatedId(response);
+            userRepository.save(UserMapper.userDtoToUserEntity(user, userId));
+            UserResource userResource = usersResource.get(userId);
 
 //        Set Realm Role
-        RoleRepresentation testerRealmRole = realmResource.roles().get(UserConst.ROLE_USER).toRepresentation();
-        userResource.roles().realmLevel().add(Arrays.asList(testerRealmRole));
+            RoleRepresentation testerRealmRole = realmResource.roles().get(user.getRoleName()).toRepresentation();
+            userResource.roles().realmLevel().add(Arrays.asList(testerRealmRole));
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response(CommonConstant.EMAIL_ALREADY_EXISTS, HttpStatus.BAD_REQUEST.value()));
+        }
+        return ResponseEntity.ok(new Response(CommonConstant.REGISTER_SUCCESS, HttpStatus.OK.value()));
     }
 
     @Override
@@ -113,12 +126,8 @@ public class UserServiceImpl implements UserService {
         kcUser.setEmail(user.getEmail());
         kcUser.setEmailVerified(false);
 
-        if (user.getRegRequestFrom().equalsIgnoreCase(UserConst.WEB)) {
-            kcUser.setEnabled(true);
-        } else {
-            kcUser.setEnabled(false);
-        }
-        Response response = usersResource.create(kcUser);
+        kcUser.setEnabled(user.getRegRequestFrom().equalsIgnoreCase(UserConst.WEB));
+        javax.ws.rs.core.Response response = usersResource.create(kcUser);
 
         String userId = CreatedResponseUtil.getCreatedId(response);
         userRepository.save(UserMapper.userDtoToUserEntity(user, userId));
@@ -142,18 +151,21 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseEntity<Object> updateUserStatus(UserUpdateDto userUpdateDto) {
         Keycloak keycloak = keyCloakConfig.getInstance();
-//        Get Realm Resource
-        RealmResource realmResource = keycloak.realm(KeyCloakConfig.REALM);
 //        Get User Resource
         UsersResource usersResource = keycloak.realm(KeyCloakConfig.REALM).users();
         UserRepresentation user = usersResource.get(userUpdateDto.getUserId()).toRepresentation();
         user.setEnabled(userUpdateDto.getIsEnabled());
         usersResource.get(userUpdateDto.getUserId()).update(user);
-
-        User oldUser = userRepository.findById(userUpdateDto.getUserId()).get();
-        oldUser.setRegStatus(UserConst.REGISTRATION_COMPLETED);
-        userRepository.save(oldUser);
-        return ResponseEntity.ok(oldUser);
+        User oldUser;
+        Optional<User> optionalUser = userRepository.findById(userUpdateDto.getUserId());
+        if (optionalUser.isPresent()) {
+            oldUser = optionalUser.get();
+            oldUser.setRegStatus(UserConst.REGISTRATION_COMPLETED);
+            userRepository.save(oldUser);
+            return ResponseEntity.ok(oldUser);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Response(CommonConstant.USER_NOT_FOUND, HttpStatus.NOT_FOUND.value()));
+        }
     }
 
     @Override

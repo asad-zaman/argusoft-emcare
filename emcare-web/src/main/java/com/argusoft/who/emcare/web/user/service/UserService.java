@@ -10,11 +10,12 @@ import org.keycloak.OAuth2Constants;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
 import org.keycloak.admin.client.resource.RolesResource;
-import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.representations.AccessToken;
+import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.http.ResponseEntity;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * @author jay
@@ -23,13 +24,13 @@ public interface UserService {
 
     public AccessToken getCurrentUser();
 
-    public UsersResource getAllUserResource(HttpServletRequest request);
+    public List<UserRepresentation> getAllUser(HttpServletRequest request);
 
     public RolesResource getAllRoles(HttpServletRequest request);
 
     public RolesResource getAllRolesForSignUp(HttpServletRequest request);
 
-    public void signUp(UserDto user);
+    public ResponseEntity<Object> signUp(UserDto user);
 
     public void addUser(UserDto user);
 
