@@ -194,4 +194,28 @@ public class UserServiceImpl implements UserService {
         return passwordCredentials;
     }
 
+    @Override
+    public ResponseEntity<Object> getUserById(String userId) {
+        Keycloak keycloak = keyCloakConfig.getInstance();
+        UserRepresentation retrievedUser = keycloak.realm(KeyCloakConfig.REALM)
+                .users().get(userId).toRepresentation();
+        return ResponseEntity.ok(retrievedUser);
+    }
+
+    @Override
+    public ResponseEntity<Object> updateUser(UserDto userDto, String userId) {
+        Keycloak keycloak = keyCloakConfig.getInstance();
+        RealmResource realmResource = keycloak.realm(KeyCloakConfig.REALM);
+        UserResource userResource = keycloak.realm(KeyCloakConfig.REALM)
+                .users().get(userId);
+        UserRepresentation oldUser = userResource.toRepresentation();
+
+        oldUser.setFirstName(userDto.getFirstName());
+        oldUser.setLastName(userDto.getLastName());
+
+        oldUser.setEnabled(userDto.getRegRequestFrom().equalsIgnoreCase(UserConst.WEB));
+        userResource.update(oldUser);
+        return ResponseEntity.ok(HttpStatus.OK);
+    }
+
 }

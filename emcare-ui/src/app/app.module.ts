@@ -14,7 +14,10 @@ import {
   LocationTypeComponent,
   LocationService,
   DeviceManagementComponent,
-  DeviceManagementService
+  DeviceManagementService,
+  UserListComponent,
+  ManageUserComponent,
+  UserManagementService
 } from './root/index';
 import { AuthenticationService } from './shared';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -42,7 +45,9 @@ import { DeviceListComponent } from './root/components/Device-Management/device-
     ShowLocationTypeComponent,
     ShowLocationComponent,
     DeviceManagementComponent,
-    DeviceListComponent
+    DeviceListComponent,
+    UserListComponent,
+    ManageUserComponent
   ],
   imports: [
     BrowserModule,
@@ -57,7 +62,8 @@ import { DeviceListComponent } from './root/components/Device-Management/device-
     AuthenticationService,
     tempBackendProvider,
     LocationService,
-    DeviceManagementService
+    DeviceManagementService,
+    UserManagementService
   ],
   bootstrap: [AppComponent]
 })
