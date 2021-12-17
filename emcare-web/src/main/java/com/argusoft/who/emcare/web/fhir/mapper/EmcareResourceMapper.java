@@ -15,22 +15,30 @@ public class EmcareResourceMapper {
 
     public static List<PatientDto> entitiesToDtoMapper(List<Patient> patients) {
         List<PatientDto> patientDtos = new ArrayList<>();
-        
+
         for (Patient p : patients) {
             PatientDto pDto = new PatientDto();
-            
+
             pDto.setId(p.getIdElement().getIdPart());
             pDto.setIdentifier(p.getIdentifier().get(0).getValue());
-            pDto.setGivenName(p.getName().get(0).getGiven().get(0).asStringValue());
-            pDto.setFamilyName(p.getName().get(0).getFamily());
-            pDto.setGender(p.getGender().getDisplay());
+            if (p.hasName()) {
+                if (p.getNameFirstRep().hasGiven()) {
+                    pDto.setGivenName(p.getNameFirstRep().getGivenAsSingleString());
+                }
+                if (p.getNameFirstRep().hasFamily()) {
+                    pDto.setFamilyName(p.getNameFirstRep().getFamily());
+                }
+            }
+            if (p.hasGender()) {
+                pDto.setGender(p.getGender().getDisplay());
+            }
             pDto.setDob(p.getBirthDate());
             //Caregiver
-            if(p.hasLink()){
+            if (p.hasLink()) {
                 pDto.setCaregiver(p.getLinkFirstRep().getOther().getIdentifier().getValue());
             }
             //Location
-            if(p.hasExtension()){
+            if (p.hasExtension()) {
                 Extension locationExtension = p.getExtension().get(0);
                 String locationId = ((Identifier) locationExtension.getValue()).getValue();
                 pDto.setLocation(locationId);
