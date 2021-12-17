@@ -154,8 +154,8 @@ public class PatientResourceProvider implements IResourceProvider {
 
         String patientString = parser.encodeResourceToString(thePatient);
 
-        String patientId = thePatient.getId()
-                .substring(thePatient.getId().indexOf("/") + 1); //Getting id part after Patient/
+        
+        String patientId = thePatient.getIdElement().getIdPart();
 
         EmcareResource emcareResource = emcareResourceService.findByResourceId(patientId);
 
@@ -231,10 +231,14 @@ public class PatientResourceProvider implements IResourceProvider {
             m.setVersionId(String.valueOf(versionId));
         }
 
-        String relatedPersonId = theRelatedPerson.getId()
-                .substring(theRelatedPerson.getId().indexOf("/") + 1);
+        String relatedPersonId = theRelatedPerson.getIdElement().getIdPart();
 
-        EmcareResource emcareResource = new EmcareResource();
+        EmcareResource emcareResource = emcareResourceService.findByResourceId(relatedPersonId);
+
+        if (emcareResource == null) {
+            emcareResource = new EmcareResource();
+        }
+        
         emcareResource.setText(relatedPersonString);
         emcareResource.setResourceId(relatedPersonId);
         emcareResource.setType("RELATED_PERSON");
