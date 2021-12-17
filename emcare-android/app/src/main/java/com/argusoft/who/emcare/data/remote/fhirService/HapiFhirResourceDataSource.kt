@@ -1,6 +1,5 @@
-package com.argusoft.who.emcare.data
+package com.argusoft.who.emcare.data.remote.fhirService
 
-import com.argusoft.who.emcare.oldstruct.api.ServerFhirService
 import com.google.android.fhir.sync.DataSource
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody

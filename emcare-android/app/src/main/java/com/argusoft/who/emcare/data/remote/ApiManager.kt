@@ -3,9 +3,6 @@ package com.argusoft.who.emcare.data.remote
 import com.argusoft.who.emcare.BuildConfig
 import com.argusoft.who.emcare.data.local.pref.Preference
 import com.argusoft.who.emcare.ui.common.model.SignupRequest
-import com.argusoft.who.emcare.oldstruct.api.HttpRequestInterceptor
-import com.argusoft.who.emcare.oldstruct.model.DeviceInfo
-import com.argusoft.who.emcare.oldstruct.static.CompanionValues.Companion.BASE_URL
 import com.argusoft.who.emcare.ui.common.model.DeviceDetails
 import com.argusoft.who.emcare.ui.common.model.User
 import okhttp3.OkHttpClient

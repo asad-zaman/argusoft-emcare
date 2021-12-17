@@ -1,6 +1,7 @@
 package com.argusoft.who.emcare.ui.home.patient
 
 import android.content.ContentValues
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -8,6 +9,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.uhn.fhir.context.FhirContext
 import com.argusoft.who.emcare.data.remote.ApiResponse
+import com.argusoft.who.emcare.data.remote.fhirService.FhirPeriodicSyncWorker
 import com.argusoft.who.emcare.oldstruct.toPatientItem
 import com.argusoft.who.emcare.ui.common.model.PatientItem
 import com.argusoft.who.emcare.utils.extention.toPatientItem
@@ -17,7 +19,9 @@ import com.google.android.fhir.datacapture.mapping.ResourceMapper
 import com.google.android.fhir.search.Order
 import com.google.android.fhir.search.StringFilterModifier
 import com.google.android.fhir.search.search
+import com.google.android.fhir.sync.Sync
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.launch
 import org.hl7.fhir.r4.model.*
 import java.util.*
@@ -25,7 +29,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PatientViewModel @Inject constructor(
-    private val fhirEngine: FhirEngine
+    private val fhirEngine: FhirEngine,
+    @ApplicationContext private val applicationContext: Context
 ) : ViewModel() {
 
     var questionnaireJson: String? = null
@@ -69,6 +74,10 @@ class PatientViewModel @Inject constructor(
         }
     }
 
+    fun syncPatients(){
+        Sync.oneTimeSync<FhirPeriodicSyncWorker>(applicationContext)
+    }
+
     fun savePatient(questionnaireResponse: QuestionnaireResponse, questionnaire: String) {
         val questionnaireResource: Questionnaire = FhirContext.forR4().newJsonParser().parseResource(questionnaire) as Questionnaire
         viewModelScope.launch {
@@ -99,13 +108,6 @@ class PatientViewModel @Inject constructor(
                     }
                     caregiver.name = listOf(caregiverHumanName)
 
-                    //Saving patient reference to the caregiver
-                    val patientReference: Reference = Reference()
-                    patientReference.identifier = patientIdentifier
-                    val relatedPersonLinkComponent: Patient.PatientLinkComponent = Patient.PatientLinkComponent()
-                    relatedPersonLinkComponent.other = patientReference
-                    caregiver.patient = patientReference
-
                     //Saving Caregiver
                     fhirEngine.save(caregiver)
 
@@ -113,7 +115,7 @@ class PatientViewModel @Inject constructor(
                     val caregiverReference: Reference = Reference()
                     val caregiverIdentifier: Identifier = Identifier()
                     caregiverIdentifier.use = Identifier.IdentifierUse.OFFICIAL
-                    caregiverIdentifier.value = patient.id
+                    caregiverIdentifier.value = caregiver.id
                     caregiver.identifier = listOf(caregiverIdentifier)
                     caregiverReference.identifier = caregiverIdentifier
                     val patientLinkComponent: Patient.PatientLinkComponent = Patient.PatientLinkComponent()

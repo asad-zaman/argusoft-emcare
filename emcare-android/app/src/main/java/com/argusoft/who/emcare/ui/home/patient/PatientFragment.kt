@@ -25,6 +25,11 @@ class PatientFragment : BaseFragment<FragmentPatientBinding>(), SearchView.OnQue
 
     override fun initView() {
         binding.headerLayout.toolbar.setTitleAndBack(R.string.title_patient)
+        binding.headerLayout.toolbar.inflateMenu(R.menu.patient_menu)
+        binding.headerLayout.toolbar.setOnMenuItemClickListener {
+            patientViewModel.syncPatients()
+            return@setOnMenuItemClickListener true
+        }
         setupRecyclerView()
     }
 
