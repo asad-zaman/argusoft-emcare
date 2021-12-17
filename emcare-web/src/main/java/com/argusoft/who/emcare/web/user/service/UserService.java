@@ -11,6 +11,7 @@ import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
 import org.keycloak.admin.client.resource.RolesResource;
 import org.keycloak.representations.AccessToken;
+import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.http.ResponseEntity;
 
@@ -26,7 +27,9 @@ public interface UserService {
 
     public List<UserRepresentation> getAllUser(HttpServletRequest request);
 
-    public RolesResource getAllRoles(HttpServletRequest request);
+    public List<RoleRepresentation> getAllRoles(HttpServletRequest request);
+
+    public RoleRepresentation getRoleByName(String roleId, HttpServletRequest request);
 
     public RolesResource getAllRolesForSignUp(HttpServletRequest request);
 

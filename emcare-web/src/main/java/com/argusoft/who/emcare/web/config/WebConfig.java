@@ -71,6 +71,7 @@ public class WebConfig extends KeycloakWebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers("/api/signup/**").permitAll()
                 .antMatchers("/api/user/**").authenticated()
+                .antMatchers("/api/role/**").authenticated()
                 .antMatchers("/api/location/**").authenticated()
                 .antMatchers("/api/device/**").authenticated()
                 .antMatchers("/api/emcare/**").authenticated()
