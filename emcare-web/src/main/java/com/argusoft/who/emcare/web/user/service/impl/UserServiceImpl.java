@@ -102,7 +102,7 @@ public class UserServiceImpl implements UserService {
             UserResource userResource = usersResource.get(userId);
 
 //        Set Realm Role
-            RoleRepresentation testerRealmRole = realmResource.roles().get(UserConst.ROLE_USER).toRepresentation();
+            RoleRepresentation testerRealmRole = realmResource.roles().get(user.getRoleName()).toRepresentation();
             userResource.roles().realmLevel().add(Arrays.asList(testerRealmRole));
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response(CommonConstant.EMAIL_ALREADY_EXISTS, HttpStatus.BAD_REQUEST.value()));
