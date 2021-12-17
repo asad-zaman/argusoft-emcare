@@ -8,9 +8,11 @@ import com.argusoft.who.emcare.web.device.model.DeviceMaster;
 import com.argusoft.who.emcare.web.device.service.DeviceService;
 import com.argusoft.who.emcare.web.secuirty.EmCareSecurityUser;
 import com.argusoft.who.emcare.web.user.service.UserService;
+
 import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
+
 import org.keycloak.admin.client.resource.UsersResource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,7 +20,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 /**
- *
  * @author jay
  */
 @Service
@@ -69,7 +70,7 @@ public class DeviceServiceImpl implements DeviceService {
     }
 
     @Override
-    public ResponseEntity<Object> getDeviceInfoByImei(String imei, String macAddress, String userId) {
+    public ResponseEntity<Object> getDeviceInfoByImei(String imei, String macAddress, String userId, String deviceUUID) {
         DeviceMaster device = new DeviceMaster();
         if (imei != null) {
             device = deviceRepository.getDeviceByImei(imei);
@@ -79,6 +80,9 @@ public class DeviceServiceImpl implements DeviceService {
         }
         if (macAddress != null) {
             device = deviceRepository.getDeviceByMacAddress(macAddress);
+        }
+        if (deviceUUID != null) {
+            device = deviceRepository.getDeviceByDeviceUUID(deviceUUID);
         }
 
         return ResponseEntity.ok(device);
