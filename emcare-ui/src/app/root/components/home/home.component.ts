@@ -18,8 +18,15 @@ export class HomeComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    const loggedInUser = JSON.parse(localStorage.getItem('sample-login-page'));
-    this.userName = `${loggedInUser.firstName} ${loggedInUser.lastName}`;
+    // const loggedInUser = JSON.parse(localStorage.getItem('sample-login-page'));
+    // this.userName = `${loggedInUser.firstName} ${loggedInUser.lastName}`;
+    this.getLoggedInUser();
+  }
+
+  getLoggedInUser() {
+    this.authService.getLoggedInUser().subscribe(res => {
+      console.log(res);
+    })
   }
 
   logout() {
