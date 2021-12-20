@@ -108,5 +108,10 @@ public class LocationServiceImpl implements LocationService {
         LocationMaster locationMaster = locationMasterDao.findById(locationId).get();
         return ResponseEntity.ok(locationMaster);
     }
+    
+    @Override
+    public LocationMaster getLocationMasterById(Integer locationId) {
+        return locationMasterDao.findById(locationId).get();
+    }
 
 }

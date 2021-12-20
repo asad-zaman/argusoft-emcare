@@ -29,7 +29,7 @@ import { CommonModule } from '@angular/common';
 import { ShowLocationTypeComponent } from './root/components/Location/location-type/show-location-type/show-location-type.component';
 import { ShowLocationComponent } from './root/components/Location/location-management/show-location/show-location.component';
 import { DeviceListComponent } from './root/components/Device-Management/device-list/device-list.component';
-
+import { PatientListComponent } from './root/components/patient-management/patient-list/patient-list.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -47,7 +47,8 @@ import { DeviceListComponent } from './root/components/Device-Management/device-
     DeviceManagementComponent,
     DeviceListComponent,
     UserListComponent,
-    ManageUserComponent
+    ManageUserComponent,
+    PatientListComponent
   ],
   imports: [
     BrowserModule,
