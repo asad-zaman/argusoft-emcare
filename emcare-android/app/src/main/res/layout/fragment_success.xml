@@ -6,15 +6,31 @@
     android:background="@color/colorPrimary"
     app:layoutDescription="@xml/fragment_signup_scene">
 
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/bgImageView"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_220sdp"
+        android:layout_marginEnd="@dimen/_60sdp"
+        android:scaleType="fitStart"
+        android:src="@drawable/ic_shape"/>
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/familyLogoImageView"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_172sdp"
+        android:src="@drawable/ic_family"/>
+
     <include
+        android:layout_width="match_parent"
         android:id="@+id/headerLayout"
+        android:layout_marginTop="@dimen/_12sdp"
+        android:layout_height="wrap_content"
         layout="@layout/layout_header_transparent" />
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/nestedScrollView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="@dimen/_52sdp"
         android:background="@drawable/bg_top_curved_white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/headerLayout">
@@ -43,7 +59,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_8sdp"
                 android:text="@string/label_success"
-                android:textColor="@color/colorPrimary"
+                android:textColor="@color/colorSnackBarSuccessBg"
                 android:textSize="@dimen/_28ssp"
                 app:layout_constraintEnd_toEndOf="@+id/successImageView"
                 app:layout_constraintStart_toStartOf="@id/successImageView"
@@ -55,9 +71,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_12sdp"
-                android:textSize="@dimen/_14ssp"
                 android:text="@string/label_thank_you_for_registration"
-                android:textColor="@color/textColorLightBlue"
+                android:textColor="@color/textColorBlack"
+                android:textSize="@dimen/_14ssp"
                 app:layout_constraintEnd_toEndOf="@+id/successImageView"
                 app:layout_constraintStart_toStartOf="@id/successImageView"
                 app:layout_constraintTop_toBottomOf="@+id/signupTextView" />
@@ -69,12 +85,12 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_4sdp"
                 android:gravity="center"
-                app:layout_constraintWidth_percent="0.90"
                 android:text="@string/msg_registration_success"
-                android:textColor="@color/textColorLightBlue"
+                android:textColor="@color/textColorBlack80"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/thanksTextView" />
+                app:layout_constraintTop_toBottomOf="@+id/thanksTextView"
+                app:layout_constraintWidth_percent="0.90" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

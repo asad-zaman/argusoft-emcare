@@ -12,7 +12,7 @@ class SuccessFragment : BaseFragment<FragmentSuccessBinding>() {
 
 
     override fun initListener() {
-        binding.headerLayout.toolbar.onClickListener()
+        binding.headerLayout.toolbar.setTitleAndBack()
     }
 
     override fun initObserver() {

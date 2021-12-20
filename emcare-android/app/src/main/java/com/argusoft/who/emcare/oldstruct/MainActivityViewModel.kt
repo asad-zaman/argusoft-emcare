@@ -5,7 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.work.Constraints
-import com.argusoft.who.emcare.data.FhirPeriodicSyncWorker
+import com.argusoft.who.emcare.oldstruct.api.FhirPeriodicSyncWorker
 import com.google.android.fhir.sync.PeriodicSyncConfiguration
 import com.google.android.fhir.sync.RepeatInterval
 import com.google.android.fhir.sync.State

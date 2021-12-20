@@ -25,7 +25,7 @@ class PreferenceManager(private val sharedPreferences: EncPref) : Preference {
     }
 
     override fun getToken(): String {
-        return sharedPreferences.getString(TOKEN)
+        return sharedPreferences.getString(TOKEN, "")
     }
 
     override fun setUser(user: User) {

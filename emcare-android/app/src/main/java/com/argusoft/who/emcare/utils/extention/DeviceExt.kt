@@ -2,7 +2,7 @@ package com.argusoft.who.emcare.utils.extention
 
 /**
  * USAGE : To get device related information.
- * Created by R.S.
+ * Created by
  */
 
 import android.Manifest
@@ -17,6 +17,11 @@ import android.util.DisplayMetrics
 import androidx.core.content.ContextCompat
 import java.io.UnsupportedEncodingException
 import java.util.*
+import java.net.SocketException
+
+import java.net.NetworkInterface
+
+import java.util.Collections
 
 
 fun Int.dpToPx(): Int = (this * getDisplayMetrics().density).toInt()
