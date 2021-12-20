@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { AuthGuard } from './auth/auth.guard';
 import { HomeComponent } from './root/components/home/home.component';
+import { PatientListComponent } from './root/components/patient-management/patient-list/patient-list.component';
 import {
   LoginComponent,
   SignupComponent,
@@ -33,6 +34,7 @@ const routes: Routes = [
   { path: 'editLocation/:id', component: LocationManagementComponent, canActivate: [AuthGuard] },
   { path: 'showLocation', component: ShowLocationComponent, canActivate: [AuthGuard] },
   { path: 'showDevices', component: DeviceListComponent, canActivate: [AuthGuard] },
+  { path: 'showPatients',component:PatientListComponent, canActivate: [AuthGuard]},
   { path: '**', redirectTo: 'login' }
 ];
 @NgModule({

@@ -2,6 +2,7 @@ package com.argusoft.who.emcare.web.location.service;
 
 import com.argusoft.who.emcare.web.location.dto.HierarchyMasterDto;
 import com.argusoft.who.emcare.web.location.dto.LocationMasterDto;
+import com.argusoft.who.emcare.web.location.model.LocationMaster;
 import org.springframework.http.ResponseEntity;
 
 /**
@@ -29,4 +30,6 @@ public interface LocationConfigService {
     public ResponseEntity<Object> deleteLocationById(Integer locationId);
 
     public ResponseEntity<Object> getLocationById(Integer locationId);
+    
+    public LocationMaster getLocationMasterById(Integer locationId);
 }
