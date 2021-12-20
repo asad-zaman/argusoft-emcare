@@ -22,7 +22,7 @@ import android.widget.FrameLayout
 
 /**
  * USAGE : Alert utils class for basic operations like display Alert.
- * Created by R.S.
+ * Created by
  */
 var snackBarWeekReference: WeakReference<Snackbar?>? = null
 

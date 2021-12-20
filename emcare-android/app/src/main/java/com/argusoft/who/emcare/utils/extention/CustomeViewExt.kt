@@ -3,6 +3,7 @@
 package com.argusoft.who.emcare.utils.extention
 
 import android.view.View
+import androidx.annotation.DrawableRes
 import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.data.remote.ApiResponse
 import com.argusoft.who.emcare.ui.common.base.BaseAdapter
@@ -16,7 +17,7 @@ fun <T> ApiResponse<T>?.handleApiView(
 ) {
     when (this) {
         is ApiResponse.Loading -> {
-            progressLayout?.showHorizontalProgress()
+            progressLayout?.showHorizontalProgress(skipIds)
         }
         is ApiResponse.Success -> {
             isSuccess(data)
@@ -54,6 +55,7 @@ inline fun <reified T> ApiResponse<T>?.handleListApiView(
     progressLayout: ApiViewStateConstraintLayout?,
     skipIds: List<Int> = emptyList(),
     onClickListener: View.OnClickListener? = null,
+    @DrawableRes drawableResId: Int? = 0,
     crossinline isSuccess: (t: T?) -> Unit = {}
 ) {
     val adapter: BaseAdapter<T>? = progressLayout?.recyclerView?.adapter as? BaseAdapter<T>?
@@ -65,7 +67,7 @@ inline fun <reified T> ApiResponse<T>?.handleListApiView(
             } else {
                 progressLayout?.swipeRefreshLayout?.isRefreshing = isRefresh
                 if (!isRefresh) {
-                    progressLayout?.showProgress()
+                    progressLayout?.showProgress(skipIds = skipIds)
                     progressLayout?.swipeRefreshLayout?.isEnabled = false
                 }
             }
@@ -82,10 +84,11 @@ inline fun <reified T> ApiResponse<T>?.handleListApiView(
                     adapter?.addAll(it)
                     if ((adapter?.itemCount ?: 0) == 0) {
                         progressLayout.showError(
-                            R.drawable.ic_no_record,
+                            drawableResId ?: R.drawable.ic_no_record,
                             message = successMessage ?: progressLayout.getString(R.string.no_record_found),
                             buttonTextResId = R.string.button_refresh,
-                            onClickListener = onClickListener
+                            onClickListener = onClickListener,
+                            skipIds = skipIds
                         )
                     } else progressLayout.showContent(skipIds)
                 }
@@ -98,7 +101,8 @@ inline fun <reified T> ApiResponse<T>?.handleListApiView(
                             R.drawable.ic_no_record,
                             message = successMessage ?: progressLayout.getString(R.string.no_record_found),
                             buttonTextResId = R.string.button_refresh,
-                            onClickListener = onClickListener
+                            onClickListener = onClickListener,
+                            skipIds = skipIds
                         )
                     } else progressLayout.showContent(skipIds)
                 }
@@ -125,7 +129,8 @@ inline fun <reified T> ApiResponse<T>?.handleListApiView(
                     R.string.server_error_title,
                     message = errorMessage,
                     buttonTextResId = R.string.button_try_again,
-                    onClickListener = onClickListener
+                    onClickListener = onClickListener,
+                    skipIds = skipIds
                 )
             }
         }
@@ -142,7 +147,8 @@ inline fun <reified T> ApiResponse<T>?.handleListApiView(
                     messageResId = R.string.no_internet_message,
                     buttonTextResId = R.string.button_try_again,
                     onClickListener = onClickListener,
-                    isDisplayInternetSettingPanel = true
+                    isDisplayInternetSettingPanel = true,
+                    skipIds = skipIds
                 )
             }
         }

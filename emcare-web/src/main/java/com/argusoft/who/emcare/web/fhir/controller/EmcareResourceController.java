@@ -7,7 +7,7 @@ import com.argusoft.who.emcare.web.fhir.mapper.EmcareResourceMapper;
 import com.argusoft.who.emcare.web.fhir.model.EmcareResource;
 import com.argusoft.who.emcare.web.fhir.service.EmcareResourceService;
 import com.argusoft.who.emcare.web.location.model.LocationMaster;
-import com.argusoft.who.emcare.web.location.service.LocationConfigService;
+import com.argusoft.who.emcare.web.location.service.LocationService;
 import java.util.ArrayList;
 import java.util.List;
 import org.hl7.fhir.r4.model.Patient;
@@ -30,7 +30,7 @@ public class EmcareResourceController {
     private EmcareResourceService emcareResourceService;
     
     @Autowired
-    private LocationConfigService locationService;
+    private LocationService locationService;
 
 
     @GetMapping("/patient")

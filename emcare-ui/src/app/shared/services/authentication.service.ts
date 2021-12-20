@@ -34,27 +34,33 @@ export class AuthenticationService {
     getHeaders() {
         const headerObj = {
             headers: new HttpHeaders({
-                'Content-Type': 'application/x-www-form-urlencoded',
-                'Access-Control-Allow-Origin': '*'
+                'Content-Type': 'application/x-www-form-urlencoded'
             })
         };
         return headerObj;
     }
 
     login(username: string, password: string) {
-        const url = `http://782c-14-192-29-30.ngrok.io/auth/realms/emcare/protocol/openid-connect/token`;
+        const url = `http://localhost:8180/auth/realms/emcare_demo/protocol/openid-connect/token`;
         const body = new HttpParams()
-            .set('username', 'user1')
-            .set('password', 'argusadmin')
+            .set('username', 'test')
+            .set('password', 'parth@123')
             .set('grant_type', 'password')
-            .set('client_id', 'login-app')
-            .set('client_secret', '50fe2579-ea20-4cf2-b0d2-e219f67dfbb4');
+            .set('client_id', 'emcare_client')
+            .set('client_secret', '5b929983-175b-4e9f-97d2-ac97dff78ce9');
         // return this.http.post<any>(`http:localhost:4200/users/authenticate`, { username, password }, { withCredentials: true })
-        return this.http.post<any>(url, body.toString(), this.getHeaders())
-            .pipe(map(user => {
-                this.userInfo.next(user);
-                return user;
-            }));
+        return this.http.post<any>(url, body.toString(), this.getHeaders());
+    }
+
+    getLoggedInUser() {
+        const accessToken = JSON.parse(localStorage.getItem('access_token'));
+        const headerObj = {
+            headers: new HttpHeaders({
+                'Authorization': `Bearer ${accessToken}`
+            })
+        };
+        const url = `http://localhost:8080/api/user`;
+        return this.http.get<any>(url, headerObj);
     }
 
     logout() {
@@ -62,9 +68,12 @@ export class AuthenticationService {
     }
 
     refreshToken() {
-        return this.http.post<any>(`http:localhost:4200/users/refresh-token`, {}, { withCredentials: true })
-            .pipe(map((user) => {
-                return user;
-            }));
+        const url = `http://localhost:8180/auth/realms/emcare_demo/protocol/openid-connect/token`;
+        const body = new HttpParams()
+            .set('grant_type', 'password')
+            .set('password', 'parth@123')
+            .set('client_id', 'emcare_client')
+            .set('client_secret', '5b929983-175b-4e9f-97d2-ac97dff78ce9');
+        return this.http.post<any>(url, body.toString(), this.getHeaders());
     }
 }

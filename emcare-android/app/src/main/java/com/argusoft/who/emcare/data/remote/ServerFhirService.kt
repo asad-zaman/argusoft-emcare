@@ -1,6 +1,8 @@
-package com.argusoft.who.emcare.oldstruct.api
+package com.argusoft.who.emcare.data.remote
 
 import ca.uhn.fhir.parser.IParser
+import com.argusoft.who.emcare.oldstruct.api.HttpRequestInterceptor
+import com.argusoft.who.emcare.oldstruct.api.FhirConverterFactory
 import com.argusoft.who.emcare.oldstruct.static.CompanionValues
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody
@@ -18,7 +20,6 @@ import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Url
 
-/** hapi.fhir.org API communication via Retrofit */
 interface ServerFhirService {
 
     @GET

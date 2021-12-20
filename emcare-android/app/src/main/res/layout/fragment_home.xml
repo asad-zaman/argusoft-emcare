@@ -9,9 +9,19 @@
     app:layoutDescription="@xml/fragment_home_scene"
     tools:context=".ui.home.HomeFragment">
 
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/bgImageView"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_220sdp"
+        android:layout_marginEnd="@dimen/_60sdp"
+        android:scaleType="fitStart"
+        android:src="@drawable/ic_shape"/>
+
     <include
         android:id="@+id/headerLayout"
-        layout="@layout/layout_header_transparent" />
+        layout="@layout/layout_header_transparent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/welcomeTextView"
@@ -30,12 +40,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/_4sdp"
-        android:layout_marginTop="@dimen/_16sdp"
+        android:layout_marginTop="@dimen/_8sdp"
         android:text="Jayesh Patel"
         app:layout_constraintStart_toEndOf="@+id/welcomeTextView"
         app:layout_constraintTop_toBottomOf="@+id/headerLayout" />
 
-    <com.google.android.material.textview.MaterialTextView
+   <!-- <com.google.android.material.textview.MaterialTextView
         android:id="@+id/letsTextView"
         style="@style/TextView.Small"
         android:layout_width="wrap_content"
@@ -55,7 +65,7 @@
         android:layout_marginStart="@dimen/_4sdp"
         android:text="@string/label_get_started"
         app:layout_constraintStart_toEndOf="@+id/letsTextView"
-        app:layout_constraintTop_toBottomOf="@+id/nameTextView" />
+        app:layout_constraintTop_toBottomOf="@+id/nameTextView" />-->
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/nestedScrollView"
@@ -64,7 +74,7 @@
         android:layout_marginTop="@dimen/_16sdp"
         android:background="@drawable/bg_top_curved_white"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/getsTextView">
+        app:layout_constraintTop_toBottomOf="@+id/nameTextView">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -75,11 +85,11 @@
                 style="@style/TextView.SemiBold"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_18sdp"
+                android:layout_marginTop="@dimen/_18sdp"
                 android:text="@string/label_what_would_you_like_to_do_today"
                 android:textColor="@color/textColorBlack"
                 android:textSize="@dimen/_14ssp"
-                android:layout_marginTop="@dimen/_18sdp"
-                android:layout_marginStart="@dimen/_18sdp"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.recyclerview.widget.RecyclerView
@@ -88,10 +98,10 @@
                 android:layout_height="wrap_content"
                 android:nestedScrollingEnabled="false"
                 android:padding="@dimen/_8sdp"
-                tools:listitem="@layout/list_item_dashboard"
                 app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
                 app:layout_constraintTop_toBottomOf="@+id/titleTextView"
-                app:spanCount="3" />
+                app:spanCount="3"
+                tools:listitem="@layout/list_item_dashboard" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.core.widget.NestedScrollView>

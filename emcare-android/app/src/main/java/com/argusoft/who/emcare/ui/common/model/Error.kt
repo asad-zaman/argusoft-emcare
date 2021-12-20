@@ -8,6 +8,10 @@ import com.squareup.moshi.JsonClass
 data class Error(
     @Json(name = "error")
     var error: String? = null,
+    @Json(name = "statusCode")
+    var statusCode: Int? = null,
+    @Json(name = "errorMessage")
+    var errorMessage: String? = null,
     @Json(name = "error_description")
     var errorDescription: String? = null
 )

@@ -64,5 +64,9 @@ open class BaseAdapter<T>(private val dataList: ArrayList<T?>) : RecyclerView.Ad
 
     fun getSingleItem(position: Int) = dataList[position]
 
+    fun isNotEmpty() = dataList.isNotEmpty()
+
+    fun isEmpty() = dataList.isEmpty()
+
     inner class ProgressViewHolder(_binding: ListItemProgressBinding) : RecyclerView.ViewHolder(_binding.root)
 }

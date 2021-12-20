@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="252247ce-0696-452b-9c23-89ebefa7a554" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <list default="true" id="252247ce-0696-452b-9c23-89ebefa7a554" name="Default Changelist" comment="Setup" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -33,7 +34,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Maven.emcare-web [clean]">
+  <component name="RunManager" selected="Application.EmcareWebApplication">
     <configuration name="EmcareWebApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.argusoft.who.emcare.web.EmcareWebApplication" />
       <module name="web" />
@@ -106,6 +107,7 @@
     <recent_temporary>
       <list>
         <item itemvalue="Application.EmcareWebApplication" />
+        <item itemvalue="Application.EmcareWebApplication" />
       </list>
     </recent_temporary>
   </component>
@@ -120,6 +122,29 @@
       <option name="presentableId" value="Default" />
       <updated>1637677407914</updated>
     </task>
+    <task id="LOCAL-00001" summary="Setup">
+      <created>1639118207396</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1639118207396</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Setup" />
+    <option name="LAST_COMMIT_MESSAGE" value="Setup" />
   </component>
 </project>

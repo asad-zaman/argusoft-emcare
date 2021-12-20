@@ -17,7 +17,7 @@ import com.argusoft.who.emcare.utils.common.CustomTypefaceSpan
 
 /**
  * USAGE :
- * Created by R.S.
+ * Created by
  */
 
 fun String.isValidURL() =

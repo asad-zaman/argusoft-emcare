@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity() {
     initActionBar()
     initNavigationDrawer()
     observeLastSyncTime()
-    requestSyncPoll()
+    //requestSyncPoll()
     viewModel.getLastSyncTime()
   }
 

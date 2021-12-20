@@ -7,7 +7,7 @@ import android.text.style.MetricAffectingSpan
 
 /**
  * USAGE : Used to load custom font in Spannable String.
- * Created by R.S.
+ * Created by
  */
 class CustomTypefaceSpan(private val typeface: Typeface) : MetricAffectingSpan() {
 
