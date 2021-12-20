@@ -64,7 +64,7 @@ public class UserController {
     @PostMapping("/user/add")
     public ResponseEntity<Object> addUserFromWeb(@RequestBody UserDto user) {
         userService.addUser(user);
-        return ResponseEntity.status(HttpStatus.OK).body(null);
+        return ResponseEntity.status(HttpStatus.CREATED).body(null);
     }
 
     @PostMapping("/role/add")
@@ -72,10 +72,22 @@ public class UserController {
         userService.addRealmRole(role);
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
+    
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<Object> getUserById(@PathVariable String userId) {
+        return userService.getUserById(userId);
+    }
 
     @GetMapping("/user/role/{userId}")
     public ResponseEntity<Object> getUserRoleById(@PathVariable String userId) {
         return userService.getUserRolesById(userId);
+    }
+    
+    @PutMapping("/user/update/{userId}")
+    public ResponseEntity<Object> updateUser(@RequestBody UserDto userDto,
+            @PathVariable String userId
+    ) {
+        return userService.updateUser(userDto, userId);
     }
 
     @GetMapping("/role/{roleId}")

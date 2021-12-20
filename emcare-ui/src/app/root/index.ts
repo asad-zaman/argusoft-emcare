@@ -12,3 +12,6 @@ export { LocationService } from './services/location.service';
 export { DeviceManagementComponent } from './components/Device-Management/device-management/device-management.component';
 export { DeviceListComponent } from './components/Device-Management/device-list/device-list.component';
 export { DeviceManagementService } from './services/device-management.service';
+export { UserListComponent } from './components/User/user-list/user-list.component';
+export { ManageUserComponent } from './components/User/manage-user/manage-user.component';
+export { UserManagementService } from './services/user-management.service';

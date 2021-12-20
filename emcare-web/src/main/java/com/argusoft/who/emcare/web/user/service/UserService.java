@@ -40,8 +40,12 @@ public interface UserService {
     public void addRealmRole(RoleDto role);
 
     public ResponseEntity<Object> updateUserStatus(UserUpdateDto userUpdateDto);
+    
+    public ResponseEntity<Object> getUserById(String userId);
 
     public ResponseEntity<Object> getUserRolesById(String useraId);
+    
+    public ResponseEntity<Object> updateUser(UserDto userDto, String userId);
 
     public ResponseEntity<Object> updateRole(RoleUpdateDto roleUpdateDto);
 

@@ -16,7 +16,9 @@ import {
   LocationManagementComponent,
   ShowLocationComponent,
   ShowLocationTypeComponent,
-  DeviceListComponent
+  DeviceListComponent,
+  UserListComponent,
+  ManageUserComponent
 } from './root/index';
 
 const routes: Routes = [
@@ -36,6 +38,9 @@ const routes: Routes = [
   { path: 'editLocation/:id', component: LocationManagementComponent, canActivate: [AuthGuard] },
   { path: 'showLocation', component: ShowLocationComponent, canActivate: [AuthGuard] },
   { path: 'showDevices', component: DeviceListComponent, canActivate: [AuthGuard] },
+  { path: 'showUsers', component: UserListComponent, canActivate: [AuthGuard] },
+  { path: 'addUser', component: ManageUserComponent, canActivate: [AuthGuard] },
+  { path: 'updateUser/:id', component: ManageUserComponent, canActivate: [AuthGuard] },
   { path: 'showPatients',component:PatientListComponent, canActivate: [AuthGuard]},
   { path: 'showRoles',component:ShowRoleComponent, canActivate: [AuthGuard]},
   { path: 'addRole',component:ManageRoleComponent, canActivate: [AuthGuard]},
