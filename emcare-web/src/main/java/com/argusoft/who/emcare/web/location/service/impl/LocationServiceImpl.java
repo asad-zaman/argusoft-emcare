@@ -9,10 +9,9 @@ import com.argusoft.who.emcare.web.location.mapper.HierarchyMasterMapper;
 import com.argusoft.who.emcare.web.location.mapper.LocationMasterMapper;
 import com.argusoft.who.emcare.web.location.model.HierarchyMaster;
 import com.argusoft.who.emcare.web.location.model.LocationMaster;
-import com.argusoft.who.emcare.web.location.service.LocationConfigService;
+import com.argusoft.who.emcare.web.location.service.LocationService;
 import com.argusoft.who.emcare.web.secuirty.EmCareSecurityUser;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,7 +23,7 @@ import org.springframework.stereotype.Service;
  * @author jay
  */
 @Service
-public class LocationConfigServiceImpl implements LocationConfigService {
+public class LocationServiceImpl implements LocationService {
 
     @Autowired
     HierarchyMasterDao hierarchyMasterDao;
@@ -95,7 +94,6 @@ public class LocationConfigServiceImpl implements LocationConfigService {
 
     @Override
     public ResponseEntity<Object> deleteLocationById(Integer locationId) {
-        LocationMaster locationMaster = locationMasterDao.findById(locationId).get();
         List<LocationMaster> childLocations = locationMasterDao.getChildLocation(locationId);
         if (!childLocations.isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("This Location Have Child Location, You Can Not Delete");

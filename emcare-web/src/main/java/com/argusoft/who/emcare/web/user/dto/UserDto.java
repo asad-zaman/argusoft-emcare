@@ -11,6 +11,8 @@ public class UserDto {
     private String email;
     private String regRequestFrom;
     private Integer locationId;
+    private String roleName;
+
 
     public String getFirstName() {
         return firstName;
@@ -58,5 +60,13 @@ public class UserDto {
 
     public void setLocationId(Integer locationId) {
         this.locationId = locationId;
+    }
+
+    public String getRoleName() {
+        return roleName;
+    }
+
+    public void setRoleName(String roleName) {
+        this.roleName = roleName;
     }
 }

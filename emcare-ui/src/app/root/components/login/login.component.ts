@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { AuthenticationService } from 'src/app/shared';
 import { Router } from '@angular/router';
-import { first } from 'rxjs/operators';
 
 @Component({
   selector: 'app-login',
@@ -25,8 +24,8 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {
     this.loginForm = this.formBuilder.group({
-      username: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-]+$')]],
-      password: ['', Validators.required]
+      username: ['test@gmail.com', [Validators.required, Validators.pattern('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-]+$')]],
+      password: ['test', Validators.required]
     });
   }
 
@@ -41,10 +40,15 @@ export class LoginComponent implements OnInit {
       return;
     }
     this.authService.login(this.loginForm.value.username, this.loginForm.value.password)
-      .pipe(first())
       .subscribe(
-        _data => {
-          this.router.navigate(["/dashboard"]);
+        data => {
+          if (data) {
+            localStorage.setItem('access_token', JSON.stringify(data.access_token));
+            localStorage.setItem('access_token_expiry_time', JSON.stringify(data.expires_in));
+            localStorage.setItem('refresh_token', JSON.stringify(data.refresh_token));
+            localStorage.setItem('refresh_token_expiry_time', JSON.stringify(data.refresh_expires_in));
+            this.router.navigate(["/dashboard"]);
+          }
         },
         error => {
           this.error = error['error']['message'];

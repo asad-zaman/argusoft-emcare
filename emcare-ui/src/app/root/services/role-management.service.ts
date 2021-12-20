@@ -1,12 +1,13 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { Injectable } from "@angular/core";
+import { Bundle } from "fhir/r4";
 
 @Injectable({
     providedIn: 'root'
 })
-export class DeviceManagementService {
+export class RoleManagementService {
 
-    backendURL = `http://localhost:8080/api/device`;
+    roleBaseURL = `http://localhost:8080/api/role`
 
     constructor(private http: HttpClient) { }
 
@@ -25,11 +26,22 @@ export class DeviceManagementService {
         return headerObj;
     }
 
-    getAllDevices() {
-        return this.http.get(`${this.backendURL}/all`, this.getHeaders());
+    //Endpoints TODO
+
+    getAllRoles() {
+        return this.http.get(`${this.roleBaseURL}`, this.getHeaders());
     }
 
-    updateDeviceById(obj) {
-        return this.http.put(`${this.backendURL}/update`, obj, this.getHeaders());
+    getRoleById(id:String) {
+        return this.http.get(`${this.roleBaseURL}/${id}`, this.getHeaders());
     }
+
+    createRole(obj) {
+        return this.http.post(`${this.roleBaseURL}/add`, obj, this.getHeaders());
+    }
+
+    updateRole(obj) {
+        return this.http.put(`${this.roleBaseURL}/update`, obj, this.getHeaders());
+    }
+
 }

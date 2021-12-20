@@ -1,4 +1,4 @@
-<nav *ngIf="userName" class="navbar navbar-expand navbar-dark bg-dark">
+<nav class="navbar navbar-expand navbar-dark bg-dark">
   <div class="navbar-nav">
     <a class="nav-item nav-link cursor-pointer float-right" (click)="logout()">Logout</a>
   </div>
@@ -29,14 +29,20 @@
   <div class="navbar-nav">
     <a class="nav-item nav-link cursor-pointer float-right" (click)="showPatients()">Show Patients</a>
   </div>
+  <div class="navbar-nav">
+    <a class="nav-item nav-link cursor-pointer float-right" (click)="addRole()">Add Role</a>
+  </div>
+  <div class="navbar-nav">
+    <a class="nav-item nav-link cursor-pointer float-right" (click)="showRoles()">Show Roles</a>
+  </div>
 </nav>
 <div class="container">
   <div class="card mt-4">
     <h4 class="card-header">Welcome</h4>
-    <div class="card-body">
+    <!--<div class="card-body">
       <ul>
         <li>{{userName}}</li>
       </ul>
-    </div>
+    </div>-->
   </div>
 </div>

@@ -27,6 +27,8 @@ import { ShowLocationTypeComponent } from './root/components/Location/location-t
 import { ShowLocationComponent } from './root/components/Location/location-management/show-location/show-location.component';
 import { DeviceListComponent } from './root/components/Device-Management/device-list/device-list.component';
 import { PatientListComponent } from './root/components/patient-management/patient-list/patient-list.component';
+import { ManageRoleComponent } from './root/components/role-management/manage-role/manage-role.component';
+import { ShowRoleComponent } from './root/components/role-management/show-role/show-role.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -43,7 +45,9 @@ import { PatientListComponent } from './root/components/patient-management/patie
     ShowLocationComponent,
     DeviceManagementComponent,
     DeviceListComponent,
-    PatientListComponent
+    PatientListComponent,
+    ManageRoleComponent,
+    ShowRoleComponent
   ],
   imports: [
     BrowserModule,

@@ -3,14 +3,19 @@ package com.argusoft.who.emcare.web.device.mapper;
 import com.argusoft.who.emcare.web.device.dto.DeviceDto;
 import com.argusoft.who.emcare.web.device.dto.DeviceWithUserDetails;
 import com.argusoft.who.emcare.web.device.model.DeviceMaster;
-import org.keycloak.admin.client.resource.UsersResource;
+import org.keycloak.representations.idm.UserRepresentation;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author jay
  */
 public class DeviceMapper {
+    private DeviceMapper() {
+    }
 
-    public static DeviceMaster dtoToEntityDeviceMasterCreate(DeviceDto deviceDto, String userId) {
+    public static DeviceMaster getDeviceMatserFromDto(DeviceDto deviceDto, String userId) {
         DeviceMaster master = new DeviceMaster();
 
         master.setAndroidVersion(deviceDto.getAndroidVersion());
@@ -26,7 +31,7 @@ public class DeviceMapper {
         return master;
     }
 
-    public static DeviceMaster dtoToEntityDeviceMasterUpdate(DeviceMaster deviceMaster, DeviceDto deviceDto, String userId) {
+    public static DeviceMaster getDeviceMaster(DeviceMaster deviceMaster, DeviceDto deviceDto, String userId) {
         DeviceMaster master = new DeviceMaster();
 
         master.setDeviceId(deviceMaster.getDeviceId());
@@ -39,7 +44,7 @@ public class DeviceMapper {
         return master;
     }
 
-    public static DeviceWithUserDetails entityToDtoDeviceWithUser(DeviceMaster deviceMaster, UsersResource usersResource) {
+    public static DeviceWithUserDetails getDeviceWithUser(DeviceMaster deviceMaster, List<UserRepresentation> allUsers) {
         DeviceWithUserDetails deviceWithUserDetails = new DeviceWithUserDetails();
 
         deviceWithUserDetails.setDeviceId(deviceMaster.getDeviceId());
@@ -52,12 +57,8 @@ public class DeviceMapper {
         deviceWithUserDetails.setDeviceUUID(deviceMaster.getDeviceUUID());
         deviceWithUserDetails.setDeviceModel(deviceMaster.getDeviceModel());
         deviceWithUserDetails.setDeviceName(deviceMaster.getDeviceName());
-        deviceWithUserDetails.setCreatedBy(deviceMaster.getCreatedBy());
-        deviceWithUserDetails.setCreatedOn(deviceMaster.getCreatedOn());
-        deviceWithUserDetails.setModifiedOn(deviceMaster.getModifiedOn());
-        deviceWithUserDetails.setModifiedBy(deviceMaster.getModifiedBy());
-        deviceWithUserDetails.setUsersResource(usersResource.get(deviceMaster.getLastLoggedInUser()).toRepresentation());
-
+        deviceWithUserDetails.setUsersResource(allUsers.stream().filter(a -> a.getId().equals(deviceMaster.getLastLoggedInUser()))
+                .collect(Collectors.toList()).get(0));
         return deviceWithUserDetails;
     }
 

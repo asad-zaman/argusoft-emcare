@@ -22,19 +22,18 @@ import javax.servlet.http.HttpServletRequest;
  */
 @Component
 public class KeyCloakConfig {
-
-    static Keycloak keycloak = null;
-    public final static String SERVER_URL = "http://localhost:8180/auth";
-    public final static String REALM = "emcare";
-    public final static String CLIENT_ID = "emcare";
-    public final static String CLIENT_SECRET = "4d9c181a-e677-49da-99fa-a1bab142dce5";
-    public final static String USER_NAME = "jay";
-    public final static String PASSWORD = "argusadmin";
-    public final static String MASTER_USER_ID = "j@gmail.com";
-    public final static String MASTER_USER_PASSWORD = "argusadmin";
-
     @Autowired
     HttpServletRequest request;
+
+    Keycloak keycloak = null;
+    public static final String SERVER_URL = "http://localhost:8180/auth";
+    public static final String CLIENT_SECRET = "4d9c181a-e677-49da-99fa-a1bab142dce5";
+    public static final String CLIENT_ID = "emcare";
+    public static final String REALM = "emcare";
+    public static final String USER_NAME = "jay";
+    public static final String PASSWORD = "argusadmin";
+    public static final String MASTER_USER_ID = "j@gmail.com";
+    public static final String MASTER_USER_PASSWORD = "argusadmin";
 
     public Keycloak getInstance() {
         if (keycloak == null) {
@@ -56,14 +55,12 @@ public class KeyCloakConfig {
 
     public static Keycloak getInstanceByAuth(HttpServletRequest request) {
         KeycloakSecurityContext context = (KeycloakSecurityContext) request.getAttribute(KeycloakSecurityContext.class.getName());
-
-        Keycloak keycloakInstance = KeycloakBuilder.builder()
+        return KeycloakBuilder.builder()
                 .serverUrl(SERVER_URL)
                 .realm(REALM)
                 .authorization(context.getTokenString())
                 .resteasyClient(new ResteasyClientBuilder().connectionPoolSize(20).build())
                 .build();
-        return keycloakInstance;
     }
 
     public static String getAccessToken() {
@@ -78,8 +75,7 @@ public class KeyCloakConfig {
         map.add("client_id", CLIENT_ID);
         map.add("client_secret", CLIENT_SECRET);
         HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(map, headers);
-        AccessTokenForUser response = restTemplate.postForObject("http://localhost:8180/auth/realms/emcare/protocol/openid-connect/token", entity, AccessTokenForUser.class);
-        String token = response.getAccess_token();
-        return token;
+        String url = SERVER_URL + "/realms/" + REALM + "/protocol/openid-connect/token";
+        return restTemplate.postForObject(url, entity, AccessTokenForUser.class).getAccess_token();
     }
 }
