@@ -1,8 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="252247ce-0696-452b-9c23-89ebefa7a554" name="Default Changelist" comment="" />
-    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <list default="true" id="252247ce-0696-452b-9c23-89ebefa7a554" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/index.pb" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/index.pb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/argusoft/who/emcare/web/config/KeyCloakConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/argusoft/who/emcare/web/config/KeyCloakConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/argusoft/who/emcare/web/fhir/controller/EmcareResourceController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/argusoft/who/emcare/web/fhir/controller/EmcareResourceController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/argusoft/who/emcare/web/user/service/impl/UserServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/argusoft/who/emcare/web/user/service/impl/UserServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web.iml" beforeDir="false" afterPath="$PROJECT_DIR$/web.iml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -16,25 +27,84 @@
       </list>
     </option>
   </component>
-  <component name="ProjectId" id="21K6PZC5OTWryhHtzFSG9pSG5DJ" />
-  <component name="PropertiesComponent">
-    <property name="last_directory_selection" value="$PROJECT_DIR$/src/main/java/com/argusoft/who/emcare/web/sample" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
-  <component name="RunDashboard">
-    <option name="ruleStates">
-      <list>
-        <RuleState>
-          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
-        </RuleState>
-        <RuleState>
-          <option name="name" value="StatusDashboardGroupingRule" />
-        </RuleState>
-      </list>
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
+  </component>
+  <component name="GitToolBoxStore">
+    <option name="recentBranches">
+      <RecentBranches>
+        <option name="branchesForRepo">
+          <list>
+            <RecentBranchesForRepo>
+              <option name="branches">
+                <list>
+                  <RecentBranch>
+                    <option name="branchName" value="8-create-user-management-apis-in-emcare-using-keycloak-java-apis" />
+                    <option name="lastUsedInstant" value="1639716184" />
+                  </RecentBranch>
+                  <RecentBranch>
+                    <option name="branchName" value="developer" />
+                    <option name="lastUsedInstant" value="1639661569" />
+                  </RecentBranch>
+                  <RecentBranch>
+                    <option name="branchName" value="7-implement-user-functionality-in-back-end-side" />
+                    <option name="lastUsedInstant" value="1639114828" />
+                  </RecentBranch>
+                  <RecentBranch>
+                    <option name="branchName" value="3-implement-key-cloack-in-api" />
+                    <option name="lastUsedInstant" value="1638794578" />
+                  </RecentBranch>
+                </list>
+              </option>
+              <option name="repositoryRootUrl" value="file://$PROJECT_DIR$/.." />
+            </RecentBranchesForRepo>
+          </list>
+        </option>
+      </RecentBranches>
     </option>
   </component>
-  <component name="RunManager" selected="Maven.emcare-web [clean]">
-    <configuration name="EmcareWebApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+  <component name="JpbToolWindowState">
+    <option name="myId2FirstActivated">
+      <map>
+        <entry key="JPA Inspector" value="true" />
+        <entry key="JPA Palette" value="true" />
+        <entry key="JPA Structure" value="true" />
+      </map>
+    </option>
+    <option name="myId2Visible">
+      <map>
+        <entry key="JPA Inspector" value="false" />
+        <entry key="JPA Palette" value="false" />
+        <entry key="JPA Structure" value="false" />
+      </map>
+    </option>
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="21K6PZC5OTWryhHtzFSG9pSG5DJ" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="last_directory_selection" value="$PROJECT_DIR$/src/main/java/com/argusoft/who/emcare/web/auth" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/pom.xml" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
+  </component>
+  <component name="RunManager" selected="Application.EmcareWebApplication">
+    <configuration name="EmcareWebApplication" type="Application" factoryName="Application" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.argusoft.who.emcare.web.EmcareWebApplication" />
       <module name="web" />
       <extension name="coverage">
@@ -100,15 +170,11 @@
     </configuration>
     <list>
       <item itemvalue="Application.EmcareWebApplication" />
-      <item itemvalue="Maven.emcare-web [clean]" />
       <item itemvalue="Maven.emcare -web [clean,build]" />
+      <item itemvalue="Maven.emcare-web [clean]" />
     </list>
-    <recent_temporary>
-      <list>
-        <item itemvalue="Application.EmcareWebApplication" />
-      </list>
-    </recent_temporary>
   </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="SvnConfiguration">
     <configuration />
   </component>
@@ -121,5 +187,25 @@
       <updated>1637677407914</updated>
     </task>
     <servers />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <breakpoint enabled="true" type="java-exception">
+          <properties class="javax.ws.rs.NotAuthorizedException" package="javax.ws.rs" />
+          <option name="timeStamp" value="6" />
+        </breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/argusoft/who/emcare/web/user/service/impl/UserServiceImpl.java</url>
+          <line>162</line>
+          <option name="timeStamp" value="23" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/argusoft/who/emcare/web/user/service/impl/UserServiceImpl.java</url>
+          <line>185</line>
+          <option name="timeStamp" value="24" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
