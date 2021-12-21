@@ -25,7 +25,7 @@ export class HomeComponent implements OnInit {
 
   getLoggedInUser() {
     this.authService.getLoggedInUser().subscribe(res => {
-      console.log(res);
+      // console.log(res);
     })
   }
 
@@ -80,5 +80,14 @@ export class HomeComponent implements OnInit {
   showRoles() {
     this.router.navigate(['/showRoles']);
   }
+
+  showUsers() {
+    this.router.navigate(['/showUsers']);
+  }
+
+  addUser() {
+    this.router.navigate(['/addUser']);
+  }
+
 
 }

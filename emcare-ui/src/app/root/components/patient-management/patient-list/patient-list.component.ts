@@ -1,5 +1,4 @@
 import { Component, OnInit } from "@angular/core";
-import { Patient } from "fhir/r4";
 import { FhirService } from "src/app/shared/services/fhir.service";
 
 @Component({
@@ -9,7 +8,7 @@ import { FhirService } from "src/app/shared/services/fhir.service";
 })
 export class PatientListComponent implements OnInit {
 
-    patients: Patient[] | any
+    patients: any
 
     ngOnInit(): void {
         this.prerequisite();
