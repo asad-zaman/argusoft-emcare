@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 @Component
 public class KeyCloakConfig {
+    
     @Autowired
     HttpServletRequest request;
 
@@ -53,7 +54,7 @@ public class KeyCloakConfig {
         return keycloak;
     }
 
-    public static Keycloak getInstanceByAuth(HttpServletRequest request) {
+    public Keycloak getInstanceByAuth() {
         KeycloakSecurityContext context = (KeycloakSecurityContext) request.getAttribute(KeycloakSecurityContext.class.getName());
         return KeycloakBuilder.builder()
                 .serverUrl(SERVER_URL)
