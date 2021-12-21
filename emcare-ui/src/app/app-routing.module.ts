@@ -3,6 +3,8 @@ import { Routes, RouterModule } from '@angular/router';
 import { AuthGuard } from './auth/auth.guard';
 import { HomeComponent } from './root/components/home/home.component';
 import { PatientListComponent } from './root/components/patient-management/patient-list/patient-list.component';
+import { ManageRoleComponent } from './root/components/role-management/manage-role/manage-role.component';
+import { ShowRoleComponent } from './root/components/role-management/show-role/show-role.component';
 import {
   LoginComponent,
   SignupComponent,
@@ -14,7 +16,9 @@ import {
   LocationManagementComponent,
   ShowLocationComponent,
   ShowLocationTypeComponent,
-  DeviceListComponent
+  DeviceListComponent,
+  UserListComponent,
+  ManageUserComponent
 } from './root/index';
 
 const routes: Routes = [
@@ -34,7 +38,13 @@ const routes: Routes = [
   { path: 'editLocation/:id', component: LocationManagementComponent, canActivate: [AuthGuard] },
   { path: 'showLocation', component: ShowLocationComponent, canActivate: [AuthGuard] },
   { path: 'showDevices', component: DeviceListComponent, canActivate: [AuthGuard] },
+  { path: 'showUsers', component: UserListComponent, canActivate: [AuthGuard] },
+  { path: 'addUser', component: ManageUserComponent, canActivate: [AuthGuard] },
+  { path: 'updateUser/:id', component: ManageUserComponent, canActivate: [AuthGuard] },
   { path: 'showPatients',component:PatientListComponent, canActivate: [AuthGuard]},
+  { path: 'showRoles',component:ShowRoleComponent, canActivate: [AuthGuard]},
+  { path: 'addRole',component:ManageRoleComponent, canActivate: [AuthGuard]},
+  { path: 'editRole/:id',component:ManageRoleComponent, canActivate: [AuthGuard]},
   { path: '**', redirectTo: 'login' }
 ];
 @NgModule({

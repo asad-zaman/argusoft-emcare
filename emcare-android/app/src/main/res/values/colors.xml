@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
     <color name="horizontalBackground">#6CFAFAFA</color>
-    <color name="colorPrimary">#0097DA</color>
-    <color name="colorPrimaryDark">#0097DA</color>
-    <color name="colorAccent">#ffffff</color>
+    <color name="colorPrimary">#4D4D4D</color>
+    <color name="colorPrimaryDark">#4D4D4D</color>
+    <color name="colorAccent">#E2203B</color>
     <color name="colorStatusBar">#175adf</color>
     <color name="low_risk">#388e3c</color>
     <color name="low_risk_background">#e8f5e9</color>
@@ -20,15 +20,16 @@
 
     <color name="colorSnackBarErrorBg">#FFDF5130</color>
     <color name="colorSnackBarErrorText">#FFFFFF</color>
-    <color name="colorSnackBarSuccessBg">#1DCC25</color>
+    <color name="colorSnackBarSuccessBg">#57A655</color>
     <color name="colorSnackBarSuccessText">#FFFFFF</color>
 
     <color name="colorWhite">#FFFFFF</color>
     <color name="colorBlack">#000000</color>
     <color name="textColorWhite">#FFFFFF</color>
     <color name="textColorWhite80">#CCFFFFFF</color>
-    <color name="textColorBlack">#000000</color>
-    <color name="buttonColor">#00ADEF</color>
-    <color name="textColorLightBlue">#6AA1B6</color>
-    <color name="colorLightGrey">#E3EAF0</color>
+    <color name="textColorBlack">#4E4E4E</color>
+    <color name="textColorBlack80">#4E4E4E</color>
+    <color name="buttonColor">#E2203B</color>
+    <color name="textColorLightBlue">#1385D7</color>
+    <color name="colorLightGrey">#FFCCCCCC</color>
 </resources>

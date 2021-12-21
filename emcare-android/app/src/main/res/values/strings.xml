@@ -1,8 +1,9 @@
 <resources>
     <string name="app_name">EmCare</string>
 
-    <string name="title_patient_list">Registered Patients</string>
+    <string name="title_patient">Registered Patients</string>
     <string name="title_patient_detail">SamplePatient Detail</string>
+    <string name="title_patient_details">Patient Details</string>
     <string name="menu_about">About Fhir Engine</string>
     <string name="menu_load_resource">Load CQL Resources &amp; Patients</string>
     <string name="menu_sync_resources">Sync Resources</string>
@@ -83,6 +84,7 @@
     <string name="rationale_camera">This app needs access to your camera to capture and save images</string>
     <string name="rationale_gallery">This app needs access to your gallery to pick images</string>
     <string name="rationale_location">This app needs access to your location to pick current location</string>
+    <string name="rationale_phone_state">This app needs access to phone state</string>
     <string name="alert_error_selecting_image">Error selecting the image, please try again.</string>
     <string name="alert_message_error">Something went wrong please try after sometime.</string>
     <string name="action_ok">OK</string>
@@ -117,6 +119,7 @@
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
     <string name="label_notifications">Notifications</string>
+    <string name="label_sync">Sync</string>
     <string name="label_more">More</string>
     <string name="menu_edit_profile">Edit Profile</string>
     <string name="menu_settings">Settings</string>
@@ -129,4 +132,18 @@
   <string name="ok">Ok</string>
     <string name="error_msg_username">Please enter username</string>
     <string name="error_msg_password">Please enter password</string>
+    <string name="button_add_patient">Add Patient</string>
+    <string name="label_id_with_colon">Id: #---%1$s</string>
+    <string name="title_add_patient">Add Patient</string>
+    <string name="menu_save">Save</string>
+    <string name="msg_logout">Are you sure you want to logout?</string>
+    <string name="msg_delete_patient">Are you sure you want to delete Patient?</string>
+    <string name="error_msg_firstname">Please enter first name</string>
+    <string name="error_msg_lastname">Please enter last name</string>
+    <string name="error_msg_email">Please enter email</string>
+    <string name="error_msg_valid_email">Please enter valid email</string>
+    <string name="error_msg_location">Please select location</string>
+    <string name="error_msg_role">Please select role</string>
+    <string name="error_msg_confirm_password">Please enter confirm password</string>
+    <string name="error_msg_password_not_match">Password does\'t match</string>
 </resources>

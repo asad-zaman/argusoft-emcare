@@ -79,7 +79,8 @@
           "linkId": "0",
           "definition": "http://hl7.org/fhir/StructureDefinition/Patient#Patient.identifier",
           "text": "Unique identification",
-          "type": "string"
+          "type": "string",
+          "required": true
         },
         {
           "linkId": "1",
