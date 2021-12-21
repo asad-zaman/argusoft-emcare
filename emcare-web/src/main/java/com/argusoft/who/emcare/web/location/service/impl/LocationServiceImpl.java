@@ -11,15 +11,15 @@ import com.argusoft.who.emcare.web.location.model.HierarchyMaster;
 import com.argusoft.who.emcare.web.location.model.LocationMaster;
 import com.argusoft.who.emcare.web.location.service.LocationService;
 import com.argusoft.who.emcare.web.secuirty.EmCareSecurityUser;
-import java.util.ArrayList;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- *
  * @author jay
  */
 @Service
@@ -104,11 +104,10 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
-    public ResponseEntity<Object> getLocationById(Integer locationId) {
-        LocationMaster locationMaster = locationMasterDao.findById(locationId).get();
-        return ResponseEntity.ok(locationMaster);
+    public LocationMaster getLocationById(Integer locationId) {
+        return locationMasterDao.findById(locationId).get();
     }
-    
+
     @Override
     public LocationMaster getLocationMasterById(Integer locationId) {
         return locationMasterDao.findById(locationId).get();

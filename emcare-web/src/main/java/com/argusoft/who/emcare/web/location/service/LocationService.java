@@ -29,7 +29,7 @@ public interface LocationService {
 
     public ResponseEntity<Object> deleteLocationById(Integer locationId);
 
-    public ResponseEntity<Object> getLocationById(Integer locationId);
+    public LocationMaster getLocationById(Integer locationId);
     
     public LocationMaster getLocationMasterById(Integer locationId);
 }

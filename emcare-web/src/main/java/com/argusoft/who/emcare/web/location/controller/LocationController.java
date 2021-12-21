@@ -2,6 +2,7 @@ package com.argusoft.who.emcare.web.location.controller;
 
 import com.argusoft.who.emcare.web.location.dto.HierarchyMasterDto;
 import com.argusoft.who.emcare.web.location.dto.LocationMasterDto;
+import com.argusoft.who.emcare.web.location.model.LocationMaster;
 import com.argusoft.who.emcare.web.location.service.LocationService;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,7 +76,7 @@ public class LocationController {
     }
     
     @RequestMapping(value = "/{locationId}", method = RequestMethod.GET)
-    public ResponseEntity<Object> getLocationById(@PathVariable(value = "locationId") Integer locationId) {
+    public LocationMaster getLocationById(@PathVariable(value = "locationId") Integer locationId) {
         return locationConfigService.getLocationById(locationId);
     }
 }
