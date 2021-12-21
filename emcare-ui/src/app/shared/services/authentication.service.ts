@@ -43,8 +43,8 @@ export class AuthenticationService {
     login(username: string, password: string) {
         const url = `http://localhost:8180/auth/realms/emcare_demo/protocol/openid-connect/token`;
         const body = new HttpParams()
-            .set('username', 'test')
-            .set('password', 'parth@123')
+            .set('username', username)
+            .set('password', password)
             .set('grant_type', 'password')
             .set('client_id', 'emcare_client')
             .set('client_secret', '5b929983-175b-4e9f-97d2-ac97dff78ce9');

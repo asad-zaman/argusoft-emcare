@@ -28,6 +28,16 @@
                                         id="email" placeholder="Enter Email">
                                 </div>
                             </div>
+                            <div *ngIf="!isEdit" class="col-12">
+                                <div class="form-group">
+                                    <label for="role">Role</label>
+                                    <select class="form-control" formControlName="role" id="role">
+                                        <ng-container *ngFor="let role of roles">
+                                            <option value="{{role.name}}">{{role.name}}</option>
+                                        </ng-container>
+                                    </select>
+                                </div>
+                            </div>
                             <div class="col-2">
                                 <button type="submit" class="btn btn-primary" (click)="saveData()">Submit</button>
                             </div>
