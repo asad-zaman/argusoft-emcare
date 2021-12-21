@@ -95,6 +95,10 @@ class ApiManager(private val preference: Preference) : Api {
     override suspend fun getLocations(): ApiResponse<List<Location>> {
         return executeApiHelper { apiService.getLocations() }
     }
+
+    override suspend fun getLoggedInUser(): ApiResponse<LoggedInUser> {
+        return executeApiHelper { apiService.getLoggedInUser() }
+    }
 }
 
 

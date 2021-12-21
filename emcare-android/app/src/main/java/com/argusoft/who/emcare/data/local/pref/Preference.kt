@@ -1,5 +1,6 @@
 package com.argusoft.who.emcare.data.local.pref
 
+import com.argusoft.who.emcare.ui.common.model.LoggedInUser
 import com.argusoft.who.emcare.ui.common.model.User
 
 interface Preference {
@@ -15,6 +16,10 @@ interface Preference {
     fun setUser(user: User)
 
     fun getUser(): User?
+
+    fun setLoggedInUser(loggedInUser: LoggedInUser)
+
+    fun getLoggedInuser() : LoggedInUser?
 
     fun clear()
 }

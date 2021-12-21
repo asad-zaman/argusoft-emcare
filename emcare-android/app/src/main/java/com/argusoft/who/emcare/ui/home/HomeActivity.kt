@@ -2,6 +2,7 @@ package com.argusoft.who.emcare.ui.home
 
 import android.content.DialogInterface
 import android.content.Intent
+import android.widget.TextView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -38,6 +39,13 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
         )
 //        setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+
+        //Setting name & email in drawer view
+        if(preference.getLoggedInuser() != null) {
+            val headerView = binding.navView.getHeaderView(0)
+            headerView.findViewById<TextView>(R.id.nameTextView).text = preference.getLoggedInuser()?.name
+            headerView.findViewById<TextView>(R.id.emailTextView).text = preference.getLoggedInuser()?.preferredUsername
+        }
     }
 
     fun openDrawer() {
