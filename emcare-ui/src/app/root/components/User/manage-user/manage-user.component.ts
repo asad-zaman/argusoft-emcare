@@ -62,7 +62,7 @@ export class ManageUserComponent implements OnInit {
       this.userForm = this.formBuilder.group({
         firstName: ['', [Validators.required]],
         lastName: ['', [Validators.required]],
-        email: ['', [Validators.required]],
+        email: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-]+$')]],
         role: ['', [Validators.required]]
       });
     }
