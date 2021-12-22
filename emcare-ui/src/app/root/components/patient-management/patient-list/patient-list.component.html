@@ -22,7 +22,7 @@
                                 <tr>
                                     <th scope="row">{{i+1}}</th>
                                     <td>{{patient.identifier}}</td>
-                                    <td>{{patient.givenName}} {{patient.familyName}}</td>
+                                    <td><a style="cursor: pointer;" (click)="showPatientDetails(patient.id)" class="link">{{patient.givenName}} {{patient.familyName}}</a></td>
                                     <td>{{patient.gender}}</td>
                                     <td>{{patient.dob | date:'mediumDate'}}</td>
                                     <td>{{patient.caregiver || "NOT PROVIDED"}}</td>
@@ -31,6 +31,71 @@
                             </ng-container>
                         </tbody>
                     </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="showPatientDetailsFlag" class="modal" tabindex="-1" role="dialog" style="display:block">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Patient Details</h4>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-borderless">
+                        <tbody>
+                            <tr>
+                                <td class="font-weight-bold">Identifier:</td>
+                                <td>{{patientDetails.identifier}}</td>
+                            </tr>
+                            <tr *ngIf="!!patientDetails.id">
+                                <td class="font-weight-bold">ID:</td>
+                                <td>{{patientDetails.id}}</td>
+                            </tr>
+                            <tr *ngIf="!!patientDetails.givenName">
+                                <td class="font-weight-bold">Given Name:</td>
+                                <td>{{patientDetails.givenName}}</td>
+                            </tr>
+                            <tr *ngIf="!!patientDetails.familyName"> 
+                                <td class="font-weight-bold">Family Name:</td>
+                                <td>{{patientDetails.familyName}}</td>
+                            </tr>
+                            <tr *ngIf="!!patientDetails.gender">
+                                <td class="font-weight-bold">Gender:</td>
+                                <td>{{patientDetails.gender}}</td>
+                            </tr>
+                            <tr *ngIf="!!patientDetails.dob">
+                                <td class="font-weight-bold">Date of Birth:</td>
+                                <td>{{patientDetails.dob | date:'mediumDate'}}</td>
+                            </tr>
+                            <tr *ngIf="!!patientDetails.caregiver">
+                                <td class="font-weight-bold">Caregiver:</td>
+                                <td>{{patientDetails.caregiver}}</td>
+                            </tr>
+                            <tr *ngIf="!!patientDetails.addressLine || !!patientDetails.addressCity || !!patientDetails.addressCountry">
+                                <td class="font-weight-bold">Address:</td>
+                                <td><div>
+                                    <span *ngIf="!!patientDetails.addressLine">{{patientDetails.addressLine}},<br/></span>
+                                    <span *ngIf="!!patientDetails.addressCity">{{patientDetails.addressCity}},<br/></span>
+                                    <span *ngIf="!!patientDetails.addressCountry">{{patientDetails.addressCountry}}</span>
+                                </div></td>
+                            </tr>
+                            <tr *ngIf="!!patientDetails.addressPostalCode">
+                                <td class="font-weight-bold">Postal Code:</td>
+                                <td>{{patientDetails.addressPostalCode}}</td>
+                            </tr>
+                            <tr *ngIf="!!patientDetails.location">
+                                <td class="font-weight-bold">Location:</td>
+                                <td>{{patientDetails.location}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" (click)="closePopup()">
+                        Close
+                    </button>
                 </div>
             </div>
         </div>
