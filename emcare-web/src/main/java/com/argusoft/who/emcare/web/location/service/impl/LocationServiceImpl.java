@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -111,6 +112,13 @@ public class LocationServiceImpl implements LocationService {
     @Override
     public LocationMaster getLocationMasterById(Integer locationId) {
         return locationMasterDao.findById(locationId).get();
+    }
+
+    @Override
+    public List<LocationMaster> getLocationByType(String type) {
+        List<LocationMaster> locations = locationMasterDao.findByType(type);
+        Collections.sort(locations, (LocationMaster l1, LocationMaster l2) -> l1.getName().compareTo(l2.getName()));
+        return locations;
     }
 
 }

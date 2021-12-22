@@ -5,22 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="252247ce-0696-452b-9c23-89ebefa7a554" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/argusoft/who/emcare/web/user/dto/UserMasterDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/argusoft/who/emcare/web/menu/model/MenuConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/argusoft/who/emcare/web/menu/service/MenuService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/argusoft/who/emcare/web/menu/service/impl/MenuServiceimpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/argusoft/who/emcare/web/location/controller/LocationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/argusoft/who/emcare/web/location/controller/LocationController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/argusoft/who/emcare/web/location/dao/LocationMasterDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/argusoft/who/emcare/web/location/dao/LocationMasterDao.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/argusoft/who/emcare/web/location/service/LocationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/argusoft/who/emcare/web/location/service/LocationService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/argusoft/who/emcare/web/location/service/impl/LocationServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/argusoft/who/emcare/web/location/service/impl/LocationServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/argusoft/who/emcare/web/user/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/argusoft/who/emcare/web/user/controller/UserController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/argusoft/who/emcare/web/user/dao/UserRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/argusoft/who/emcare/web/user/mapper/UserMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/argusoft/who/emcare/web/user/mapper/UserMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/argusoft/who/emcare/web/user/model/User.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/argusoft/who/emcare/web/user/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/argusoft/who/emcare/web/user/service/UserService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/argusoft/who/emcare/web/user/service/impl/UserServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/argusoft/who/emcare/web/user/service/impl/UserServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/argusoft/who/emcare/web/userLocationMapping/dao/UserLocationMappingRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/argusoft/who/emcare/web/userLocationMapping/dao/UserLocationMappingRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/argusoft/who/emcare/web/userLocationMapping/model/UserLocationMapping.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/argusoft/who/emcare/web/userLocationMapping/model/UserLocationMapping.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/argusoft/who/emcare/web/userLocationMapping/service/UserLocationMappingService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/argusoft/who/emcare/web/userLocationMapping/service/UserLocationMappingService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/argusoft/who/emcare/web/userLocationMapping/service/impl/UserLocationMappingServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/argusoft/who/emcare/web/userLocationMapping/service/impl/UserLocationMappingServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

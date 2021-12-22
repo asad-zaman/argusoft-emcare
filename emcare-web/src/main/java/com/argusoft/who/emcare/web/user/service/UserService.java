@@ -7,7 +7,6 @@ import org.keycloak.OAuth2Constants;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
 import org.keycloak.admin.client.resource.RolesResource;
-import org.keycloak.representations.AccessToken;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.http.ResponseEntity;
@@ -45,6 +44,8 @@ public interface UserService {
     public ResponseEntity<Object> updateUser(UserDto userDto, String userId);
 
     public ResponseEntity<Object> updateRole(RoleUpdateDto roleUpdateDto);
+
+    public String getRoleIdByName(String roleName);
 
     public default Keycloak getKeyCloakInstance() {
         return KeycloakBuilder.builder()

@@ -196,6 +196,13 @@ public class UserServiceImpl implements UserService {
         return ResponseEntity.ok(roleUpdateDto);
     }
 
+    @Override
+    public String getRoleIdByName(String roleName) {
+        Keycloak keycloak = keyCloakConfig.getInstanceByAuth();
+        RoleResource roleResource = keycloak.realm(KeyCloakConfig.REALM).roles().get(roleName);
+        return roleResource.toRepresentation().getId();
+    }
+
     private static CredentialRepresentation createPasswordCredentials(String password) {
         CredentialRepresentation passwordCredentials = new CredentialRepresentation();
         passwordCredentials.setTemporary(false);
