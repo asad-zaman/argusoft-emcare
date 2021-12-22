@@ -13,11 +13,10 @@ import com.argusoft.who.emcare.ui.common.model.Role
 import com.argusoft.who.emcare.ui.common.model.SignupRequest
 import com.argusoft.who.emcare.utils.extention.get
 import com.argusoft.who.emcare.utils.extention.isValidEmail
+import com.argusoft.who.emcare.utils.listener.SingleLiveEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -26,12 +25,12 @@ class SignUpViewModel @Inject constructor(
     private val preference: Preference
 ) : ViewModel() {
 
-    private val _errorMessageState = MutableLiveData<Int>()
+    private val _errorMessageState = SingleLiveEvent<Int>()
     val errorMessageState: LiveData<Int> = _errorMessageState
 
     private val signupRequest = SignupRequest()
 
-    private val _signupApiState = MutableLiveData<ApiResponse<Any>>()
+    private val _signupApiState = SingleLiveEvent<ApiResponse<Any>>()
     val signupApiState: LiveData<ApiResponse<Any>> = _signupApiState
 
     private val _locationAndRolesApiState = MutableLiveData<Pair<ApiResponse<List<Location>>, ApiResponse<List<Role>>>>()

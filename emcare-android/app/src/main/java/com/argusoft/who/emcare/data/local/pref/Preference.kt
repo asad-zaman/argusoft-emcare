@@ -19,7 +19,7 @@ interface Preference {
 
     fun setLoggedInUser(loggedInUser: LoggedInUser)
 
-    fun getLoggedInuser() : LoggedInUser?
+    fun loggedInUser() : LoggedInUser?
 
     fun clear()
 }
