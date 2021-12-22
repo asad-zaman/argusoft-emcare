@@ -2,20 +2,16 @@ package com.argusoft.who.emcare.web.location.controller;
 
 import com.argusoft.who.emcare.web.location.dto.HierarchyMasterDto;
 import com.argusoft.who.emcare.web.location.dto.LocationMasterDto;
+import com.argusoft.who.emcare.web.location.model.LocationMaster;
 import com.argusoft.who.emcare.web.location.service.LocationService;
-import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
- *
  * @author jay
  */
 @CrossOrigin(origins = "**")
@@ -73,9 +69,14 @@ public class LocationController {
     public ResponseEntity<Object> deleteLocation(@RequestParam("locationId") Integer locationId) {
         return locationConfigService.deleteLocationById(locationId);
     }
-    
+
     @RequestMapping(value = "/{locationId}", method = RequestMethod.GET)
-    public ResponseEntity<Object> getLocationById(@PathVariable(value = "locationId") Integer locationId) {
+    public LocationMaster getLocationById(@PathVariable(value = "locationId") Integer locationId) {
         return locationConfigService.getLocationById(locationId);
+    }
+
+    @RequestMapping(value = "/type/{type}", method = RequestMethod.GET)
+    public List<LocationMaster> getLocationByType(@PathVariable(value = "type") String locationType) {
+        return locationConfigService.getLocationByType(locationType);
     }
 }

@@ -52,10 +52,6 @@ public class UserController {
         return locationConfigService.getAllLocation();
     }
 
-    /**
-     * @param user
-     * @return
-     */
     @PostMapping("/signup")
     public ResponseEntity<Object> addUser(@RequestBody UserDto user) {
         return userService.signUp(user);

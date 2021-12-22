@@ -1,16 +1,12 @@
 package com.argusoft.who.emcare.web.user.service;
 
 import com.argusoft.who.emcare.web.config.KeyCloakConfig;
-import com.argusoft.who.emcare.web.user.dto.RoleDto;
-import com.argusoft.who.emcare.web.user.dto.RoleUpdateDto;
-import com.argusoft.who.emcare.web.user.dto.UserDto;
-import com.argusoft.who.emcare.web.user.dto.UserUpdateDto;
+import com.argusoft.who.emcare.web.user.dto.*;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.keycloak.OAuth2Constants;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
 import org.keycloak.admin.client.resource.RolesResource;
-import org.keycloak.representations.AccessToken;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +19,7 @@ import java.util.List;
  */
 public interface UserService {
 
-    public AccessToken getCurrentUser();
+    public UserMasterDto getCurrentUser();
 
     public List<UserRepresentation> getAllUser(HttpServletRequest request);
 
@@ -40,14 +36,16 @@ public interface UserService {
     public void addRealmRole(RoleDto role);
 
     public ResponseEntity<Object> updateUserStatus(UserUpdateDto userUpdateDto);
-    
+
     public ResponseEntity<Object> getUserById(String userId);
 
     public ResponseEntity<Object> getUserRolesById(String useraId);
-    
+
     public ResponseEntity<Object> updateUser(UserDto userDto, String userId);
 
     public ResponseEntity<Object> updateRole(RoleUpdateDto roleUpdateDto);
+
+    public String getRoleIdByName(String roleName);
 
     public default Keycloak getKeyCloakInstance() {
         return KeycloakBuilder.builder()

@@ -3,16 +3,15 @@ package com.argusoft.who.emcare.web.user.service.impl;
 import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.common.response.Response;
 import com.argusoft.who.emcare.web.config.KeyCloakConfig;
+import com.argusoft.who.emcare.web.location.model.LocationMaster;
+import com.argusoft.who.emcare.web.location.service.LocationService;
 import com.argusoft.who.emcare.web.secuirty.EmCareSecurityUser;
 import com.argusoft.who.emcare.web.user.cons.UserConst;
-import com.argusoft.who.emcare.web.user.dao.UserRepository;
-import com.argusoft.who.emcare.web.user.dto.RoleDto;
-import com.argusoft.who.emcare.web.user.dto.RoleUpdateDto;
-import com.argusoft.who.emcare.web.user.dto.UserDto;
-import com.argusoft.who.emcare.web.user.dto.UserUpdateDto;
+import com.argusoft.who.emcare.web.user.dto.*;
 import com.argusoft.who.emcare.web.user.mapper.UserMapper;
-import com.argusoft.who.emcare.web.user.model.User;
 import com.argusoft.who.emcare.web.user.service.UserService;
+import com.argusoft.who.emcare.web.userLocationMapping.dao.UserLocationMappingRepository;
+import com.argusoft.who.emcare.web.userLocationMapping.model.UserLocationMapping;
 import org.keycloak.admin.client.CreatedResponseUtil;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.resource.*;
@@ -26,7 +25,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author jay
@@ -35,17 +37,24 @@ import java.util.*;
 public class UserServiceImpl implements UserService {
 
     @Autowired
-    UserRepository userRepository;
-
-    @Autowired
     KeyCloakConfig keyCloakConfig;
 
     @Autowired
     EmCareSecurityUser emCareSecurityUser;
 
+    @Autowired
+    UserLocationMappingRepository userLocationMappingRepository;
+
+    @Autowired
+    LocationService locationService;
+
     @Override
-    public AccessToken getCurrentUser() {
-        return emCareSecurityUser.getLoggedInUser();
+    public UserMasterDto getCurrentUser() {
+        AccessToken user = emCareSecurityUser.getLoggedInUser();
+        UserLocationMapping userLocationMapping = userLocationMappingRepository.findByUserId(user.getSubject()).get(0);
+        LocationMaster userLocation = locationService.getLocationById(userLocationMapping.getLocationId());
+        UserMasterDto masterUser = UserMapper.getMasterUser(user, userLocation);
+        return masterUser;
     }
 
     @Override
@@ -104,7 +113,7 @@ public class UserServiceImpl implements UserService {
         try {
             javax.ws.rs.core.Response response = usersResource.create(kcUser);
             String userId = CreatedResponseUtil.getCreatedId(response);
-            userRepository.save(UserMapper.userDtoToUserEntity(user, userId));
+            userLocationMappingRepository.save(UserMapper.userDtoToUserLocationMappingEntity(user, userId));
             UserResource userResource = usersResource.get(userId);
 
 //        Set Realm Role
@@ -136,7 +145,7 @@ public class UserServiceImpl implements UserService {
         javax.ws.rs.core.Response response = usersResource.create(kcUser);
 
         String userId = CreatedResponseUtil.getCreatedId(response);
-        userRepository.save(UserMapper.userDtoToUserEntity(user, userId));
+        userLocationMappingRepository.save(UserMapper.userDtoToUserLocationMappingEntity(user, userId));
         UserResource userResource = usersResource.get(userId);
 
 //        Set Realm Role
@@ -162,16 +171,11 @@ public class UserServiceImpl implements UserService {
         UserRepresentation user = usersResource.get(userUpdateDto.getUserId()).toRepresentation();
         user.setEnabled(userUpdateDto.getIsEnabled());
         usersResource.get(userUpdateDto.getUserId()).update(user);
-        User oldUser;
-        Optional<User> optionalUser = userRepository.findById(userUpdateDto.getUserId());
-        if (optionalUser.isPresent()) {
-            oldUser = optionalUser.get();
-            oldUser.setRegStatus(UserConst.REGISTRATION_COMPLETED);
-            userRepository.save(oldUser);
-            return ResponseEntity.ok(oldUser);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Response(CommonConstant.USER_NOT_FOUND, HttpStatus.NOT_FOUND.value()));
-        }
+        UserLocationMapping oldUser = userLocationMappingRepository.findByUserId(userUpdateDto.getUserId()).get(0);
+        oldUser.setState(true);
+        userLocationMappingRepository.save(oldUser);
+        return ResponseEntity.ok(oldUser);
+
     }
 
     @Override
@@ -190,6 +194,13 @@ public class UserServiceImpl implements UserService {
         RoleResource roleResource = keycloak.realm(KeyCloakConfig.REALM).roles().get(roleUpdateDto.getOldRoleName());
         roleResource.update(roleRep);
         return ResponseEntity.ok(roleUpdateDto);
+    }
+
+    @Override
+    public String getRoleIdByName(String roleName) {
+        Keycloak keycloak = keyCloakConfig.getInstanceByAuth();
+        RoleResource roleResource = keycloak.realm(KeyCloakConfig.REALM).roles().get(roleName);
+        return roleResource.toRepresentation().getId();
     }
 
     private static CredentialRepresentation createPasswordCredentials(String password) {

@@ -1,29 +1,26 @@
 package com.argusoft.who.emcare.web.userLocationMapping.model;
 
-import com.argusoft.who.emcare.web.common.model.EntityAuditInfo;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "user_location_mapping")
-public class UserLocationMapping extends EntityAuditInfo {
-    
+public class UserLocationMapping implements Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
     private Integer id;
-    
+
     @Column(name = "user_id", nullable = false)
     private String userId;
-    
+
     @Column(name = "location_id", nullable = false)
     private Integer locationId;
-    
+
+    @Column(name = "reg_request_from", nullable = false)
+    private String regRequestFrom;
+
     @Basic(optional = false)
     @Column(name = "state", nullable = false)
     private boolean state;
@@ -59,5 +56,12 @@ public class UserLocationMapping extends EntityAuditInfo {
     public void setState(boolean state) {
         this.state = state;
     }
-    
+
+    public String getRegRequestFrom() {
+        return regRequestFrom;
+    }
+
+    public void setRegRequestFrom(String regRequestFrom) {
+        this.regRequestFrom = regRequestFrom;
+    }
 }

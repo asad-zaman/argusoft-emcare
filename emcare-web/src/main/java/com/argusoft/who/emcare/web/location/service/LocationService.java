@@ -5,8 +5,9 @@ import com.argusoft.who.emcare.web.location.dto.LocationMasterDto;
 import com.argusoft.who.emcare.web.location.model.LocationMaster;
 import org.springframework.http.ResponseEntity;
 
+import java.util.List;
+
 /**
- *
  * @author jay
  */
 public interface LocationService {
@@ -29,7 +30,9 @@ public interface LocationService {
 
     public ResponseEntity<Object> deleteLocationById(Integer locationId);
 
-    public ResponseEntity<Object> getLocationById(Integer locationId);
-    
+    public LocationMaster getLocationById(Integer locationId);
+
     public LocationMaster getLocationMasterById(Integer locationId);
+
+    public List<LocationMaster> getLocationByType(String type);
 }
