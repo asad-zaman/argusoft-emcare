@@ -5,6 +5,7 @@ import com.argusoft.who.emcare.ui.common.model.User
 import com.argusoft.who.emcare.utils.extention.fromJson
 import com.argusoft.who.emcare.utils.extention.orEmpty
 import com.argusoft.who.emcare.utils.extention.toJson
+import java.util.*
 
 class PreferenceManager(private val sharedPreferences: EncPref) : Preference {
 
@@ -13,6 +14,7 @@ class PreferenceManager(private val sharedPreferences: EncPref) : Preference {
         private const val USER = "USER"
         private const val TOKEN = "TOKEN"
         private const val LOGGED_IN_USER = "LOGGED_IN_USER"
+        const val SELECTED_LANGUAGE = "APP_LANGUAGE"
     }
 
     override fun setLogin() {
@@ -43,8 +45,16 @@ class PreferenceManager(private val sharedPreferences: EncPref) : Preference {
         sharedPreferences.putString(LOGGED_IN_USER, loggedInUser.toJson())
     }
 
-    override fun loggedInUser(): LoggedInUser? {
+    override fun getLoggedInUser(): LoggedInUser? {
         return sharedPreferences.getString(LOGGED_IN_USER).orEmpty { "{}" }.fromJson<LoggedInUser>()
+    }
+
+    override fun setAppLanguage(lanCode: String) {
+        sharedPreferences.putString(SELECTED_LANGUAGE, lanCode)
+    }
+
+    override fun getAppLanguage(): String {
+        return sharedPreferences.getString(SELECTED_LANGUAGE, Locale.getDefault().language)
     }
 
     override fun clear() {

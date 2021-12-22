@@ -19,7 +19,11 @@ interface Preference {
 
     fun setLoggedInUser(loggedInUser: LoggedInUser)
 
-    fun loggedInUser() : LoggedInUser?
+    fun getLoggedInUser() : LoggedInUser?
+
+    fun setAppLanguage(lanCode: String)
+
+    fun getAppLanguage(): String
 
     fun clear()
 }

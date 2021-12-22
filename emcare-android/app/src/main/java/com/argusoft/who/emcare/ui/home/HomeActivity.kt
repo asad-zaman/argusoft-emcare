@@ -41,10 +41,10 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
         navView.setupWithNavController(navController)
 
         //Setting name & email in drawer view
-        if(preference.getLoggedInuser() != null) {
+        if(preference.getLoggedInUser() != null) {
             val headerView = binding.navView.getHeaderView(0)
-            headerView.findViewById<TextView>(R.id.nameTextView).text = preference.getLoggedInuser()?.userName
-            headerView.findViewById<TextView>(R.id.emailTextView).text = preference.getLoggedInuser()?.email
+            headerView.findViewById<TextView>(R.id.nameTextView).text = preference.getLoggedInUser()?.userName
+            headerView.findViewById<TextView>(R.id.emailTextView).text = preference.getLoggedInUser()?.email
         }
     }
 

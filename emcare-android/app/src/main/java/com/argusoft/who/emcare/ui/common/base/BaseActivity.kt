@@ -1,5 +1,7 @@
 package com.argusoft.who.emcare.ui.common.base
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -14,8 +16,10 @@ import com.google.android.play.core.install.model.UpdateAvailability
 import com.google.android.play.core.review.ReviewManagerFactory
 import com.argusoft.who.emcare.data.local.pref.Preference
 import com.argusoft.who.emcare.ui.common.MY_UPDATE_REQUEST_CODE
+import com.argusoft.who.emcare.ui.home.HomeActivity
 import com.argusoft.who.emcare.utils.extention.hideKeyboard
 import com.argusoft.who.emcare.utils.extention.onViewBinding
+import com.argusoft.who.emcare.utils.localization.LocaleHelperActivityDelegateImpl
 import javax.inject.Inject
 
 abstract class BaseActivity<B : ViewBinding> : AppCompatActivity(), View.OnClickListener {
@@ -26,6 +30,13 @@ abstract class BaseActivity<B : ViewBinding> : AppCompatActivity(), View.OnClick
     abstract fun initView()
     abstract fun initListener()
     abstract fun initObserver()
+
+    private val localeDelegate = LocaleHelperActivityDelegateImpl()
+
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(localeDelegate.attachBaseContext(newBase))
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -101,5 +112,13 @@ abstract class BaseActivity<B : ViewBinding> : AppCompatActivity(), View.OnClick
         request.addOnFailureListener {
             callback.invoke(false)
         }
+    }
+
+    fun restartApp() {
+        val intent = Intent(this, HomeActivity::class.java)
+        //intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+        finish()
+        startActivity(intent)
+
     }
 }
