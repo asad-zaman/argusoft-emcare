@@ -43,7 +43,7 @@ class PreferenceManager(private val sharedPreferences: EncPref) : Preference {
         sharedPreferences.putString(LOGGED_IN_USER, loggedInUser.toJson())
     }
 
-    override fun loggedInUser(): LoggedInUser? {
+    override fun getLoggedInUser(): LoggedInUser? {
         return sharedPreferences.getString(LOGGED_IN_USER).orEmpty { "{}" }.fromJson<LoggedInUser>()
     }
 
