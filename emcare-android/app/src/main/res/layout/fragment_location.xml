@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.argusoft.who.emcare.widget.ApiViewStateConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <include
+        android:id="@+id/headerLayout"
+        layout="@layout/layout_header"
+        app:layout_constraintTop_toTopOf="parent" />
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/submitLocationButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/_16sdp"
+        android:layout_marginTop="@dimen/_12sdp"
+        android:text="@string/button_submit_location"
+        app:layout_constraintTop_toBottomOf="@+id/headerLayout" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/selectLocationRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_12sdp"
+        android:orientation="vertical"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintTop_toBottomOf="@id/submitLocationButton"
+        tools:listitem="@layout/list_item_location"
+        />
+
+</com.argusoft.who.emcare.widget.ApiViewStateConstraintLayout>
