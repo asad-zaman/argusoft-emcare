@@ -2,6 +2,9 @@ package com.argusoft.who.emcare.web.user.dto;
 
 import com.argusoft.who.emcare.web.location.model.LocationMaster;
 
+import java.util.List;
+import java.util.Map;
+
 public class UserMasterDto {
 
     private String userId;
@@ -9,6 +12,7 @@ public class UserMasterDto {
     private String email;
     private LocationMaster location;
     private String[] roles;
+    private List<Map<String, Object>> feature;
 
     public String getUserId() {
         return userId;
@@ -48,5 +52,13 @@ public class UserMasterDto {
 
     public void setRoles(String[] roles) {
         this.roles = roles;
+    }
+
+    public List<Map<String, Object>> getFeature() {
+        return feature;
+    }
+
+    public void setFeature(List<Map<String, Object>> feature) {
+        this.feature = feature;
     }
 }

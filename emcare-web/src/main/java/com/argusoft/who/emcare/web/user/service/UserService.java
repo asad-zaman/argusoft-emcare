@@ -37,15 +37,17 @@ public interface UserService {
 
     public ResponseEntity<Object> updateUserStatus(UserUpdateDto userUpdateDto);
 
-    public ResponseEntity<Object> getUserById(String userId);
+    public UserRepresentation getUserById(String userId);
 
-    public ResponseEntity<Object> getUserRolesById(String useraId);
+    public ResponseEntity<Object> getUserRolesById(String userId);
 
     public ResponseEntity<Object> updateUser(UserDto userDto, String userId);
 
     public ResponseEntity<Object> updateRole(RoleUpdateDto roleUpdateDto);
 
     public String getRoleIdByName(String roleName);
+
+    public String getRoleNameById(String roleId);
 
     public default Keycloak getKeyCloakInstance() {
         return KeycloakBuilder.builder()
