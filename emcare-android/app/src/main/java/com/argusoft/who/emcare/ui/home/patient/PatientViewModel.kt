@@ -129,7 +129,7 @@ class PatientViewModel @Inject constructor(
                 //#Adding locationId
                 val locationIdentifier: Identifier = Identifier()
                 locationIdentifier.use = Identifier.IdentifierUse.OFFICIAL
-                locationIdentifier.value = UUID.randomUUID().toString()
+                locationIdentifier.value = "4" //TODO: replace this with preference location id
                 val extension: Extension = Extension()
                     .setValue(locationIdentifier)
                     .setUrl("http://hl7.org/fhir/StructureDefinition/patient-locationId")
