@@ -1,0 +1,99 @@
+.sidenav {
+    border-right: 1px solid $color-gray-50;
+    position: fixed;
+    left: 0px;
+    top: 60px;
+    width: 230px;
+    height: 100%;
+    background: $color-light-gray;
+    .nav-link {
+        margin: 0px;
+        padding: 0px;
+        li {
+            list-style-type: none;
+            a {
+                text-decoration: none;
+                color: $color-gray-80;
+                font-size: 14px;
+                font-weight: 500;
+                position: relative;
+                padding: 15px;
+                padding-left: 45px;
+                display: block;
+                .nav-link_icon {
+                    position: absolute;
+                    left: 15px;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    font-size: 16px;
+                }
+                &:hover {
+                    background: $color-red;
+                    color: $color-white;
+                    i {
+                        color: $color-white;
+                    }
+                }
+                .drop-icon {
+                    position: absolute;
+                    right: 15px;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    font-size: 16px;
+                }
+            }
+            .active {
+                background: $color-red;
+                color: $color-white;
+                .drop-icon {
+                    transform: translateY(-50%) rotateZ(-180deg);
+                    color: $color-white;
+                }
+                i {
+                    color: $color-white;
+                }
+            }
+        }
+    }
+    .dropdown_list_wrapper {
+        background: $color-white;
+        padding: 10px;
+        padding-left: 45px;
+        .dropdown_list {
+            margin: 0px;
+            padding: 0px;
+            border-left: 1px solid $color-gray-50;
+            li {
+                position: relative;
+                list-style-type: none;
+                a {
+                    text-decoration: none;
+                    color: $color-gray-80;
+                    font-size: 14px;
+                    font-weight: 500;
+                    position: relative;
+                    padding: 6px 10px;
+                    display: block;
+                    &:hover {
+                        background: transparent;
+                        color: $color-gray-90;
+                    }
+                }
+                .dropdown-link_active {
+                    color: $color-gray-90;
+                    font-weight: 700;
+                    &:before {
+                        content: "";
+                        position: absolute;
+                        left: -6px;
+                        top: 10px;
+                        width: 10px;
+                        height: 10px;
+                        border-radius: 50%;
+                        background: $color-balck;
+                    }
+                }
+            }
+        }
+    }
+}

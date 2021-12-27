@@ -11,7 +11,7 @@ import { LocationService } from 'src/app/root/services/location.service';
 export class LocationManagementComponent implements OnInit {
 
   locationForm: FormGroup;
-  isEdit: boolean;
+  isEdit: boolean = false;
   editId: string;
   locationArr: any;
   locationTypeArr: any;

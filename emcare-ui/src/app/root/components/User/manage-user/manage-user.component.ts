@@ -12,7 +12,7 @@ import { UserManagementService } from 'src/app/root/services/user-management.ser
 export class ManageUserComponent implements OnInit {
 
   userForm: FormGroup;
-  isEdit: boolean;
+  isEdit: boolean = false;
   editId: string;
   roles: any;
 
@@ -70,14 +70,13 @@ export class ManageUserComponent implements OnInit {
 
   getRoles() {
     this.roleService.getAllRoles().subscribe(res => {
-      if(res) {
+      if (res) {
         this.roles = res;
       }
     });
   }
 
   saveData() {
-    console.log(this.userForm);
     if (this.userForm.valid) {
       if (this.isEdit) {
         const data = {
@@ -106,5 +105,4 @@ export class ManageUserComponent implements OnInit {
   showUser() {
     this.router.navigate([`showUsers`]);
   }
-
 }
