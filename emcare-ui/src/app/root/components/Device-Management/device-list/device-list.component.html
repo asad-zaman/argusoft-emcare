@@ -1,42 +1,52 @@
-<div class="container">
-    <div class="row mt-5">
-        <div class="col-1"></div>
-        <div class="col-10">
-            <div class="card">
-                <div class="card-body">
-                    <h3 class="mt-3">Device List</h3>
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th scope="col">No.</th>
-                                <th scope="col">IMEI Number</th>
-                                <th scope="col">MAC Address</th>
-                                <th scope="col">Android Version</th>
-                                <th scope="col">Logged in User</th>
-                                <th scope="col">App Usage</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <ng-container *ngFor="let data of deviceArr; let i=index">
-                                <tr>
-                                    <th scope="row">{{i+1}}</th>
-                                    <td>{{data.imeiNumber}}</td>
-                                    <td>{{data.macAddress}}</td>
-                                    <td>{{data.androidVersion}}</td>
-                                    <td>{{data.lastLoggedInUser}}</td>
-                                    <td>
-                                        <label class="switch">
-                                            <input [(ngModel)]="data.isBlocked" (ngModelChange)="editDevice($event, data)" id="isBlocked" type="checkbox" checked>
-                                            <span class="slider round"></span>
-                                        </label>
-                                    </td>
-                                </tr>
-                            </ng-container>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-        <div class="col-1"></div>
-    </div>
+<div class="main-wrapper">
+  <h1 class="heading">Device List</h1>
+  <hr>
+  <!--Table-->
+  <div class="table-responsive">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>IMEI Number</th>
+          <th>MAC Address</th>
+          <th>Android Version</th>
+          <th>Logged in User</th>
+          <th>App Usage</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let data of deviceArr; let i=index">
+          <tr>
+            <th scope="row">{{i+1}}</th>
+            <td>{{data.imeiNumber}}</td>
+            <td>{{data.macAddress}}</td>
+            <td>{{data.androidVersion}}</td>
+            <td>{{data.lastLoggedInUser}}</td>
+            <td>
+              <label class="switch">
+                <input [(ngModel)]="data.isBlocked" (ngModelChange)="editDevice($event, data)" id="isBlocked"
+                  type="checkbox" checked>
+                <span class="slider round"></span>
+              </label>
+            </td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </table>
+  </div>
+  <!--Table-END-->
+
+  <!--pagination-->
+  <ul class="pagination custom-pagination justify-content-end my-4">
+    <li class="page-item">
+      <a class="page-link" href="#" tabindex="-1" aria-disabled="true"><i class="bi bi-arrow-left font-size-16"></i></a>
+    </li>
+    <li class="page-item"><a class="page-link" href="#">1</a></li>
+    <li class="page-item"><a class="page-link pagination-active" href="#">2</a></li>
+    <li class="page-item"><a class="page-link" href="#">3</a></li>
+    <li class="page-item">
+      <a class="page-link" href="#"><i class="bi bi-arrow-right font-size-16"></i></a>
+    </li>
+  </ul>
+  <!--pagination-END-->
 </div>

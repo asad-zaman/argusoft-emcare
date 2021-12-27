@@ -24,7 +24,7 @@ export class AuthenticationService {
     }
 
     signup(firstname: string, lastname: string, username: string, password: string) {
-        return this.http.post<any>(`http:localhost:4200/users/signup`, { firstname, lastname, username, password }, { withCredentials: true })
+        return this.http.post<any>(`http://7907-150-129-149-210.ngrok.io/users/signup`, { firstname, lastname, username, password }, { withCredentials: true })
             .pipe(map(user => {
                 this.userInfo.next(user);
                 return user;
@@ -41,7 +41,7 @@ export class AuthenticationService {
     }
 
     login(username: string, password: string) {
-        const url = `http://localhost:8180/auth/realms/emcare_demo/protocol/openid-connect/token`;
+        const url = `http://7907-150-129-149-210.ngrok.io/auth/realms/emcare_demo/protocol/openid-connect/token`;
         const body = new HttpParams()
             .set('username', username)
             .set('password', password)
@@ -59,7 +59,7 @@ export class AuthenticationService {
                 'Authorization': `Bearer ${accessToken}`
             })
         };
-        const url = `http://localhost:8080/api/user`;
+        const url = `http://7907-150-129-149-210.ngrok.io/api/user`;
         return this.http.get<any>(url, headerObj);
     }
 
@@ -68,7 +68,7 @@ export class AuthenticationService {
     }
 
     refreshToken() {
-        const url = `http://localhost:8180/auth/realms/emcare_demo/protocol/openid-connect/token`;
+        const url = `http://7907-150-129-149-210.ngrok.io/auth/realms/emcare_demo/protocol/openid-connect/token`;
         const body = new HttpParams()
             .set('grant_type', 'password')
             .set('password', 'parth@123')

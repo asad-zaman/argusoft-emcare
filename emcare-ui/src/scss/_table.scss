@@ -1,0 +1,26 @@
+.data-table {
+    width: 100%;
+    th {
+        white-space: nowrap;
+        background: $color-balck;
+        padding: 12px;
+        font-size: 14px;
+        font-weight: 500;
+        color: $color-white;
+        &:first-child {
+            border-top-left-radius: 5px;
+        }
+        &:last-child {
+            border-top-right-radius: 5px;
+        }
+    }
+    tbody {
+        td {
+            padding: 12px;
+            border-bottom: 1px solid $color-gray-40;
+            color: $color-gray-90;
+            font-size: 14px;
+            white-space: nowrap;
+        }
+    }
+}
