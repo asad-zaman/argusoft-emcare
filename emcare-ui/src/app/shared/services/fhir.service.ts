@@ -29,4 +29,8 @@ export class FhirService {
     getAllPatients() {
         return this.http.get(`${this.fhirBaseURL}/patient`,this.getHeaders());
     }
+
+    getPatientById(id: String) {
+        return this.http.get(`${this.fhirBaseURL}/patient/${id}`,this.getHeaders());
+    }
 }
