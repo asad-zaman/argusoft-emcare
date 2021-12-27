@@ -16,4 +16,6 @@ public interface LocationMasterDao extends JpaRepository<LocationMaster, Integer
     public List<LocationMaster> getChildLocation(@Param("id") Integer id);
 
     List<LocationMaster> findByType(String locationType);
+
+    List<LocationMaster> findByParent(Long locationId);
 }

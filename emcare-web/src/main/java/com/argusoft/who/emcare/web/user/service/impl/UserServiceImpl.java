@@ -183,11 +183,24 @@ public class UserServiceImpl implements UserService {
         keycloak.realm(KeyCloakConfig.REALM).roles().create(roleRep);
         RoleRepresentation roleRepresentation = keycloak.realm(KeyCloakConfig.REALM).roles().get(role.getRoleName()).toRepresentation();
         List<MenuConfig> menuList = menuConfigRepository.findAll();
-        for (MenuConfig menu : menuList) {
-            UserMenuConfig userMenuConfig = new UserMenuConfig();
-            userMenuConfig.setMenuId(menu.getId());
-            userMenuConfig.setRoleId(roleRepresentation.getId());
-            userMenuConfigRepository.save(userMenuConfig);
+        List<UserMenuConfig> userMenuConfigs = userMenuConfigRepository.findAll();
+        List<RoleRepresentation> roleRepresentationList = keycloak.realm(KeyCloakConfig.REALM).roles().list();
+        if (userMenuConfigs.isEmpty()) {
+            for (MenuConfig menu : menuList) {
+                for (RoleRepresentation roleReps : roleRepresentationList) {
+                    UserMenuConfig userMenuConfig = new UserMenuConfig();
+                    userMenuConfig.setMenuId(menu.getId());
+                    userMenuConfig.setRoleId(roleReps.getId());
+                    userMenuConfigRepository.save(userMenuConfig);
+                }
+            }
+        } else {
+            for (MenuConfig menu : menuList) {
+                UserMenuConfig userMenuConfig = new UserMenuConfig();
+                userMenuConfig.setMenuId(menu.getId());
+                userMenuConfig.setRoleId(roleRepresentation.getId());
+                userMenuConfigRepository.save(userMenuConfig);
+            }
         }
     }
 

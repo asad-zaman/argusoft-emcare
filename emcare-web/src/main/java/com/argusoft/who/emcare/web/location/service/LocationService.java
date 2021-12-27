@@ -2,6 +2,7 @@ package com.argusoft.who.emcare.web.location.service;
 
 import com.argusoft.who.emcare.web.location.dto.HierarchyMasterDto;
 import com.argusoft.who.emcare.web.location.dto.LocationMasterDto;
+import com.argusoft.who.emcare.web.location.dto.LocationaListDto;
 import com.argusoft.who.emcare.web.location.model.LocationMaster;
 import org.springframework.http.ResponseEntity;
 
@@ -35,4 +36,6 @@ public interface LocationService {
     public LocationMaster getLocationMasterById(Integer locationId);
 
     public List<LocationMaster> getLocationByType(String type);
+
+    public List<LocationaListDto> getChildLocation(Integer locationId);
 }
