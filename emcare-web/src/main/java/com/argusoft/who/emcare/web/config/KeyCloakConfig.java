@@ -27,13 +27,13 @@ public class KeyCloakConfig {
     HttpServletRequest request;
 
     Keycloak keycloak = null;
-    public static final String SERVER_URL = "http://localhost:8180/auth";
-    public static final String CLIENT_SECRET = "4d9c181a-e677-49da-99fa-a1bab142dce5";
+    public static final String SERVER_URL = "http://192.1.200.197:8180/auth";
+    public static final String CLIENT_SECRET = "b5a37bde-8d54-4837-a8dc-12e1f808e26e";
     public static final String CLIENT_ID = "emcare";
     public static final String REALM = "emcare";
-    public static final String USER_NAME = "jay";
+    public static final String USER_NAME = "emcare_admin";
     public static final String PASSWORD = "argusadmin";
-    public static final String MASTER_USER_ID = "j@gmail.com";
+    public static final String MASTER_USER_ID = "emcare@gmail.com";
     public static final String MASTER_USER_PASSWORD = "argusadmin";
 
     public Keycloak getInstance() {

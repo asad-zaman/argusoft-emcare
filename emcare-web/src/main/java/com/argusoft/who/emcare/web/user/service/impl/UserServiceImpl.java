@@ -3,16 +3,19 @@ package com.argusoft.who.emcare.web.user.service.impl;
 import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.common.response.Response;
 import com.argusoft.who.emcare.web.config.KeyCloakConfig;
+import com.argusoft.who.emcare.web.location.model.LocationMaster;
+import com.argusoft.who.emcare.web.location.service.LocationService;
+import com.argusoft.who.emcare.web.menu.dao.MenuConfigRepository;
+import com.argusoft.who.emcare.web.menu.dao.UserMenuConfigRepository;
+import com.argusoft.who.emcare.web.menu.model.MenuConfig;
+import com.argusoft.who.emcare.web.menu.model.UserMenuConfig;
 import com.argusoft.who.emcare.web.secuirty.EmCareSecurityUser;
 import com.argusoft.who.emcare.web.user.cons.UserConst;
-import com.argusoft.who.emcare.web.user.dao.UserRepository;
-import com.argusoft.who.emcare.web.user.dto.RoleDto;
-import com.argusoft.who.emcare.web.user.dto.RoleUpdateDto;
-import com.argusoft.who.emcare.web.user.dto.UserDto;
-import com.argusoft.who.emcare.web.user.dto.UserUpdateDto;
+import com.argusoft.who.emcare.web.user.dto.*;
 import com.argusoft.who.emcare.web.user.mapper.UserMapper;
-import com.argusoft.who.emcare.web.user.model.User;
 import com.argusoft.who.emcare.web.user.service.UserService;
+import com.argusoft.who.emcare.web.userLocationMapping.dao.UserLocationMappingRepository;
+import com.argusoft.who.emcare.web.userLocationMapping.model.UserLocationMapping;
 import org.keycloak.admin.client.CreatedResponseUtil;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.resource.*;
@@ -24,18 +27,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author jay
  */
 @Service
+@Transactional
 public class UserServiceImpl implements UserService {
-
-    @Autowired
-    UserRepository userRepository;
 
     @Autowired
     KeyCloakConfig keyCloakConfig;
@@ -43,9 +48,33 @@ public class UserServiceImpl implements UserService {
     @Autowired
     EmCareSecurityUser emCareSecurityUser;
 
+    @Autowired
+    UserLocationMappingRepository userLocationMappingRepository;
+
+    @Autowired
+    LocationService locationService;
+
+    @Autowired
+    MenuConfigRepository menuConfigRepository;
+
+    @Autowired
+    UserMenuConfigRepository userMenuConfigRepository;
+
     @Override
-    public AccessToken getCurrentUser() {
-        return emCareSecurityUser.getLoggedInUser();
+    public UserMasterDto getCurrentUser() {
+        AccessToken user = emCareSecurityUser.getLoggedInUser();
+        List<UserLocationMapping> userLocationList = userLocationMappingRepository.findByUserId(user.getSubject());
+        UserLocationMapping userLocationMapping;
+        LocationMaster userLocation;
+        if (userLocationList.isEmpty()) {
+            userLocation = null;
+        } else {
+            userLocationMapping = userLocationMappingRepository.findByUserId(user.getSubject()).get(0);
+            userLocation = locationService.getLocationById(userLocationMapping.getLocationId());
+        }
+        UserMasterDto masterUser = UserMapper.getMasterUser(user, userLocation);
+        masterUser.setFeature(userMenuConfigRepository.getMenuByUser(Arrays.asList(masterUser.getRoles()), masterUser.getUserId()));
+        return masterUser;
     }
 
     @Override
@@ -104,7 +133,7 @@ public class UserServiceImpl implements UserService {
         try {
             javax.ws.rs.core.Response response = usersResource.create(kcUser);
             String userId = CreatedResponseUtil.getCreatedId(response);
-            userRepository.save(UserMapper.userDtoToUserEntity(user, userId));
+            userLocationMappingRepository.save(UserMapper.userDtoToUserLocationMappingEntity(user, userId));
             UserResource userResource = usersResource.get(userId);
 
 //        Set Realm Role
@@ -136,7 +165,7 @@ public class UserServiceImpl implements UserService {
         javax.ws.rs.core.Response response = usersResource.create(kcUser);
 
         String userId = CreatedResponseUtil.getCreatedId(response);
-        userRepository.save(UserMapper.userDtoToUserEntity(user, userId));
+        userLocationMappingRepository.save(UserMapper.userDtoToUserLocationMappingEntity(user, userId));
         UserResource userResource = usersResource.get(userId);
 
 //        Set Realm Role
@@ -152,6 +181,27 @@ public class UserServiceImpl implements UserService {
         roleRep.setName(role.getRoleName());
         roleRep.setDescription(role.getRoleDescription());
         keycloak.realm(KeyCloakConfig.REALM).roles().create(roleRep);
+        RoleRepresentation roleRepresentation = keycloak.realm(KeyCloakConfig.REALM).roles().get(role.getRoleName()).toRepresentation();
+        List<MenuConfig> menuList = menuConfigRepository.findAll();
+        List<UserMenuConfig> userMenuConfigs = userMenuConfigRepository.findAll();
+        List<RoleRepresentation> roleRepresentationList = keycloak.realm(KeyCloakConfig.REALM).roles().list();
+        if (userMenuConfigs.isEmpty()) {
+            for (MenuConfig menu : menuList) {
+                for (RoleRepresentation roleReps : roleRepresentationList) {
+                    UserMenuConfig userMenuConfig = new UserMenuConfig();
+                    userMenuConfig.setMenuId(menu.getId());
+                    userMenuConfig.setRoleId(roleReps.getId());
+                    userMenuConfigRepository.save(userMenuConfig);
+                }
+            }
+        } else {
+            for (MenuConfig menu : menuList) {
+                UserMenuConfig userMenuConfig = new UserMenuConfig();
+                userMenuConfig.setMenuId(menu.getId());
+                userMenuConfig.setRoleId(roleRepresentation.getId());
+                userMenuConfigRepository.save(userMenuConfig);
+            }
+        }
     }
 
     @Override
@@ -162,16 +212,11 @@ public class UserServiceImpl implements UserService {
         UserRepresentation user = usersResource.get(userUpdateDto.getUserId()).toRepresentation();
         user.setEnabled(userUpdateDto.getIsEnabled());
         usersResource.get(userUpdateDto.getUserId()).update(user);
-        User oldUser;
-        Optional<User> optionalUser = userRepository.findById(userUpdateDto.getUserId());
-        if (optionalUser.isPresent()) {
-            oldUser = optionalUser.get();
-            oldUser.setRegStatus(UserConst.REGISTRATION_COMPLETED);
-            userRepository.save(oldUser);
-            return ResponseEntity.ok(oldUser);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Response(CommonConstant.USER_NOT_FOUND, HttpStatus.NOT_FOUND.value()));
-        }
+        UserLocationMapping oldUser = userLocationMappingRepository.findByUserId(userUpdateDto.getUserId()).get(0);
+        oldUser.setState(true);
+        userLocationMappingRepository.save(oldUser);
+        return ResponseEntity.ok(oldUser);
+
     }
 
     @Override
@@ -192,6 +237,24 @@ public class UserServiceImpl implements UserService {
         return ResponseEntity.ok(roleUpdateDto);
     }
 
+    @Override
+    public String getRoleIdByName(String roleName) {
+        Keycloak keycloak = keyCloakConfig.getInstanceByAuth();
+        RoleResource roleResource = keycloak.realm(KeyCloakConfig.REALM).roles().get(roleName);
+        return roleResource.toRepresentation().getId();
+    }
+
+    @Override
+    public String getRoleNameById(String roleId) {
+        String roleName = "";
+        Keycloak keycloak = keyCloakConfig.getInstanceByAuth();
+        RoleRepresentation roleResource = keycloak.realm(KeyCloakConfig.REALM).roles().list().stream().filter(role -> roleId.equals(role.getId())).findAny().orElse(null);
+        if (roleResource != null) {
+            roleName = roleResource.getName();
+        }
+        return roleName;
+    }
+
     private static CredentialRepresentation createPasswordCredentials(String password) {
         CredentialRepresentation passwordCredentials = new CredentialRepresentation();
         passwordCredentials.setTemporary(false);
@@ -201,17 +264,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseEntity<Object> getUserById(String userId) {
-        Keycloak keycloak = keyCloakConfig.getInstance();
-        UserRepresentation retrievedUser = keycloak.realm(KeyCloakConfig.REALM)
-                .users().get(userId).toRepresentation();
-        return ResponseEntity.ok(retrievedUser);
+    public UserRepresentation getUserById(String userId) {
+        Keycloak keycloak = keyCloakConfig.getInstanceByAuth();
+        return keycloak.realm(KeyCloakConfig.REALM).users().get(userId).toRepresentation();
     }
 
     @Override
     public ResponseEntity<Object> updateUser(UserDto userDto, String userId) {
         Keycloak keycloak = keyCloakConfig.getInstance();
-        RealmResource realmResource = keycloak.realm(KeyCloakConfig.REALM);
         UserResource userResource = keycloak.realm(KeyCloakConfig.REALM)
                 .users().get(userId);
         UserRepresentation oldUser = userResource.toRepresentation();

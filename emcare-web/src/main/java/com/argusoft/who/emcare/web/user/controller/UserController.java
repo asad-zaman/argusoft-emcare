@@ -6,6 +6,7 @@ import com.argusoft.who.emcare.web.user.dto.RoleUpdateDto;
 import com.argusoft.who.emcare.web.user.dto.UserDto;
 import com.argusoft.who.emcare.web.user.dto.UserUpdateDto;
 import com.argusoft.who.emcare.web.user.service.UserService;
+import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -52,10 +53,6 @@ public class UserController {
         return locationConfigService.getAllLocation();
     }
 
-    /**
-     * @param user
-     * @return
-     */
     @PostMapping("/signup")
     public ResponseEntity<Object> addUser(@RequestBody UserDto user) {
         return userService.signUp(user);
@@ -74,7 +71,7 @@ public class UserController {
     }
     
     @GetMapping("/user/{userId}")
-    public ResponseEntity<Object> getUserById(@PathVariable String userId) {
+    public UserRepresentation getUserById(@PathVariable String userId) {
         return userService.getUserById(userId);
     }
 
