@@ -1,18 +1,19 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LocationService {
 
-  locationURL = `http://localhost:8080/api/location`;
+  locationURL = `${environment.apiUrl}/api/location`;
 
   constructor(private http: HttpClient) { }
 
   getHeaders() {
     let authToken = localStorage.getItem("access_token");
-    authToken = authToken.substring(1,authToken.length - 1);
+    authToken = authToken ? authToken.substring(1,authToken.length - 1) : '';
     const headerObj = {
         headers: new HttpHeaders({
             'Content-Type': 'application/json',

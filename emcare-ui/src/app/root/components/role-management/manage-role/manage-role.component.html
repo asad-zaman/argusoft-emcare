@@ -1,37 +1,32 @@
-<div class="container">
-    <div class="row mt-5">
-        <div class="col-2"></div>
-        <div class="col-8">
-            <div class="card">
-                <div class="card-body">
-                    <h3 *ngIf="!isEdit" class="mt-3">Create Role</h3>
-                    <h3 *ngIf="!!isEdit" class="mt-3">Update Role</h3>
-                    <form [formGroup]="roleForm" name="roleForm" novalidate>
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="form-group">
-                                    <label for="name">Role Name</label>
-                                    <input formControlName="name" type="text" class="form-control" id="name"
-                                        placeholder="Enter Role Name">
-                                </div>
-                            </div>
-                            <div class="col-12">
-                                <div class="form-group">
-                                    <label for="description">Description</label>
-                                    <input formControlName="description" type="text" class="form-control" id="description"
-                                        placeholder="Enter Role Description">
-                                </div>
-                            </div>
-                            <div class="col-2">
-                                <button type="submit" class="btn btn-primary" (click)="saveData()">Submit</button>
-                            </div>
-                            <div class="col-7">
-                                <button type="submit" class="btn btn-primary" (click)="showRoles()">Show Roles</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
+<div class="main-wrapper">
+  <div class="form-wrapper">
+    <form [formGroup]="roleForm" name="roleForm" novalidate>
+      <div class="mb-5">
+        <h1 *ngIf="!isEdit" class="heading">{{ !isEdit ? 'Add Role' : 'Update Role'}}</h1>
+        <hr>
+      </div>
+      <div class="row">
+        <div class="col-12 col-sm-6">
+          <div class="mb-3">
+            <label class="form-label">Role Name</label>
+            <input class="form-control custom-input" formControlName="name" type="text" id="name"
+              placeholder="Enter Role name">
+          </div>
         </div>
-    </div>
+        <div class="col-12 col-sm-6">
+          <div class="mb-3">
+            <label class="form-label">Description</label>
+            <input class="form-control custom-input" formControlName="description" type="text" id="description"
+              placeholder="Enter description">
+          </div>
+        </div>
+      </div>
+      <div class="text-end mt-5">
+        <hr>
+        <button (click)="saveData()" class="btn-red btn">
+          {{ !isEdit ? 'CREATE ROLE' : 'UPDATE ROLE'}}
+        </button>
+      </div>
+    </form>
+  </div>
 </div>
