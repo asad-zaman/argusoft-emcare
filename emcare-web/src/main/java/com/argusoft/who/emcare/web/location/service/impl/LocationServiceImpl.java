@@ -121,4 +121,18 @@ public class LocationServiceImpl implements LocationService {
         return locations;
     }
 
+    @Override
+    public List<LocationaListDto> getChildLocation(Integer locationId) {
+        List<LocationMaster> locationMasters = locationMasterDao.findByParent(locationId.longValue());
+        List<LocationaListDto> locationaListDtos = new ArrayList<>();
+        for (LocationMaster locationMaster : locationMasters) {
+            if (locationMaster.getParent() == 0 || locationMaster.getParent() == null) {
+                locationaListDtos.add(LocationMasterMapper.entityToLocationList(locationMaster, "NA"));
+            } else {
+                locationaListDtos.add(LocationMasterMapper.entityToLocationList(locationMaster, locationMasterDao.findById(locationMaster.getParent().intValue()).get().getName()));
+            }
+        }
+        return locationaListDtos;
+    }
+
 }
