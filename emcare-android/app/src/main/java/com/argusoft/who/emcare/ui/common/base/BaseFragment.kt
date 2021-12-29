@@ -1,5 +1,6 @@
 package com.argusoft.who.emcare.ui.common.base
 
+import android.app.Application
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -18,6 +19,10 @@ import javax.inject.Inject
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
+import com.argusoft.who.emcare.utils.common.UnauthorizedAccess
+import com.argusoft.who.emcare.utils.extention.showToast
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
 
 
 abstract class BaseFragment<B : ViewBinding> : Fragment(), View.OnClickListener {
@@ -32,6 +37,12 @@ abstract class BaseFragment<B : ViewBinding> : Fragment(), View.OnClickListener 
     abstract fun initView()
     abstract fun initListener()
     abstract fun initObserver()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        if (!EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().register(this)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         _binding = onViewBinding(inflater, container)
@@ -69,9 +80,17 @@ abstract class BaseFragment<B : ViewBinding> : Fragment(), View.OnClickListener 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        if (EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().unregister(this)
     }
 
-    fun isNetworkAvailable(): Boolean {
+    @Subscribe
+    fun onEvent(unauthorizedAccess: UnauthorizedAccess) {
+        context.showToast(messageResId = R.string.msg_session_expired)
+        (activity as? BaseActivity<*>)?.logout()
+    }
+
+    fun Application.isNetworkAvailable(): Boolean {
         val connectivityManager = requireContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             val nw = connectivityManager.activeNetwork ?: return false

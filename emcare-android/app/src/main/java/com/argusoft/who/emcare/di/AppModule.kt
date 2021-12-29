@@ -1,7 +1,11 @@
 package com.argusoft.who.emcare.di
 
 import android.content.Context
+import androidx.room.Room
 import com.argusoft.who.emcare.BuildConfig
+import com.argusoft.who.emcare.data.local.database.Database
+import com.argusoft.who.emcare.data.local.database.DatabaseManager
+import com.argusoft.who.emcare.data.local.database.RoomDatabase
 import com.argusoft.who.emcare.data.local.pref.EncPref
 import com.argusoft.who.emcare.data.local.pref.Preference
 import com.argusoft.who.emcare.data.local.pref.PreferenceManager
@@ -30,15 +34,15 @@ class AppModule {
             .build()
     }
 
-/*    @Singleton
+    @Singleton
     @Provides
     fun provideAppRoomDatabase(@ApplicationContext context: Context): RoomDatabase {
         return Room.databaseBuilder(
             context,
             RoomDatabase::class.java,
-            "app.db"
+            "${BuildConfig.APPLICATION_ID}.db"
         ).build()
-    }*/
+    }
 
     @Singleton
     @Provides
@@ -46,11 +50,11 @@ class AppModule {
         return PreferenceManager(encPref)
     }
 
-/*    @Singleton
+    @Singleton
     @Provides
     fun provideAppDatabase(roomDatabase: RoomDatabase): Database {
         return DatabaseManager(roomDatabase)
-    }*/
+    }
 
     @Singleton
     @Provides

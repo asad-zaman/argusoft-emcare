@@ -10,7 +10,16 @@
         android:name="com.argusoft.who.emcare.ui.home.HomeFragment"
         tools:layout="@layout/fragment_home" >
         <action
-            android:id="@+id/action_homeFragment_to_patientFragment"
+            android:id="@+id/action_homeFragment_to_locationFragment"
+            app:destination="@id/locationFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/locationFragment"
+        android:name="com.argusoft.who.emcare.ui.home.location.LocationFragment"
+        tools:layout="@layout/fragment_location" >
+        <action
+            android:id="@+id/action_locationFragment_to_patientFragment"
             app:destination="@id/patientFragment" />
     </fragment>
 

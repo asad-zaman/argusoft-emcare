@@ -148,4 +148,11 @@
     <string name="error_msg_confirm_password">Please enter confirm password</string>
     <string name="error_msg_password_not_match">Password does\'t match</string>
     <string name="button_submit_location">Submit Location</string>
+    <string name="error_msg_not_find_user">Invalid user credentials</string>
+    <string name="button_select">Select</string>
+    <string name="button_continue">Continue</string>
+    <string name="error_msg_select_location">Please select location</string>
+    <string name="title_registration">Registration</string>
+    <string name="label_select_location">Select location</string>
+    <string name="msg_session_expired">Your session expired, please login again</string>
 </resources>

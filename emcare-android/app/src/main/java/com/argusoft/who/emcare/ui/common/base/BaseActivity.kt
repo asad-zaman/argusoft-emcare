@@ -1,5 +1,6 @@
 package com.argusoft.who.emcare.ui.common.base
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -13,6 +14,7 @@ import com.google.android.play.core.install.model.InstallStatus
 import com.google.android.play.core.install.model.UpdateAvailability
 import com.google.android.play.core.review.ReviewManagerFactory
 import com.argusoft.who.emcare.data.local.pref.Preference
+import com.argusoft.who.emcare.ui.auth.AuthenticationActivity
 import com.argusoft.who.emcare.ui.common.MY_UPDATE_REQUEST_CODE
 import com.argusoft.who.emcare.utils.extention.hideKeyboard
 import com.argusoft.who.emcare.utils.extention.onViewBinding
@@ -101,5 +103,11 @@ abstract class BaseActivity<B : ViewBinding> : AppCompatActivity(), View.OnClick
         request.addOnFailureListener {
             callback.invoke(false)
         }
+    }
+
+    fun logout() {
+        preference.clear()
+        startActivity(Intent(this@BaseActivity, AuthenticationActivity::class.java))
+        finish()
     }
 }

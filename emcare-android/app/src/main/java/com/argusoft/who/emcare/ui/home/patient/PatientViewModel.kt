@@ -6,10 +6,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.uhn.fhir.context.FhirContext
+import com.argusoft.who.emcare.data.local.database.Database
 import com.argusoft.who.emcare.data.remote.Api
 import com.argusoft.who.emcare.data.remote.ApiResponse
+import com.argusoft.who.emcare.ui.common.LOCATION_EXTENSION_URL
 import com.argusoft.who.emcare.ui.common.model.PatientItem
 import com.argusoft.who.emcare.utils.extention.toPatientItem
+import com.argusoft.who.emcare.utils.extention.whenSuccess
 import com.argusoft.who.emcare.utils.listener.SingleLiveEvent
 import com.google.android.fhir.FhirEngine
 import com.google.android.fhir.datacapture.mapping.ResourceMapper
@@ -27,6 +30,7 @@ import javax.inject.Inject
 class PatientViewModel @Inject constructor(
     private val fhirEngine: FhirEngine,
     private val api: Api,
+    private val database: Database,
     private val applicationContext: Application
 ) : ViewModel() {
 
@@ -37,11 +41,7 @@ class PatientViewModel @Inject constructor(
     private val _addPatients = MutableLiveData<ApiResponse<Int>>()
     val addPatients: LiveData<ApiResponse<Int>> = _addPatients
 
-    init {
-        getPatients()
-    }
-
-    fun getPatients(search: String? = null, isRefresh: Boolean = false) {
+    fun getPatients(search: String? = null, locationId: Int?, isRefresh: Boolean = false) {
         _patients.value = ApiResponse.Loading(isRefresh)
         viewModelScope.launch {
             val riskAssessment = getRiskAssessments()
@@ -58,7 +58,11 @@ class PatientViewModel @Inject constructor(
                 sort(Patient.GIVEN, Order.ASCENDING)
                 count = 100
                 from = 0
-            }.mapIndexed { index, fhirPatient -> fhirPatient.toPatientItem(index + 1, riskAssessment) }
+            }.filter {
+                (it.getExtensionByUrl(LOCATION_EXTENSION_URL)?.value as? Identifier)?.value == locationId.toString()
+            }.mapIndexed { index, fhirPatient ->
+                fhirPatient.toPatientItem(index + 1, riskAssessment)
+            }
             )
         }
     }
@@ -79,10 +83,13 @@ class PatientViewModel @Inject constructor(
                 api.getHapiFhirResourceDataSource(),
                 mapOf(ResourceType.Patient to mapOf())
             )
+            api.getLocations().whenSuccess {
+                database.saveLocations(it)
+            }
         }
     }
 
-    fun savePatient(questionnaireResponse: QuestionnaireResponse, questionnaire: String) {
+    fun savePatient(questionnaireResponse: QuestionnaireResponse, questionnaire: String, locationId: Int) {
         val questionnaireResource: Questionnaire = FhirContext.forR4().newJsonParser().parseResource(questionnaire) as Questionnaire
         viewModelScope.launch {
             val resources = ResourceMapper.extract(questionnaireResource, questionnaireResponse)
@@ -127,12 +134,12 @@ class PatientViewModel @Inject constructor(
                     patient.link = listOf(patientLinkComponent)
                 }
                 //#Adding locationId
-                val locationIdentifier: Identifier = Identifier()
+                val locationIdentifier = Identifier()
                 locationIdentifier.use = Identifier.IdentifierUse.OFFICIAL
-                locationIdentifier.value = "4" //TODO: replace this with preference location id
+                locationIdentifier.value = locationId.toString()
                 val extension: Extension = Extension()
                     .setValue(locationIdentifier)
-                    .setUrl("http://hl7.org/fhir/StructureDefinition/patient-locationId")
+                    .setUrl(LOCATION_EXTENSION_URL)
                 patient.addExtension(extension)
                 //End of location Id
                 fhirEngine.save(patient)
