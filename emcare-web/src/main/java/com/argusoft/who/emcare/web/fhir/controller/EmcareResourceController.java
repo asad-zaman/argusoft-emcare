@@ -15,11 +15,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 @CrossOrigin(origins = "**")
 @RestController
@@ -72,7 +67,7 @@ public class EmcareResourceController {
     public List<PatientDto> getAllPatientsUnderLocation(@PathVariable(value = "locationId") Integer locationId) {
         return emcareResourceService.getPatientUnderLocationId(locationId);
     }
-    
+
     @GetMapping("/patient/{patientId}")
     public PatientDto getPatientById(@PathVariable String patientId) {
         EmcareResource emcareResource = emcareResourceService.findByResourceId(patientId);
@@ -88,7 +83,7 @@ public class EmcareResourceController {
             LocationMaster location = locationService.getLocationMasterById(Integer.parseInt(patientDto.getLocation()));
             patientDto.setLocation(location.getName());
         }
-        
+
         return patientDto;
     }
 }
