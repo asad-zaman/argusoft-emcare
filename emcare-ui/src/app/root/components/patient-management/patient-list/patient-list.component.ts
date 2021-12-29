@@ -4,11 +4,13 @@ import { FhirService } from "src/app/shared/services/fhir.service";
 @Component({
     selector: 'app-patient-list',
     templateUrl: './patient-list.component.html',
-    styleUrls: ['./patient-list-component.scss']
+    styleUrls: ['./patient-list.component.scss']
 })
 export class PatientListComponent implements OnInit {
 
     patients: any
+    patientDetails: any
+    showPatientDetailsFlag: boolean = false
 
     ngOnInit(): void {
         this.prerequisite();
@@ -28,5 +30,19 @@ export class PatientListComponent implements OnInit {
                 this.patients = res;
             }
         });
+    }
+
+    showPatientDetails(id){
+        this.fhirService.getPatientById(id).subscribe(res => {
+            if(res) {
+                this.patientDetails = res;
+                this.showPatientDetailsFlag = true;
+            }
+        });
+    }
+
+    closePopup(){
+        this.showPatientDetailsFlag = false;
+        this.patientDetails = null;
     }
 }

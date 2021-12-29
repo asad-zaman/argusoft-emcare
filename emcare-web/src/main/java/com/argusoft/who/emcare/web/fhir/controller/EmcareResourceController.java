@@ -15,6 +15,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @CrossOrigin(origins = "**")
 @RestController
@@ -29,7 +34,6 @@ public class EmcareResourceController {
 
     @Autowired
     private LocationService locationService;
-
 
     @GetMapping("/patient")
     public List<PatientDto> getAllPatients() {
@@ -67,5 +71,24 @@ public class EmcareResourceController {
     @GetMapping("/patient/locationId/{locationId}")
     public List<PatientDto> getAllPatientsUnderLocation(@PathVariable(value = "locationId") Integer locationId) {
         return emcareResourceService.getPatientUnderLocationId(locationId);
+    }
+    
+    @GetMapping("/patient/{patientId}")
+    public PatientDto getPatientById(@PathVariable String patientId) {
+        EmcareResource emcareResource = emcareResourceService.findByResourceId(patientId);
+        Patient patient = parser.parseResource(Patient.class, emcareResource.getText());
+        PatientDto patientDto = EmcareResourceMapper.entityToDtoMapper(patient);
+        if (patientDto.getCaregiver() != null) {
+            EmcareResource caregiverResource = emcareResourceService.findByResourceId(patientDto.getCaregiver());
+            RelatedPerson caregiver = parser.parseResource(RelatedPerson.class, caregiverResource.getText());
+            patientDto.setCaregiver(caregiver.getNameFirstRep().getGiven().get(0) + " " + caregiver.getNameFirstRep().getFamily());
+        }
+
+        if (patientDto.getLocation() != null) {
+            LocationMaster location = locationService.getLocationMasterById(Integer.parseInt(patientDto.getLocation()));
+            patientDto.setLocation(location.getName());
+        }
+        
+        return patientDto;
     }
 }
