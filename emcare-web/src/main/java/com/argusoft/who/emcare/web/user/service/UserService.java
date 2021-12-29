@@ -49,6 +49,8 @@ public interface UserService {
 
     public String getRoleNameById(String roleId);
 
+    public List<UserRepresentation> getUsersUnderLocation(Integer locationId);
+
     public default Keycloak getKeyCloakInstance() {
         return KeycloakBuilder.builder()
                 .serverUrl(KeyCloakConfig.SERVER_URL)

@@ -27,7 +27,11 @@ public class LocationMasterMapper {
         locationMaster.setId(locationMasterDto.getId());
         locationMaster.setActive(true);
         locationMaster.setName(locationMasterDto.getName());
-        locationMaster.setParent(locationMasterDto.getParent());
+        if (locationMasterDto.getParent() == null) {
+            locationMaster.setParent(0L);
+        } else {
+            locationMaster.setParent(locationMasterDto.getParent());
+        }
         locationMaster.setType(locationMasterDto.getType());
 
         return locationMaster;
