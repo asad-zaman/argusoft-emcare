@@ -14,7 +14,6 @@ class PreferenceManager(private val sharedPreferences: EncPref) : Preference {
         private const val USER = "USER"
         private const val TOKEN = "TOKEN"
         private const val LOGGED_IN_USER = "LOGGED_IN_USER"
-        const val SELECTED_LANGUAGE = "APP_LANGUAGE"
     }
 
     override fun setLogin() {
@@ -47,14 +46,6 @@ class PreferenceManager(private val sharedPreferences: EncPref) : Preference {
 
     override fun getLoggedInUser(): LoggedInUser? {
         return sharedPreferences.getString(LOGGED_IN_USER).orEmpty { "{}" }.fromJson<LoggedInUser>()
-    }
-
-    override fun setAppLanguage(lanCode: String) {
-        sharedPreferences.putString(SELECTED_LANGUAGE, lanCode)
-    }
-
-    override fun getAppLanguage(): String {
-        return sharedPreferences.getString(SELECTED_LANGUAGE, Locale.getDefault().language)
     }
 
     override fun clear() {

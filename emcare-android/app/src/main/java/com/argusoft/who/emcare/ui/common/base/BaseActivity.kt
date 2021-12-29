@@ -119,6 +119,5 @@ abstract class BaseActivity<B : ViewBinding> : AppCompatActivity(), View.OnClick
         //intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
         finish()
         startActivity(intent)
-
     }
 }

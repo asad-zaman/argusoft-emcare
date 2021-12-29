@@ -4,11 +4,11 @@ import android.annotation.TargetApi
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Build
-import com.argusoft.who.emcare.data.local.pref.PreferenceManager.Companion.SELECTED_LANGUAGE
 import java.util.*
 
 object LocaleHelper {
 
+    private const val SELECTED_LANGUAGE = "APP_LANGUAGE"
 
     fun onAttach(context: Context): Context {
         val locale = load(context)
@@ -35,7 +35,7 @@ object LocaleHelper {
         )
     }
 
-    private fun persist(context: Context, locale: Locale?) {
+    fun persist(context: Context, locale: Locale?) {
         if (locale == null) return
         getPreferences(context)
             .edit()
@@ -43,7 +43,7 @@ object LocaleHelper {
             .apply()
     }
 
-    private fun load(context: Context): Locale {
+    fun load(context: Context): Locale {
         val preferences = getPreferences(context)
         val language = preferences.getString(SELECTED_LANGUAGE, Locale.getDefault().language)
         return Locale(language)

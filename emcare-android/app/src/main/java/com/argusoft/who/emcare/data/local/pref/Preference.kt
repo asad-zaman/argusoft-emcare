@@ -21,9 +21,5 @@ interface Preference {
 
     fun getLoggedInUser() : LoggedInUser?
 
-    fun setAppLanguage(lanCode: String)
-
-    fun getAppLanguage(): String
-
     fun clear()
 }

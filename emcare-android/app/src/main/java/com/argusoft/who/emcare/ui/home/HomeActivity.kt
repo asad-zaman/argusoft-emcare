@@ -1,16 +1,12 @@
 package com.argusoft.who.emcare.ui.home
 
-import android.content.DialogInterface
 import android.content.Intent
 import android.widget.TextView
-import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.navigation.Navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.databinding.ActivityHomeBinding
@@ -41,7 +37,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
         navView.setupWithNavController(navController)
 
         //Setting name & email in drawer view
-        if(preference.getLoggedInUser() != null) {
+        if (preference.getLoggedInUser() != null) {
             val headerView = binding.navView.getHeaderView(0)
             headerView.findViewById<TextView>(R.id.nameTextView).text = preference.getLoggedInUser()?.userName
             headerView.findViewById<TextView>(R.id.emailTextView).text = preference.getLoggedInUser()?.email
@@ -70,6 +66,10 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
                         }
                         setNegativeButton(R.string.button_no) { _, _ -> }
                     }.show()
+                }
+                R.id.action_settings -> {
+                    closeDrawer()
+                    navHostFragment.navController.navigate(R.id.action_global_settingsFragment)
                 }
             }
             return@setNavigationItemSelectedListener true

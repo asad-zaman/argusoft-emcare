@@ -3,11 +3,13 @@ package com.argusoft.who.emcare
 import android.app.Application
 import android.content.Context
 import android.content.res.Configuration
+import com.argusoft.who.emcare.data.local.pref.Preference
 import com.argusoft.who.emcare.utils.localization.LocaleHelperApplicationDelegate
 import com.google.android.fhir.FhirEngine
 import com.google.android.fhir.FhirEngineProvider
 import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
+import javax.inject.Inject
 
 @HiltAndroidApp
 class EmCareApplication : Application() {
