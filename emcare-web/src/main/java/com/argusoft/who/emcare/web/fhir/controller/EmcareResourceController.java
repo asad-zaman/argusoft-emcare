@@ -15,6 +15,7 @@ import org.hl7.fhir.r4.model.RelatedPerson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -28,10 +29,9 @@ public class EmcareResourceController {
 
     @Autowired
     private EmcareResourceService emcareResourceService;
-    
+
     @Autowired
     private LocationService locationService;
-
 
     @GetMapping("/patient")
     public List<PatientDto> getAllPatients() {
@@ -50,13 +50,13 @@ public class EmcareResourceController {
 
         //Converting caregiverId and locationid to name
         for (PatientDto patientDto : patientDtosList) {
-            
+
             if (patientDto.getCaregiver() != null) {
                 EmcareResource caregiverResource = emcareResourceService.findByResourceId(patientDto.getCaregiver());
                 RelatedPerson caregiver = parser.parseResource(RelatedPerson.class, caregiverResource.getText());
                 patientDto.setCaregiver(caregiver.getNameFirstRep().getGiven().get(0) + " " + caregiver.getNameFirstRep().getFamily());
             }
-            
+
             if (patientDto.getLocation() != null) {
                 LocationMaster location = locationService.getLocationMasterById(Integer.parseInt(patientDto.getLocation()));
                 patientDto.setLocation(location.getName());
@@ -64,5 +64,24 @@ public class EmcareResourceController {
         }
 
         return patientDtosList;
+    }
+
+    @GetMapping("/patient/{patientId}")
+    public PatientDto getPatientById(@PathVariable String patientId) {
+        EmcareResource emcareResource = emcareResourceService.findByResourceId(patientId);
+        Patient patient = parser.parseResource(Patient.class, emcareResource.getText());
+        PatientDto patientDto = EmcareResourceMapper.entityToDtoMapper(patient);
+        if (patientDto.getCaregiver() != null) {
+            EmcareResource caregiverResource = emcareResourceService.findByResourceId(patientDto.getCaregiver());
+            RelatedPerson caregiver = parser.parseResource(RelatedPerson.class, caregiverResource.getText());
+            patientDto.setCaregiver(caregiver.getNameFirstRep().getGiven().get(0) + " " + caregiver.getNameFirstRep().getFamily());
+        }
+
+        if (patientDto.getLocation() != null) {
+            LocationMaster location = locationService.getLocationMasterById(Integer.parseInt(patientDto.getLocation()));
+            patientDto.setLocation(location.getName());
+        }
+        
+        return patientDto;
     }
 }
