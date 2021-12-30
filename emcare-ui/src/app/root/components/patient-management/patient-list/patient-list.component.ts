@@ -29,36 +29,44 @@ export class PatientListComponent implements OnInit {
     getPatients() {
         this.patients = [];
         this.fhirService.getAllPatients().subscribe(res => {
-            if(res) {
+            if (res) {
                 this.patients = res;
                 this.filteredPatients = this.patients;
             }
         });
     }
 
-    showPatientDetails(id){
+    showPatientDetails(id) {
         this.fhirService.getPatientById(id).subscribe(res => {
-            if(res) {
+            if (res) {
                 this.patientDetails = res;
                 this.showPatientDetailsFlag = true;
             }
         });
     }
 
-    closePopup(){
+    closePopup() {
         this.showPatientDetailsFlag = false;
         this.patientDetails = null;
     }
 
     searchFilter() {
-        this.filteredPatients = this.patients.filter( patient => {
-    
-          return ( patient.identifier?.includes(this.searchString) 
-          ||  patient.givenName?.includes(this.searchString)
-          ||  patient.familyName?.includes(this.searchString)
-          ||  patient.gender?.includes(this.searchString)
-          ||  patient.caregiver?.includes(this.searchString)
-          ||  patient.location?.includes(this.searchString));
+        this.filteredPatients = this.patients.filter(patient => {
+            return (patient.identifier?.includes(this.searchString)
+                || patient.givenName?.includes(this.searchString)
+                || patient.familyName?.includes(this.searchString)
+                || patient.gender?.includes(this.searchString)
+                || patient.caregiver?.includes(this.searchString)
+                || patient.location?.includes(this.searchString));
         });
+    }
+
+    getLocationId(data) {
+        const selectedId = data;
+        this.fhirService.getPatientByLocationId(selectedId).subscribe(res => {
+            if (res) {
+                this.filteredPatients = res;
+            }
+        })
     }
 }

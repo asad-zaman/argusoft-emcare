@@ -52,4 +52,7 @@ export class UserManagementService {
     return this.http.post(`${this.userURL}/status/change`, user, this.getHeaders());
   }
 
+  getUserByLocationId(id) {
+    return this.http.get(`${this.userURL}/locationId/${id}`, this.getHeaders())
+  }
 }

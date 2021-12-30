@@ -7,7 +7,7 @@ import { environment } from "src/environments/environment";
 })
 export class FhirService {
 
-    fhirBaseURL= `${environment.apiUrl}/api/emcare`
+    fhirBaseURL= `${environment.apiUrl}/api/emcare`;
 
     constructor(private http: HttpClient){ }
 
@@ -33,5 +33,9 @@ export class FhirService {
 
     getPatientById(id: String) {
         return this.http.get(`${this.fhirBaseURL}/patient/${id}`,this.getHeaders());
+    }
+
+    getPatientByLocationId(id) {
+        return this.http.get(`${this.fhirBaseURL}/patient/locationId/${id}`,this.getHeaders());
     }
 }

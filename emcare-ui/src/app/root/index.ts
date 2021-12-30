@@ -16,3 +16,4 @@ export { UserListComponent } from './components/User/user-list/user-list.compone
 export { ManageUserComponent } from './components/User/manage-user/manage-user.component';
 export { ConfirmUserComponent } from './components/User/confirm-user/confirm-user.component';
 export { UserManagementService } from './services/user-management.service';
+export { LocationFilterComponent } from './components/Location/location-filter/location-filter.component';

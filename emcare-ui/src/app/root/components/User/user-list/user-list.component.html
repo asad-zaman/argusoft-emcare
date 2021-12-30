@@ -1,3 +1,4 @@
+<app-location-filter (locationId)="getLocationId($event)"></app-location-filter>
 <div class="main-wrapper">
   <h1 class="heading">Users</h1>
   <hr>
@@ -5,6 +6,7 @@
     <div class=" col-lg-3 col-xxl-2 col-md-5 position-relative">
       <input class="form-control custom-input" id="exampleFormControlInput1" [(ngModel)]="searchString" (input)="searchFilter()" placeholder="Search">
     </div>
+    <div class="col-2"> <button class="btn btn-red" (click)="getAllUsers()">Clear</button></div>
     <div class="col text-end"> <button class="btn btn-red" routerLink="/addUser">+ Add User</button></div>
   </div>
   <!--Table-->

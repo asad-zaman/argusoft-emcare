@@ -33,6 +33,7 @@ import { DeviceListComponent } from './root/components/Device-Management/device-
 import { PatientListComponent } from './root/components/patient-management/patient-list/patient-list.component';
 import { ManageRoleComponent } from './root/components/role-management/manage-role/manage-role.component';
 import { ShowRoleComponent } from './root/components/role-management/show-role/show-role.component';
+import { LocationFilterComponent } from './root/components/Location/location-filter/location-filter.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -54,7 +55,8 @@ import { ShowRoleComponent } from './root/components/role-management/show-role/s
     PatientListComponent,
     ManageRoleComponent,
     ShowRoleComponent,
-    ConfirmUserComponent
+    ConfirmUserComponent,
+    LocationFilterComponent
   ],
   imports: [
     BrowserModule,
