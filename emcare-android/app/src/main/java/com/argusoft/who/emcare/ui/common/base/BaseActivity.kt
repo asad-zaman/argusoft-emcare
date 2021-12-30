@@ -15,6 +15,7 @@ import com.google.android.play.core.install.model.InstallStatus
 import com.google.android.play.core.install.model.UpdateAvailability
 import com.google.android.play.core.review.ReviewManagerFactory
 import com.argusoft.who.emcare.data.local.pref.Preference
+import com.argusoft.who.emcare.ui.auth.AuthenticationActivity
 import com.argusoft.who.emcare.ui.common.MY_UPDATE_REQUEST_CODE
 import com.argusoft.who.emcare.ui.home.HomeActivity
 import com.argusoft.who.emcare.utils.extention.hideKeyboard
@@ -119,5 +120,11 @@ abstract class BaseActivity<B : ViewBinding> : AppCompatActivity(), View.OnClick
         //intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
         finish()
         startActivity(intent)
+    }
+
+    fun logout() {
+        preference.clear()
+        startActivity(Intent(this@BaseActivity, AuthenticationActivity::class.java))
+        finish()
     }
 }

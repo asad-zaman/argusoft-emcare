@@ -4,9 +4,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.argusoft.who.emcare.databinding.PatientDetailsItemBinding
 import com.argusoft.who.emcare.ui.common.base.BaseAdapter
-import com.argusoft.who.emcare.ui.common.model.PatientItem
 import com.argusoft.who.emcare.ui.common.model.PatientItemData
-import com.argusoft.who.emcare.ui.home.patient.PatientAdapter
 import com.argusoft.who.emcare.utils.extention.toBinding
 
 class PatientDetailsAdapter(

@@ -1,7 +1,5 @@
 package com.argusoft.who.emcare.utils.extention
 
-import android.content.ContentValues
-import android.util.Log
 import com.argusoft.who.emcare.ui.common.model.PatientItem
 import org.hl7.fhir.r4.model.Patient
 import org.hl7.fhir.r4.model.RiskAssessment

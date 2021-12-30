@@ -1,9 +1,12 @@
 package com.argusoft.who.emcare.ui.common.model
 
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
+@Entity
 @JsonClass(generateAdapter = true)
 data class Location(
     @Json(name = "active")
@@ -12,8 +15,9 @@ data class Location(
     var createdBy: String? = null,
     @Json(name = "createdOn")
     var createdOn: String? = null,
+    @PrimaryKey
     @Json(name = "id")
-    var id: Int? = null,
+    var id: Int = 0,
     @Json(name = "modifiedBy")
     var modifiedBy: String? = null,
     @Json(name = "modifiedOn")

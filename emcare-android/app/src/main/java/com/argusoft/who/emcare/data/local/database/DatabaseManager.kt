@@ -1,8 +1,33 @@
 package com.argusoft.who.emcare.data.local.database
 
+import com.argusoft.who.emcare.ui.common.model.Location
+import com.argusoft.who.emcare.ui.common.model.LoggedInUser
+
 class DatabaseManager(roomDatabase: RoomDatabase) : Database {
 
     private val dao = roomDatabase.dao()
 
+    override suspend fun saveLocations(locations: List<Location>) {
+        dao.saveLocations(locations)
+    }
 
+    override suspend fun getLocationById(id: Int): Location? {
+        return dao.getLocationById(id)
+    }
+
+    override suspend fun getChildLocations(id: Int?): List<Location>? {
+        return dao.getChildLocations(id)
+    }
+
+    override suspend fun saveLoginUser(loginUser: LoggedInUser) {
+        dao.saveLoginUser(loginUser)
+    }
+
+    override suspend fun loginUser(username: String, password: String): LoggedInUser? {
+        return dao.loginUser(username, password)
+    }
+
+    override suspend fun getAllUser(): List<LoggedInUser>? {
+        return dao.getAllUser()
+    }
 }

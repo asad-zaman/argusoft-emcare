@@ -12,7 +12,7 @@ import com.argusoft.who.emcare.widget.ApiViewStateConstraintLayout
 fun <T> ApiResponse<T>?.handleApiView(
     progressLayout: ApiViewStateConstraintLayout?,
     onClickListener: View.OnClickListener? = null,
-    skipIds: List<Int> = emptyList(),
+    skipIds: List<Int> = listOf(R.id.headerLayout),
     isSuccess: (t: T?) -> Unit = {}
 ) {
     when (this) {
@@ -53,7 +53,7 @@ fun <T> ApiResponse<T>?.handleApiView(
 @Suppress("UNCHECKED_CAST")
 inline fun <reified T> ApiResponse<T>?.handleListApiView(
     progressLayout: ApiViewStateConstraintLayout?,
-    skipIds: List<Int> = emptyList(),
+    skipIds: List<Int> = listOf(R.id.headerLayout),
     onClickListener: View.OnClickListener? = null,
     @DrawableRes drawableResId: Int? = 0,
     crossinline isSuccess: (t: T?) -> Unit = {}

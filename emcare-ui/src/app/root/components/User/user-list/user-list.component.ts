@@ -9,7 +9,10 @@ import { UserManagementService } from 'src/app/root/services/user-management.ser
 })
 export class UserListComponent implements OnInit {
 
-  userList: any;
+  mainUserList: any;
+  filteredUserList: any;
+  searchString:string;
+
 
   constructor(
     private readonly router: Router,
@@ -25,12 +28,32 @@ export class UserListComponent implements OnInit {
   }
 
   getAllUsers() {
-    this.userList = [];
+    this.mainUserList = [];
     this.userService.getAllUsers().subscribe(res => {
       if (res) {
-        this.userList = res;
+        this.mainUserList = res;
+        this.filteredUserList = this.mainUserList;
       }
     });
+  }
+
+  searchFilter() {
+    this.filteredUserList = this.mainUserList.filter( user => {
+      let roleFlag = false;
+      user.realmRoles.every(role => {
+        if(role.includes(this.searchString)){
+          roleFlag = true;
+          return false;
+        }
+        return true;
+      });
+
+      return (roleFlag 
+          ||  user.id?.includes(this.searchString) 
+          ||  user.firstName?.includes(this.searchString)
+          ||  user.lastName?.includes(this.searchString)
+          ||  user.username?.includes(this.searchString))
+    })
   }
 
   addUser() {
@@ -38,7 +61,7 @@ export class UserListComponent implements OnInit {
   }
 
   updateUser(index) {
-    this.router.navigate([`updateUser/${this.userList[index]['id']}`]);
+    this.router.navigate([`updateUser/${this.filteredUserList[index]['id']}`]);
   }
 
 }

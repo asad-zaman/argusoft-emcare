@@ -10,6 +10,8 @@ import { DeviceManagementService } from 'src/app/root/services/device-management
 export class DeviceListComponent implements OnInit {
 
   deviceArr: any;
+  filteredDevices: any;
+  searchString: string;
 
   constructor(
     private readonly router: Router,
@@ -25,8 +27,10 @@ export class DeviceListComponent implements OnInit {
   }
 
   getDevices() {
+    this.deviceArr = [];
     this.deviceManagementService.getAllDevices().subscribe((res) => {
       this.deviceArr = res;
+      this.filteredDevices = this.deviceArr;
     })
   }
 
@@ -40,6 +44,15 @@ export class DeviceListComponent implements OnInit {
     }
     this.deviceManagementService.updateDeviceById(obj).subscribe(res => {
       this.getDevices();
+    });
+  }
+
+  searchFilter() {
+    this.filteredDevices = this.deviceArr.filter( device => {
+
+      return ( device.deviceUUID?.includes(this.searchString) 
+      ||  device.androidVersion?.includes(this.searchString)
+      ||  device.lastLoggedInUser?.includes(this.searchString));
     });
   }
 }

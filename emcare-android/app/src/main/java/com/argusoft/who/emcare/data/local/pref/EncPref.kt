@@ -263,4 +263,12 @@ object EncPref {
         myPref.edit().clear().apply()
     }
 
+    fun encrypt(value: String): String {
+        return encryptText(value) ?: value
+    }
+
+    fun decrypt(value: String): String {
+        return decryptText(value) ?: value
+    }
+
 }

@@ -5,6 +5,7 @@ import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
 import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.databinding.FragmentAddPatientBinding
+import com.argusoft.who.emcare.ui.common.INTENT_EXTRA_LOCATION_ID
 import com.argusoft.who.emcare.ui.common.base.BaseFragment
 import com.argusoft.who.emcare.ui.home.patient.PatientViewModel
 import com.argusoft.who.emcare.utils.extention.handleApiView
@@ -28,7 +29,10 @@ class AddPatientFragment : BaseFragment<FragmentAddPatientBinding>() {
         binding.headerLayout.toolbar.inflateMenu(R.menu.menu_save)
         binding.headerLayout.toolbar.setOnMenuItemClickListener {
             patientViewModel.questionnaireJson?.let {
-                patientViewModel.savePatient(questionnaireFragment.getQuestionnaireResponse(), it)
+                patientViewModel.savePatient(
+                    questionnaireFragment.getQuestionnaireResponse(), it,
+                    requireArguments().getInt(INTENT_EXTRA_LOCATION_ID)
+                )
             }
             return@setOnMenuItemClickListener true
         }

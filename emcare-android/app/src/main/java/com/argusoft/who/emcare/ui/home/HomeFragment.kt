@@ -7,6 +7,7 @@ import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.databinding.FragmentHomeBinding
 import com.argusoft.who.emcare.ui.common.base.BaseFragment
 import com.argusoft.who.emcare.ui.common.dashboardList
+import com.argusoft.who.emcare.ui.home.patient.PatientViewModel
 import com.argusoft.who.emcare.utils.SpacesItemDecoration
 import com.argusoft.who.emcare.utils.extention.navigate
 import com.argusoft.who.emcare.utils.glide.GlideApp
@@ -16,7 +17,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class HomeFragment : BaseFragment<FragmentHomeBinding>() {
 
-    private val homeViewModel: HomeViewModel by viewModels()
+    private val patientViewModel: PatientViewModel by viewModels()
     private lateinit var glideRequests: GlideRequests
     private lateinit var homeAdapter: HomeAdapter
 
@@ -28,7 +29,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
 
     override fun initView() {
         binding.headerLayout.toolbar.setUpDashboard()
-        if(preference.getLoggedInUser() != null) binding.nameTextView.text = preference.getLoggedInUser()?.userName
+        if (preference.getLoggedInUser() != null) binding.nameTextView.text = preference.getLoggedInUser()?.userName
         setupRecyclerView()
     }
 
@@ -38,7 +39,14 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
     }
 
     override fun initListener() {
-
+        binding.headerLayout.toolbar.setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.action_sync -> {
+                    patientViewModel.syncPatients()
+                }
+            }
+            return@setOnMenuItemClickListener true
+        }
     }
 
     override fun initObserver() {
@@ -51,7 +59,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
             R.id.itemRootLayout -> {
                 when (view.tag as? Int) {
                     0 -> {
-                        navigate(R.id.action_homeFragment_to_patientFragment)
+                        navigate(R.id.action_homeFragment_to_locationFragment)
                     }
                 }
             }

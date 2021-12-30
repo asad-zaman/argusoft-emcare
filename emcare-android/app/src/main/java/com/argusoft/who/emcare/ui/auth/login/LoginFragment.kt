@@ -72,7 +72,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(), EasyPermissions.Perm
             )
         } else {
             EasyPermissions.requestPermissions(
-                requireActivity(),
+                this,
                 getString(R.string.rationale_phone_state),
                 REQUEST_CODE_READ_PHONE_STATE,
                 Manifest.permission.READ_PHONE_STATE,
