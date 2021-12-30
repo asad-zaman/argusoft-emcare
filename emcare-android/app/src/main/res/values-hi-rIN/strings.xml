@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">EmCare</string>
 
@@ -125,12 +126,12 @@
     <string name="menu_edit_profile">Edit Profile</string>
     <string name="menu_settings">Settings</string>
     <string name="menu_logout">Logout</string>
-    <string name="label_welcome">Welcome,</string>
+    <string name="label_welcome">स्वागत,</string>
     <string name="label_let_s">Let\'s</string>
     <string name="label_get_started">Get Started.</string>
-    <string name="label_what_would_you_like_to_do_today">What would you like to do today!</string>
-  <string name="blocked_device_message">This device is blocked from using the EmCare application.</string>
-  <string name="ok">Ok</string>
+    <string name="label_what_would_you_like_to_do_today">आप आज क्या करना चाहेंगे!</string>
+    <string name="blocked_device_message">This device is blocked from using the EmCare application.</string>
+    <string name="ok">Ok</string>
     <string name="error_msg_username">Please enter username</string>
     <string name="error_msg_password">Please enter password</string>
     <string name="button_add_patient">Add Patient</string>
