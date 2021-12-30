@@ -13,11 +13,12 @@ public interface UserLocationMappingRepository extends
     List<UserLocationMapping> findByUserId(String userId);
 
     @Query(value = "WITH RECURSIVE child AS \n" +
-            "(SELECT * FROM location_master WHERE id = :id \n" +
-            "UNION SELECT l.* FROM location_master l \n" +
+            "(SELECT * FROM location_master WHERE parent = :id or id = :id \n" +
+            "UNION SELECT l.* FROM location_master l\n" +
             "INNER JOIN child s ON s.id = l.parent)\n" +
-            "SELECT ulm.user_id FROM user_location_mapping as ulm \n" +
-            "left join child as ch on ulm.location_id = ch.id", nativeQuery = true)
+            "SELECT ulm.user_id FROM child as ch \n" +
+            "left join user_location_mapping as ulm  on ch.id = ulm.location_id\n" +
+            "where ulm.user_id is not null", nativeQuery = true)
     public List<String> getAllUserOnChildLocations(@Param("id") Integer id);
 
 
