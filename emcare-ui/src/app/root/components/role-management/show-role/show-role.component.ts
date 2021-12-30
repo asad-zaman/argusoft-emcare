@@ -10,6 +10,8 @@ import { RoleManagementService } from 'src/app/root/services/role-management.ser
 export class ShowRoleComponent implements OnInit {
 
   rolesArr: any;
+  filteredRoles: any;
+  searchString: string;
 
   constructor(
     private readonly router: Router,
@@ -25,9 +27,11 @@ export class ShowRoleComponent implements OnInit {
   }
 
   getRoles() {
+    this.rolesArr = [];
     this.roleService.getAllRoles().subscribe(res => {
       if(res) {
         this.rolesArr = res;
+        this.filteredRoles = this.rolesArr;
       }
     });
   }
@@ -37,8 +41,15 @@ export class ShowRoleComponent implements OnInit {
   }
 
   editRole(index) {
-    this.router.navigate([`editRole/${this.rolesArr[index]['id']}`]);
+    this.router.navigate([`editRole/${this.filteredRoles[index]['id']}`]);
   }
 
+  searchFilter() {
+    this.filteredRoles = this.rolesArr.filter( role => {
+
+      return ( role.name?.includes(this.searchString) 
+      ||  role.description?.includes(this.searchString))
+    });
+  }
 
 }

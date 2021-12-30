@@ -1,6 +1,11 @@
 <div class="main-wrapper">
   <h1 class="heading">Device List</h1>
   <hr>
+  <div class="row align-items-center mb-3">
+    <div class=" col-lg-3 col-xxl-2 col-md-5 position-relative">
+      <input class="form-control custom-input" id="exampleFormControlInput1" [(ngModel)]="searchString" (input)="searchFilter()" placeholder="Search">
+    </div>
+  </div>
   <!--Table-->
   <div class="table-responsive">
     <table class="data-table">
@@ -14,7 +19,7 @@
         </tr>
       </thead>
       <tbody>
-        <ng-container *ngFor="let data of deviceArr; let i=index">
+        <ng-container *ngFor="let data of filteredDevices; let i=index">
           <tr>
             <td>{{i+1}}</td>
             <td>{{data.deviceUUID}}</td>

@@ -9,7 +9,9 @@ import { LocationService } from 'src/app/root/services/location.service';
 })
 export class ShowLocationComponent implements OnInit {
 
+  filteredLocations: any;
   locationArr: any;
+  searchString: string;
 
   constructor(
     private readonly router: Router,
@@ -29,6 +31,7 @@ export class ShowLocationComponent implements OnInit {
     this.locationService.getAllLocations().subscribe(res => {
       if (res) {
         this.locationArr = res;
+        this.filteredLocations = this.locationArr;
       }
     });
   }
@@ -38,14 +41,24 @@ export class ShowLocationComponent implements OnInit {
   }
 
   editLocation(index) {
-    this.router.navigate([`editLocation/${this.locationArr[index]['id']}`]);
+    this.router.navigate([`editLocation/${this.filteredLocations[index]['id']}`]);
   }
 
   deleteLocation(index) {
-    this.locationService.deleteLocationById(this.locationArr[index]['id']).subscribe(res => {
+    this.locationService.deleteLocationById(this.filteredLocations[index]['id']).subscribe(res => {
       this.getLocations();
     }, (err) => {
       alert(err.error);
     });
   }
+
+  searchFilter() {
+    this.filteredLocations = this.locationArr.filter( location => {
+
+      return ( location.name?.includes(this.searchString) 
+      ||  location.type?.includes(this.searchString)
+      ||  location.parentName?.includes(this.searchString));
+    });
+  }
+
 }
