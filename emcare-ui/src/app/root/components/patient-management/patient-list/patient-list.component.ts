@@ -9,6 +9,8 @@ import { FhirService } from "src/app/shared/services/fhir.service";
 export class PatientListComponent implements OnInit {
 
     patients: any
+    filteredPatients: any;
+    searchString: string;
     patientDetails: any
     showPatientDetailsFlag: boolean = false
 
@@ -25,9 +27,11 @@ export class PatientListComponent implements OnInit {
     }
 
     getPatients() {
+        this.patients = [];
         this.fhirService.getAllPatients().subscribe(res => {
             if(res) {
                 this.patients = res;
+                this.filteredPatients = this.patients;
             }
         });
     }
@@ -44,5 +48,17 @@ export class PatientListComponent implements OnInit {
     closePopup(){
         this.showPatientDetailsFlag = false;
         this.patientDetails = null;
+    }
+
+    searchFilter() {
+        this.filteredPatients = this.patients.filter( patient => {
+    
+          return ( patient.identifier?.includes(this.searchString) 
+          ||  patient.givenName?.includes(this.searchString)
+          ||  patient.familyName?.includes(this.searchString)
+          ||  patient.gender?.includes(this.searchString)
+          ||  patient.caregiver?.includes(this.searchString)
+          ||  patient.location?.includes(this.searchString));
+        });
     }
 }
