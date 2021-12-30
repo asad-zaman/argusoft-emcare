@@ -23,8 +23,17 @@ export class AuthenticationService {
         }
     }
 
-    signup(firstname: string, lastname: string, username: string, password: string) {
-        return this.http.post<any>(`http://7907-150-129-149-210.ngrok.io/users/signup`, { firstname, lastname, username, password }, { withCredentials: true })
+    signup(firstName: string, lastName: string, email: string, password: string, locationId: Number, roleName: string) {
+        const user = {
+            firstName,
+            lastName,
+            email,
+            password,
+            regRequestFrom: 'web',
+            locationId,
+            roleName
+        }
+        return this.http.post<any>(`http://7907-150-129-149-210.ngrok.io/api/signup`, user)
             .pipe(map(user => {
                 this.userInfo.next(user);
                 return user;
@@ -71,9 +80,21 @@ export class AuthenticationService {
         const url = `http://7907-150-129-149-210.ngrok.io/auth/realms/emcare_demo/protocol/openid-connect/token`;
         const body = new HttpParams()
             .set('grant_type', 'password')
-            .set('password', 'parth@123')
+            .set('password', 'argusadmin')
             .set('client_id', 'emcare_client')
             .set('client_secret', '5b929983-175b-4e9f-97d2-ac97dff78ce9');
         return this.http.post<any>(url, body.toString(), this.getHeaders());
+    }
+
+    getAllRolesForSignUp() {
+        const url = `http://7907-150-129-149-210.ngrok.io/api/signup/roles`;
+        const headerObj = this.getHeaders();
+        return this.http.get<any>(url, headerObj);
+    }
+
+    getAllLocationsForSignUp() {
+        const url = `http://7907-150-129-149-210.ngrok.io/api/signup/location`;
+        const headerObj = this.getHeaders();
+        return this.http.get<any>(url, headerObj);
     }
 }

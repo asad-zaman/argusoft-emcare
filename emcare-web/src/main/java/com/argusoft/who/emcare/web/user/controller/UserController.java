@@ -37,6 +37,11 @@ public class UserController {
     public ResponseEntity<Object> getAllUser(HttpServletRequest request) {
         return ResponseEntity.ok(userService.getAllUser(request));
     }
+    
+    @GetMapping("/user/signedup")
+    public ResponseEntity<Object> getAllSignedUpUser(HttpServletRequest request) {
+        return ResponseEntity.ok(userService.getAllSignedUpUser(request));
+    }
 
     @GetMapping("/role")
     public ResponseEntity<Object> getAllRoles(HttpServletRequest request) {

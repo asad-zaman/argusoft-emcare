@@ -33,9 +33,8 @@ export class DeviceListComponent implements OnInit {
   editDevice(event, data) {
     const obj = {
       "deviceId": data['deviceId'],
+      "deviceUUID": data['deviceUUID'],
       "androidVersion": data['androidVersion'],
-      "imeiNumber": data['imeiNumber'],
-      "macAddress": data['macAddress'],
       "lastLoggedInUser": data['lastLoggedInUser'],
       "isBlocked": event
     }

@@ -24,6 +24,10 @@ public class UserLocationMapping implements Serializable {
     @Basic(optional = false)
     @Column(name = "state", nullable = false)
     private boolean state;
+    
+    @Basic(optional = false)
+    @Column(name = "is_first", nullable = false)
+    private boolean isFirst;
 
     public Integer getId() {
         return id;
@@ -64,4 +68,13 @@ public class UserLocationMapping implements Serializable {
     public void setRegRequestFrom(String regRequestFrom) {
         this.regRequestFrom = regRequestFrom;
     }
+
+    public boolean isIsFirst() {
+        return isFirst;
+    }
+
+    public void setIsFirst(boolean isFirst) {
+        this.isFirst = isFirst;
+    }
+    
 }
