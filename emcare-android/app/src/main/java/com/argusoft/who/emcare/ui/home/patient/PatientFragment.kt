@@ -6,6 +6,7 @@ import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.viewModels
 import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.databinding.FragmentPatientBinding
+import com.argusoft.who.emcare.ui.common.INTENT_EXTRA_LOCATION_ID
 import com.argusoft.who.emcare.ui.common.base.BaseFragment
 import com.argusoft.who.emcare.utils.extention.handleListApiView
 import com.argusoft.who.emcare.utils.extention.navigate
@@ -21,6 +22,7 @@ class PatientFragment : BaseFragment<FragmentPatientBinding>(), SearchView.OnQue
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         patientAdapter = PatientAdapter(onClickListener = this)
+        patientViewModel.getPatients("", requireArguments().getInt(INTENT_EXTRA_LOCATION_ID), patientAdapter.isNotEmpty())
     }
 
     override fun initView() {
@@ -38,7 +40,7 @@ class PatientFragment : BaseFragment<FragmentPatientBinding>(), SearchView.OnQue
         binding.progressLayout.swipeRefreshLayout = binding.swipeRefreshLayout
         binding.recyclerView.adapter = patientAdapter
         binding.progressLayout.setOnSwipeRefreshLayout {
-            patientViewModel.getPatients(binding.searchView.query.toString(), true)
+            patientViewModel.getPatients(binding.searchView.query.toString(), requireArguments().getInt(INTENT_EXTRA_LOCATION_ID), true)
         }
     }
 
@@ -52,7 +54,7 @@ class PatientFragment : BaseFragment<FragmentPatientBinding>(), SearchView.OnQue
     }
 
     override fun onQueryTextChange(newText: String?): Boolean {
-        patientViewModel.getPatients(binding.searchView.query.toString(), patientAdapter.isNotEmpty())
+        patientViewModel.getPatients(binding.searchView.query.toString(), requireArguments().getInt(INTENT_EXTRA_LOCATION_ID), patientAdapter.isNotEmpty())
         return true
     }
 
@@ -71,7 +73,9 @@ class PatientFragment : BaseFragment<FragmentPatientBinding>(), SearchView.OnQue
         super.onClick(view)
         when (view?.id) {
             R.id.addPatientButton -> {
-                navigate(R.id.action_patientFragment_to_addPatientFragment)
+                navigate(R.id.action_patientFragment_to_addPatientFragment) {
+                    putInt(INTENT_EXTRA_LOCATION_ID, requireArguments().getInt(INTENT_EXTRA_LOCATION_ID))
+                }
             }
         }
     }

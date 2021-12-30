@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.argusoft.who.emcare.widget.ApiViewStateConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/progressLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include
+        android:id="@+id/headerLayout"
+        layout="@layout/layout_header"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!--
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/userLocationTextInputLayout"
+            style="@style/TextInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/_16sdp"
+            android:layout_marginTop="@dimen/_12sdp"
+            android:enabled="false"
+
+            app:layout_constraintTop_toBottomOf="@+id/headerLayout">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/userLocationEditText"
+                style="@style/TextInputEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorWhite"
+                android:hint="@string/hint_location" />
+        </com.google.android.material.textfield.TextInputLayout>
+    -->
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/labelTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_12sdp"
+        android:text="@string/label_select_location"
+        android:layout_marginHorizontal="@dimen/_16sdp"
+        app:layout_constraintTop_toBottomOf="@+id/headerLayout" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/locationTextInputLayout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/_16sdp"
+        android:layout_marginTop="@dimen/_4sdp"
+        app:endIconMode="dropdown_menu"
+        app:layout_constraintEnd_toEndOf="@+id/headerLayout"
+        app:layout_constraintStart_toStartOf="@id/headerLayout"
+        app:layout_constraintTop_toBottomOf="@+id/labelTextView">
+
+        <com.google.android.material.textfield.MaterialAutoCompleteTextView
+            android:id="@+id/locationEditText"
+            style="@style/TextInputEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:imeOptions="actionDone"
+            android:background="@color/colorWhite"
+            android:hint="@string/hint_location" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/selectButton"
+        style="@style/Button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_18sdp"
+        android:layout_marginBottom="@dimen/_16sdp"
+        android:text="@string/button_select"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/locationTextInputLayout"
+        app:layout_constraintStart_toStartOf="@+id/locationTextInputLayout" />
+
+</com.argusoft.who.emcare.widget.ApiViewStateConstraintLayout>

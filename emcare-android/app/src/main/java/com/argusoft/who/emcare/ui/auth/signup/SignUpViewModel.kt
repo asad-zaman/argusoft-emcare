@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.argusoft.who.emcare.R
+import com.argusoft.who.emcare.data.local.database.Database
 import com.argusoft.who.emcare.data.local.pref.Preference
 import com.argusoft.who.emcare.data.remote.Api
 import com.argusoft.who.emcare.data.remote.ApiResponse
@@ -13,6 +14,7 @@ import com.argusoft.who.emcare.ui.common.model.Role
 import com.argusoft.who.emcare.ui.common.model.SignupRequest
 import com.argusoft.who.emcare.utils.extention.get
 import com.argusoft.who.emcare.utils.extention.isValidEmail
+import com.argusoft.who.emcare.utils.extention.whenSuccess
 import com.argusoft.who.emcare.utils.listener.SingleLiveEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
@@ -22,6 +24,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SignUpViewModel @Inject constructor(
     private val api: Api,
+    private val database: Database,
     private val preference: Preference
 ) : ViewModel() {
 
@@ -44,7 +47,9 @@ class SignUpViewModel @Inject constructor(
         _locationAndRolesApiState.value = Pair(ApiResponse.Loading(), ApiResponse.Loading())
         viewModelScope.launch {
             _locationAndRolesApiState.value = Pair(async {
-                api.getLocations()
+                api.getLocations().whenSuccess {
+                    database.saveLocations(it)
+                }
             }.await(), async {
                 api.getRoles()
             }.await())

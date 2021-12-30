@@ -6,15 +6,17 @@ import com.argusoft.who.emcare.ui.common.model.Dashboard
 const val REQUEST_CODE_READ_PHONE_STATE = 1
 const val INTENT_EXTRA_ALBUM = "INTENT_EXTRA_ALBUM"
 const val INTENT_EXTRA_PATIENT_ID = "INTENT_EXTRA_PATIENT_ID"
+const val INTENT_EXTRA_LOCATION_ID = "INTENT_EXTRA_LOCATION_ID"
 const val INTENT_EXTRA_PATIENT_NAME = "INTENT_EXTRA_PATIENT_NAME"
 const val MY_UPDATE_REQUEST_CODE = 50
 
 
 
 
+const val LOCATION_EXTENSION_URL = "http://hl7.org/fhir/StructureDefinition/patient-locationId"
 //KeyCloak details
-const val KEYCLOAK_CLIENT_SECRET = "1097c25b-fec0-4a96-b0a2-3a2f99b7a411"
-const val KEYCLOAK_CLIENT_ID = "emcare_client"
+const val KEYCLOAK_CLIENT_SECRET = "b5a37bde-8d54-4837-a8dc-12e1f808e26e"
+const val KEYCLOAK_CLIENT_ID = "emcare"
 const val KEYCLOAK_SCOPE = "openid"
 const val KEYCLOAK_GRANT_TYPE = "password"
 
