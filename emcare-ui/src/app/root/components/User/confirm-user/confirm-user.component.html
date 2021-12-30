@@ -1,11 +1,10 @@
 <div class="main-wrapper">
-  <h1 class="heading">Users</h1>
+  <h1 class="heading">Registration Requests</h1>
   <hr>
   <div class="row align-items-center mb-3">
     <div class=" col-lg-3 col-xxl-2 col-md-5 position-relative">
       <input type="email" class="form-control custom-input" id="exampleFormControlInput1" placeholder="Search">
     </div>
-    <div class="col text-end"> <button class="btn btn-red" routerLink="/addUser">+ Add User</button></div>
   </div>
   <!--Table-->
   <div class="table-responsive">
@@ -18,7 +17,7 @@
           <th>Last name</th>
           <th>Email</th>
           <th>Role</th>
-          <th>Status</th>
+          <th></th>
           <th></th>
         </tr>
       </thead>
@@ -35,10 +34,11 @@
                 {{ role }}
               </li>
             </td>
-            <td><span class="badges-red bg-green">Verifed</span>
-            <td class="text-end">
-              <i (click)="updateUser(i)" class="bi bi-pencil-square cursor-pointer font-size-16"></i>
-              <!-- <i class="bi bi-trash ms-3 text-red cursor-pointer font-size-16"></i> -->
+            <td>
+              <i (click)="onApproveUser(i)" class="bi bi-check-circle text-success cursor-pointer font-size-32"></i>
+            </td>
+            <td>
+              <i (click)="onDisapproveUser(i)" class="bi bi-x-circle text-red cursor-pointer font-size-32"></i>
             </td>
           </tr>
         </ng-container>
@@ -60,4 +60,22 @@
     </li>
   </ul>
   <!--pagination-END-->
+
+  <div *ngIf="showConfirmDialogFlag" class="modal" tabindex="-1" role="dialog" style="display:block">
+    <div class="modal-dialog modal-dialog-centered" style="width: 350px; height: 500px">
+        <div class="modal-content">
+            <div class="modal-body">
+              <h2 class="modal-title text-center">{{ isApproveUser ? 'Approve' : 'Disapprove'}} User</h2>
+              <div class="text-center my-3">
+                <p class="font-size-15">Are you sure you want to {{ isApproveUser ? 'approve' : 'disapprove'}}
+                this user?
+              </div>
+              <div class="text-center">
+                <button type="button" class="btn btn-primary btn-md mr-2" style="width: 70px;" (click)="authorizeUser()">Ok</button>
+                <button type="button" class="btn btn-danger btn-md" style="width: 70px;" (click)="showConfirmDialogFlag = false">Cancel</button>
+              </div>
+            </div>
+        </div>
+    </div>
+  </div>
 </div>

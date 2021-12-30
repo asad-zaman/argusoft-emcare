@@ -3,6 +3,7 @@ package com.argusoft.who.emcare.web.user.service.impl;
 import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.common.response.Response;
 import com.argusoft.who.emcare.web.config.KeyCloakConfig;
+import com.argusoft.who.emcare.web.location.dao.LocationMasterDao;
 import com.argusoft.who.emcare.web.location.model.LocationMaster;
 import com.argusoft.who.emcare.web.location.service.LocationService;
 import com.argusoft.who.emcare.web.menu.dao.MenuConfigRepository;
@@ -34,6 +35,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author jay
@@ -60,6 +63,9 @@ public class UserServiceImpl implements UserService {
     @Autowired
     UserMenuConfigRepository userMenuConfigRepository;
 
+    @Autowired
+    LocationMasterDao locationMasterDao;
+
     @Override
     public UserMasterDto getCurrentUser() {
         AccessToken user = emCareSecurityUser.getLoggedInUser();
@@ -79,7 +85,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserRepresentation> getAllUser(HttpServletRequest request) {
-        Keycloak keycloak = keyCloakConfig.getInstanceByAuth();
+        Keycloak keycloak = keyCloakConfig.getInstance();
         List<UserRepresentation> userRepresentations = keycloak.realm(KeyCloakConfig.REALM).users().list();
         for (UserRepresentation representation : userRepresentations) {
             List<RoleRepresentation> roleRepresentationList = keycloak.realm(KeyCloakConfig.REALM).users().get(representation.getId()).roles().realmLevel().listAll();
@@ -90,6 +96,23 @@ public class UserServiceImpl implements UserService {
             representation.setRealmRoles(roles);
         }
         return userRepresentations;
+    }
+    
+    @Override
+    public List<UserRepresentation> getAllSignedUpUser(HttpServletRequest request) {
+        List<UserRepresentation> users = getAllUser(request);
+        List<UserLocationMapping> mobileUsers = userLocationMappingRepository
+            .findByRegRequestFromAndIsFirst("mobile", true);
+        
+        Set<String> userIds = mobileUsers.stream()
+            .map(UserLocationMapping::getUserId)
+            .collect(Collectors.toSet());
+
+        List<UserRepresentation> signedUpUsers = users.stream()
+            .filter(user -> userIds.contains(user.getId()))
+            .collect(Collectors.toList());
+        
+        return signedUpUsers;
     }
 
     @Override
@@ -213,7 +236,8 @@ public class UserServiceImpl implements UserService {
         user.setEnabled(userUpdateDto.getIsEnabled());
         usersResource.get(userUpdateDto.getUserId()).update(user);
         UserLocationMapping oldUser = userLocationMappingRepository.findByUserId(userUpdateDto.getUserId()).get(0);
-        oldUser.setState(true);
+        oldUser.setState(userUpdateDto.getIsEnabled());
+        oldUser.setIsFirst(false);
         userLocationMappingRepository.save(oldUser);
         return ResponseEntity.ok(oldUser);
 
@@ -255,6 +279,16 @@ public class UserServiceImpl implements UserService {
         return roleName;
     }
 
+    @Override
+    public List<UserRepresentation> getUsersUnderLocation(Integer locationId) {
+        List<String> allUsersIdUnderLocation = userLocationMappingRepository.getAllUserOnChildLocations(locationId);
+        List<UserRepresentation> userRepresentations = new ArrayList<>();
+        for (String userId : allUsersIdUnderLocation) {
+            userRepresentations.add(getUserById(userId));
+        }
+        return userRepresentations;
+    }
+
     private static CredentialRepresentation createPasswordCredentials(String password) {
         CredentialRepresentation passwordCredentials = new CredentialRepresentation();
         passwordCredentials.setTemporary(false);
@@ -272,8 +306,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseEntity<Object> updateUser(UserDto userDto, String userId) {
         Keycloak keycloak = keyCloakConfig.getInstance();
-        UserResource userResource = keycloak.realm(KeyCloakConfig.REALM)
-                .users().get(userId);
+        UserResource userResource = keycloak.realm(KeyCloakConfig.REALM).users().get(userId);
         UserRepresentation oldUser = userResource.toRepresentation();
 
         oldUser.setFirstName(userDto.getFirstName());

@@ -5,10 +5,15 @@
     android:id="@+id/home.xml"
     app:startDestination="@+id/homeFragment">
 
+    <action
+        android:id="@+id/action_global_settingsFragment"
+        app:destination="@+id/settingsFragment"
+        app:launchSingleTop="true" />
+
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.argusoft.who.emcare.ui.home.HomeFragment"
-        tools:layout="@layout/fragment_home" >
+        tools:layout="@layout/fragment_home">
         <action
             android:id="@+id/action_homeFragment_to_locationFragment"
             app:destination="@id/locationFragment" />
@@ -26,7 +31,7 @@
     <fragment
         android:id="@+id/patientFragment"
         android:name="com.argusoft.who.emcare.ui.home.patient.PatientFragment"
-        tools:layout="@layout/fragment_patient" >
+        tools:layout="@layout/fragment_patient">
         <action
             android:id="@+id/action_patientFragment_to_addPatientFragment"
             app:destination="@id/addPatientFragment" />
@@ -38,10 +43,15 @@
     <fragment
         android:id="@+id/addPatientFragment"
         android:name="com.argusoft.who.emcare.ui.home.patient.add.AddPatientFragment"
-        tools:layout="@layout/fragment_add_patient"/>
+        tools:layout="@layout/fragment_add_patient" />
 
     <fragment
         android:id="@+id/patientDetailsFragment"
         android:name="com.argusoft.who.emcare.ui.home.patient.details.PatientDetailsFragment"
         tools:layout="@layout/fragment_patient_details" />
+
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.argusoft.who.emcare.ui.home.settings.SettingsFragment"
+        tools:layout="@layout/fragment_settings" />
 </navigation>

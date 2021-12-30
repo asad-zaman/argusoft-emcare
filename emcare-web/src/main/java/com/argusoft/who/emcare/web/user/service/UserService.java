@@ -22,6 +22,8 @@ public interface UserService {
     public UserMasterDto getCurrentUser();
 
     public List<UserRepresentation> getAllUser(HttpServletRequest request);
+    
+    public List<UserRepresentation> getAllSignedUpUser(HttpServletRequest request);
 
     public List<RoleRepresentation> getAllRoles(HttpServletRequest request);
 
@@ -48,6 +50,8 @@ public interface UserService {
     public String getRoleIdByName(String roleName);
 
     public String getRoleNameById(String roleId);
+
+    public List<UserRepresentation> getUsersUnderLocation(Integer locationId);
 
     public default Keycloak getKeyCloakInstance() {
         return KeycloakBuilder.builder()

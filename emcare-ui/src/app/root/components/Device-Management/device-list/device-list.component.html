@@ -7,8 +7,7 @@
       <thead>
         <tr>
           <th>ID</th>
-          <th>IMEI Number</th>
-          <th>MAC Address</th>
+          <th>Device UUID</th>
           <th>Android Version</th>
           <th>Logged in User</th>
           <th>App Usage</th>
@@ -17,9 +16,8 @@
       <tbody>
         <ng-container *ngFor="let data of deviceArr; let i=index">
           <tr>
-            <th scope="row">{{i+1}}</th>
-            <td>{{data.imeiNumber}}</td>
-            <td>{{data.macAddress}}</td>
+            <td>{{i+1}}</td>
+            <td>{{data.deviceUUID}}</td>
             <td>{{data.androidVersion}}</td>
             <td>{{data.lastLoggedInUser}}</td>
             <td>

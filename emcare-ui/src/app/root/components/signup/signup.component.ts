@@ -16,6 +16,8 @@ export class SignupComponent implements OnInit {
   submitted = false;
   returnUrl: string | undefined;
   error = '';
+  locationArr: any = [];
+  roleArr: any = [];
 
   constructor(
     private formBuilder: FormBuilder,
@@ -24,12 +26,36 @@ export class SignupComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.initSignUpForm();
+    this.getAllLocations();
+    this.getAllRoles();
+  }
+
+  initSignUpForm() {
     this.signupForm = this.formBuilder.group({
       firstname: ['', Validators.required],
       lastname: ['', Validators.required],
       username: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-]+$')]],
       password: ['', Validators.required],
-      confirmPassword: ['', Validators.required]
+      confirmPassword: ['', Validators.required],
+      location: ['', Validators.required],
+      role: ['', Validators.required]
+    });
+  }
+
+  getAllLocations() {
+    this.authService.getAllLocationsForSignUp().subscribe(res => {
+      if (res) {
+        this.locationArr = res;
+      }
+    });
+  }
+
+  getAllRoles() {
+    this.authService.getAllRolesForSignUp().subscribe(res => {
+      if (res) {
+        this.roleArr = res;
+      }
     });
   }
 
@@ -43,11 +69,14 @@ export class SignupComponent implements OnInit {
     if (this.signupForm.invalid) {
       return;
     }
-    this.authService.signup(this.signupForm.value.firstname, this.signupForm.value.lastname, this.signupForm.value.username, this.signupForm.value.password)
+    this.authService.signup(this.signupForm.value.firstname, this.signupForm.value.lastname, 
+      this.signupForm.value.username, this.signupForm.value.password,
+      this.signupForm.value.location, this.signupForm.value.role
+      )
       .pipe(first())
       .subscribe(
         _data => {
-          this.router.navigate(["/dashboard"]);
+          this.router.navigate(["/login"]);
         },
         error => {
           this.error = error['error']['message'];

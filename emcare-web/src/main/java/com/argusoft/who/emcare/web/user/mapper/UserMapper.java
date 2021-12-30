@@ -16,6 +16,7 @@ public class UserMapper {
         UserLocationMapping user = new UserLocationMapping();
         user.setUserId(userId);
         user.setLocationId(userDto.getLocationId());
+        user.setIsFirst(true);
         if (userDto.getRegRequestFrom().equalsIgnoreCase(UserConst.MOBILE)) {
             user.setRegRequestFrom(UserConst.MOBILE);
             user.setState(false);

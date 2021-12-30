@@ -65,6 +65,8 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
                         .build()
                 )
                 .into(headerView.findViewById(R.id.userImageView))
+            headerView.findViewById<TextView>(R.id.nameTextView).text = preference.getLoggedInUser()?.userName
+            headerView.findViewById<TextView>(R.id.emailTextView).text = preference.getLoggedInUser()?.email
         }
     }
 
@@ -88,6 +90,10 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
                         }
                         setNegativeButton(R.string.button_no) { _, _ -> }
                     }.show()
+                }
+                R.id.action_settings -> {
+                    closeDrawer()
+                    navHostFragment.navController.navigate(R.id.action_global_settingsFragment)
                 }
             }
             return@setNavigationItemSelectedListener true

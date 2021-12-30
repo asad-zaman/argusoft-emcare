@@ -3,48 +3,10 @@
   <header>
     <div class="logo"><img src="assets/images/emcare-logo.svg"></div>
     <ul class="navigation">
-      <li>
-        <div class="dropdown">
-          <i data-bs-toggle="dropdown" class="bi bi-bell font-size-20"></i>
-          <span class="notification__circle">10</span>
-          <div class="dropdown-menu notification_wrapper" aria-labelledby="navbarDropdown">
-            <div class="notification_header">
-              <h5>Notification</h5>
-            </div>
-            <ul>
-              <li>
-                <span class="notification_name">Brigid Dawson</span>
-                <p class="notification_title text-truncate">Lorem Ipsum is simply dummy text of the printing and
-                  typesetting</p>
-                <span class="notification_date">13-12-2021</span>
-              </li>
-              <li>
-                <span class="notification_name">Brigid Dawson</span>
-                <p class="notification_title text-truncate">Lorem Ipsum is simply dummy text of the printing and
-                  typesetting</p>
-                <span class="notification_date">13-12-2021</span>
-              </li>
-              <li>
-                <span class="notification_name">Brigid Dawson</span>
-                <p class="notification_title text-truncate">Lorem Ipsum is simply dummy text of the printing and
-                  typesetting</p>
-                <span class="notification_date">13-12-2021</span>
-              </li>
-              <li>
-                <span class="notification_name">Brigid Dawson</span>
-                <p class="notification_title text-truncate">Lorem Ipsum is simply dummy text of the printing and
-                  typesetting</p>
-                <span class="notification_date">13-12-2021</span>
-              </li>
-            </ul>
-            <div class="notification_footer"><a href="#">View All</a></div>
-          </div>
-        </div>
-      </li>
       <li class="dropdown">
         <div class="d-flex align-items-center" data-bs-toggle="dropdown">
-          <div class="user-pic"><img src="assets/images/user.png"></div>
-          John <i class="bi bi-chevron-down ps-2"></i>
+          <div class="user-pic"><img src="assets/images/default-user.png"></div>
+          {{ userName }}<i class="bi bi-chevron-down ps-2"></i>
         </div>
         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
           <li><a class="dropdown-item" href="#">Edit Profile</a></li>
@@ -76,10 +38,13 @@
             <li><a class="mouse-pointer" routerLink="/showRoles"
                 [ngClass]="{'dropdown-link_active': this.currentUrl === '/showRoles' || this.currentUrl === '/addRole'}">Role
                 and Features</a></li>
-            <li><a class="mouse-pointer">Registration Request</a></li>
+            <li><a class="mouse-pointer" routerLink="/confirmUsers"
+              [ngClass]="{'dropdown-link_active': this.currentUrl === '/confirmUsers'}">Registration Request</a></li>
           </ul>
         </div>
       </li>
+      <li><a class="mouse-pointer" routerLink="/showPatients"><i class="bi bi-people nav-link_icon"></i>Manage
+        Patients</a></li>
       <li>
         <a class="mouse-pointer" (click)="hideCurrentDropdown(2)">
           <i class="bi bi-map nav-link_icon"></i>Manage Locations

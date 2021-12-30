@@ -29,5 +29,5 @@ data class Location(
     @Json(name = "parentName")
     var parentName: String? = null,
     @Json(name = "type")
-    var type: String? = null
+    var type: String? = null,
 )

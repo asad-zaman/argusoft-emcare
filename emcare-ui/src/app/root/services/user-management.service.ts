@@ -36,12 +36,20 @@ export class UserManagementService {
     return this.http.get(`${this.userURL}/all`, this.getHeaders());
   }
 
+  getAllSignedUpUsers() {
+    return this.http.get(`${this.userURL}/signedup`, this.getHeaders())
+  }
+
   getUserById(id) {
     return this.http.get(`${this.userURL}/${id}`, this.getHeaders());
   }
   
   updateUser(user, id) {
     return this.http.put(`${this.userURL}/update/${id}`, user, this.getHeaders());
+  }
+
+  updateUserStatus(user) {
+    return this.http.post(`${this.userURL}/status/change`, user, this.getHeaders());
   }
 
 }

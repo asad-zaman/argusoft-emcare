@@ -8,16 +8,13 @@ import com.argusoft.who.emcare.web.fhir.model.EmcareResource;
 import com.argusoft.who.emcare.web.fhir.service.EmcareResourceService;
 import com.argusoft.who.emcare.web.location.model.LocationMaster;
 import com.argusoft.who.emcare.web.location.service.LocationService;
-import java.util.ArrayList;
-import java.util.List;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.RelatedPerson;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @CrossOrigin(origins = "**")
 @RestController
@@ -66,6 +63,11 @@ public class EmcareResourceController {
         return patientDtosList;
     }
 
+    @GetMapping("/patient/locationId/{locationId}")
+    public List<PatientDto> getAllPatientsUnderLocation(@PathVariable(value = "locationId") Integer locationId) {
+        return emcareResourceService.getPatientUnderLocationId(locationId);
+    }
+
     @GetMapping("/patient/{patientId}")
     public PatientDto getPatientById(@PathVariable String patientId) {
         EmcareResource emcareResource = emcareResourceService.findByResourceId(patientId);
@@ -81,7 +83,7 @@ public class EmcareResourceController {
             LocationMaster location = locationService.getLocationMasterById(Integer.parseInt(patientDto.getLocation()));
             patientDto.setLocation(location.getName());
         }
-        
+
         return patientDto;
     }
 }

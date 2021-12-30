@@ -21,7 +21,7 @@ data class LoggedInUser(
     @Json(name = "userId")
     var userId: String = "",
     @Json(name = "userName")
-    var userName: String? = "null",
+    var userName: String? = null,
     @Json(name = "password")
     var password: String? = null,
 )
