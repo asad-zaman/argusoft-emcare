@@ -2,7 +2,6 @@ package com.argusoft.who.emcare.ui.common.base
 
 import android.content.Context
 import android.content.Intent
-import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
