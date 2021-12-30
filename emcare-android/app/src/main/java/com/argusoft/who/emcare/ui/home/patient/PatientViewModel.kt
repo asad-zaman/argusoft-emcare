@@ -19,6 +19,8 @@ import com.google.android.fhir.datacapture.mapping.ResourceMapper
 import com.google.android.fhir.search.Order
 import com.google.android.fhir.search.StringFilterModifier
 import com.google.android.fhir.search.search
+import com.google.android.fhir.sync.Result
+import com.google.android.fhir.sync.State
 import com.google.android.fhir.sync.Sync
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -40,6 +42,9 @@ class PatientViewModel @Inject constructor(
 
     private val _addPatients = MutableLiveData<ApiResponse<Int>>()
     val addPatients: LiveData<ApiResponse<Int>> = _addPatients
+
+    private val _syncState = MutableLiveData<State>()
+    val syncState: LiveData<State> = _syncState
 
     fun getPatients(search: String? = null, locationId: Int?, isRefresh: Boolean = false) {
         _patients.value = ApiResponse.Loading(isRefresh)
@@ -76,8 +81,9 @@ class PatientViewModel @Inject constructor(
     }
 
     fun syncPatients() {
+        _syncState.value = State.Started
         viewModelScope.launch {
-            Sync.oneTimeSync(
+            val reustl = Sync.oneTimeSync(
                 applicationContext,
                 fhirEngine,
                 api.getHapiFhirResourceDataSource(),
@@ -85,6 +91,14 @@ class PatientViewModel @Inject constructor(
             )
             api.getLocations().whenSuccess {
                 database.saveLocations(it)
+            }
+            when (reustl) {
+                is Result.Success -> {
+                    _syncState.value = State.Finished(reustl)
+                }
+                is Result.Error -> {
+                    _syncState.value = State.Failed(reustl)
+                }
             }
         }
     }
