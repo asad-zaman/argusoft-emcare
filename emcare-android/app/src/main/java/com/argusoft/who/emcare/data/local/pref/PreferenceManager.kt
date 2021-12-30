@@ -1,8 +1,11 @@
 package com.argusoft.who.emcare.data.local.pref
 
+import com.argusoft.who.emcare.ui.common.model.LoggedInUser
 import com.argusoft.who.emcare.ui.common.model.User
 import com.argusoft.who.emcare.utils.extention.fromJson
+import com.argusoft.who.emcare.utils.extention.orEmpty
 import com.argusoft.who.emcare.utils.extention.toJson
+import java.util.*
 
 class PreferenceManager(private val sharedPreferences: EncPref) : Preference {
 
@@ -10,6 +13,7 @@ class PreferenceManager(private val sharedPreferences: EncPref) : Preference {
         private const val IS_LOGIN = "pref_is_login"
         private const val USER = "USER"
         private const val TOKEN = "TOKEN"
+        private const val LOGGED_IN_USER = "LOGGED_IN_USER"
     }
 
     override fun setLogin() {
@@ -33,7 +37,15 @@ class PreferenceManager(private val sharedPreferences: EncPref) : Preference {
     }
 
     override fun getUser(): User? {
-        return sharedPreferences.getString(USER, "{}").fromJson<User>()
+        return sharedPreferences.getString(USER).orEmpty { "{}" }.fromJson<User>()
+    }
+
+    override fun setLoggedInUser(loggedInUser: LoggedInUser) {
+        sharedPreferences.putString(LOGGED_IN_USER, loggedInUser.toJson())
+    }
+
+    override fun getLoggedInUser(): LoggedInUser? {
+        return sharedPreferences.getString(LOGGED_IN_USER).orEmpty { "{}" }.fromJson<LoggedInUser>()
     }
 
     override fun clear() {

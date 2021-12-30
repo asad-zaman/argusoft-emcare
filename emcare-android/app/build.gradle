@@ -38,6 +38,12 @@ android {
         }
     }
 
+    bundle {
+        language {
+            enableSplit = false
+        }
+    }
+
     lintOptions {
         // In general we want to check for problems. Any time, all the time.
         checkReleaseBuilds true

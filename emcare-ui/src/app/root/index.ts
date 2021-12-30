@@ -14,4 +14,5 @@ export { DeviceListComponent } from './components/Device-Management/device-list/
 export { DeviceManagementService } from './services/device-management.service';
 export { UserListComponent } from './components/User/user-list/user-list.component';
 export { ManageUserComponent } from './components/User/manage-user/manage-user.component';
+export { ConfirmUserComponent } from './components/User/confirm-user/confirm-user.component';
 export { UserManagementService } from './services/user-management.service';

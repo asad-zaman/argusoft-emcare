@@ -28,6 +28,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
 
     override fun initView() {
         binding.headerLayout.toolbar.setUpDashboard()
+        if(preference.getLoggedInUser() != null) binding.nameTextView.text = preference.getLoggedInUser()?.userName
         setupRecyclerView()
     }
 

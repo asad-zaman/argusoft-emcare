@@ -22,6 +22,8 @@ public interface UserService {
     public UserMasterDto getCurrentUser();
 
     public List<UserRepresentation> getAllUser(HttpServletRequest request);
+    
+    public List<UserRepresentation> getAllSignedUpUser(HttpServletRequest request);
 
     public List<RoleRepresentation> getAllRoles(HttpServletRequest request);
 

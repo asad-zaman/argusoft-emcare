@@ -1,7 +1,6 @@
 package com.argusoft.who.emcare.ui.auth.signup
 
 import android.view.View
-import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.fragment.app.viewModels
 import com.argusoft.who.emcare.R

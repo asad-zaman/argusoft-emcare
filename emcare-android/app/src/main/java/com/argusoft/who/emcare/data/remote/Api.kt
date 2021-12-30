@@ -17,4 +17,6 @@ interface Api {
     suspend fun getRoles(): ApiResponse<List<Role>>
 
     suspend fun getLocations(): ApiResponse<List<Location>>
+
+    suspend fun getLoggedInUser(): ApiResponse<LoggedInUser>
 }

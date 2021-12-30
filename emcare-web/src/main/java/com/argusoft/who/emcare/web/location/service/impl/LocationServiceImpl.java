@@ -77,7 +77,7 @@ public class LocationServiceImpl implements LocationService {
         List<LocationMaster> locationMasters = locationMasterDao.findAll();
         List<LocationaListDto> locationaListDtos = new ArrayList<>();
         for (LocationMaster locationMaster : locationMasters) {
-            if (locationMaster.getParent() == 0 || locationMaster.getParent() == null) {
+            if (locationMaster.getParent() == null || locationMaster.getParent() == 0) {
                 locationaListDtos.add(LocationMasterMapper.entityToLocationList(locationMaster, "NA"));
             } else {
                 locationaListDtos.add(LocationMasterMapper.entityToLocationList(locationMaster, locationMasterDao.findById(locationMaster.getParent().intValue()).get().getName()));

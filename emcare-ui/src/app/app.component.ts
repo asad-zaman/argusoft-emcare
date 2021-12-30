@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, NavigationStart, Event as NavigationEvent } from '@angular/router';
+import { AuthenticationService } from './shared/services/authentication.service';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -8,10 +9,14 @@ import { Router, NavigationStart, Event as NavigationEvent } from '@angular/rout
 export class AppComponent implements OnInit {
 
   currentUrl;
+  userName: any;
   isUserDropdownOpen: boolean = true;
   isLocationDropdownOpen: boolean = true;
 
-  constructor(private readonly router: Router) { }
+  constructor(
+    private readonly router: Router,
+    private readonly authenticationService: AuthenticationService
+  ) { }
 
   ngOnInit() {
     this.prerequisite();
@@ -26,6 +31,17 @@ export class AppComponent implements OnInit {
       if (event instanceof NavigationStart) {
         this.currentUrl = event.url;
         console.log(this.currentUrl);
+        if (this.currentUrl !== '/login' && this.currentUrl !== '/signup') {
+          this.getLoggedInUser();
+        }
+      }
+    });
+  }
+
+  getLoggedInUser() {
+    this.authenticationService.getLoggedInUser().subscribe(res => {
+      if (res) {
+        this.userName = res.userName;
       }
     });
   }

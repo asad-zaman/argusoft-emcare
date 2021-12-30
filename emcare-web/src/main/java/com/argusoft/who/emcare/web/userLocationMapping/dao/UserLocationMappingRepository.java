@@ -7,7 +7,8 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface UserLocationMappingRepository extends JpaRepository<UserLocationMapping, Integer> {
+public interface UserLocationMappingRepository extends 
+        JpaRepository<UserLocationMapping, Integer> {
 
     List<UserLocationMapping> findByUserId(String userId);
 
@@ -20,4 +21,8 @@ public interface UserLocationMappingRepository extends JpaRepository<UserLocatio
     public List<String> getAllUserOnChildLocations(@Param("id") Integer id);
 
 
+    
+    List<UserLocationMapping> findByRegRequestFromAndIsFirst(
+            String regRequestFrom, boolean isFirst);
+    
 }

@@ -72,6 +72,10 @@ class LoginViewModel @Inject constructor(
                         user.accessToken?.let { accessToken -> preference.setToken(accessToken) }
                         preference.setUser(user)
 
+                        api.getLoggedInUser().whenSuccess { loggedInUser ->
+                            preference.setLoggedInUser(loggedInUser)
+                        }
+
                         val getDevice = api.getDevice(deviceUUID)
                         getDevice.whenSuccess {
                             deviceDetails.isBlocked = it.isBlocked

@@ -17,6 +17,7 @@ import {
   DeviceManagementService,
   UserListComponent,
   ManageUserComponent,
+  ConfirmUserComponent,
   UserManagementService
 } from './root/index';
 import { AuthenticationService } from './shared';
@@ -52,7 +53,8 @@ import { ShowRoleComponent } from './root/components/role-management/show-role/s
     ManageUserComponent,
     PatientListComponent,
     ManageRoleComponent,
-    ShowRoleComponent
+    ShowRoleComponent,
+    ConfirmUserComponent
   ],
   imports: [
     BrowserModule,

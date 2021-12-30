@@ -1,9 +1,6 @@
 package com.argusoft.who.emcare.data.remote
 
-import com.argusoft.who.emcare.ui.common.model.DeviceDetails
-import com.argusoft.who.emcare.ui.common.model.Location
-import com.argusoft.who.emcare.ui.common.model.Role
-import com.argusoft.who.emcare.ui.common.model.SignupRequest
+import com.argusoft.who.emcare.ui.common.model.*
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -32,4 +29,7 @@ interface ApiService {
 
     @GET("signup/location")
     suspend fun getLocations(): Response<List<Location>>
+
+    @GET("user")
+    suspend fun getLoggedInUser(): Response<LoggedInUser>
 }
