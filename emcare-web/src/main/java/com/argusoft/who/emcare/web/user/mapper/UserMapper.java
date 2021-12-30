@@ -9,6 +9,9 @@ import org.keycloak.representations.AccessToken;
 
 public class UserMapper {
 
+    private UserMapper() {
+    }
+
     public static UserLocationMapping userDtoToUserLocationMappingEntity(UserDto userDto, String userId) {
         UserLocationMapping user = new UserLocationMapping();
         user.setUserId(userId);

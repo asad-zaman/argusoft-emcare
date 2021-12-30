@@ -16,6 +16,11 @@ public class PatientDto {
     private Date dob;
     private String caregiver;
     private String location;
+    private String addressLine;
+    private String addressCity;
+    private String addressCountry;
+    private String addressPostalCode;
+    
 
     public PatientDto() {
     }
@@ -83,6 +88,39 @@ public class PatientDto {
     public void setLocation(String location) {
         this.location = location;
     }
+
+    public String getAddressLine() {
+        return addressLine;
+    }
+
+    public void setAddressLine(String addressLine) {
+        this.addressLine = addressLine;
+    }
+
+    public String getAddressCity() {
+        return addressCity;
+    }
+
+    public void setAddressCity(String addressCity) {
+        this.addressCity = addressCity;
+    }
+
+    public String getAddressCountry() {
+        return addressCountry;
+    }
+
+    public void setAddressCountry(String addressCountry) {
+        this.addressCountry = addressCountry;
+    }
+
+    public String getAddressPostalCode() {
+        return addressPostalCode;
+    }
+
+    public void setAddressPostalCode(String addressPostalCode) {
+        this.addressPostalCode = addressPostalCode;
+    }
+    
     
     
 }

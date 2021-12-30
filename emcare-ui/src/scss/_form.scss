@@ -1,0 +1,76 @@
+.btn-red {
+    background: $color-red;
+    text-transform: uppercase;
+    color: $color-white;
+    font-size: 16px;
+    padding: 12px 40px;
+    &:hover {
+        background: $color-dark-red;
+        color: $color-white;
+    }
+    &:focus {
+        box-shadow: none;
+    }
+}
+
+.custom-input {
+    height: 45px;
+    border: 1px solid $color-gray-30;
+    &:focus {
+        box-shadow: none;
+    }
+}
+.custom-select {
+    height: 45px;
+    border: 1px solid $color-gray-30;
+    &:focus {
+        box-shadow: none;
+    }
+}
+
+.form-wrapper {
+    width: 640px;
+    margin: 0 auto;
+    margin-top: 30px;
+    @media screen and (max-width: 991px) {
+        width: 90%;
+    }
+}
+label {
+    color: $color-gray-30;
+}
+
+/*Signup-page-css*/
+
+.signup_left-col {
+    display: flex;
+
+    align-items: center;
+    background: linear-gradient(160.59deg, #ffffff 5.63%, #eeeeee 60.17%);
+    height: 100vh;
+    @media screen and (max-width: 767px) {
+        height: auto;
+        margin-bottom: 30px;
+    }
+
+    .signup_left-col_inner {
+        width: 400px;
+        margin: 0 auto;
+        text-align: center;
+        @media screen and (max-width: 991px) {
+            width: 90%;
+            padding: 30px;
+        }
+    }
+}
+
+.signup_form_wrapper {
+    width: 450px;
+    margin: 0 auto;
+    @media screen and (max-width: 991px) {
+        width: 90%;
+        margin-bottom: 50px;
+    }
+}
+
+/*Signup-page-css*/

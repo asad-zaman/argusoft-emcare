@@ -1,18 +1,19 @@
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
+import { environment } from "src/environments/environment";
 
 @Injectable({
     providedIn: 'root'
 })
 export class RoleManagementService {
 
-    roleBaseURL = `http://localhost:8080/api/role`
+    roleBaseURL = `${environment.apiUrl}/api/role`
 
     constructor(private http: HttpClient) { }
 
     getHeaders() {
         let authToken = localStorage.getItem("access_token");
-        authToken = authToken.substring(1,authToken.length - 1);
+        authToken = authToken ? authToken.substring(1, authToken.length - 1) : '';
         const headerObj = {
             headers: new HttpHeaders({
                 'Content-Type': 'application/json',
@@ -31,7 +32,7 @@ export class RoleManagementService {
         return this.http.get(`${this.roleBaseURL}`, this.getHeaders());
     }
 
-    getRoleById(id:String) {
+    getRoleById(id: String) {
         return this.http.get(`${this.roleBaseURL}/${id}`, this.getHeaders());
     }
 

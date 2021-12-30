@@ -2,6 +2,7 @@ package com.argusoft.who.emcare.web.location.controller;
 
 import com.argusoft.who.emcare.web.location.dto.HierarchyMasterDto;
 import com.argusoft.who.emcare.web.location.dto.LocationMasterDto;
+import com.argusoft.who.emcare.web.location.dto.LocationaListDto;
 import com.argusoft.who.emcare.web.location.model.LocationMaster;
 import com.argusoft.who.emcare.web.location.service.LocationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,58 +26,63 @@ public class LocationController {
     @Autowired
     private HttpServletRequest request;
 
-    @RequestMapping(value = "/hierarchy/create", method = RequestMethod.POST)
+    @PostMapping("/hierarchy/create")
     public ResponseEntity<Object> createHierarchyMaster(@RequestBody HierarchyMasterDto hierarchyMasterDto) {
         return locationConfigService.createHierarchyMaster(hierarchyMasterDto);
     }
 
-    @RequestMapping(value = "/hierarchy/update", method = RequestMethod.PUT)
+    @PutMapping("/hierarchy/update")
     public ResponseEntity<Object> updateHierarchyMaster(@RequestBody HierarchyMasterDto hierarchyMasterDto) {
         return locationConfigService.updateHierarchyMaster(hierarchyMasterDto);
     }
 
-    @RequestMapping(value = "/hierarchy/delete/{id}", method = RequestMethod.DELETE)
+    @DeleteMapping("/hierarchy/delete/{id}")
     public void deleteHierarchyMaster(@PathVariable(value = "id") String id) {
         locationConfigService.deleteHierarchyMaster(id);
     }
 
-    @RequestMapping(value = "/hierarchy/{type}", method = RequestMethod.GET)
+    @GetMapping("/hierarchy/{type}")
     public ResponseEntity<Object> retriveHierarchyMasterById(@PathVariable(value = "type") String type) {
         return locationConfigService.getHierarchyMasterById(type);
     }
 
-    @RequestMapping(value = "/hierarchy", method = RequestMethod.GET)
+    @GetMapping("/hierarchy")
     public ResponseEntity<Object> retriveAllHierarchyMaster() {
         return locationConfigService.getAllHierarchyMaster();
     }
 
-    @RequestMapping(value = "/create", method = RequestMethod.POST)
+    @PostMapping("/create")
     public ResponseEntity<Object> createOrUpdate(@RequestBody LocationMasterDto locationMasterDto) {
         return locationConfigService.createOrUpdate(locationMasterDto);
     }
 
-    @RequestMapping(value = "", method = RequestMethod.GET)
+    @GetMapping("")
     public ResponseEntity<Object> getAllLocation() {
         return locationConfigService.getAllLocation();
     }
 
-    @RequestMapping(value = "/update", method = RequestMethod.PUT)
+    @PutMapping("/update")
     public ResponseEntity<Object> updateLocation(@RequestBody LocationMasterDto locationMasterDto) {
         return locationConfigService.updateLocation(locationMasterDto);
     }
 
-    @RequestMapping(value = "", method = RequestMethod.DELETE)
+    @DeleteMapping("")
     public ResponseEntity<Object> deleteLocation(@RequestParam("locationId") Integer locationId) {
         return locationConfigService.deleteLocationById(locationId);
     }
 
-    @RequestMapping(value = "/{locationId}", method = RequestMethod.GET)
+    @GetMapping("/{locationId}")
     public LocationMaster getLocationById(@PathVariable(value = "locationId") Integer locationId) {
         return locationConfigService.getLocationById(locationId);
     }
 
-    @RequestMapping(value = "/type/{type}", method = RequestMethod.GET)
+    @GetMapping("/type/{type}")
     public List<LocationMaster> getLocationByType(@PathVariable(value = "type") String locationType) {
         return locationConfigService.getLocationByType(locationType);
+    }
+
+    @GetMapping("/child/{locationId}")
+    public List<LocationaListDto> getChildLocation(@PathVariable(value = "locationId") Integer locationId) {
+        return locationConfigService.getChildLocation(locationId);
     }
 }

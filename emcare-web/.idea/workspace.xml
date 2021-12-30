@@ -5,16 +5,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="252247ce-0696-452b-9c23-89ebefa7a554" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/argusoft/who/emcare/web/menu/model/MenuConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/argusoft/who/emcare/web/menu/service/MenuService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/argusoft/who/emcare/web/menu/service/impl/MenuServiceimpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/index.pb" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/index.pb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/argusoft/who/emcare/web/location/controller/LocationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/argusoft/who/emcare/web/location/controller/LocationController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/argusoft/who/emcare/web/location/dao/LocationMasterDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/argusoft/who/emcare/web/location/dao/LocationMasterDao.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/argusoft/who/emcare/web/location/service/LocationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/argusoft/who/emcare/web/location/service/LocationService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/argusoft/who/emcare/web/location/service/impl/LocationServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/argusoft/who/emcare/web/location/service/impl/LocationServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/argusoft/who/emcare/web/config/KeyCloakConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/argusoft/who/emcare/web/config/KeyCloakConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/argusoft/who/emcare/web/config/WebConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/argusoft/who/emcare/web/config/WebConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/argusoft/who/emcare/web/menu/service/MenuService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/argusoft/who/emcare/web/menu/service/MenuService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/argusoft/who/emcare/web/menu/service/impl/MenuServiceimpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/argusoft/who/emcare/web/menu/service/impl/MenuServiceimpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/argusoft/who/emcare/web/user/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/argusoft/who/emcare/web/user/controller/UserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/argusoft/who/emcare/web/user/dto/UserMasterDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/argusoft/who/emcare/web/user/dto/UserMasterDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/argusoft/who/emcare/web/user/mapper/UserMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/argusoft/who/emcare/web/user/mapper/UserMapper.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/argusoft/who/emcare/web/user/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/argusoft/who/emcare/web/user/service/UserService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/argusoft/who/emcare/web/user/service/impl/UserServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/argusoft/who/emcare/web/user/service/impl/UserServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -205,24 +208,20 @@
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
-        <breakpoint enabled="true" type="java-exception">
-          <properties class="javax.ws.rs.NotAuthorizedException" package="javax.ws.rs" />
-          <option name="timeStamp" value="6" />
-        </breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/com/argusoft/who/emcare/web/user/service/impl/UserServiceImpl.java</url>
-          <line>171</line>
-          <option name="timeStamp" value="23" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/argusoft/who/emcare/web/user/service/impl/UserServiceImpl.java</url>
-          <line>189</line>
+          <line>217</line>
           <option name="timeStamp" value="24" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/com/argusoft/who/emcare/web/user/service/impl/UserServiceImpl.java</url>
-          <line>52</line>
-          <option name="timeStamp" value="25" />
+          <line>182</line>
+          <option name="timeStamp" value="27" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/argusoft/who/emcare/web/user/service/impl/UserServiceImpl.java</url>
+          <line>81</line>
+          <option name="timeStamp" value="28" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
