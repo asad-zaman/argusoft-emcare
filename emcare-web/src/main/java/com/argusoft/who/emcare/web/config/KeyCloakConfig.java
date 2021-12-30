@@ -22,7 +22,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 @Component
 public class KeyCloakConfig {
-    
+
     @Autowired
     HttpServletRequest request;
 
@@ -37,20 +37,20 @@ public class KeyCloakConfig {
     public static final String MASTER_USER_PASSWORD = "argusadmin";
 
     public Keycloak getInstance() {
-        if (keycloak == null) {
-            KeycloakSecurityContext context = (KeycloakSecurityContext) request.getAttribute(KeycloakSecurityContext.class.getName());
-            keycloak = KeycloakBuilder.builder()
-                    .serverUrl(KeyCloakConfig.SERVER_URL)
-                    .realm(KeyCloakConfig.REALM)
-                    .grantType(OAuth2Constants.PASSWORD)
-                    .username(KeyCloakConfig.USER_NAME)
-                    .password(KeyCloakConfig.PASSWORD)
-                    .clientId(KeyCloakConfig.CLIENT_ID)
-                    .authorization(context.getTokenString())
-                    .clientSecret(KeyCloakConfig.CLIENT_SECRET)
-                    .resteasyClient(new ResteasyClientBuilder().connectionPoolSize(10).build())
-                    .build();
-        }
+//        if (keycloak == null) {
+        KeycloakSecurityContext context = (KeycloakSecurityContext) request.getAttribute(KeycloakSecurityContext.class.getName());
+        keycloak = KeycloakBuilder.builder()
+                .serverUrl(KeyCloakConfig.SERVER_URL)
+                .realm(KeyCloakConfig.REALM)
+                .grantType(OAuth2Constants.PASSWORD)
+                .username(KeyCloakConfig.USER_NAME)
+                .password(KeyCloakConfig.PASSWORD)
+                .clientId(KeyCloakConfig.CLIENT_ID)
+                .authorization(context.getTokenString())
+                .clientSecret(KeyCloakConfig.CLIENT_SECRET)
+                .resteasyClient(new ResteasyClientBuilder().connectionPoolSize(10).build())
+                .build();
+//        }
         return keycloak;
     }
 
