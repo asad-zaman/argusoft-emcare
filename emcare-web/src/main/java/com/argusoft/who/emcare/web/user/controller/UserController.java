@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * @author jay
@@ -74,26 +75,26 @@ public class UserController {
         userService.addRealmRole(role);
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
-    
+
     @GetMapping("/user/{userId}")
-    public UserRepresentation getUserById(@PathVariable String userId) {
+    public UserRepresentation getUserById(@PathVariable(value = "userId") String userId) {
         return userService.getUserById(userId);
     }
 
     @GetMapping("/user/role/{userId}")
-    public ResponseEntity<Object> getUserRoleById(@PathVariable String userId) {
+    public ResponseEntity<Object> getUserRoleById(@PathVariable(value = "userId") String userId) {
         return userService.getUserRolesById(userId);
     }
-    
+
     @PutMapping("/user/update/{userId}")
     public ResponseEntity<Object> updateUser(@RequestBody UserDto userDto,
-            @PathVariable String userId
+                                             @PathVariable(value = "userId") String userId
     ) {
         return userService.updateUser(userDto, userId);
     }
 
     @GetMapping("/role/{roleId}")
-    public ResponseEntity<Object> getRoleById(@PathVariable String roleId, HttpServletRequest request) {
+    public ResponseEntity<Object> getRoleById(@PathVariable(value = "roleId") String roleId, HttpServletRequest request) {
         return ResponseEntity.status(HttpStatus.OK).body(userService.getRoleByName(roleId, request));
     }
 
@@ -105,5 +106,10 @@ public class UserController {
     @PostMapping("/user/status/change")
     public ResponseEntity<Object> changeUserStatus(@RequestBody UserUpdateDto userUpdateDto) {
         return userService.updateUserStatus(userUpdateDto);
+    }
+
+    @GetMapping("user/locationId/{locationId}")
+    public List<UserRepresentation> getUsersUnderLocation(@PathVariable(value = "locationId") Integer locationId) {
+        return userService.getUsersUnderLocation(locationId);
     }
 }
