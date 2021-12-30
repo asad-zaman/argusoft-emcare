@@ -11,7 +11,7 @@ export class AppComponent implements OnInit {
   currentUrl;
   userName: any;
   isUserDropdownOpen: boolean = true;
-  isLocationDropdownOpen: boolean = true;
+  isLocationDropdownOpen: boolean = false;
 
   constructor(
     private readonly router: Router,
@@ -30,7 +30,6 @@ export class AppComponent implements OnInit {
     this.router.events.subscribe((event: NavigationEvent) => {
       if (event instanceof NavigationStart) {
         this.currentUrl = event.url;
-        console.log(this.currentUrl);
         if (this.currentUrl !== '/login' && this.currentUrl !== '/signup') {
           this.getLoggedInUser();
         }

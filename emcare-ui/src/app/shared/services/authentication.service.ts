@@ -9,7 +9,8 @@ import { environment } from 'src/environments/environment';
 @Injectable({ providedIn: 'root' })
 export class AuthenticationService {
 
-    backendURL = `${environment.apiUrl}/api/signup`;
+    loginURL = `http://192.1.200.197:8180`;
+    backendURL = `${environment.apiUrl}`;
     userInfo = new BehaviorSubject(null);
     jwtHelper = new JwtHelperService();
     userKey = 'sample-login-page';
@@ -35,7 +36,7 @@ export class AuthenticationService {
             locationId,
             roleName
         }
-        return this.http.post<any>(`${this.backendURL}`, user)
+        return this.http.post<any>(`${this.backendURL}/api/signup`, user)
             .pipe(map(user => {
                 this.userInfo.next(user);
                 return user;
@@ -52,13 +53,13 @@ export class AuthenticationService {
     }
 
     login(username: string, password: string) {
-        const url = `http://7907-150-129-149-210.ngrok.io/auth/realms/emcare_demo/protocol/openid-connect/token`;
+        const url = `${this.loginURL}/auth/realms/emcare/protocol/openid-connect/token`;
         const body = new HttpParams()
             .set('username', username)
             .set('password', password)
             .set('grant_type', 'password')
-            .set('client_id', 'emcare_client')
-            .set('client_secret', '5b929983-175b-4e9f-97d2-ac97dff78ce9');
+            .set('client_id', 'emcare')
+            .set('client_secret', 'b5a37bde-8d54-4837-a8dc-12e1f808e26e');
         // return this.http.post<any>(`http:localhost:4200/users/authenticate`, { username, password }, { withCredentials: true })
         return this.http.post<any>(url, body.toString(), this.getHeaders());
     }
@@ -70,7 +71,7 @@ export class AuthenticationService {
                 'Authorization': `Bearer ${accessToken}`
             })
         };
-        const url = `http://7907-150-129-149-210.ngrok.io/api/user`;
+        const url = `${this.backendURL}/api/user`;
         return this.http.get<any>(url, headerObj);
     }
 
@@ -79,7 +80,7 @@ export class AuthenticationService {
     }
 
     refreshToken() {
-        const url = `http://7907-150-129-149-210.ngrok.io/auth/realms/emcare_demo/protocol/openid-connect/token`;
+        const url = `${this.loginURL}/auth/realms/emcare_demo/protocol/openid-connect/token`;
         const body = new HttpParams()
             .set('grant_type', 'password')
             .set('password', 'argusadmin')
@@ -89,13 +90,13 @@ export class AuthenticationService {
     }
 
     getAllRolesForSignUp() {
-        const url = `${this.backendURL}/roles`;
+        const url = `${this.backendURL}/api/signup/roles`;
         const headerObj = this.getHeaders();
         return this.http.get<any>(url, headerObj);
     }
 
     getAllLocationsForSignUp() {
-        const url = `${this.backendURL}/location`;
+        const url = `${this.backendURL}/api/signup/location`;
         const headerObj = this.getHeaders();
         return this.http.get<any>(url, headerObj);
     }

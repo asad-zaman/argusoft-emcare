@@ -1,0 +1,78 @@
+<div class="">
+  <input type="checkbox" class="openSidebarMenu" id="openSidebarMenu">
+  <label for="openSidebarMenu" class="sidebarIconToggle">
+    <div class="spinner diagonal part-1"></div>
+    <div class="spinner horizontal"></div>
+    <div class="spinner diagonal part-2"></div>
+  </label>
+  <div id="sidebarMenu">
+    <form [formGroup]="locationFilterForm" name="locationFilterForm" novalidate>
+      <div class="mb-5">
+        <h1 class="heading">Location Filter</h1>
+        <hr>
+      </div>
+      <div class="row">
+        <div *ngIf="dropdownActiveArr[0] == true" class="col-12 col-sm-6">
+          <div class="mb-3">
+            <label class="form-label">Country</label>
+            <select (click)="onClicked($event, 1)" class="form-control custom-input" formControlName="country"
+              id="country">
+              <ng-container *ngFor="let data of countryArr">
+                <option value="{{data.id}}">{{data.name}}</option>
+              </ng-container>
+            </select>
+          </div>
+        </div>
+        <div *ngIf="dropdownActiveArr[1] == true" class="col-12 col-sm-6">
+          <div class="mb-3">
+            <label class="form-label">State</label>
+            <select (click)="onClicked($event, 2)" class="form-control custom-input" formControlName="state" id="state">
+              <ng-container *ngFor="let data of stateArr">
+                <option value="{{data.id}}">{{data.name}}</option>
+              </ng-container>
+            </select>
+          </div>
+        </div>
+        <div *ngIf="dropdownActiveArr[2] == true" class="col-12 col-sm-6">
+          <div class="mb-3">
+            <label class="form-label">City</label>
+            <select (click)="onClicked($event, 3)" class="form-control custom-input" formControlName="city" id="city">
+              <ng-container *ngFor="let data of cityArr">
+                <option value="{{data.id}}">{{data.name}}</option>
+              </ng-container>
+            </select>
+          </div>
+        </div>
+        <div *ngIf="dropdownActiveArr[3] == true" class="col-12 col-sm-6">
+          <div class="mb-3">
+            <label class="form-label">Region</label>
+            <select (click)="onClicked($event, 4)" class="form-control custom-input" formControlName="region"
+              id="region">
+              <ng-container *ngFor="let data of regionArr">
+                <option value="{{data.id}}">{{data.name}}</option>
+              </ng-container>
+            </select>
+          </div>
+        </div>
+        <div *ngIf="dropdownActiveArr[4] == true" class="col-12 col-sm-6">
+          <div class="mb-3">
+            <label class="form-label">Other</label>
+            <select (click)="onClicked($event, 5)" class="form-control custom-input" formControlName="other" id="other">
+              <ng-container *ngFor="let data of otherArr">
+                <option value="{{data.id}}">{{data.name}}</option>
+              </ng-container>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="text-end mt-5">
+        <hr>
+        <button (click)="saveData()" class="btn-red btn">
+          GET RESULTS
+        </button>
+      </div>
+    </form>
+  </div>
+  <div class="form-wrapper">
+  </div>
+</div>

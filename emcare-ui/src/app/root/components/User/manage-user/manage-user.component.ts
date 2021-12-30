@@ -33,6 +33,8 @@ export class ManageUserComponent implements OnInit {
     this.editId = routeParams.get('id');
     if (this.editId) {
       this.isEdit = true;
+      console.log(this.isEdit);
+      
       this.initUpdateForm();
     } else {
       this.getRoles();

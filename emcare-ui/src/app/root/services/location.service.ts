@@ -69,4 +69,13 @@ export class LocationService {
   deleteLocationById(id) {
     return this.http.delete(`${this.locationURL}?locationId=${id}`, this.getHeaders());
   }
+
+  getAllLocationByType(type) {
+    return this.http.get(`${this.locationURL}/type/${type}`, this.getHeaders());
+  }
+
+  getChildLocationById(id) {
+    return this.http.get(`${this.locationURL}/child/${id}`, this.getHeaders());
+  }
 }
+ 

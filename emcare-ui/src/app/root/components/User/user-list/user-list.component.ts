@@ -11,8 +11,7 @@ export class UserListComponent implements OnInit {
 
   mainUserList: any;
   filteredUserList: any;
-  searchString:string;
-
+  searchString: string;
 
   constructor(
     private readonly router: Router,
@@ -38,21 +37,21 @@ export class UserListComponent implements OnInit {
   }
 
   searchFilter() {
-    this.filteredUserList = this.mainUserList.filter( user => {
+    this.filteredUserList = this.mainUserList.filter(user => {
       let roleFlag = false;
       user.realmRoles.every(role => {
-        if(role.includes(this.searchString)){
+        if (role.includes(this.searchString)) {
           roleFlag = true;
           return false;
         }
         return true;
       });
 
-      return (roleFlag 
-          ||  user.id?.includes(this.searchString) 
-          ||  user.firstName?.includes(this.searchString)
-          ||  user.lastName?.includes(this.searchString)
-          ||  user.username?.includes(this.searchString))
+      return (roleFlag
+        || user.id?.includes(this.searchString)
+        || user.firstName?.includes(this.searchString)
+        || user.lastName?.includes(this.searchString)
+        || user.username?.includes(this.searchString))
     })
   }
 
@@ -64,4 +63,14 @@ export class UserListComponent implements OnInit {
     this.router.navigate([`updateUser/${this.filteredUserList[index]['id']}`]);
   }
 
+  getLocationId(data) {
+    const selectedId = data;
+    this.userService.getUserByLocationId(selectedId).subscribe(res => {
+      if (res) {
+        this.filteredUserList = [];
+        this.filteredUserList = res;
+        console.log(this.filteredUserList);
+      }
+    })
+  }
 }

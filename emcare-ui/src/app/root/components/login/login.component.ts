@@ -24,8 +24,8 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {
     this.loginForm = this.formBuilder.group({
-      username: ['test@gmail.com', [Validators.required, Validators.pattern('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-]+$')]],
-      password: ['test', Validators.required]
+      username: ['emcare@gmail.com', [Validators.required, Validators.pattern('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-]+$')]],
+      password: ['argusadmin', Validators.required]
     });
   }
 
@@ -47,7 +47,7 @@ export class LoginComponent implements OnInit {
             localStorage.setItem('access_token_expiry_time', JSON.stringify(data.expires_in));
             localStorage.setItem('refresh_token', JSON.stringify(data.refresh_token));
             localStorage.setItem('refresh_token_expiry_time', JSON.stringify(data.refresh_expires_in));
-            this.router.navigate(["/dashboard"]);
+            this.router.navigate(["/showUsers"]);
           }
         },
         error => {
