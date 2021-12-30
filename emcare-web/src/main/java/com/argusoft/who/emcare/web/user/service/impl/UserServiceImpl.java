@@ -281,10 +281,19 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserRepresentation> getUsersUnderLocation(Integer locationId) {
+        Keycloak keycloak = keyCloakConfig.getInstance();
         List<String> allUsersIdUnderLocation = userLocationMappingRepository.getAllUserOnChildLocations(locationId);
         List<UserRepresentation> userRepresentations = new ArrayList<>();
         for (String userId : allUsersIdUnderLocation) {
             userRepresentations.add(getUserById(userId));
+        }
+        for (UserRepresentation representation : userRepresentations) {
+            List<RoleRepresentation> roleRepresentationList = keycloak.realm(KeyCloakConfig.REALM).users().get(representation.getId()).roles().realmLevel().listAll();
+            List<String> roles = new ArrayList<>();
+            for (RoleRepresentation roleRepresentation : roleRepresentationList) {
+                roles.add(roleRepresentation.getName());
+            }
+            representation.setRealmRoles(roles);
         }
         return userRepresentations;
     }
