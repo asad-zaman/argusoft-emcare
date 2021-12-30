@@ -4,10 +4,12 @@ import { map } from 'rxjs/operators';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { environment } from 'src/environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class AuthenticationService {
 
+    backendURL = `${environment.apiUrl}/api/signup`;
     userInfo = new BehaviorSubject(null);
     jwtHelper = new JwtHelperService();
     userKey = 'sample-login-page';
@@ -33,7 +35,7 @@ export class AuthenticationService {
             locationId,
             roleName
         }
-        return this.http.post<any>(`http://7907-150-129-149-210.ngrok.io/api/signup`, user)
+        return this.http.post<any>(`${this.backendURL}`, user)
             .pipe(map(user => {
                 this.userInfo.next(user);
                 return user;
@@ -87,13 +89,13 @@ export class AuthenticationService {
     }
 
     getAllRolesForSignUp() {
-        const url = `http://7907-150-129-149-210.ngrok.io/api/signup/roles`;
+        const url = `${this.backendURL}/roles`;
         const headerObj = this.getHeaders();
         return this.http.get<any>(url, headerObj);
     }
 
     getAllLocationsForSignUp() {
-        const url = `http://7907-150-129-149-210.ngrok.io/api/signup/location`;
+        const url = `${this.backendURL}/location`;
         const headerObj = this.getHeaders();
         return this.http.get<any>(url, headerObj);
     }
