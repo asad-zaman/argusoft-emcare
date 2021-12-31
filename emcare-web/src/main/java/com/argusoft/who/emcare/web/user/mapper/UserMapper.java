@@ -3,9 +3,11 @@ package com.argusoft.who.emcare.web.user.mapper;
 import com.argusoft.who.emcare.web.location.model.LocationMaster;
 import com.argusoft.who.emcare.web.user.cons.UserConst;
 import com.argusoft.who.emcare.web.user.dto.UserDto;
+import com.argusoft.who.emcare.web.user.dto.UserListDto;
 import com.argusoft.who.emcare.web.user.dto.UserMasterDto;
 import com.argusoft.who.emcare.web.userLocationMapping.model.UserLocationMapping;
 import org.keycloak.representations.AccessToken;
+import org.keycloak.representations.idm.UserRepresentation;
 
 public class UserMapper {
 
@@ -35,5 +37,20 @@ public class UserMapper {
         userMaster.setUserId(token.getSubject());
         userMaster.setEmail(token.getEmail());
         return userMaster;
+    }
+
+    public static UserListDto getUserListDto(UserRepresentation userRepresentation, LocationMaster locationMaster) {
+        UserListDto user = new UserListDto();
+        user.setId(userRepresentation.getId());
+        user.setFirstName(userRepresentation.getFirstName());
+        user.setLastName(userRepresentation.getLastName());
+        user.setUserName(userRepresentation.getUsername());
+        user.setEmail(userRepresentation.getEmail());
+        user.setEnabled(userRepresentation.isEnabled());
+        user.setRealmRoles(userRepresentation.getRealmRoles());
+        user.setLocationName(locationMaster != null ? locationMaster.getName() : null);
+        user.setLocationId(locationMaster != null ? locationMaster.getId() : null);
+        user.setLocationType(locationMaster != null ? locationMaster.getType() : null);
+        return user;
     }
 }

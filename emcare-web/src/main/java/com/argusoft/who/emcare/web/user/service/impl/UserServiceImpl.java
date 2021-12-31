@@ -31,11 +31,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -84,7 +80,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserRepresentation> getAllUser(HttpServletRequest request) {
+    public List<UserListDto> getAllUser(HttpServletRequest request) {
+        List<UserListDto> userList = new ArrayList<>();
         Keycloak keycloak = keyCloakConfig.getInstance();
         List<UserRepresentation> userRepresentations = keycloak.realm(KeyCloakConfig.REALM).users().list();
         for (UserRepresentation representation : userRepresentations) {
@@ -95,24 +92,31 @@ public class UserServiceImpl implements UserService {
             }
             representation.setRealmRoles(roles);
         }
-        return userRepresentations;
+        for (UserRepresentation representation : userRepresentations) {
+            List<UserLocationMapping> userLocation = userLocationMappingRepository.findByUserId(representation.getId());
+            if (!userLocation.isEmpty()) {
+                Optional<LocationMaster> locationMaster = locationMasterDao.findById(userLocation.get(0).getLocationId());
+                userList.add(UserMapper.getUserListDto(representation, locationMaster.isPresent() ? locationMaster.get() : null));
+            } else {
+                userList.add(UserMapper.getUserListDto(representation, null));
+            }
+        }
+        return userList;
     }
-    
-    @Override
-    public List<UserRepresentation> getAllSignedUpUser(HttpServletRequest request) {
-        List<UserRepresentation> users = getAllUser(request);
-        List<UserLocationMapping> mobileUsers = userLocationMappingRepository
-            .findByRegRequestFromAndIsFirst("mobile", true);
-        
-        Set<String> userIds = mobileUsers.stream()
-            .map(UserLocationMapping::getUserId)
-            .collect(Collectors.toSet());
 
-        List<UserRepresentation> signedUpUsers = users.stream()
-            .filter(user -> userIds.contains(user.getId()))
-            .collect(Collectors.toList());
-        
-        return signedUpUsers;
+    @Override
+    public List<UserListDto> getAllSignedUpUser(HttpServletRequest request) {
+        List<UserListDto> users = getAllUser(request);
+        List<UserLocationMapping> mobileUsers = userLocationMappingRepository
+                .findByRegRequestFromAndIsFirst("mobile", true);
+
+        Set<String> userIds = mobileUsers.stream()
+                .map(UserLocationMapping::getUserId)
+                .collect(Collectors.toSet());
+
+        return users.stream()
+                .filter(user -> userIds.contains(user.getId()))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -169,7 +173,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void addUser(UserDto user) {
+    public ResponseEntity<Object> addUser(UserDto user) {
         Keycloak keycloak = keyCloakConfig.getInstance();
 //        Get Realm Resource
         RealmResource realmResource = keycloak.realm(KeyCloakConfig.REALM);
@@ -185,16 +189,19 @@ public class UserServiceImpl implements UserService {
         kcUser.setEmailVerified(false);
 
         kcUser.setEnabled(user.getRegRequestFrom().equalsIgnoreCase(UserConst.WEB));
-        javax.ws.rs.core.Response response = usersResource.create(kcUser);
-
-        String userId = CreatedResponseUtil.getCreatedId(response);
-        userLocationMappingRepository.save(UserMapper.userDtoToUserLocationMappingEntity(user, userId));
-        UserResource userResource = usersResource.get(userId);
+        try {
+            javax.ws.rs.core.Response response = usersResource.create(kcUser);
+            String userId = CreatedResponseUtil.getCreatedId(response);
+            userLocationMappingRepository.save(UserMapper.userDtoToUserLocationMappingEntity(user, userId));
+            UserResource userResource = usersResource.get(userId);
 
 //        Set Realm Role
-//        TODO Set Role by admin not specific
-        RoleRepresentation testerRealmRole = realmResource.roles().get(UserConst.ROLE_USER).toRepresentation();
-        userResource.roles().realmLevel().add(Arrays.asList(testerRealmRole));
+            RoleRepresentation testerRealmRole = realmResource.roles().get(user.getRoleName()).toRepresentation();
+            userResource.roles().realmLevel().add(Arrays.asList(testerRealmRole));
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response(CommonConstant.EMAIL_ALREADY_EXISTS, HttpStatus.BAD_REQUEST.value()));
+        }
+        return ResponseEntity.ok(new Response(CommonConstant.REGISTER_SUCCESS, HttpStatus.OK.value()));
     }
 
     @Override
@@ -280,7 +287,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserRepresentation> getUsersUnderLocation(Integer locationId) {
+    public List<UserListDto> getUsersUnderLocation(Integer locationId) {
+        List<UserListDto> userList = new ArrayList<>();
+
         Keycloak keycloak = keyCloakConfig.getInstance();
         List<String> allUsersIdUnderLocation = userLocationMappingRepository.getAllUserOnChildLocations(locationId);
         List<UserRepresentation> userRepresentations = new ArrayList<>();
@@ -295,7 +304,16 @@ public class UserServiceImpl implements UserService {
             }
             representation.setRealmRoles(roles);
         }
-        return userRepresentations;
+        for (UserRepresentation representation : userRepresentations) {
+            List<UserLocationMapping> userLocation = userLocationMappingRepository.findByUserId(representation.getId());
+            if (!userLocation.isEmpty()) {
+                Optional<LocationMaster> locationMaster = locationMasterDao.findById(userLocation.get(0).getLocationId());
+                userList.add(UserMapper.getUserListDto(representation, locationMaster.isPresent() ? locationMaster.get() : null));
+            } else {
+                userList.add(UserMapper.getUserListDto(representation, null));
+            }
+        }
+        return userList;
     }
 
     private static CredentialRepresentation createPasswordCredentials(String password) {

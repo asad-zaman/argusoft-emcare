@@ -21,9 +21,9 @@ public interface UserService {
 
     public UserMasterDto getCurrentUser();
 
-    public List<UserRepresentation> getAllUser(HttpServletRequest request);
-    
-    public List<UserRepresentation> getAllSignedUpUser(HttpServletRequest request);
+    public List<UserListDto> getAllUser(HttpServletRequest request);
+
+    public List<UserListDto> getAllSignedUpUser(HttpServletRequest request);
 
     public List<RoleRepresentation> getAllRoles(HttpServletRequest request);
 
@@ -33,7 +33,7 @@ public interface UserService {
 
     public ResponseEntity<Object> signUp(UserDto user);
 
-    public void addUser(UserDto user);
+    public ResponseEntity<Object> addUser(UserDto user);
 
     public void addRealmRole(RoleDto role);
 
@@ -51,7 +51,7 @@ public interface UserService {
 
     public String getRoleNameById(String roleId);
 
-    public List<UserRepresentation> getUsersUnderLocation(Integer locationId);
+    public List<UserListDto> getUsersUnderLocation(Integer locationId);
 
     public default Keycloak getKeyCloakInstance() {
         return KeycloakBuilder.builder()

@@ -3,6 +3,7 @@ package com.argusoft.who.emcare.web.device.mapper;
 import com.argusoft.who.emcare.web.device.dto.DeviceDto;
 import com.argusoft.who.emcare.web.device.dto.DeviceWithUserDetails;
 import com.argusoft.who.emcare.web.device.model.DeviceMaster;
+import com.argusoft.who.emcare.web.user.dto.UserListDto;
 import org.keycloak.representations.idm.UserRepresentation;
 
 import java.util.List;
@@ -38,13 +39,13 @@ public class DeviceMapper {
         master.setAndroidVersion(deviceDto.getAndroidVersion());
         master.setImeiNumber(deviceMaster.getImeiNumber());
         master.setMacAddress(deviceDto.getMacAddress());
-        master.setLastLoggedInUser(userId);
+        master.setLastLoggedInUser(deviceMaster.getLastLoggedInUser());
         master.setIsBlocked(deviceDto.getIsBlocked());
 
         return master;
     }
 
-    public static DeviceWithUserDetails getDeviceWithUser(DeviceMaster deviceMaster, List<UserRepresentation> allUsers) {
+    public static DeviceWithUserDetails getDeviceWithUser(DeviceMaster deviceMaster, List<UserListDto> allUsers) {
         DeviceWithUserDetails deviceWithUserDetails = new DeviceWithUserDetails();
 
         deviceWithUserDetails.setDeviceId(deviceMaster.getDeviceId());
