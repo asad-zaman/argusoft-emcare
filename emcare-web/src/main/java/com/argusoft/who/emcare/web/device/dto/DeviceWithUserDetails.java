@@ -1,8 +1,6 @@
 package com.argusoft.who.emcare.web.device.dto;
 
-import org.keycloak.representations.idm.UserRepresentation;
-
-import java.util.Date;
+import com.argusoft.who.emcare.web.user.dto.UserListDto;
 
 /**
  * @author jay
@@ -19,7 +17,7 @@ public class DeviceWithUserDetails {
     private String deviceModel;
     private String lastLoggedInUser;
     private Boolean isBlocked;
-    private UserRepresentation usersResource;
+    private UserListDto usersResource;
 
     public Integer getDeviceId() {
         return deviceId;
@@ -101,11 +99,11 @@ public class DeviceWithUserDetails {
         isBlocked = blocked;
     }
 
-    public UserRepresentation getUsersResource() {
+    public UserListDto getUsersResource() {
         return usersResource;
     }
 
-    public void setUsersResource(UserRepresentation usersResource) {
+    public void setUsersResource(UserListDto usersResource) {
         this.usersResource = usersResource;
     }
 }

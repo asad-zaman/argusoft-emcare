@@ -1,10 +1,7 @@
 package com.argusoft.who.emcare.web.user.controller;
 
 import com.argusoft.who.emcare.web.location.service.LocationService;
-import com.argusoft.who.emcare.web.user.dto.RoleDto;
-import com.argusoft.who.emcare.web.user.dto.RoleUpdateDto;
-import com.argusoft.who.emcare.web.user.dto.UserDto;
-import com.argusoft.who.emcare.web.user.dto.UserUpdateDto;
+import com.argusoft.who.emcare.web.user.dto.*;
 import com.argusoft.who.emcare.web.user.service.UserService;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +35,7 @@ public class UserController {
     public ResponseEntity<Object> getAllUser(HttpServletRequest request) {
         return ResponseEntity.ok(userService.getAllUser(request));
     }
-    
+
     @GetMapping("/user/signedup")
     public ResponseEntity<Object> getAllSignedUpUser(HttpServletRequest request) {
         return ResponseEntity.ok(userService.getAllSignedUpUser(request));
@@ -66,8 +63,7 @@ public class UserController {
 
     @PostMapping("/user/add")
     public ResponseEntity<Object> addUserFromWeb(@RequestBody UserDto user) {
-        userService.addUser(user);
-        return ResponseEntity.status(HttpStatus.CREATED).body(null);
+        return userService.addUser(user);
     }
 
     @PostMapping("/role/add")
@@ -87,9 +83,7 @@ public class UserController {
     }
 
     @PutMapping("/user/update/{userId}")
-    public ResponseEntity<Object> updateUser(@RequestBody UserDto userDto,
-                                             @PathVariable(value = "userId") String userId
-    ) {
+    public ResponseEntity<Object> updateUser(@RequestBody UserDto userDto, @PathVariable(value = "userId") String userId) {
         return userService.updateUser(userDto, userId);
     }
 
@@ -109,7 +103,7 @@ public class UserController {
     }
 
     @GetMapping("user/locationId/{locationId}")
-    public List<UserRepresentation> getUsersUnderLocation(@PathVariable(value = "locationId") Integer locationId) {
+    public List<UserListDto> getUsersUnderLocation(@PathVariable(value = "locationId") Integer locationId) {
         return userService.getUsersUnderLocation(locationId);
     }
 }
