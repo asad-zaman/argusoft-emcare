@@ -165,7 +165,9 @@ public class UserServiceImpl implements UserService {
 
 //        Set Realm Role
             RoleRepresentation testerRealmRole = realmResource.roles().get(user.getRoleName()).toRepresentation();
+            RoleRepresentation defaultRole = realmResource.roles().get("default-roles-emcare").toRepresentation();
             userResource.roles().realmLevel().add(Arrays.asList(testerRealmRole));
+            userResource.roles().realmLevel().remove(Arrays.asList(defaultRole));
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response(CommonConstant.EMAIL_ALREADY_EXISTS, HttpStatus.BAD_REQUEST.value()));
         }
@@ -197,7 +199,9 @@ public class UserServiceImpl implements UserService {
 
 //        Set Realm Role
             RoleRepresentation testerRealmRole = realmResource.roles().get(user.getRoleName()).toRepresentation();
+            RoleRepresentation defaultRole = realmResource.roles().get("default-roles-emcare").toRepresentation();
             userResource.roles().realmLevel().add(Arrays.asList(testerRealmRole));
+            userResource.roles().realmLevel().remove(Arrays.asList(defaultRole));
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response(CommonConstant.EMAIL_ALREADY_EXISTS, HttpStatus.BAD_REQUEST.value()));
         }
