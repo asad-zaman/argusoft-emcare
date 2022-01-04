@@ -41,6 +41,8 @@ public interface UserService {
 
     public UserRepresentation getUserById(String userId);
 
+    public UserListDto getUserDtoById(String userId);
+
     public ResponseEntity<Object> getUserRolesById(String userId);
 
     public ResponseEntity<Object> updateUser(UserDto userDto, String userId);

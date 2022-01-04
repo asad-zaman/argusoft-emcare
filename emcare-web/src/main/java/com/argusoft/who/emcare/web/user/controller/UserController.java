@@ -73,8 +73,8 @@ public class UserController {
     }
 
     @GetMapping("/user/{userId}")
-    public UserRepresentation getUserById(@PathVariable(value = "userId") String userId) {
-        return userService.getUserById(userId);
+    public UserListDto getUserById(@PathVariable(value = "userId") String userId) {
+        return userService.getUserDtoById(userId);
     }
 
     @GetMapping("/user/role/{userId}")
