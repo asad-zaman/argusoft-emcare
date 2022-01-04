@@ -365,6 +365,12 @@ public class UserServiceImpl implements UserService {
 
         oldUser.setFirstName(userDto.getFirstName());
         oldUser.setLastName(userDto.getLastName());
+        List<UserLocationMapping> userLocationMappingList = userLocationMappingRepository.findByUserId(userId);
+        if(userLocationMappingList != null){
+            UserLocationMapping ulm = userLocationMappingList.get(0);
+            ulm.setLocationId(userDto.getLocationId());
+            userLocationMappingRepository.save(ulm);
+        }
 
         oldUser.setEnabled(userDto.getRegRequestFrom().equalsIgnoreCase(UserConst.WEB));
         userResource.update(oldUser);
