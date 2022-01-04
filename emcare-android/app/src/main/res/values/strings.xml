@@ -158,4 +158,7 @@
     <string name="label_language">Language</string>
     <string name="title_settings">Settings</string>
     <string name="label_select_lang">Select Language</string>
+    <string name="msg_sync_started">Sync started</string>
+    <string name="msg_sync_successfully">Sync Successfully</string>
+    <string name="msg_sync_failed">Sync failed, please try again</string>
 </resources>

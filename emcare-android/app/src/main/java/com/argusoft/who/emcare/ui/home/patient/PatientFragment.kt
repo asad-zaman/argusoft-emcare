@@ -11,6 +11,8 @@ import com.argusoft.who.emcare.ui.common.base.BaseFragment
 import com.argusoft.who.emcare.utils.extention.handleListApiView
 import com.argusoft.who.emcare.utils.extention.navigate
 import com.argusoft.who.emcare.utils.extention.observeNotNull
+import com.argusoft.who.emcare.utils.extention.showToast
+import com.google.android.fhir.sync.State
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -65,6 +67,13 @@ class PatientFragment : BaseFragment<FragmentPatientBinding>(), SearchView.OnQue
                     patientAdapter.clearAllItems()
                     patientAdapter.addAll(list)
                 }
+            }
+        }
+        observeNotNull(patientViewModel.syncState) {
+            when (it) {
+                is State.Started -> requireContext().showToast(messageResId = R.string.msg_sync_started)
+                is State.Finished -> requireContext().showToast(messageResId = R.string.msg_sync_successfully)
+                is State.Failed -> requireContext().showToast(messageResId = R.string.msg_sync_failed)
             }
         }
     }

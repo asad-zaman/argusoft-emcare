@@ -11,6 +11,7 @@ import com.argusoft.who.emcare.data.local.pref.Preference
 import com.argusoft.who.emcare.data.local.pref.PreferenceManager
 import com.argusoft.who.emcare.data.remote.Api
 import com.argusoft.who.emcare.data.remote.ApiManager
+import com.argusoft.who.emcare.utils.common.NetworkHelper
 import com.google.android.fhir.FhirEngine
 import com.google.android.fhir.FhirEngineProvider
 import dagger.Module
@@ -66,5 +67,11 @@ class AppModule {
     @Provides
     fun provideAppFhirEngine(@ApplicationContext context: Context): FhirEngine {
         return FhirEngineProvider.getInstance(context)
+    }
+
+    @Singleton
+    @Provides
+    fun provideNetworkHelper(@ApplicationContext context: Context): NetworkHelper {
+        return NetworkHelper(context)
     }
 }

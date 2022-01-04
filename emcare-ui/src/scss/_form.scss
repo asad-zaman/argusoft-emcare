@@ -1,9 +1,9 @@
 .btn-red {
     background: $color-red;
-    text-transform: uppercase;
+    text-transform: none;
     color: $color-white;
     font-size: 16px;
-    padding: 12px 40px;
+    padding: 7px 25px;
     &:hover {
         background: $color-dark-red;
         color: $color-white;

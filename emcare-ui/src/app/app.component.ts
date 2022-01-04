@@ -12,6 +12,7 @@ export class AppComponent implements OnInit {
   userName: any;
   isUserDropdownOpen: boolean = true;
   isLocationDropdownOpen: boolean = false;
+  userCharLogo: string;
 
   constructor(
     private readonly router: Router,
@@ -40,7 +41,10 @@ export class AppComponent implements OnInit {
   getLoggedInUser() {
     this.authenticationService.getLoggedInUser().subscribe(res => {
       if (res) {
+        const userNameArr = res.userName.split(' ');
         this.userName = res.userName;
+        this.userCharLogo = `${userNameArr[0].toString().charAt(0).toUpperCase()}${userNameArr[1].toString().charAt(0).toUpperCase()}`;
+        console.log(this.userCharLogo);
       }
     });
   }

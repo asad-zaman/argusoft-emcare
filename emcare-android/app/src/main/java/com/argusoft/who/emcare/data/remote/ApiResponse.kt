@@ -6,7 +6,7 @@ sealed class ApiResponse<out T> {
 
     data class Loading(val isRefresh: Boolean = false, val isLoadMore: Boolean = false) : ApiResponse<Nothing>()
 
-    data class ApiError(val apiErrorMessage: String) : ApiResponse<Nothing>()
+    data class ApiError(val apiErrorMessage: String? = null, val apiErrorMessageResId: Int? = null) : ApiResponse<Nothing>()
 
     data class ServerError(val errorMessage: String) : ApiResponse<Nothing>()
 
