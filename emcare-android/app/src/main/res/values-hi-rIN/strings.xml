@@ -159,4 +159,7 @@
     <string name="label_language">भाषा</string>
     <string name="title_settings">समायोजन</string>
     <string name="label_select_lang">भाषा चुने</string>
+    <string name="msg_sync_started">Sync started</string>
+    <string name="msg_sync_successfully">Sync Successfully</string>
+    <string name="msg_sync_failed">Sync failed, please try again</string>
 </resources>

@@ -17,14 +17,13 @@ import com.argusoft.who.emcare.ui.common.KEYCLOAK_GRANT_TYPE
 import com.argusoft.who.emcare.ui.common.KEYCLOAK_SCOPE
 import com.argusoft.who.emcare.ui.common.model.DeviceDetails
 import com.argusoft.who.emcare.ui.common.model.User
+import com.argusoft.who.emcare.utils.common.NetworkHelper
 import com.argusoft.who.emcare.utils.extention.isInternetAvailable
 import com.argusoft.who.emcare.utils.extention.whenFailed
 import com.argusoft.who.emcare.utils.extention.whenSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.collections.HashMap
 import kotlin.collections.set
 
 @HiltViewModel
@@ -32,7 +31,7 @@ class LoginViewModel @Inject constructor(
     private val api: Api,
     private val database: Database,
     private val preference: Preference,
-    private val application: Application
+    private val networkHelper: NetworkHelper
 ) : ViewModel() {
 
     private val _errorMessageState = MutableLiveData<Int>()
@@ -66,7 +65,7 @@ class LoginViewModel @Inject constructor(
             password.isEmpty() -> _errorMessageState.value = R.string.error_msg_password
             else -> {
                 _loginApiState.value = ApiResponse.Loading()
-                if (application.isInternetAvailable()) {
+                if (networkHelper.isInternetAvailable()) {
                     val requestMap = HashMap<String, String>()
                     requestMap["client_id"] = KEYCLOAK_CLIENT_ID
                     requestMap["grant_type"] = KEYCLOAK_GRANT_TYPE
@@ -117,7 +116,7 @@ class LoginViewModel @Inject constructor(
                             preference.setLoggedInUser(it)
                             _loginApiState.value = ApiResponse.Success(data = null)
                         } ?: let {
-                            _loginApiState.value = ApiResponse.ApiError(application.getString(R.string.error_msg_not_find_user))
+                            _loginApiState.value = ApiResponse.ApiError(apiErrorMessageResId = R.string.error_msg_not_find_user)
                         }
                     }
                 }
