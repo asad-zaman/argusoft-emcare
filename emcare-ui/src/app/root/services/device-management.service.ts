@@ -30,6 +30,10 @@ export class DeviceManagementService {
         return this.http.get(`${this.backendURL}/all`, this.getHeaders());
     }
 
+    updateDeviceStatusById(deviceId,status) {
+        return this.http.get(`${this.backendURL}/status/${deviceId}/${status}`, this.getHeaders());
+    }
+
     updateDeviceById(obj) {
         return this.http.put(`${this.backendURL}/update`, obj, this.getHeaders());
     }
