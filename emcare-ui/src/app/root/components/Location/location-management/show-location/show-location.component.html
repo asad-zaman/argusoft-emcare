@@ -21,7 +21,7 @@
         </tr>
       </thead>
       <tbody>
-        <ng-container *ngIf="filteredLocations.length > 0; else noRecords">
+        <ng-container *ngIf="!filteredLocations || filteredLocations.length > 0; else noRecords">
           <ng-container *ngFor="let data of filteredLocations; let i=index">
             <tr>
               <td>{{i+1}}</td>

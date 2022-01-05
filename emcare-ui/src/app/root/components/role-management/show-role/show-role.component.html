@@ -20,7 +20,7 @@
         </tr>
       </thead>
       <tbody>
-        <ng-container *ngIf="filteredRoles.length > 0; else noRecords">
+        <ng-container *ngIf="!filteredRoles || filteredRoles.length > 0; else noRecords">
           <ng-container *ngFor="let data of filteredRoles; let i=index">
             <tr>
               <td>{{i+1}}</td>
