@@ -22,9 +22,9 @@ import {
 } from './root/index';
 import { AuthenticationService } from './shared';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { HomeComponent } from './root/components/home/home.component';
-import { tempBackendProvider } from './auth/temp-backend';
+import { HTTPStatus, TokenInterceptor } from './auth/token-interceptor';
 import { CommonModule } from '@angular/common';
 // import { FhirService } from './root/services/fhir.service';
 import { ShowLocationTypeComponent } from './root/components/Location/location-type/show-location-type/show-location-type.component';
@@ -69,10 +69,15 @@ import { LocationFilterComponent } from './root/components/Location/location-fil
   ],
   providers: [
     AuthenticationService,
-    tempBackendProvider,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: TokenInterceptor,
+      multi: true
+    },
     LocationService,
     DeviceManagementService,
-    UserManagementService
+    UserManagementService,
+    HTTPStatus
   ],
   bootstrap: [AppComponent]
 })
