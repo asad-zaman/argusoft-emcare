@@ -23,18 +23,26 @@
         </tr>
       </thead>
       <tbody>
-        <ng-container *ngFor="let patient of filteredPatients; let i=index">
-          <tr>
-            <td>{{i+1}}</td>
-            <td>{{patient.identifier}}</td>
-            <td><a style="cursor: pointer;" (click)="showPatientDetails(patient.id)" class="link">{{patient.givenName}}
-                {{patient.familyName}}</a></td>
-            <td>{{patient.gender}}</td>
-            <td>{{patient.dob | date:'mediumDate'}}</td>
-            <td>{{patient.caregiver || "NOT PROVIDED"}}</td>
-            <td>{{patient.location}}</td>
-          </tr>
+        <ng-container *ngIf="filteredPatients.length > 0; else noRecords">
+          <ng-container *ngFor="let patient of filteredPatients; let i=index">
+            <tr>
+              <td>{{i+1}}</td>
+              <td>{{patient.identifier}}</td>
+              <td><a style="cursor: pointer;" (click)="showPatientDetails(patient.id)"
+                  class="link">{{patient.givenName}}
+                  {{patient.familyName}}</a></td>
+              <td>{{patient.gender}}</td>
+              <td>{{patient.dob | date:'mediumDate'}}</td>
+              <td>{{patient.caregiver || "NOT PROVIDED"}}</td>
+              <td>{{patient.location}}</td>
+            </tr>
+          </ng-container>
         </ng-container>
+        <ng-template #noRecords>
+          <div class="no-record">
+            No Records Found!!
+          </div>
+        </ng-template>
       </tbody>
     </table>
   </div>

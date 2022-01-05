@@ -29,7 +29,7 @@ export class ShowRoleComponent implements OnInit {
   getRoles() {
     this.rolesArr = [];
     this.roleService.getAllRoles().subscribe(res => {
-      if(res) {
+      if (res) {
         this.rolesArr = res;
         this.filteredRoles = this.rolesArr;
       }
@@ -45,10 +45,10 @@ export class ShowRoleComponent implements OnInit {
   }
 
   searchFilter() {
-    this.filteredRoles = this.rolesArr.filter( role => {
+    this.filteredRoles = this.rolesArr.filter(role => {
 
-      return ( role.name?.includes(this.searchString) 
-      ||  role.description?.includes(this.searchString))
+      return (role.name?.includes(this.searchString)
+        || role.description?.includes(this.searchString))
     });
   }
 
