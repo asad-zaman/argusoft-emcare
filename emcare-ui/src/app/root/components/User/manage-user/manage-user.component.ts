@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { LocationService } from 'src/app/root/services/location.service';
 import { RoleManagementService } from 'src/app/root/services/role-management.service';
 import { UserManagementService } from 'src/app/root/services/user-management.service';
+import { MustMatch } from 'src/app/shared/validators/must-match.validator';
 
 @Component({
   selector: 'app-manage-user',
@@ -17,6 +18,7 @@ export class ManageUserComponent implements OnInit {
   editId: string;
   roles: any;
   locationArr: any = [];
+  submitted = false;
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -71,9 +73,13 @@ export class ManageUserComponent implements OnInit {
         firstName: ['', [Validators.required]],
         lastName: ['', [Validators.required]],
         email: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-]+$')]],
+        password: ['', Validators.required],
+        confirmPassword: ['', Validators.required],
         role: ['', [Validators.required]],
         location: ['', Validators.required]
-      });
+      }, {
+        validator: MustMatch('password', 'confirmPassword')
+    });
     }
   }
 
@@ -93,7 +99,12 @@ export class ManageUserComponent implements OnInit {
     });
   }
 
+  get f() {
+    return this.userForm.controls;
+  }
+
   saveData() {
+    this.submitted=true;
     if (this.userForm.valid) {
       if (this.isEdit) {
         const data = {
@@ -110,6 +121,7 @@ export class ManageUserComponent implements OnInit {
           "firstName": this.userForm.get('firstName').value,
           "lastName": this.userForm.get('lastName').value,
           "email": this.userForm.get('email').value,
+          "password": this.userForm.get('password').value,
           "roleName": this.userForm.get('role').value,
           "locationId": this.userForm.get('location').value,
           "regRequestFrom": "web"

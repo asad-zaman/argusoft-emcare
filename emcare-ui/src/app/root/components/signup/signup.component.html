@@ -74,11 +74,12 @@
           <div class="row">
             <div class="col-12 mt-3">
               <div class="mb-3">
-                <label class="form-label">Confrm Password</label>
+                <label class="form-label">Confirm Password</label>
                 <input type="password" formControlName="confirmPassword"
                   class="form-control custom-input" [ngClass]="{ 'is-invalid': submitted && f.confirmPassword.errors }" />
                 <div *ngIf="submitted && f.confirmPassword.errors" class="invalid-feedback">
                   <div *ngIf="f.confirmPassword.errors.required">Confirm Password is required</div>
+                  <div *ngIf="f.confirmPassword.errors.mustMatch">Passwords must match</div>
                 </div>
               </div>
             </div>

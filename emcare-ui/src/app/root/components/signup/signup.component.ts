@@ -3,6 +3,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { AuthenticationService } from 'src/app/shared';
 import { Router } from '@angular/router';
 import { first } from 'rxjs/operators';
+import { MustMatch } from 'src/app/shared/validators/must-match.validator';
 
 @Component({
   selector: 'app-signup',
@@ -40,7 +41,9 @@ export class SignupComponent implements OnInit {
       confirmPassword: ['', Validators.required],
       location: ['', Validators.required],
       role: ['', Validators.required]
-    });
+    }, {
+      validator: MustMatch('password', 'confirmPassword')
+  });
   }
 
   getAllLocations() {
