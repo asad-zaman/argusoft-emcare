@@ -2,18 +2,13 @@ package com.argusoft.who.emcare.web.device.controller;
 
 import com.argusoft.who.emcare.web.device.dto.DeviceDto;
 import com.argusoft.who.emcare.web.device.service.DeviceService;
-import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
- *
  * @author jay
  */
 @CrossOrigin(origins = "**")
@@ -37,6 +32,11 @@ public class DeviceController {
     @RequestMapping(value = "/all", method = RequestMethod.GET)
     public ResponseEntity<Object> getAllDevice(HttpServletRequest request) {
         return deviceService.getAllDevice(request);
+    }
+
+    @GetMapping("/status/{deviceId}/{status}")
+    public ResponseEntity<Object> changeDeviceStatus(@PathVariable(value = "deviceId") Integer deviceId, @PathVariable(value = "status") Boolean status) {
+        return deviceService.changeDeviceStatus(deviceId, status);
     }
 
     @RequestMapping(value = "", method = RequestMethod.GET)

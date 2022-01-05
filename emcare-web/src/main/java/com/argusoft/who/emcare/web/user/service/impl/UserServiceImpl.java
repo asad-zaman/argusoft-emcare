@@ -24,6 +24,7 @@ import org.keycloak.representations.AccessToken;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
+import org.keycloak.representations.idm.UserSessionRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -363,6 +364,7 @@ public class UserServiceImpl implements UserService {
     public ResponseEntity<Object> updateUser(UserDto userDto, String userId) {
         Keycloak keycloak = keyCloakConfig.getInstance();
         UserResource userResource = keycloak.realm(KeyCloakConfig.REALM).users().get(userId);
+        UserSessionRepresentation sessions  = userResource.getUserSessions().get(0);
         UserRepresentation oldUser = userResource.toRepresentation();
 
         oldUser.setFirstName(userDto.getFirstName());
