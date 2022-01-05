@@ -13,7 +13,7 @@
       <thead>
         <tr>
           <th>ID</th>
-          <th>User Id</th>
+          <th>Username</th>
           <th>First name</th>
           <th>Last name</th>
           <th>Email</th>
@@ -27,15 +27,11 @@
           <ng-container *ngFor="let user of filteredUserList; let i=index">
             <tr>
               <td>{{i+1}}</td>
-              <td>{{user.id}}</td>
+              <td>{{user.userName}}</td>
               <td>{{user.firstName}}</td>
               <td>{{user.lastName}}</td>
-              <td>{{user.username}}</td>
-              <td>
-                <li *ngFor="let role of user.realmRoles">
-                  {{ role }}
-                </li>
-              </td>
+              <td>{{user.email}}</td>
+              <td>{{user.realmRoles[0]}}</td>
               <td>
                 <i (click)="onApproveUser(i)" class="bi bi-check-circle text-success cursor-pointer font-size-32"></i>
               </td>

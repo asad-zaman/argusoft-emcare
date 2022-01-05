@@ -75,10 +75,10 @@ export class ConfirmUserComponent implements OnInit {
       });
 
       return (roleFlag 
-          ||  user.id?.toLowerCase().includes(lowerCasedSearchString) 
           ||  user.firstName?.toLowerCase().includes(lowerCasedSearchString)
           ||  user.lastName?.toLowerCase().includes(lowerCasedSearchString)
-          ||  user.username?.toLowerCase().includes(lowerCasedSearchString))
+          ||  user.userName?.toLowerCase().includes(lowerCasedSearchString)
+          ||  user.email?.toLowerCase().includes(lowerCasedSearchString))
     })
   }
 
