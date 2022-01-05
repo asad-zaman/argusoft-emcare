@@ -46,10 +46,11 @@ export class DeviceListComponent implements OnInit {
   }
 
   searchFilter() {
+    const lowerCasedSearchString = this.searchString?.toLowerCase();
     this.filteredDevices = this.deviceArr.filter( device => {
-      return ( device.deviceUUID?.includes(this.searchString) 
-      ||  device.androidVersion?.includes(this.searchString)
-      ||  device.lastLoggedInUser?.includes(this.searchString));
+      return ( device.deviceUUID?.toLowerCase().includes(lowerCasedSearchString) 
+      ||  device.androidVersion?.toLowerCase().includes(lowerCasedSearchString)
+      ||  device.lastLoggedInUser?.toLowerCase().includes(lowerCasedSearchString));
     });
   }
 }

@@ -25,18 +25,14 @@
         </tr>
       </thead>
       <tbody>
-        <ng-container *ngIf="filteredUserList.length > 0; else noRecords">
+        <ng-container *ngIf="!filteredUserList || filteredUserList.length > 0; else noRecords">
           <ng-container *ngFor="let user of filteredUserList; let i=index">
             <tr>
               <td>{{i+1}}</td>
               <td>{{user.firstName}}</td>
               <td>{{user.lastName}}</td>
               <td>{{user.userName}}</td>
-              <td>
-                <li *ngFor="let role of user.realmRoles">
-                  {{ role }}
-                </li>
-              </td>
+              <td>{{user.realmRoles[0]}}</td>
               <td>{{user.locationName ? user.locationName : 'NA'}}</td>
               <td><span class="badges-red bg-green">Verifed</span>
               <td class="text-end">

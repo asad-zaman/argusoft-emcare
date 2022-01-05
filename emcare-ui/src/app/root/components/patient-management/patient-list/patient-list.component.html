@@ -23,7 +23,7 @@
         </tr>
       </thead>
       <tbody>
-        <ng-container *ngIf="filteredPatients.length > 0; else noRecords">
+        <ng-container *ngIf="!filteredPatients || filteredPatients.length > 0; else noRecords">
           <ng-container *ngFor="let patient of filteredPatients; let i=index">
             <tr>
               <td>{{i+1}}</td>
