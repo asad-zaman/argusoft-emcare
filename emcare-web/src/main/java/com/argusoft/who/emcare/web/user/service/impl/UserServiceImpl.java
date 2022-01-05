@@ -182,9 +182,11 @@ public class UserServiceImpl implements UserService {
 //        Get User Resource
         UsersResource usersResource = keycloak.realm(KeyCloakConfig.REALM).users();
 
+        CredentialRepresentation credentialRepresentation = createPasswordCredentials(user.getPassword());
 //        Create User Representation
         UserRepresentation kcUser = new UserRepresentation();
         kcUser.setUsername(user.getEmail());
+        kcUser.setCredentials(Collections.singletonList(credentialRepresentation));
         kcUser.setFirstName(user.getFirstName());
         kcUser.setLastName(user.getLastName());
         kcUser.setEmail(user.getEmail());
