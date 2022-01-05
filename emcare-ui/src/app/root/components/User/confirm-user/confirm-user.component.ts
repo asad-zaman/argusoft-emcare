@@ -63,10 +63,11 @@ export class ConfirmUserComponent implements OnInit {
   }
 
   searchFilter() {
+    const lowerCasedSearchString = this.searchString?.toLowerCase();
     this.filteredUserList = this.mainUserList.filter( user => {
       let roleFlag = false;
       user.realmRoles.every(role => {
-        if(role.includes(this.searchString)){
+        if(role.toLowerCase().includes(lowerCasedSearchString)){
           roleFlag = true;
           return false;
         }
@@ -74,10 +75,10 @@ export class ConfirmUserComponent implements OnInit {
       });
 
       return (roleFlag 
-          ||  user.id?.includes(this.searchString) 
-          ||  user.firstName?.includes(this.searchString)
-          ||  user.lastName?.includes(this.searchString)
-          ||  user.username?.includes(this.searchString))
+          ||  user.id?.toLowerCase().includes(lowerCasedSearchString) 
+          ||  user.firstName?.toLowerCase().includes(lowerCasedSearchString)
+          ||  user.lastName?.toLowerCase().includes(lowerCasedSearchString)
+          ||  user.username?.toLowerCase().includes(lowerCasedSearchString))
     })
   }
 

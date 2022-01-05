@@ -51,13 +51,14 @@ export class PatientListComponent implements OnInit {
     }
 
     searchFilter() {
+        const lowerCasedSearchString = this.searchString?.toLowerCase();
         this.filteredPatients = this.patients.filter(patient => {
-            return (patient.identifier?.includes(this.searchString)
-                || patient.givenName?.includes(this.searchString)
-                || patient.familyName?.includes(this.searchString)
-                || patient.gender?.includes(this.searchString)
-                || patient.caregiver?.includes(this.searchString)
-                || patient.location?.includes(this.searchString));
+            return (patient.identifier?.toLowerCase().includes(lowerCasedSearchString)
+                || patient.givenName?.toLowerCase().includes(lowerCasedSearchString)
+                || patient.familyName?.toLowerCase().includes(lowerCasedSearchString)
+                || patient.gender?.toLowerCase().includes(lowerCasedSearchString)
+                || patient.caregiver?.toLowerCase().includes(lowerCasedSearchString)
+                || patient.location?.toLowerCase().includes(lowerCasedSearchString));
         });
     }
 

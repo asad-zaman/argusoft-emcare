@@ -33,9 +33,11 @@
               <td>{{user.lastName}}</td>
               <td>{{user.userName}}</td>
               <td>
-                <li *ngFor="let role of user.realmRoles">
-                  {{ role }}
-                </li>
+                <ul style="list-style-type: none;">
+                  <li *ngFor="let role of user.realmRoles">
+                    {{ role }}
+                  </li>
+                </ul>
               </td>
               <td>{{user.locationName ? user.locationName : 'NA'}}</td>
               <td><span class="badges-red bg-green">Verifed</span>

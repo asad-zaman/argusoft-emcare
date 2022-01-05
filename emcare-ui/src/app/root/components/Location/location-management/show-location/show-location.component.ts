@@ -53,11 +53,11 @@ export class ShowLocationComponent implements OnInit {
   }
 
   searchFilter() {
+    const lowerCasedSearchString = this.searchString?.toLowerCase();
     this.filteredLocations = this.locationArr.filter( location => {
-
-      return ( location.name?.includes(this.searchString) 
-      ||  location.type?.includes(this.searchString)
-      ||  location.parentName?.includes(this.searchString));
+      return ( location.name?.toLowerCase().includes(lowerCasedSearchString) 
+      ||  location.type?.toLowerCase().includes(lowerCasedSearchString)
+      ||  location.parentName?.toLowerCase().includes(lowerCasedSearchString));
     });
   }
 
