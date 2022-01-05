@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, NavigationStart, Event as NavigationEvent } from '@angular/router';
+import { HTTPStatus } from './auth/token-interceptor';
 import { AuthenticationService } from './shared/services/authentication.service';
 @Component({
   selector: 'app-root',
@@ -13,11 +14,13 @@ export class AppComponent implements OnInit {
   isUserDropdownOpen: boolean = true;
   isLocationDropdownOpen: boolean = false;
   userCharLogo: string;
+  HTTPActivity: boolean;
 
   constructor(
     private readonly router: Router,
-    private readonly authenticationService: AuthenticationService
-  ) { }
+    private readonly authenticationService: AuthenticationService,
+    private readonly httpStatus: HTTPStatus
+    ) { }
 
   ngOnInit() {
     this.prerequisite();
@@ -25,6 +28,13 @@ export class AppComponent implements OnInit {
 
   prerequisite() {
     this.getCurrentPage();
+    this.checkAPIStatus();
+  }
+
+  checkAPIStatus() {
+    this.httpStatus.getHttpStatus().subscribe((status: boolean) => {
+      this.HTTPActivity = status;
+    });
   }
 
   getCurrentPage() {
@@ -40,7 +50,7 @@ export class AppComponent implements OnInit {
 
   getLoggedInUser() {
     this.userName = localStorage.getItem('Username');
-    if (this.userName) {
+    if (!this.userName) {
       this.authenticationService.getLoggedInUser().subscribe(res => {
         if (res) {
           const userNameArr = res.userName.split(' ');
