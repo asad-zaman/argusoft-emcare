@@ -3,7 +3,8 @@
   <hr>
   <div class="row align-items-center mb-3">
     <div class=" col-lg-3 col-xxl-2 col-md-5 position-relative">
-      <input class="form-control custom-input h-40" id="exampleFormControlInput1" [(ngModel)]="searchString" (input)="searchFilter()" placeholder="Search">
+      <input class="form-control custom-input h-40" id="exampleFormControlInput1" [(ngModel)]="searchString"
+        (input)="searchFilter()" placeholder="Search">
     </div>
   </div>
   <!--Table-->
@@ -22,26 +23,33 @@
         </tr>
       </thead>
       <tbody>
-        <ng-container *ngFor="let user of filteredUserList; let i=index">
-          <tr>
-            <td>{{i+1}}</td>
-            <td>{{user.id}}</td>
-            <td>{{user.firstName}}</td>
-            <td>{{user.lastName}}</td>
-            <td>{{user.username}}</td>
-            <td>
-              <li *ngFor="let role of user.realmRoles">
-                {{ role }}
-              </li>
-            </td>
-            <td>
-              <i (click)="onApproveUser(i)" class="bi bi-check-circle text-success cursor-pointer font-size-32"></i>
-            </td>
-            <td>
-              <i (click)="onDisapproveUser(i)" class="bi bi-x-circle text-red cursor-pointer font-size-32"></i>
-            </td>
-          </tr>
+        <ng-container *ngIf="filteredUserList.length > 0; else noRecords">
+          <ng-container *ngFor="let user of filteredUserList; let i=index">
+            <tr>
+              <td>{{i+1}}</td>
+              <td>{{user.id}}</td>
+              <td>{{user.firstName}}</td>
+              <td>{{user.lastName}}</td>
+              <td>{{user.username}}</td>
+              <td>
+                <li *ngFor="let role of user.realmRoles">
+                  {{ role }}
+                </li>
+              </td>
+              <td>
+                <i (click)="onApproveUser(i)" class="bi bi-check-circle text-success cursor-pointer font-size-32"></i>
+              </td>
+              <td>
+                <i (click)="onDisapproveUser(i)" class="bi bi-x-circle text-red cursor-pointer font-size-32"></i>
+              </td>
+            </tr>
+          </ng-container>
         </ng-container>
+        <ng-template #noRecords>
+          <div class="no-record">
+            No Records Found!!
+          </div>
+        </ng-template>
       </tbody>
     </table>
   </div>
@@ -63,19 +71,21 @@
 
   <div *ngIf="showConfirmDialogFlag" class="modal" tabindex="-1" role="dialog" style="display:block">
     <div class="modal-dialog modal-dialog-centered" style="width: 350px; height: 500px">
-        <div class="modal-content">
-            <div class="modal-body">
-              <h2 class="modal-title text-center">{{ isApproveUser ? 'Approve' : 'Disapprove'}} User</h2>
-              <div class="text-center my-3">
-                <p class="font-size-15">Are you sure you want to {{ isApproveUser ? 'approve' : 'disapprove'}}
-                this user?
-              </div>
-              <div class="text-center">
-                <button type="button" class="btn btn-primary btn-md mr-2" style="width: 70px;" (click)="authorizeUser()">Ok</button>
-                <button type="button" class="btn btn-danger btn-md" style="width: 70px;" (click)="showConfirmDialogFlag = false">Cancel</button>
-              </div>
-            </div>
+      <div class="modal-content">
+        <div class="modal-body">
+          <h2 class="modal-title text-center">{{ isApproveUser ? 'Approve' : 'Disapprove'}} User</h2>
+          <div class="text-center my-3">
+            <p class="font-size-15">Are you sure you want to {{ isApproveUser ? 'approve' : 'disapprove'}}
+              this user?
+          </div>
+          <div class="text-center">
+            <button type="button" class="btn btn-primary btn-md mr-2" style="width: 70px;"
+              (click)="authorizeUser()">Ok</button>
+            <button type="button" class="btn btn-danger btn-md" style="width: 70px;"
+              (click)="showConfirmDialogFlag = false">Cancel</button>
+          </div>
         </div>
+      </div>
     </div>
   </div>
 </div>
