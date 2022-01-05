@@ -329,8 +329,31 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserListDto getUserDtoById(String userId) {
+        Keycloak keycloak = keyCloakConfig.getInstanceByAuth();
+        UserListDto user = new UserListDto();
+        UserRepresentation userRepresentation = keycloak.realm(KeyCloakConfig.REALM).users().get(userId).toRepresentation();
+        List<RoleRepresentation> roleRepresentationList = keycloak.realm(KeyCloakConfig.REALM).users().get(userRepresentation.getId()).roles().realmLevel().listAll();
+        List<String> roles = new ArrayList<>();
+        for (RoleRepresentation roleRepresentation : roleRepresentationList) {
+            roles.add(roleRepresentation.getName());
+        }
+        userRepresentation.setRealmRoles(roles);
+
+        List<UserLocationMapping> userLocation = userLocationMappingRepository.findByUserId(userRepresentation.getId());
+        if (!userLocation.isEmpty()) {
+            Optional<LocationMaster> locationMaster = locationMasterDao.findById(userLocation.get(0).getLocationId());
+            user = UserMapper.getUserListDto(userRepresentation, locationMaster.isPresent() ? locationMaster.get() : null);
+        } else {
+            user = UserMapper.getUserListDto(userRepresentation, null);
+        }
+        return user;
+    }
+
+    @Override
     public UserRepresentation getUserById(String userId) {
         Keycloak keycloak = keyCloakConfig.getInstanceByAuth();
+        UserListDto user = new UserListDto();
         return keycloak.realm(KeyCloakConfig.REALM).users().get(userId).toRepresentation();
     }
 
@@ -342,6 +365,12 @@ public class UserServiceImpl implements UserService {
 
         oldUser.setFirstName(userDto.getFirstName());
         oldUser.setLastName(userDto.getLastName());
+        List<UserLocationMapping> userLocationMappingList = userLocationMappingRepository.findByUserId(userId);
+        if(userLocationMappingList != null){
+            UserLocationMapping ulm = userLocationMappingList.get(0);
+            ulm.setLocationId(userDto.getLocationId());
+            userLocationMappingRepository.save(ulm);
+        }
 
         oldUser.setEnabled(userDto.getRegRequestFrom().equalsIgnoreCase(UserConst.WEB));
         userResource.update(oldUser);

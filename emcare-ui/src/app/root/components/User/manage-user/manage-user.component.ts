@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { LocationService } from 'src/app/root/services/location.service';
 import { RoleManagementService } from 'src/app/root/services/role-management.service';
 import { UserManagementService } from 'src/app/root/services/user-management.service';
 
@@ -15,13 +16,15 @@ export class ManageUserComponent implements OnInit {
   isEdit: boolean = false;
   editId: string;
   roles: any;
+  locationArr: any = [];
 
   constructor(
     private readonly formBuilder: FormBuilder,
     private readonly router: Router,
     private readonly route: ActivatedRoute,
     private readonly userService: UserManagementService,
-    private readonly roleService: RoleManagementService
+    private readonly roleService: RoleManagementService,
+    private readonly locationService: LocationService
   ) { }
 
   ngOnInit(): void {
@@ -31,6 +34,7 @@ export class ManageUserComponent implements OnInit {
   prerequisite() {
     const routeParams = this.route.snapshot.paramMap;
     this.editId = routeParams.get('id');
+    this.getAllLocations();
     if (this.editId) {
       this.isEdit = true;
       console.log(this.isEdit);
@@ -47,7 +51,8 @@ export class ManageUserComponent implements OnInit {
       if (res) {
         const data = {
           firstName: res['firstName'],
-          lastName: res['lastName']
+          lastName: res['lastName'],
+          location: res['locationId']
         };
         this.userForm.patchValue(data);
       }
@@ -58,14 +63,16 @@ export class ManageUserComponent implements OnInit {
     if (this.isEdit) {
       this.userForm = this.formBuilder.group({
         firstName: ['', [Validators.required]],
-        lastName: ['', [Validators.required]]
+        lastName: ['', [Validators.required]],
+        location: ['', Validators.required]
       });
     } else {
       this.userForm = this.formBuilder.group({
         firstName: ['', [Validators.required]],
         lastName: ['', [Validators.required]],
         email: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-]+$')]],
-        role: ['', [Validators.required]]
+        role: ['', [Validators.required]],
+        location: ['', Validators.required]
       });
     }
   }
@@ -78,12 +85,21 @@ export class ManageUserComponent implements OnInit {
     });
   }
 
+  getAllLocations() {
+    this.locationService.getAllLocations().subscribe(res => {
+      if (res) {
+        this.locationArr = res;
+      }
+    });
+  }
+
   saveData() {
     if (this.userForm.valid) {
       if (this.isEdit) {
         const data = {
           "firstName": this.userForm.get('firstName').value,
           "lastName": this.userForm.get('lastName').value,
+          "locationId": this.userForm.get('location').value,
           "regRequestFrom": "web"
         }
         this.userService.updateUser(data, this.editId).subscribe(res => {
@@ -95,6 +111,7 @@ export class ManageUserComponent implements OnInit {
           "lastName": this.userForm.get('lastName').value,
           "email": this.userForm.get('email').value,
           "roleName": this.userForm.get('role').value,
+          "locationId": this.userForm.get('location').value,
           "regRequestFrom": "web"
         }
         this.userService.createUser(data).subscribe(res => {
