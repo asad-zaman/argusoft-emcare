@@ -45,10 +45,10 @@ export class ShowRoleComponent implements OnInit {
   }
 
   searchFilter() {
+    const lowerCasedSearchString = this.searchString?.toLowerCase();
     this.filteredRoles = this.rolesArr.filter(role => {
-
-      return (role.name?.includes(this.searchString)
-        || role.description?.includes(this.searchString))
+      return (role.name?.toLowerCase().includes(lowerCasedSearchString)
+        || role.description?.toLowerCase().includes(lowerCasedSearchString))
     });
   }
 

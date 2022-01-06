@@ -51,10 +51,10 @@ export class ShowLocationTypeComponent implements OnInit {
   }
 
   searchFilter() {
+    const lowerCasedSearchString = this.searchString?.toLowerCase();
     this.filteredLocationTypes = this.locationTypeArr.filter( locationType => {
-
-      return ( locationType.name?.includes(this.searchString) 
-      ||  locationType.code?.includes(this.searchString));
+      return ( locationType.name?.toLowerCase().includes(lowerCasedSearchString) 
+      ||  locationType.code?.toLowerCase().includes(lowerCasedSearchString));
     });
   }
 

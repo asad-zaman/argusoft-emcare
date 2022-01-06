@@ -1,14 +1,16 @@
 <div class="">
-  <input type="checkbox" class="openSidebarMenu" id="openSidebarMenu">
-  <label for="openSidebarMenu" class="sidebarIconToggle">
-    <div class="spinner diagonal part-1"></div>
-    <div class="spinner horizontal"></div>
-    <div class="spinner diagonal part-2"></div>
+  <input type="checkbox" name="sideMenu" [(ngModel)]="sideMenu" class="openSidebarMenu" id="openSidebarMenu">
+  <label for="openSidebarMenu" class="sidebarIconToggle" [ngStyle]="{'right': this.currentUrl === 'showPatients' ? '100px' : '250px'}">
+    <div class="btn btn-red cst-filter-btn">
+      <i class="bi bi-filter-circle mouse-pointer cst-filter-icon"></i>
+      Filter
+    </div>
   </label>
   <div id="sidebarMenu">
     <form [formGroup]="locationFilterForm" name="locationFilterForm" novalidate>
       <div class="mb-5">
-        <h1 class="heading">Location Filter</h1>
+        <h1 class="heading d-inline">Location Filter</h1>
+        <i class="bi bi-x-lg close-filter mouse-pointer" (click)="this.sideMenu=false"></i>
         <hr>
       </div>
       <div class="row">
@@ -72,7 +74,5 @@
         </button>
       </div>
     </form>
-  </div>
-  <div class="form-wrapper">
   </div>
 </div>

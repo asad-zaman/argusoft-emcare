@@ -1,5 +1,6 @@
 package com.argusoft.who.emcare.web.device.service.impl;
 
+import com.argusoft.who.emcare.web.config.KeyCloakConfig;
 import com.argusoft.who.emcare.web.device.dao.DeviceRepository;
 import com.argusoft.who.emcare.web.device.dto.DeviceDto;
 import com.argusoft.who.emcare.web.device.dto.DeviceWithUserDetails;
@@ -9,7 +10,9 @@ import com.argusoft.who.emcare.web.device.service.DeviceService;
 import com.argusoft.who.emcare.web.secuirty.EmCareSecurityUser;
 import com.argusoft.who.emcare.web.user.dto.UserListDto;
 import com.argusoft.who.emcare.web.user.service.UserService;
-import org.keycloak.representations.idm.UserRepresentation;
+import org.keycloak.admin.client.Keycloak;
+import org.keycloak.admin.client.resource.UserResource;
+import org.keycloak.representations.idm.UserSessionRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +36,9 @@ public class DeviceServiceImpl implements DeviceService {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    KeyCloakConfig keyCloakConfig;
 
     @Override
     public ResponseEntity<Object> addNewDevice(DeviceDto deviceDto) {
@@ -59,14 +65,30 @@ public class DeviceServiceImpl implements DeviceService {
     public ResponseEntity<Object> updateDeviceDetails(DeviceDto deviceDto) {
         String userId = emCareSecurityUser.getLoggedInUser().getSubject();
         DeviceMaster oldDeviceDetails = deviceRepository.findById(deviceDto.getDeviceId()).get();
+        Keycloak keycloak = keyCloakConfig.getInstance();
+        UserResource userResource = keycloak.realm(KeyCloakConfig.REALM).users().get(userId);
+        UserSessionRepresentation sessions = userResource.getUserSessions().get(0);
+        keycloak.realm(KeyCloakConfig.REALM).deleteSession(sessions.getId());
         DeviceMaster updatedDevice = DeviceMapper.getDeviceMaster(oldDeviceDetails, deviceDto, userId);
-        deviceRepository.updateDevice(
-                updatedDevice.getAndroidVersion(),
-                updatedDevice.getLastLoggedInUser(),
-                updatedDevice.getIsBlocked(),
-                updatedDevice.getDeviceId()
-        );
+//        deviceRepository.updateDevice(
+//                updatedDevice.getAndroidVersion(),
+//                updatedDevice.getLastLoggedInUser(),
+//                updatedDevice.getIsBlocked(),
+//                updatedDevice.getDeviceId()
+//        );
         return ResponseEntity.status(HttpStatus.OK).body(updatedDevice);
+    }
+
+    @Override
+    public ResponseEntity<Object> changeDeviceStatus(Integer deviceId, Boolean status) {
+        DeviceMaster deviceInfo = deviceRepository.findById(deviceId).get();
+        deviceInfo.setIsBlocked(status);
+        deviceRepository.save(deviceInfo);
+        Keycloak keycloak = keyCloakConfig.getInstance();
+        UserResource userResource = keycloak.realm(KeyCloakConfig.REALM).users().get(deviceInfo.getLastLoggedInUser());
+        UserSessionRepresentation sessions = userResource.getUserSessions().get(0);
+        keycloak.realm(KeyCloakConfig.REALM).deleteSession(sessions.getId());
+        return ResponseEntity.ok(deviceInfo);
     }
 
     @Override

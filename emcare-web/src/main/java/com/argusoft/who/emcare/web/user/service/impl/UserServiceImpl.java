@@ -24,6 +24,7 @@ import org.keycloak.representations.AccessToken;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
+import org.keycloak.representations.idm.UserSessionRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -182,9 +183,11 @@ public class UserServiceImpl implements UserService {
 //        Get User Resource
         UsersResource usersResource = keycloak.realm(KeyCloakConfig.REALM).users();
 
+        CredentialRepresentation credentialRepresentation = createPasswordCredentials(user.getPassword());
 //        Create User Representation
         UserRepresentation kcUser = new UserRepresentation();
         kcUser.setUsername(user.getEmail());
+        kcUser.setCredentials(Collections.singletonList(credentialRepresentation));
         kcUser.setFirstName(user.getFirstName());
         kcUser.setLastName(user.getLastName());
         kcUser.setEmail(user.getEmail());
@@ -366,11 +369,19 @@ public class UserServiceImpl implements UserService {
         oldUser.setFirstName(userDto.getFirstName());
         oldUser.setLastName(userDto.getLastName());
         List<UserLocationMapping> userLocationMappingList = userLocationMappingRepository.findByUserId(userId);
-        if(userLocationMappingList != null){
-            UserLocationMapping ulm = userLocationMappingList.get(0);
+        UserLocationMapping ulm = new UserLocationMapping();
+        if(!userLocationMappingList.isEmpty()){
+            ulm = userLocationMappingList.get(0);
             ulm.setLocationId(userDto.getLocationId());
-            userLocationMappingRepository.save(ulm);
+        } else {
+            ulm.setLocationId(userDto.getLocationId());
+            ulm.setUserId(userId);
+            ulm.setIsFirst(false);
+            ulm.setRegRequestFrom(UserConst.WEB);
+            ulm.setState(true);
         }
+        userLocationMappingRepository.save(ulm);
+
 
         oldUser.setEnabled(userDto.getRegRequestFrom().equalsIgnoreCase(UserConst.WEB));
         userResource.update(oldUser);

@@ -1,0 +1,8 @@
+/* Make modal scrollable */
+.modal-dialog{
+    overflow-y: initial !important
+}
+.modal-body{
+    height: 50vh;
+    overflow-y: auto;
+}
