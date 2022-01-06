@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router, NavigationStart, Event as NavigationEvent } from '@angular/router';
+import { HTTPStatus } from './auth/token-interceptor';
 import { AuthenticationService } from './shared/services/authentication.service';
 @Component({
   selector: 'app-root',
@@ -13,19 +14,27 @@ export class AppComponent implements OnInit {
   isUserDropdownOpen: boolean = true;
   isLocationDropdownOpen: boolean = false;
   userCharLogo: string;
+  HTTPActivity: boolean;
 
   constructor(
     private readonly router: Router,
-    private readonly authenticationService: AuthenticationService
+    private readonly authenticationService: AuthenticationService,
+    private readonly httpStatus: HTTPStatus,
+    private cdr: ChangeDetectorRef
   ) { }
 
   ngOnInit() {
     this.prerequisite();
   }
 
+  ngAfterViewChecked() {
+    this.cdr.detectChanges();
+  }
+
   prerequisite() {
     this.getCurrentPage();
     this.checkTOkenExpiresOrNot();
+    this.checkAPIStatus();
   }
 
   checkTOkenExpiresOrNot() {
@@ -39,6 +48,12 @@ export class AppComponent implements OnInit {
       this.router.navigate(['/login']);
       localStorage.clear();
     } else { }
+  }
+
+  checkAPIStatus() {
+    this.httpStatus.getHttpStatus().subscribe((status: boolean) => {
+      this.HTTPActivity = status;
+    });
   }
 
   getCurrentPage() {
