@@ -24,7 +24,6 @@ import org.keycloak.representations.AccessToken;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
-import org.keycloak.representations.idm.UserSessionRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -108,16 +107,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserListDto> getAllSignedUpUser(HttpServletRequest request) {
         List<UserListDto> users = getAllUser(request);
-        List<UserLocationMapping> mobileUsers = userLocationMappingRepository
-                .findByRegRequestFromAndIsFirst("mobile", true);
-
-        Set<String> userIds = mobileUsers.stream()
-                .map(UserLocationMapping::getUserId)
-                .collect(Collectors.toSet());
-
-        return users.stream()
-                .filter(user -> userIds.contains(user.getId()))
-                .collect(Collectors.toList());
+        List<UserLocationMapping> mobileUsers = userLocationMappingRepository.findByIsFirst(true);
+        Set<String> userIds = mobileUsers.stream().map(UserLocationMapping::getUserId).collect(Collectors.toSet());
+        return users.stream().filter(user -> userIds.contains(user.getId())).collect(Collectors.toList());
     }
 
     @Override
@@ -155,13 +147,13 @@ public class UserServiceImpl implements UserService {
         kcUser.setFirstName(user.getFirstName());
         kcUser.setLastName(user.getLastName());
         kcUser.setEmail(user.getEmail());
+        kcUser.setEnabled(Boolean.FALSE);
         kcUser.setEmailVerified(false);
 
-        kcUser.setEnabled(user.getRegRequestFrom().equalsIgnoreCase(UserConst.WEB));
         try {
             javax.ws.rs.core.Response response = usersResource.create(kcUser);
             String userId = CreatedResponseUtil.getCreatedId(response);
-            userLocationMappingRepository.save(UserMapper.userDtoToUserLocationMappingEntity(user, userId));
+            userLocationMappingRepository.save(UserMapper.userDtoToUserLocationMappingEntityForSignup(user, userId));
             UserResource userResource = usersResource.get(userId);
 
 //        Set Realm Role
@@ -191,9 +183,9 @@ public class UserServiceImpl implements UserService {
         kcUser.setFirstName(user.getFirstName());
         kcUser.setLastName(user.getLastName());
         kcUser.setEmail(user.getEmail());
+        kcUser.setEnabled(true);
         kcUser.setEmailVerified(false);
 
-        kcUser.setEnabled(user.getRegRequestFrom().equalsIgnoreCase(UserConst.WEB));
         try {
             javax.ws.rs.core.Response response = usersResource.create(kcUser);
             String userId = CreatedResponseUtil.getCreatedId(response);
@@ -370,7 +362,7 @@ public class UserServiceImpl implements UserService {
         oldUser.setLastName(userDto.getLastName());
         List<UserLocationMapping> userLocationMappingList = userLocationMappingRepository.findByUserId(userId);
         UserLocationMapping ulm = new UserLocationMapping();
-        if(!userLocationMappingList.isEmpty()){
+        if (!userLocationMappingList.isEmpty()) {
             ulm = userLocationMappingList.get(0);
             ulm.setLocationId(userDto.getLocationId());
         } else {

@@ -44,7 +44,7 @@ export class DeviceListComponent implements OnInit {
     this.filteredDevices = this.deviceArr.filter( device => {
       return ( device.deviceUUID?.toLowerCase().includes(lowerCasedSearchString) 
       ||  device.androidVersion?.toLowerCase().includes(lowerCasedSearchString)
-      ||  device.lastLoggedInUser?.toLowerCase().includes(lowerCasedSearchString));
+      ||  device.usersResource.userName?.toLowerCase().includes(lowerCasedSearchString));
     });
   }
 }
