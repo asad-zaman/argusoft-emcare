@@ -16,6 +16,7 @@
           <th>First name</th>
           <th>Last name</th>
           <th>Email</th>
+          <th>Location</th>
           <th>Role</th>
           <th></th>
           <th></th>
@@ -29,6 +30,7 @@
               <td>{{user.firstName}}</td>
               <td>{{user.lastName}}</td>
               <td>{{user.email}}</td>
+              <td>{{user.locationName ? user.locationName : 'NA'}}</td>
               <td>{{user.realmRoles[0]}}</td>
               <td>
                 <i (click)="onApproveUser(i)" class="bi bi-check-circle text-success cursor-pointer font-size-32"></i>
