@@ -27,7 +27,7 @@ public class KeyCloakConfig {
     HttpServletRequest request;
 
     Keycloak keycloak = null;
-    public static final String SERVER_URL = "http://192.1.200.197:8180/auth";
+    public static final String SERVER_URL = "http://emcare.argusoft.com/auth";
     public static final String CLIENT_SECRET = "b5a37bde-8d54-4837-a8dc-12e1f808e26e";
     public static final String CLIENT_ID = "emcare";
     public static final String REALM = "emcare";
