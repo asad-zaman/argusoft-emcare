@@ -18,7 +18,10 @@ import {
   UserListComponent,
   ManageUserComponent,
   ConfirmUserComponent,
-  UserManagementService
+  FeatureListComponent,
+  ManageFeatureComponent,
+  UserManagementService,
+  FeatureManagementService
 } from './root/index';
 import { AuthenticationService } from './shared';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -56,7 +59,10 @@ import { LocationFilterComponent } from './root/components/Location/location-fil
     ManageRoleComponent,
     ShowRoleComponent,
     ConfirmUserComponent,
-    LocationFilterComponent
+    LocationFilterComponent,
+    FeatureListComponent,
+    ManageFeatureComponent,
+    ManageFeatureComponent
   ],
   imports: [
     BrowserModule,
@@ -77,6 +83,7 @@ import { LocationFilterComponent } from './root/components/Location/location-fil
     LocationService,
     DeviceManagementService,
     UserManagementService,
+    FeatureManagementService,
     HTTPStatus
   ],
   bootstrap: [AppComponent]

@@ -65,6 +65,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserMasterDto getCurrentUser() {
         AccessToken user = emCareSecurityUser.getLoggedInUser();
+        Keycloak keycloak = keyCloakConfig.getInstance();
         List<UserLocationMapping> userLocationList = userLocationMappingRepository.findByUserId(user.getSubject());
         UserLocationMapping userLocationMapping;
         LocationMaster userLocation;
@@ -75,7 +76,12 @@ public class UserServiceImpl implements UserService {
             userLocation = locationService.getLocationById(userLocationMapping.getLocationId());
         }
         UserMasterDto masterUser = UserMapper.getMasterUser(user, userLocation);
-        masterUser.setFeature(userMenuConfigRepository.getMenuByUser(Arrays.asList(masterUser.getRoles()), masterUser.getUserId()));
+        List<RoleRepresentation> roleRepresentationList = keycloak.realm(KeyCloakConfig.REALM).users().get(masterUser.getUserId()).roles().realmLevel().listAll();
+        List<String> roleIds = new ArrayList<>();
+        for (RoleRepresentation role : roleRepresentationList) {
+            roleIds.add(role.getId());
+        }
+        masterUser.setFeature(userMenuConfigRepository.getMenuByUser(roleIds, masterUser.getUserId()));
         return masterUser;
     }
 
