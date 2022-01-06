@@ -58,7 +58,6 @@ export class LocationManagementComponent implements OnInit {
       this.isEdit = true;
       this.locationService.getLocationById(this.editId).subscribe(res => {
         if (res) {
-          console.log(res);
           const data = {
             locationType: res['type'],
             locationName: res['name'],
@@ -89,7 +88,6 @@ export class LocationManagementComponent implements OnInit {
         }
         this.locationService.updateLocationById(data).subscribe(res => {
           if (res) {
-            console.log(res);
             this.showLocation();
           }
         });

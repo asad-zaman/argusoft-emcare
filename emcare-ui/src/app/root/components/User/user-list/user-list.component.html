@@ -7,7 +7,9 @@
       <input class="form-control custom-input h-40" id="exampleFormControlInput1" [(ngModel)]="searchString"
         (input)="searchFilter()" placeholder="Search">
     </div>
-    <div class="col text-end"> <button class="btn btn-red" routerLink="/addUser">+ Add User</button></div>
+    <div class="col text-end">
+      <button class="btn btn-red" routerLink="/addUser">+ Add User</button>
+    </div>
   </div>
   <!--Table-->
   <div class="table-responsive">
@@ -53,7 +55,7 @@
   <!--Table-END-->
 
   <!--pagination-->
-  <ul class="pagination custom-pagination justify-content-end my-4">
+  <!-- <ul class="pagination custom-pagination justify-content-end my-4">
     <li class="page-item">
       <a class="page-link" href="#" tabindex="-1" aria-disabled="true"><i class="bi bi-arrow-left font-size-16"></i></a>
     </li>
@@ -63,6 +65,6 @@
     <li class="page-item">
       <a class="page-link" href="#"><i class="bi bi-arrow-right font-size-16"></i></a>
     </li>
-  </ul>
+  </ul> -->
   <!--pagination-END-->
 </div>

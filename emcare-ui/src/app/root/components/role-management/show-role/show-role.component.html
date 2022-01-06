@@ -25,7 +25,7 @@
             <tr>
               <td>{{i+1}}</td>
               <td>{{data.name}}</td>
-              <td>{{data.description}}</td>
+              <td>{{data.description ? data.description : 'NA'}}</td>
               <td class="text-end">
                 <i (click)="editRole(i)" class="bi bi-pencil-square cursor-pointer font-size-16"></i>
                 <!-- <i class="bi bi-trash ms-3 text-red cursor-pointer font-size-16"></i> -->
@@ -44,7 +44,7 @@
   <!--Table-END-->
 
   <!--pagination-->
-  <ul class="pagination custom-pagination justify-content-end my-4">
+  <!-- <ul class="pagination custom-pagination justify-content-end my-4">
     <li class="page-item">
       <a class="page-link" href="#" tabindex="-1" aria-disabled="true"><i class="bi bi-arrow-left font-size-16"></i></a>
     </li>
@@ -54,6 +54,6 @@
     <li class="page-item">
       <a class="page-link" href="#"><i class="bi bi-arrow-right font-size-16"></i></a>
     </li>
-  </ul>
+  </ul> -->
   <!--pagination-END-->
 </div>

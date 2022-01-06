@@ -70,7 +70,6 @@ export class UserListComponent implements OnInit {
       if (res) {
         this.filteredUserList = [];
         this.filteredUserList = res;
-        console.log(this.filteredUserList);
       }
     })
   }

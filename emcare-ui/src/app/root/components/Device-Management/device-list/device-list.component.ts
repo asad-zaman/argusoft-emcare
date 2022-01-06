@@ -32,15 +32,9 @@ export class DeviceListComponent implements OnInit {
     })
   }
 
-  editDevice(event, data) {
-    const obj = {
-      "deviceId": data['deviceId'],
-      "deviceUUID": data['deviceUUID'],
-      "androidVersion": data['androidVersion'],
-      "lastLoggedInUser": data['lastLoggedInUser'],
-      "isBlocked": event
-    }
-    this.deviceManagementService.updateDeviceById(obj).subscribe(res => {
+  editDevice(event, deviceId) {
+    const status = !event;
+    this.deviceManagementService.updateDeviceStatusById(deviceId, status).subscribe(res => {
       this.getDevices();
     });
   }

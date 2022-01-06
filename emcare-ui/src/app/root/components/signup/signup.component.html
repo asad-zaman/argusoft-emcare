@@ -6,9 +6,9 @@
         <div class="signup_left-col_inner">
           <div><img src="../../../../assets/images/emcare-icon.png"></div>
           <div class="mt-3"> <img src="../../../../assets/images/img-01.png" class="img-fluid"> </div>
-          <p class="font-size-15 mt-3">Lorem Ipsum is simply dummy text of the printing and
-            typesetting industry. Lorem Ipsum has been the industry's
-            Lorem Ipsum is simply dummy text of the printing and
+          <p class="font-size-15 mt-3">The WHO Em Care application is an executable reference software, which accurately
+            represents the intentions, operational, and functional requirements of the WHO recommendations for emergency
+            settings.
           </p>
         </div>
       </div>
@@ -30,6 +30,7 @@
                   [ngClass]="{ 'is-invalid': submitted && f.firstname.errors }" />
                 <div *ngIf="submitted && f.firstname.errors" class="invalid-feedback">
                   <div *ngIf="f.firstname.errors.required">Firstname is required</div>
+                  <div *ngIf="f.firstname.errors.pattern">Invalid First Name</div>
                 </div>
               </div>
             </div>
@@ -42,6 +43,7 @@
                   [ngClass]="{ 'is-invalid': submitted && f.lastname.errors }" />
                 <div *ngIf="submitted && f.lastname.errors" class="invalid-feedback">
                   <div *ngIf="f.lastname.errors.required">Lastname is required</div>
+                  <div *ngIf="f.lastname.errors.pattern">Invalid Last Name</div>
                 </div>
               </div>
             </div>
@@ -50,11 +52,14 @@
             <div class="col-12">
               <div class="mb-3">
                 <label class="form-label">Username</label>
-                <input type="email" class="form-control custom-input" formControlName="username"
-                  [ngClass]="{ 'is-invalid': submitted && f.username.errors }" />
+                <input type="email" class="form-control custom-input" formControlName="username" (input)="!!error ? error = null : ''"
+                  [ngClass]="{ 'is-invalid': submitted && (f.username.errors || !!this.error) }" />
                 <div *ngIf="submitted && f.username.errors" class="invalid-feedback">
                   <div *ngIf="f.username.errors.required">Username is required</div>
                   <div *ngIf="f.username.errors.pattern">Invalid username</div>
+                </div>
+                <div *ngIf="submitted && !!error" class="invalid-feedback">
+                  <div *ngIf="!!error">This Email is Already Registered with Emcare</div>
                 </div>
               </div>
             </div>
@@ -89,7 +94,7 @@
               <div class="mb-3">
                 <label class="form-label">Location</label>
                 <ng-container *ngIf="locationArr.length>0; else noLocation">
-                  <select class="form-control custom-input" formControlName="location" id="location">
+                  <select class="form-control custom-input" formControlName="location" id="location" [ngClass]="{ 'is-invalid': submitted && f.location.errors }">
                     <ng-container *ngFor="let location of locationArr">
                       <option value="{{location.id}}">{{location.name}}</option>
                     </ng-container>
@@ -97,24 +102,30 @@
                 </ng-container>
                 <ng-template #noLocation>
                   <input formControlName="location" type="text" class="form-control custom-input" id="location"
-                    placeholder="Enter Location">
+                    placeholder="Enter Location" [ngClass]="{ 'is-invalid': submitted && f.location.errors }">
                 </ng-template>
+                <div *ngIf="submitted && f.location.errors" class="invalid-feedback">
+                  <div *ngIf="f.location.errors.required">Location is required</div>
+                </div>
               </div>
             </div>
             <div class="col-12 col-sm-6">
               <div class="mb-3">
                 <label class="form-label">Role</label>
                 <ng-container *ngIf="roleArr.length>0; else noRole">
-                  <select class="form-control custom-input" formControlName="role" id="role">
+                  <select class="form-control custom-input" formControlName="role" id="role" [ngClass]="{ 'is-invalid': submitted && f.role.errors }">
                     <ng-container *ngFor="let role of roleArr">
                       <option value="{{role.name}}">{{role.name}}</option>
                     </ng-container>
                   </select>
                 </ng-container>
                 <ng-template #noRole>
-                  <input formControlName="role" type="text" class="form-control custom-input" id="role"
+                  <input formControlName="role" type="text" class="form-control custom-input" id="role" [ngClass]="{ 'is-invalid': submitted && f.role.errors }"
                     placeholder="Enter Role">
                 </ng-template>
+                <div *ngIf="submitted && f.role.errors" class="invalid-feedback">
+                  <div *ngIf="f.role.errors.required">Role is required</div>
+                </div>
               </div>
             </div>
           </div>
