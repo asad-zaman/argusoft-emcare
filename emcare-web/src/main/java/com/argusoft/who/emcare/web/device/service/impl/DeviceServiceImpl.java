@@ -51,12 +51,7 @@ public class DeviceServiceImpl implements DeviceService {
 
         } else {
             DeviceMaster updatedDevice = DeviceMapper.getDeviceMaster(oldDevice, deviceDto, userId);
-            deviceRepository.updateDevice(
-                    updatedDevice.getAndroidVersion(),
-                    updatedDevice.getLastLoggedInUser(),
-                    updatedDevice.getIsBlocked(),
-                    updatedDevice.getDeviceId()
-            );
+            deviceRepository.updateDevice(updatedDevice.getAndroidVersion(), updatedDevice.getLastLoggedInUser(), updatedDevice.getIsBlocked(), updatedDevice.getDeviceId());
             return ResponseEntity.status(HttpStatus.OK).body(deviceDto);
         }
     }
@@ -86,8 +81,11 @@ public class DeviceServiceImpl implements DeviceService {
         deviceRepository.save(deviceInfo);
         Keycloak keycloak = keyCloakConfig.getInstance();
         UserResource userResource = keycloak.realm(KeyCloakConfig.REALM).users().get(deviceInfo.getLastLoggedInUser());
-        UserSessionRepresentation sessions = userResource.getUserSessions().get(0);
-        keycloak.realm(KeyCloakConfig.REALM).deleteSession(sessions.getId());
+        List<UserSessionRepresentation> userSessions = userResource.getUserSessions();
+        if (!userSessions.isEmpty()) {
+            UserSessionRepresentation sessions = userSessions.get(0);
+            keycloak.realm(KeyCloakConfig.REALM).deleteSession(sessions.getId());
+        }
         return ResponseEntity.ok(deviceInfo);
     }
 

@@ -14,6 +14,22 @@ public class UserMapper {
     private UserMapper() {
     }
 
+
+    public static UserLocationMapping userDtoToUserLocationMappingEntityForSignup(UserDto userDto, String userId) {
+        UserLocationMapping user = new UserLocationMapping();
+        user.setUserId(userId);
+        user.setLocationId(userDto.getLocationId());
+        user.setIsFirst(true);
+        if (userDto.getRegRequestFrom().equalsIgnoreCase(UserConst.MOBILE)) {
+            user.setRegRequestFrom(UserConst.MOBILE);
+            user.setState(false);
+        } else {
+            user.setRegRequestFrom(UserConst.WEB);
+            user.setState(false);
+        }
+        return user;
+    }
+
     public static UserLocationMapping userDtoToUserLocationMappingEntity(UserDto userDto, String userId) {
         UserLocationMapping user = new UserLocationMapping();
         user.setUserId(userId);
