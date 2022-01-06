@@ -15,7 +15,6 @@
           <th>ID</th>
           <th>Device UUID</th>
           <th>Android Version</th>
-          <th>Location</th>
           <th>Logged in User</th>
           <th>App Usage</th>
         </tr>
@@ -27,8 +26,7 @@
               <td>{{i+1}}</td>
               <td>{{data.deviceUUID}}</td>
               <td>{{data.androidVersion}}</td>
-              <td>{{data.usersResource.locationName ? data.usersResource.locationName : 'NA'}}</td>
-              <td>{{data.lastLoggedInUser}}</td>
+              <td>{{data.usersResource.userName}}</td>
               <td>
                 <label class="switch">
                   <input [(ngModel)]="!data.isBlocked" (ngModelChange)="editDevice($event, data.deviceId)" id="isBlocked"

@@ -36,7 +36,7 @@
               <td>{{user.userName}}</td>
               <td>{{user.realmRoles[0]}}</td>
               <td>{{user.locationName ? user.locationName : 'NA'}}</td>
-              <td><span class="badges-red bg-green">Verifed</span>
+              <td><span [ngClass] = "(!!user.enabled) ? 'badges-red bg-green' : 'badges-red'"> {{ !!user.enabled ? 'Verifed' : 'Not Verified'}}</span>
               <td class="text-end">
                 <i (click)="updateUser(i)" class="bi bi-pencil-square cursor-pointer font-size-16"></i>
                 <!-- <i class="bi bi-trash ms-3 text-red cursor-pointer font-size-16"></i> -->
