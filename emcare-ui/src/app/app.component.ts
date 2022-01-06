@@ -25,6 +25,7 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this.prerequisite();
+    console.log('asd');
   }
 
   ngAfterViewChecked() {
@@ -74,16 +75,18 @@ export class AppComponent implements OnInit {
 
   getLoggedInUser() {
     this.userName = localStorage.getItem('Username');
-    this.userCharLogo = this.getUserCharLogo(this.userName);
-    if (!this.userName) {
-      this.authenticationService.getLoggedInUser().subscribe(res => {
-        if (res) {
-          const userNameArr = res.userName.split(' ');
-          this.userName = res.userName;
-          this.userCharLogo = this.getUserCharLogo(this.userName);
-          localStorage.setItem('Username', this.userName);
-        }
-      });
+    this.userCharLogo = this.userName && this.getUserCharLogo(this.userName);
+    const token = JSON.parse(localStorage.getItem('access_token'));
+    if (token) {
+      if (!this.userName) {
+        this.authenticationService.getLoggedInUser().subscribe(res => {
+          if (res) {
+            this.userName = res.userName;
+            this.userCharLogo = this.getUserCharLogo(this.userName);
+            localStorage.setItem('Username', this.userName);
+          }
+        });
+      }
     }
   }
 
@@ -96,5 +99,10 @@ export class AppComponent implements OnInit {
         this.isLocationDropdownOpen = !this.isLocationDropdownOpen;
         break;
     }
+  }
+
+  logout() {
+    this.router.navigate(['/login']);
+    localStorage.clear();
   }
 }
