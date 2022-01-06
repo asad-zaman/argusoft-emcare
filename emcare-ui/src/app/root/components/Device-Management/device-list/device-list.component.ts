@@ -32,24 +32,19 @@ export class DeviceListComponent implements OnInit {
     })
   }
 
-  editDevice(event, data) {
-    const obj = {
-      "deviceId": data['deviceId'],
-      "deviceUUID": data['deviceUUID'],
-      "androidVersion": data['androidVersion'],
-      "lastLoggedInUser": data['lastLoggedInUser'],
-      "isBlocked": event
-    }
-    this.deviceManagementService.updateDeviceById(obj).subscribe(res => {
+  editDevice(event, deviceId) {
+    const status = !event;
+    this.deviceManagementService.updateDeviceStatusById(deviceId, status).subscribe(res => {
       this.getDevices();
     });
   }
 
   searchFilter() {
+    const lowerCasedSearchString = this.searchString?.toLowerCase();
     this.filteredDevices = this.deviceArr.filter( device => {
-      return ( device.deviceUUID?.includes(this.searchString) 
-      ||  device.androidVersion?.includes(this.searchString)
-      ||  device.lastLoggedInUser?.includes(this.searchString));
+      return ( device.deviceUUID?.toLowerCase().includes(lowerCasedSearchString) 
+      ||  device.androidVersion?.toLowerCase().includes(lowerCasedSearchString)
+      ||  device.lastLoggedInUser?.toLowerCase().includes(lowerCasedSearchString));
     });
   }
 }

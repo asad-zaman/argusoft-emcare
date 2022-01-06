@@ -10,18 +10,25 @@ export class AuthGuard implements CanActivate {
     ) { }
 
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean | UrlTree | Observable<boolean | UrlTree> | Promise<boolean | UrlTree> {
-        let userData = localStorage.getItem('sample-login-page');
-
-        if (userData) {
-            if (state.url.indexOf("/login") != -1) {
-                // loggin user trying to access login page
-                this.router.navigate(["/dashboard"]);
+        const token = JSON.parse(localStorage.getItem('access_token'));
+        const tokenExpiryDate = JSON.parse(localStorage.getItem('refresh_token_expiry_time'));
+        const tokenExpiry = tokenExpiryDate
+            ? new Date(tokenExpiryDate)
+            : null;
+        // Check if token is expired or not
+        if (token) {
+            if (tokenExpiry && tokenExpiry <= new Date()) {
+                // token has expired user should benavigateByUrl logged out
+                this.router.navigate(['/login']);
+                localStorage.clear();
                 return false;
-            }
-            else {
+            } else {
                 return true;
             }
         } else {
+            if (route.routeConfig.path !== 'login' && route.routeConfig.path !== 'signup') {
+                this.router.navigate(['/login']);
+            }
             return true;
         }
     }

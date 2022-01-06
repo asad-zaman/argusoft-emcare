@@ -1,7 +1,7 @@
 <div class="spinner-border" *ngIf="HTTPActivity">
   <span class="sr-only" id="loadbar"></span>
 </div>
-<ng-container *ngIf="currentUrl !== '/login' && currentUrl !== '/signup'">
+<ng-container *ngIf="currentUrl !== '/' && currentUrl !== '/login' && currentUrl !== '/signup'">
   <!--header-->
   <header>
     <div class="logo"><img src="assets/images/emcare-logo.svg"></div>
@@ -16,7 +16,7 @@
         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
           <!-- <li><a class="dropdown-item" href="#">Edit Profile</a></li>
           <li><a class="dropdown-item" href="#">Settings</a></li> -->
-          <li><a class="dropdown-item" routerLink="/login">Logout</a></li>
+          <li><a class="dropdown-item" (click)="logout()">Logout</a></li>
         </ul>
       </li>
     </ul>

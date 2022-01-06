@@ -23,7 +23,7 @@
         </tr>
       </thead>
       <tbody>
-        <ng-container *ngIf="filteredPatients.length > 0; else noRecords">
+        <ng-container *ngIf="!filteredPatients || filteredPatients.length > 0; else noRecords">
           <ng-container *ngFor="let patient of filteredPatients; let i=index">
             <tr>
               <td>{{i+1}}</td>
@@ -48,7 +48,7 @@
   </div>
   <!--Table-END-->
   <!--pagination-->
-  <ul class="pagination custom-pagination justify-content-end my-4">
+  <!-- <ul class="pagination custom-pagination justify-content-end my-4">
     <li class="page-item">
       <a class="page-link" href="#" tabindex="-1" aria-disabled="true"><i class="bi bi-arrow-left font-size-16"></i></a>
     </li>
@@ -58,7 +58,7 @@
     <li class="page-item">
       <a class="page-link" href="#"><i class="bi bi-arrow-right font-size-16"></i></a>
     </li>
-  </ul>
+  </ul> -->
   <!--pagination-END-->
   <div *ngIf="showPatientDetailsFlag" class="modal" tabindex="-1" role="dialog" style="display:block">
     <div class="modal-dialog" role="document">

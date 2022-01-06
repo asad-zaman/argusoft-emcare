@@ -13,7 +13,7 @@ export class UserManagementService {
 
   getHeaders() {
     let authToken = localStorage.getItem("access_token");
-    authToken = authToken.substring(1,authToken.length - 1);
+    authToken = authToken && authToken.substring(1,authToken.length - 1);
     const headerObj = {
         headers: new HttpHeaders({
             'Content-Type': 'application/json',

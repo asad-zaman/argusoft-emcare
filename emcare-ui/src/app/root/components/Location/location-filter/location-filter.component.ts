@@ -17,6 +17,8 @@ export class LocationFilterComponent implements OnInit {
   otherArr = [];
   dropdownActiveArr = [true, false, false, false, false];
   @Output() locationId = new EventEmitter<any>();
+  sideMenu = false;
+  currentUrl: string;
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -28,6 +30,8 @@ export class LocationFilterComponent implements OnInit {
   }
 
   prerequisite() {
+    const urlArr = location.href.split('/');
+    this.currentUrl = urlArr[urlArr.length - 1];
     this.initLocationFilterForm();
     this.getAllLocations();
   }
@@ -86,8 +90,8 @@ export class LocationFilterComponent implements OnInit {
         selectedId = valueArr[index];
       }
     }
-    console.log(selectedId);
     this.locationId.emit(selectedId);
+    this.sideMenu = false;
   }
 
   onClicked(event, dropdownNum) {

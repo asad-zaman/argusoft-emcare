@@ -13,29 +13,25 @@
       <thead>
         <tr>
           <th>ID</th>
-          <th>User Id</th>
           <th>First name</th>
           <th>Last name</th>
           <th>Email</th>
+          <th>Location</th>
           <th>Role</th>
           <th></th>
           <th></th>
         </tr>
       </thead>
       <tbody>
-        <ng-container *ngIf="filteredUserList.length > 0; else noRecords">
+        <ng-container *ngIf="!filteredUserList || filteredUserList.length > 0; else noRecords">
           <ng-container *ngFor="let user of filteredUserList; let i=index">
             <tr>
               <td>{{i+1}}</td>
-              <td>{{user.id}}</td>
               <td>{{user.firstName}}</td>
               <td>{{user.lastName}}</td>
-              <td>{{user.username}}</td>
-              <td>
-                <li *ngFor="let role of user.realmRoles">
-                  {{ role }}
-                </li>
-              </td>
+              <td>{{user.email}}</td>
+              <td>{{user.locationName ? user.locationName : 'NA'}}</td>
+              <td>{{user.realmRoles[0]}}</td>
               <td>
                 <i (click)="onApproveUser(i)" class="bi bi-check-circle text-success cursor-pointer font-size-32"></i>
               </td>
@@ -56,7 +52,7 @@
   <!--Table-END-->
 
   <!--pagination-->
-  <ul class="pagination custom-pagination justify-content-end my-4">
+  <!-- <ul class="pagination custom-pagination justify-content-end my-4">
     <li class="page-item">
       <a class="page-link" href="#" tabindex="-1" aria-disabled="true"><i class="bi bi-arrow-left font-size-16"></i></a>
     </li>
@@ -66,7 +62,7 @@
     <li class="page-item">
       <a class="page-link" href="#"><i class="bi bi-arrow-right font-size-16"></i></a>
     </li>
-  </ul>
+  </ul> -->
   <!--pagination-END-->
 
   <div *ngIf="showConfirmDialogFlag" class="modal" tabindex="-1" role="dialog" style="display:block">
