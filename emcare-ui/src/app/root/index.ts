@@ -17,3 +17,6 @@ export { ManageUserComponent } from './components/User/manage-user/manage-user.c
 export { ConfirmUserComponent } from './components/User/confirm-user/confirm-user.component';
 export { UserManagementService } from './services/user-management.service';
 export { LocationFilterComponent } from './components/Location/location-filter/location-filter.component';
+export { FeatureListComponent } from './components/Feature/feature-list/feature-list.component';
+export { ManageFeatureComponent } from './components/Feature/manage-feature/manage-feature.component';
+export { FeatureManagementService } from './services/feature-management.service';

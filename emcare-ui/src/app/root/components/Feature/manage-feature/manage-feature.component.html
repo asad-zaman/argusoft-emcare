@@ -1,0 +1,76 @@
+<div class="main-wrapper">
+    <h1 class="heading">Update Feature Config</h1>
+    <hr>
+    <div class="row align-items-center mb-3">
+      <div class="col-3 col-sm-3">
+        <div class="mb-3">
+          <label class="form-label">User</label>
+          <ng-container>
+            <select class="form-control custom-input" [(ngModel)]="selectedUser" (change)="selectedRole=null" id="user">
+              <ng-container *ngFor="let user of userList">
+                <option [value]="user.id">{{user.userName}}</option>
+              </ng-container>
+            </select>
+          </ng-container>
+        </div>
+      </div>
+      <div class="col-3 col-sm-3">
+        <div class="mb-3">
+          <label class="form-label">Role</label>
+          <ng-container>
+            <select class="form-control custom-input" [(ngModel)]="selectedRole" (change)="selectedUser=null" id="role">
+              <ng-container *ngFor="let role of roleList">
+                <option [value]="role.id">{{role.name}}</option>
+              </ng-container>
+            </select>
+          </ng-container>
+        </div>
+      </div>
+      <div class="col-3 col-sm-3">
+        <button (click)="AddFeatureConfig()" [disabled]="!selectedUser && !selectedRole"
+         class="btn btn-red p-l-70 p-r-70 mt-3">+ ADD</button>
+      </div>
+    </div>
+    <!--Table-->
+    <div class="table-responsive">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Type</th>
+            <th>Name</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <ng-container *ngIf="!featureConfigList || featureConfigList.length > 0; else noRecords">
+            <ng-container *ngFor="let featureConfig of featureConfigList; let i=index">
+                <tr>
+                  <td>{{i+1}}</td>
+                  <td>{{ featureConfig.userId ? 'User' : 'Role' }}</td>
+                  <td>{{ featureConfig.userId ? featureConfig.userName : featureConfig.roleName }}</td>
+                  <td class="text-end">
+                    <i (click)="deleteFeatureConfig(i)" class="bi bi-trash cursor-pointer font-size-16"></i>
+                    <!-- <i class="bi bi-trash ms-3 text-red cursor-pointer font-size-16"></i> -->
+                  </td>
+                </tr>
+            </ng-container>
+          </ng-container>
+          <ng-template #noRecords>
+            <div class="no-record">
+                No Records Found!!
+            </div>
+          </ng-template>      
+        </tbody>
+      </table>
+    </div>
+    <!--Table-END-->
+    <div class="row">
+        <div class="col-3 col-sm-3">
+            <button routerLink="/showFeatures" class="btn btn-red mt-3 mr-5 text-center" style="width: 150px;">
+                <i class="bi bi-chevron-left"></i>Back
+            </button>
+        </div>
+    </div>
+</div>
+

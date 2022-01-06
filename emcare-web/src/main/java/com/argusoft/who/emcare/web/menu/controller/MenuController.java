@@ -28,7 +28,7 @@ public class MenuController {
         return menuService.getMenuConfigByMenuId(menuId);
     }
 
-    @GetMapping("/config/add")
+    @PostMapping("/config/add")
     public UserMenuConfig addMenuConfig(@RequestBody MenuConfigDto menuConfig) {
         return menuService.addMenuConfiguration(menuConfig);
     }

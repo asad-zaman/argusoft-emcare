@@ -19,7 +19,9 @@ import {
   DeviceListComponent,
   UserListComponent,
   ManageUserComponent,
-  ConfirmUserComponent
+  ConfirmUserComponent,
+  FeatureListComponent,
+  ManageFeatureComponent
 } from './root/index';
 
 const routes: Routes = [
@@ -47,6 +49,8 @@ const routes: Routes = [
   { path: 'showRoles', component: ShowRoleComponent, canActivate: [AuthGuard] },
   { path: 'addRole', component: ManageRoleComponent, canActivate: [AuthGuard] },
   { path: 'editRole/:id', component: ManageRoleComponent, canActivate: [AuthGuard] },
+  { path: 'showFeatures', component: FeatureListComponent, canActivate: [AuthGuard] },
+  { path: 'editFeature/:id', component: ManageFeatureComponent, canActivate: [AuthGuard] },
   { path: '**', redirectTo: 'login' }
 ];
 @NgModule({
