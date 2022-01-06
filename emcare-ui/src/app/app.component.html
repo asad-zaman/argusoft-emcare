@@ -1,3 +1,6 @@
+<div class="spinner-border" *ngIf="HTTPActivity">
+  <span class="sr-only" id="loadbar"></span>
+</div>
 <ng-container *ngIf="currentUrl !== '/login' && currentUrl !== '/signup'">
   <!--header-->
   <header>
@@ -5,7 +8,9 @@
     <ul class="navigation">
       <li class="dropdown">
         <div class="d-flex align-items-center" data-bs-toggle="dropdown">
-          <div class="user-pic"><img src="assets/images/default-user.png"></div>
+          <span class="user-char-logo">
+            {{userCharLogo}}
+          </span>
           {{ userName }}<i class="bi bi-chevron-down ps-2"></i>
         </div>
         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">

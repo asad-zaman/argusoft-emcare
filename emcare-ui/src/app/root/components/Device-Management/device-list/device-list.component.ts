@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 import { DeviceManagementService } from 'src/app/root/services/device-management.service';
 
 @Component({
@@ -14,7 +13,6 @@ export class DeviceListComponent implements OnInit {
   searchString: string;
 
   constructor(
-    private readonly router: Router,
     private readonly deviceManagementService: DeviceManagementService
   ) { }
 
@@ -49,7 +47,6 @@ export class DeviceListComponent implements OnInit {
 
   searchFilter() {
     this.filteredDevices = this.deviceArr.filter( device => {
-
       return ( device.deviceUUID?.includes(this.searchString) 
       ||  device.androidVersion?.includes(this.searchString)
       ||  device.lastLoggedInUser?.includes(this.searchString));

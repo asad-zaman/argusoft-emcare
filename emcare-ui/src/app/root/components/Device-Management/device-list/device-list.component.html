@@ -3,7 +3,8 @@
   <hr>
   <div class="row align-items-center mb-3">
     <div class=" col-lg-3 col-xxl-2 col-md-5 position-relative">
-      <input class="form-control custom-input" id="exampleFormControlInput1" [(ngModel)]="searchString" (input)="searchFilter()" placeholder="Search">
+      <input class="form-control custom-input h-40" id="exampleFormControlInput1" [(ngModel)]="searchString"
+        (input)="searchFilter()" placeholder="Search">
     </div>
   </div>
   <!--Table-->
@@ -14,26 +15,35 @@
           <th>ID</th>
           <th>Device UUID</th>
           <th>Android Version</th>
+          <th>Location</th>
           <th>Logged in User</th>
           <th>App Usage</th>
         </tr>
       </thead>
       <tbody>
-        <ng-container *ngFor="let data of filteredDevices; let i=index">
-          <tr>
-            <td>{{i+1}}</td>
-            <td>{{data.deviceUUID}}</td>
-            <td>{{data.androidVersion}}</td>
-            <td>{{data.lastLoggedInUser}}</td>
-            <td>
-              <label class="switch">
-                <input [(ngModel)]="data.isBlocked" (ngModelChange)="editDevice($event, data)" id="isBlocked"
-                  type="checkbox" checked>
-                <span class="slider round"></span>
-              </label>
-            </td>
-          </tr>
+        <ng-container *ngIf="filteredDevices && filteredDevices.length > 0; else noRecords">
+          <ng-container *ngFor="let data of filteredDevices; let i=index">
+            <tr>
+              <td>{{i+1}}</td>
+              <td>{{data.deviceUUID}}</td>
+              <td>{{data.androidVersion}}</td>
+              <td>{{data.usersResource.locationName ? data.usersResource.locationName : 'NA'}}</td>
+              <td>{{data.lastLoggedInUser}}</td>
+              <td>
+                <label class="switch">
+                  <input [(ngModel)]="data.isBlocked" (ngModelChange)="editDevice($event, data)" id="isBlocked"
+                    type="checkbox" checked>
+                  <span class="slider round"></span>
+                </label>
+              </td>
+            </tr>
+          </ng-container>
         </ng-container>
+        <ng-template #noRecords>
+          <div class="no-record">
+            No Records Found!!
+          </div>
+        </ng-template>
       </tbody>
     </table>
   </div>

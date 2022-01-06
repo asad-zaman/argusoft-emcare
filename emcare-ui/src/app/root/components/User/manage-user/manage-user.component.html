@@ -40,10 +40,31 @@
           </div>
         </div>
       </div>
+      <div class="row">
+        <div class="col-12">
+          <div class="mb-3">
+            <label class="form-label">Location</label>
+            <ng-container *ngIf="locationArr.length>0; else noLocation">
+              <select class="form-control custom-input" formControlName="location" id="location">
+                <ng-container *ngFor="let location of locationArr">
+                  <option value="{{location.id}}">{{location.name}}</option>
+                </ng-container>
+              </select>
+            </ng-container>
+            <ng-template #noLocation>
+              <input formControlName="location" type="text" class="form-control custom-input" id="location"
+                placeholder="Enter Location">
+            </ng-template>
+          </div>
+        </div>
+      </div>
       <div class="text-end mt-5">
         <hr>
+        <button routerLink="/showUsers" class="btn-red btn mr-3">
+          <i class="bi bi-chevron-left"></i> Back
+        </button>
         <button (click)="saveData()" class="btn-red btn">
-          {{ !isEdit ? 'CREATE USER' : 'UPDATE USER'}}
+          {{ !isEdit ? 'Create User' : 'Update User'}}
         </button>
       </div>
     </form>

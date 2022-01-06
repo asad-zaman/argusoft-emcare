@@ -1,0 +1,31 @@
+.user-char-logo {
+    background: white;
+    color: black;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-size: 20px;
+    padding: 5px 0px 0px 7px;
+    display: inline-block;
+    margin-right: 10px;
+}
+
+.spinner-border {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 50px;
+    height: 50px;
+}
+#loadbar {
+    animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}

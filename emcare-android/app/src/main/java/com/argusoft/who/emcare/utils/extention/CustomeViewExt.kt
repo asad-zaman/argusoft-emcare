@@ -27,7 +27,7 @@ fun <T> ApiResponse<T>?.handleApiView(
             progressLayout?.showContent(skipIds)
             progressLayout?.context?.showSnackBar(
                 view = progressLayout,
-                message = apiErrorMessage,
+                message = apiErrorMessage ?: apiErrorMessageResId?.let { progressLayout.context?.getString(it) },
                 isError = true
             )
         }

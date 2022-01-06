@@ -10,14 +10,9 @@ import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import com.google.android.material.snackbar.Snackbar
 import com.argusoft.who.emcare.R
+import com.google.android.material.snackbar.Snackbar
 import java.lang.ref.WeakReference
-import android.view.Gravity
-
-import android.widget.FrameLayout
-
-
 
 
 /**

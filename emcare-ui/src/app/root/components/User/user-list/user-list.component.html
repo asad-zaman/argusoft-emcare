@@ -3,10 +3,10 @@
   <h1 class="heading">Users</h1>
   <hr>
   <div class="row align-items-center mb-3">
-    <div class=" col-lg-3 col-xxl-2 col-md-5 position-relative">
-      <input class="form-control custom-input" id="exampleFormControlInput1" [(ngModel)]="searchString" (input)="searchFilter()" placeholder="Search">
+    <div class="col-lg-3 col-xxl-2 col-md-5 position-relative">
+      <input class="form-control custom-input h-40" id="exampleFormControlInput1" [(ngModel)]="searchString"
+        (input)="searchFilter()" placeholder="Search">
     </div>
-    <div class="col-2"> <button class="btn btn-red" (click)="getAllUsers()">Clear</button></div>
     <div class="col text-end"> <button class="btn btn-red" routerLink="/addUser">+ Add User</button></div>
   </div>
   <!--Table-->
@@ -15,35 +15,42 @@
       <thead>
         <tr>
           <th>ID</th>
-          <th>User Id</th>
           <th>First name</th>
           <th>Last name</th>
           <th>Email</th>
           <th>Role</th>
+          <th>Location</th>
           <th>Status</th>
           <th></th>
         </tr>
       </thead>
       <tbody>
-        <ng-container *ngFor="let user of filteredUserList; let i=index">
-          <tr>
-            <td>{{i+1}}</td>
-            <td>{{user.id}}</td>
-            <td>{{user.firstName}}</td>
-            <td>{{user.lastName}}</td>
-            <td>{{user.username}}</td>
-            <td>
-              <li *ngFor="let role of user.realmRoles">
-                {{ role }}
-              </li>
-            </td>
-            <td><span class="badges-red bg-green">Verifed</span>
-            <td class="text-end">
-              <i (click)="updateUser(i)" class="bi bi-pencil-square cursor-pointer font-size-16"></i>
-              <!-- <i class="bi bi-trash ms-3 text-red cursor-pointer font-size-16"></i> -->
-            </td>
-          </tr>
+        <ng-container *ngIf="filteredUserList.length > 0; else noRecords">
+          <ng-container *ngFor="let user of filteredUserList; let i=index">
+            <tr>
+              <td>{{i+1}}</td>
+              <td>{{user.firstName}}</td>
+              <td>{{user.lastName}}</td>
+              <td>{{user.userName}}</td>
+              <td>
+                <li *ngFor="let role of user.realmRoles">
+                  {{ role }}
+                </li>
+              </td>
+              <td>{{user.locationName ? user.locationName : 'NA'}}</td>
+              <td><span class="badges-red bg-green">Verifed</span>
+              <td class="text-end">
+                <i (click)="updateUser(i)" class="bi bi-pencil-square cursor-pointer font-size-16"></i>
+                <!-- <i class="bi bi-trash ms-3 text-red cursor-pointer font-size-16"></i> -->
+              </td>
+            </tr>
+          </ng-container>
         </ng-container>
+        <ng-template #noRecords>
+          <div class="no-record">
+            No Records Found!!
+          </div>
+        </ng-template>
       </tbody>
     </table>
   </div>
