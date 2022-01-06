@@ -25,6 +25,20 @@ export class AppComponent implements OnInit {
 
   prerequisite() {
     this.getCurrentPage();
+    this.checkTOkenExpiresOrNot();
+  }
+
+  checkTOkenExpiresOrNot() {
+    const tokenExpiryDate = JSON.parse(localStorage.getItem('refresh_token_expiry_time'));
+    const tokenExpiry = tokenExpiryDate
+      ? new Date(tokenExpiryDate)
+      : null;
+    // Check if token is expired or not
+    if (tokenExpiry && tokenExpiry <= new Date()) {
+      // token has expired user should be logged out
+      this.router.navigate(['/login']);
+      localStorage.clear();
+    } else { }
   }
 
   getCurrentPage() {
@@ -38,14 +52,20 @@ export class AppComponent implements OnInit {
     });
   }
 
+  getUserCharLogo(username) {
+    const userNameArr = username.split(' ');
+    return `${userNameArr[0].toString().charAt(0).toUpperCase()}${userNameArr[1].toString().charAt(0).toUpperCase()}`;
+  }
+
   getLoggedInUser() {
     this.userName = localStorage.getItem('Username');
-    if (this.userName) {
+    this.userCharLogo = this.getUserCharLogo(this.userName);
+    if (!this.userName) {
       this.authenticationService.getLoggedInUser().subscribe(res => {
         if (res) {
           const userNameArr = res.userName.split(' ');
           this.userName = res.userName;
-          this.userCharLogo = `${userNameArr[0].toString().charAt(0).toUpperCase()}${userNameArr[1].toString().charAt(0).toUpperCase()}`;
+          this.userCharLogo = this.getUserCharLogo(this.userName);
           localStorage.setItem('Username', this.userName);
         }
       });
