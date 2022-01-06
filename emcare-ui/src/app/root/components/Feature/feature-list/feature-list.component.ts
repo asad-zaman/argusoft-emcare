@@ -39,7 +39,7 @@ export class FeatureListComponent implements OnInit {
 
   searchFilter() {
     this.filteredFeatureList = this.mainFeatureList.filter(feature => {
-      return feature.menuName?.includes(this.searchString);
+      return feature.menuName?.toLowerCase().includes(this.searchString);
     })
   }
 
