@@ -16,7 +16,7 @@ export class SignupComponent implements OnInit {
   loading = false;
   submitted = false;
   returnUrl: string | undefined;
-  error = '';
+  error = null;
   locationArr: any = [];
   roleArr: any = [];
 
@@ -69,7 +69,7 @@ export class SignupComponent implements OnInit {
   userSignup() {
     this.submitted = true;
     // stop here if form is invalid
-    if (this.signupForm.invalid) {
+    if (this.signupForm.invalid || !!this.error) {
       return;
     }
     this.authService.signup(this.signupForm.value.firstname, this.signupForm.value.lastname, 
@@ -82,7 +82,9 @@ export class SignupComponent implements OnInit {
           this.router.navigate(["/login"]);
         },
         error => {
-          this.error = error['error']['errorMessage'];
+          if(error.status == 400){
+            this.error = error['error']['errorMessage'];
+          } 
           //TODO: Add toaster for email already registered
           this.loading = false;
         });

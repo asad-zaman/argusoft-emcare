@@ -52,11 +52,14 @@
             <div class="col-12">
               <div class="mb-3">
                 <label class="form-label">Username</label>
-                <input type="email" class="form-control custom-input" formControlName="username"
-                  [ngClass]="{ 'is-invalid': submitted && f.username.errors }" />
+                <input type="email" class="form-control custom-input" formControlName="username" (input)="!!error ? error = null : ''"
+                  [ngClass]="{ 'is-invalid': submitted && (f.username.errors || !!this.error) }" />
                 <div *ngIf="submitted && f.username.errors" class="invalid-feedback">
                   <div *ngIf="f.username.errors.required">Username is required</div>
                   <div *ngIf="f.username.errors.pattern">Invalid username</div>
+                </div>
+                <div *ngIf="submitted && !!error" class="invalid-feedback">
+                  <div *ngIf="!!error">This Email is Already Registered with Emcare</div>
                 </div>
               </div>
             </div>
