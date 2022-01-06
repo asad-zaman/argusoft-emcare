@@ -34,8 +34,8 @@ export class SignupComponent implements OnInit {
 
   initSignUpForm() {
     this.signupForm = this.formBuilder.group({
-      firstname: ['', Validators.required],
-      lastname: ['', Validators.required],
+      firstname: ['', [Validators.required, Validators.pattern('^[a-zA-z]*')]],
+      lastname: ['', [Validators.required, Validators.pattern('^[a-zA-z]*')]],
       username: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-]+$')]],
       password: ['', Validators.required],
       confirmPassword: ['', Validators.required],
@@ -82,7 +82,8 @@ export class SignupComponent implements OnInit {
           this.router.navigate(["/login"]);
         },
         error => {
-          this.error = error['error']['message'];
+          this.error = error['error']['errorMessage'];
+          //TODO: Add toaster for email already registered
           this.loading = false;
         });
   }

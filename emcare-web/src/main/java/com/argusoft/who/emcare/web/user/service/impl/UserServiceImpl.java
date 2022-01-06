@@ -364,17 +364,24 @@ public class UserServiceImpl implements UserService {
     public ResponseEntity<Object> updateUser(UserDto userDto, String userId) {
         Keycloak keycloak = keyCloakConfig.getInstance();
         UserResource userResource = keycloak.realm(KeyCloakConfig.REALM).users().get(userId);
-        UserSessionRepresentation sessions  = userResource.getUserSessions().get(0);
         UserRepresentation oldUser = userResource.toRepresentation();
 
         oldUser.setFirstName(userDto.getFirstName());
         oldUser.setLastName(userDto.getLastName());
         List<UserLocationMapping> userLocationMappingList = userLocationMappingRepository.findByUserId(userId);
-        if(userLocationMappingList != null){
-            UserLocationMapping ulm = userLocationMappingList.get(0);
+        UserLocationMapping ulm = new UserLocationMapping();
+        if(!userLocationMappingList.isEmpty()){
+            ulm = userLocationMappingList.get(0);
             ulm.setLocationId(userDto.getLocationId());
-            userLocationMappingRepository.save(ulm);
+        } else {
+            ulm.setLocationId(userDto.getLocationId());
+            ulm.setUserId(userId);
+            ulm.setIsFirst(false);
+            ulm.setRegRequestFrom(UserConst.WEB);
+            ulm.setState(true);
         }
+        userLocationMappingRepository.save(ulm);
+
 
         oldUser.setEnabled(userDto.getRegRequestFrom().equalsIgnoreCase(UserConst.WEB));
         userResource.update(oldUser);
