@@ -45,7 +45,7 @@ class AddPatientFragment : BaseFragment<FragmentAddPatientBinding>() {
         patientViewModel.questionnaireJson?.let {
             questionnaireFragment.arguments = bundleOf(QuestionnaireFragment.BUNDLE_KEY_QUESTIONNAIRE to it)
             childFragmentManager.commit {
-                add(R.id.fragmentContainerView, questionnaireFragment, QuestionnaireFragment::class.java.simpleName)
+                add(R.id.nestedScrollView, questionnaireFragment, QuestionnaireFragment::class.java.simpleName)
             }
         }
     }
