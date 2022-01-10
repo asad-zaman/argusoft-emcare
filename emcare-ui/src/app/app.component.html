@@ -23,7 +23,7 @@
   </header>
   <!--header-END-->
   <!--Sidenav-->
-  <div class="sidenav">
+  <div class="sidenav" *ngIf="featureList.length !== 0">
     <ul class="nav-link">
       <li *ngIf="hasAccess('Users') || hasAccess('Roles')">
         <a class="mouse-pointer"
@@ -85,7 +85,7 @@
           Devices</a></li>
       <li *ngIf="hasAccess('Feature Management')"><a class="mouse-pointer" 
           [ngClass]="{'active': this.currentUrl === '/showFeatures' || this.currentUrl.includes('/editFeature')}"
-          routerLink="/showFeatures"><i class="bi bi-people nav-link_icon"></i>Manage
+          routerLink="/showFeatures"><i class="bi bi-list nav-link_icon"></i>Manage
           Features</a>
       </li>
       <!-- <li><a> <i class="bi bi-recycle nav-link_icon"></i> Manage Conficts</a></li> -->

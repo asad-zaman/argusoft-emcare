@@ -9,7 +9,7 @@ import { AuthenticationService } from './shared/services/authentication.service'
 })
 export class AppComponent implements OnInit {
 
-  currentUrl;
+  currentUrl:string = '';
   userName: any;
   isUserDropdownOpen: boolean = true;
   isLocationDropdownOpen: boolean = false;
@@ -17,6 +17,7 @@ export class AppComponent implements OnInit {
   HTTPActivity: boolean;
   user: any;
   featureList: any = [];
+  isLoggedIn: boolean = false;
 
   constructor(
     private readonly router: Router,
@@ -38,7 +39,11 @@ export class AppComponent implements OnInit {
     this.getCurrentPage();
     this.checkTOkenExpiresOrNot();
     this.checkAPIStatus();
-    this.getFeatureList();
+    this.authenticationService.getIsLoggedIn().subscribe(result => {
+      if (result) {
+        this.getFeatureList();
+      }
+    })
   }
 
   checkTOkenExpiresOrNot() {
@@ -51,7 +56,10 @@ export class AppComponent implements OnInit {
       // token has expired user should be logged out
       this.router.navigate(['/login']);
       localStorage.clear();
-    } else { }
+    } else if (!!tokenExpiryDate) { 
+      this.authenticationService.setIsLoggedIn(true);
+    } else {
+    }
   }
 
   checkAPIStatus() {
@@ -121,5 +129,5 @@ export class AppComponent implements OnInit {
   hasAccess(feature: string) {
     return !!this.featureList.find(f => f === feature);
   }
-  
+
 }
