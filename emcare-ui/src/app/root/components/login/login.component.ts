@@ -53,11 +53,13 @@ export class LoginComponent implements OnInit {
             localStorage.setItem('refresh_token', JSON.stringify(data.refresh_token));
             localStorage.setItem('refresh_token_expiry_time', JSON.stringify(refreshTokenexpiration));
             this.router.navigate(["/showUsers"]);
+            this.authService.setIsLoggedIn(true);
           }
         },
         error => {
           this.error = error['error']['message'];
           this.loading = false;
+          this.authService.setIsLoggedIn(false);
         });
   }
 
