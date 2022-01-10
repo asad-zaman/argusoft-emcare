@@ -7,12 +7,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.uhn.fhir.context.FhirContext
 import com.argusoft.who.emcare.data.local.database.Database
+import com.argusoft.who.emcare.data.local.pref.Preference
 import com.argusoft.who.emcare.data.remote.Api
 import com.argusoft.who.emcare.data.remote.ApiResponse
+import com.argusoft.who.emcare.sync.EmCareSync
+import com.argusoft.who.emcare.sync.SyncResult
+import com.argusoft.who.emcare.sync.SyncType
 import com.argusoft.who.emcare.ui.common.LOCATION_EXTENSION_URL
 import com.argusoft.who.emcare.ui.common.model.PatientItem
 import com.argusoft.who.emcare.utils.extention.toPatientItem
-import com.argusoft.who.emcare.utils.extention.whenSuccess
 import com.argusoft.who.emcare.utils.listener.SingleLiveEvent
 import com.google.android.fhir.FhirEngine
 import com.google.android.fhir.datacapture.mapping.ResourceMapper
@@ -33,6 +36,7 @@ class PatientViewModel @Inject constructor(
     private val fhirEngine: FhirEngine,
     private val api: Api,
     private val database: Database,
+    private val preference: Preference,
     private val applicationContext: Application
 ) : ViewModel() {
 
@@ -83,22 +87,17 @@ class PatientViewModel @Inject constructor(
     fun syncPatients() {
         _syncState.value = State.Started
         viewModelScope.launch {
-            val reustl = Sync.oneTimeSync(
+            val fhirResult = Sync.oneTimeSync(
                 applicationContext,
                 fhirEngine,
                 api.getHapiFhirResourceDataSource(),
                 mapOf(ResourceType.Patient to mapOf())
             )
-            api.getLocations().whenSuccess {
-                database.saveLocations(it)
-            }
-            when (reustl) {
-                is Result.Success -> {
-                    _syncState.value = State.Finished(reustl)
-                }
-                is Result.Error -> {
-                    _syncState.value = State.Failed(reustl)
-                }
+            val emCareResult = EmCareSync.oneTimeSync(api, database, preference, listOf(SyncType.LOCATION))
+            if (fhirResult is Result.Success && emCareResult is SyncResult.Success) {
+                _syncState.value = State.Finished(fhirResult)
+            } else {
+                _syncState.value = State.Failed(fhirResult as Result.Error)
             }
         }
     }

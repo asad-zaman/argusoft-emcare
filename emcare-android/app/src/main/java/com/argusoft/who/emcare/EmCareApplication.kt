@@ -2,8 +2,13 @@ package com.argusoft.who.emcare
 
 import android.app.Application
 import android.content.Context
-import android.content.res.Configuration
+import androidx.hilt.work.HiltWorkerFactory
+import androidx.work.Configuration
+import com.argusoft.who.emcare.data.local.database.Database
 import com.argusoft.who.emcare.data.local.pref.Preference
+import com.argusoft.who.emcare.data.remote.Api
+import com.argusoft.who.emcare.sync.EmCarePeriodicSyncWorker
+import com.argusoft.who.emcare.sync.EmCareSync
 import com.argusoft.who.emcare.utils.localization.LocaleHelperApplicationDelegate
 import com.google.android.fhir.FhirEngine
 import com.google.android.fhir.FhirEngineProvider
@@ -11,8 +16,18 @@ import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
 import javax.inject.Inject
 
+
 @HiltAndroidApp
-class EmCareApplication : Application() {
+class EmCareApplication : Application(), Configuration.Provider {
+
+    @Inject
+    lateinit var preference: Preference
+
+    @Inject
+    lateinit var database: Database
+
+    @Inject
+    lateinit var api: Api
 
     private val localeAppDelegate = LocaleHelperApplicationDelegate()
 
@@ -26,6 +41,14 @@ class EmCareApplication : Application() {
         return FhirEngineProvider.getInstance(this)
     }
 
+    @Inject
+    lateinit var workerFactory: HiltWorkerFactory
+
+    override fun getWorkManagerConfiguration() =
+        Configuration.Builder()
+            .setWorkerFactory(workerFactory)
+            .build()
+
     override fun onCreate() {
         super.onCreate()
         if (BuildConfig.DEBUG) {
@@ -37,7 +60,7 @@ class EmCareApplication : Application() {
         super.attachBaseContext(localeAppDelegate.attachBaseContext(base))
     }
 
-    override fun onConfigurationChanged(newConfig: Configuration) {
+    override fun onConfigurationChanged(newConfig: android.content.res.Configuration) {
         super.onConfigurationChanged(newConfig)
         localeAppDelegate.onConfigurationChanged(this)
     }
