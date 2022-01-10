@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import { LocationService } from 'src/app/root/services/location.service';
 
 @Component({
@@ -15,7 +16,8 @@ export class ShowLocationTypeComponent implements OnInit {
 
   constructor(
     private readonly router: Router,
-    private readonly locationService: LocationService
+    private readonly locationService: LocationService,
+    private readonly toastr: ToastrService
   ) { }
 
   ngOnInit(): void {
@@ -46,16 +48,16 @@ export class ShowLocationTypeComponent implements OnInit {
 
   deleteLocationType(index) {
     this.locationService.deleteLocationTypeById(this.filteredLocationTypes[index]['hierarchyType']).subscribe(res => {
+      this.toastr.success('Location Deleted successfully!!', 'EMCARE');
       this.getLocationTypes();
     });
   }
 
   searchFilter() {
     const lowerCasedSearchString = this.searchString?.toLowerCase();
-    this.filteredLocationTypes = this.locationTypeArr.filter( locationType => {
-      return ( locationType.name?.toLowerCase().includes(lowerCasedSearchString) 
-      ||  locationType.code?.toLowerCase().includes(lowerCasedSearchString));
+    this.filteredLocationTypes = this.locationTypeArr.filter(locationType => {
+      return (locationType.name?.toLowerCase().includes(lowerCasedSearchString)
+        || locationType.code?.toLowerCase().includes(lowerCasedSearchString));
     });
   }
-
 }

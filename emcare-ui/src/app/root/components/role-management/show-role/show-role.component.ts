@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { RoleManagementService } from 'src/app/root/services/role-management.service';
-
 @Component({
   selector: 'app-show-role',
   templateUrl: './show-role.component.html',
@@ -51,5 +50,4 @@ export class ShowRoleComponent implements OnInit {
         || role.description?.toLowerCase().includes(lowerCasedSearchString))
     });
   }
-
 }

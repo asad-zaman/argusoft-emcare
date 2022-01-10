@@ -23,7 +23,7 @@ import {
   UserManagementService,
   FeatureManagementService
 } from './root/index';
-import { AuthenticationService } from './shared';
+import { AuthenticationService, ToasterService } from './shared';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { HomeComponent } from './root/components/home/home.component';
@@ -37,6 +37,9 @@ import { PatientListComponent } from './root/components/patient-management/patie
 import { ManageRoleComponent } from './root/components/role-management/manage-role/manage-role.component';
 import { ShowRoleComponent } from './root/components/role-management/show-role/show-role.component';
 import { LocationFilterComponent } from './root/components/Location/location-filter/location-filter.component';
+import { ToastrModule } from 'ngx-toastr';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -71,7 +74,9 @@ import { LocationFilterComponent } from './root/components/Location/location-fil
     ReactiveFormsModule,
     HttpClientModule,
     CommonModule,
-    SharedModule
+    SharedModule,
+    BrowserAnimationsModule,
+    ToastrModule.forRoot()
   ],
   providers: [
     AuthenticationService,
@@ -84,7 +89,8 @@ import { LocationFilterComponent } from './root/components/Location/location-fil
     DeviceManagementService,
     UserManagementService,
     FeatureManagementService,
-    HTTPStatus
+    HTTPStatus,
+    ToasterService
   ],
   bootstrap: [AppComponent]
 })

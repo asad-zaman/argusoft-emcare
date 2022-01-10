@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { AuthenticationService } from 'src/app/shared';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-login',
@@ -17,15 +18,16 @@ export class LoginComponent implements OnInit {
   error = '';
 
   constructor(
-    private formBuilder: FormBuilder,
-    private authService: AuthenticationService,
-    private router: Router
+    private readonly formBuilder: FormBuilder,
+    private readonly authService: AuthenticationService,
+    private readonly router: Router,
+    private readonly toastr: ToastrService
   ) { }
 
   ngOnInit() {
     this.loginForm = this.formBuilder.group({
-      username: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-]+$')]],
-      password: ['', Validators.required]
+      username: ['emcare@gmail.com', [Validators.required, Validators.pattern('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-]+$')]],
+      password: ['argusadmin', Validators.required]
     });
   }
 
@@ -53,6 +55,7 @@ export class LoginComponent implements OnInit {
             localStorage.setItem('refresh_token', JSON.stringify(data.refresh_token));
             localStorage.setItem('refresh_token_expiry_time', JSON.stringify(refreshTokenexpiration));
             this.router.navigate(["/showUsers"]);
+            this.toastr.success('Welcome to EmCare!!');
           }
         },
         error => {

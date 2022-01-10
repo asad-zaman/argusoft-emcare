@@ -9,7 +9,7 @@ import { environment } from 'src/environments/environment';
 @Injectable({ providedIn: 'root' })
 export class AuthenticationService {
 
-    loginURL = `http://192.1.200.197:8180`;
+    loginURL = `https://emcare.argusoft.com`;
     backendURL = `${environment.apiUrl}`;
     userInfo = new BehaviorSubject(null);
     jwtHelper = new JwtHelperService();

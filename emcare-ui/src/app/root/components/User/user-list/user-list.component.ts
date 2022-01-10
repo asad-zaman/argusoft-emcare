@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { UserManagementService } from 'src/app/root/services/user-management.service';
-
 @Component({
   selector: 'app-user-list',
   templateUrl: './user-list.component.html',
