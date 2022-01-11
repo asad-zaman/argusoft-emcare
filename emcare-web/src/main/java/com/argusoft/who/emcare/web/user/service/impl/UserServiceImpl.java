@@ -1,6 +1,7 @@
 package com.argusoft.who.emcare.web.user.service.impl;
 
 import com.argusoft.who.emcare.web.common.constant.CommonConstant;
+import com.argusoft.who.emcare.web.common.dto.PageDto;
 import com.argusoft.who.emcare.web.common.response.Response;
 import com.argusoft.who.emcare.web.config.KeyCloakConfig;
 import com.argusoft.who.emcare.web.location.dao.LocationMasterDao;
@@ -108,6 +109,41 @@ public class UserServiceImpl implements UserService {
             }
         }
         return userList;
+    }
+
+    @Override
+    public PageDto getUserPage(HttpServletRequest request, Integer pageNo) {
+        Integer pageSize = CommonConstant.PAGE_SIZE;
+        Integer startIndex = pageNo * pageSize;
+        Integer endIndex = pageNo * pageSize == 0 ? pageSize : pageNo * pageSize;
+        List<UserListDto> userList = new ArrayList<>();
+        Keycloak keycloak = keyCloakConfig.getInstance();
+        Integer userTotalCount = keycloak.realm(KeyCloakConfig.REALM).users().list().size();
+        if (endIndex > userTotalCount) {
+            endIndex = userTotalCount;
+        }
+        List<UserRepresentation> userRepresentations = keycloak.realm(KeyCloakConfig.REALM).users().list().subList(startIndex, endIndex);
+        for (UserRepresentation representation : userRepresentations) {
+            List<RoleRepresentation> roleRepresentationList = keycloak.realm(KeyCloakConfig.REALM).users().get(representation.getId()).roles().realmLevel().listAll();
+            List<String> roles = new ArrayList<>();
+            for (RoleRepresentation roleRepresentation : roleRepresentationList) {
+                roles.add(roleRepresentation.getName());
+            }
+            representation.setRealmRoles(roles);
+        }
+        for (UserRepresentation representation : userRepresentations) {
+            List<UserLocationMapping> userLocation = userLocationMappingRepository.findByUserId(representation.getId());
+            if (!userLocation.isEmpty()) {
+                Optional<LocationMaster> locationMaster = locationMasterDao.findById(userLocation.get(0).getLocationId());
+                userList.add(UserMapper.getUserListDto(representation, locationMaster.isPresent() ? locationMaster.get() : null));
+            } else {
+                userList.add(UserMapper.getUserListDto(representation, null));
+            }
+        }
+        PageDto page = new PageDto();
+        page.setList(userList);
+        page.setTotalCount(userTotalCount.longValue());
+        return page;
     }
 
     @Override
@@ -300,11 +336,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserListDto> getUsersUnderLocation(Integer locationId) {
+    public PageDto getUsersUnderLocation(Integer locationId, Integer pageNo) {
         List<UserListDto> userList = new ArrayList<>();
 
         Keycloak keycloak = keyCloakConfig.getInstance();
-        List<String> allUsersIdUnderLocation = userLocationMappingRepository.getAllUserOnChildLocations(locationId);
+        Integer totalCount = userLocationMappingRepository.getAllUserOnChildLocations(locationId).size();
+        List<String> allUsersIdUnderLocation = userLocationMappingRepository.getAllUserOnChildLocationsWithPage(locationId, pageNo, CommonConstant.PAGE_SIZE);
         List<UserRepresentation> userRepresentations = new ArrayList<>();
         for (String userId : allUsersIdUnderLocation) {
             userRepresentations.add(getUserById(userId));
@@ -326,7 +363,10 @@ public class UserServiceImpl implements UserService {
                 userList.add(UserMapper.getUserListDto(representation, null));
             }
         }
-        return userList;
+        PageDto pageDto = new PageDto();
+        pageDto.setTotalCount(totalCount.longValue());
+        pageDto.setList(userList);
+        return pageDto;
     }
 
     private static CredentialRepresentation createPasswordCredentials(String password) {
