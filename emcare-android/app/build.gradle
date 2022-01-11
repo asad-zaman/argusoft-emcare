@@ -127,7 +127,7 @@ dependencies {
     implementation 'pub.devrel:easypermissions:3.0.0'
 
     // Location dependency
-    implementation 'com.google.android.gms:play-services-location:18.0.0'
+    implementation 'com.google.android.gms:play-services-location:19.0.0'
 
     // Encryption dependency
     implementation 'com.google.crypto.tink:tink-android:1.6.0'
