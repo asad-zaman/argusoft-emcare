@@ -7,7 +7,7 @@ import com.argusoft.who.emcare.web.fhir.model.EmcareResource;
 import java.util.List;
 
 @Repository
-public interface EmcareResourceRepository extends JpaRepository<EmcareResource,Long>{
+public interface EmcareResourceRepository extends JpaRepository<EmcareResource,Integer>{
     
     List<EmcareResource> findAllByType(String type);
     

@@ -58,7 +58,10 @@ public class PatientResourceProvider implements IResourceProvider {
     public Patient getResourceById(@IdParam IdType theId) {
 
         EmcareResource emcareResource = emcareResourceService.findByResourceId(theId.getIdPart());
-        Patient patient = parser.parseResource(Patient.class, emcareResource.getText());
+        Patient patient = null;
+        if (emcareResource != null) {
+            patient = parser.parseResource(Patient.class, emcareResource.getText());
+        }
         return patient;
     }
 
@@ -114,7 +117,7 @@ public class PatientResourceProvider implements IResourceProvider {
 
         MethodOutcome retVal = new MethodOutcome();
         retVal.setId(new IdType("Patient", thePatient.getId(), "1"));
-        retVal.setResource(new Patient());
+        retVal.setResource(thePatient);
 
         return retVal;
     }
@@ -139,7 +142,7 @@ public class PatientResourceProvider implements IResourceProvider {
             versionId = Integer.parseInt(thePatient.getMeta().getVersionId()) + 1;
             m.setVersionId(String.valueOf(versionId));
         }
-        
+
         String patientString = parser.encodeResourceToString(thePatient);
         String patientId = thePatient.getIdElement().getIdPart();
 
@@ -152,7 +155,7 @@ public class PatientResourceProvider implements IResourceProvider {
         emcareResource.setText(patientString);
         emcareResource.setResourceId(patientId);
         emcareResource.setType("PATIENT");
-        
+
         emcareResourceService.saveResource(emcareResource);
 
         MethodOutcome retVal = new MethodOutcome();
@@ -192,7 +195,6 @@ public class PatientResourceProvider implements IResourceProvider {
             emcareResourceService.remove(emcareResource);
         }
 
-        return;
     }
 
     /*
@@ -224,7 +226,7 @@ public class PatientResourceProvider implements IResourceProvider {
         if (emcareResource == null) {
             emcareResource = new EmcareResource();
         }
-        
+
         emcareResource.setText(relatedPersonString);
         emcareResource.setResourceId(relatedPersonId);
         emcareResource.setType("RELATED_PERSON");
