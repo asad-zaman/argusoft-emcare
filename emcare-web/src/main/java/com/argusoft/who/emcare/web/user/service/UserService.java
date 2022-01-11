@@ -1,5 +1,6 @@
 package com.argusoft.who.emcare.web.user.service;
 
+import com.argusoft.who.emcare.web.common.dto.PageDto;
 import com.argusoft.who.emcare.web.config.KeyCloakConfig;
 import com.argusoft.who.emcare.web.user.dto.*;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
@@ -22,6 +23,8 @@ public interface UserService {
     public UserMasterDto getCurrentUser();
 
     public List<UserListDto> getAllUser(HttpServletRequest request);
+
+    public PageDto getUserPage(HttpServletRequest request, Integer pageNo);
 
     public List<UserListDto> getAllSignedUpUser(HttpServletRequest request);
 
@@ -53,7 +56,7 @@ public interface UserService {
 
     public String getRoleNameById(String roleId);
 
-    public List<UserListDto> getUsersUnderLocation(Integer locationId);
+    public PageDto getUsersUnderLocation(Integer locationId,Integer pageNo);
 
     public default Keycloak getKeyCloakInstance() {
         return KeycloakBuilder.builder()
