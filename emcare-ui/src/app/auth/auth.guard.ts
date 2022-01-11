@@ -48,36 +48,36 @@ export class AuthGuard implements CanActivate {
 
     checkFeature(route) {
         if (
-           route.routeConfig.path == 'addLocationType' 
+           route.routeConfig.path === 'addLocationType' 
         || route.routeConfig.path.includes('editLocationType')
-        || route.routeConfig.path == 'showLocationType'
-        || route.routeConfig.path == 'addLocation'
+        || route.routeConfig.path === 'showLocationType'
+        || route.routeConfig.path === 'addLocation'
         || route.routeConfig.path.includes('editLocation')
-        || route.routeConfig.path == 'showLocation') {
+        || route.routeConfig.path === 'showLocation') {
             return !!this.user.feature.find(f => f.menu_name === 'Location Management');
         } else if (
             route.routeConfig.path == 'showDevices'
         ) {
             return !!this.user.feature.find(f => f.menu_name === 'Device Management');
         } else if (
-            route.routeConfig.path == 'showUsers'
-        ||  route.routeConfig.path == 'addUser'
+            route.routeConfig.path === 'showUsers'
+        ||  route.routeConfig.path === 'addUser'
         ||  route.routeConfig.path.includes('updateUser')
-        ||  route.routeConfig.path == 'confirmUsers'
+        ||  route.routeConfig.path === 'confirmUsers'
         ) {
             return !!this.user.feature.find(f => f.menu_name === 'Users');
         } else if (
-            route.routeConfig.path == 'showPatients'
+            route.routeConfig.path === 'showPatients'
         ) {
             return !!this.user.feature.find(f => f.menu_name === 'Patient Management');
         } else if (
-            route.routeConfig.path == 'showRoles'
-        ||  route.routeConfig.path == 'addRole'
+            route.routeConfig.path === 'showRoles'
+        ||  route.routeConfig.path === 'addRole'
         ||  route.routeConfig.path.includes('editRole')
         ) {
             return !!this.user.feature.find(f => f.menu_name === 'Roles');
         } else if (
-            route.routeConfig.path == 'showFeatures'
+            route.routeConfig.path === 'showFeatures'
         ||  route.routeConfig.path.includes('editFeature')
         ) {
             return !!this.user.feature.find(f => f.menu_name === 'Feature Management');

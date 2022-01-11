@@ -216,6 +216,14 @@ public class UserServiceImpl implements UserService {
         roleRep.setName(role.getRoleName());
         roleRep.setDescription(role.getRoleDescription());
         keycloak.realm(KeyCloakConfig.REALM).roles().create(roleRep);
+        RoleResource roleResource = keycloak.realm(KeyCloakConfig.REALM).roles().get(role.getRoleName());
+//      ADD COMPOSITE ROLE
+        RoleRepresentation defaultRoleRepresentation = keycloak.realm(KeyCloakConfig.REALM).roles().get("default-roles-emcare").toRepresentation();
+        List<RoleRepresentation> compositeRoles = new ArrayList<>();
+        compositeRoles.add(defaultRoleRepresentation);
+        roleResource.addComposites(compositeRoles);
+
+//      ADD ALL MENU CONFIG FOR NEWLY ADDED ROLE
         RoleRepresentation roleRepresentation = keycloak.realm(KeyCloakConfig.REALM).roles().get(role.getRoleName()).toRepresentation();
         List<MenuConfig> menuList = menuConfigRepository.findAll();
         List<UserMenuConfig> userMenuConfigs = userMenuConfigRepository.findAll();

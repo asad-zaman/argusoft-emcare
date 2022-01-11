@@ -42,6 +42,7 @@ export class FeatureListComponent implements OnInit {
   }
 
   updateFeature(index) {
-    this.router.navigate([`editFeature/${this.filteredFeatureList[index]['id']}`]);
+    this.router.navigate([`editFeature/${this.filteredFeatureList[index]['id']}`],
+      {queryParams: { name: this.filteredFeatureList[index]['menuName']}});
   }
 }

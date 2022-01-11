@@ -56,11 +56,13 @@ export class LoginComponent implements OnInit {
             localStorage.setItem('refresh_token_expiry_time', JSON.stringify(refreshTokenexpiration));
             this.router.navigate(["/showUsers"]);
             this.toastr.success('Welcome to EmCare!!');
+            this.authService.setIsLoggedIn(true);
           }
         },
         error => {
           this.error = error['error']['message'];
           this.loading = false;
+          this.authService.setIsLoggedIn(false);
         });
   }
 

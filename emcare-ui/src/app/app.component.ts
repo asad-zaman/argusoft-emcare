@@ -10,12 +10,15 @@ import { AuthenticationService } from './shared/services/authentication.service'
 })
 export class AppComponent implements OnInit {
 
-  currentUrl;
+  currentUrl:string = '';
   userName: any;
   isUserDropdownOpen: boolean = true;
   isLocationDropdownOpen: boolean = false;
   userCharLogo: string;
   HTTPActivity: boolean;
+  user: any;
+  featureList: any = [];
+  isLoggedIn: boolean = false;
 
   constructor(
     private readonly router: Router,
@@ -36,6 +39,11 @@ export class AppComponent implements OnInit {
     this.getCurrentPage();
     this.checkTOkenExpiresOrNot();
     this.checkAPIStatus();
+    this.authenticationService.getIsLoggedIn().subscribe(result => {
+      if (result) {
+        this.getFeatureList();
+      }
+    })
   }
 
   checkTOkenExpiresOrNot() {
@@ -48,7 +56,10 @@ export class AppComponent implements OnInit {
       // token has expired user should be logged out
       this.router.navigate(['/login']);
       localStorage.clear();
-    } else { }
+    } else if (!!tokenExpiryDate) { 
+      this.authenticationService.setIsLoggedIn(true);
+    } else {
+    }
   }
 
   checkAPIStatus() {
@@ -71,6 +82,15 @@ export class AppComponent implements OnInit {
   getUserCharLogo(username) {
     const userNameArr = username.split(' ');
     return `${userNameArr[0].toString().charAt(0).toUpperCase()}${userNameArr[1].toString().charAt(0).toUpperCase()}`;
+  }
+
+  getFeatureList() {
+    this.authenticationService.getLoggedInUser().subscribe(res => {
+      if (res) {
+        this.user = res;
+        this.featureList = this.user.feature.map(f => f.menu_name);
+      }
+    })
   }
 
   getLoggedInUser() {
@@ -107,4 +127,9 @@ export class AppComponent implements OnInit {
     this.router.navigate(['/login']);
     localStorage.clear();
   }
+
+  hasAccess(feature: string) {
+    return !!this.featureList.find(f => f === feature);
+  }
+
 }
