@@ -137,7 +137,7 @@ public class DeviceServiceImpl implements DeviceService {
         allDevice.forEach(deviceMaster -> list.add(DeviceMapper.getDeviceWithUser(deviceMaster, allUsers)));
 
         PageDto pageDto = new PageDto();
-        pageDto.setList(allDevice.getContent());
+        pageDto.setList(list);
         pageDto.setTotalCount(deviceRepository.count());
         return ResponseEntity.ok(pageDto);
     }
