@@ -89,10 +89,7 @@ public class LocationServiceImpl implements LocationService {
                 locationaListDtos.add(LocationMasterMapper.entityToLocationList(locationMaster, locationMasterDao.findById(locationMaster.getParent().intValue()).get().getName()));
             }
         }
-        PageDto pageDto = new PageDto();
-        pageDto.setList(locationaListDtos);
-        pageDto.setTotalCount(locationMasterDao.count());
-        return ResponseEntity.ok(pageDto);
+        return ResponseEntity.ok(locationaListDtos);
     }
 
     @Override
