@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
 import { DeviceManagementService } from 'src/app/root/services/device-management.service';
 
 @Component({
@@ -14,7 +15,8 @@ export class DeviceListComponent implements OnInit {
   isAPIBusy: boolean = true;
 
   constructor(
-    private readonly deviceManagementService: DeviceManagementService
+    private readonly deviceManagementService: DeviceManagementService,
+    private readonly toastr: ToastrService
   ) { }
 
   ngOnInit(): void {
@@ -37,16 +39,17 @@ export class DeviceListComponent implements OnInit {
   editDevice(event, deviceId) {
     const status = !event;
     this.deviceManagementService.updateDeviceStatusById(deviceId, status).subscribe(res => {
+      this.toastr.success('Device updated successfully!!', 'EMCARE');
       this.getDevices();
     });
   }
 
   searchFilter() {
     const lowerCasedSearchString = this.searchString?.toLowerCase();
-    this.filteredDevices = this.deviceArr.filter( device => {
-      return ( device.deviceUUID?.toLowerCase().includes(lowerCasedSearchString) 
-      ||  device.androidVersion?.toLowerCase().includes(lowerCasedSearchString)
-      ||  device.usersResource.userName?.toLowerCase().includes(lowerCasedSearchString));
+    this.filteredDevices = this.deviceArr.filter(device => {
+      return (device.deviceUUID?.toLowerCase().includes(lowerCasedSearchString)
+        || device.androidVersion?.toLowerCase().includes(lowerCasedSearchString)
+        || device.usersResource.userName?.toLowerCase().includes(lowerCasedSearchString));
     });
   }
 }

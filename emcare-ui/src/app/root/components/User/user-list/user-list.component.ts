@@ -3,7 +3,6 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UserManagementService } from 'src/app/root/services/user-management.service';
 import { MustMatch } from 'src/app/shared/validators/must-match.validator';
-
 @Component({
   selector: 'app-user-list',
   templateUrl: './user-list.component.html',

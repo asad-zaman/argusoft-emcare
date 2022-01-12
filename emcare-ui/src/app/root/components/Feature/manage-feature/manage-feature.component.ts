@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import { FeatureManagementService } from 'src/app/root/services/feature-management.service';
 import { RoleManagementService } from 'src/app/root/services/role-management.service';
 import { UserManagementService } from 'src/app/root/services/user-management.service';
-
 @Component({
   selector: 'app-manage-feature',
   templateUrl: './manage-feature.component.html',
@@ -21,11 +21,11 @@ export class ManageFeatureComponent implements OnInit {
   isAPIBusy: boolean = true;
 
   constructor(
-    private readonly router: Router,
     private readonly route: ActivatedRoute,
     private readonly userService: UserManagementService,
     private readonly roleService: RoleManagementService,
-    private readonly featureService: FeatureManagementService
+    private readonly featureService: FeatureManagementService,
+    private readonly toastr: ToastrService
   ) { }
 
   ngOnInit(): void {
@@ -56,8 +56,8 @@ export class ManageFeatureComponent implements OnInit {
       if (res) {
         this.userList = res;
         this.userList = this.userList.filter(
-          user => !this.featureConfigList.map(featureConfig => featureConfig.userId).includes(user.id)
-        ); 
+          (user: { id: any; }) => !this.featureConfigList.map(featureConfig => featureConfig.userId).includes(user.id)
+        );
       }
     })
   }
@@ -67,14 +67,15 @@ export class ManageFeatureComponent implements OnInit {
       if (res) {
         this.roleList = res;
         this.roleList = this.roleList.filter(
-          role => !this.featureConfigList.map(featureConfig => featureConfig.roleId).includes(role.id)
-        ); 
+          (role: { id: any; }) => !this.featureConfigList.map(featureConfig => featureConfig.roleId).includes(role.id)
+        );
       }
     })
   }
 
   deleteFeatureConfig(index) {
     this.featureService.deleteFeatureConfig(this.featureConfigList[index]['id']).subscribe(res => {
+      this.toastr.success('Feature deleted successfully!!', 'EMCARE');
       this.prerequisite();
     });
   }
@@ -86,11 +87,11 @@ export class ManageFeatureComponent implements OnInit {
       "roleId": this.selectedRole,
       "featureJson": "{\"canAdd\":true,\"canEdit\":true,\"canView\":true,\"canDelete\":true}"
     }
-    this.featureService.addFeatureConfig(data).subscribe(res => {
+    this.featureService.addFeatureConfig(data).subscribe(_res => {
+      this.toastr.success('Feature added successfully!!', 'EMCARE');
       this.selectedUser = null;
       this.selectedRole = null;
       this.prerequisite();
     })
   }
-
 }

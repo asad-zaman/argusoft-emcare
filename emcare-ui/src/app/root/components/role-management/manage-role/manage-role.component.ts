@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import { RoleManagementService } from 'src/app/root/services/role-management.service';
 
 @Component({
@@ -18,9 +19,10 @@ export class ManageRoleComponent implements OnInit {
 
   constructor(
     private readonly formBuilder: FormBuilder,
-    private router: Router,
-    private route: ActivatedRoute,
-    private readonly roleService: RoleManagementService
+    private readonly router: Router,
+    private readonly route: ActivatedRoute,
+    private readonly roleService: RoleManagementService,
+    private readonly toastr: ToastrService
   ) { }
 
   ngOnInit(): void {
@@ -38,7 +40,7 @@ export class ManageRoleComponent implements OnInit {
     if (this.editId) {
       this.isEdit = true;
       this.roleService.getRoleById(this.editId).subscribe(res => {
-        if(res) {
+        if (res) {
           const obj = {
             name: res['name'],
             description: res['description']
@@ -72,6 +74,7 @@ export class ManageRoleComponent implements OnInit {
           "description": this.roleForm.get('description').value
         };
         this.roleService.updateRole(data).subscribe(() => {
+          this.toastr.success('Role updated successfully!!', 'EMCARE');
           this.showRoles();
         });
       } else {
@@ -79,7 +82,8 @@ export class ManageRoleComponent implements OnInit {
           "roleName": this.roleForm.get('name').value,
           "roleDescription": this.roleForm.get('description').value
         };
-        this.roleService.createRole(data).subscribe((res) => {
+        this.roleService.createRole(data).subscribe((_res) => {
+          this.toastr.success('Role created successfully!!', 'EMCARE');
           this.showRoles();
         });
       }
