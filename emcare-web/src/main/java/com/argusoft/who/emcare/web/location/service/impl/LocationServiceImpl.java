@@ -80,8 +80,7 @@ public class LocationServiceImpl implements LocationService {
 
     @Override
     public ResponseEntity<Object> getAllLocation() {
-        Pageable page = PageRequest.of(0, CommonConstant.PAGE_SIZE);
-        Page<LocationMaster> locationMasters = locationMasterDao.findAll(page);
+        List<LocationMaster> locationMasters = locationMasterDao.findAll();
         List<LocationaListDto> locationaListDtos = new ArrayList<>();
         for (LocationMaster locationMaster : locationMasters) {
             if (locationMaster.getParent() == null || locationMaster.getParent() == 0) {
@@ -90,10 +89,7 @@ public class LocationServiceImpl implements LocationService {
                 locationaListDtos.add(LocationMasterMapper.entityToLocationList(locationMaster, locationMasterDao.findById(locationMaster.getParent().intValue()).get().getName()));
             }
         }
-        PageDto pageDto = new PageDto();
-        pageDto.setList(locationaListDtos);
-        pageDto.setTotalCount(locationMasterDao.count());
-        return ResponseEntity.ok(pageDto);
+        return ResponseEntity.ok(locationaListDtos);
     }
 
     @Override

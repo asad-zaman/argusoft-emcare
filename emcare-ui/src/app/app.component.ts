@@ -1,5 +1,6 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router, NavigationStart, Event as NavigationEvent } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import { HTTPStatus } from './auth/token-interceptor';
 import { AuthenticationService } from './shared/services/authentication.service';
 @Component({
@@ -113,8 +114,10 @@ export class AppComponent implements OnInit {
     switch (id) {
       case 1:
         this.isUserDropdownOpen = !this.isUserDropdownOpen;
+        this.isLocationDropdownOpen = !this.isLocationDropdownOpen;
         break;
       case 2:
+        this.isUserDropdownOpen = !this.isUserDropdownOpen;
         this.isLocationDropdownOpen = !this.isLocationDropdownOpen;
         break;
     }

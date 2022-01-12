@@ -59,4 +59,8 @@ export class UserManagementService {
   getUsersByPage(pageIndex) {
     return this.http.get(`${this.userURL}/page?pageNo=${pageIndex}`, this.getHeaders());
   }
+
+  updatePassword(user, id) {
+    return this.http.put(`${this.userURL}/update/password/${id}`, user, this.getHeaders());
+  }
 }

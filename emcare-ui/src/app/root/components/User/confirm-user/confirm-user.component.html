@@ -8,7 +8,7 @@
     </div>
   </div>
   <!--Table-->
-  <div class="table-responsive">
+  <div *ngIf="!isAPIBusy" class="table-responsive">
     <table class="data-table">
       <thead>
         <tr>
@@ -23,7 +23,7 @@
         </tr>
       </thead>
       <tbody>
-        <ng-container *ngIf="!filteredUserList || filteredUserList.length > 0; else noRecords">
+        <ng-container *ngIf="filteredUserList && filteredUserList.length > 0; else noRecords">
           <ng-container *ngFor="let user of filteredUserList; let i=index">
             <tr>
               <td>{{i+1}}</td>
@@ -75,9 +75,9 @@
               this user?
           </div>
           <div class="text-center">
-            <button type="button" class="btn btn-primary btn-md mr-2" style="width: 70px;"
+            <button type="button" class="btn-red btn mr-2" style="width: 100px;"
               (click)="authorizeUser()">Ok</button>
-            <button type="button" class="btn btn-danger btn-md" style="width: 70px;"
+            <button type="button" class="btn-red btn" style="width: 100px;"
               (click)="showConfirmDialogFlag = false">Cancel</button>
           </div>
         </div>

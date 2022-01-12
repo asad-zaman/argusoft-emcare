@@ -10,14 +10,20 @@
           <div class="mb-3">
             <label class="form-label">First Name</label>
             <input class="form-control custom-input" formControlName="firstName" type="text" id="firstName"
-              placeholder="Enter first name">
+              placeholder="Enter first name" [ngClass]="{ 'is-invalid': submitted && f.firstName.errors }">
+            <div *ngIf="submitted && f.firstName.errors" class="invalid-feedback">
+              <div class="cst-error-style" *ngIf="f.firstName.errors.required">*Firstname is required</div>
+            </div>
           </div>
         </div>
         <div class="col-12 col-sm-6">
           <div class="mb-3">
             <label class="form-label">Last Name</label>
             <input class="form-control custom-input" formControlName="lastName" type="text" id="lastName"
-              placeholder="Enter last name">
+              placeholder="Enter last name" [ngClass]="{ 'is-invalid': submitted && f.lastName.errors }">
+            <div *ngIf="submitted && f.lastName.errors" class="invalid-feedback">
+              <div class="cst-error-style" *ngIf="f.lastName.errors.required">*LastName is required</div>
+            </div>
           </div>
         </div>
       </div>
@@ -26,17 +32,25 @@
           <div class="mb-3">
             <label class="form-label">Email</label>
             <input formControlName="email" id="email" placeholder="Enter Email" type="email"
-              class="form-control custom-input">
+              class="form-control custom-input" [ngClass]="{ 'is-invalid': submitted && f.email.errors }">
+            <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
+              <div class="cst-error-style" *ngIf="f.email.errors.required">*Email is required</div>
+              <div class="cst-error-style" *ngIf="f.email.errors.pattern">*Email is invalid</div>
+            </div>
           </div>
         </div>
         <div class="col-12 col-sm-6">
           <div class="mb-3">
             <label class="form-label">Role</label>
-            <select formControlName="role" class="form-control custom-input" id="role">
+            <select formControlName="role" [ngClass]="{ 'is-invalid': submitted && f.role.errors }"
+              class="form-control custom-input" id="role">
               <ng-container *ngFor="let role of roles">
                 <option value="{{role.name}}">{{role.name}}</option>
               </ng-container>
             </select>
+            <div *ngIf="submitted && f.role.errors" class="invalid-feedback">
+              <div class="cst-error-style" *ngIf="f.role.errors.required">*Role is required</div>
+            </div>
           </div>
         </div>
       </div>
@@ -45,21 +59,21 @@
           <div class="mb-3">
             <label class="form-label">Password</label>
             <input type="password" formControlName="password" class="form-control custom-input"
-                  [ngClass]="{ 'is-invalid': submitted && f.password.errors }" />
-                <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
-                  <div *ngIf="f.password.errors.required">Password is required</div>
-                </div>
+              [ngClass]="{ 'is-invalid': submitted && f.password.errors }" />
+            <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
+              <div class="cst-error-style" *ngIf="f.password.errors.required">*Password is required</div>
+            </div>
           </div>
         </div>
         <div class="col-12 col-sm-6">
           <div class="mb-3">
             <label class="form-label">Confirm Password</label>
-            <input type="password" formControlName="confirmPassword"
-                class="form-control custom-input" [ngClass]="{ 'is-invalid': submitted && f.confirmPassword.errors }" />
-              <div *ngIf="submitted && f.confirmPassword.errors" class="invalid-feedback">
-                <div *ngIf="f.confirmPassword.errors.required">Confirm Password is required</div>
-                <div *ngIf="f.confirmPassword.errors.mustMatch">Passwords must match</div>
-              </div>
+            <input type="password" formControlName="confirmPassword" class="form-control custom-input"
+              [ngClass]="{ 'is-invalid': submitted && f.confirmPassword.errors }" />
+            <div *ngIf="submitted && f.confirmPassword.errors" class="invalid-feedback">
+              <div class="cst-error-style" *ngIf="f.confirmPassword.errors.required">*Confirm Password is required</div>
+              <div class="cst-error-style" *ngIf="f.confirmPassword.errors.mustMatch">*Passwords must match</div>
+            </div>
           </div>
         </div>
       </div>
@@ -68,16 +82,20 @@
           <div class="mb-3">
             <label class="form-label">Location</label>
             <ng-container *ngIf="locationArr.length>0; else noLocation">
-              <select class="form-control custom-input" formControlName="location" id="location">
+              <select class="form-control custom-input" [ngClass]="{ 'is-invalid': submitted && f.location.errors }"
+                formControlName="location" id="location">
                 <ng-container *ngFor="let location of locationArr">
                   <option value="{{location.id}}">{{location.name}}</option>
                 </ng-container>
               </select>
             </ng-container>
             <ng-template #noLocation>
-              <input formControlName="location" type="text" class="form-control custom-input" id="location"
-                placeholder="Enter Location">
+              <input formControlName="location" type="text" class="form-control custom-input"
+                [ngClass]="{ 'is-invalid': submitted && f.location.errors }" id="location" placeholder="Enter Location">
             </ng-template>
+            <div *ngIf="submitted && f.location.errors" class="invalid-feedback">
+              <div class="cst-error-style" *ngIf="f.location.errors.required">*Location is required</div>
+            </div>
           </div>
         </div>
       </div>

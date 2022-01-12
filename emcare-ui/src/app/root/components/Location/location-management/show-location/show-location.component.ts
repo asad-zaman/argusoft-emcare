@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import { LocationService } from 'src/app/root/services/location.service';
 
 @Component({
@@ -12,10 +13,12 @@ export class ShowLocationComponent implements OnInit {
   filteredLocations: any;
   locationArr: any;
   searchString: string;
+  isAPIBusy: boolean = true;
 
   constructor(
     private readonly router: Router,
-    private readonly locationService: LocationService
+    private readonly locationService: LocationService,
+    private readonly toastr: ToastrService
   ) { }
 
   ngOnInit(): void {
@@ -32,6 +35,7 @@ export class ShowLocationComponent implements OnInit {
       if (res) {
         this.locationArr = res;
         this.filteredLocations = this.locationArr;
+        this.isAPIBusy = false;
       }
     });
   }
@@ -46,6 +50,7 @@ export class ShowLocationComponent implements OnInit {
 
   deleteLocation(index) {
     this.locationService.deleteLocationById(this.filteredLocations[index]['id']).subscribe(res => {
+      this.toastr.success('Location Deleted successfully!!', 'EMCARE');
       this.getLocations();
     }, (err) => {
       alert(err.error);
@@ -54,11 +59,10 @@ export class ShowLocationComponent implements OnInit {
 
   searchFilter() {
     const lowerCasedSearchString = this.searchString?.toLowerCase();
-    this.filteredLocations = this.locationArr.filter( location => {
-      return ( location.name?.toLowerCase().includes(lowerCasedSearchString) 
-      ||  location.type?.toLowerCase().includes(lowerCasedSearchString)
-      ||  location.parentName?.toLowerCase().includes(lowerCasedSearchString));
+    this.filteredLocations = this.locationArr.filter(location => {
+      return (location.name?.toLowerCase().includes(lowerCasedSearchString)
+        || location.type?.toLowerCase().includes(lowerCasedSearchString)
+        || location.parentName?.toLowerCase().includes(lowerCasedSearchString));
     });
   }
-
 }

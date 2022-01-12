@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { features } from 'process';
 import { FeatureManagementService } from 'src/app/root/services/feature-management.service';
-
 @Component({
   selector: 'app-feature-list',
   templateUrl: './feature-list.component.html',
@@ -13,6 +11,7 @@ export class FeatureListComponent implements OnInit {
   mainFeatureList: any;
   filteredFeatureList: any;
   searchString: string;
+  isAPIBusy: boolean = true;
 
   constructor(
     private readonly router: Router,
@@ -33,6 +32,7 @@ export class FeatureListComponent implements OnInit {
       if (res) {
         this.mainFeatureList = res;
         this.filteredFeatureList = this.mainFeatureList;
+        this.isAPIBusy = false;
       }
     });
   }
@@ -47,5 +47,4 @@ export class FeatureListComponent implements OnInit {
     this.router.navigate([`editFeature/${this.filteredFeatureList[index]['id']}`],
       {queryParams: { name: this.filteredFeatureList[index]['menuName']}});
   }
-
 }

@@ -23,7 +23,7 @@ import {
   UserManagementService,
   FeatureManagementService
 } from './root/index';
-import { AuthenticationService } from './shared';
+import { AuthenticationService, ToasterService } from './shared';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { HomeComponent } from './root/components/home/home.component';
@@ -38,6 +38,9 @@ import { ManageRoleComponent } from './root/components/role-management/manage-ro
 import { ShowRoleComponent } from './root/components/role-management/show-role/show-role.component';
 import { LocationFilterComponent } from './root/components/Location/location-filter/location-filter.component';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { ToastrModule } from 'ngx-toastr';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -73,7 +76,9 @@ import { NgxPaginationModule } from 'ngx-pagination';
     HttpClientModule,
     CommonModule,
     SharedModule,
-    NgxPaginationModule
+    NgxPaginationModule,
+    BrowserAnimationsModule,
+    ToastrModule.forRoot()
   ],
   providers: [
     AuthenticationService,
@@ -86,7 +91,8 @@ import { NgxPaginationModule } from 'ngx-pagination';
     DeviceManagementService,
     UserManagementService,
     FeatureManagementService,
-    HTTPStatus
+    HTTPStatus,
+    ToasterService
   ],
   bootstrap: [AppComponent]
 })

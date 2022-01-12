@@ -16,14 +16,15 @@ export class PatientListComponent implements OnInit {
     currentPage = 0;
     totalCount = 0;
     tableSize = 10;
-
-    ngOnInit(): void {
-        this.prerequisite();
-    }
+    isAPIBusy: boolean = true;
 
     constructor(
         private readonly fhirService: FhirService
     ) { }
+
+    ngOnInit(): void {
+        this.prerequisite();
+    }
 
     prerequisite() {
         this.getPatientsByPageIndex(this.currentPage);
@@ -36,6 +37,7 @@ export class PatientListComponent implements OnInit {
                 this.patients = res['list'];
                 this.filteredPatients = this.patients;
                 this.totalCount = res['totalCount'];
+                this.isAPIBusy = false;
             }
         });
     }

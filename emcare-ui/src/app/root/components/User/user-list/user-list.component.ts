@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UserManagementService } from 'src/app/root/services/user-management.service';
-
+import { MustMatch } from 'src/app/shared/validators/must-match.validator';
 @Component({
   selector: 'app-user-list',
   templateUrl: './user-list.component.html',
@@ -15,10 +16,17 @@ export class UserListComponent implements OnInit {
   currentPage = 0;
   totalCount = 0;
   tableSize = 10;
+  selectedUserId: string;
+  resetPasswordForm!: FormGroup;
+  error: any = null;
+  submitted: boolean = false;
+  showResetPasswordDialog: boolean = false;
+  isAPIBusy: boolean = true;
 
   constructor(
     private readonly router: Router,
-    private readonly userService: UserManagementService
+    private readonly userService: UserManagementService,
+    private formBuilder: FormBuilder,
   ) { }
 
   ngOnInit(): void {
@@ -36,6 +44,7 @@ export class UserListComponent implements OnInit {
         this.mainUserList = res['list'];
         this.filteredUserList = this.mainUserList;
         this.totalCount = res['totalCount'];
+        this.isAPIBusy = false;
       }
     });
   }
@@ -81,5 +90,46 @@ export class UserListComponent implements OnInit {
         this.filteredUserList = res;
       }
     })
+  }
+
+  onResetPassword(index) {
+    this.selectedUserId = this.filteredUserList[index]['id'];
+    this.showResetPasswordDialog = true;
+    this.initResetPasswordForm();
+  }
+
+  initResetPasswordForm() {
+    this.resetPasswordForm = this.formBuilder.group({
+      password: ['', Validators.required],
+      confirmPassword: ['', Validators.required],
+    }, {
+      validator: MustMatch('password', 'confirmPassword')
+    });
+  }
+
+  get f() {
+    return this.resetPasswordForm.controls;
+  }
+
+  updatePassword() {
+    this.submitted = true;
+    if (this.resetPasswordForm.invalid || !!this.error) {
+      return;
+    }
+    const user = {
+      password: this.resetPasswordForm.value.password
+    }
+    this.userService.updatePassword(user, this.selectedUserId).subscribe(result => {
+      if (result) {
+        this.closeDialog();
+      }
+    })
+  }
+
+  closeDialog() {
+    this.submitted = false;
+    this.error = null;
+    this.showResetPasswordDialog = false;
+    this.resetPasswordForm.reset();
   }
 }
