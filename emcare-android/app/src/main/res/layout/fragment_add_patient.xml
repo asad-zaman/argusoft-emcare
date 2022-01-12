@@ -5,42 +5,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.constraintlayout.motion.widget.MotionLayout
+    <include
+        android:id="@+id/headerLayout"
+        layout="@layout/layout_header" />
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragmentContainerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/colorPrimary"
-        app:layoutDescription="@xml/fragment_signup_scene">
+        android:layout_height="0dp"
+        android:paddingTop="@dimen/_16sdp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/headerLayout" />
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/bgImageView"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/_220sdp"
-            android:layout_marginEnd="@dimen/_60sdp"
-            android:scaleType="fitStart"
-            android:src="@drawable/ic_shape" />
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/familyLogoImageView"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/_172sdp"
-            android:src="@drawable/ic_family" />
-
-        <include
-            android:id="@+id/headerLayout"
-            layout="@layout/layout_header_transparent"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/status_margin_top" />
-
-        <androidx.fragment.app.FragmentContainerView
-            android:id="@+id/nestedScrollView"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:background="@drawable/bg_top_curved_white"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/headerLayout">
-
-
-        </androidx.fragment.app.FragmentContainerView>
-    </androidx.constraintlayout.motion.widget.MotionLayout>
 </com.argusoft.who.emcare.widget.ApiViewStateConstraintLayout>
