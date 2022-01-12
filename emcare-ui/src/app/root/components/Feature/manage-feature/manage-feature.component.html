@@ -1,6 +1,7 @@
 <div class="main-wrapper">
     <h1 class="heading">Update Feature Config</h1>
     <hr>
+    <h4 class="mb-2">{{ featureName }}</h4>
     <div class="row align-items-center mb-3">
       <div class="col-3 col-sm-3">
         <div class="mb-3">
@@ -32,7 +33,7 @@
       </div>
     </div>
     <!--Table-->
-    <div class="table-responsive">
+    <div *ngIf="!isAPIBusy" class="table-responsive">
       <table class="data-table">
         <thead>
           <tr>
@@ -43,7 +44,7 @@
           </tr>
         </thead>
         <tbody>
-          <ng-container *ngIf="!featureConfigList || featureConfigList.length > 0; else noRecords">
+          <ng-container *ngIf="featureConfigList && featureConfigList.length > 0; else noRecords">
             <ng-container *ngFor="let featureConfig of featureConfigList; let i=index">
                 <tr>
                   <td>{{i+1}}</td>

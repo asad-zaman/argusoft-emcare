@@ -13,6 +13,7 @@ export class FeatureListComponent implements OnInit {
   mainFeatureList: any;
   filteredFeatureList: any;
   searchString: string;
+  isAPIBusy: boolean = true;
 
   constructor(
     private readonly router: Router,
@@ -33,6 +34,7 @@ export class FeatureListComponent implements OnInit {
       if (res) {
         this.mainFeatureList = res;
         this.filteredFeatureList = this.mainFeatureList;
+        this.isAPIBusy = false;
       }
     });
   }
@@ -44,7 +46,8 @@ export class FeatureListComponent implements OnInit {
   }
 
   updateFeature(index) {
-    this.router.navigate([`editFeature/${this.filteredFeatureList[index]['id']}`]);
+    this.router.navigate([`editFeature/${this.filteredFeatureList[index]['id']}`],
+      {queryParams: { name: this.filteredFeatureList[index]['menuName']}});
   }
 
 }

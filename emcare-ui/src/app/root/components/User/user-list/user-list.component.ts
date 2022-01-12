@@ -19,6 +19,7 @@ export class UserListComponent implements OnInit {
   error: any = null;
   submitted: boolean = false;
   showResetPasswordDialog: boolean = false;
+  isAPIBusy: boolean = true;
 
   constructor(
     private readonly router: Router,
@@ -40,6 +41,7 @@ export class UserListComponent implements OnInit {
       if (res) {
         this.mainUserList = res;
         this.filteredUserList = this.mainUserList;
+        this.isAPIBusy = false;
       }
     });
   }

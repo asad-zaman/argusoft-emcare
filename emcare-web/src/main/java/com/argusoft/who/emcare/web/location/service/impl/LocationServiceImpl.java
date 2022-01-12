@@ -1,5 +1,7 @@
 package com.argusoft.who.emcare.web.location.service.impl;
 
+import com.argusoft.who.emcare.web.common.constant.CommonConstant;
+import com.argusoft.who.emcare.web.common.dto.PageDto;
 import com.argusoft.who.emcare.web.location.dao.HierarchyMasterDao;
 import com.argusoft.who.emcare.web.location.dao.LocationMasterDao;
 import com.argusoft.who.emcare.web.location.dto.HierarchyMasterDto;
@@ -12,6 +14,10 @@ import com.argusoft.who.emcare.web.location.model.LocationMaster;
 import com.argusoft.who.emcare.web.location.service.LocationService;
 import com.argusoft.who.emcare.web.secuirty.EmCareSecurityUser;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -84,6 +90,28 @@ public class LocationServiceImpl implements LocationService {
             }
         }
         return ResponseEntity.ok(locationaListDtos);
+    }
+
+    @Override
+    public ResponseEntity<Object> getLocationPage(Integer pageNo, String orderBy, String order) {
+        if (orderBy.equalsIgnoreCase("null")) {
+            orderBy = "name";
+        }
+        Sort sort = order.equalsIgnoreCase(CommonConstant.DESC) ? Sort.by(orderBy).descending() : Sort.by(orderBy).ascending();
+        Pageable page = PageRequest.of(pageNo, CommonConstant.PAGE_SIZE, !sort.isEmpty() ? sort : null);
+        Page<LocationMaster> locationMasters = locationMasterDao.findAll(page);
+        List<LocationaListDto> locationList = new ArrayList<>();
+        for (LocationMaster locationMaster : locationMasters) {
+            if (locationMaster.getParent() == null || locationMaster.getParent() == 0) {
+                locationList.add(LocationMasterMapper.entityToLocationList(locationMaster, "NA"));
+            } else {
+                locationList.add(LocationMasterMapper.entityToLocationList(locationMaster, locationMasterDao.findById(locationMaster.getParent().intValue()).get().getName()));
+            }
+        }
+        PageDto pageDto = new PageDto();
+        pageDto.setList(locationList);
+        pageDto.setTotalCount(locationMasterDao.count());
+        return ResponseEntity.ok(pageDto);
     }
 
     @Override

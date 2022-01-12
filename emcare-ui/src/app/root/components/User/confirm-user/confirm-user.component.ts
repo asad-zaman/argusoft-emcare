@@ -14,7 +14,8 @@ export class ConfirmUserComponent implements OnInit {
   showConfirmDialogFlag: boolean = false;
   isApproveUser: boolean = true;
   selectedUser: any;
-  searchString:string;
+  searchString: string;
+  isAPIBusy: boolean = true;
 
   constructor(
     private readonly router: Router,
@@ -35,6 +36,7 @@ export class ConfirmUserComponent implements OnInit {
       if (res) {
         this.mainUserList = res;
         this.filteredUserList = this.mainUserList;
+        this.isAPIBusy = false;
       }
     });
   }

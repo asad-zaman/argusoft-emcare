@@ -12,7 +12,7 @@
     </div>
   </div>
   <!--Table-->
-  <div class="table-responsive">
+  <div *ngIf="!isAPIBusy" class="table-responsive">
     <table class="data-table">
       <thead>
         <tr>
@@ -27,7 +27,7 @@
         </tr>
       </thead>
       <tbody>
-        <ng-container *ngIf="!filteredUserList || filteredUserList.length > 0; else noRecords">
+        <ng-container *ngIf="filteredUserList && filteredUserList.length > 0; else noRecords">
           <ng-container *ngFor="let user of filteredUserList; let i=index">
             <tr>
               <td>{{i+1}}</td>
@@ -36,7 +36,8 @@
               <td>{{user.userName}}</td>
               <td>{{user.realmRoles[0]}}</td>
               <td>{{user.locationName ? user.locationName : 'NA'}}</td>
-              <td><span [ngClass] = "(!!user.enabled) ? 'badges-red bg-green' : 'badges-red'"> {{ !!user.enabled ? 'Verifed' : 'Not Verified'}}</span>
+              <td><span [ngClass]="(!!user.enabled) ? 'badges-red bg-green' : 'badges-red'">
+                  {{ !!user.enabled ? 'Verifed' : 'Not Verified'}}</span>
               <td class="text-end">
                 <ul class="navigation" style="list-style-type: none;">
                   <li class="dropdown mt-3 cursor-pointer">
