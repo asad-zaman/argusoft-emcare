@@ -210,7 +210,7 @@ object LocationUtils : EasyPermissions.PermissionCallbacks {
     }
 
     private fun stopLocationRequest() {
-        weakReferenceFusedLocationClient?.get()?.removeLocationUpdates(locationCallback)
+        locationCallback?.let { weakReferenceFusedLocationClient?.get()?.removeLocationUpdates(it) }
     }
 
     override fun onPermissionsDenied(requestCode: Int, perms: MutableList<String>) {

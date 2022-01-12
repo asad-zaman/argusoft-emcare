@@ -10,6 +10,7 @@ import com.argusoft.who.emcare.ui.common.base.BaseFragment
 import com.argusoft.who.emcare.ui.home.patient.PatientViewModel
 import com.argusoft.who.emcare.utils.extention.handleApiView
 import com.argusoft.who.emcare.utils.extention.observeNotNull
+import com.argusoft.who.emcare.widget.CustomQuestionnaireFragment
 import com.google.android.fhir.datacapture.QuestionnaireFragment
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -17,7 +18,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class AddPatientFragment : BaseFragment<FragmentAddPatientBinding>() {
 
     private val patientViewModel: PatientViewModel by viewModels()
-    private val questionnaireFragment = QuestionnaireFragment()
+    private val questionnaireFragment = CustomQuestionnaireFragment()
 
     override fun initView() {
         setupToolbar()

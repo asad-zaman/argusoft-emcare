@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:id="@+id/toolbar"
+    app:titleTextColor="@color/colorWhite"
     android:layout_height="wrap_content"
     android:backgroundTint="@color/colorTransparent"
     app:navigationIcon="@drawable/ic_back" />
