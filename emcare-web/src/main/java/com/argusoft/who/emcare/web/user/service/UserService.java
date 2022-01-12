@@ -46,6 +46,8 @@ public interface UserService {
     public ResponseEntity<Object> getUserRolesById(String userId);
 
     public ResponseEntity<Object> updateUser(UserDto userDto, String userId);
+    
+    public ResponseEntity<Object> updatePassword(UserDto userDto, String userId);
 
     public ResponseEntity<Object> updateRole(RoleUpdateDto roleUpdateDto);
 

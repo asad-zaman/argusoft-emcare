@@ -362,10 +362,10 @@ public class UserServiceImpl implements UserService {
     public ResponseEntity<Object> updateUser(UserDto userDto, String userId) {
         Keycloak keycloak = keyCloakConfig.getInstance();
         UserResource userResource = keycloak.realm(KeyCloakConfig.REALM).users().get(userId);
-        UserRepresentation oldUser = userResource.toRepresentation();
+        UserRepresentation newUser = userResource.toRepresentation();
 
-        oldUser.setFirstName(userDto.getFirstName());
-        oldUser.setLastName(userDto.getLastName());
+        newUser.setFirstName(userDto.getFirstName());
+        newUser.setLastName(userDto.getLastName());
         List<UserLocationMapping> userLocationMappingList = userLocationMappingRepository.findByUserId(userId);
         UserLocationMapping ulm = new UserLocationMapping();
         if (!userLocationMappingList.isEmpty()) {
@@ -381,8 +381,26 @@ public class UserServiceImpl implements UserService {
         userLocationMappingRepository.save(ulm);
 
 
-        oldUser.setEnabled(userDto.getRegRequestFrom().equalsIgnoreCase(UserConst.WEB));
-        userResource.update(oldUser);
+        newUser.setEnabled(userDto.getRegRequestFrom().equalsIgnoreCase(UserConst.WEB));
+        userResource.update(newUser);
+        return ResponseEntity.ok(HttpStatus.OK);
+    }
+    
+    @Override
+    public ResponseEntity<Object> updatePassword(UserDto userDto, String userId) {
+        Keycloak keycloak = keyCloakConfig.getInstance();
+        UserResource userResource = keycloak.realm(KeyCloakConfig.REALM)
+            .users().get(userId);
+        UserRepresentation newUser = userResource.toRepresentation();
+
+        if (userDto.getPassword() != null) {
+            CredentialRepresentation credentialRepresentation = 
+                createPasswordCredentials(userDto.getPassword());
+            newUser.setCredentials(Collections
+                .singletonList(credentialRepresentation));    
+        }
+        
+        userResource.update(newUser);
         return ResponseEntity.ok(HttpStatus.OK);
     }
 

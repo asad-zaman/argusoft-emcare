@@ -86,6 +86,11 @@ public class UserController {
     public ResponseEntity<Object> updateUser(@RequestBody UserDto userDto, @PathVariable(value = "userId") String userId) {
         return userService.updateUser(userDto, userId);
     }
+    
+    @PutMapping("/user/update/password/{userId}")
+    public ResponseEntity<Object> updatePassword(@RequestBody UserDto userDto, @PathVariable(value = "userId") String userId) {
+        return userService.updatePassword(userDto, userId);
+    }
 
     @GetMapping("/role/{roleId}")
     public ResponseEntity<Object> getRoleById(@PathVariable(value = "roleId") String roleId, HttpServletRequest request) {
