@@ -18,6 +18,7 @@ export class ManageFeatureComponent implements OnInit {
   roleList: any = [];
   selectedUser: any = null;
   selectedRole: any = null;
+  isAPIBusy: boolean = true;
 
   constructor(
     private readonly router: Router,
@@ -43,6 +44,7 @@ export class ManageFeatureComponent implements OnInit {
     this.featureService.getFeatureConfigById(this.featureId).subscribe(res => {
       if (res) {
         this.featureConfigList = res;
+        this.isAPIBusy = false;
         this.getUsers();
         this.getRoles();
       }

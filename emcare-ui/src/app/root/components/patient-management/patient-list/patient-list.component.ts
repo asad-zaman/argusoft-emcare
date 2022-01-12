@@ -13,14 +13,15 @@ export class PatientListComponent implements OnInit {
     searchString: string;
     patientDetails: any
     showPatientDetailsFlag: boolean = false
-
-    ngOnInit(): void {
-        this.prerequisite();
-    }
+    isAPIBusy: boolean = true;
 
     constructor(
         private readonly fhirService: FhirService
     ) { }
+
+    ngOnInit(): void {
+        this.prerequisite();
+    }
 
     prerequisite() {
         this.getPatients();
@@ -32,6 +33,7 @@ export class PatientListComponent implements OnInit {
             if (res) {
                 this.patients = res;
                 this.filteredPatients = this.patients;
+                this.isAPIBusy = false;
             }
         });
     }

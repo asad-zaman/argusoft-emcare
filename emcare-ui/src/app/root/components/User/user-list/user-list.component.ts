@@ -12,6 +12,7 @@ export class UserListComponent implements OnInit {
   mainUserList: any;
   filteredUserList: any;
   searchString: string;
+  isAPIBusy: boolean = true;
 
   constructor(
     private readonly router: Router,
@@ -32,6 +33,7 @@ export class UserListComponent implements OnInit {
       if (res) {
         this.mainUserList = res;
         this.filteredUserList = this.mainUserList;
+        this.isAPIBusy = false;
       }
     });
   }

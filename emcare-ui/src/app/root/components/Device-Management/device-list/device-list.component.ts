@@ -11,6 +11,7 @@ export class DeviceListComponent implements OnInit {
   deviceArr: any;
   filteredDevices: any;
   searchString: string;
+  isAPIBusy: boolean = true;
 
   constructor(
     private readonly deviceManagementService: DeviceManagementService
@@ -29,7 +30,8 @@ export class DeviceListComponent implements OnInit {
     this.deviceManagementService.getAllDevices().subscribe((res) => {
       this.deviceArr = res;
       this.filteredDevices = this.deviceArr;
-    })
+      this.isAPIBusy = false;
+    });
   }
 
   editDevice(event, deviceId) {

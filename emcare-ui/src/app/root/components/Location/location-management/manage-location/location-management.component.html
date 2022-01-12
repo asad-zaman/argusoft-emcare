@@ -9,18 +9,25 @@
         <div class="col-12 col-sm-6">
           <div class="mb-3">
             <label class="form-label">Location Type</label>
-            <select class="form-control custom-input" formControlName="locationType" id="locationType">
+            <select class="form-control custom-input" [ngClass]="{ 'is-invalid': submitted && f.locationType.errors }"
+              formControlName="locationType" id="locationType">
               <ng-container *ngFor="let data of locationTypeArr">
                 <option value="{{data.code}}">{{data.name}}</option>
               </ng-container>
             </select>
+            <div *ngIf="submitted && f.locationType.errors" class="invalid-feedback">
+              <div class="cst-error-style" *ngIf="f.locationType.errors.required">*Location type is required</div>
+            </div>
           </div>
         </div>
         <div class="col-12 col-sm-6">
           <div class="mb-3">
             <label class="form-label">Location Name</label>
             <input formControlName="locationName" type="text" class="form-control custom-input" id="locationName"
-              placeholder="Enter location name">
+              placeholder="Enter location name" [ngClass]="{ 'is-invalid': submitted && f.locationName.errors }">
+            <div *ngIf="submitted && f.locationName.errors" class="invalid-feedback">
+              <div class="cst-error-style" *ngIf="f.locationName.errors.required">*Location name is required</div>
+            </div>
           </div>
         </div>
         <div class="col-12 col-sm-6">
