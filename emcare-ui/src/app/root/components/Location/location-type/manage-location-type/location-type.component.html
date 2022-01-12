@@ -10,14 +10,20 @@
           <div class="mb-3">
             <label class="form-label">Location Type</label>
             <input class="form-control custom-input" formControlName="type" type="text" id="type"
-              placeholder="Enter type">
+              placeholder="Enter type" [ngClass]="{ 'is-invalid': submitted && f.type.errors }">
+            <div *ngIf="submitted && f.type.errors" class="invalid-feedback">
+              <div class="cst-error-style" *ngIf="f.type.errors.required">*Location type is required</div>
+            </div>
           </div>
         </div>
         <div class="col-12 col-sm-6">
           <div class="mb-3">
             <label class="form-label">Name</label>
             <input class="form-control custom-input" formControlName="name" type="text" id="name"
-              placeholder="Enter name">
+              placeholder="Enter name" [ngClass]="{ 'is-invalid': submitted && f.name.errors }">
+            <div *ngIf="submitted && f.name.errors" class="invalid-feedback">
+              <div class="cst-error-style" *ngIf="f.name.errors.required">*Location type name is required</div>
+            </div>
           </div>
         </div>
       </div>
