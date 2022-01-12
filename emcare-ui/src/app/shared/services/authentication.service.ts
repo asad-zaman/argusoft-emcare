@@ -9,7 +9,6 @@ import { environment } from 'src/environments/environment';
 @Injectable({ providedIn: 'root' })
 export class AuthenticationService {
 
-    loginURL = `http://192.1.200.197:8180`;
     backendURL = `${environment.apiUrl}`;
     userInfo = new BehaviorSubject(null);
     jwtHelper = new JwtHelperService();
@@ -54,7 +53,7 @@ export class AuthenticationService {
     }
 
     login(username: string, password: string) {
-        const url = `${this.loginURL}/auth/realms/emcare/protocol/openid-connect/token`;
+        const url = `${this.backendURL}/auth/realms/emcare/protocol/openid-connect/token`;
         const body = new HttpParams()
             .set('username', username)
             .set('password', password)
@@ -89,7 +88,7 @@ export class AuthenticationService {
     }
 
     refreshToken() {
-        const url = `${this.loginURL}/auth/realms/emcare_demo/protocol/openid-connect/token`;
+        const url = `${this.backendURL}/auth/realms/emcare_demo/protocol/openid-connect/token`;
         const body = new HttpParams()
             .set('grant_type', 'password')
             .set('password', 'argusadmin')

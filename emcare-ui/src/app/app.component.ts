@@ -28,7 +28,6 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this.prerequisite();
-    console.log('asd');
   }
 
   ngAfterViewChecked() {

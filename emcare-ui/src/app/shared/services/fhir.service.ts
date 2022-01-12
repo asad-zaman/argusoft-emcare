@@ -38,4 +38,8 @@ export class FhirService {
     getPatientByLocationId(id) {
         return this.http.get(`${this.fhirBaseURL}/patient/locationId/${id}`,this.getHeaders());
     }
+
+    getPatientsByPageIndex(pageIndex) {
+        return this.http.get(`${this.fhirBaseURL}/patient/page?pageNo=${pageIndex}`,this.getHeaders());
+    }
 }

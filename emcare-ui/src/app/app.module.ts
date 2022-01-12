@@ -37,6 +37,7 @@ import { PatientListComponent } from './root/components/patient-management/patie
 import { ManageRoleComponent } from './root/components/role-management/manage-role/manage-role.component';
 import { ShowRoleComponent } from './root/components/role-management/show-role/show-role.component';
 import { LocationFilterComponent } from './root/components/Location/location-filter/location-filter.component';
+import { NgxPaginationModule } from 'ngx-pagination';
 @NgModule({
   declarations: [
     AppComponent,
@@ -71,7 +72,8 @@ import { LocationFilterComponent } from './root/components/Location/location-fil
     ReactiveFormsModule,
     HttpClientModule,
     CommonModule,
-    SharedModule
+    SharedModule,
+    NgxPaginationModule
   ],
   providers: [
     AuthenticationService,

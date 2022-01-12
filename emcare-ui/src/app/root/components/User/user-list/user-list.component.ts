@@ -12,6 +12,9 @@ export class UserListComponent implements OnInit {
   mainUserList: any;
   filteredUserList: any;
   searchString: string;
+  currentPage = 0;
+  totalCount = 0;
+  tableSize = 10;
 
   constructor(
     private readonly router: Router,
@@ -23,17 +26,23 @@ export class UserListComponent implements OnInit {
   }
 
   prerequisite() {
-    this.getAllUsers();
+    this.getUsersByPageIndex(this.currentPage);
   }
 
-  getAllUsers() {
+  getUsersByPageIndex(index) {
     this.mainUserList = [];
-    this.userService.getAllUsers().subscribe(res => {
-      if (res) {
-        this.mainUserList = res;
+    this.userService.getUsersByPage(index).subscribe(res => {
+      if (res && res['list']) {
+        this.mainUserList = res['list'];
         this.filteredUserList = this.mainUserList;
+        this.totalCount = res['totalCount'];
       }
     });
+  }
+
+  onIndexChange(event) {
+    this.currentPage = event;
+    this.getUsersByPageIndex(event - 1);
   }
 
   searchFilter() {
