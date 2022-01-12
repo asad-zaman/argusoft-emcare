@@ -89,7 +89,7 @@ export class AuthenticationService {
     }
 
     refreshToken() {
-        const url = `${this.loginURL}/auth/realms/emcare_demo/protocol/openid-connect/token`;
+        const url = `${this.loginURL}/auth/realms/emcare/protocol/openid-connect/token`;
         const body = new HttpParams()
             .set('grant_type', 'password')
             .set('password', 'argusadmin')
