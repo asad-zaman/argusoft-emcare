@@ -39,8 +39,25 @@
               <td><span [ngClass]="(!!user.enabled) ? 'badges-red bg-green' : 'badges-red'">
                   {{ !!user.enabled ? 'Verifed' : 'Not Verified'}}</span>
               <td class="text-end">
-                <i (click)="updateUser(i)" class="bi bi-pencil-square cursor-pointer font-size-16"></i>
-                <!-- <i class="bi bi-trash ms-3 text-red cursor-pointer font-size-16"></i> -->
+                <ul class="navigation" style="list-style-type: none;">
+                  <li class="dropdown mt-3 cursor-pointer">
+                    <div class="d-flex align-items-center" data-bs-toggle="dropdown">
+                      <i class="bi bi-three-dots-vertical ps-2"></i>
+                    </div>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                      <li (click)="updateUser(i)">
+                        <a class="dropdown-item">
+                          <i class="bi bi-pencil font-size-16 mr-2"></i>Update User
+                        </a>
+                      </li>
+                      <li (click)="onResetPassword(i)">
+                        <a class="dropdown-item">
+                          <i class="bi bi-pencil font-size-16 mr-2"></i>Reset Password
+                        </a>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
               </td>
             </tr>
           </ng-container>
@@ -68,4 +85,50 @@
     </li>
   </ul> -->
   <!--pagination-END-->
+  <div *ngIf="showResetPasswordDialog" class="modal" tabindex="-1" role="dialog" style="display:block">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Reset Password</h4>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="resetPasswordForm">
+            <div class="row mt-3">
+              <div class="col-12">
+                <div class="mb-3">
+                  <label class="form-label">Password</label>
+                  <input type="password" formControlName="password" class="form-control custom-input"
+                    [ngClass]="{ 'is-invalid': submitted && f.password.errors }" />
+                  <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
+                    <div *ngIf="f.password.errors.required">Password is required</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-12 mt-3">
+                <div class="mb-3">
+                  <label class="form-label">Confirm Password</label>
+                  <input type="password" formControlName="confirmPassword"
+                    class="form-control custom-input" [ngClass]="{ 'is-invalid': submitted && f.confirmPassword.errors }" />
+                  <div *ngIf="submitted && f.confirmPassword.errors" class="invalid-feedback">
+                    <div *ngIf="f.confirmPassword.errors.required">Confirm Password is required</div>
+                    <div *ngIf="f.confirmPassword.errors.mustMatch">Passwords must match</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row mt-3">
+              <div class="col-12 col-sm-6">
+                <button (click)="closeDialog()" class="btn btn-red p-l-70 p-r-70 mb-5 mr-5" style="width: 210px;">Cancel</button>
+              </div>
+              <div class="col-12 col-sm-6">
+                <button (click)="updatePassword()" class="btn btn-red p-l-70 p-r-70 mb-5" style="width: 210px;">Submit</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
