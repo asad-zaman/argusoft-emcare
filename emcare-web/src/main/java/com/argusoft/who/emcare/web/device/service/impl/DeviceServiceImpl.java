@@ -49,7 +49,7 @@ public class DeviceServiceImpl implements DeviceService {
     @Override
     public ResponseEntity<Object> addNewDevice(DeviceDto deviceDto) {
         String userId = emCareSecurityUser.getLoggedInUserId();
-        DeviceMaster oldDevice = deviceRepository.getDeviceByImei(deviceDto.getImeiNumber());
+        DeviceMaster oldDevice = deviceRepository.getDeviceByDeviceUUID(deviceDto.getDeviceUUID());
         if (oldDevice == null) {
             DeviceMaster newDevice = DeviceMapper.getDeviceMatserFromDto(deviceDto, userId);
             newDevice = deviceRepository.save(newDevice);
