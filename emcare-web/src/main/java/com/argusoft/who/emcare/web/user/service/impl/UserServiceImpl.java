@@ -115,7 +115,7 @@ public class UserServiceImpl implements UserService {
     public PageDto getUserPage(HttpServletRequest request, Integer pageNo) {
         Integer pageSize = CommonConstant.PAGE_SIZE;
         Integer startIndex = pageNo * pageSize;
-        Integer endIndex = pageNo * pageSize == 0 ? pageSize : pageNo * pageSize;
+        Integer endIndex = (pageNo + 1) * pageSize;
         List<UserListDto> userList = new ArrayList<>();
         Keycloak keycloak = keyCloakConfig.getInstance();
         Integer userTotalCount = keycloak.realm(KeyCloakConfig.REALM).users().list().size();
