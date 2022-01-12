@@ -34,6 +34,14 @@ public class DeviceController {
         return deviceService.getAllDevice(request);
     }
 
+    @GetMapping("/page")
+    public ResponseEntity<Object> getDevicePage(HttpServletRequest request,
+                                                @RequestParam(value = "pageNo") Integer pageNo,
+                                                @RequestParam(value = "orderBy", defaultValue = "deviceName") String orderBy,
+                                                @RequestParam(value = "order") String order) {
+        return deviceService.getDevicePage(request, pageNo, orderBy, order);
+    }
+
     @GetMapping("/status/{deviceId}/{status}")
     public ResponseEntity<Object> changeDeviceStatus(@PathVariable(value = "deviceId") Integer deviceId, @PathVariable(value = "status") Boolean status) {
         return deviceService.changeDeviceStatus(deviceId, status);

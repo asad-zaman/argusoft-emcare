@@ -13,6 +13,7 @@ export class ShowLocationComponent implements OnInit {
   filteredLocations: any;
   locationArr: any;
   searchString: string;
+  isAPIBusy: boolean = true;
 
   constructor(
     private readonly router: Router,
@@ -34,6 +35,7 @@ export class ShowLocationComponent implements OnInit {
       if (res) {
         this.locationArr = res;
         this.filteredLocations = this.locationArr;
+        this.isAPIBusy = false;
       }
     });
   }

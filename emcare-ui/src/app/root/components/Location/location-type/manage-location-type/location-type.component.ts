@@ -14,6 +14,7 @@ export class LocationTypeComponent implements OnInit {
   locationTypeForm: FormGroup;
   isEdit: boolean;
   editId: string;
+  submitted: boolean;
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -56,7 +57,12 @@ export class LocationTypeComponent implements OnInit {
     });
   }
 
+  get f() {
+    return this.locationTypeForm.controls;
+  }
+
   saveData() {
+    this.submitted = true;
     if (this.locationTypeForm.valid) {
       if (this.isEdit) {
         const data = {

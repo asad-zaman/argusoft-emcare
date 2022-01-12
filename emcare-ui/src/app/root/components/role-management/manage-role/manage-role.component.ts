@@ -15,6 +15,7 @@ export class ManageRoleComponent implements OnInit {
   isEdit: boolean;
   editId: string;
   oldRoleName: string;
+  submitted: boolean;
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -58,7 +59,12 @@ export class ManageRoleComponent implements OnInit {
     });
   }
 
+  get f() {
+    return this.roleForm.controls;
+  }
+
   saveData() {
+    this.submitted = true;
     if (this.roleForm.valid) {
       if (this.isEdit) {
         const data = {

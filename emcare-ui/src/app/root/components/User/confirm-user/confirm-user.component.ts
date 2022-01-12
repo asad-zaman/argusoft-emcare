@@ -16,6 +16,7 @@ export class ConfirmUserComponent implements OnInit {
   isApproveUser: boolean = true;
   selectedUser: any;
   searchString: string;
+  isAPIBusy: boolean = true;
 
   constructor(
     private readonly toastr: ToastrService,
@@ -36,6 +37,7 @@ export class ConfirmUserComponent implements OnInit {
       if (res) {
         this.mainUserList = res;
         this.filteredUserList = this.mainUserList;
+        this.isAPIBusy = false;
       }
     });
   }

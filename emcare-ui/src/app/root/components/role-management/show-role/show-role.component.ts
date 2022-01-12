@@ -11,6 +11,7 @@ export class ShowRoleComponent implements OnInit {
   rolesArr: any;
   filteredRoles: any;
   searchString: string;
+  isAPIBusy: boolean = true;
 
   constructor(
     private readonly router: Router,
@@ -31,6 +32,7 @@ export class ShowRoleComponent implements OnInit {
       if (res) {
         this.rolesArr = res;
         this.filteredRoles = this.rolesArr;
+        this.isAPIBusy = false;
       }
     });
   }

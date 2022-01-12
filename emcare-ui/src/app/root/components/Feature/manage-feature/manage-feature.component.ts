@@ -12,11 +12,13 @@ import { UserManagementService } from 'src/app/root/services/user-management.ser
 export class ManageFeatureComponent implements OnInit {
 
   featureConfigList: any;
+  featureName: string = '';
   featureId: string;
   userList: any = [];
   roleList: any = [];
   selectedUser: any = null;
   selectedRole: any = null;
+  isAPIBusy: boolean = true;
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -32,6 +34,9 @@ export class ManageFeatureComponent implements OnInit {
 
   prerequisite() {
     this.featureId = this.route.snapshot.paramMap.get('id');
+    this.route.queryParams.subscribe(params => {
+      this.featureName = params.name;
+    })
     this.getFeatureConfig();
   }
 
@@ -39,6 +44,7 @@ export class ManageFeatureComponent implements OnInit {
     this.featureService.getFeatureConfigById(this.featureId).subscribe(res => {
       if (res) {
         this.featureConfigList = res;
+        this.isAPIBusy = false;
         this.getUsers();
         this.getRoles();
       }
@@ -68,10 +74,10 @@ export class ManageFeatureComponent implements OnInit {
   }
 
   deleteFeatureConfig(index) {
-    this.featureService.deleteFeatureConfig(this.featureConfigList[index]['id']).subscribe(_res => {
+    this.featureService.deleteFeatureConfig(this.featureConfigList[index]['id']).subscribe(res => {
       this.toastr.success('Feature deleted successfully!!', 'EMCARE');
+      this.prerequisite();
     });
-    this.prerequisite();
   }
 
   AddFeatureConfig() {

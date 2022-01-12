@@ -16,6 +16,7 @@ export class LocationManagementComponent implements OnInit {
   editId: string;
   locationArr: any;
   locationTypeArr: any;
+  submitted: boolean;
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -79,7 +80,12 @@ export class LocationManagementComponent implements OnInit {
     });
   }
 
+  get f() {
+    return this.locationForm.controls;
+  }
+
   saveData() {
+    this.submitted = true;
     if (this.locationForm.valid) {
       if (this.isEdit) {
         const data = {
