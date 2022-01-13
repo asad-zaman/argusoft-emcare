@@ -17,14 +17,19 @@
 package com.argusoft.who.emcare.widget
 
 import com.google.android.fhir.datacapture.QuestionnaireFragment
+import org.hl7.fhir.r4.model.Questionnaire
 
 class CustomQuestionnaireFragment : QuestionnaireFragment() {
-  override fun getCustomQuestionnaireItemViewHolderFactoryMatchers():
-    List<QuestionnaireItemViewHolderFactoryMatcher> {
-    return listOf(
-      QuestionnaireItemViewHolderFactoryMatcher(CustomEditTextFactory) { questionnaireItem ->
-        return@QuestionnaireItemViewHolderFactoryMatcher questionnaireItem.linkId == "0"
-      }
-    )
-  }
+    override fun getCustomQuestionnaireItemViewHolderFactoryMatchers():
+            List<QuestionnaireItemViewHolderFactoryMatcher> {
+        return listOf(
+            QuestionnaireItemViewHolderFactoryMatcher(CustomEditTextFactory) { questionnaireItem ->
+                return@QuestionnaireItemViewHolderFactoryMatcher questionnaireItem.type == Questionnaire.QuestionnaireItemType.STRING || questionnaireItem.type == Questionnaire
+                    .QuestionnaireItemType.QUANTITY || questionnaireItem.type == Questionnaire.QuestionnaireItemType.INTEGER
+            },
+            QuestionnaireItemViewHolderFactoryMatcher(CustomDateFactory) { questionnaireItem ->
+                return@QuestionnaireItemViewHolderFactoryMatcher questionnaireItem.type == Questionnaire.QuestionnaireItemType.DATE
+            },
+        )
+    }
 }

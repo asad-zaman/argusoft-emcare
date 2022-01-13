@@ -13,6 +13,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 @EnableJpaAuditing(auditorAwareRef = "createAuditorProvider")
 @Configuration
@@ -34,7 +35,7 @@ public class EntityAuditConfig {
 
         @Override
         public Optional<String> getCurrentAuditor() {
-            KeycloakAuthenticationToken token = (KeycloakAuthenticationToken) request.getUserPrincipal();
+            KeycloakAuthenticationToken token = (KeycloakAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
             KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
             KeycloakSecurityContext session = principal.getKeycloakSecurityContext();
             AccessToken accessToken = session.getToken();

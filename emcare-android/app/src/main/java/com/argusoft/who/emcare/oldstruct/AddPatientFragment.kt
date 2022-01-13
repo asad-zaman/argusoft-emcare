@@ -13,6 +13,7 @@ import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.NavHostFragment
 import com.argusoft.who.emcare.R
+import com.argusoft.who.emcare.widget.CustomQuestionnaireFragment
 import com.google.android.fhir.datacapture.QuestionnaireFragment
 import org.hl7.fhir.r4.model.QuestionnaireResponse
 
@@ -66,7 +67,7 @@ class AddPatientFragment : Fragment(R.layout.add_patient_fragment) {
   }
 
   private fun addQuestionnaireFragment() {
-    val fragment = QuestionnaireFragment()
+    val fragment = CustomQuestionnaireFragment()
     fragment.arguments =
       bundleOf(QuestionnaireFragment.BUNDLE_KEY_QUESTIONNAIRE to viewModel.questionnaire)
     childFragmentManager.commit {

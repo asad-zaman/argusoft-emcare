@@ -1,27 +1,20 @@
 package com.argusoft.who.emcare.ui.home.patient
 
-import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.uhn.fhir.context.FhirContext
-import com.argusoft.who.emcare.data.local.database.Database
-import com.argusoft.who.emcare.data.remote.Api
 import com.argusoft.who.emcare.data.remote.ApiResponse
 import com.argusoft.who.emcare.ui.common.LOCATION_EXTENSION_URL
 import com.argusoft.who.emcare.ui.common.model.PatientItem
 import com.argusoft.who.emcare.utils.extention.toPatientItem
-import com.argusoft.who.emcare.utils.extention.whenSuccess
 import com.argusoft.who.emcare.utils.listener.SingleLiveEvent
 import com.google.android.fhir.FhirEngine
 import com.google.android.fhir.datacapture.mapping.ResourceMapper
 import com.google.android.fhir.search.Order
 import com.google.android.fhir.search.StringFilterModifier
 import com.google.android.fhir.search.search
-import com.google.android.fhir.sync.Result
-import com.google.android.fhir.sync.State
-import com.google.android.fhir.sync.Sync
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import org.hl7.fhir.r4.model.*
@@ -30,21 +23,19 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PatientViewModel @Inject constructor(
-    private val fhirEngine: FhirEngine,
-    private val api: Api,
-    private val database: Database,
-    private val applicationContext: Application
+    private val fhirEngine: FhirEngine
 ) : ViewModel() {
 
     var questionnaireJson: String? = null
     private val _patients = SingleLiveEvent<ApiResponse<List<PatientItem>>>()
     val patients: LiveData<ApiResponse<List<PatientItem>>> = _patients
 
+    private val _questionnaire = SingleLiveEvent<Questionnaire>()
+    val questionnaire: LiveData<Questionnaire> = _questionnaire
+
     private val _addPatients = MutableLiveData<ApiResponse<Int>>()
     val addPatients: LiveData<ApiResponse<Int>> = _addPatients
 
-    private val _syncState = MutableLiveData<State>()
-    val syncState: LiveData<State> = _syncState
 
     fun getPatients(search: String? = null, locationId: Int?, isRefresh: Boolean = false) {
         _patients.value = ApiResponse.Loading(isRefresh)
@@ -72,34 +63,17 @@ class PatientViewModel @Inject constructor(
         }
     }
 
+    fun getQuestionnaire(questionnaireId: String) {
+        viewModelScope.launch{
+            _questionnaire.value = fhirEngine.load(Questionnaire::class.java, questionnaireId)
+        }
+    }
+
     private suspend fun getRiskAssessments(): Map<String, RiskAssessment?> {
         return fhirEngine.search<RiskAssessment> {}.groupBy { it.subject.reference }.mapValues { entry ->
             entry
                 .value
                 .filter { it.hasOccurrence() }.maxByOrNull { it.occurrenceDateTimeType.value }
-        }
-    }
-
-    fun syncPatients() {
-        _syncState.value = State.Started
-        viewModelScope.launch {
-            val reustl = Sync.oneTimeSync(
-                applicationContext,
-                fhirEngine,
-                api.getHapiFhirResourceDataSource(),
-                mapOf(ResourceType.Patient to mapOf())
-            )
-            api.getLocations().whenSuccess {
-                database.saveLocations(it)
-            }
-            when (reustl) {
-                is Result.Success -> {
-                    _syncState.value = State.Finished(reustl)
-                }
-                is Result.Error -> {
-                    _syncState.value = State.Failed(reustl)
-                }
-            }
         }
     }
 

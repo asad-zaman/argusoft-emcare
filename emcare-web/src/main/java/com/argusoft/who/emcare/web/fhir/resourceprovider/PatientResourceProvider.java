@@ -58,7 +58,10 @@ public class PatientResourceProvider implements IResourceProvider {
     public Patient getResourceById(@IdParam IdType theId) {
 
         EmcareResource emcareResource = emcareResourceService.findByResourceId(theId.getIdPart());
-        Patient patient = parser.parseResource(Patient.class, emcareResource.getText());
+        Patient patient = null;
+        if (emcareResource != null) {
+            patient = parser.parseResource(Patient.class, emcareResource.getText());
+        }
         return patient;
     }
 
@@ -114,7 +117,7 @@ public class PatientResourceProvider implements IResourceProvider {
 
         MethodOutcome retVal = new MethodOutcome();
         retVal.setId(new IdType("Patient", thePatient.getId(), "1"));
-        retVal.setResource(new Patient());
+        retVal.setResource(thePatient);
 
         return retVal;
     }
@@ -133,13 +136,12 @@ public class PatientResourceProvider implements IResourceProvider {
 
         Integer versionId = 1;
 
-        if (thePatient.getMeta() == null || thePatient.getMeta().getVersionId() == null) {
-            thePatient.setMeta(m);
-        } else {
+        if (thePatient.getMeta() != null && thePatient.getMeta().getVersionId() != null) {
             versionId = Integer.parseInt(thePatient.getMeta().getVersionId()) + 1;
             m.setVersionId(String.valueOf(versionId));
         }
-        
+        thePatient.setMeta(m);
+
         String patientString = parser.encodeResourceToString(thePatient);
         String patientId = thePatient.getIdElement().getIdPart();
 
@@ -152,7 +154,7 @@ public class PatientResourceProvider implements IResourceProvider {
         emcareResource.setText(patientString);
         emcareResource.setResourceId(patientId);
         emcareResource.setType("PATIENT");
-        
+
         emcareResourceService.saveResource(emcareResource);
 
         MethodOutcome retVal = new MethodOutcome();
@@ -192,7 +194,6 @@ public class PatientResourceProvider implements IResourceProvider {
             emcareResourceService.remove(emcareResource);
         }
 
-        return;
     }
 
     /*
@@ -201,8 +202,6 @@ public class PatientResourceProvider implements IResourceProvider {
     @Update
     public MethodOutcome updateRelatedPerson(@IdParam IdType theId, @ResourceParam RelatedPerson theRelatedPerson) {
 
-        String relatedPersonString = parser.encodeResourceToString(theRelatedPerson);
-
         //Adding meta to the related person resource
         Meta m = new Meta();
         m.setVersionId("1");
@@ -210,13 +209,13 @@ public class PatientResourceProvider implements IResourceProvider {
 
         Integer versionId = 1;
 
-        if (theRelatedPerson.getMeta() == null || theRelatedPerson.getMeta().getVersionId() == null) {
-            theRelatedPerson.setMeta(m);
-        } else {
+        if (theRelatedPerson.getMeta() != null && theRelatedPerson.getMeta().getVersionId() != null) {
             versionId = Integer.parseInt(theRelatedPerson.getMeta().getVersionId()) + 1;
             m.setVersionId(String.valueOf(versionId));
         }
+        theRelatedPerson.setMeta(m);
 
+        String relatedPersonString = parser.encodeResourceToString(theRelatedPerson);
         String relatedPersonId = theRelatedPerson.getIdElement().getIdPart();
 
         EmcareResource emcareResource = emcareResourceService.findByResourceId(relatedPersonId);
@@ -224,7 +223,7 @@ public class PatientResourceProvider implements IResourceProvider {
         if (emcareResource == null) {
             emcareResource = new EmcareResource();
         }
-        
+
         emcareResource.setText(relatedPersonString);
         emcareResource.setResourceId(relatedPersonId);
         emcareResource.setType("RELATED_PERSON");

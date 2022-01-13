@@ -4,6 +4,8 @@ import { ToastrService } from 'ngx-toastr';
 import { FeatureManagementService } from 'src/app/root/services/feature-management.service';
 import { RoleManagementService } from 'src/app/root/services/role-management.service';
 import { UserManagementService } from 'src/app/root/services/user-management.service';
+import { AuthenticationService } from 'src/app/shared/services/authentication.service';
+
 @Component({
   selector: 'app-manage-feature',
   templateUrl: './manage-feature.component.html',
@@ -25,7 +27,8 @@ export class ManageFeatureComponent implements OnInit {
     private readonly userService: UserManagementService,
     private readonly roleService: RoleManagementService,
     private readonly featureService: FeatureManagementService,
-    private readonly toastr: ToastrService
+    private readonly toastr: ToastrService,
+    private readonly authenticationService: AuthenticationService
   ) { }
 
   ngOnInit(): void {
@@ -75,8 +78,9 @@ export class ManageFeatureComponent implements OnInit {
 
   deleteFeatureConfig(index) {
     this.featureService.deleteFeatureConfig(this.featureConfigList[index]['id']).subscribe(res => {
-      this.toastr.success('Feature deleted successfully!!', 'EMCARE');
+      this.toastr.success('Feature Config deleted successfully!!', 'EMCARE');
       this.prerequisite();
+      this.getFeatureList();
     });
   }
 
@@ -88,10 +92,19 @@ export class ManageFeatureComponent implements OnInit {
       "featureJson": "{\"canAdd\":true,\"canEdit\":true,\"canView\":true,\"canDelete\":true}"
     }
     this.featureService.addFeatureConfig(data).subscribe(_res => {
-      this.toastr.success('Feature added successfully!!', 'EMCARE');
+      this.toastr.success('Feature Config added successfully!!', 'EMCARE');
       this.selectedUser = null;
       this.selectedRole = null;
       this.prerequisite();
+      this.getFeatureList();
+    })
+  }
+
+  getFeatureList() {
+    this.authenticationService.getLoggedInUser().subscribe(res => {
+      if (res) {
+        this.authenticationService.setFeatures(res.feature.map(f => f.menu_name));
+      }
     })
   }
 }
