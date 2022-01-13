@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ToastrService } from 'ngx-toastr';
 import { LocationService } from 'src/app/root/services/location.service';
-
+import { ToasterService } from 'src/app/shared';
 @Component({
   selector: 'app-location-type',
   templateUrl: './location-type.component.html',
@@ -21,7 +20,7 @@ export class LocationTypeComponent implements OnInit {
     private readonly router: Router,
     private readonly route: ActivatedRoute,
     private readonly locationService: LocationService,
-    private readonly toastr: ToastrService
+    private readonly toasterService: ToasterService
   ) { }
 
   ngOnInit(): void {
@@ -71,7 +70,7 @@ export class LocationTypeComponent implements OnInit {
           "code": this.locationTypeForm.get('type').value
         };
         this.locationService.updateLocationTypeById(data).subscribe(() => {
-          this.toastr.success('Location Type updated successfully!!', 'EM CARE');
+          this.toasterService.showSuccess('Location Type updated successfully!', 'EM CARE');
           this.showLocationType();
         });
       } else {
@@ -81,7 +80,7 @@ export class LocationTypeComponent implements OnInit {
           "code": this.locationTypeForm.get('type').value
         };
         this.locationService.createLocationType(data).subscribe((res) => {
-          this.toastr.success('Location Type added successfully!!', 'EM CARE');
+          this.toasterService.showSuccess('Location Type added successfully!', 'EM CARE');
           this.showLocationType();
         });
       }

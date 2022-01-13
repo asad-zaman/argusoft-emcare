@@ -35,3 +35,7 @@ body {
 .cst-error-style {
     font-weight: 500;
 }
+
+.ngx-pagination .current {
+    background: $color-red !important;
+}

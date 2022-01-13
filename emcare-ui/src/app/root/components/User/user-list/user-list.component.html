@@ -28,7 +28,8 @@
       </thead>
       <tbody>
         <ng-container *ngIf="filteredUserList && filteredUserList.length > 0; else noRecords">
-          <ng-container *ngFor="let user of filteredUserList; let i=index">
+          <ng-container *ngFor="let user of filteredUserList | 
+          paginate : { itemsPerPage: tableSize, currentPage: currentPage, totalItems: totalCount }; let i=index">
             <tr>
               <td>{{i+1}}</td>
               <td>{{user.firstName}}</td>
@@ -69,22 +70,12 @@
         </ng-template>
       </tbody>
     </table>
+    <div class="d-flex justify-content-end mt-3">
+      <pagination-controls responsive="true" previousLabel="Prev" nextLabel="Next" (pageChange)="onIndexChange($event)">
+      </pagination-controls>
+    </div>
   </div>
   <!--Table-END-->
-
-  <!--pagination-->
-  <!-- <ul class="pagination custom-pagination justify-content-end my-4">
-    <li class="page-item">
-      <a class="page-link" href="#" tabindex="-1" aria-disabled="true"><i class="bi bi-arrow-left font-size-16"></i></a>
-    </li>
-    <li class="page-item"><a class="page-link" href="#">1</a></li>
-    <li class="page-item"><a class="page-link pagination-active" href="#">2</a></li>
-    <li class="page-item"><a class="page-link" href="#">3</a></li>
-    <li class="page-item">
-      <a class="page-link" href="#"><i class="bi bi-arrow-right font-size-16"></i></a>
-    </li>
-  </ul> -->
-  <!--pagination-END-->
   <div *ngIf="showResetPasswordDialog" class="modal" tabindex="-1" role="dialog" style="display:block">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -110,8 +101,8 @@
               <div class="col-12 mt-3">
                 <div class="mb-3">
                   <label class="form-label">Confirm Password</label>
-                  <input type="password" formControlName="confirmPassword"
-                    class="form-control custom-input" [ngClass]="{ 'is-invalid': submitted && f.confirmPassword.errors }" />
+                  <input type="password" formControlName="confirmPassword" class="form-control custom-input"
+                    [ngClass]="{ 'is-invalid': submitted && f.confirmPassword.errors }" />
                   <div *ngIf="submitted && f.confirmPassword.errors" class="invalid-feedback">
                     <div *ngIf="f.confirmPassword.errors.required">Confirm Password is required</div>
                     <div *ngIf="f.confirmPassword.errors.mustMatch">Passwords must match</div>

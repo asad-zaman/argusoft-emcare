@@ -13,6 +13,9 @@ export class PatientListComponent implements OnInit {
     searchString: string;
     patientDetails: any
     showPatientDetailsFlag: boolean = false
+    currentPage = 0;
+    totalCount = 0;
+    tableSize = 10;
     isAPIBusy: boolean = true;
 
     constructor(
@@ -24,18 +27,24 @@ export class PatientListComponent implements OnInit {
     }
 
     prerequisite() {
-        this.getPatients();
+        this.getPatientsByPageIndex(this.currentPage);
     }
 
-    getPatients() {
+    getPatientsByPageIndex(index) {
         this.patients = [];
-        this.fhirService.getAllPatients().subscribe(res => {
-            if (res) {
-                this.patients = res;
+        this.fhirService.getPatientsByPageIndex(index).subscribe(res => {
+            if (res && res['list']) {
+                this.patients = res['list'];
                 this.filteredPatients = this.patients;
+                this.totalCount = res['totalCount'];
                 this.isAPIBusy = false;
             }
         });
+    }
+
+    onIndexChange(event) {
+        this.currentPage = event;
+        this.getPatientsByPageIndex(event - 1);
     }
 
     showPatientDetails(id) {

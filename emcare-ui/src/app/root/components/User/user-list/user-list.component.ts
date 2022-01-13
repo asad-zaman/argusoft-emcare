@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UserManagementService } from 'src/app/root/services/user-management.service';
+import { ToasterService } from 'src/app/shared';
 import { MustMatch } from 'src/app/shared/validators/must-match.validator';
 @Component({
   selector: 'app-user-list',
@@ -13,17 +14,23 @@ export class UserListComponent implements OnInit {
   mainUserList: any;
   filteredUserList: any;
   searchString: string;
+  currentPage = 0;
+  totalCount = 0;
+  tableSize = 10;
   selectedUserId: string;
   resetPasswordForm!: FormGroup;
   error: any = null;
   submitted: boolean = false;
   showResetPasswordDialog: boolean = false;
   isAPIBusy: boolean = true;
+  isLocationFilterOn: boolean = false;
+  selectedId: any;
 
   constructor(
     private readonly router: Router,
     private readonly userService: UserManagementService,
-    private formBuilder: FormBuilder,
+    private readonly formBuilder: FormBuilder,
+    private readonly toasterService: ToasterService
   ) { }
 
   ngOnInit(): void {
@@ -31,18 +38,28 @@ export class UserListComponent implements OnInit {
   }
 
   prerequisite() {
-    this.getAllUsers();
+    this.getUsersByPageIndex(this.currentPage);
   }
 
-  getAllUsers() {
+  getUsersByPageIndex(index) {
     this.mainUserList = [];
-    this.userService.getAllUsers().subscribe(res => {
-      if (res) {
-        this.mainUserList = res;
+    this.userService.getUsersByPage(index).subscribe(res => {
+      if (res && res['list']) {
+        this.mainUserList = res['list'];
         this.filteredUserList = this.mainUserList;
+        this.totalCount = res['totalCount'];
         this.isAPIBusy = false;
       }
     });
+  }
+
+  onIndexChange(event) {
+    this.currentPage = event;
+    if (this.isLocationFilterOn) {
+      this.getUsersBasedOnLocationAndPageIndex(event - 1);
+    } else {
+      this.getUsersByPageIndex(event - 1);
+    }
   }
 
   searchFilter() {
@@ -73,14 +90,31 @@ export class UserListComponent implements OnInit {
     this.router.navigate([`updateUser/${this.filteredUserList[index]['id']}`]);
   }
 
+  resetPageIndex() {
+    this.currentPage = 0;
+  }
+
   getLocationId(data) {
-    const selectedId = data;
-    this.userService.getUserByLocationId(selectedId).subscribe(res => {
+    this.selectedId = data;
+    if (this.selectedId) {
+      this.isLocationFilterOn = true;
+      this.resetPageIndex();
+      const pageIndex = this.currentPage === 0 ? this.currentPage : this.currentPage - 1;
+      this.getUsersBasedOnLocationAndPageIndex(pageIndex);
+    } else {
+      this.toasterService.showInfo('Please select Location!', 'EMCARE')
+    }
+  }
+
+  getUsersBasedOnLocationAndPageIndex(pageIndex) {
+    this.userService.getUsersByLocationAndPageIndex(this.selectedId, pageIndex).subscribe(res => {
       if (res) {
         this.filteredUserList = [];
-        this.filteredUserList = res;
+        this.filteredUserList = res['list'];
+        this.totalCount = res['totalCount'];
+        this.isAPIBusy = false;
       }
-    })
+    });
   }
 
   onResetPassword(index) {
@@ -114,7 +148,7 @@ export class UserListComponent implements OnInit {
       if (result) {
         this.closeDialog();
       }
-    })
+    });
   }
 
   closeDialog() {
@@ -123,5 +157,4 @@ export class UserListComponent implements OnInit {
     this.showResetPasswordDialog = false;
     this.resetPasswordForm.reset();
   }
-
 }

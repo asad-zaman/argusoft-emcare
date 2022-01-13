@@ -37,4 +37,8 @@ export class DeviceManagementService {
     updateDeviceById(obj) {
         return this.http.put(`${this.backendURL}/update`, obj, this.getHeaders());
     }
+
+    getDevicesByPageIndex(pageIndex) {
+        return this.http.get(`${this.backendURL}/page?pageNo=${pageIndex}&orderBy=null&order=null`, this.getHeaders());
+    }
 }

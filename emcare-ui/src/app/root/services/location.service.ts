@@ -77,5 +77,9 @@ export class LocationService {
   getChildLocationById(id) {
     return this.http.get(`${this.locationURL}/child/${id}`, this.getHeaders());
   }
+
+  getLocationsByPageIndex(pageIndex) {
+    return this.http.get(`${this.locationURL}/page?pageNo=${pageIndex}&orderBy=null&order=null`, this.getHeaders());
+  }
 }
  

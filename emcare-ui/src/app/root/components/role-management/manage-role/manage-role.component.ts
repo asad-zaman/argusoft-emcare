@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ToastrService } from 'ngx-toastr';
 import { RoleManagementService } from 'src/app/root/services/role-management.service';
+import { ToasterService } from 'src/app/shared';
 
 @Component({
   selector: 'app-manage-role',
@@ -22,7 +22,7 @@ export class ManageRoleComponent implements OnInit {
     private readonly router: Router,
     private readonly route: ActivatedRoute,
     private readonly roleService: RoleManagementService,
-    private readonly toastr: ToastrService
+    private readonly toasterService: ToasterService
   ) { }
 
   ngOnInit(): void {
@@ -74,7 +74,7 @@ export class ManageRoleComponent implements OnInit {
           "description": this.roleForm.get('description').value
         };
         this.roleService.updateRole(data).subscribe(() => {
-          this.toastr.success('Role updated successfully!!', 'EMCARE');
+          this.toasterService.showSuccess('Role updated successfully!', 'EMCARE');
           this.showRoles();
         });
       } else {
@@ -83,7 +83,7 @@ export class ManageRoleComponent implements OnInit {
           "roleDescription": this.roleForm.get('description').value
         };
         this.roleService.createRole(data).subscribe((_res) => {
-          this.toastr.success('Role created successfully!!', 'EMCARE');
+          this.toasterService.showSuccess('Role created successfully!', 'EMCARE');
           this.showRoles();
         });
       }

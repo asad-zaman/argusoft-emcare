@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { ToastrService } from 'ngx-toastr';
 import { LocationService } from 'src/app/root/services/location.service';
-
+import { ToasterService } from 'src/app/shared';
 @Component({
   selector: 'app-show-location-type',
   templateUrl: './show-location-type.component.html',
@@ -18,7 +17,7 @@ export class ShowLocationTypeComponent implements OnInit {
   constructor(
     private readonly router: Router,
     private readonly locationService: LocationService,
-    private readonly toastr: ToastrService
+    private readonly toasterService: ToasterService
   ) { }
 
   ngOnInit(): void {
@@ -50,7 +49,7 @@ export class ShowLocationTypeComponent implements OnInit {
 
   deleteLocationType(index) {
     this.locationService.deleteLocationTypeById(this.filteredLocationTypes[index]['hierarchyType']).subscribe(res => {
-      this.toastr.success('Location Deleted successfully!!', 'EMCARE');
+      this.toasterService.showSuccess('Location Deleted successfully!', 'EMCARE');
       this.getLocationTypes();
     });
   }

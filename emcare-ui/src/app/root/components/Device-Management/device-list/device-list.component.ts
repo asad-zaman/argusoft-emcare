@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ToastrService } from 'ngx-toastr';
 import { DeviceManagementService } from 'src/app/root/services/device-management.service';
+import { ToasterService } from 'src/app/shared';
 
 @Component({
   selector: 'app-device-list',
@@ -13,10 +13,13 @@ export class DeviceListComponent implements OnInit {
   filteredDevices: any;
   searchString: string;
   isAPIBusy: boolean = true;
+  currentPage = 0;
+  totalCount = 0;
+  tableSize = 10;
 
   constructor(
     private readonly deviceManagementService: DeviceManagementService,
-    private readonly toastr: ToastrService
+    private readonly toasterService: ToasterService
   ) { }
 
   ngOnInit(): void {
@@ -24,24 +27,37 @@ export class DeviceListComponent implements OnInit {
   }
 
   prerequisite() {
-    this.getDevices();
+    this.getDevicesByPageIndex(this.currentPage);
   }
 
-  getDevices() {
+  getDevicesByPageIndex(index) {
     this.deviceArr = [];
-    this.deviceManagementService.getAllDevices().subscribe((res) => {
-      this.deviceArr = res;
-      this.filteredDevices = this.deviceArr;
-      this.isAPIBusy = false;
+    this.deviceManagementService.getDevicesByPageIndex(index).subscribe(res => {
+      if (res && res['list']) {
+        this.deviceArr = res['list'];
+        this.filteredDevices = this.deviceArr;
+        this.totalCount = res['totalCount'];
+        this.isAPIBusy = false;
+      }
     });
+  }
+
+  onIndexChange(event) {
+    this.currentPage = event;
+    this.getDevicesByPageIndex(event - 1);
   }
 
   editDevice(event, deviceId) {
     const status = !event;
     this.deviceManagementService.updateDeviceStatusById(deviceId, status).subscribe(res => {
-      this.toastr.success('Device updated successfully!!', 'EMCARE');
-      this.getDevices();
+      this.toasterService.showSuccess('Device updated successfully!', 'EMCARE');
+      this.resetCurrentPage();
+      this.getDevicesByPageIndex(this.currentPage);
     });
+  }
+
+  resetCurrentPage() {
+    this.currentPage = 0;
   }
 
   searchFilter() {

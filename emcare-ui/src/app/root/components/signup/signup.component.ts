@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { AuthenticationService } from 'src/app/shared';
+import { AuthenticationService, ToasterService } from 'src/app/shared';
 import { Router } from '@angular/router';
 import { first } from 'rxjs/operators';
 import { MustMatch } from 'src/app/shared/validators/must-match.validator';
-import { ToastrService } from 'ngx-toastr';
 @Component({
   selector: 'app-signup',
   templateUrl: './signup.component.html',
@@ -24,7 +23,7 @@ export class SignupComponent implements OnInit {
     private readonly formBuilder: FormBuilder,
     private readonly authService: AuthenticationService,
     private readonly router: Router,
-    private readonly toastr: ToastrService
+    private readonly toasterService: ToasterService
   ) { }
 
   ngOnInit() {
@@ -81,14 +80,14 @@ export class SignupComponent implements OnInit {
       .subscribe(
         _data => {
           this.router.navigate(["/login"]);
-          this.toastr.success('User added successfully!!');
+          this.toasterService.showSuccess('User added successfully!');
         },
         error => {
           if (error.status == 400) {
             this.error = error['error']['errorMessage'];
           }
           this.loading = false;
-          this.toastr.error('Email already registered!!');
+          this.toasterService.showError('Email already registered!');
         });
   }
 
