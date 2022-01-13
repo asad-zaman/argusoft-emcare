@@ -80,14 +80,14 @@ export class SignupComponent implements OnInit {
       .subscribe(
         _data => {
           this.router.navigate(["/login"]);
-          this.toasterService.showSuccess('User added successfully!!');
+          this.toasterService.showSuccess('User added successfully!');
         },
         error => {
           if (error.status == 400) {
             this.error = error['error']['errorMessage'];
           }
           this.loading = false;
-          this.toasterService.showError('Email already registered!!');
+          this.toasterService.showError('Email already registered!');
         });
   }
 

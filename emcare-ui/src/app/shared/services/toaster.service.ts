@@ -12,15 +12,15 @@ export class ToasterService {
     this.toaster.success(message, title);
   }
 
-  showError(message, title) {
+  showError(message, title?) {
     this.toaster.error(message, title);
   }
 
-  showInfo(message, title) {
+  showInfo(message, title?) {
     this.toaster.info(message, title);
   }
 
-  showWarning(message, title) {
+  showWarning(message, title?) {
     this.toaster.warning(message, title);
   }
 }
