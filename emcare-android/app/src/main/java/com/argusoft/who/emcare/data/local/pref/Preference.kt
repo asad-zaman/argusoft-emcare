@@ -21,5 +21,7 @@ interface Preference {
 
     fun getLoggedInUser() : LoggedInUser?
 
+    fun writeLastSyncTimestamp(timestamp: String)
+
     fun clear()
 }

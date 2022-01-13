@@ -6,6 +6,7 @@ import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.viewModels
 import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.databinding.FragmentPatientBinding
+import com.argusoft.who.emcare.sync.SyncViewModel
 import com.argusoft.who.emcare.ui.common.INTENT_EXTRA_LOCATION_ID
 import com.argusoft.who.emcare.ui.common.base.BaseFragment
 import com.argusoft.who.emcare.utils.extention.handleListApiView
@@ -19,6 +20,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class PatientFragment : BaseFragment<FragmentPatientBinding>(), SearchView.OnQueryTextListener {
 
     private val patientViewModel: PatientViewModel by viewModels()
+    private val syncViewModel: SyncViewModel by viewModels()
     private lateinit var patientAdapter: PatientAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,7 +33,7 @@ class PatientFragment : BaseFragment<FragmentPatientBinding>(), SearchView.OnQue
         binding.headerLayout.toolbar.setTitleAndBack(R.string.title_patient)
         binding.headerLayout.toolbar.inflateMenu(R.menu.patient_menu)
         binding.headerLayout.toolbar.setOnMenuItemClickListener {
-            patientViewModel.syncPatients()
+            syncViewModel.syncPatients()
             return@setOnMenuItemClickListener true
         }
         setupRecyclerView()
@@ -69,7 +71,7 @@ class PatientFragment : BaseFragment<FragmentPatientBinding>(), SearchView.OnQue
                 }
             }
         }
-        observeNotNull(patientViewModel.syncState) {
+        observeNotNull(syncViewModel.syncState) {
             when (it) {
                 is State.Started -> requireContext().showToast(messageResId = R.string.msg_sync_started)
                 is State.Finished -> requireContext().showToast(messageResId = R.string.msg_sync_successfully)

@@ -7,10 +7,12 @@ import androidx.fragment.app.viewModels
 import com.argusoft.who.emcare.BuildConfig
 import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.databinding.FragmentLoginBinding
+import com.argusoft.who.emcare.sync.SyncViewModel
 import com.argusoft.who.emcare.ui.common.REQUEST_CODE_READ_PHONE_STATE
 import com.argusoft.who.emcare.ui.common.base.BaseFragment
 import com.argusoft.who.emcare.ui.home.HomeActivity
 import com.argusoft.who.emcare.utils.extention.*
+import com.google.android.fhir.sync.State
 import dagger.hilt.android.AndroidEntryPoint
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.AppSettingsDialog
@@ -19,6 +21,7 @@ import pub.devrel.easypermissions.EasyPermissions
 @AndroidEntryPoint
 class LoginFragment : BaseFragment<FragmentLoginBinding>(), EasyPermissions.PermissionCallbacks {
 
+    private val syncViewModel: SyncViewModel by viewModels()
     private val loginViewModel: LoginViewModel by viewModels()
 
     override fun initView() {
@@ -40,8 +43,24 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(), EasyPermissions.Perm
         }
         observeNotNull(loginViewModel.loginApiState) {
             it.handleApiView(binding.progressLayout) {
-                startActivity(Intent(requireContext(), HomeActivity::class.java))
-                requireActivity().finish()
+                syncViewModel.syncPatients()
+
+            }
+        }
+
+        observeNotNull(syncViewModel.syncState) {
+            when (it) {
+                is State.Started -> requireContext().showToast(messageResId = R.string.msg_sync_started)
+                is State.Finished -> {
+                    requireContext().showToast(messageResId = R.string.msg_sync_successfully)
+                    startActivity(Intent(requireContext(), HomeActivity::class.java))
+                    requireActivity().finish()
+                }
+                is State.Failed -> {
+                    requireContext().showToast(messageResId = R.string.msg_sync_failed)
+                    startActivity(Intent(requireContext(), HomeActivity::class.java))
+                    requireActivity().finish()
+                }
             }
         }
     }

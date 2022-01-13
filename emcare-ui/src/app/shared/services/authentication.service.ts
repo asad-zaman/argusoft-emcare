@@ -14,6 +14,7 @@ export class AuthenticationService {
     jwtHelper = new JwtHelperService();
     userKey = 'sample-login-page';
     private isLoggedIn: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    private features: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
 
     constructor(private http: HttpClient, private router: Router) {
         this.loadUserInfo();
@@ -85,6 +86,14 @@ export class AuthenticationService {
 
     setIsLoggedIn(loggedIn: boolean): void {
         this.isLoggedIn.next(loggedIn);
+    }
+
+    getFeatures(): Observable<string[]> {
+        return this.features;
+    }
+
+    setFeatures(features: string[]): void {
+        this.features.next(features);
     }
 
     refreshToken() {

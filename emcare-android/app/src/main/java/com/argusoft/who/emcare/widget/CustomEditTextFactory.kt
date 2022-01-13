@@ -17,6 +17,7 @@
 package com.argusoft.who.emcare.widget
 
 import android.view.View
+import android.view.inputmethod.EditorInfo
 import com.argusoft.who.emcare.R
 import com.google.android.fhir.datacapture.validation.ValidationResult
 import com.google.android.fhir.datacapture.views.QuestionnaireItemViewHolderDelegate
@@ -24,6 +25,7 @@ import com.google.android.fhir.datacapture.views.QuestionnaireItemViewHolderFact
 import com.google.android.fhir.datacapture.views.QuestionnaireItemViewItem
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
+import org.hl7.fhir.r4.model.Questionnaire
 
 object CustomEditTextFactory :
     QuestionnaireItemViewHolderFactory(R.layout.custom_edit_text_layout) {
@@ -42,14 +44,24 @@ object CustomEditTextFactory :
                 textInputEditText = itemView.findViewById(R.id.textInputEditText)
             }
 
+           /* override fun setReadOnly(isReadOnly: Boolean) {
+                textInputEditText.isEnabled = !isReadOnly
+                textInputLayout.isEnabled = !isReadOnly
+            }*/
+
             override fun bind(questionnaireItemViewItem: QuestionnaireItemViewItem) {
+                if (questionnaireItemViewItem.questionnaireItem.type == Questionnaire.QuestionnaireItemType.INTEGER || questionnaireItemViewItem.questionnaireItem.type ==
+                    Questionnaire.QuestionnaireItemType.QUANTITY
+                ) {
+                    textInputEditText.inputType = EditorInfo.TYPE_CLASS_NUMBER
+                }
                 textInputLayout.hint = questionnaireItemViewItem.questionnaireItem.text
             }
 
             override fun displayValidationResult(validationResult: ValidationResult) {
                 // Custom validation message
-                if (validationResult.isValid)
-                    textInputLayout.error = validationResult.validationMessages[0] ?: ""
+                if (validationResult.isValid && !validationResult.validationMessages.isNullOrEmpty())
+                    textInputLayout.error = validationResult.validationMessages[0]
             }
         }
 }

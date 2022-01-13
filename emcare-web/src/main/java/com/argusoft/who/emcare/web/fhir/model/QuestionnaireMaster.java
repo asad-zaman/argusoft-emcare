@@ -10,8 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "emcare_resources")
-public class EmcareResource extends EntityAuditInfo implements Serializable {
+@Table(name = "questionnaire_master")
+public class QuestionnaireMaster extends EntityAuditInfo implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -20,11 +20,11 @@ public class EmcareResource extends EntityAuditInfo implements Serializable {
     @Column(name = "text", columnDefinition = "TEXT")
     private String text;
     
-    @Column(name = "type", columnDefinition = "TEXT")
-    private String type;
-    
-    @Column(name = "resource_id")
+    @Column(name = "resource_id", columnDefinition = "TEXT")
     private String resourceId;
+
+    @Column(name = "version", columnDefinition = "TEXT")
+    private String version;
 
     public Integer getId() {
         return id;
@@ -32,6 +32,14 @@ public class EmcareResource extends EntityAuditInfo implements Serializable {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+    
+    public String getResourceId() {
+        return resourceId;
+    }
+
+    public void setResourceId(String resourceId) {
+        this.resourceId = resourceId;
     }
 
     public String getText() {
@@ -42,20 +50,12 @@ public class EmcareResource extends EntityAuditInfo implements Serializable {
         this.text = text;
     }
 
-    public String getType() {
-        return type;
+    public String getVersion() {
+        return version;
     }
 
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getResourceId() {
-        return resourceId;
-    }
-
-    public void setResourceId(String resourceId) {
-        this.resourceId = resourceId;
+    public void setVersion(String version) {
+        this.version = version;
     }
 
 }

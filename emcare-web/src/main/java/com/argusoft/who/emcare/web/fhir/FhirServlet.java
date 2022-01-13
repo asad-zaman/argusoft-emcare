@@ -20,6 +20,9 @@ public class FhirServlet extends RestfulServer {
 
     @Autowired
     private PatientResourceProvider patientResourceProvider;
+    
+    @Autowired
+    private QuestionnaireResourceProvider questionnaireResourceProvider;
 
     @Override
     protected void initialize() throws ServletException {
@@ -34,6 +37,7 @@ public class FhirServlet extends RestfulServer {
     public void setPostResourceProviders() {
         List<IResourceProvider> resourceProviders = new ArrayList<>();
         resourceProviders.add(patientResourceProvider);
+        resourceProviders.add(questionnaireResourceProvider);
         setResourceProviders(resourceProviders);
     }
 

@@ -14,6 +14,7 @@ class PreferenceManager(private val sharedPreferences: EncPref) : Preference {
         private const val USER = "USER"
         private const val TOKEN = "TOKEN"
         private const val LOGGED_IN_USER = "LOGGED_IN_USER"
+        private const val EMCARE_LAST_SYNC_TIME_STAMP = "EMCARE_LAST_SYNC_TIME_STAMP"
     }
 
     override fun setLogin() {
@@ -46,6 +47,10 @@ class PreferenceManager(private val sharedPreferences: EncPref) : Preference {
 
     override fun getLoggedInUser(): LoggedInUser? {
         return sharedPreferences.getString(LOGGED_IN_USER).orEmpty { "{}" }.fromJson<LoggedInUser>()
+    }
+
+    override fun writeLastSyncTimestamp(timestamp: String) {
+        sharedPreferences.putString(EMCARE_LAST_SYNC_TIME_STAMP, timestamp)
     }
 
     override fun clear() {

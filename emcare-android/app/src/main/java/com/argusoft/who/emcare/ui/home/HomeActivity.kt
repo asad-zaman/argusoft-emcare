@@ -33,7 +33,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
     private val signUpViewModel: SignUpViewModel by viewModels()
 
     override fun initView() {
-        signUpViewModel.getLocationsAndRoles()
+//        signUpViewModel.getLocationsAndRoles()
         val drawerLayout: DrawerLayout = binding.drawerLayout
         val navView: NavigationView = binding.navView
         navHostFragment = supportFragmentManager.findFragmentById(R.id.navHostFragment) as NavHostFragment
