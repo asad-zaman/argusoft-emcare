@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ToastrService } from 'ngx-toastr';
 import { LocationService } from 'src/app/root/services/location.service';
 import { RoleManagementService } from 'src/app/root/services/role-management.service';
 import { UserManagementService } from 'src/app/root/services/user-management.service';
+import { ToasterService } from 'src/app/shared';
 import { MustMatch } from 'src/app/shared/validators/must-match.validator';
 
 @Component({
@@ -28,7 +28,7 @@ export class ManageUserComponent implements OnInit {
     private readonly userService: UserManagementService,
     private readonly roleService: RoleManagementService,
     private readonly locationService: LocationService,
-    private readonly toastr: ToastrService
+    private readonly toasterService: ToasterService
   ) { }
 
   ngOnInit(): void {
@@ -114,7 +114,7 @@ export class ManageUserComponent implements OnInit {
           "regRequestFrom": "web"
         }
         this.userService.updateUser(data, this.editId).subscribe(res => {
-          this.toastr.success('User updated successfully!!', 'EMCARE');
+          this.toasterService.showSuccess('User updated successfully!', 'EMCARE');
           this.showUser();
         });
       } else {
@@ -128,7 +128,7 @@ export class ManageUserComponent implements OnInit {
           "regRequestFrom": "web"
         }
         this.userService.createUser(data).subscribe(res => {
-          this.toastr.success('User added successfully!!', 'EMCARE');
+          this.toasterService.showSuccess('User added successfully!', 'EMCARE');
           this.showUser();
         });
       }

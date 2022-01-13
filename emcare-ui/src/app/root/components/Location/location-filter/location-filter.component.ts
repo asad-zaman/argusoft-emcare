@@ -38,8 +38,8 @@ export class LocationFilterComponent implements OnInit {
 
   getAllLocations() {
     this.locationService.getAllLocations().subscribe((res: Array<Object>) => {
-      if (res && res['list']) {
-        const data = res['list'].find(el => el['parent'] === 0);
+      if (res) {
+        const data = res.find(el => el['parent'] === 0);
         this.getAllLocationsByType(data['type'], true);
       }
     })

@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ToastrService } from 'ngx-toastr';
 import { LocationService } from 'src/app/root/services/location.service';
-
+import { ToasterService } from 'src/app/shared';
 @Component({
   selector: 'app-location-management',
   templateUrl: './location-management.component.html',
@@ -23,7 +22,7 @@ export class LocationManagementComponent implements OnInit {
     private readonly router: Router,
     private readonly route: ActivatedRoute,
     private readonly locationService: LocationService,
-    private readonly toastr: ToastrService
+    private readonly toasterService: ToasterService
   ) { }
 
   ngOnInit(): void {
@@ -96,7 +95,7 @@ export class LocationManagementComponent implements OnInit {
         }
         this.locationService.updateLocationById(data).subscribe(res => {
           if (res) {
-            this.toastr.success('Location updated successfully!!', 'EMCARE');
+            this.toasterService.showSuccess('Location updated successfully!', 'EMCARE');
             this.showLocation();
           }
         });
@@ -108,7 +107,7 @@ export class LocationManagementComponent implements OnInit {
         }
         this.locationService.createLocation(data).subscribe(res => {
           if (res) {
-            this.toastr.success('Location added successfully!!', 'EMCARE');
+            this.toasterService.showSuccess('Location added successfully!', 'EMCARE');
             this.showLocation();
           }
         });

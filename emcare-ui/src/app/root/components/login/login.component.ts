@@ -1,9 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { AuthenticationService } from 'src/app/shared';
+import { AuthenticationService, ToasterService } from 'src/app/shared';
 import { Router } from '@angular/router';
-import { ToastrService } from 'ngx-toastr';
-
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -21,7 +19,7 @@ export class LoginComponent implements OnInit {
     private readonly formBuilder: FormBuilder,
     private readonly authService: AuthenticationService,
     private readonly router: Router,
-    private readonly toastr: ToastrService
+    private readonly toasterService: ToasterService
   ) { }
 
   ngOnInit() {
@@ -55,7 +53,7 @@ export class LoginComponent implements OnInit {
             localStorage.setItem('refresh_token', JSON.stringify(data.refresh_token));
             localStorage.setItem('refresh_token_expiry_time', JSON.stringify(refreshTokenexpiration));
             this.router.navigate(["/showUsers"]);
-            this.toastr.success('Welcome to EmCare!!');
+            this.toasterService.showSuccess('Welcome to EmCare!!');
             this.authService.setIsLoggedIn(true);
           }
         },

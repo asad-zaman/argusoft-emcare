@@ -6,21 +6,21 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class ToasterService {
 
-  constructor(private toastr: ToastrService) { }
+  constructor(private toaster: ToastrService) { }
 
-  showSuccess(message, title) {
-    this.toastr.success(message, title)
+  showSuccess(message, title?) {
+    this.toaster.success(message, title);
   }
 
   showError(message, title) {
-    this.toastr.error(message, title)
+    this.toaster.error(message, title);
   }
 
   showInfo(message, title) {
-    this.toastr.info(message, title)
+    this.toaster.info(message, title);
   }
 
   showWarning(message, title) {
-    this.toastr.warning(message, title)
+    this.toaster.warning(message, title);
   }
 }

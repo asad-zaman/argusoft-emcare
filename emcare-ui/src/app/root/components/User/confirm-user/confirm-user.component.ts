@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { ToastrService } from 'ngx-toastr';
 import { UserManagementService } from 'src/app/root/services/user-management.service';
-
+import { ToasterService } from 'src/app/shared';
 @Component({
   selector: 'app-confirm-user',
   templateUrl: './confirm-user.component.html',
@@ -19,7 +17,7 @@ export class ConfirmUserComponent implements OnInit {
   isAPIBusy: boolean = true;
 
   constructor(
-    private readonly toastr: ToastrService,
+    private readonly toasterService: ToasterService,
     private readonly userService: UserManagementService
   ) { }
 
@@ -60,7 +58,7 @@ export class ConfirmUserComponent implements OnInit {
       "isEnabled": this.isApproveUser
     }
     this.userService.updateUserStatus(data).subscribe(res => {
-      this.toastr.success('User approved successfully!!', 'EMCARE');
+      this.toasterService.showSuccess('User approved successfully!', 'EMCARE');
       this.getAllSignedUpUsers();
     });
     this.showConfirmDialogFlag = false;
