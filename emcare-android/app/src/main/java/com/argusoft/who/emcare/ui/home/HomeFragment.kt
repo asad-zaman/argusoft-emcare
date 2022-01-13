@@ -5,6 +5,7 @@ import android.view.View
 import androidx.fragment.app.viewModels
 import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.databinding.FragmentHomeBinding
+import com.argusoft.who.emcare.sync.SyncViewModel
 import com.argusoft.who.emcare.ui.common.base.BaseFragment
 import com.argusoft.who.emcare.ui.common.dashboardList
 import com.argusoft.who.emcare.ui.home.patient.PatientViewModel
@@ -20,7 +21,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class HomeFragment : BaseFragment<FragmentHomeBinding>() {
 
-    private val patientViewModel: PatientViewModel by viewModels()
+    private val syncViewModel: SyncViewModel by viewModels()
     private lateinit var glideRequests: GlideRequests
     private lateinit var homeAdapter: HomeAdapter
 
@@ -45,7 +46,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
         binding.headerLayout.toolbar.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.action_sync -> {
-                    patientViewModel.syncPatients()
+                    syncViewModel.syncPatients()
                 }
             }
             return@setOnMenuItemClickListener true
@@ -53,7 +54,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
     }
 
     override fun initObserver() {
-        observeNotNull(patientViewModel.syncState) {
+        observeNotNull(syncViewModel.syncState) {
             when (it) {
                 is State.Started -> requireContext().showToast(messageResId = R.string.msg_sync_started)
                 is State.Finished -> requireContext().showToast(messageResId = R.string.msg_sync_successfully)
