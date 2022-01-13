@@ -136,12 +136,11 @@ public class PatientResourceProvider implements IResourceProvider {
 
         Integer versionId = 1;
 
-        if (thePatient.getMeta() == null || thePatient.getMeta().getVersionId() == null) {
-            thePatient.setMeta(m);
-        } else {
+        if (thePatient.getMeta() != null && thePatient.getMeta().getVersionId() != null) {
             versionId = Integer.parseInt(thePatient.getMeta().getVersionId()) + 1;
             m.setVersionId(String.valueOf(versionId));
         }
+        thePatient.setMeta(m);
 
         String patientString = parser.encodeResourceToString(thePatient);
         String patientId = thePatient.getIdElement().getIdPart();
@@ -203,8 +202,6 @@ public class PatientResourceProvider implements IResourceProvider {
     @Update
     public MethodOutcome updateRelatedPerson(@IdParam IdType theId, @ResourceParam RelatedPerson theRelatedPerson) {
 
-        String relatedPersonString = parser.encodeResourceToString(theRelatedPerson);
-
         //Adding meta to the related person resource
         Meta m = new Meta();
         m.setVersionId("1");
@@ -212,13 +209,13 @@ public class PatientResourceProvider implements IResourceProvider {
 
         Integer versionId = 1;
 
-        if (theRelatedPerson.getMeta() == null || theRelatedPerson.getMeta().getVersionId() == null) {
-            theRelatedPerson.setMeta(m);
-        } else {
+        if (theRelatedPerson.getMeta() != null && theRelatedPerson.getMeta().getVersionId() != null) {
             versionId = Integer.parseInt(theRelatedPerson.getMeta().getVersionId()) + 1;
             m.setVersionId(String.valueOf(versionId));
         }
+        theRelatedPerson.setMeta(m);
 
+        String relatedPersonString = parser.encodeResourceToString(theRelatedPerson);
         String relatedPersonId = theRelatedPerson.getIdElement().getIdPart();
 
         EmcareResource emcareResource = emcareResourceService.findByResourceId(relatedPersonId);
