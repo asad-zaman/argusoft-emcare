@@ -16,7 +16,6 @@ export class AppComponent implements OnInit {
   isLocationDropdownOpen: boolean = false;
   userCharLogo: string;
   HTTPActivity: boolean;
-  user: any;
   featureList: any = [];
   isLoggedIn: boolean = false;
 
@@ -42,6 +41,11 @@ export class AppComponent implements OnInit {
     this.authenticationService.getIsLoggedIn().subscribe(result => {
       if (result) {
         this.getFeatureList();
+      }
+    });
+    this.authenticationService.getFeatures().subscribe(result => {
+      if(result) {
+        this.featureList = result;
       }
     })
   }
@@ -87,8 +91,7 @@ export class AppComponent implements OnInit {
   getFeatureList() {
     this.authenticationService.getLoggedInUser().subscribe(res => {
       if (res) {
-        this.user = res;
-        this.featureList = this.user.feature.map(f => f.menu_name);
+        this.authenticationService.setFeatures(res.feature.map(f => f.menu_name));
       }
     })
   }
