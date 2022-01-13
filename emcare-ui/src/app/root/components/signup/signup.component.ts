@@ -4,7 +4,7 @@ import { AuthenticationService } from 'src/app/shared';
 import { Router } from '@angular/router';
 import { first } from 'rxjs/operators';
 import { MustMatch } from 'src/app/shared/validators/must-match.validator';
-
+import { ToastrService } from 'ngx-toastr';
 @Component({
   selector: 'app-signup',
   templateUrl: './signup.component.html',
@@ -21,9 +21,10 @@ export class SignupComponent implements OnInit {
   roleArr: any = [];
 
   constructor(
-    private formBuilder: FormBuilder,
-    private authService: AuthenticationService,
-    private router: Router
+    private readonly formBuilder: FormBuilder,
+    private readonly authService: AuthenticationService,
+    private readonly router: Router,
+    private readonly toastr: ToastrService
   ) { }
 
   ngOnInit() {
@@ -43,7 +44,7 @@ export class SignupComponent implements OnInit {
       role: ['', Validators.required]
     }, {
       validator: MustMatch('password', 'confirmPassword')
-  });
+    });
   }
 
   getAllLocations() {
@@ -72,21 +73,22 @@ export class SignupComponent implements OnInit {
     if (this.signupForm.invalid || !!this.error) {
       return;
     }
-    this.authService.signup(this.signupForm.value.firstname, this.signupForm.value.lastname, 
+    this.authService.signup(this.signupForm.value.firstname, this.signupForm.value.lastname,
       this.signupForm.value.username, this.signupForm.value.password,
       this.signupForm.value.location, this.signupForm.value.role
-      )
+    )
       .pipe(first())
       .subscribe(
         _data => {
           this.router.navigate(["/login"]);
+          this.toastr.success('User added successfully!!');
         },
         error => {
-          if(error.status == 400){
+          if (error.status == 400) {
             this.error = error['error']['errorMessage'];
-          } 
-          //TODO: Add toaster for email already registered
+          }
           this.loading = false;
+          this.toastr.error('Email already registered!!');
         });
   }
 

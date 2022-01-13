@@ -10,7 +10,10 @@
           <div class="mb-3">
             <label class="form-label">Role Name</label>
             <input class="form-control custom-input" formControlName="name" type="text" id="name"
-              placeholder="Enter Role name">
+              placeholder="Enter Role name" [ngClass]="{ 'is-invalid': submitted && f.name.errors }">
+            <div *ngIf="submitted && f.name.errors" class="invalid-feedback">
+              <div class="cst-error-style" *ngIf="f.name.errors.required">*Role name is required</div>
+            </div>
           </div>
         </div>
         <div class="col-12 col-sm-6">

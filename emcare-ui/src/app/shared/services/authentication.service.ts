@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
@@ -9,11 +9,12 @@ import { environment } from 'src/environments/environment';
 @Injectable({ providedIn: 'root' })
 export class AuthenticationService {
 
-    loginURL = `http://192.1.200.197:8180`;
+    loginURL = `https://emcare.argusoft.com`;
     backendURL = `${environment.apiUrl}`;
     userInfo = new BehaviorSubject(null);
     jwtHelper = new JwtHelperService();
     userKey = 'sample-login-page';
+    private isLoggedIn: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
     constructor(private http: HttpClient, private router: Router) {
         this.loadUserInfo();
@@ -79,8 +80,16 @@ export class AuthenticationService {
         return this.http.post<any>(`http:localhost:4200/users/revoke-token`, {}, { withCredentials: true });
     }
 
+    getIsLoggedIn(): Observable<boolean> {
+        return this.isLoggedIn;
+    }
+
+    setIsLoggedIn(loggedIn: boolean): void {
+        this.isLoggedIn.next(loggedIn);
+    }
+
     refreshToken() {
-        const url = `${this.loginURL}/auth/realms/emcare_demo/protocol/openid-connect/token`;
+        const url = `${this.loginURL}/auth/realms/emcare/protocol/openid-connect/token`;
         const body = new HttpParams()
             .set('grant_type', 'password')
             .set('password', 'argusadmin')

@@ -1,5 +1,7 @@
 package com.argusoft.who.emcare.web.device.service.impl;
 
+import com.argusoft.who.emcare.web.common.constant.CommonConstant;
+import com.argusoft.who.emcare.web.common.dto.PageDto;
 import com.argusoft.who.emcare.web.config.KeyCloakConfig;
 import com.argusoft.who.emcare.web.device.dao.DeviceRepository;
 import com.argusoft.who.emcare.web.device.dto.DeviceDto;
@@ -14,6 +16,10 @@ import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.resource.UserResource;
 import org.keycloak.representations.idm.UserSessionRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -43,7 +49,7 @@ public class DeviceServiceImpl implements DeviceService {
     @Override
     public ResponseEntity<Object> addNewDevice(DeviceDto deviceDto) {
         String userId = emCareSecurityUser.getLoggedInUserId();
-        DeviceMaster oldDevice = deviceRepository.getDeviceByImei(deviceDto.getImeiNumber());
+        DeviceMaster oldDevice = deviceRepository.getDeviceByDeviceUUID(deviceDto.getDeviceUUID());
         if (oldDevice == null) {
             DeviceMaster newDevice = DeviceMapper.getDeviceMatserFromDto(deviceDto, userId);
             newDevice = deviceRepository.save(newDevice);
@@ -116,6 +122,24 @@ public class DeviceServiceImpl implements DeviceService {
         List<DeviceMaster> allDevice = deviceRepository.findAll();
         allDevice.forEach(deviceMaster -> list.add(DeviceMapper.getDeviceWithUser(deviceMaster, allUsers)));
         return ResponseEntity.ok(list);
+    }
+
+    @Override
+    public ResponseEntity<Object> getDevicePage(HttpServletRequest request, Integer pageNo, String orderBy, String order) {
+        List<UserListDto> allUsers = userService.getAllUser(request);
+        List<DeviceWithUserDetails> list = new ArrayList<>();
+        if (orderBy.equalsIgnoreCase("null")) {
+            orderBy = "deviceName";
+        }
+        Sort sort = order.equalsIgnoreCase(CommonConstant.DESC) ? Sort.by(orderBy).descending() : Sort.by(orderBy).ascending();
+        Pageable page = PageRequest.of(pageNo, CommonConstant.PAGE_SIZE, !sort.isEmpty() ? sort : null);
+        Page<DeviceMaster> allDevice = deviceRepository.findAll(page);
+        allDevice.forEach(deviceMaster -> list.add(DeviceMapper.getDeviceWithUser(deviceMaster, allUsers)));
+
+        PageDto pageDto = new PageDto();
+        pageDto.setList(list);
+        pageDto.setTotalCount(deviceRepository.count());
+        return ResponseEntity.ok(pageDto);
     }
 
 }

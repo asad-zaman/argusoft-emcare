@@ -55,4 +55,8 @@ export class UserManagementService {
   getUserByLocationId(id) {
     return this.http.get(`${this.userURL}/locationId/${id}`, this.getHeaders())
   }
+
+  updatePassword(user, id) {
+    return this.http.put(`${this.userURL}/update/password/${id}`, user, this.getHeaders());
+  }
 }

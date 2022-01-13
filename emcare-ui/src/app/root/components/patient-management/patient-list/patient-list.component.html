@@ -9,12 +9,12 @@
     </div>
   </div>
   <!--Table-->
-  <div class="table-responsive">
+  <div *ngIf="!isAPIBusy" class="table-responsive">
     <table class="data-table">
       <thead>
         <tr>
           <th>No.</th>
-          <th>Identifier.</th>
+          <th>Identifier</th>
           <th>Name</th>
           <th>Gender</th>
           <th>Date of Birth</th>
@@ -23,7 +23,7 @@
         </tr>
       </thead>
       <tbody>
-        <ng-container *ngIf="!filteredPatients || filteredPatients.length > 0; else noRecords">
+        <ng-container *ngIf="filteredPatients && filteredPatients.length > 0; else noRecords">
           <ng-container *ngFor="let patient of filteredPatients; let i=index">
             <tr>
               <td>{{i+1}}</td>
@@ -120,7 +120,7 @@
           </table>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-danger" (click)="closePopup()">
+          <button type="button" class="btn btn-red" (click)="closePopup()">
             Close
           </button>
         </div>

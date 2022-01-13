@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import { LocationService } from 'src/app/root/services/location.service';
 
 @Component({
@@ -15,12 +16,14 @@ export class LocationManagementComponent implements OnInit {
   editId: string;
   locationArr: any;
   locationTypeArr: any;
+  submitted: boolean;
 
   constructor(
     private readonly formBuilder: FormBuilder,
     private readonly router: Router,
     private readonly route: ActivatedRoute,
-    private readonly locationService: LocationService
+    private readonly locationService: LocationService,
+    private readonly toastr: ToastrService
   ) { }
 
   ngOnInit(): void {
@@ -77,7 +80,12 @@ export class LocationManagementComponent implements OnInit {
     });
   }
 
+  get f() {
+    return this.locationForm.controls;
+  }
+
   saveData() {
+    this.submitted = true;
     if (this.locationForm.valid) {
       if (this.isEdit) {
         const data = {
@@ -88,6 +96,7 @@ export class LocationManagementComponent implements OnInit {
         }
         this.locationService.updateLocationById(data).subscribe(res => {
           if (res) {
+            this.toastr.success('Location updated successfully!!', 'EMCARE');
             this.showLocation();
           }
         });
@@ -99,6 +108,7 @@ export class LocationManagementComponent implements OnInit {
         }
         this.locationService.createLocation(data).subscribe(res => {
           if (res) {
+            this.toastr.success('Location added successfully!!', 'EMCARE');
             this.showLocation();
           }
         });

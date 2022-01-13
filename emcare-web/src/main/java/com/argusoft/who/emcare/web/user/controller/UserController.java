@@ -1,16 +1,15 @@
 package com.argusoft.who.emcare.web.user.controller;
 
+import com.argusoft.who.emcare.web.common.dto.PageDto;
 import com.argusoft.who.emcare.web.location.service.LocationService;
 import com.argusoft.who.emcare.web.user.dto.*;
 import com.argusoft.who.emcare.web.user.service.UserService;
-import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 
 /**
  * @author jay
@@ -34,6 +33,12 @@ public class UserController {
     @GetMapping("/user/all")
     public ResponseEntity<Object> getAllUser(HttpServletRequest request) {
         return ResponseEntity.ok(userService.getAllUser(request));
+    }
+
+    @GetMapping("/user/page")
+    public ResponseEntity<Object> getUserPage(HttpServletRequest request,
+                                              @RequestParam(value = "pageNo") Integer pageNo) {
+        return ResponseEntity.ok(userService.getUserPage(request, pageNo));
     }
 
     @GetMapping("/user/signedup")
@@ -86,6 +91,11 @@ public class UserController {
     public ResponseEntity<Object> updateUser(@RequestBody UserDto userDto, @PathVariable(value = "userId") String userId) {
         return userService.updateUser(userDto, userId);
     }
+    
+    @PutMapping("/user/update/password/{userId}")
+    public ResponseEntity<Object> updatePassword(@RequestBody UserDto userDto, @PathVariable(value = "userId") String userId) {
+        return userService.updatePassword(userDto, userId);
+    }
 
     @GetMapping("/role/{roleId}")
     public ResponseEntity<Object> getRoleById(@PathVariable(value = "roleId") String roleId, HttpServletRequest request) {
@@ -103,7 +113,8 @@ public class UserController {
     }
 
     @GetMapping("user/locationId/{locationId}")
-    public List<UserListDto> getUsersUnderLocation(@PathVariable(value = "locationId") Integer locationId) {
-        return userService.getUsersUnderLocation(locationId);
+    public PageDto getUsersUnderLocation(@PathVariable(value = "locationId") Integer locationId,
+                                         @RequestParam(value = "pageNo") Integer pageNo) {
+        return userService.getUsersUnderLocation(locationId, pageNo);
     }
 }

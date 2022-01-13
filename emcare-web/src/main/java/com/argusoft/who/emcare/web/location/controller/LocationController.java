@@ -61,6 +61,13 @@ public class LocationController {
         return locationConfigService.getAllLocation();
     }
 
+    @GetMapping("/page")
+    public ResponseEntity<Object> getLocationPage(@RequestParam(value = "pageNo") Integer pageNo,
+                                                  @RequestParam(value = "orderBy", defaultValue = "name") String orderBy,
+                                                  @RequestParam(value = "order") String order) {
+        return locationConfigService.getLocationPage(pageNo, orderBy, order);
+    }
+
     @PutMapping("/update")
     public ResponseEntity<Object> updateLocation(@RequestBody LocationMasterDto locationMasterDto) {
         return locationConfigService.updateLocation(locationMasterDto);

@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  apiUrl: 'http://192.1.200.197:8080'
+  apiUrl: 'https://emcare.argusoft.com'
 };
 
 /*
