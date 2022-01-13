@@ -17,7 +17,7 @@ public interface UserLocationMappingRepository extends JpaRepository<UserLocatio
             "INNER JOIN child s ON s.id = l.parent)\n" +
             "SELECT ulm.user_id FROM child as ch \n" +
             "left join user_location_mapping as ulm  on ch.id = ulm.location_id\n" +
-            "where ulm.user_id is not null offset :pageNo limit :pageSize", nativeQuery = true)
+            "where ulm.user_id is not null offset :pageNo * :pageSize limit :pageSize", nativeQuery = true)
     public List<String> getAllUserOnChildLocationsWithPage(@Param("id") Integer id, @Param("pageNo") Integer pageNo, @Param("pageSize") Integer pageSize);
 
     @Query(value = "WITH RECURSIVE child AS \n" +
