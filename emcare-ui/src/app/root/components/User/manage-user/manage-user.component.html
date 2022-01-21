@@ -2,27 +2,39 @@
   <div class="form-wrapper">
     <form [formGroup]="userForm" name="userForm" novalidate>
       <div class="mb-5">
-        <h1 class="heading">{{ !isEdit ? 'Add User' : 'Update User'}}</h1>
+        <h1 class="heading">
+          <ng-container *ngIf="!isEdit; else UpdateUser">
+            {{'User.UserList.AddUser' | translate}}
+          </ng-container>
+          <ng-template #UpdateUser>
+            {{'User.UserList.UpdateUser' | translate}}
+          </ng-template>
+        </h1>
         <hr>
       </div>
       <div class="row">
         <div class="col-12 col-sm-6">
           <div class="mb-3">
-            <label class="form-label">First Name</label>
+            <label class="form-label">{{'User.UserList.TableColumns.FirstName' | translate}}'</label>
             <input class="form-control custom-input" formControlName="firstName" type="text" id="firstName"
-              placeholder="Enter first name" [ngClass]="{ 'is-invalid': submitted && f.firstName.errors }">
+              placeholder="{{'User.UserManagement.Placeholder.FirstName' | translate}}"
+              [ngClass]="{ 'is-invalid': submitted && f.firstName.errors }">
             <div *ngIf="submitted && f.firstName.errors" class="invalid-feedback">
-              <div class="cst-error-style" *ngIf="f.firstName.errors.required">*Firstname is required</div>
+              <div class="cst-error-style" *ngIf="f.firstName.errors.required">
+                {{'User.UserManagement.FirstNameReqMsg' | translate}}
+              </div>
             </div>
           </div>
         </div>
         <div class="col-12 col-sm-6">
           <div class="mb-3">
-            <label class="form-label">Last Name</label>
+            <label class="form-label">{{'User.UserList.TableColumns.LastName' | translate}}</label>
             <input class="form-control custom-input" formControlName="lastName" type="text" id="lastName"
-              placeholder="Enter last name" [ngClass]="{ 'is-invalid': submitted && f.lastName.errors }">
+              placeholder="{{'User.UserManagement.Placeholder.LastName' | translate}}"
+              [ngClass]="{ 'is-invalid': submitted && f.lastName.errors }">
             <div *ngIf="submitted && f.lastName.errors" class="invalid-feedback">
-              <div class="cst-error-style" *ngIf="f.lastName.errors.required">*LastName is required</div>
+              <div class="cst-error-style" *ngIf="f.lastName.errors.required">
+                {{'User.UserManagement.LastNameReqMsg' | translate}}</div>
             </div>
           </div>
         </div>
@@ -30,18 +42,21 @@
       <div *ngIf="!isEdit" class="row mt-3">
         <div class="col-12 col-sm-6">
           <div class="mb-3">
-            <label class="form-label">Email</label>
-            <input formControlName="email" id="email" placeholder="Enter Email" type="email"
+            <label class="form-label">{{'User.UserList.TableColumns.Email' | translate}}</label>
+            <input formControlName="email" id="email"
+              placeholder="{{'User.UserManagement.Placeholder.Email' | translate}}" type="email"
               class="form-control custom-input" [ngClass]="{ 'is-invalid': submitted && f.email.errors }">
             <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
-              <div class="cst-error-style" *ngIf="f.email.errors.required">*Email is required</div>
-              <div class="cst-error-style" *ngIf="f.email.errors.pattern">*Email is invalid</div>
+              <div class="cst-error-style" *ngIf="f.email.errors.required">
+                {{'User.UserManagement.EmailReqMsg' | translate}}</div>
+              <div class="cst-error-style" *ngIf="f.email.errors.pattern">
+                {{'User.UserManagement.EmailInvalidMsg' | translate}}</div>
             </div>
           </div>
         </div>
         <div class="col-12 col-sm-6">
           <div class="mb-3">
-            <label class="form-label">Role</label>
+            <label class="form-label">{{'User.UserList.TableColumns.Role' | translate}}</label>
             <select formControlName="role" [ngClass]="{ 'is-invalid': submitted && f.role.errors }"
               class="form-control custom-input" id="role">
               <ng-container *ngFor="let role of roles">
@@ -49,7 +64,8 @@
               </ng-container>
             </select>
             <div *ngIf="submitted && f.role.errors" class="invalid-feedback">
-              <div class="cst-error-style" *ngIf="f.role.errors.required">*Role is required</div>
+              <div class="cst-error-style" *ngIf="f.role.errors.required">
+                {{'User.UserManagement.RoleReqMsg' | translate}}</div>
             </div>
           </div>
         </div>
@@ -57,22 +73,27 @@
       <div *ngIf="!isEdit" class="row mt-3">
         <div class="col-12 col-sm-6">
           <div class="mb-3">
-            <label class="form-label">Password</label>
+            <label class="form-label">{{'User.UserList.PasswordModal.Password' | translate}}</label>
             <input type="password" formControlName="password" class="form-control custom-input"
+              placeholder="{{'User.UserManagement.Placeholder.Password' | translate}}"
               [ngClass]="{ 'is-invalid': submitted && f.password.errors }" />
             <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
-              <div class="cst-error-style" *ngIf="f.password.errors.required">*Password is required</div>
+              <div class="cst-error-style" *ngIf="f.password.errors.required">
+                {{'User.UserList.PasswordModal.PasswordRequiredMsg' | translate}}</div>
             </div>
           </div>
         </div>
         <div class="col-12 col-sm-6">
           <div class="mb-3">
-            <label class="form-label">Confirm Password</label>
+            <label class="form-label">{{'User.UserList.PasswordModal.ConfirmPassword' | translate}}</label>
             <input type="password" formControlName="confirmPassword" class="form-control custom-input"
+              placeholder="{{'User.UserManagement.Placeholder.ConfirmPassword' | translate}}"
               [ngClass]="{ 'is-invalid': submitted && f.confirmPassword.errors }" />
             <div *ngIf="submitted && f.confirmPassword.errors" class="invalid-feedback">
-              <div class="cst-error-style" *ngIf="f.confirmPassword.errors.required">*Confirm Password is required</div>
-              <div class="cst-error-style" *ngIf="f.confirmPassword.errors.mustMatch">*Passwords must match</div>
+              <div class="cst-error-style" *ngIf="f.confirmPassword.errors.required">
+                {{'User.UserList.PasswordModal.ConfirmPasswordRequiredMsg' | translate}}</div>
+              <div class="cst-error-style" *ngIf="f.confirmPassword.errors.mustMatch">
+                {{'User.UserList.PasswordModal.PasswordsMatchMsg' | translate}}</div>
             </div>
           </div>
         </div>
@@ -80,7 +101,7 @@
       <div class="row">
         <div class="col-12">
           <div class="mb-3">
-            <label class="form-label">Location</label>
+            <label class="form-label">{{'User.UserList.TableColumns.Location' | translate}}</label>
             <ng-container *ngIf="locationArr.length>0; else noLocation">
               <select class="form-control custom-input" [ngClass]="{ 'is-invalid': submitted && f.location.errors }"
                 formControlName="location" id="location">
@@ -91,10 +112,12 @@
             </ng-container>
             <ng-template #noLocation>
               <input formControlName="location" type="text" class="form-control custom-input"
-                [ngClass]="{ 'is-invalid': submitted && f.location.errors }" id="location" placeholder="Enter Location">
+                [ngClass]="{ 'is-invalid': submitted && f.location.errors }" id="location"
+                placeholder="{{'User.UserManagement.Placeholder.Location' | translate}}">
             </ng-template>
             <div *ngIf="submitted && f.location.errors" class="invalid-feedback">
-              <div class="cst-error-style" *ngIf="f.location.errors.required">*Location is required</div>
+              <div class="cst-error-style" *ngIf="f.location.errors.required">
+                {{'User.UserManagement.LocationReqMsg' | translate}}</div>
             </div>
           </div>
         </div>
@@ -102,10 +125,15 @@
       <div class="text-end mt-5">
         <hr>
         <button routerLink="/showUsers" class="btn-red btn mr-3">
-          <i class="bi bi-chevron-left"></i> Back
+          <i class="bi bi-chevron-left"></i> {{'Common.Back' | translate}}
         </button>
         <button (click)="saveData()" class="btn-red btn">
-          {{ !isEdit ? 'Create User' : 'Update User'}}
+          <ng-container *ngIf="!isEdit; else UpdateUser">
+            {{'User.UserList.AddUser' | translate}}
+          </ng-container>
+          <ng-template #UpdateUser>
+            {{'User.UserList.UpdateUser' | translate}}
+          </ng-template>
         </button>
       </div>
     </form>

@@ -1,0 +1,188 @@
+{
+  "User": {
+    "UserList": {
+      "Heading": "Utilisatrices",
+      "SearchPlaceholder": "Chercher",
+      "AddUser": "Ajouter un utilisateur",
+      "UpdateUser": "Mettre à jour l'utilisateur",
+      "ResetPassword": "réinitialiser le mot de passe",
+      "TableColumns": {
+        "ID": "identifiant",
+        "FirstName": "Prénom",
+        "LastName": "Nom de famille",
+        "Email": "E-mail",
+        "Role": "Rôle",
+        "Location": "Emplacement",
+        "Status": "Statut"
+      },
+      "Status": {
+        "Verifed": "Vérifié",
+        "NotVerified": "Non vérifié"
+      },
+      "PasswordModal": {
+        "Password": "Mot de passe",
+        "PasswordRequiredMsg": "Mot de passe requis",
+        "ConfirmPassword": "Confirmez le mot de passe",
+        "ConfirmPasswordRequiredMsg": "Confirmer le mot de passe est requis",
+        "PasswordsMatchMsg": "Les mots de passe doivent correspondre"
+      }
+    },
+    "UserManagement": {
+      "FirstNameReqMsg": "*Le prénom est requis",
+      "LastNameReqMsg": "*Le nom de famille est requis",
+      "EmailReqMsg": "*Le courriel est requis",
+      "EmailInvalidMsg": "*Le courriel est invalide",
+      "RoleReqMsg": "*Le rôle est requis",
+      "LocationReqMsg": "*L'emplacement est requis",
+      "Placeholder": {
+        "FirstName": "entrez votre prénom",
+        "LastName": "Entrer le nom de famille",
+        "Email": "Entrez l'e-mail",
+        "Location": "Entrez l'emplacement",
+        "Password": "Entrer le mot de passe",
+        "ConfirmPassword": "Entrez le mot de passe de confirmation"
+      }
+    }
+  },
+  "Role": {
+    "RoleList": {
+      "Roles": "Les rôles",
+      "Search": "Chercher0",
+      "AddRole": "Ajouter un rôle",
+      "ID": "identifiant",
+      "Name": "Nom",
+      "Description": "La description"
+    },
+    "RoleManagement": {
+      "AddRole": "Ajouter un rôle",
+      "UpdateRole": "Mettre à jour le rôle",
+      "RoleName": "Nom de rôle",
+      "RoleNamePlaceholder": "Entrez le nom du rôle",
+      "RoleNameReqMsg": "*Le nom du rôle est requis",
+      "Description": "La description",
+      "DescriptionPlaceholder": "Entrez la description"
+    }
+  },
+  "RegistrationRequests": {
+    "RegistrationRequests": "Demandes d'inscription",
+    "ID": "identifiant",
+    "Firstname": "Prénom",
+    "Lastname": "Nom de famille",
+    "Email": "E-mail",
+    "Location": "Emplacement",
+    "Role": "Rôle",
+    "ApproveUser": "Approuver l'utilisateur",
+    "DisapproveUser": "Refuser l'utilisateur",
+    "Ok": "D'accord",
+    "Cancel": "Annuler",
+    "ConfirmApproval": "Êtes-vous sûr de vouloir approuver cet utilisateur?",
+    "DisApproval": "Voulez-vous vraiment refuser cet utilisateur?"
+  },
+  "Patients": {
+    "Patients": "Les patients",
+    "No": "Non",
+    "Identifier": "Identifiant",
+    "Name": "Nom",
+    "Gender": "Le genre",
+    "DateofBirth": "Date de naissance",
+    "CaregiverName": "Nom du soignant",
+    "Location": "Emplacement",
+    "Modal": {
+      "PatientDetails": "Détails du patient",
+      "ID": "identifiant",
+      "GivenName": "Prénom",
+      "FamilyName": "Nom de famille",
+      "Caregiver": "Soignante",
+      "Address": "Adresse",
+      "PostalCode": "code postal",
+      "Close": "Fermer"
+    }
+  },
+  "Location": {
+    "LocationList": {
+      "ShowLocation": "Afficher l'emplacement",
+      "AddLocation": "Ajouter un emplacement",
+      "ID": "identifiant",
+      "LocationName": "Nom de la localisation",
+      "Type": "Taper",
+      "Parent": "parentale"
+    },
+    "LocationManagement": {
+      "AddLocation": "Ajouter un emplacement",
+      "UpdateLocation": "Mettre à jour l'emplacement",
+      "LocationType": "Type de lieu",
+      "LocationTypeReqMsg": "*Le type de lieu est requis",
+      "LocationName": "Nom de la localisation",
+      "LocationNamePlaceholder": "Entrez le nom de l'emplacement",
+      "LocationNameReqMsg": "*Le nom de l'emplacement est requis",
+      "Parent": "parentale",
+      "ParentPlceholder": "Entrer parent"
+    },
+    "LocationTypeList": {
+      "LocationType": "Type de lieu",
+      "AddLocationType": "Ajouter un type d'emplacement",
+      "ID": "identifiant",
+      "Name": "Nom",
+      "Type": "Taper"
+    },
+    "LocationTypeManagement": {
+      "AddLocationType": "Ajouter un type d'emplacement",
+      "UpdateLocationType": "Mettre à jour le type d'emplacement",
+      "LocationType": "Type de lieu",
+      "LocationTypePlaceholder": "Entrez le type",
+      "LocationTypeReqMsg": "*Le type de lieu est requis",
+      "Name": "Nom",
+      "NamePlaceholder": "Entrez le nom",
+      "NameReqMsg": "*Le nom du type d'emplacement est requis"
+    }
+  },
+  "Devices": {
+    "DeviceList": "Liste des périphériques",
+    "ID": "identifiant",
+    "DeviceUUID": "UUID de l'appareil",
+    "AndroidVersion": "Version Android",
+    "LoggedinUser": "Utilisateur connecté",
+    "AppUsage": "Utilisation de l'application"
+  },
+  "Features": {
+    "Features": "Caractéristiques",
+    "ID": "identifiant",
+    "FeatureName": "Nom de la fonctionnalité",
+    "UpdateFeatureConfig": "Mettre à jour la configuration des fonctionnalités",
+    "User": "Utilisatrice",
+    "Role": "Rôle",
+    "ADD": "AJOUTER",
+    "Type": "Taper",
+    "Name": "Nom"
+  },
+  "LocationFilter": {
+    "Filter": "Filtre",
+    "LocationFilter": "Filtre d'emplacement",
+    "Country": "Pays",
+    "State": "État",
+    "City": "Ville",
+    "Region": "Région",
+    "Other": "Autre",
+    "GetResults": "Obtenir des résultats"
+  },
+  "SidebarAndHeader": {
+    "Logout": "Se déconnecter",
+    "UserManagement": "Gestion des utilisateurs",
+    "Users": "Utilisatrices",
+    "Roles": "Les rôles",
+    "RegistrationRequest": "Demande d'inscription",
+    "ManagePatients": "Gérer les patients",
+    "ManageLocations": "Gérer les emplacements",
+    "Locations": "Emplacements",
+    "LocationType": "Type de lieu",
+    "ManageDevices": "Gérer les appareils",
+    "ManageFeatures": "Gérer les fonctionnalités"
+  },
+  "Common": {
+    "Filter": "Filtre",
+    "NoRecords": "Aucun enregistrement trouvé!!",
+    "Submit": "Soumettre",
+    "Back": "Retour",
+    "Search": "Chercher0"
+  }
+}

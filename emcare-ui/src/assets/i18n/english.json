@@ -1,0 +1,189 @@
+{
+  "User": {
+    "UserList": {
+      "Heading": "Users",
+      "SearchPlaceholder": "Search",
+      "AddUser": "Add User",
+      "UpdateUser": "Update User",
+      "ResetPassword": "Reset Password",
+      "TableColumns": {
+        "ID": "ID",
+        "FirstName": "First name",
+        "LastName": "Last name",
+        "Email": "Email",
+        "Role": "Role",
+        "Location": "Location",
+        "Status": "Status"
+      },
+      "Status": {
+        "Verifed": "Verifed",
+        "NotVerified": "Not Verified"
+      },
+      "PasswordModal": {
+        "Password": "Password",
+        "PasswordRequiredMsg": "Password is required",
+        "ConfirmPassword": "Confirm Password",
+        "ConfirmPasswordRequiredMsg": "Confirm Password is required",
+        "PasswordsMatchMsg": "Passwords must match"
+      }
+    },
+    "UserManagement": {
+      "FirstNameReqMsg": "*Firstname is required",
+      "LastNameReqMsg": "*LastName is required",
+      "EmailReqMsg": "*Email is required",
+      "EmailInvalidMsg": "*Email is invalid",
+      "RoleReqMsg": "*Role is required",
+      "LocationReqMsg": "*Location is required",
+      "Placeholder": {
+        "FirstName": "Enter first name",
+        "LastName": "Enter last name",
+        "Email": "Enter Email",
+        "Location": "Enter Location",
+        "Password": "Enter Password",
+        "ConfirmPassword": "Enter confirm password"
+      }
+    }
+  },
+  "Role": {
+    "RoleList": {
+      "Roles": "Roles",
+      "Search": "Search",
+      "AddRole": "Add Role",
+      "ID": "ID",
+      "Name": "Name",
+      "Description": "Description"
+    },
+    "RoleManagement": {
+      "AddRole": "Add Role",
+      "UpdateRole": "Update Role",
+      "RoleName": "Role Name",
+      "RoleNamePlaceholder": "Enter Role name",
+      "RoleNameReqMsg": "*Role name is required",
+      "Description": "Description",
+      "DescriptionPlaceholder": "Enter description"
+    }
+  },
+  "RegistrationRequests": {
+    "RegistrationRequests": "Registration Requests",
+    "ID": "ID",
+    "Firstname": "First name",
+    "Lastname": "Last name",
+    "Email": "Email",
+    "Location": "Location",
+    "Role": "Role",
+    "ApproveUser": "Approve User",
+    "DisapproveUser": "Disapprove User",
+    "Ok": "Ok",
+    "Cancel": "Cancel",
+    "ConfirmApproval": "Are you sure you want to approve this user?",
+    "DisApproval": "Are you sure you want to disapprove this user?"
+  },
+  "Patients": {
+    "Patients": "Patients",
+    "No": "No",
+    "Identifier": "Identifier",
+    "Name": "Name",
+    "Gender": "Gender",
+    "DateofBirth": "Date of Birth",
+    "CaregiverName": "Caregiver Name",
+    "Location": "Location",
+    "Modal": {
+      "PatientDetails": "Patient Details",
+      "ID": "ID",
+      "GivenName": "Given Name",
+      "FamilyName": "Family Name",
+      "Caregiver": "Caregiver",
+      "Address": "Address",
+      "PostalCode": "Postal Code",
+      "Close": "Close"
+    }
+  },
+  "Location": {
+    "LocationList": {
+      "ShowLocation": "Show Location",
+      "AddLocation": "Add Location",
+      "ID": "ID",
+      "LocationName": "Location Name",
+      "Type": "Type",
+      "Parent": "Parent"
+    },
+    "LocationManagement": {
+      "AddLocation": "Add Location",
+      "UpdateLocation": "Update Location",
+      "LocationType": "Location Type",
+      "LocationTypeReqMsg": "*Location type is required",
+      "LocationName": "Location Name",
+      "LocationNamePlaceholder": "Enter location name",
+      "LocationNameReqMsg": "*Location name is required",
+      "Parent": "Parent",
+      "ParentPlceholder": "Enter parent"
+    },
+    "LocationTypeList": {
+      "LocationType": "Location Type",
+      "AddLocationType": "Add Location Type",
+      "ID": "ID",
+      "Name": "Name",
+      "Type": "Type"
+    },
+    "LocationTypeManagement": {
+      "AddLocationType": "Add Location Type",
+      "UpdateLocationType": "Update Location Type",
+      "LocationType": "Location Type",
+      "LocationTypePlaceholder": "Enter type",
+      "LocationTypeReqMsg": "*Location type is required",
+      "Name": "Name",
+      "NamePlaceholder": "Enter name",
+      "NameReqMsg": "*Location type name is required"
+    }
+  },
+  "Devices": {
+    "DeviceList": "Device List",
+    "ID": "ID",
+    "DeviceUUID": "Device UUID",
+    "AndroidVersion": "Android Version",
+    "LoggedinUser": "Logged in User",
+    "AppUsage": "App Usage"
+  },
+  "Features": {
+    "Features": "Features",
+    "ID": "ID",
+    "FeatureName": "Feature name",
+    "UpdateFeatureConfig": "Update Feature Config",
+    "User": "User",
+    "Role": "Role",
+    "ADD": "ADD",
+    "Type": "Type",
+    "Name": "Name"
+  },
+  "LocationFilter": {
+    "Filter": "Filter",
+    "LocationFilter": "Location Filter",
+    "Country": "Country",
+    "State": "State",
+    "City": "City",
+    "Region": "Region",
+    "Other": "Other",
+    "GetResults": "Get Results"
+  },
+  "SidebarAndHeader": {
+    "Logout": "Logout",
+    "UserManagement": "User Management",
+    "Users": "Users",
+    "Roles": "Roles",
+    "RegistrationRequest": "Registration Request",
+    "ManagePatients": "Manage Patients",
+    "ManageLocations": "Manage Locations",
+    "Locations": "Locations",
+    "LocationType": "Location Type",
+    "ManageDevices": "Manage Devices",
+    "ManageFeatures": "Manage Features"
+  },
+  "Common": {
+    "Filter": "Filter",
+    "NoRecords": "No Records Found!!",
+    "Submit": "Submit",
+    "Back": "Back",
+    "Search": "Search",
+    "Logout": "Logout"
+  }
+}

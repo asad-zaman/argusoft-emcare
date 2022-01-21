@@ -1,22 +1,23 @@
 <div class="">
   <input type="checkbox" name="sideMenu" [(ngModel)]="sideMenu" class="openSidebarMenu" id="openSidebarMenu">
-  <label for="openSidebarMenu" class="sidebarIconToggle" [ngStyle]="{'right': this.currentUrl === 'showPatients' ? '100px' : '250px'}">
+  <label for="openSidebarMenu" class="sidebarIconToggle"
+    [ngStyle]="{'right': this.currentUrl === 'showPatients' ? '100px' : '250px'}">
     <div class="btn btn-red cst-filter-btn">
       <i class="bi bi-filter-circle mouse-pointer cst-filter-icon"></i>
-      Filter
+      {{'LocationFilter.Filter' | translate}}
     </div>
   </label>
   <div id="sidebarMenu">
     <form [formGroup]="locationFilterForm" name="locationFilterForm" novalidate>
       <div class="mb-5">
-        <h1 class="heading d-inline">Location Filter</h1>
+        <h1 class="heading d-inline">{{'LocationFilter.LocationFilter' | translate}}</h1>
         <i class="bi bi-x-lg close-filter mouse-pointer" (click)="this.sideMenu=false"></i>
         <hr>
       </div>
       <div class="row">
         <div *ngIf="dropdownActiveArr[0] == true" class="col-12 col-sm-6">
           <div class="mb-3">
-            <label class="form-label">Country</label>
+            <label class="form-label">{{'LocationFilter.Country' | translate}}</label>
             <select (click)="onClicked($event, 1)" class="form-control custom-input" formControlName="country"
               id="country">
               <ng-container *ngFor="let data of countryArr">
@@ -27,7 +28,7 @@
         </div>
         <div *ngIf="dropdownActiveArr[1] == true" class="col-12 col-sm-6">
           <div class="mb-3">
-            <label class="form-label">State</label>
+            <label class="form-label">{{'LocationFilter.State' | translate}}</label>
             <select (click)="onClicked($event, 2)" class="form-control custom-input" formControlName="state" id="state">
               <ng-container *ngFor="let data of stateArr">
                 <option value="{{data.id}}">{{data.name}}</option>
@@ -37,7 +38,7 @@
         </div>
         <div *ngIf="dropdownActiveArr[2] == true" class="col-12 col-sm-6">
           <div class="mb-3">
-            <label class="form-label">City</label>
+            <label class="form-label">{{'LocationFilter.City' | translate}}</label>
             <select (click)="onClicked($event, 3)" class="form-control custom-input" formControlName="city" id="city">
               <ng-container *ngFor="let data of cityArr">
                 <option value="{{data.id}}">{{data.name}}</option>
@@ -47,7 +48,7 @@
         </div>
         <div *ngIf="dropdownActiveArr[3] == true" class="col-12 col-sm-6">
           <div class="mb-3">
-            <label class="form-label">Region</label>
+            <label class="form-label">{{'LocationFilter.Region' | translate}}</label>
             <select (click)="onClicked($event, 4)" class="form-control custom-input" formControlName="region"
               id="region">
               <ng-container *ngFor="let data of regionArr">
@@ -58,7 +59,7 @@
         </div>
         <div *ngIf="dropdownActiveArr[4] == true" class="col-12 col-sm-6">
           <div class="mb-3">
-            <label class="form-label">Other</label>
+            <label class="form-label">{{'LocationFilter.Other' | translate}}</label>
             <select (click)="onClicked($event, 5)" class="form-control custom-input" formControlName="other" id="other">
               <ng-container *ngFor="let data of otherArr">
                 <option value="{{data.id}}">{{data.name}}</option>
@@ -70,7 +71,7 @@
       <div class="text-end mt-5">
         <hr>
         <button (click)="saveData()" class="btn-red btn">
-          Get Results
+          {{'LocationFilter.GetResults' | translate}}
         </button>
       </div>
     </form>

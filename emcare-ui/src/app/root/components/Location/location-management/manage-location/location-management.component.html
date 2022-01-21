@@ -2,13 +2,20 @@
   <div class="form-wrapper">
     <form [formGroup]="locationForm" name="locationForm" novalidate>
       <div class="mb-5">
-        <h1 class="heading">{{ !isEdit ? 'Add Location' : 'Update Location'}}</h1>
+        <h1 class="heading">
+          <ng-container *ngIf="!isEdit; else updateLocation">
+            {{'Location.LocationManagement.AddLocation' | translate}}
+          </ng-container>
+          <ng-template #updateLocation>
+            {{'Location.LocationManagement.UpdateLocation' | translate}}
+          </ng-template>
+        </h1>
         <hr>
       </div>
       <div class="row">
         <div class="col-12 col-sm-6">
           <div class="mb-3">
-            <label class="form-label">Location Type</label>
+            <label class="form-label">{{'Location.LocationManagement.LocationType' | translate}}</label>
             <select class="form-control custom-input" [ngClass]="{ 'is-invalid': submitted && f.locationType.errors }"
               formControlName="locationType" id="locationType">
               <ng-container *ngFor="let data of locationTypeArr">
@@ -16,23 +23,26 @@
               </ng-container>
             </select>
             <div *ngIf="submitted && f.locationType.errors" class="invalid-feedback">
-              <div class="cst-error-style" *ngIf="f.locationType.errors.required">*Location type is required</div>
+              <div class="cst-error-style" *ngIf="f.locationType.errors.required">
+                {{'Location.LocationManagement.LocationTypeReqMsg' | translate}}</div>
             </div>
           </div>
         </div>
         <div class="col-12 col-sm-6">
           <div class="mb-3">
-            <label class="form-label">Location Name</label>
+            <label class="form-label">{{'Location.LocationManagement.LocationName' | translate}}</label>
             <input formControlName="locationName" type="text" class="form-control custom-input" id="locationName"
-              placeholder="Enter location name" [ngClass]="{ 'is-invalid': submitted && f.locationName.errors }">
+              placeholder="{{'Location.LocationManagement.LocationNamePlaceholder' | translate}}"
+              [ngClass]="{ 'is-invalid': submitted && f.locationName.errors }">
             <div *ngIf="submitted && f.locationName.errors" class="invalid-feedback">
-              <div class="cst-error-style" *ngIf="f.locationName.errors.required">*Location name is required</div>
+              <div class="cst-error-style" *ngIf="f.locationName.errors.required">
+                {{'Location.LocationManagement.LocationNameReqMsg' | translate}}</div>
             </div>
           </div>
         </div>
         <div class="col-12 col-sm-6">
           <div class="mb-3">
-            <label class="form-label">Parent</label>
+            <label class="form-label">{{'Location.LocationManagement.Parent' | translate}}</label>
             <ng-container *ngIf="locationArr.length>0; else noLocation">
               <select class="form-control custom-input" formControlName="parent" id="parent">
                 <ng-container *ngFor="let data of locationArr">
@@ -42,7 +52,7 @@
             </ng-container>
             <ng-template #noLocation>
               <input formControlName="parent" type="text" class="form-control custom-input" id="parent"
-                placeholder="Enter parent">
+                placeholder="{{'Location.LocationManagement.ParentPlceholder' | translate}}">
             </ng-template>
           </div>
         </div>
@@ -50,10 +60,15 @@
       <div class="text-end mt-5">
         <hr>
         <button routerLink="/showLocation" class="btn-red btn mr-3">
-          <i class="bi bi-chevron-left"></i> Back
+          <i class="bi bi-chevron-left"></i> {{'Common.Back' | translate}}
         </button>
         <button (click)="saveData()" class="btn-red btn">
-          {{ !isEdit ? 'Create Location' : 'Update Location'}}
+          <ng-container *ngIf="!isEdit; else updateLocation">
+            {{'Location.LocationManagement.AddLocation' | translate}}
+          </ng-container>
+          <ng-template #updateLocation>
+            {{'Location.LocationManagement.UpdateLocation' | translate}}
+          </ng-template>
         </button>
       </div>
     </form>
