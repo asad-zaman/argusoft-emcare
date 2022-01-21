@@ -40,6 +40,7 @@ import { LocationFilterComponent } from './root/components/Location/location-fil
 import { NgxPaginationModule } from 'ngx-pagination';
 import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { BaseModule } from './base.module';
 
 @NgModule({
   declarations: [
@@ -78,7 +79,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     SharedModule,
     NgxPaginationModule,
     BrowserAnimationsModule,
-    ToastrModule.forRoot()
+    ToastrModule.forRoot(),
+    BaseModule.forRoot()
   ],
   providers: [
     AuthenticationService,

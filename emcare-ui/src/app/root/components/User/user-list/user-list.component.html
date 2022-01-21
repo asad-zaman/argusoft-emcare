@@ -1,14 +1,14 @@
 <app-location-filter (locationId)="getLocationId($event)"></app-location-filter>
 <div class="main-wrapper">
-  <h1 class="heading">Users</h1>
+  <h1 class="heading">{{'User.UserList.Heading' | translate}}</h1>
   <hr>
   <div class="row align-items-center mb-3">
     <div class="col-lg-3 col-xxl-2 col-md-5 position-relative">
       <input class="form-control custom-input h-40" id="exampleFormControlInput1" [(ngModel)]="searchString"
-        (input)="searchFilter()" placeholder="Search">
+        (input)="searchFilter()" placeholder="{{'User.UserList.SearchPlaceholder' | translate}}">
     </div>
     <div class="col text-end">
-      <button class="btn btn-red" routerLink="/addUser">+ Add User</button>
+      <button class="btn btn-red" routerLink="/addUser">+ {{'User.UserList.AddUser' | translate}}</button>
     </div>
   </div>
   <!--Table-->
@@ -16,13 +16,13 @@
     <table class="data-table">
       <thead>
         <tr>
-          <th>ID</th>
-          <th>First name</th>
-          <th>Last name</th>
-          <th>Email</th>
-          <th>Role</th>
-          <th>Location</th>
-          <th>Status</th>
+          <th>{{'User.UserList.TableColumns.ID' | translate}}</th>
+          <th>{{'User.UserList.TableColumns.FirstName' | translate}}</th>
+          <th>{{'User.UserList.TableColumns.LastName' | translate}}</th>
+          <th>{{'User.UserList.TableColumns.Email' | translate}}</th>
+          <th>{{'User.UserList.TableColumns.Role' | translate}}</th>
+          <th>{{'User.UserList.TableColumns.Location' | translate}}</th>
+          <th>{{'User.UserList.TableColumns.Status' | translate}}</th>
           <th></th>
         </tr>
       </thead>
@@ -38,7 +38,13 @@
               <td>{{user.realmRoles[0]}}</td>
               <td>{{user.locationName ? user.locationName : 'NA'}}</td>
               <td><span [ngClass]="(!!user.enabled) ? 'badges-red bg-green' : 'badges-red'">
-                  {{ !!user.enabled ? 'Verifed' : 'Not Verified'}}</span>
+                  <ng-container *ngIf="!!user.enabled; else NotVerified">
+                    {{'User.UserList.Status.Verifed' | translate}}
+                  </ng-container>
+                  <ng-template #NotVerified>
+                    {{'User.UserList.Status.NotVerified' | translate}}
+                  </ng-template>
+                </span>
               <td class="text-end">
                 <ul class="navigation" style="list-style-type: none;">
                   <li class="dropdown mt-3 cursor-pointer">
@@ -48,12 +54,12 @@
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                       <li (click)="updateUser(i)">
                         <a class="dropdown-item">
-                          <i class="bi bi-pencil font-size-16 mr-2"></i>Update User
+                          <i class="bi bi-pencil font-size-16 mr-2"></i>{{'User.UserList.UpdateUser' | translate}}
                         </a>
                       </li>
                       <li (click)="onResetPassword(i)">
                         <a class="dropdown-item">
-                          <i class="bi bi-pencil font-size-16 mr-2"></i>Reset Password
+                          <i class="bi bi-pencil font-size-16 mr-2"></i>{{'User.UserList.ResetPassword' | translate}}
                         </a>
                       </li>
                     </ul>
@@ -65,7 +71,7 @@
         </ng-container>
         <ng-template #noRecords>
           <div class="no-record">
-            No Records Found!!
+            {{'Common.NoRecords' | translate}}
           </div>
         </ng-template>
       </tbody>
@@ -80,7 +86,7 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h4 class="modal-title">Reset Password</h4>
+          <h4 class="modal-title">{{'User.UserList.ResetPassword' | translate}}</h4>
           <i class="bi bi-x font-size-20 text-end cursor-pointer" (click)="closeDialog()"></i>
         </div>
         <div class="modal-body">
@@ -88,11 +94,12 @@
             <div class="row mt-3">
               <div class="col-12">
                 <div class="mb-3">
-                  <label class="form-label">Password</label>
+                  <label class="form-label">{{'User.UserList.PasswordModal.Password' | translate}}</label>
                   <input type="password" formControlName="password" class="form-control custom-input"
                     [ngClass]="{ 'is-invalid': submitted && f.password.errors }" />
                   <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
-                    <div *ngIf="f.password.errors.required">Password is required</div>
+                    <div *ngIf="f.password.errors.required">
+                      {{'User.UserList.PasswordModal.PasswordRequiredMsg' | translate}}</div>
                   </div>
                 </div>
               </div>
@@ -100,19 +107,24 @@
             <div class="row">
               <div class="col-12 mt-3">
                 <div class="mb-3">
-                  <label class="form-label">Confirm Password</label>
+                  <label class="form-label">{{'User.UserList.PasswordModal.ConfirmPassword' | translate}}</label>
                   <input type="password" formControlName="confirmPassword" class="form-control custom-input"
                     [ngClass]="{ 'is-invalid': submitted && f.confirmPassword.errors }" />
                   <div *ngIf="submitted && f.confirmPassword.errors" class="invalid-feedback">
-                    <div *ngIf="f.confirmPassword.errors.required">Confirm Password is required</div>
-                    <div *ngIf="f.confirmPassword.errors.mustMatch">Passwords must match</div>
+                    <div *ngIf="f.confirmPassword.errors.required">
+                      {{'User.UserList.PasswordModal.ConfirmPasswordRequiredMsg' | translate}}
+                    </div>
+                    <div *ngIf="f.confirmPassword.errors.mustMatch">
+                      {{'User.UserList.PasswordModal.PasswordsMatchMsg' | translate}}
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
             <div class="row mt-3">
               <div class="col-12 col-sm-6 ml-auto">
-                <button (click)="updatePassword()" class="btn btn-red p-l-70 p-r-70 mb-5" style="width: 210px;">Submit</button>
+                <button (click)="updatePassword()" class="btn btn-red p-l-70 p-r-70 mb-5"
+                  style="width: 210px;">{{'Common.Submit' | translate}}</button>
               </div>
             </div>
           </form>

@@ -1,0 +1,188 @@
+{
+  "User": {
+    "UserList": {
+      "Heading": "उपयोगकर्ताओं",
+      "SearchPlaceholder": "खोज",
+      "AddUser": "उपयोगकर्ता जोड़ें",
+      "UpdateUser": "उपयोगकर्ता अपडेट करें",
+      "ResetPassword": "पासवर्ड रीसेट",
+      "TableColumns": {
+        "ID": "पहचान",
+        "FirstName": "पहला नाम",
+        "LastName": "अंतिम नाम",
+        "Email": "ईमेल",
+        "Role": "भूमिका",
+        "Location": "स्थान",
+        "Status": "स्थिति"
+      },
+      "Status": {
+        "Verifed": "सत्यापित",
+        "NotVerified": "प्रमाणित नहीं है"
+      },
+      "PasswordModal": {
+        "Password": "कुंजिका",
+        "PasswordRequiredMsg": "पासवर्ड की आवश्यकता है",
+        "ConfirmPassword": "पासवर्ड की पुष्टि कीजिये",
+        "ConfirmPasswordRequiredMsg": "पासवर्ड की पुष्टि करना आवश्यक है",
+        "PasswordsMatchMsg": "पासवर्डों को मेल खाना चाहिए"
+      }
+    },
+    "UserManagement": {
+      "FirstNameReqMsg": "*पहला नाम आवश्यक है",
+      "LastNameReqMsg": "*अंतिम नाम आवश्यक है",
+      "EmailReqMsg": "*ईमेल की जरूरत है",
+      "EmailInvalidMsg": "*ईमेल अमान्य है",
+      "RoleReqMsg": "*भूमिका आवश्यक है",
+      "LocationReqMsg": "*स्थान आवश्यक है",
+      "Placeholder": {
+        "FirstName": "पहला नाम दर्ज करें",
+        "LastName": "अंतिम नाम दर्ज करो",
+        "Email": "ईमेल दर्ज करें",
+        "Location": "स्थान दर्ज करें",
+        "Password": "पास वर्ड दर्ज करें",
+        "ConfirmPassword": "पासवर्ड की पुष्टि दर्ज करें"
+      }
+    }
+  },
+  "Role": {
+    "RoleList": {
+      "Roles": "भूमिकाएँ",
+      "Search": "खोज",
+      "AddRole": "भूमिका जोड़ें",
+      "ID": "पहचान",
+      "Name": "नाम",
+      "Description": "विवरण"
+    },
+    "RoleManagement": {
+      "AddRole": "भूमिका जोड़ें",
+      "UpdateRole": "अद्यतन भूमिका",
+      "RoleName": "भूमिका का नाम",
+      "RoleNamePlaceholder": "भूमिका का नाम दर्ज करें",
+      "RoleNameReqMsg": "*भूमिका नाम आवश्यक है",
+      "Description": "विवरण",
+      "DescriptionPlaceholder": "विवरण दर्ज करें"
+    }
+  },
+  "RegistrationRequests": {
+    "RegistrationRequests": "पंजीकरण अनुरोध",
+    "ID": "पहचान",
+    "Firstname": "पहला नाम",
+    "Lastname": "अंतिम नाम",
+    "Email": "ईमेल",
+    "Location": "स्थान",
+    "Role": "भूमिका",
+    "ApproveUser": "उपयोगकर्ता को स्वीकृत करें",
+    "DisapproveUser": "उपयोगकर्ता को अस्वीकृत करें",
+    "Ok": "ठीक",
+    "Cancel": "रद्द करें",
+    "ConfirmApproval": "क्या आप वाकई इस उपयोगकर्ता को स्वीकृति देना चाहते हैं?",
+    "DisApproval": "क्या आप वाकई इस उपयोगकर्ता को नामंज़ूर करना चाहते हैं?"
+  },
+  "Patients": {
+    "Patients": "मरीजों",
+    "No": "संख्या",
+    "Identifier": "पहचानकर्ता",
+    "Name": "नाम",
+    "Gender": "लिंग",
+    "DateofBirth": "जन्म की तारीख",
+    "CaregiverName": "देखभाल करने वाले का नाम",
+    "Location": "स्थान",
+    "Modal": {
+      "PatientDetails": "रोगी विवरण",
+      "ID": "पहचान",
+      "GivenName": "प्रदत्त नाम",
+      "FamilyName": "पारिवारिक नाम",
+      "Caregiver": "केयरगिवर",
+      "Address": "पता",
+      "PostalCode": "डाक कोड",
+      "Close": "बंद करे"
+    }
+  },
+  "Location": {
+    "LocationList": {
+      "ShowLocation": "स्थान दिखाएं",
+      "AddLocation": "स्थान जोड़ना",
+      "ID": "पहचान",
+      "LocationName": "स्थान का नाम",
+      "Type": "प्रकार",
+      "Parent": "मूल"
+    },
+    "LocationManagement": {
+      "AddLocation": "स्थान जोड़ना",
+      "UpdateLocation": "स्थान अपडेट करें",
+      "LocationType": "स्थान का प्रकार",
+      "LocationTypeReqMsg": "*स्थान प्रकार आवश्यक है",
+      "LocationName": "स्थान का नाम",
+      "LocationNamePlaceholder": "स्थान का नाम दर्ज करें",
+      "LocationNameReqMsg": "*स्थान का नाम आवश्यक है",
+      "Parent": "मूल",
+      "ParentPlceholder": "अभिभावक दर्ज करें"
+    },
+    "LocationTypeList": {
+      "LocationType": "स्थान का प्रकार",
+      "AddLocationType": "स्थान प्रकार जोड़ें",
+      "ID": "पहचान",
+      "Name": "नाम",
+      "Type": "प्रकार"
+    },
+    "LocationTypeManagement": {
+      "AddLocationType": "स्थान प्रकार जोड़ें",
+      "UpdateLocationType": "स्थान प्रकार अपडेट करें",
+      "LocationType": "स्थान का प्रकार",
+      "LocationTypePlaceholder": "टाइप दर्ज करें",
+      "LocationTypeReqMsg": "*स्थान प्रकार आवश्यक है",
+      "Name": "नाम",
+      "NamePlaceholder": "नाम दर्ज करें",
+      "NameReqMsg": "*स्थान प्रकार का नाम आवश्यक है"
+    }
+  },
+  "Devices": {
+    "DeviceList": "उपकरण सूची",
+    "ID": "पहचान",
+    "DeviceUUID": "डिवाइस यूयूआईडी",
+    "AndroidVersion": "Android संस्करण",
+    "LoggedinUser": "लॉग इन यूजर",
+    "AppUsage": "ऐप उपयोग"
+  },
+  "Features": {
+    "Features": "विशेषताएं",
+    "ID": "पहचान",
+    "FeatureName": "फ़ीचर का नाम",
+    "UpdateFeatureConfig": "फ़ीचर कॉन्फ़िग अपडेट करें",
+    "User": "उपयोगकर्ता",
+    "Role": "भूमिका",
+    "ADD": "जोड़ें",
+    "Type": "प्रकार",
+    "Name": "नाम"
+  },
+  "LocationFilter": {
+    "Filter": "फ़िल्टर",
+    "LocationFilter": "स्थान फ़िल्टर",
+    "Country": "देश",
+    "State": "राज्य",
+    "City": "शहर",
+    "Region": "क्षेत्र",
+    "Other": "अन्य",
+    "GetResults": "परिणाम प्राप्त करें"
+  },
+  "SidebarAndHeader": {
+    "Logout": "लॉग आउट",
+    "UserManagement": "उपयोगकर्ता प्रबंधन",
+    "Users": "उपयोगकर्ताओं",
+    "Roles": "भूमिकाएँ",
+    "RegistrationRequest": "पंजीकरण अनुरोध",
+    "ManagePatients": "मरीजों को प्रबंधित करें",
+    "ManageLocations": "स्थान प्रबंधित करें",
+    "Locations": "स्थानों",
+    "LocationType": "स्थान का प्रकार",
+    "ManageDevices": "डिवाइस प्रबंधित करें",
+    "ManageFeatures": "सुविधाओं को प्रबंधित करें"
+  },
+  "Common": {
+    "Filter": "फ़िल्टर",
+    "NoRecords": "कोई रिकॉर्ड नहीं मिला!!",
+    "Submit": "प्रस्तुत करना",
+    "Back": "पीछे",
+    "Search": "खोज"
+  }
+}

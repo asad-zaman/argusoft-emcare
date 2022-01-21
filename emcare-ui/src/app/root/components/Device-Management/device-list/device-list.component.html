@@ -1,10 +1,10 @@
 <div class="main-wrapper">
-  <h1 class="heading">Device List</h1>
+  <h1 class="heading">{{'Devices.DeviceList' | translate}}</h1>
   <hr>
   <div class="row align-items-center mb-3">
     <div class=" col-lg-3 col-xxl-2 col-md-5 position-relative">
       <input class="form-control custom-input h-40" id="exampleFormControlInput1" [(ngModel)]="searchString"
-        (input)="searchFilter()" placeholder="Search">
+        (input)="searchFilter()" placeholder="{{'Common.Search' | translate}}">
     </div>
   </div>
   <!--Table-->
@@ -12,11 +12,11 @@
     <table class="data-table">
       <thead>
         <tr>
-          <th>ID</th>
-          <th>Device UUID</th>
-          <th>Android Version</th>
-          <th>Logged in User</th>
-          <th>App Usage</th>
+          <th>{{'Devices.ID' | translate}}</th>
+          <th>{{'Devices.DeviceUUID' | translate}}</th>
+          <th>{{'Devices.AndroidVersion' | translate}}</th>
+          <th>{{'Devices.LoggedinUser' | translate}}</th>
+          <th>{{'Devices.AppUsage' | translate}}</th>
         </tr>
       </thead>
       <tbody>
@@ -40,7 +40,7 @@
         </ng-container>
         <ng-template #noRecords>
           <div class="no-record">
-            No Records Found!!
+            {{'Common.NoRecords' | translate}}
           </div>
         </ng-template>
       </tbody>
