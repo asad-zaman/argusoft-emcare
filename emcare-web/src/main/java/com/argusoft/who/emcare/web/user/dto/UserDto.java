@@ -12,6 +12,7 @@ public class UserDto {
     private String regRequestFrom;
     private Integer locationId;
     private String roleName;
+    private String language;
 
 
     public String getFirstName() {
@@ -68,5 +69,13 @@ public class UserDto {
 
     public void setRoleName(String roleName) {
         this.roleName = roleName;
+    }
+
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
     }
 }
