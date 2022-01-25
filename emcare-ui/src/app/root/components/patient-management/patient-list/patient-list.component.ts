@@ -1,4 +1,5 @@
 import { Component, OnInit } from "@angular/core";
+import { ToasterService } from "src/app/shared";
 import { FhirService } from "src/app/shared/services/fhir.service";
 
 @Component({
@@ -17,9 +18,12 @@ export class PatientListComponent implements OnInit {
     totalCount = 0;
     tableSize = 10;
     isAPIBusy: boolean = true;
+    isLocationFilterOn: boolean = false;
+    selectedId: any;
 
     constructor(
-        private readonly fhirService: FhirService
+        private readonly fhirService: FhirService,
+        private readonly toasterService: ToasterService
     ) { }
 
     ngOnInit(): void {
@@ -42,9 +46,24 @@ export class PatientListComponent implements OnInit {
         });
     }
 
+    getPatientsBasedOnLocationAndPageIndex(pageIndex) {
+        this.fhirService.getPatientsByLocationAndPageIndex(this.selectedId, pageIndex).subscribe(res => {
+            if (res) {
+                this.filteredPatients = [];
+                this.filteredPatients = res['list'];
+                this.totalCount = res['totalCount'];
+                this.isAPIBusy = false;
+            }
+        });
+    }
+
     onIndexChange(event) {
         this.currentPage = event;
-        this.getPatientsByPageIndex(event - 1);
+        if(this.isLocationFilterOn) {
+            this.getPatientsBasedOnLocationAndPageIndex(event - 1);
+        } else {
+            this.getPatientsByPageIndex(event - 1);
+        }
     }
 
     showPatientDetails(id) {
@@ -73,12 +92,19 @@ export class PatientListComponent implements OnInit {
         });
     }
 
+    resetPageIndex() {
+        this.currentPage = 0;
+    }
+
     getLocationId(data) {
-        const selectedId = data;
-        this.fhirService.getPatientByLocationId(selectedId).subscribe(res => {
-            if (res) {
-                this.filteredPatients = res;
-            }
-        })
+        this.selectedId = data;
+        if(this.selectedId) {
+            this.isLocationFilterOn = true;
+            this.resetPageIndex();
+            const pageIndex = this.currentPage == 0 ? this.currentPage : this.currentPage - 1;
+            this.getPatientsBasedOnLocationAndPageIndex(pageIndex);
+        } else {
+            this.toasterService.showInfo('Please select Location!', 'EMCARE');
+        }
     }
 }

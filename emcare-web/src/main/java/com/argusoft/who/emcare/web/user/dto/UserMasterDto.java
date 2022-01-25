@@ -10,6 +10,7 @@ public class UserMasterDto {
     private String userId;
     private String userName;
     private String email;
+    private String language;
     private LocationMaster location;
     private String[] roles;
     private List<Map<String, Object>> feature;
@@ -58,7 +59,17 @@ public class UserMasterDto {
         return feature;
     }
 
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
+    }
+
     public void setFeature(List<Map<String, Object>> feature) {
         this.feature = feature;
+
+
     }
 }
