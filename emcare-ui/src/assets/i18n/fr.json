@@ -183,6 +183,13 @@
     "NoRecords": "Aucun enregistrement trouvé!!",
     "Submit": "Soumettre",
     "Back": "Retour",
-    "Search": "Chercher0"
+    "Search": "Chercher",
+    "Logout": "Se déconnecter",
+    "EditProfile": "Editer le profil",
+    "SaveDetails": "Enregistrer les détails",
+    "Language": "Langue",
+    "French": "français",
+    "English": "Anglais",
+    "Hindi": "hindi"
   }
 }

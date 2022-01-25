@@ -19,6 +19,7 @@ export class LocationFilterComponent implements OnInit {
   @Output() locationId = new EventEmitter<any>();
   sideMenu = false;
   currentUrl: string;
+  currentLan;
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -34,6 +35,11 @@ export class LocationFilterComponent implements OnInit {
     this.currentUrl = urlArr[urlArr.length - 1];
     this.initLocationFilterForm();
     this.getAllLocations();
+    this.getAndSetCurrentLanguage();
+  }
+
+  getAndSetCurrentLanguage() {
+    this.currentLan = localStorage.getItem('language');
   }
 
   getAllLocations() {

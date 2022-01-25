@@ -1,0 +1,50 @@
+@import "./../../../../scss/variables";
+
+.cst-language {
+    list-style-type: none;
+    padding: 0;
+}
+
+.cst-language li {
+    float: left;
+    margin: 0 10px 0 0;
+    width: 100px;
+    height: 40px;
+    position: relative;
+    text-align: center;
+}
+
+.cst-language label,
+.cst-language input {
+    background: #ea6262;
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.cst-language input[type="radio"] {
+    opacity: 0.01;
+    z-index: 100;
+}
+
+.cst-language input[type="radio"]:checked + label,
+.Checked + label {
+    background: $color-dark-red;
+}
+
+.cst-language label {
+    padding: 5px;
+    border: 1px solid $color-gray-50;
+    cursor: pointer;
+    z-index: 90;
+    border-radius: 30px;
+    color: $color-white;
+    font-weight: 500;
+}
+
+.cst-language label:hover {
+    background: $color-dark-red;
+}
