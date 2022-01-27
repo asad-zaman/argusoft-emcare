@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { RoleManagementService } from 'src/app/root/services/role-management.service';
-
 @Component({
   selector: 'app-show-role',
   templateUrl: './show-role.component.html',
@@ -12,6 +11,7 @@ export class ShowRoleComponent implements OnInit {
   rolesArr: any;
   filteredRoles: any;
   searchString: string;
+  isAPIBusy: boolean = true;
 
   constructor(
     private readonly router: Router,
@@ -32,6 +32,7 @@ export class ShowRoleComponent implements OnInit {
       if (res) {
         this.rolesArr = res;
         this.filteredRoles = this.rolesArr;
+        this.isAPIBusy = false;
       }
     });
   }
@@ -51,5 +52,4 @@ export class ShowRoleComponent implements OnInit {
         || role.description?.toLowerCase().includes(lowerCasedSearchString))
     });
   }
-
 }

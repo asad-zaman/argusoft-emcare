@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { LocationService } from 'src/app/root/services/location.service';
 import { RoleManagementService } from 'src/app/root/services/role-management.service';
 import { UserManagementService } from 'src/app/root/services/user-management.service';
+import { ToasterService } from 'src/app/shared';
 import { MustMatch } from 'src/app/shared/validators/must-match.validator';
 
 @Component({
@@ -26,7 +27,8 @@ export class ManageUserComponent implements OnInit {
     private readonly route: ActivatedRoute,
     private readonly userService: UserManagementService,
     private readonly roleService: RoleManagementService,
-    private readonly locationService: LocationService
+    private readonly locationService: LocationService,
+    private readonly toasterService: ToasterService
   ) { }
 
   ngOnInit(): void {
@@ -38,7 +40,7 @@ export class ManageUserComponent implements OnInit {
     this.editId = routeParams.get('id');
     this.getAllLocations();
     if (this.editId) {
-      this.isEdit = true;      
+      this.isEdit = true;
       this.initUpdateForm();
     } else {
       this.getRoles();
@@ -77,7 +79,7 @@ export class ManageUserComponent implements OnInit {
         location: ['', Validators.required]
       }, {
         validator: MustMatch('password', 'confirmPassword')
-    });
+      });
     }
   }
 
@@ -102,7 +104,7 @@ export class ManageUserComponent implements OnInit {
   }
 
   saveData() {
-    this.submitted=true;
+    this.submitted = true;
     if (this.userForm.valid) {
       if (this.isEdit) {
         const data = {
@@ -112,6 +114,7 @@ export class ManageUserComponent implements OnInit {
           "regRequestFrom": "web"
         }
         this.userService.updateUser(data, this.editId).subscribe(res => {
+          this.toasterService.showSuccess('User updated successfully!', 'EMCARE');
           this.showUser();
         });
       } else {
@@ -125,6 +128,7 @@ export class ManageUserComponent implements OnInit {
           "regRequestFrom": "web"
         }
         this.userService.createUser(data).subscribe(res => {
+          this.toasterService.showSuccess('User added successfully!', 'EMCARE');
           this.showUser();
         });
       }

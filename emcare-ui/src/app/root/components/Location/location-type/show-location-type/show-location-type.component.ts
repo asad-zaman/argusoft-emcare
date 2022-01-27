@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { LocationService } from 'src/app/root/services/location.service';
-
+import { ToasterService } from 'src/app/shared';
 @Component({
   selector: 'app-show-location-type',
   templateUrl: './show-location-type.component.html',
@@ -12,10 +12,12 @@ export class ShowLocationTypeComponent implements OnInit {
   locationTypeArr: any;
   filteredLocationTypes: any;
   searchString: string;
+  isAPIBusy: boolean = true;
 
   constructor(
     private readonly router: Router,
-    private readonly locationService: LocationService
+    private readonly locationService: LocationService,
+    private readonly toasterService: ToasterService
   ) { }
 
   ngOnInit(): void {
@@ -32,6 +34,7 @@ export class ShowLocationTypeComponent implements OnInit {
       if (res) {
         this.locationTypeArr = res;
         this.filteredLocationTypes = this.locationTypeArr;
+        this.isAPIBusy = false;
       }
     });
   }
@@ -46,16 +49,16 @@ export class ShowLocationTypeComponent implements OnInit {
 
   deleteLocationType(index) {
     this.locationService.deleteLocationTypeById(this.filteredLocationTypes[index]['hierarchyType']).subscribe(res => {
+      this.toasterService.showSuccess('Location Deleted successfully!', 'EMCARE');
       this.getLocationTypes();
     });
   }
 
   searchFilter() {
     const lowerCasedSearchString = this.searchString?.toLowerCase();
-    this.filteredLocationTypes = this.locationTypeArr.filter( locationType => {
-      return ( locationType.name?.toLowerCase().includes(lowerCasedSearchString) 
-      ||  locationType.code?.toLowerCase().includes(lowerCasedSearchString));
+    this.filteredLocationTypes = this.locationTypeArr.filter(locationType => {
+      return (locationType.name?.toLowerCase().includes(lowerCasedSearchString)
+        || locationType.code?.toLowerCase().includes(lowerCasedSearchString));
     });
   }
-
 }

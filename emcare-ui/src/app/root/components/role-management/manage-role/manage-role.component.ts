@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RoleManagementService } from 'src/app/root/services/role-management.service';
+import { ToasterService } from 'src/app/shared';
 
 @Component({
   selector: 'app-manage-role',
@@ -14,12 +15,14 @@ export class ManageRoleComponent implements OnInit {
   isEdit: boolean;
   editId: string;
   oldRoleName: string;
+  submitted: boolean;
 
   constructor(
     private readonly formBuilder: FormBuilder,
-    private router: Router,
-    private route: ActivatedRoute,
-    private readonly roleService: RoleManagementService
+    private readonly router: Router,
+    private readonly route: ActivatedRoute,
+    private readonly roleService: RoleManagementService,
+    private readonly toasterService: ToasterService
   ) { }
 
   ngOnInit(): void {
@@ -37,7 +40,7 @@ export class ManageRoleComponent implements OnInit {
     if (this.editId) {
       this.isEdit = true;
       this.roleService.getRoleById(this.editId).subscribe(res => {
-        if(res) {
+        if (res) {
           const obj = {
             name: res['name'],
             description: res['description']
@@ -56,7 +59,12 @@ export class ManageRoleComponent implements OnInit {
     });
   }
 
+  get f() {
+    return this.roleForm.controls;
+  }
+
   saveData() {
+    this.submitted = true;
     if (this.roleForm.valid) {
       if (this.isEdit) {
         const data = {
@@ -66,6 +74,7 @@ export class ManageRoleComponent implements OnInit {
           "description": this.roleForm.get('description').value
         };
         this.roleService.updateRole(data).subscribe(() => {
+          this.toasterService.showSuccess('Role updated successfully!', 'EMCARE');
           this.showRoles();
         });
       } else {
@@ -73,7 +82,8 @@ export class ManageRoleComponent implements OnInit {
           "roleName": this.roleForm.get('name').value,
           "roleDescription": this.roleForm.get('description').value
         };
-        this.roleService.createRole(data).subscribe((res) => {
+        this.roleService.createRole(data).subscribe((_res) => {
+          this.toasterService.showSuccess('Role created successfully!', 'EMCARE');
           this.showRoles();
         });
       }

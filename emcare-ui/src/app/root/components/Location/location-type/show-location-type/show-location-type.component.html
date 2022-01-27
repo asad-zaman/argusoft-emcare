@@ -1,27 +1,28 @@
 <div class="main-wrapper">
-  <h1 class="heading">Location Type</h1>
+  <h1 class="heading">{{'Location.LocationTypeList.LocationType' | translate}}</h1>
   <hr>
   <div class="row align-items-center mb-3">
     <div class="col-lg-3 col-xxl-2 col-md-5 position-relative">
       <input class="form-control custom-input h-40" id="exampleFormControlInput1" [(ngModel)]="searchString"
-        (input)="searchFilter()" placeholder="Search">
+        (input)="searchFilter()" placeholder="{{'Common.Search' | translate}}">
     </div>
-    <div class="col text-end"> <button class="btn btn-red" routerLink="/addLocationType">+ Add Location Type</button>
+    <div class="col text-end"> <button class="btn btn-red" routerLink="/addLocationType">+
+        {{'Location.LocationTypeList.AddLocationType' | translate}}</button>
     </div>
   </div>
   <!--Table-->
-  <div class="table-responsive">
+  <div *ngIf="!isAPIBusy" class="table-responsive">
     <table class="data-table">
       <thead>
         <tr>
-          <th>ID</th>
-          <th>Name</th>
-          <th>Type</th>
+          <th>{{'Location.LocationTypeList.ID' | translate}}</th>
+          <th>{{'Location.LocationTypeList.Name' | translate}}</th>
+          <th>{{'Location.LocationTypeList.Type' | translate}}</th>
           <th></th>
         </tr>
       </thead>
       <tbody>
-        <ng-container *ngIf="!filteredLocationTypes || filteredLocationTypes.length > 0; else noRecords">
+        <ng-container *ngIf="filteredLocationTypes && filteredLocationTypes.length > 0; else noRecords">
           <ng-container *ngFor="let data of filteredLocationTypes; let i=index">
             <tr>
               <td>{{i+1}}</td>
@@ -36,25 +37,11 @@
         </ng-container>
         <ng-template #noRecords>
           <div class="no-record">
-            No Records Found!!
+            {{'Common.NoRecords' | translate}}
           </div>
         </ng-template>
       </tbody>
     </table>
   </div>
   <!--Table-END-->
-
-  <!--pagination-->
-  <!-- <ul class="pagination custom-pagination justify-content-end my-4">
-    <li class="page-item">
-      <a class="page-link" href="#" tabindex="-1" aria-disabled="true"><i class="bi bi-arrow-left font-size-16"></i></a>
-    </li>
-    <li class="page-item"><a class="page-link" href="#">1</a></li>
-    <li class="page-item"><a class="page-link pagination-active" href="#">2</a></li>
-    <li class="page-item"><a class="page-link" href="#">3</a></li>
-    <li class="page-item">
-      <a class="page-link" href="#"><i class="bi bi-arrow-right font-size-16"></i></a>
-    </li>
-  </ul> -->
-  <!--pagination-END-->
 </div>

@@ -1,34 +1,35 @@
 <app-location-filter (locationId)="getLocationId($event)"></app-location-filter>
 <div class="main-wrapper">
-  <h1 class="heading">Users</h1>
+  <h1 class="heading">{{'User.UserList.Heading' | translate}}</h1>
   <hr>
   <div class="row align-items-center mb-3">
     <div class="col-lg-3 col-xxl-2 col-md-5 position-relative">
       <input class="form-control custom-input h-40" id="exampleFormControlInput1" [(ngModel)]="searchString"
-        (input)="searchFilter()" placeholder="Search">
+        (input)="searchFilter()" placeholder="{{'User.UserList.SearchPlaceholder' | translate}}">
     </div>
     <div class="col text-end">
-      <button class="btn btn-red" routerLink="/addUser">+ Add User</button>
+      <button class="btn btn-red" routerLink="/addUser">+ {{'User.UserList.AddUser' | translate}}</button>
     </div>
   </div>
   <!--Table-->
-  <div class="table-responsive">
+  <div *ngIf="!isAPIBusy" class="table-responsive">
     <table class="data-table">
       <thead>
         <tr>
-          <th>ID</th>
-          <th>First name</th>
-          <th>Last name</th>
-          <th>Email</th>
-          <th>Role</th>
-          <th>Location</th>
-          <th>Status</th>
+          <th>{{'User.UserList.TableColumns.ID' | translate}}</th>
+          <th>{{'User.UserList.TableColumns.FirstName' | translate}}</th>
+          <th>{{'User.UserList.TableColumns.LastName' | translate}}</th>
+          <th>{{'User.UserList.TableColumns.Email' | translate}}</th>
+          <th>{{'User.UserList.TableColumns.Role' | translate}}</th>
+          <th>{{'User.UserList.TableColumns.Location' | translate}}</th>
+          <th>{{'User.UserList.TableColumns.Status' | translate}}</th>
           <th></th>
         </tr>
       </thead>
       <tbody>
-        <ng-container *ngIf="!filteredUserList || filteredUserList.length > 0; else noRecords">
-          <ng-container *ngFor="let user of filteredUserList; let i=index">
+        <ng-container *ngIf="filteredUserList && filteredUserList.length > 0; else noRecords">
+          <ng-container *ngFor="let user of filteredUserList | 
+          paginate : { itemsPerPage: tableSize, currentPage: currentPage, totalItems: totalCount }; let i=index">
             <tr>
               <td>{{i+1}}</td>
               <td>{{user.firstName}}</td>
@@ -36,35 +37,99 @@
               <td>{{user.userName}}</td>
               <td>{{user.realmRoles[0]}}</td>
               <td>{{user.locationName ? user.locationName : 'NA'}}</td>
-              <td><span [ngClass] = "(!!user.enabled) ? 'badges-red bg-green' : 'badges-red'"> {{ !!user.enabled ? 'Verifed' : 'Not Verified'}}</span>
+              <td><span [ngClass]="(!!user.enabled) ? 'badges-red bg-green' : 'badges-red'">
+                  <ng-container *ngIf="!!user.enabled; else NotVerified">
+                    {{'User.UserList.Status.Verifed' | translate}}
+                  </ng-container>
+                  <ng-template #NotVerified>
+                    {{'User.UserList.Status.NotVerified' | translate}}
+                  </ng-template>
+                </span>
               <td class="text-end">
-                <i (click)="updateUser(i)" class="bi bi-pencil-square cursor-pointer font-size-16"></i>
-                <!-- <i class="bi bi-trash ms-3 text-red cursor-pointer font-size-16"></i> -->
+                <ul class="navigation" style="list-style-type: none;">
+                  <li class="dropdown mt-3 cursor-pointer">
+                    <div class="d-flex align-items-center" data-bs-toggle="dropdown">
+                      <i class="bi bi-three-dots-vertical ps-2"></i>
+                    </div>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                      <li (click)="updateUser(i)">
+                        <a class="dropdown-item">
+                          <i class="bi bi-pencil font-size-16 mr-2"></i>{{'User.UserList.UpdateUser' | translate}}
+                        </a>
+                      </li>
+                      <li (click)="onResetPassword(i)">
+                        <a class="dropdown-item">
+                          <i class="bi bi-pencil font-size-16 mr-2"></i>{{'User.UserList.ResetPassword' | translate}}
+                        </a>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
               </td>
             </tr>
           </ng-container>
         </ng-container>
         <ng-template #noRecords>
           <div class="no-record">
-            No Records Found!!
+            {{'Common.NoRecords' | translate}}
           </div>
         </ng-template>
       </tbody>
     </table>
+    <div class="d-flex justify-content-end mt-3">
+      <pagination-controls responsive="true" previousLabel="Prev" nextLabel="Next" (pageChange)="onIndexChange($event)">
+      </pagination-controls>
+    </div>
   </div>
   <!--Table-END-->
-
-  <!--pagination-->
-  <!-- <ul class="pagination custom-pagination justify-content-end my-4">
-    <li class="page-item">
-      <a class="page-link" href="#" tabindex="-1" aria-disabled="true"><i class="bi bi-arrow-left font-size-16"></i></a>
-    </li>
-    <li class="page-item"><a class="page-link" href="#">1</a></li>
-    <li class="page-item"><a class="page-link pagination-active" href="#">2</a></li>
-    <li class="page-item"><a class="page-link" href="#">3</a></li>
-    <li class="page-item">
-      <a class="page-link" href="#"><i class="bi bi-arrow-right font-size-16"></i></a>
-    </li>
-  </ul> -->
-  <!--pagination-END-->
+  <div *ngIf="showResetPasswordDialog" class="modal" tabindex="-1" role="dialog" style="display:block">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">{{'User.UserList.ResetPassword' | translate}}</h4>
+          <i class="bi bi-x font-size-20 text-end cursor-pointer" (click)="closeDialog()"></i>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="resetPasswordForm">
+            <div class="row mt-3">
+              <div class="col-12">
+                <div class="mb-3">
+                  <label class="form-label">{{'User.UserList.PasswordModal.Password' | translate}}</label>
+                  <input type="password" formControlName="password" class="form-control custom-input"
+                    [ngClass]="{ 'is-invalid': submitted && f.password.errors }" />
+                  <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
+                    <div *ngIf="f.password.errors.required">
+                      {{'User.UserList.PasswordModal.PasswordRequiredMsg' | translate}}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-12 mt-3">
+                <div class="mb-3">
+                  <label class="form-label">{{'User.UserList.PasswordModal.ConfirmPassword' | translate}}</label>
+                  <input type="password" formControlName="confirmPassword" class="form-control custom-input"
+                    [ngClass]="{ 'is-invalid': submitted && f.confirmPassword.errors }" />
+                  <div *ngIf="submitted && f.confirmPassword.errors" class="invalid-feedback">
+                    <div *ngIf="f.confirmPassword.errors.required">
+                      {{'User.UserList.PasswordModal.ConfirmPasswordRequiredMsg' | translate}}
+                    </div>
+                    <div *ngIf="f.confirmPassword.errors.mustMatch">
+                      {{'User.UserList.PasswordModal.PasswordsMatchMsg' | translate}}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row mt-3">
+              <div class="col-12 col-sm-6 ml-auto">
+                <button (click)="updatePassword()" class="btn btn-red p-l-70 p-r-70 mb-5"
+                  style="width: 210px;">{{'Common.Submit' | translate}}</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

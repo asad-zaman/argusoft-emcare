@@ -1,29 +1,29 @@
 <div class="main-wrapper">
-  <h1 class="heading">Registration Requests</h1>
+  <h1 class="heading">{{'RegistrationRequests.RegistrationRequests' | translate}}</h1>
   <hr>
   <div class="row align-items-center mb-3">
     <div class=" col-lg-3 col-xxl-2 col-md-5 position-relative">
       <input class="form-control custom-input h-40" id="exampleFormControlInput1" [(ngModel)]="searchString"
-        (input)="searchFilter()" placeholder="Search">
+        (input)="searchFilter()" placeholder="{{'Common.Search' | translate}}">
     </div>
   </div>
   <!--Table-->
-  <div class="table-responsive">
+  <div *ngIf="!isAPIBusy" class="table-responsive">
     <table class="data-table">
       <thead>
         <tr>
-          <th>ID</th>
-          <th>First name</th>
-          <th>Last name</th>
-          <th>Email</th>
-          <th>Location</th>
-          <th>Role</th>
+          <th>{{'RegistrationRequests.ID' | translate}}</th>
+          <th>{{'RegistrationRequests.Firstname' | translate}}</th>
+          <th>{{'RegistrationRequests.Lastname' | translate}}</th>
+          <th>{{'RegistrationRequests.Email' | translate}}</th>
+          <th>{{'RegistrationRequests.Location' | translate}}</th>
+          <th>{{'RegistrationRequests.Role' | translate}}</th>
           <th></th>
           <th></th>
         </tr>
       </thead>
       <tbody>
-        <ng-container *ngIf="!filteredUserList || filteredUserList.length > 0; else noRecords">
+        <ng-container *ngIf="filteredUserList && filteredUserList.length > 0; else noRecords">
           <ng-container *ngFor="let user of filteredUserList; let i=index">
             <tr>
               <td>{{i+1}}</td>
@@ -43,42 +43,39 @@
         </ng-container>
         <ng-template #noRecords>
           <div class="no-record">
-            No Records Found!!
+            {{'Common.NoRecords' | translate}}
           </div>
         </ng-template>
       </tbody>
     </table>
   </div>
   <!--Table-END-->
-
-  <!--pagination-->
-  <!-- <ul class="pagination custom-pagination justify-content-end my-4">
-    <li class="page-item">
-      <a class="page-link" href="#" tabindex="-1" aria-disabled="true"><i class="bi bi-arrow-left font-size-16"></i></a>
-    </li>
-    <li class="page-item"><a class="page-link" href="#">1</a></li>
-    <li class="page-item"><a class="page-link pagination-active" href="#">2</a></li>
-    <li class="page-item"><a class="page-link" href="#">3</a></li>
-    <li class="page-item">
-      <a class="page-link" href="#"><i class="bi bi-arrow-right font-size-16"></i></a>
-    </li>
-  </ul> -->
-  <!--pagination-END-->
-
   <div *ngIf="showConfirmDialogFlag" class="modal" tabindex="-1" role="dialog" style="display:block">
     <div class="modal-dialog modal-dialog-centered" style="width: 350px; height: 500px">
       <div class="modal-content">
         <div class="modal-body">
-          <h2 class="modal-title text-center">{{ isApproveUser ? 'Approve' : 'Disapprove'}} User</h2>
+          <h2 class="modal-title text-center">
+            <ng-container *ngIf="isApproveUser; else disapprove">
+              {{'RegistrationRequests.ApproveUser' | translate}}
+            </ng-container>
+            <ng-template #disapprove>
+              {{'RegistrationRequests.DisapproveUser' | translate}}
+            </ng-template>
+          </h2>
           <div class="text-center my-3">
-            <p class="font-size-15">Are you sure you want to {{ isApproveUser ? 'approve' : 'disapprove'}}
-              this user?
+            <p class="font-size-15">
+              <ng-container *ngIf="isApproveUser; else disapprove">
+                {{'RegistrationRequests.ConfirmApproval' | translate}}
+              </ng-container>
+              <ng-template #disapprove>
+                {{'RegistrationRequests.DisApproval' | translate}}
+              </ng-template>
           </div>
           <div class="text-center">
-            <button type="button" class="btn btn-primary btn-md mr-2" style="width: 70px;"
-              (click)="authorizeUser()">Ok</button>
-            <button type="button" class="btn btn-danger btn-md" style="width: 70px;"
-              (click)="showConfirmDialogFlag = false">Cancel</button>
+            <button type="button" class="btn-red btn mr-2" style="width: 100px;"
+              (click)="authorizeUser()">{{'RegistrationRequests.Ok' | translate}}</button>
+            <button type="button" class="btn-red btn" style="width: 100px;"
+              (click)="showConfirmDialogFlag = false">{{'RegistrationRequests.Cancel' | translate}}</button>
           </div>
         </div>
       </div>

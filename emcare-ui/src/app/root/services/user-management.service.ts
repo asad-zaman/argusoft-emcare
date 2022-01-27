@@ -13,15 +13,15 @@ export class UserManagementService {
 
   getHeaders() {
     let authToken = localStorage.getItem("access_token");
-    authToken = authToken && authToken.substring(1,authToken.length - 1);
+    authToken = authToken && authToken.substring(1, authToken.length - 1);
     const headerObj = {
-        headers: new HttpHeaders({
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Headers': 'Content-Type',
-            'Access-Control-Allow-Methods': 'GET,POST,OPTIONS,DELETE,PUT',
-            'Authorization': `Bearer ${authToken}`
-        })
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': 'Content-Type',
+        'Access-Control-Allow-Methods': 'GET,POST,OPTIONS,DELETE,PUT',
+        'Authorization': `Bearer ${authToken}`
+      })
     };
     return headerObj;
   }
@@ -43,7 +43,7 @@ export class UserManagementService {
   getUserById(id) {
     return this.http.get(`${this.userURL}/${id}`, this.getHeaders());
   }
-  
+
   updateUser(user, id) {
     return this.http.put(`${this.userURL}/update/${id}`, user, this.getHeaders());
   }
@@ -53,6 +53,18 @@ export class UserManagementService {
   }
 
   getUserByLocationId(id) {
-    return this.http.get(`${this.userURL}/locationId/${id}`, this.getHeaders())
+    return this.http.get(`${this.userURL}/locationId/${id}`, this.getHeaders());
+  }
+
+  getUsersByPage(pageIndex) {
+    return this.http.get(`${this.userURL}/page?pageNo=${pageIndex}`, this.getHeaders());
+  }
+
+  updatePassword(user, id) {
+    return this.http.put(`${this.userURL}/update/password/${id}`, user, this.getHeaders());
+  }
+
+  getUsersByLocationAndPageIndex(locationId, pageIndex) {
+    return this.http.get(`${this.userURL}/locationId/${locationId}?pageNo=${pageIndex}`, this.getHeaders());
   }
 }

@@ -31,3 +31,11 @@ body {
     padding: 20px 0px;
     font-weight: 500;
 }
+
+.cst-error-style {
+    font-weight: 500;
+}
+
+.ngx-pagination .current {
+    background: $color-red !important;
+}

@@ -3,6 +3,8 @@ package com.argusoft.who.emcare.ui.home.patient.add
 import androidx.core.os.bundleOf
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
+import ca.uhn.fhir.context.FhirContext
+import ca.uhn.fhir.parser.IParser
 import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.databinding.FragmentAddPatientBinding
 import com.argusoft.who.emcare.ui.common.INTENT_EXTRA_LOCATION_ID
@@ -10,18 +12,20 @@ import com.argusoft.who.emcare.ui.common.base.BaseFragment
 import com.argusoft.who.emcare.ui.home.patient.PatientViewModel
 import com.argusoft.who.emcare.utils.extention.handleApiView
 import com.argusoft.who.emcare.utils.extention.observeNotNull
+import com.argusoft.who.emcare.widget.CustomQuestionnaireFragment
 import com.google.android.fhir.datacapture.QuestionnaireFragment
 import dagger.hilt.android.AndroidEntryPoint
+import org.hl7.fhir.r4.model.Questionnaire
 
 @AndroidEntryPoint
 class AddPatientFragment : BaseFragment<FragmentAddPatientBinding>() {
 
     private val patientViewModel: PatientViewModel by viewModels()
-    private val questionnaireFragment = QuestionnaireFragment()
+    private val questionnaireFragment = CustomQuestionnaireFragment()
 
     override fun initView() {
         setupToolbar()
-        addQuestionnaireFragment()
+        patientViewModel.getQuestionnaire("EmCareA") //TODO: replace hardcoded questionnaire id.
     }
 
     private fun setupToolbar() {
@@ -38,10 +42,10 @@ class AddPatientFragment : BaseFragment<FragmentAddPatientBinding>() {
         }
     }
 
-    private fun addQuestionnaireFragment() {
-        patientViewModel.questionnaireJson = requireContext().assets.open("questionnaire-EmCareA.json").bufferedReader().use {
-            it.readText()
-        }
+    private fun addQuestionnaireFragment(questionnaire: Questionnaire) {
+        val fhirCtx: FhirContext = FhirContext.forR4()
+        val parser: IParser = fhirCtx.newJsonParser().setPrettyPrint(false)
+        patientViewModel.questionnaireJson = parser.encodeResourceToString(questionnaire)
         patientViewModel.questionnaireJson?.let {
             questionnaireFragment.arguments = bundleOf(QuestionnaireFragment.BUNDLE_KEY_QUESTIONNAIRE to it)
             childFragmentManager.commit {
@@ -61,6 +65,9 @@ class AddPatientFragment : BaseFragment<FragmentAddPatientBinding>() {
                     requireActivity().onBackPressed()
                 }
             }
+        }
+        observeNotNull(patientViewModel.questionnaire) { questionnaire ->
+            addQuestionnaireFragment(questionnaire)
         }
     }
 }

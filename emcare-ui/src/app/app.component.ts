@@ -1,5 +1,7 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router, NavigationStart, Event as NavigationEvent } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
+import { ToastrService } from 'ngx-toastr';
 import { HTTPStatus } from './auth/token-interceptor';
 import { AuthenticationService } from './shared/services/authentication.service';
 @Component({
@@ -9,13 +11,12 @@ import { AuthenticationService } from './shared/services/authentication.service'
 })
 export class AppComponent implements OnInit {
 
-  currentUrl:string = '';
+  currentUrl: string = '';
   userName: any;
   isUserDropdownOpen: boolean = true;
   isLocationDropdownOpen: boolean = false;
   userCharLogo: string;
   HTTPActivity: boolean;
-  user: any;
   featureList: any = [];
   isLoggedIn: boolean = false;
 
@@ -23,12 +24,12 @@ export class AppComponent implements OnInit {
     private readonly router: Router,
     private readonly authenticationService: AuthenticationService,
     private readonly httpStatus: HTTPStatus,
-    private cdr: ChangeDetectorRef
+    private readonly cdr: ChangeDetectorRef,
+    private readonly translate: TranslateService
   ) { }
 
   ngOnInit() {
     this.prerequisite();
-    console.log('asd');
   }
 
   ngAfterViewChecked() {
@@ -36,6 +37,7 @@ export class AppComponent implements OnInit {
   }
 
   prerequisite() {
+    this.setDefaultLanguage();
     this.getCurrentPage();
     this.checkTOkenExpiresOrNot();
     this.checkAPIStatus();
@@ -43,7 +45,37 @@ export class AppComponent implements OnInit {
       if (result) {
         this.getFeatureList();
       }
+    });
+    this.authenticationService.getFeatures().subscribe(result => {
+      if (result) {
+        this.featureList = result;
+      }
     })
+  }
+
+  setDefaultLanguage() {
+    // Set German as default language
+    // this language will be used as a fallback when a translation isn't found in the current language
+    this.translate.setDefaultLang('french');
+    // the lang to use, if the lang isn't available, it will use the current loader to get them
+    this.translate.use('english');
+  }
+
+  changeLaunguage(lIndex) {
+    switch (lIndex) {
+      case 1:
+        this.translate.use('french');
+        break;
+      case 2:
+        this.translate.use('english');
+        break;
+      case 3:
+        this.translate.use('hindi');
+        break;
+      default:
+        this.translate.use('english');
+        break;
+    }
   }
 
   checkTOkenExpiresOrNot() {
@@ -56,10 +88,9 @@ export class AppComponent implements OnInit {
       // token has expired user should be logged out
       this.router.navigate(['/login']);
       localStorage.clear();
-    } else if (!!tokenExpiryDate) { 
+    } else if (!!tokenExpiryDate) {
       this.authenticationService.setIsLoggedIn(true);
-    } else {
-    }
+    } else { }
   }
 
   checkAPIStatus() {
@@ -87,8 +118,7 @@ export class AppComponent implements OnInit {
   getFeatureList() {
     this.authenticationService.getLoggedInUser().subscribe(res => {
       if (res) {
-        this.user = res;
-        this.featureList = this.user.feature.map(f => f.menu_name);
+        this.authenticationService.setFeatures(res.feature.map(f => f.menu_name));
       }
     })
   }
@@ -114,8 +144,10 @@ export class AppComponent implements OnInit {
     switch (id) {
       case 1:
         this.isUserDropdownOpen = !this.isUserDropdownOpen;
+        this.isLocationDropdownOpen = !this.isLocationDropdownOpen;
         break;
       case 2:
+        this.isUserDropdownOpen = !this.isUserDropdownOpen;
         this.isLocationDropdownOpen = !this.isLocationDropdownOpen;
         break;
     }
@@ -129,5 +161,4 @@ export class AppComponent implements OnInit {
   hasAccess(feature: string) {
     return !!this.featureList.find(f => f === feature);
   }
-
 }

@@ -9,12 +9,12 @@ import { environment } from 'src/environments/environment';
 @Injectable({ providedIn: 'root' })
 export class AuthenticationService {
 
-    loginURL = `http://192.1.200.197:8180`;
     backendURL = `${environment.apiUrl}`;
     userInfo = new BehaviorSubject(null);
     jwtHelper = new JwtHelperService();
     userKey = 'sample-login-page';
     private isLoggedIn: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    private features: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
 
     constructor(private http: HttpClient, private router: Router) {
         this.loadUserInfo();
@@ -54,7 +54,7 @@ export class AuthenticationService {
     }
 
     login(username: string, password: string) {
-        const url = `${this.loginURL}/auth/realms/emcare/protocol/openid-connect/token`;
+        const url = `${this.backendURL}/auth/realms/emcare/protocol/openid-connect/token`;
         const body = new HttpParams()
             .set('username', username)
             .set('password', password)
@@ -88,8 +88,16 @@ export class AuthenticationService {
         this.isLoggedIn.next(loggedIn);
     }
 
+    getFeatures(): Observable<string[]> {
+        return this.features;
+    }
+
+    setFeatures(features: string[]): void {
+        this.features.next(features);
+    }
+
     refreshToken() {
-        const url = `${this.loginURL}/auth/realms/emcare_demo/protocol/openid-connect/token`;
+        const url = `${this.backendURL}/auth/realms/emcare/protocol/openid-connect/token`;
         const body = new HttpParams()
             .set('grant_type', 'password')
             .set('password', 'argusadmin')

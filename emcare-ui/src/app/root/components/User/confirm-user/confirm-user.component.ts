@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 import { UserManagementService } from 'src/app/root/services/user-management.service';
-
+import { ToasterService } from 'src/app/shared';
 @Component({
   selector: 'app-confirm-user',
   templateUrl: './confirm-user.component.html',
@@ -14,10 +13,11 @@ export class ConfirmUserComponent implements OnInit {
   showConfirmDialogFlag: boolean = false;
   isApproveUser: boolean = true;
   selectedUser: any;
-  searchString:string;
+  searchString: string;
+  isAPIBusy: boolean = true;
 
   constructor(
-    private readonly router: Router,
+    private readonly toasterService: ToasterService,
     private readonly userService: UserManagementService
   ) { }
 
@@ -35,6 +35,7 @@ export class ConfirmUserComponent implements OnInit {
       if (res) {
         this.mainUserList = res;
         this.filteredUserList = this.mainUserList;
+        this.isAPIBusy = false;
       }
     });
   }
@@ -57,6 +58,7 @@ export class ConfirmUserComponent implements OnInit {
       "isEnabled": this.isApproveUser
     }
     this.userService.updateUserStatus(data).subscribe(res => {
+      this.toasterService.showSuccess('User approved successfully!', 'EMCARE');
       this.getAllSignedUpUsers();
     });
     this.showConfirmDialogFlag = false;
@@ -64,21 +66,20 @@ export class ConfirmUserComponent implements OnInit {
 
   searchFilter() {
     const lowerCasedSearchString = this.searchString?.toLowerCase();
-    this.filteredUserList = this.mainUserList.filter( user => {
+    this.filteredUserList = this.mainUserList.filter(user => {
       let roleFlag = false;
       user.realmRoles.every(role => {
-        if(role.toLowerCase().includes(lowerCasedSearchString)){
+        if (role.toLowerCase().includes(lowerCasedSearchString)) {
           roleFlag = true;
           return false;
         }
         return true;
       });
 
-      return (roleFlag 
-          ||  user.firstName?.toLowerCase().includes(lowerCasedSearchString)
-          ||  user.lastName?.toLowerCase().includes(lowerCasedSearchString)
-          ||  user.email?.toLowerCase().includes(lowerCasedSearchString))
+      return (roleFlag
+        || user.firstName?.toLowerCase().includes(lowerCasedSearchString)
+        || user.lastName?.toLowerCase().includes(lowerCasedSearchString)
+        || user.email?.toLowerCase().includes(lowerCasedSearchString))
     })
   }
-
 }

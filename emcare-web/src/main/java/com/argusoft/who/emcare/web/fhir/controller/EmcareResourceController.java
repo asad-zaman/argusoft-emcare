@@ -2,6 +2,7 @@ package com.argusoft.who.emcare.web.fhir.controller;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.IParser;
+import com.argusoft.who.emcare.web.common.dto.PageDto;
 import com.argusoft.who.emcare.web.fhir.dto.PatientDto;
 import com.argusoft.who.emcare.web.fhir.mapper.EmcareResourceMapper;
 import com.argusoft.who.emcare.web.fhir.model.EmcareResource;
@@ -63,9 +64,15 @@ public class EmcareResourceController {
         return patientDtosList;
     }
 
+    @GetMapping("/patient/page")
+    public PageDto getPatientsPage(@RequestParam(value = "pageNo") Integer pageNo) {
+        return emcareResourceService.getPatientsPage(pageNo);
+    }
+
     @GetMapping("/patient/locationId/{locationId}")
-    public List<PatientDto> getAllPatientsUnderLocation(@PathVariable(value = "locationId") Integer locationId) {
-        return emcareResourceService.getPatientUnderLocationId(locationId);
+    public PageDto getAllPatientsUnderLocation(@PathVariable(value = "locationId") Integer locationId,
+                                               @RequestParam(value = "pageNo") Integer pageNo) {
+        return emcareResourceService.getPatientUnderLocationId(locationId, pageNo);
     }
 
     @GetMapping("/patient/{patientId}")

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LocationService } from 'src/app/root/services/location.service';
-
+import { ToasterService } from 'src/app/shared';
 @Component({
   selector: 'app-location-type',
   templateUrl: './location-type.component.html',
@@ -13,12 +13,14 @@ export class LocationTypeComponent implements OnInit {
   locationTypeForm: FormGroup;
   isEdit: boolean;
   editId: string;
+  submitted: boolean;
 
   constructor(
     private readonly formBuilder: FormBuilder,
-    private router: Router,
-    private route: ActivatedRoute,
-    private readonly locationService: LocationService
+    private readonly router: Router,
+    private readonly route: ActivatedRoute,
+    private readonly locationService: LocationService,
+    private readonly toasterService: ToasterService
   ) { }
 
   ngOnInit(): void {
@@ -54,7 +56,12 @@ export class LocationTypeComponent implements OnInit {
     });
   }
 
+  get f() {
+    return this.locationTypeForm.controls;
+  }
+
   saveData() {
+    this.submitted = true;
     if (this.locationTypeForm.valid) {
       if (this.isEdit) {
         const data = {
@@ -63,6 +70,7 @@ export class LocationTypeComponent implements OnInit {
           "code": this.locationTypeForm.get('type').value
         };
         this.locationService.updateLocationTypeById(data).subscribe(() => {
+          this.toasterService.showSuccess('Location Type updated successfully!', 'EM CARE');
           this.showLocationType();
         });
       } else {
@@ -72,6 +80,7 @@ export class LocationTypeComponent implements OnInit {
           "code": this.locationTypeForm.get('type').value
         };
         this.locationService.createLocationType(data).subscribe((res) => {
+          this.toasterService.showSuccess('Location Type added successfully!', 'EM CARE');
           this.showLocationType();
         });
       }
