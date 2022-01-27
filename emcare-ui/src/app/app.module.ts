@@ -41,6 +41,7 @@ import { NgxPaginationModule } from 'ngx-pagination';
 import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BaseModule } from './base.module';
+import { ManageProfileComponent } from './root/components/manage-profile/manage-profile.component';
 
 @NgModule({
   declarations: [
@@ -67,7 +68,8 @@ import { BaseModule } from './base.module';
     LocationFilterComponent,
     FeatureListComponent,
     ManageFeatureComponent,
-    ManageFeatureComponent
+    ManageFeatureComponent,
+    ManageProfileComponent
   ],
   imports: [
     BrowserModule,

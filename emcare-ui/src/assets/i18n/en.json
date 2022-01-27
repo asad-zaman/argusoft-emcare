@@ -184,6 +184,12 @@
     "Submit": "Submit",
     "Back": "Back",
     "Search": "Search",
-    "Logout": "Logout"
+    "Logout": "Logout",
+    "EditProfile": "Edit Profile",
+    "SaveDetails": "Save Details",
+    "Language": "Language",
+    "French": "French",
+    "English": "English",
+    "Hindi": "Hindi"
   }
 }
