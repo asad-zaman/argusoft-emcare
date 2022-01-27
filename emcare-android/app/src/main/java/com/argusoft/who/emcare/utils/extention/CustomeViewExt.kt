@@ -20,8 +20,8 @@ fun <T> ApiResponse<T>?.handleApiView(
             progressLayout?.showHorizontalProgress(skipIds)
         }
         is ApiResponse.Success -> {
-            isSuccess(data)
             progressLayout?.showContent(skipIds)
+            isSuccess(data)
         }
         is ApiResponse.ApiError -> {
             progressLayout?.showContent(skipIds)
