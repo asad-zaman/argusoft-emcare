@@ -21,7 +21,7 @@
         <ng-container *ngIf="filteredFeatureList && filteredFeatureList.length > 0; else noRecords">
           <ng-container *ngFor="let feature of filteredFeatureList; let i=index">
             <tr>
-              <td>{{i+1}}</td>
+              <td>{{currentPage == 0 ? ((currentPage)*10 + i + 1) : ((currentPage-1)*10 + i + 1)}}</td>
               <td>{{feature.menuName}}</td>
               <td class="text-end">
                 <i (click)="updateFeature(i)" class="bi bi-pencil-square cursor-pointer font-size-16"></i>
