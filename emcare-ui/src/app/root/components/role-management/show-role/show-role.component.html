@@ -24,7 +24,7 @@
         <ng-container *ngIf="filteredRoles && filteredRoles.length > 0; else noRecords">
           <ng-container *ngFor="let data of filteredRoles; let i=index">
             <tr>
-              <td>{{i+1}}</td>
+              <td>{{i + 1}}</td>
               <td>{{data.name}}</td>
               <td>{{data.description ? data.description : 'NA'}}</td>
               <td class="text-end">

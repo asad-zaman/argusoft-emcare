@@ -92,7 +92,8 @@ export class LocationFilterComponent implements OnInit {
     let selectedId;
     for (let index = this.dropdownActiveArr.length - 1; index >= 0; index--) {
       const data = this.dropdownActiveArr[index];
-      if (data && valueArr[index] !== "" && !selectedId) {
+      //  if value is not selected and showing --select-- in dropdown then the parent valus should be emitted as selectedId
+      if (data && (valueArr[index] !== "" && valueArr[index] !== "default") && !selectedId) {
         selectedId = valueArr[index];
       }
     }
