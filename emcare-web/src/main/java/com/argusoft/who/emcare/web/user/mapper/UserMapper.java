@@ -49,6 +49,8 @@ public class UserMapper {
     public static UserMasterDto getMasterUser(AccessToken token, LocationMaster locationMaster, UserRepresentation userInfo) {
         UserMasterDto userMaster = new UserMasterDto();
         userMaster.setUserName(token.getName());
+        userMaster.setFirstName(userInfo.getFirstName());
+        userMaster.setLastName(userInfo.getLastName());
         userMaster.setLocation(locationMaster);
         userMaster.setRoles(token.getRealmAccess().getRoles().toArray(new String[0]));
         userMaster.setUserId(token.getSubject());

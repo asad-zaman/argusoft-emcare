@@ -14,6 +14,8 @@ public class UserMasterDto {
     private LocationMaster location;
     private String[] roles;
     private List<Map<String, Object>> feature;
+    private String firstName;
+    private String lastName;
 
     public String getUserId() {
         return userId;
@@ -69,7 +71,21 @@ public class UserMasterDto {
 
     public void setFeature(List<Map<String, Object>> feature) {
         this.feature = feature;
+    }
 
+    public String getFirstName() {
+        return firstName;
+    }
 
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 }
