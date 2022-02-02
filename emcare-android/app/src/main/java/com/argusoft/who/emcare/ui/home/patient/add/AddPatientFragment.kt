@@ -21,7 +21,7 @@ import org.hl7.fhir.r4.model.Questionnaire
 class AddPatientFragment : BaseFragment<FragmentAddPatientBinding>() {
 
     private val patientViewModel: PatientViewModel by viewModels()
-    private val questionnaireFragment = CustomQuestionnaireFragment()
+    private val questionnaireFragment = QuestionnaireFragment()
 
     override fun initView() {
         setupToolbar()
