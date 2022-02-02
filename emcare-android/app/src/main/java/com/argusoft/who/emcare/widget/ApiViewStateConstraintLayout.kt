@@ -20,12 +20,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.google.android.material.snackbar.Snackbar
 import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.databinding.ViewStateCircularProgrssBinding
 import com.argusoft.who.emcare.databinding.ViewStateErrorViewBinding
 import com.argusoft.who.emcare.databinding.ViewStateHorizontalLoadingBinding
 import com.argusoft.who.emcare.ui.common.base.BaseAdapter
+import com.google.android.material.snackbar.Snackbar
 import java.util.*
 
 class ApiViewStateConstraintLayout : ConstraintLayout {

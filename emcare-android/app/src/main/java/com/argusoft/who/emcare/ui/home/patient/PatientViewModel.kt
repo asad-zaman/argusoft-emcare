@@ -1,5 +1,6 @@
 package com.argusoft.who.emcare.ui.home.patient
 
+import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -23,7 +24,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PatientViewModel @Inject constructor(
-    private val fhirEngine: FhirEngine
+    private val fhirEngine: FhirEngine,
+    private val application: Application
 ) : ViewModel() {
 
     var questionnaireJson: String? = null
@@ -64,7 +66,7 @@ class PatientViewModel @Inject constructor(
     }
 
     fun getQuestionnaire(questionnaireId: String) {
-        viewModelScope.launch{
+        viewModelScope.launch {
             _questionnaire.value = fhirEngine.load(Questionnaire::class.java, questionnaireId)
         }
     }
@@ -80,8 +82,8 @@ class PatientViewModel @Inject constructor(
     fun savePatient(questionnaireResponse: QuestionnaireResponse, questionnaire: String, locationId: Int) {
         val questionnaireResource: Questionnaire = FhirContext.forR4().newJsonParser().parseResource(questionnaire) as Questionnaire
         viewModelScope.launch {
-            val resources = ResourceMapper.extract(questionnaireResource, questionnaireResponse)
-            val entry = ResourceMapper.extract(questionnaireResource, questionnaireResponse).entryFirstRep
+            val resources = ResourceMapper.extract(application, questionnaireResource, questionnaireResponse)
+            val entry = ResourceMapper.extract(application, questionnaireResource, questionnaireResponse).entryFirstRep
             if (entry.resource !is Patient) return@launch
             val patient = entry.resource as Patient
             if (patient.identifier.isNotEmpty()

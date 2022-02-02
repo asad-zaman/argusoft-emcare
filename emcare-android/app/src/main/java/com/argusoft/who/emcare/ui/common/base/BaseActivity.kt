@@ -6,6 +6,13 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewbinding.ViewBinding
+import com.argusoft.who.emcare.data.local.pref.Preference
+import com.argusoft.who.emcare.ui.auth.AuthenticationActivity
+import com.argusoft.who.emcare.ui.common.MY_UPDATE_REQUEST_CODE
+import com.argusoft.who.emcare.ui.home.HomeActivity
+import com.argusoft.who.emcare.utils.extention.hideKeyboard
+import com.argusoft.who.emcare.utils.extention.onViewBinding
+import com.argusoft.who.emcare.utils.localization.LocaleHelperActivityDelegateImpl
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.install.InstallState
@@ -14,13 +21,6 @@ import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.InstallStatus
 import com.google.android.play.core.install.model.UpdateAvailability
 import com.google.android.play.core.review.ReviewManagerFactory
-import com.argusoft.who.emcare.data.local.pref.Preference
-import com.argusoft.who.emcare.ui.auth.AuthenticationActivity
-import com.argusoft.who.emcare.ui.common.MY_UPDATE_REQUEST_CODE
-import com.argusoft.who.emcare.ui.home.HomeActivity
-import com.argusoft.who.emcare.utils.extention.hideKeyboard
-import com.argusoft.who.emcare.utils.extention.onViewBinding
-import com.argusoft.who.emcare.utils.localization.LocaleHelperActivityDelegateImpl
 import javax.inject.Inject
 
 abstract class BaseActivity<B : ViewBinding> : AppCompatActivity(), View.OnClickListener {

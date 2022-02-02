@@ -9,7 +9,6 @@ import com.argusoft.who.emcare.ui.common.INTENT_EXTRA_PATIENT_ID
 import com.argusoft.who.emcare.ui.common.INTENT_EXTRA_PATIENT_NAME
 import com.argusoft.who.emcare.ui.common.base.BaseFragment
 import com.argusoft.who.emcare.utils.extention.handleApiView
-import com.argusoft.who.emcare.utils.extention.navigate
 import com.argusoft.who.emcare.utils.extention.observeNotNull
 import dagger.hilt.android.AndroidEntryPoint
 

@@ -157,7 +157,5 @@
     
     <style name="Questionnaire" parent="Theme.MaterialComponents.Light.DarkActionBar">
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="groupHeaderTextAppearance">@style/TextAppearance.MaterialComponents.Headline6
-        </item>
     </style>
 </resources>

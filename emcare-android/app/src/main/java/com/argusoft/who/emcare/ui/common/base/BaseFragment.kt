@@ -2,6 +2,9 @@ package com.argusoft.who.emcare.ui.common.base
 
 import android.app.Application
 import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,16 +16,13 @@ import androidx.viewbinding.ViewBinding
 import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.data.local.pref.Preference
 import com.argusoft.who.emcare.ui.home.HomeActivity
+import com.argusoft.who.emcare.utils.common.UnauthorizedAccess
 import com.argusoft.who.emcare.utils.extention.hideKeyboard
 import com.argusoft.who.emcare.utils.extention.onViewBinding
-import javax.inject.Inject
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
-import android.os.Build
-import com.argusoft.who.emcare.utils.common.UnauthorizedAccess
 import com.argusoft.who.emcare.utils.extention.showToast
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
+import javax.inject.Inject
 
 
 abstract class BaseFragment<B : ViewBinding> : Fragment(), View.OnClickListener {

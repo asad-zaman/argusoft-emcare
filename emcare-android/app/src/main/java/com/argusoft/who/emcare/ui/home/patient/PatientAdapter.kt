@@ -11,7 +11,6 @@ import com.argusoft.who.emcare.ui.common.INTENT_EXTRA_PATIENT_ID
 import com.argusoft.who.emcare.ui.common.INTENT_EXTRA_PATIENT_NAME
 import com.argusoft.who.emcare.ui.common.base.BaseAdapter
 import com.argusoft.who.emcare.ui.common.model.PatientItem
-import com.argusoft.who.emcare.utils.extention.isNotEmpty
 import com.argusoft.who.emcare.utils.extention.navigate
 import com.argusoft.who.emcare.utils.extention.orEmpty
 import com.argusoft.who.emcare.utils.extention.toBinding

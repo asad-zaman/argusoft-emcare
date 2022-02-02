@@ -11,10 +11,10 @@ import android.os.Looper
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.IntentSenderRequest
 import androidx.fragment.app.Fragment
-import com.google.android.gms.common.api.ResolvableApiException
-import com.google.android.gms.location.*
 import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.utils.extention.showSnackBar
+import com.google.android.gms.common.api.ResolvableApiException
+import com.google.android.gms.location.*
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions

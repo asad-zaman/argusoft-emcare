@@ -23,7 +23,6 @@ import androidx.work.Data
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
 import com.argusoft.who.emcare.EmCareApplication
-import com.argusoft.who.emcare.utils.extention.timber
 import com.google.gson.ExclusionStrategy
 import com.google.gson.FieldAttributes
 import kotlinx.coroutines.CoroutineScope

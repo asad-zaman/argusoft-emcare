@@ -8,7 +8,6 @@ import com.argusoft.who.emcare.databinding.FragmentHomeBinding
 import com.argusoft.who.emcare.sync.SyncViewModel
 import com.argusoft.who.emcare.ui.common.base.BaseFragment
 import com.argusoft.who.emcare.ui.common.dashboardList
-import com.argusoft.who.emcare.ui.home.patient.PatientViewModel
 import com.argusoft.who.emcare.utils.SpacesItemDecoration
 import com.argusoft.who.emcare.utils.extention.navigate
 import com.argusoft.who.emcare.utils.extention.observeNotNull

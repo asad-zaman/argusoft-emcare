@@ -47,7 +47,7 @@ class AddPatientFragment : BaseFragment<FragmentAddPatientBinding>() {
         val parser: IParser = fhirCtx.newJsonParser().setPrettyPrint(false)
         patientViewModel.questionnaireJson = parser.encodeResourceToString(questionnaire)
         patientViewModel.questionnaireJson?.let {
-            questionnaireFragment.arguments = bundleOf(QuestionnaireFragment.BUNDLE_KEY_QUESTIONNAIRE to it)
+            questionnaireFragment.arguments = bundleOf(QuestionnaireFragment.EXTRA_QUESTIONNAIRE_JSON_STRING to it)
             childFragmentManager.commit {
                 add(R.id.fragmentContainerView, questionnaireFragment, QuestionnaireFragment::class.java.simpleName)
             }

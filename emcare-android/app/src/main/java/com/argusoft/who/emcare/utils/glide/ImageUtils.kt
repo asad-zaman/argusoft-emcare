@@ -8,8 +8,8 @@ import android.os.Build
 import android.util.Log
 import android.widget.ImageView
 import androidx.annotation.*
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.argusoft.who.emcare.utils.extention.isValidURL
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException

@@ -1,6 +1,5 @@
 package com.argusoft.who.emcare.ui.auth.login
 
-import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -18,7 +17,6 @@ import com.argusoft.who.emcare.ui.common.KEYCLOAK_SCOPE
 import com.argusoft.who.emcare.ui.common.model.DeviceDetails
 import com.argusoft.who.emcare.ui.common.model.User
 import com.argusoft.who.emcare.utils.common.NetworkHelper
-import com.argusoft.who.emcare.utils.extention.isInternetAvailable
 import com.argusoft.who.emcare.utils.extention.whenFailed
 import com.argusoft.who.emcare.utils.extention.whenSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
