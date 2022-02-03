@@ -85,6 +85,10 @@
           routerLink="/showFeatures"><i
             class="bi bi-list nav-link_icon"></i>{{'SidebarAndHeader.ManageFeatures' | translate}}</a>
       </li>
+      <li><a class="mouse-pointer" [ngClass]="{'active': this.currentUrl === '/manage-translation'}"
+          routerLink="/manage-translation"><i
+            class="bi bi-list nav-link_icon"></i>{{'ManageTranslations.ManageTranslations' | translate}}</a>
+      </li>
       <!-- <li><a> <i class="bi bi-recycle nav-link_icon"></i> Manage Conficts</a></li> -->
     </ul>
   </div>

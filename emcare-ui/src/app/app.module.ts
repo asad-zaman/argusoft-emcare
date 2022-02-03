@@ -27,7 +27,7 @@ import { AuthenticationService, ToasterService } from './shared';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { HomeComponent } from './root/components/home/home.component';
-import { HTTPStatus, TokenInterceptor } from './auth/token-interceptor';
+import { HTTPStatus, LaunguageSubjects, TokenInterceptor } from './auth/token-interceptor';
 import { CommonModule } from '@angular/common';
 // import { FhirService } from './root/services/fhir.service';
 import { ShowLocationTypeComponent } from './root/components/Location/location-type/show-location-type/show-location-type.component';
@@ -42,6 +42,7 @@ import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BaseModule } from './base.module';
 import { ManageProfileComponent } from './root/components/manage-profile/manage-profile.component';
+import { ManageTranslationsComponent } from './root/components/manage-translations/manage-translations.component';
 
 @NgModule({
   declarations: [
@@ -69,7 +70,8 @@ import { ManageProfileComponent } from './root/components/manage-profile/manage-
     FeatureListComponent,
     ManageFeatureComponent,
     ManageFeatureComponent,
-    ManageProfileComponent
+    ManageProfileComponent,
+    ManageTranslationsComponent
   ],
   imports: [
     BrowserModule,
@@ -96,7 +98,8 @@ import { ManageProfileComponent } from './root/components/manage-profile/manage-
     UserManagementService,
     FeatureManagementService,
     HTTPStatus,
-    ToasterService
+    ToasterService,
+    LaunguageSubjects
   ],
   bootstrap: [AppComponent]
 })

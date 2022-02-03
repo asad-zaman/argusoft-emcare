@@ -16,6 +16,7 @@ export class ManageProfileComponent implements OnInit {
   currentUserForm: FormGroup;
   submitted: boolean;
   locationId;
+  lanArr = [];
 
   constructor(
     private readonly authenticationService: AuthenticationService,
@@ -24,7 +25,13 @@ export class ManageProfileComponent implements OnInit {
     private readonly toasterService: ToasterService,
     private readonly translate: TranslateService,
     private readonly router: Router
-  ) { }
+  ) {
+    this.lanArr = [
+      { id: 'en', name: 'English' },
+      { id: 'fr', name: 'French' },
+      { id: 'hin', name: 'Hindi' }
+    ];
+  }
 
   ngOnInit(): void {
     this.prerequisite();

@@ -1,9 +1,11 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router, NavigationStart, Event as NavigationEvent } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import { ToastrService } from 'ngx-toastr';
-import { HTTPStatus } from './auth/token-interceptor';
+import { HTTPStatus, LaunguageSubjects } from './auth/token-interceptor';
+import { FhirService } from './shared';
 import { AuthenticationService } from './shared/services/authentication.service';
+import * as _ from 'lodash';
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -19,13 +21,16 @@ export class AppComponent implements OnInit {
   HTTPActivity: boolean;
   featureList: any = [];
   isLoggedIn: boolean = false;
+  currTranslations: any;
 
   constructor(
     private readonly router: Router,
     private readonly authenticationService: AuthenticationService,
     private readonly httpStatus: HTTPStatus,
     private readonly cdr: ChangeDetectorRef,
-    private readonly translate: TranslateService
+    private readonly translate: TranslateService,
+    private readonly fhirService: FhirService,
+    private readonly lanSubjects: LaunguageSubjects
   ) { }
 
   ngOnInit() {
@@ -49,13 +54,43 @@ export class AppComponent implements OnInit {
       if (result) {
         this.featureList = result;
       }
-    })
+    });
+    this.detectLanChange();
+  }
+
+  detectLanChange() {
+    this.lanSubjects.getLaunguage().subscribe(lan => {
+      if (lan === 'fr') {
+        this.lanSubjects.getFrenchTranslations().subscribe(res => {
+          this.translate.setTranslation(lan, res, true);
+        });
+      } else if (lan === 'hin') {
+        this.lanSubjects.getHindiTranslations().subscribe(res => {
+          this.translate.setTranslation(lan, res, true);
+        });
+      }
+    });
+  }
+
+  getAllLaunguages() {
+    const currLan = localStorage.getItem('language');
+    this.fhirService.getAllLaunguages().subscribe(res => {
+      if (res) {
+        _.forIn(res, (value, _key) => {
+          if (value.languageCode === currLan) {
+            this.currTranslations = JSON.parse(value.languageData);
+            this.translate.setTranslation(currLan, this.currTranslations, true);
+            this.translate.use(currLan);
+          }
+        });
+      }
+    });
   }
 
   setDefaultLanguage(lan) {
     this.translate.use(lan);
     // the lang to use, if the lang isn't available, it will use the current loader to get them
-    this.translate.setDefaultLang('english');
+    this.translate.setDefaultLang('en');
   }
 
   changeLaunguage(lIndex) {
@@ -116,6 +151,7 @@ export class AppComponent implements OnInit {
         this.setDefaultLanguage(res['language']);
         this.authenticationService.setFeatures(res.feature.map(f => f.menu_name));
         this.getLoggedInUser(res);
+        this.getAllLaunguages();
       }
     });
   }

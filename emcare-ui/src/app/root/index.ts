@@ -20,3 +20,4 @@ export { LocationFilterComponent } from './components/Location/location-filter/l
 export { FeatureListComponent } from './components/Feature/feature-list/feature-list.component';
 export { ManageFeatureComponent } from './components/Feature/manage-feature/manage-feature.component';
 export { FeatureManagementService } from './services/feature-management.service';
+export { ManageTranslationsComponent } from './components/manage-translations/manage-translations.component';
