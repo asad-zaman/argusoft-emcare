@@ -67,7 +67,9 @@ class AddPatientFragment : BaseFragment<FragmentAddPatientBinding>() {
             }
         }
         observeNotNull(patientViewModel.questionnaire) { questionnaire ->
-            addQuestionnaireFragment(questionnaire)
+            questionnaire.handleApiView(binding.progressLayout, skipIds = listOf(R.id.headerLayout)) {
+                it?.let { addQuestionnaireFragment(it) }
+            }
         }
     }
 }
