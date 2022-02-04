@@ -41,6 +41,8 @@ import { NgxPaginationModule } from 'ngx-pagination';
 import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
+import { QuestionnaireListComponent } from './root/components/questionnaire-management/questionnaire-list/questionnaire-list.component';
+import { QuestionnaireBuilderComponent } from './root/components/questionnaire-management/questionnaire-builder/questionnaire-builder.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -66,7 +68,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     LocationFilterComponent,
     FeatureListComponent,
     ManageFeatureComponent,
-    ManageFeatureComponent
+    ManageFeatureComponent,
+    QuestionnaireListComponent,
+    QuestionnaireBuilderComponent
   ],
   imports: [
     BrowserModule,

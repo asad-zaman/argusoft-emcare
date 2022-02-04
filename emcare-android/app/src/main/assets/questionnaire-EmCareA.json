@@ -94,16 +94,6 @@
           "linkId": "2",
           "type": "group",
           "definition": "http://hl7.org/fhir/StructureDefinition/Patient#Patient.name",
-          "extension": [
-            {
-              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-itemExtractionContext",
-              "valueExpression": {
-                "language": "application/x-fhir-query",
-                "expression": "HumanName",
-                "name": "humanName"
-              }
-            }
-          ],
           "enableWhen": [
             {
               "question": "1",
@@ -226,7 +216,30 @@
             {
               "linkId": "5a",
               "text": "Provide an estimated age",
-              "type": "quantity",
+              "type": "choice",
+              "answerOption":[
+                {"valueCoding":
+                {
+                  "system": "http://fhir.org/guides/who/emc-cds/CodeSystem/emc-custom-codes",
+                  "code": "EmCare.A.DE13",
+                  "display": "Estimated Age"
+                }
+                },
+                {"valueCoding":
+                {
+                  "system": "http://fhir.org/guides/who/emc-cds/CodeSystem/emc-custom-codes",
+                  "code": "EmCare.A.DE14",
+                  "display": "Only know age in weeks/days/hours"
+                }
+                },
+                {"valueCoding":
+                {
+                  "system": "http://fhir.org/guides/who/emc-cds/CodeSystem/emc-custom-codes",
+                  "code": "EmCare.A.DE15",
+                  "display": "Estimated Date of Birth"
+                }
+                }
+              ],
               "enableWhen": [
                 {
                   "question": "5",
@@ -264,76 +277,27 @@
           "definition": "http://hl7.org/fhir/StructureDefinition/Patient#Patient.gender",
           "type": "choice",
           "text": "Gender",
-          "extension": [
-            {
-              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
-              "valueExpression": {
-                "system": "http://hl7.org/fhir/administrative-gender",
-                "language": "text/fhirpath",
-                "expression": "Patient.gender",
-                "name": "patientGender"
-              }
-            },
-            {
-              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-itemExtractionContext",
-              "valueExpression": {
-                "language": "application/x-fhir-query",
-                "expression": "Enumerations$AdministrativeGender",
-                "name": "administrativeGender"
-              }
-            },
-            {
-              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-              "valueCodeableConcept": {
-                "coding": [
-                  {
-                    "system": "http://hl7.org/fhir/questionnaire-item-control",
-                    "code": "radio-button",
-                    "display": "Radio Button"
-                  }
-                ]
-              }
-            },
-            {
-              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
-              "valueCode": "horizontal"
-            }
-          ],
-          "initial": [
-            {
-              "valueCoding": {
-                "system": "http://hl7.org/fhir/administrative-gender",
-                "code": "female",
-                "display": "Female"
-              }
-            }
-          ],
           "answerOption": [
+            {"valueCoding":
             {
-              "valueCoding": {
-                "system": "http://hl7.org/fhir/administrative-gender",
-                "code": "female",
-                "display": "Female",
-                "designation": [
-                  {
-                    "language": "sw",
-                    "value": "Mwanamke"
-                  }
-                ]
-              }
+              "system": "http://fhir.org/guides/who/emc-cds/CodeSystem/emc-custom-codes",
+              "code": "female",
+              "display": "Female"
+            }
             },
+            {"valueCoding":
             {
-              "valueCoding": {
-                "system": "http://hl7.org/fhir/administrative-gender",
-                "code": "male",
-                "display": "Male",
-                "designation": [
-                  {
-                    "language": "sw",
-                    "value": "Mwanaume"
-                  }
-                ]
-              }
+              "system": "http://fhir.org/guides/who/emc-cds/CodeSystem/emc-custom-codes",
+              "code": "male",
+              "display": "Male"
+            }
+            },
+            {"valueCoding":
+            {
+              "system": "http://fhir.org/guides/who/emc-cds/CodeSystem/emc-custom-codes",
+              "code": "unknown",
+              "display": "Not Specified"
+            }
             }
           ]
         },
@@ -341,16 +305,6 @@
           "linkId": "PR-address",
           "type": "group",
           "definition": "http://hl7.org/fhir/StructureDefinition/Patient#Patient.address",
-          "extension": [
-            {
-              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-itemExtractionContext",
-              "valueExpression": {
-                "language": "application/x-fhir-query",
-                "expression": "Address",
-                "name": "address"
-              }
-            }
-          ],
           "item": [
             {
               "extension": [
@@ -521,7 +475,51 @@
         {
           "linkId": "18",
           "text": "Primary Caregiver's Relationship to Client",
-          "type": "string"
+          "type": "choice",
+          "answerOption":[
+            {"valueCoding":
+            {
+              "system": "http://fhir.org/guides/who/emc-cds/CodeSystem/emc-custom-codes",
+              "code": "MTH",
+              "display": "Mother"
+            }
+            },
+            {"valueCoding":
+            {
+              "system": "http://fhir.org/guides/who/emc-cds/CodeSystem/emc-custom-codes",
+              "code": "FTH",
+              "display": "Father"
+            }
+            },
+            {"valueCoding":
+            {
+              "system": "http://fhir.org/guides/who/emc-cds/CodeSystem/emc-custom-codes",
+              "code": "CHILD",
+              "display": "Sibling"
+            }
+            },
+            {"valueCoding":
+            {
+              "system": "http://fhir.org/guides/who/emc-cds/CodeSystem/emc-custom-codes",
+              "code": "EXT",
+              "display": "Extended family"
+            }
+            },
+            {"valueCoding":
+            {
+              "system": "http://fhir.org/guides/who/emc-cds/CodeSystem/emc-custom-codes",
+              "code": "PRNFOST",
+              "display": "Legal Guardian"
+            }
+            },
+            {"valueCoding":
+            {
+              "system": "http://fhir.org/guides/who/emc-cds/CodeSystem/emc-custom-codes",
+              "code": "FRND",
+              "display": "Not Related"
+            }
+            }
+          ]
         },
         {
           "linkId": "19",
@@ -536,7 +534,16 @@
         {
           "linkId": "26",
           "text": "Caregiver wants to receive SMS or other messages regarding the child's visits and health status",
-          "type": "boolean"
+          "type": "choice",
+          "answerOption":[
+            {"valueCoding":
+            {
+              "system": "http://fhir.org/guides/who/emc-cds/CodeSystem/emc-custom-codes",
+              "code": "EmCare.A.DE38",
+              "display": "Caregiver wants to receive SMS or other messages regarding the child's visits and health status"
+            }
+            }
+          ]
         },
         {
           "linkId": "27",
@@ -585,7 +592,16 @@
         {
           "linkId": "31",
           "text": "Person accompanying child today's Relationship to Client",
-          "type": "string",
+          "type": "choice",
+          "answerOption":[
+            {"valueCoding":
+            {
+              "system": "http://fhir.org/guides/who/emc-cds/CodeSystem/emc-custom-codes",
+              "code": "EmCare.A.DE43",
+              "display": "Person accompanying child today's Relationship to Client"
+            }
+            }
+          ],
           "enableWhen": [
             {
               "question": "27",
@@ -617,16 +633,80 @@
       ],
       "item": [
         {
+          "linkId": "32",
+          "definition": "http://fhir.org/guides/who/emc-cds/StructureDefinition/emcare-encounter#type",
+          "text": "Type of Visit",
+          "type": "choice",
+          "answerOption":[
+            {"valueCoding":
+            {
+              "system": "http://fhir.org/guides/who/emc-cds/CodeSystem/emc-custom-codes",
+              "code": "EmCare.B2.DE02",
+              "display": "Planned"
+            }
+            },
+            {"valueCoding":
+            {
+              "system": "http://fhir.org/guides/who/emc-cds/CodeSystem/emc-custom-codes",
+              "code": "EmCare.B2.DE03",
+              "display": "Unplanned"
+            }
+            }
+          ]
+        }, {
           "linkId": "33",
+          "definition": "http://fhir.org/guides/who/emc-cds/StructureDefinition/emcare-encounter#reasonCode",
           "text": "Reason for Consultation",
-          "type": "string"
-        },
-        {
+          "type": "choice",
+          "answerOption":[
+            {"valueCoding":
+            {
+              "system": "http://fhir.org/guides/who/emc-cds/CodeSystem/emc-custom-codes",
+              "code": "EmCare.B3.DE02",
+              "display": "Life Threatening Emergency"
+            }
+            },
+            {"valueCoding":
+            {
+              "system": "http://fhir.org/guides/who/emc-cds/CodeSystem/emc-custom-codes",
+              "code": "EmCare.B3.DE03",
+              "display": "Sick Child"
+            }
+            },
+            {"valueCoding":
+            {
+              "system": "http://fhir.org/guides/who/emc-cds/CodeSystem/emc-custom-codes",
+              "code": "EmCare.B3.DE04",
+              "display": "Well Child"
+            }
+            }
+          ]
+        }, {
           "linkId": "34",
+          "definition": "http://fhir.org/guides/who/emc-cds/StructureDefinition/emcare-observation#value[x]",
           "text": "Is the child sick today",
           "type": "boolean"
-        },
-        {
+        }, {
+          "linkId": "35",
+          "text": "Type of Consultation",
+          "type": "choice",
+          "answerOption":[
+            {"valueCoding":
+            {
+              "system": "http://fhir.org/guides/who/emc-cds/CodeSystem/emc-custom-codes",
+              "code": "EmCare.B3.DE07",
+              "display": "New Consultation"
+            }
+            },
+            {"valueCoding":
+            {
+              "system": "http://fhir.org/guides/who/emc-cds/CodeSystem/emc-custom-codes",
+              "code": "EmCare.B3.DE08",
+              "display": "Follow Up"
+            }
+            }
+          ]
+        }, {
           "linkId": "36",
           "text": "Referred by a Health Care Worker or Health Care Facility",
           "type": "boolean"

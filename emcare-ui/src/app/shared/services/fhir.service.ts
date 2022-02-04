@@ -8,6 +8,7 @@ import { environment } from "src/environments/environment";
 export class FhirService {
 
     fhirBaseURL= `${environment.apiUrl}/api/emcare`;
+    fhirResourceBaseURL = `${environment.apiUrl}/fhir`;
 
     constructor(private http: HttpClient){ }
 
@@ -41,5 +42,22 @@ export class FhirService {
 
     getPatientsByPageIndex(pageIndex) {
         return this.http.get(`${this.fhirBaseURL}/patient/page?pageNo=${pageIndex}`,this.getHeaders());
+    }
+
+    //Questionnaire Endpoints
+    getAllQuestionnaires() {
+        return this.http.get(`${this.fhirBaseURL}/questionnaire`,this.getHeaders());
+    }
+
+    getQuestionnaireById(id: String) {
+        return this.http.get(`${this.fhirBaseURL}/questionnaire/${id}`,this.getHeaders());
+    }
+
+    getQuestionnaireResourceById(id: String) {
+        return this.http.get(`${this.fhirResourceBaseURL}/Questionnaire/${id}`,this.getHeaders());
+    }
+
+    getQuestionnairesByPageIndex(pageIndex) {
+        return this.http.get(`${this.fhirBaseURL}/questionnaire/page?pageNo=${pageIndex}`,this.getHeaders());
     }
 }

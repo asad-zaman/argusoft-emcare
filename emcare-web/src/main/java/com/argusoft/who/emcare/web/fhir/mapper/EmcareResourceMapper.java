@@ -1,11 +1,13 @@
 package com.argusoft.who.emcare.web.fhir.mapper;
 
 import com.argusoft.who.emcare.web.fhir.dto.PatientDto;
+import com.argusoft.who.emcare.web.fhir.dto.QuestionnaireDto;
 import java.util.ArrayList;
 import java.util.List;
 import org.hl7.fhir.r4.model.Extension;
 import org.hl7.fhir.r4.model.Identifier;
 import org.hl7.fhir.r4.model.Patient;
+import org.hl7.fhir.r4.model.Questionnaire;
 
 /**
  *
@@ -13,7 +15,7 @@ import org.hl7.fhir.r4.model.Patient;
  */
 public class EmcareResourceMapper {
 
-    public static PatientDto entityToDtoMapper(Patient p) {
+    public static PatientDto patientEntityToDtoMapper(Patient p) {
         PatientDto pDto = new PatientDto();
 
         pDto.setId(p.getIdElement().getIdPart());
@@ -56,12 +58,32 @@ public class EmcareResourceMapper {
         return pDto;
     }
 
-    public static List<PatientDto> entitiesToDtoMapper(List<Patient> patients) {
+    public static List<PatientDto> patientEntitiesToDtoMapper(List<Patient> patients) {
         List<PatientDto> patientDtos = new ArrayList<>();
 
         for (Patient p : patients) {
-            patientDtos.add(entityToDtoMapper(p));
+            patientDtos.add(patientEntityToDtoMapper(p));
         }
         return patientDtos;
+    }
+
+    public static QuestionnaireDto questionnaireEntityToDtoMapper(Questionnaire q) {
+        QuestionnaireDto qDto = new QuestionnaireDto();
+
+        qDto.setId(q.getIdElement().getIdPart());
+        qDto.setName(q.getName());
+        qDto.setTitle(q.getTitle());
+        qDto.setDescription(q.getDescription());
+
+        return qDto;
+    }
+
+    public static List<QuestionnaireDto> questionnaireEntitiesToDtoMapper(List<Questionnaire> questionnaires) {
+        List<QuestionnaireDto> questionnaireDtos = new ArrayList<>();
+
+        for (Questionnaire q : questionnaires) {
+            questionnaireDtos.add(questionnaireEntityToDtoMapper(q));
+        }
+        return questionnaireDtos;
     }
 }

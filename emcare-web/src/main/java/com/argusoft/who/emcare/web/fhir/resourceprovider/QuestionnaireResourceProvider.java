@@ -65,7 +65,7 @@ public class QuestionnaireResourceProvider implements IResourceProvider {
         if (questionnaireMaster == null) {
             questionnaireMaster = new QuestionnaireMaster();
             questionnaireMaster.setVersion("1.0");
-            questionnaireMaster.setResourceId(questionnaire.getId());
+            questionnaireMaster.setResourceId(questionnaire.getIdElement().getIdPart());
         } else {
             Double version = (Double.parseDouble(questionnaireMaster.getVersion()) * 10 + 1) / 10; //Incrementing version by 0.1
             questionnaireMaster.setVersion(version.toString());
@@ -83,7 +83,6 @@ public class QuestionnaireResourceProvider implements IResourceProvider {
 
     @Read()
     public Questionnaire getQuestionnaireByResourceId(@IdParam IdType theId) {
-
         QuestionnaireMaster questionnaireMaster = questionnaireMasterService.retrieveQuestionnaireByResourceId(theId.getIdPart());
         Questionnaire questionnaire = null;
         if (questionnaireMaster != null) {
@@ -121,13 +120,11 @@ public class QuestionnaireResourceProvider implements IResourceProvider {
 
         
         String questionnaireString = parser.encodeResourceToString(questionnaire);
-
-        QuestionnaireMaster questionnaireMaster = questionnaireMasterService.retrieveQuestionnaireByResourceId(theId.getIdPart());
-
+        QuestionnaireMaster questionnaireMaster = questionnaireMasterService.retrieveQuestionnaireByResourceId(questionnaire.getIdElement().getIdPart());
         if (questionnaireMaster == null) {
             questionnaireMaster = new QuestionnaireMaster();
             questionnaireMaster.setVersion("1.0");
-            questionnaireMaster.setResourceId(questionnaire.getId());
+            questionnaireMaster.setResourceId(questionnaire.getIdElement().getIdPart());
         } else {
             Double version = (Double.parseDouble(questionnaireMaster.getVersion()) * 10 + 1) / 10; //Incrementing version by 0.1
             questionnaireMaster.setVersion(version.toString());
