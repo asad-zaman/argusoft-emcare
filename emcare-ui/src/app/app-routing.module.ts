@@ -22,7 +22,8 @@ import {
   ManageUserComponent,
   ConfirmUserComponent,
   FeatureListComponent,
-  ManageFeatureComponent
+  ManageFeatureComponent,
+  ManageTranslationsComponent
 } from './root/index';
 
 const routes: Routes = [
@@ -52,6 +53,7 @@ const routes: Routes = [
   { path: 'editRole/:id', component: ManageRoleComponent, canActivate: [AuthGuard] },
   { path: 'showFeatures', component: FeatureListComponent, canActivate: [AuthGuard] },
   { path: 'editFeature/:id', component: ManageFeatureComponent, canActivate: [AuthGuard] },
+  { path: 'manage-translation', component: ManageTranslationsComponent },
   { path: 'editProfile', component: ManageProfileComponent },
   { path: '**', redirectTo: 'login' }
 ];

@@ -1,0 +1,44 @@
+<div class="main-wrapper">
+  <h1 class="heading mb-3">{{'ManageTranslations.ManageTranslations' | translate}}</h1>
+  <ul class="navigation p-0 text-end mt-5 d-flex">
+    <div class="align-items-center mouse-pointer" data-bs-toggle="dropdown">
+      <b>Change Launguage</b> <i class="bi bi-chevron-down ps-2"></i>
+    </div>
+    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+      <li><a class="dropdown-item mouse-pointer" (click)="setLaunguage(1)">French</a></li>
+      <li><a class="dropdown-item mouse-pointer" (click)="setLaunguage(2)">Hindi</a></li>
+    </ul>
+    <ng-container *ngIf="this.lan">
+      <div class="mx-5">
+        <ng-container *ngFor="let item of alphabetArr; let i = index">
+          <a class="mr-3 mouse-pointer cst-alpha" (click)="showCurrCharKeys(item)">{{item}}</a>
+        </ng-container>
+      </div>
+      <button *ngIf="isChanged" class="btn btn-red ml-4"
+        (click)="saveTranslation()">{{'ManageTranslations.SaveChanges' | translate}}</button>
+    </ng-container>
+  </ul>
+  <ng-container *ngIf="this.lan">
+    <div class="cst-main-style">
+      <div *ngFor="let item of currentNames | keyvalue; let i=index" class="cst-child-style">
+        <div class="cst-parent d-flex">
+          <div class="cst-key">
+            <ng-container *ngFor="let subKey of getArr(item.key).arr; let i = index">
+              <span class="cst-subkey">{{subKey}}</span>
+              <span class="mx-3 cst-subkey" *ngIf="i!==getArr(item.key).length-1">=></span>
+            </ng-container>
+          </div>
+          <div class="cst-value d-flex">
+            <input (input)="setValue($event)" type="text" class="form-control custom-input ml-3" name="item.key"
+              value="{{item.value}}">
+            <i (click)="saveChange(item.key)"
+              class="bi bi-check-circle text-success cursor-pointer font-size-32 ml-3 cst-checkmark"></i>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="noRecords" class="p-10">
+        <h4 class="m-0">There are no translations with the selected alphabet!!</h4>
+      </div>
+    </div>
+  </ng-container>
+</div>
