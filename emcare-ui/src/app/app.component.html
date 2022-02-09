@@ -53,8 +53,7 @@
       <li *ngIf="hasAccess('Patient Management')"><a class="mouse-pointer"
         [ngClass]="{'active': this.currentUrl === '/showPatients'}" routerLink="/showPatients"><i
           class="bi bi-people nav-link_icon"></i>{{'SidebarAndHeader.ManagePatients' | translate}}</a></li>
-      <!--TODO: Replace feature with Questionnaire Management-->
-      <li *ngIf="hasAccess('Patient Management')"><a class="mouse-pointer" [ngClass]="{'active': this.currentUrl === '/showQuestionnaires' || this.currentUrl === '/addQuestionnaire' || this.currentUrl.includes('/updateQuestionnaire')}" 
+      <li *ngIf="hasAccess('Questionnaire Management')"><a class="mouse-pointer" [ngClass]="{'active': this.currentUrl === '/showQuestionnaires' || this.currentUrl === '/addQuestionnaire' || this.currentUrl.includes('/updateQuestionnaire')}" 
         routerLink="/showQuestionnaires"><i class="bi bi-people nav-link_icon"></i>Questionnaire
           Management</a></li>
       <li *ngIf="hasAccess('Location Management')">

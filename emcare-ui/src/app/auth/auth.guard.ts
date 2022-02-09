@@ -93,7 +93,7 @@ export class AuthGuard implements CanActivate {
             || route.routeConfig.path === 'addQuestionnaire'
             || route.routeConfig.path.includes('updateQuestionnaire')
         ) {
-            return !!this.user.feature.find(f => f.menu_name === 'Patient Management'); //TODO: replace with questionnaire management after adding feature.
+            return !!this.user.feature.find(f => f.menu_name === 'Questionnaire Management');
         } else if (
             route.routeConfig.path === 'showRoles'
             || route.routeConfig.path === 'addRole'
