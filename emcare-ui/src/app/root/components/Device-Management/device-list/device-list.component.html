@@ -24,7 +24,7 @@
           <ng-container *ngFor="let data of filteredDevices | 
           paginate : { itemsPerPage: tableSize, currentPage: currentPage, totalItems: totalCount }; let i=index">
             <tr>
-              <td>{{i+1}}</td>
+              <td>{{currentPage == 0 ? ((currentPage)*10 + i + 1) : ((currentPage-1)*10 + i + 1)}}</td>
               <td>{{data.deviceUUID}}</td>
               <td>{{data.androidVersion}}</td>
               <td>{{data.usersResource ? data.usersResource.userName : 'NA'}}</td>

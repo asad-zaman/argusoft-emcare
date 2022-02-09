@@ -47,7 +47,7 @@ export class LoginComponent implements OnInit {
             tokenexpiration.setSeconds(new Date().getSeconds() + data.expires_in);
             localStorage.setItem('access_token', JSON.stringify(data.access_token));
             localStorage.setItem('access_token_expiry_time', JSON.stringify(tokenexpiration));
-            
+
             const refreshTokenexpiration: Date = new Date();
             refreshTokenexpiration.setSeconds(new Date().getSeconds() + data.refresh_expires_in);
             localStorage.setItem('refresh_token', JSON.stringify(data.refresh_token));
@@ -58,8 +58,9 @@ export class LoginComponent implements OnInit {
           }
         },
         error => {
-          this.error = error['error']['message'];
+          this.error = error.error['error_description'];
           this.loading = false;
+          this.toasterService.showError(this.error, 'EmCare');
           this.authService.setIsLoggedIn(false);
         });
   }

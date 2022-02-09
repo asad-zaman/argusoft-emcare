@@ -1,9 +1,11 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router, NavigationStart, Event as NavigationEvent } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import { ToastrService } from 'ngx-toastr';
-import { HTTPStatus } from './auth/token-interceptor';
+import { HTTPStatus, LaunguageSubjects } from './auth/token-interceptor';
+import { FhirService } from './shared';
 import { AuthenticationService } from './shared/services/authentication.service';
+import * as _ from 'lodash';
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -19,13 +21,16 @@ export class AppComponent implements OnInit {
   HTTPActivity: boolean;
   featureList: any = [];
   isLoggedIn: boolean = false;
+  currTranslations: any;
 
   constructor(
     private readonly router: Router,
     private readonly authenticationService: AuthenticationService,
     private readonly httpStatus: HTTPStatus,
     private readonly cdr: ChangeDetectorRef,
-    private readonly translate: TranslateService
+    private readonly translate: TranslateService,
+    private readonly fhirService: FhirService,
+    private readonly lanSubjects: LaunguageSubjects
   ) { }
 
   ngOnInit() {
@@ -37,7 +42,6 @@ export class AppComponent implements OnInit {
   }
 
   prerequisite() {
-    this.setDefaultLanguage();
     this.getCurrentPage();
     this.checkTOkenExpiresOrNot();
     this.checkAPIStatus();
@@ -50,15 +54,43 @@ export class AppComponent implements OnInit {
       if (result) {
         this.featureList = result;
       }
-    })
+    });
+    this.detectLanChange();
   }
 
-  setDefaultLanguage() {
-    // Set German as default language
-    // this language will be used as a fallback when a translation isn't found in the current language
-    this.translate.setDefaultLang('french');
+  detectLanChange() {
+    this.lanSubjects.getLaunguage().subscribe(lan => {
+      if (lan === 'fr') {
+        this.lanSubjects.getFrenchTranslations().subscribe(res => {
+          this.translate.setTranslation(lan, res, true);
+        });
+      } else if (lan === 'hin') {
+        this.lanSubjects.getHindiTranslations().subscribe(res => {
+          this.translate.setTranslation(lan, res, true);
+        });
+      }
+    });
+  }
+
+  getAllLaunguages() {
+    const currLan = localStorage.getItem('language');
+    this.fhirService.getAllLaunguages().subscribe(res => {
+      if (res) {
+        _.forIn(res, (value, _key) => {
+          if (value.languageCode === currLan) {
+            this.currTranslations = JSON.parse(value.languageData);
+            this.translate.setTranslation(currLan, this.currTranslations, true);
+            this.translate.use(currLan);
+          }
+        });
+      }
+    });
+  }
+
+  setDefaultLanguage(lan) {
+    this.translate.use(lan);
     // the lang to use, if the lang isn't available, it will use the current loader to get them
-    this.translate.use('english');
+    this.translate.setDefaultLang('en');
   }
 
   changeLaunguage(lIndex) {
@@ -103,9 +135,6 @@ export class AppComponent implements OnInit {
     this.router.events.subscribe((event: NavigationEvent) => {
       if (event instanceof NavigationStart) {
         this.currentUrl = event.url;
-        if (this.currentUrl !== '/login' && this.currentUrl !== '/signup') {
-          this.getLoggedInUser();
-        }
       }
     });
   }
@@ -118,24 +147,27 @@ export class AppComponent implements OnInit {
   getFeatureList() {
     this.authenticationService.getLoggedInUser().subscribe(res => {
       if (res) {
+        localStorage.setItem('language', res['language']);
+        this.setDefaultLanguage(res['language']);
         this.authenticationService.setFeatures(res.feature.map(f => f.menu_name));
+        this.getLoggedInUser(res);
+        this.getAllLaunguages();
       }
-    })
+    });
   }
 
-  getLoggedInUser() {
+  // api should be called only once in page if not then it needs optimization
+  getLoggedInUser(res) {
     this.userName = localStorage.getItem('Username');
     this.userCharLogo = this.userName && this.getUserCharLogo(this.userName);
     const token = JSON.parse(localStorage.getItem('access_token'));
     if (token) {
       if (!this.userName) {
-        this.authenticationService.getLoggedInUser().subscribe(res => {
-          if (res) {
-            this.userName = res.userName;
-            this.userCharLogo = this.getUserCharLogo(this.userName);
-            localStorage.setItem('Username', this.userName);
-          }
-        });
+        if (res) {
+          this.userName = res.userName;
+          this.userCharLogo = this.getUserCharLogo(this.userName);
+          localStorage.setItem('Username', this.userName);
+        }
       }
     }
   }

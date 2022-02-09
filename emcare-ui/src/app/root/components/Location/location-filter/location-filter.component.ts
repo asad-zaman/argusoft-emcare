@@ -19,6 +19,7 @@ export class LocationFilterComponent implements OnInit {
   @Output() locationId = new EventEmitter<any>();
   sideMenu = false;
   currentUrl: string;
+  currentLan;
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -34,6 +35,11 @@ export class LocationFilterComponent implements OnInit {
     this.currentUrl = urlArr[urlArr.length - 1];
     this.initLocationFilterForm();
     this.getAllLocations();
+    this.getAndSetCurrentLanguage();
+  }
+
+  getAndSetCurrentLanguage() {
+    this.currentLan = localStorage.getItem('language');
   }
 
   getAllLocations() {
@@ -86,7 +92,8 @@ export class LocationFilterComponent implements OnInit {
     let selectedId;
     for (let index = this.dropdownActiveArr.length - 1; index >= 0; index--) {
       const data = this.dropdownActiveArr[index];
-      if (data && valueArr[index] !== "" && !selectedId) {
+      //  if value is not selected and showing --select-- in dropdown then the parent valus should be emitted as selectedId
+      if (data && (valueArr[index] !== "" && valueArr[index] !== "default") && !selectedId) {
         selectedId = valueArr[index];
       }
     }

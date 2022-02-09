@@ -1,5 +1,6 @@
 package com.argusoft.who.emcare.web.user.mapper;
 
+import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.location.model.LocationMaster;
 import com.argusoft.who.emcare.web.user.cons.UserConst;
 import com.argusoft.who.emcare.web.user.dto.UserDto;
@@ -45,13 +46,20 @@ public class UserMapper {
         return user;
     }
 
-    public static UserMasterDto getMasterUser(AccessToken token, LocationMaster locationMaster) {
+    public static UserMasterDto getMasterUser(AccessToken token, LocationMaster locationMaster, UserRepresentation userInfo) {
         UserMasterDto userMaster = new UserMasterDto();
         userMaster.setUserName(token.getName());
+        userMaster.setFirstName(userInfo.getFirstName());
+        userMaster.setLastName(userInfo.getLastName());
         userMaster.setLocation(locationMaster);
         userMaster.setRoles(token.getRealmAccess().getRoles().toArray(new String[0]));
         userMaster.setUserId(token.getSubject());
         userMaster.setEmail(token.getEmail());
+        if (userInfo.getAttributes() == null || userInfo.getAttributes().isEmpty()) {
+            userMaster.setLanguage(CommonConstant.ENGLISH);
+        } else {
+            userMaster.setLanguage(userInfo.getAttributes().get(CommonConstant.LANGUAGE_KEY).get(0));
+        }
         return userMaster;
     }
 

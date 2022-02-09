@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { AuthGuard } from './auth/auth.guard';
 import { HomeComponent } from './root/components/home/home.component';
+import { ManageProfileComponent } from './root/components/manage-profile/manage-profile.component';
 import { PatientListComponent } from './root/components/patient-management/patient-list/patient-list.component';
 import { ManageRoleComponent } from './root/components/role-management/manage-role/manage-role.component';
 import { ShowRoleComponent } from './root/components/role-management/show-role/show-role.component';
@@ -21,7 +22,8 @@ import {
   ManageUserComponent,
   ConfirmUserComponent,
   FeatureListComponent,
-  ManageFeatureComponent
+  ManageFeatureComponent,
+  ManageTranslationsComponent
 } from './root/index';
 
 const routes: Routes = [
@@ -51,6 +53,8 @@ const routes: Routes = [
   { path: 'editRole/:id', component: ManageRoleComponent, canActivate: [AuthGuard] },
   { path: 'showFeatures', component: FeatureListComponent, canActivate: [AuthGuard] },
   { path: 'editFeature/:id', component: ManageFeatureComponent, canActivate: [AuthGuard] },
+  { path: 'manage-translation', component: ManageTranslationsComponent },
+  { path: 'editProfile', component: ManageProfileComponent },
   { path: '**', redirectTo: 'login' }
 ];
 @NgModule({

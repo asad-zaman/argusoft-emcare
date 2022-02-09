@@ -28,32 +28,50 @@ export class AuthGuard implements CanActivate {
                 localStorage.clear();
                 return false;
             } else {
-                this.authService.getLoggedInUser().subscribe(res => {
-                    this.user = res;
-                    this.result = this.checkFeature(route);
-                    if (!this.result) {
-                        this.router.navigate(['/dashboard']);
+                /*  every time getLoogedInUser api should not be called
+                    first check if features are already present or not
+                    if not then only it should be fetched   */
+                this.authService.getFeatures().subscribe(res => {
+                    if (res && res.length !== 0) {
+                        this.user = res;
+                        this.getResultAndRedirect(route);
+                        return true;
+                    } else {
+                        this.authService.getLoggedInUser().subscribe(res => {
+                            this.user = res;
+                            this.getResultAndRedirect(route);
+                            return true;
+                        });
+                        return true;
                     }
-                    return true;
-                })
+                });
                 return true;
             }
         } else {
             if (route.routeConfig.path !== 'login' && route.routeConfig.path !== 'signup') {
                 this.router.navigate(['/login']);
-            } 
+            }
             return true;
+        }
+    }
+
+    getResultAndRedirect(route) {
+        if (this.user.feature) {
+            this.result = this.checkFeature(route);
+            if (!this.result) {
+                this.router.navigate(['/dashboard']);
+            }
         }
     }
 
     checkFeature(route) {
         if (
-           route.routeConfig.path === 'addLocationType' 
-        || route.routeConfig.path.includes('editLocationType')
-        || route.routeConfig.path === 'showLocationType'
-        || route.routeConfig.path === 'addLocation'
-        || route.routeConfig.path.includes('editLocation')
-        || route.routeConfig.path === 'showLocation') {
+            route.routeConfig.path === 'addLocationType'
+            || route.routeConfig.path.includes('editLocationType')
+            || route.routeConfig.path === 'showLocationType'
+            || route.routeConfig.path === 'addLocation'
+            || route.routeConfig.path.includes('editLocation')
+            || route.routeConfig.path === 'showLocation') {
             return !!this.user.feature.find(f => f.menu_name === 'Location Management');
         } else if (
             route.routeConfig.path == 'showDevices'
@@ -61,9 +79,9 @@ export class AuthGuard implements CanActivate {
             return !!this.user.feature.find(f => f.menu_name === 'Device Management');
         } else if (
             route.routeConfig.path === 'showUsers'
-        ||  route.routeConfig.path === 'addUser'
-        ||  route.routeConfig.path.includes('updateUser')
-        ||  route.routeConfig.path === 'confirmUsers'
+            || route.routeConfig.path === 'addUser'
+            || route.routeConfig.path.includes('updateUser')
+            || route.routeConfig.path === 'confirmUsers'
         ) {
             return !!this.user.feature.find(f => f.menu_name === 'Users');
         } else if (
@@ -72,13 +90,13 @@ export class AuthGuard implements CanActivate {
             return !!this.user.feature.find(f => f.menu_name === 'Patient Management');
         } else if (
             route.routeConfig.path === 'showRoles'
-        ||  route.routeConfig.path === 'addRole'
-        ||  route.routeConfig.path.includes('editRole')
+            || route.routeConfig.path === 'addRole'
+            || route.routeConfig.path.includes('editRole')
         ) {
             return !!this.user.feature.find(f => f.menu_name === 'Roles');
         } else if (
             route.routeConfig.path === 'showFeatures'
-        ||  route.routeConfig.path.includes('editFeature')
+            || route.routeConfig.path.includes('editFeature')
         ) {
             return !!this.user.feature.find(f => f.menu_name === 'Feature Management');
         } else {
