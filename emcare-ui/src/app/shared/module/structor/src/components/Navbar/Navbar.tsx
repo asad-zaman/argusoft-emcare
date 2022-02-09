@@ -14,6 +14,7 @@ import { ValidationErrorsModal } from '../ValidationErrorsModal/validationErrors
 import { useTranslation } from 'react-i18next';
 import axios, { AxiosRequestConfig } from 'axios';
 import { Questionnaire } from '../../types/fhir';
+import { environment } from '../../environments/environment';
 
 type Props = {
     showFormFiller: () => void;
@@ -37,7 +38,7 @@ const Navbar = ({ showFormFiller, setValidationErrors, validationErrors }: Props
     const [showValidationErrors, setShowValidationErrors] = useState<boolean>(false);
     const navBarRef = useRef<HTMLDivElement>(null);
     const fileExtension = 'json';
-    const questionnaireUrl = 'https://emcare.argusoft.com/fhir/Questionnaire';
+    const questionnaireURL = environment.apiUrl + '/fhir/Questionnaire';
 
     const hideMenu = () => {
         setSelectedMenuItem(MenuItem.none);
@@ -80,7 +81,7 @@ const Navbar = ({ showFormFiller, setValidationErrors, validationErrors }: Props
             };
             const questionnaireObj: Questionnaire = JSON.parse(questionnaire);
             if (questionnaireObj.id != null) {
-                axios.put(`${questionnaireUrl}/${questionnaireObj.id}`, questionnaire, axiosRequestConfig).then(
+                axios.put(`${questionnaireURL}/${questionnaireObj.id}`, questionnaire, axiosRequestConfig).then(
                     () => {
                         window.parent.postMessage({ apiMessage: 'save' }, '*');
                     },
@@ -89,7 +90,7 @@ const Navbar = ({ showFormFiller, setValidationErrors, validationErrors }: Props
                     },
                 );
             } else {
-                axios.post(questionnaireUrl, questionnaire, axiosRequestConfig).then(
+                axios.post(questionnaireURL, questionnaire, axiosRequestConfig).then(
                     () => {
                         window.parent.postMessage({ apiMessage: 'save' }, '*');
                     },
