@@ -44,6 +44,8 @@ import { BaseModule } from './base.module';
 import { ManageProfileComponent } from './root/components/manage-profile/manage-profile.component';
 import { ManageTranslationsComponent } from './root/components/manage-translations/manage-translations.component';
 
+import { QuestionnaireListComponent } from './root/components/questionnaire-management/questionnaire-list/questionnaire-list.component';
+import { QuestionnaireBuilderComponent } from './root/components/questionnaire-management/questionnaire-builder/questionnaire-builder.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -70,6 +72,8 @@ import { ManageTranslationsComponent } from './root/components/manage-translatio
     FeatureListComponent,
     ManageFeatureComponent,
     ManageFeatureComponent,
+    QuestionnaireListComponent,
+    QuestionnaireBuilderComponent,
     ManageProfileComponent,
     ManageTranslationsComponent
   ],

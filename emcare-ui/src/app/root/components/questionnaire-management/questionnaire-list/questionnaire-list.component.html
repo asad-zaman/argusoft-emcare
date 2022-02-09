@@ -1,0 +1,66 @@
+<div class="main-wrapper">
+  <h1 class="heading">Questionnaires</h1>
+  <hr>
+  <div class="row align-items-center mb-3">
+    <div class="col-lg-3 col-xxl-2 col-md-5 position-relative">
+      <input class="form-control custom-input h-40" id="exampleFormControlInput1" [(ngModel)]="searchString"
+        (input)="searchFilter()" placeholder="Search">
+    </div>
+    <div class="col text-end">
+      <button class="btn btn-red" routerLink="/addQuestionnaire">+ Add Questionnaire</button>
+    </div>
+  </div>
+  <!--Table-->
+  <div *ngIf="!isAPIBusy" class="table-responsive">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Questionnaire ID</th>
+          <th>Title</th>
+          <th>Description</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngIf="filteredQuestionnaireList && filteredQuestionnaireList.length > 0; else noRecords">
+          <ng-container *ngFor="let questionnaire of filteredQuestionnaireList | 
+          paginate : { itemsPerPage: tableSize, currentPage: currentPage, totalItems: totalCount }; let i=index">
+            <tr>
+              <td>{{i+1}}</td>
+              <td>{{questionnaire.id}}</td>
+              <td>{{questionnaire.title}}</td>
+              <td>{{questionnaire.description}}
+              <td class="text-end">
+                <ul class="navigation" style="list-style-type: none;">
+                  <li class="dropdown mt-3 cursor-pointer">
+                    <div class="d-flex align-items-center" data-bs-toggle="dropdown">
+                      <i class="bi bi-three-dots-vertical ps-2"></i>
+                    </div>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                      <li (click)="updateQuestionnaire(i)">
+                        <a class="dropdown-item">
+                          <i class="bi bi-pencil font-size-16 mr-2"></i>Update Questionnaire
+                        </a>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </td>
+            </tr>
+          </ng-container>
+        </ng-container>
+        <ng-template #noRecords>
+          <div class="no-record">
+            No Records Found!!
+          </div>
+        </ng-template>
+      </tbody>
+    </table>
+    <div class="d-flex justify-content-end mt-3">
+      <pagination-controls responsive="true" previousLabel="Prev" nextLabel="Next" (pageChange)="onIndexChange($event)">
+      </pagination-controls>
+    </div>
+  </div>
+  <!--Table-END-->
+</div>

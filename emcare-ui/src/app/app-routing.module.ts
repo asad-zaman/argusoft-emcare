@@ -4,6 +4,8 @@ import { AuthGuard } from './auth/auth.guard';
 import { HomeComponent } from './root/components/home/home.component';
 import { ManageProfileComponent } from './root/components/manage-profile/manage-profile.component';
 import { PatientListComponent } from './root/components/patient-management/patient-list/patient-list.component';
+import { QuestionnaireBuilderComponent } from './root/components/questionnaire-management/questionnaire-builder/questionnaire-builder.component';
+import { QuestionnaireListComponent } from './root/components/questionnaire-management/questionnaire-list/questionnaire-list.component';
 import { ManageRoleComponent } from './root/components/role-management/manage-role/manage-role.component';
 import { ShowRoleComponent } from './root/components/role-management/show-role/show-role.component';
 import {
@@ -48,6 +50,9 @@ const routes: Routes = [
   { path: 'updateUser/:id', component: ManageUserComponent, canActivate: [AuthGuard] },
   { path: 'confirmUsers', component: ConfirmUserComponent, canActivate: [AuthGuard] },
   { path: 'showPatients', component: PatientListComponent, canActivate: [AuthGuard] },
+  { path: 'showQuestionnaires', component: QuestionnaireListComponent, canActivate: [AuthGuard] },
+  { path: 'addQuestionnaire', component: QuestionnaireBuilderComponent, canActivate: [AuthGuard] },
+  { path: 'updateQuestionnaire/:id', component: QuestionnaireBuilderComponent, canActivate: [AuthGuard] },
   { path: 'showRoles', component: ShowRoleComponent, canActivate: [AuthGuard] },
   { path: 'addRole', component: ManageRoleComponent, canActivate: [AuthGuard] },
   { path: 'editRole/:id', component: ManageRoleComponent, canActivate: [AuthGuard] },

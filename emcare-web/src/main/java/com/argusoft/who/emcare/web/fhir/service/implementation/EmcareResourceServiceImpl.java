@@ -64,7 +64,7 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
             patientsList.add(patient);
         }
 
-        patientDtosList = EmcareResourceMapper.entitiesToDtoMapper(patientsList);
+        patientDtosList = EmcareResourceMapper.patientEntitiesToDtoMapper(patientsList);
 
         //Converting caregiverId and locationid to name
         for (PatientDto patientDto : patientDtosList) {
@@ -111,7 +111,7 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
             Patient patient = parser.parseResource(Patient.class, emcareResource.getText());
             patientsList.add(patient);
         }
-        List<PatientDto> patientDtosList = EmcareResourceMapper.entitiesToDtoMapper(patientsList);
+        List<PatientDto> patientDtosList = EmcareResourceMapper.patientEntitiesToDtoMapper(patientsList);
         List<Integer> locationIds = locationMasterDao.getAllChildLocationId(locationId);
         List<PatientDto> list = patientDtosList.stream().filter(patient -> locationIds.contains(Integer.parseInt(patient.getLocation()))).collect(Collectors.toList());
         

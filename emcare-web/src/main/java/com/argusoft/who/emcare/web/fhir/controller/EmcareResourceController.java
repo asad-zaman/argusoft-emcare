@@ -4,9 +4,12 @@ import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.IParser;
 import com.argusoft.who.emcare.web.common.dto.PageDto;
 import com.argusoft.who.emcare.web.fhir.dto.PatientDto;
+import com.argusoft.who.emcare.web.fhir.dto.QuestionnaireDto;
 import com.argusoft.who.emcare.web.fhir.mapper.EmcareResourceMapper;
 import com.argusoft.who.emcare.web.fhir.model.EmcareResource;
+import com.argusoft.who.emcare.web.fhir.model.QuestionnaireMaster;
 import com.argusoft.who.emcare.web.fhir.service.EmcareResourceService;
+import com.argusoft.who.emcare.web.fhir.service.QuestionnaireMasterService;
 import com.argusoft.who.emcare.web.location.model.LocationMaster;
 import com.argusoft.who.emcare.web.location.service.LocationService;
 import org.hl7.fhir.r4.model.Patient;
@@ -16,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.hl7.fhir.r4.model.Questionnaire;
 
 @CrossOrigin(origins = "**")
 @RestController
@@ -27,6 +31,9 @@ public class EmcareResourceController {
 
     @Autowired
     private EmcareResourceService emcareResourceService;
+    
+    @Autowired
+    private QuestionnaireMasterService questionnaireMasterService;
 
     @Autowired
     private LocationService locationService;
@@ -44,7 +51,7 @@ public class EmcareResourceController {
             patientsList.add(patient);
         }
 
-        patientDtosList = EmcareResourceMapper.entitiesToDtoMapper(patientsList);
+        patientDtosList = EmcareResourceMapper.patientEntitiesToDtoMapper(patientsList);
 
         //Converting caregiverId and locationid to name
         for (PatientDto patientDto : patientDtosList) {
@@ -79,7 +86,7 @@ public class EmcareResourceController {
     public PatientDto getPatientById(@PathVariable String patientId) {
         EmcareResource emcareResource = emcareResourceService.findByResourceId(patientId);
         Patient patient = parser.parseResource(Patient.class, emcareResource.getText());
-        PatientDto patientDto = EmcareResourceMapper.entityToDtoMapper(patient);
+        PatientDto patientDto = EmcareResourceMapper.patientEntityToDtoMapper(patient);
         if (patientDto.getCaregiver() != null) {
             EmcareResource caregiverResource = emcareResourceService.findByResourceId(patientDto.getCaregiver());
             RelatedPerson caregiver = parser.parseResource(RelatedPerson.class, caregiverResource.getText());
@@ -92,5 +99,33 @@ public class EmcareResourceController {
         }
 
         return patientDto;
+    }
+    
+    @GetMapping("/questionnaire")
+    public List<QuestionnaireDto> getAllQuestionnaires() {
+        List<QuestionnaireMaster> questionnaireMasters = questionnaireMasterService.retrieveAllQuestionnaires();
+        List<Questionnaire> questionnaires = new ArrayList<>();
+        
+        for(QuestionnaireMaster qm : questionnaireMasters) {
+            Questionnaire q = parser.parseResource(Questionnaire.class, qm.getText());
+            questionnaires.add(q);
+        }
+        
+        return EmcareResourceMapper.questionnaireEntitiesToDtoMapper(questionnaires);
+    }
+    
+    @GetMapping("/questionnaire/page")
+    public PageDto getQuestionnairesPage(@RequestParam(value = "pageNo") Integer pageNo) {
+        return questionnaireMasterService.getQuestionnaireDtosPage(pageNo);
+    }
+    
+    @GetMapping("/questionnaire/{questionnaireId}")
+    public Questionnaire getQuestionnaireById(@PathVariable String questionnaireId){
+        QuestionnaireMaster qm = questionnaireMasterService.retrieveQuestionnaireByResourceId(questionnaireId);
+        Questionnaire q = null;
+        if(qm != null){
+            q = parser.parseResource(Questionnaire.class, qm.getText());
+        }
+        return q;
     }
 }
