@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next';
 import FormBuilder from './FormBuilder';
 import Btn from '../components/Btn/Btn';
 import './FrontPage.css';
+import { useLocation } from 'react-router-dom';
 
 const FrontPage = (): JSX.Element => {
     const { t } = useTranslation();
@@ -41,12 +42,39 @@ const FrontPage = (): JSX.Element => {
         }
     };
 
+    const useQuery = () => {
+        const { search } = useLocation();
+        return React.useMemo(() => new URLSearchParams(search), [search]);
+    };
+
+    const query = useQuery();
+    const isEdit = query.get('isEdit');
+
     const uploadQuestionnaire = (event: React.ChangeEvent<HTMLInputElement>) => {
         setIsLoading(true);
         const reader = new FileReader();
         reader.onload = onReaderLoad;
         if (event.target.files && event.target.files[0]) reader.readAsText(event.target.files[0]);
     };
+
+    let questionnaireBody = localStorage.getItem('questionnaire_body');
+
+    const fetchQuestionnaire = (): void => {
+        setIsLoading(true);
+        questionnaireBody = localStorage.getItem('questionnaire_body');
+        if (questionnaireBody != null) {
+            const questionnaireObj = JSON.parse(questionnaireBody);
+            const importedState = mapToTreeState(questionnaireObj);
+            dispatch(resetQuestionnaireAction(importedState));
+            setIsLoading(false);
+            setIsFormBuilderShown(true);
+            // Reset file input
+            if (uploadRef.current) {
+                uploadRef.current.value = '';
+            }
+        }
+    };
+
     const suggestRestore: boolean = stateFromStorage?.qItems ? Object.keys(stateFromStorage.qItems).length > 0 : false;
 
     const onDenyRestoreModal = (): void => {
@@ -62,7 +90,7 @@ const FrontPage = (): JSX.Element => {
 
     return (
         <>
-            {suggestRestore && (
+            {!questionnaireBody && suggestRestore && (
                 <Modal title={t('Restore questionnaire...')} close={onDenyRestoreModal}>
                     <div>
                         <p>{t('It looks like you have previously worked with a questionnaire:')}</p>
@@ -117,21 +145,35 @@ const FrontPage = (): JSX.Element => {
                             accept="application/JSON"
                             style={{ display: 'none' }}
                         />
-                        <Btn
-                            onClick={() => {
-                                setIsFormBuilderShown(true);
-                            }}
-                            title={t('New questionnaire')}
-                            variant="primary"
-                        />
+                        {!isEdit && (
+                            <Btn
+                                onClick={() => {
+                                    setIsFormBuilderShown(true);
+                                }}
+                                title={t('New questionnaire')}
+                                variant="primary"
+                            />
+                        )}
                         {` `}
-                        <Btn
-                            onClick={() => {
-                                uploadRef.current?.click();
-                            }}
-                            title={t('Upload questionnaire')}
-                            variant="secondary"
-                        />
+                        {!isEdit && (
+                            <Btn
+                                onClick={() => {
+                                    uploadRef.current?.click();
+                                }}
+                                title={t('Upload questionnaire')}
+                                variant="secondary"
+                            />
+                        )}
+                        {` `}
+                        {!!isEdit && (
+                            <Btn
+                                onClick={() => {
+                                    fetchQuestionnaire();
+                                }}
+                                title={t('Edit questionnaire')}
+                                variant="primary"
+                            />
+                        )}
                     </div>
                 </>
             )}

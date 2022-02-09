@@ -12,6 +12,8 @@ import { saveAction } from '../../store/treeStore/treeActions';
 import { validateOrphanedElements, ValidationErrors } from '../../helpers/orphanValidation';
 import { ValidationErrorsModal } from '../ValidationErrorsModal/validationErrorsModal';
 import { useTranslation } from 'react-i18next';
+import axios, { AxiosRequestConfig } from 'axios';
+import { Questionnaire } from '../../types/fhir';
 
 type Props = {
     showFormFiller: () => void;
@@ -35,6 +37,7 @@ const Navbar = ({ showFormFiller, setValidationErrors, validationErrors }: Props
     const [showValidationErrors, setShowValidationErrors] = useState<boolean>(false);
     const navBarRef = useRef<HTMLDivElement>(null);
     const fileExtension = 'json';
+    const questionnaireUrl = 'https://emcare.argusoft.com/fhir/Questionnaire';
 
     const hideMenu = () => {
         setSelectedMenuItem(MenuItem.none);
@@ -61,20 +64,47 @@ const Navbar = ({ showFormFiller, setValidationErrors, validationErrors }: Props
         const questionnaire = generateQuestionnaire(state);
         const filename = `${getFileName()}.${fileExtension}`;
         const contentType = 'application/json;charset=utf-8;';
-
+        const accessTokenString = localStorage.getItem('access_token');
+        const accessToken = accessTokenString ? accessTokenString.substring(1, accessTokenString.length - 1) : '';
         if (window.navigator && window.navigator.msSaveOrOpenBlob) {
             const blob = new Blob([decodeURIComponent(encodeURI(questionnaire))], {
                 type: contentType,
             });
             navigator.msSaveOrOpenBlob(blob, filename);
         } else {
-            const a = document.createElement('a');
+            const axiosRequestConfig: AxiosRequestConfig = {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            };
+            const questionnaireObj: Questionnaire = JSON.parse(questionnaire);
+            if (questionnaireObj.id != null) {
+                axios.put(`${questionnaireUrl}/${questionnaireObj.id}`, questionnaire, axiosRequestConfig).then(
+                    () => {
+                        window.parent.postMessage({ apiMessage: 'save' }, '*');
+                    },
+                    () => {
+                        window.parent.postMessage({ apiMessage: 'failure' }, '*');
+                    },
+                );
+            } else {
+                axios.post(questionnaireUrl, questionnaire, axiosRequestConfig).then(
+                    () => {
+                        window.parent.postMessage({ apiMessage: 'save' }, '*');
+                    },
+                    () => {
+                        window.parent.postMessage({ apiMessage: 'failure' }, '*');
+                    },
+                );
+            }
+            /*const a = document.createElement('a');
             a.download = filename;
             a.href = 'data:' + contentType + ',' + encodeURIComponent(questionnaire);
             a.target = '_blank';
             document.body.appendChild(a);
             a.click();
-            document.body.removeChild(a);
+            document.body.removeChild(a);*/
         }
         dispatch(saveAction());
     }
