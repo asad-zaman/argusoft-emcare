@@ -60,23 +60,6 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
-
-        <activity
-            android:name="com.argusoft.who.emcare.oldstruct.BlockedDeviceActivity"
-            android:exported="true"
-            android:theme="@style/AppTheme.NoActionBar" />
-
-        <activity
-            android:name="com.argusoft.who.emcare.oldstruct.LoginActivity"
-            android:exported="true"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustResize" />
-
-        <activity
-            android:name="com.argusoft.who.emcare.oldstruct.MainActivity"
-            android:label="EmCare Patients"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustResize" />
     </application>
 
 </manifest>

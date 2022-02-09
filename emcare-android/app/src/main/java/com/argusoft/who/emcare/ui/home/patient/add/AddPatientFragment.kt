@@ -21,7 +21,7 @@ import org.hl7.fhir.r4.model.Questionnaire
 class AddPatientFragment : BaseFragment<FragmentAddPatientBinding>() {
 
     private val patientViewModel: PatientViewModel by viewModels()
-    private val questionnaireFragment = CustomQuestionnaireFragment()
+    private val questionnaireFragment = QuestionnaireFragment()
 
     override fun initView() {
         setupToolbar()
@@ -47,7 +47,7 @@ class AddPatientFragment : BaseFragment<FragmentAddPatientBinding>() {
         val parser: IParser = fhirCtx.newJsonParser().setPrettyPrint(false)
         patientViewModel.questionnaireJson = parser.encodeResourceToString(questionnaire)
         patientViewModel.questionnaireJson?.let {
-            questionnaireFragment.arguments = bundleOf(QuestionnaireFragment.BUNDLE_KEY_QUESTIONNAIRE to it)
+            questionnaireFragment.arguments = bundleOf(QuestionnaireFragment.EXTRA_QUESTIONNAIRE_JSON_STRING to it)
             childFragmentManager.commit {
                 add(R.id.fragmentContainerView, questionnaireFragment, QuestionnaireFragment::class.java.simpleName)
             }
@@ -67,7 +67,9 @@ class AddPatientFragment : BaseFragment<FragmentAddPatientBinding>() {
             }
         }
         observeNotNull(patientViewModel.questionnaire) { questionnaire ->
-            addQuestionnaireFragment(questionnaire)
+            questionnaire.handleApiView(binding.progressLayout, skipIds = listOf(R.id.headerLayout)) {
+                it?.let { addQuestionnaireFragment(it) }
+            }
         }
     }
 }

@@ -1,10 +1,6 @@
 package com.argusoft.who.emcare.ui.auth.login
 
-import android.app.Application
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.data.local.database.Database
 import com.argusoft.who.emcare.data.local.pref.EncPref
@@ -18,20 +14,18 @@ import com.argusoft.who.emcare.ui.common.KEYCLOAK_SCOPE
 import com.argusoft.who.emcare.ui.common.model.DeviceDetails
 import com.argusoft.who.emcare.ui.common.model.User
 import com.argusoft.who.emcare.utils.common.NetworkHelper
-import com.argusoft.who.emcare.utils.extention.isInternetAvailable
 import com.argusoft.who.emcare.utils.extention.whenFailed
+import com.argusoft.who.emcare.utils.extention.whenResult
 import com.argusoft.who.emcare.utils.extention.whenSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.collections.set
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val api: Api,
-    private val database: Database,
-    private val preference: Preference,
-    private val networkHelper: NetworkHelper
+    private val loginRepository: LoginRepository
 ) : ViewModel() {
 
     private val _errorMessageState = MutableLiveData<Int>()
@@ -65,59 +59,16 @@ class LoginViewModel @Inject constructor(
             password.isEmpty() -> _errorMessageState.value = R.string.error_msg_password
             else -> {
                 _loginApiState.value = ApiResponse.Loading()
-                if (networkHelper.isInternetAvailable()) {
-                    val requestMap = HashMap<String, String>()
-                    requestMap["client_id"] = KEYCLOAK_CLIENT_ID
-                    requestMap["grant_type"] = KEYCLOAK_GRANT_TYPE
-                    requestMap["client_secret"] = KEYCLOAK_CLIENT_SECRET
-                    requestMap["scope"] = KEYCLOAK_SCOPE
-                    requestMap["username"] = username
-                    requestMap["password"] = password
-                    viewModelScope.launch {
-                        val loginResponse = api.login(requestMap)
-                        loginResponse.whenFailed {
-                            _loginApiState.value = loginResponse
-                        }
-                        loginResponse.whenSuccess { user ->
-                            preference.setLogin()
-                            user.accessToken?.let { accessToken -> preference.setToken(accessToken) }
-                            preference.setUser(user)
-
-                            api.getLoggedInUser().whenSuccess { loggedInUser ->
-                                preference.setLoggedInUser(loggedInUser)
-                                database.saveLoginUser(loggedInUser.apply {
-                                    this.password = EncPref.encrypt(password)
-                                })
-                            }
-
-                            val getDevice = api.getDevice(deviceUUID)
-                            getDevice.whenSuccess {
-                                deviceDetails.isBlocked = it.isBlocked
-                                api.addDevice(deviceDetails)
-                                if (it.isBlocked == true) {
-                                    _errorMessageState.value = R.string.blocked_device_message
-                                } else {
-                                    _loginApiState.value = loginResponse
-                                }
-                            }
-                            getDevice.whenFailed {
-                                api.addDevice(deviceDetails)
-                                _loginApiState.value = loginResponse
-                            }
-                        }
-                    }
-                } else {
-                    viewModelScope.launch {
-                        val loginUser = database.getAllUser()
-                        loginUser?.find {
-                            it.email == username && EncPref.decrypt(it.password ?: "") == password
-                        }?.let {
-                            preference.setLogin()
-                            preference.setLoggedInUser(it)
-                            _loginApiState.value = ApiResponse.Success(data = null)
-                        } ?: let {
-                            _loginApiState.value = ApiResponse.ApiError(apiErrorMessageResId = R.string.error_msg_not_find_user)
-                        }
+                val requestMap = HashMap<String, String>()
+                requestMap["client_id"] = KEYCLOAK_CLIENT_ID
+                requestMap["grant_type"] = KEYCLOAK_GRANT_TYPE
+                requestMap["client_secret"] = KEYCLOAK_CLIENT_SECRET
+                requestMap["scope"] = KEYCLOAK_SCOPE
+                requestMap["username"] = username
+                requestMap["password"] = password
+                viewModelScope.launch {
+                    loginRepository.login(requestMap, deviceDetails).collect {
+                        _loginApiState.value = it
                     }
                 }
             }

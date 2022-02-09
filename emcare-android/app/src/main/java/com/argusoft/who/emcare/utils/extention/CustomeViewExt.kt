@@ -189,3 +189,26 @@ inline fun <T> ApiResponse<T>.whenFailed(function: () -> Unit): ApiResponse<T> {
     return this
 }
 
+inline fun <T> ApiResponse<T>.whenResult(
+    onSuccess: (T) -> Unit,
+    onFailed: (String) -> Unit,
+): ApiResponse<T> {
+    when (this) {
+        is ApiResponse.Success -> {
+            data?.let { onSuccess(it) }
+        }
+        is ApiResponse.ServerError -> {
+            onFailed(errorMessage)
+        }
+        is ApiResponse.ApiError -> {
+            apiErrorMessage?.let { onFailed(it) }
+        }
+        is ApiResponse.NoInternetConnection -> {
+           onFailed("Make sure that mobile data or Wi-Fi is turn on, then try again")
+        }
+        else -> {
+        }
+    }
+    return this
+}
+

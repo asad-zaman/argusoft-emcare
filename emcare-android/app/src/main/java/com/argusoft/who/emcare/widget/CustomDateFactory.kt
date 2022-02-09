@@ -131,10 +131,10 @@ object CustomDateFactory :
                     else validationResult.getSingleStringValidationMessage()
             }
 
-          /*  override fun setReadOnly(isReadOnly: Boolean) {
+            override fun setReadOnly(isReadOnly: Boolean) {
                 textInputEditText.isEnabled = !isReadOnly
                 textInputLayout.isEnabled = !isReadOnly
-            }*/
+            }
         }
 
     @SuppressLint("NewApi") // java.time APIs can be used due to desugaring

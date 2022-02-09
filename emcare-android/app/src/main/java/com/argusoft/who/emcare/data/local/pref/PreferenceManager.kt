@@ -5,7 +5,6 @@ import com.argusoft.who.emcare.ui.common.model.User
 import com.argusoft.who.emcare.utils.extention.fromJson
 import com.argusoft.who.emcare.utils.extention.orEmpty
 import com.argusoft.who.emcare.utils.extention.toJson
-import java.util.*
 
 class PreferenceManager(private val sharedPreferences: EncPref) : Preference {
 

@@ -1,9 +1,6 @@
 package com.argusoft.who.emcare.ui.auth.signup
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.data.local.database.Database
 import com.argusoft.who.emcare.data.local.pref.Preference
@@ -18,14 +15,13 @@ import com.argusoft.who.emcare.utils.extention.whenSuccess
 import com.argusoft.who.emcare.utils.listener.SingleLiveEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class SignUpViewModel @Inject constructor(
-    private val api: Api,
-    private val database: Database,
-    private val preference: Preference
+    private val signUpRepository: SignUpRepository
 ) : ViewModel() {
 
     private val _errorMessageState = SingleLiveEvent<Int>()
@@ -43,16 +39,12 @@ class SignUpViewModel @Inject constructor(
         getLocationsAndRoles()
     }
 
-    fun getLocationsAndRoles() {
+    private fun getLocationsAndRoles() {
         _locationAndRolesApiState.value = Pair(ApiResponse.Loading(), ApiResponse.Loading())
         viewModelScope.launch {
-            _locationAndRolesApiState.value = Pair(async {
-                api.getLocations().whenSuccess {
-                    database.saveLocations(it)
-                }
-            }.await(), async {
-                api.getRoles()
-            }.await())
+            signUpRepository.getLocationsAndRoles().collect {
+                _locationAndRolesApiState.value = it
+            }
         }
     }
 
@@ -93,7 +85,9 @@ class SignUpViewModel @Inject constructor(
                 signupRequest.password = password
                 _signupApiState.value = ApiResponse.Loading()
                 viewModelScope.launch {
-                    _signupApiState.value = api.signup(signupRequest)
+                    signUpRepository.signUp(signupRequest).collect {
+                        _signupApiState.value = it
+                    }
                 }
             }
         }

@@ -44,10 +44,10 @@ object CustomEditTextFactory :
                 textInputEditText = itemView.findViewById(R.id.textInputEditText)
             }
 
-           /* override fun setReadOnly(isReadOnly: Boolean) {
+            override fun setReadOnly(isReadOnly: Boolean) {
                 textInputEditText.isEnabled = !isReadOnly
                 textInputLayout.isEnabled = !isReadOnly
-            }*/
+            }
 
             override fun bind(questionnaireItemViewItem: QuestionnaireItemViewItem) {
                 if (questionnaireItemViewItem.questionnaireItem.type == Questionnaire.QuestionnaireItemType.INTEGER || questionnaireItemViewItem.questionnaireItem.type ==

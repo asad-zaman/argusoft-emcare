@@ -9,7 +9,6 @@ import com.argusoft.who.emcare.ui.common.INTENT_EXTRA_PATIENT_ID
 import com.argusoft.who.emcare.ui.common.INTENT_EXTRA_PATIENT_NAME
 import com.argusoft.who.emcare.ui.common.base.BaseFragment
 import com.argusoft.who.emcare.utils.extention.handleApiView
-import com.argusoft.who.emcare.utils.extention.navigate
 import com.argusoft.who.emcare.utils.extention.observeNotNull
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -17,7 +16,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class PatientDetailsFragment : BaseFragment<FragmentPatientDetailsBinding>() {
 
-    private val patientDetailsViewModel: PatientDetailsViewModel  by viewModels()
+    private val patientDetailsViewModel: PatientDetailsViewModel by viewModels()
     private lateinit var patientDetailsAdapter: PatientDetailsAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,12 +40,14 @@ class PatientDetailsFragment : BaseFragment<FragmentPatientDetailsBinding>() {
     }
 
     override fun initObserver() {
-        observeNotNull(patientDetailsViewModel.patientItem) {
-            patientDetailsAdapter.clearAllItems()
-            patientDetailsAdapter.addAll(patientDetailsViewModel.createPatientItemDataListFromPatientItem(it))
+        observeNotNull(patientDetailsViewModel.patientItem) { apiResponse ->
+            apiResponse.handleApiView(binding.patientDetailsLayout) {
+                patientDetailsAdapter.clearAllItems()
+                patientDetailsAdapter.addAll(patientDetailsViewModel.createPatientItemDataListFromPatientItem(it))
+            }
         }
 
-        observeNotNull(patientDetailsViewModel.deletePatientLoadingState){
+        observeNotNull(patientDetailsViewModel.deletePatientLoadingState) {
             it.handleApiView(binding.patientDetailsLayout)
         }
 
@@ -59,7 +60,7 @@ class PatientDetailsFragment : BaseFragment<FragmentPatientDetailsBinding>() {
         super.onClick(view)
         when (view?.id) {
             R.id.delete_patient_button -> {
-                        patientDetailsViewModel.deletePatient(requireArguments().getString(INTENT_EXTRA_PATIENT_ID))
+                patientDetailsViewModel.deletePatient(requireArguments().getString(INTENT_EXTRA_PATIENT_ID))
             }
         }
     }
