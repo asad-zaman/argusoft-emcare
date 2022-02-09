@@ -27,7 +27,7 @@ import { AuthenticationService, ToasterService } from './shared';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { HomeComponent } from './root/components/home/home.component';
-import { HTTPStatus, TokenInterceptor } from './auth/token-interceptor';
+import { HTTPStatus, LaunguageSubjects, TokenInterceptor } from './auth/token-interceptor';
 import { CommonModule } from '@angular/common';
 // import { FhirService } from './root/services/fhir.service';
 import { ShowLocationTypeComponent } from './root/components/Location/location-type/show-location-type/show-location-type.component';
@@ -40,6 +40,9 @@ import { LocationFilterComponent } from './root/components/Location/location-fil
 import { NgxPaginationModule } from 'ngx-pagination';
 import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { BaseModule } from './base.module';
+import { ManageProfileComponent } from './root/components/manage-profile/manage-profile.component';
+import { ManageTranslationsComponent } from './root/components/manage-translations/manage-translations.component';
 
 import { QuestionnaireListComponent } from './root/components/questionnaire-management/questionnaire-list/questionnaire-list.component';
 import { QuestionnaireBuilderComponent } from './root/components/questionnaire-management/questionnaire-builder/questionnaire-builder.component';
@@ -70,7 +73,9 @@ import { QuestionnaireBuilderComponent } from './root/components/questionnaire-m
     ManageFeatureComponent,
     ManageFeatureComponent,
     QuestionnaireListComponent,
-    QuestionnaireBuilderComponent
+    QuestionnaireBuilderComponent,
+    ManageProfileComponent,
+    ManageTranslationsComponent
   ],
   imports: [
     BrowserModule,
@@ -82,7 +87,8 @@ import { QuestionnaireBuilderComponent } from './root/components/questionnaire-m
     SharedModule,
     NgxPaginationModule,
     BrowserAnimationsModule,
-    ToastrModule.forRoot()
+    ToastrModule.forRoot(),
+    BaseModule.forRoot()
   ],
   providers: [
     AuthenticationService,
@@ -96,7 +102,8 @@ import { QuestionnaireBuilderComponent } from './root/components/questionnaire-m
     UserManagementService,
     FeatureManagementService,
     HTTPStatus,
-    ToasterService
+    ToasterService,
+    LaunguageSubjects
   ],
   bootstrap: [AppComponent]
 })

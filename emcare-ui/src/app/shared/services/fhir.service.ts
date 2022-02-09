@@ -60,4 +60,22 @@ export class FhirService {
     getQuestionnairesByPageIndex(pageIndex) {
         return this.http.get(`${this.fhirBaseURL}/questionnaire/page?pageNo=${pageIndex}`,this.getHeaders());
     }
+    getPatientsByLocationAndPageIndex(locationId, pageIndex) {
+        return this.http.get(`${this.fhirBaseURL}/patient/locationId/${locationId}?pageNo=${pageIndex}`, this.getHeaders());
+    }
+
+    addLaunguage(data) {
+        const url = `${environment.apiUrl}/api/language/add`;
+        return this.http.post(url, data, this.getHeaders());
+    }
+
+    getAllLaunguages() {
+        const url = `${environment.apiUrl}/api/language/all`;
+        return this.http.get(url, this.getHeaders());
+    }
+
+    updateTranslation(data) {
+        const url = `${environment.apiUrl}/api/language/add`;
+        return this.http.post(url, data, this.getHeaders());
+    }
 }

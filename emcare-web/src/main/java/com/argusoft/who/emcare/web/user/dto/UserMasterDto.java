@@ -10,9 +10,12 @@ public class UserMasterDto {
     private String userId;
     private String userName;
     private String email;
+    private String language;
     private LocationMaster location;
     private String[] roles;
     private List<Map<String, Object>> feature;
+    private String firstName;
+    private String lastName;
 
     public String getUserId() {
         return userId;
@@ -58,7 +61,31 @@ public class UserMasterDto {
         return feature;
     }
 
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
+    }
+
     public void setFeature(List<Map<String, Object>> feature) {
         this.feature = feature;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 }

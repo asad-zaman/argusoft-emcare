@@ -70,12 +70,14 @@ public class WebConfig extends KeycloakWebSecurityConfigurerAdapter {
         super.configure(http);
         http.authorizeRequests()
                 .antMatchers("/api/signup/**").permitAll()
+                .antMatchers("/api/cql/**").permitAll()
                 .antMatchers("/api/user/**").authenticated()
                 .antMatchers("/api/role/**").authenticated()
                 .antMatchers("/api/location/**").authenticated()
                 .antMatchers("/api/device/**").authenticated()
                 .antMatchers("/api/emcare/**").authenticated()
                 .antMatchers("/api/menu/**").authenticated()
+                .antMatchers("/api/language/**").authenticated()
                 .antMatchers("/fhir/**").authenticated()
                 .anyRequest().authenticated();
         http.csrf().disable();

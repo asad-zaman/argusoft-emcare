@@ -44,19 +44,23 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(), EasyPermissions.Perm
         observeNotNull(loginViewModel.loginApiState) {
             it.handleApiView(binding.progressLayout) {
                 syncViewModel.syncPatients()
-
             }
         }
 
         observeNotNull(syncViewModel.syncState) {
             when (it) {
-                is State.Started -> requireContext().showToast(messageResId = R.string.msg_sync_started)
+                is State.Started -> {
+                    binding.progressLayout.showHorizontalProgress()
+                    requireContext().showToast(messageResId = R.string.msg_sync_started)
+                }
                 is State.Finished -> {
+                    binding.progressLayout.showContent()
                     requireContext().showToast(messageResId = R.string.msg_sync_successfully)
                     startActivity(Intent(requireContext(), HomeActivity::class.java))
                     requireActivity().finish()
                 }
                 is State.Failed -> {
+                    binding.progressLayout.showContent()
                     requireContext().showToast(messageResId = R.string.msg_sync_failed)
                     startActivity(Intent(requireContext(), HomeActivity::class.java))
                     requireActivity().finish()
@@ -69,7 +73,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(), EasyPermissions.Perm
         super.onClick(view)
         when (view?.id) {
             R.id.loginButton -> {
-              deviceInfo()
+                deviceInfo()
             }
             R.id.signupTextView -> {
                 navigate(R.id.action_loginFragment_to_signUpFragment)

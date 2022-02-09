@@ -14,9 +14,8 @@
           {{ userName }}<i class="bi bi-chevron-down ps-2"></i>
         </div>
         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-          <!-- <li><a class="dropdown-item" href="#">Edit Profile</a></li>
-          <li><a class="dropdown-item" href="#">Settings</a></li> -->
-          <li><a class="dropdown-item" (click)="logout()">Logout</a></li>
+          <li><a class="dropdown-item" routerLink="/editProfile">Edit Profile</a></li>
+          <li><a class="dropdown-item" (click)="logout()">{{'SidebarAndHeader.Logout' | translate}}</a></li>
         </ul>
       </li>
     </ul>
@@ -26,12 +25,10 @@
   <div class="sidenav" *ngIf="featureList.length !== 0">
     <ul class="nav-link">
       <li *ngIf="hasAccess('Users') || hasAccess('Roles')">
-        <a class="mouse-pointer"
-          [ngClass]="{'active': this.currentUrl === '/showUsers' || this.currentUrl === '/addUser' || this.currentUrl.includes('/updateUser') 
+        <a class="mouse-pointer" [ngClass]="{'active': this.currentUrl === '/showUsers' || this.currentUrl === '/addUser' || this.currentUrl.includes('/updateUser') 
           || this.currentUrl === '/showRoles' || this.currentUrl === '/addRole' || this.currentUrl.includes('/editRole')
-          || this.currentUrl === '/confirmUsers'}"
-          (click)="hideCurrentDropdown(1)">
-          <i class="bi bi-people nav-link_icon"></i>User Management
+          || this.currentUrl === '/confirmUsers'}" (click)="hideCurrentDropdown(1)">
+          <i class="bi bi-people nav-link_icon"></i>{{'SidebarAndHeader.UserManagement' | translate}}
           <ng-container *ngIf="isUserDropdownOpen; else upIcon">
             <i class="bi bi-chevron-up drop-icon"></i>
           </ng-container>
@@ -42,30 +39,30 @@
         <div *ngIf="isUserDropdownOpen" class="dropdown_list_wrapper">
           <ul class="dropdown_list">
             <li *ngIf="hasAccess('Users')"><a class="mouse-pointer" routerLink="/showUsers"
-                [ngClass]="{'dropdown-link_active': this.currentUrl === '/showUsers' || this.currentUrl === '/addUser' || this.currentUrl.includes('/updateUser')}">Users</a>
+                [ngClass]="{'dropdown-link_active': this.currentUrl === '/showUsers' || this.currentUrl === '/addUser' || this.currentUrl.includes('/updateUser')}">{{'SidebarAndHeader.Users' | translate}}</a>
             </li>
             <li *ngIf="hasAccess('Roles')"><a class="mouse-pointer" routerLink="/showRoles"
-                [ngClass]="{'dropdown-link_active': this.currentUrl === '/showRoles' || this.currentUrl === '/addRole' || this.currentUrl.includes('/editRole')}">Roles
+                [ngClass]="{'dropdown-link_active': this.currentUrl === '/showRoles' || this.currentUrl === '/addRole' || this.currentUrl.includes('/editRole')}">{{'SidebarAndHeader.Roles' | translate}}
               </a></li>
             <li *ngIf="hasAccess('Users')"><a class="mouse-pointer" routerLink="/confirmUsers"
-                [ngClass]="{'dropdown-link_active': this.currentUrl === '/confirmUsers'}">Registration Request</a></li>
+                [ngClass]="{'dropdown-link_active': this.currentUrl === '/confirmUsers'}">{{'SidebarAndHeader.RegistrationRequest' | translate}}</a>
+            </li>
           </ul>
         </div>
       </li>
-      <li *ngIf="hasAccess('Patient Management')"><a class="mouse-pointer" [ngClass]="{'active': this.currentUrl === '/showPatients'}"
-        routerLink="/showPatients"><i class="bi bi-people nav-link_icon"></i>Manage
-          Patients</a></li>
+      <li *ngIf="hasAccess('Patient Management')"><a class="mouse-pointer"
+        [ngClass]="{'active': this.currentUrl === '/showPatients'}" routerLink="/showPatients"><i
+          class="bi bi-people nav-link_icon"></i>{{'SidebarAndHeader.ManagePatients' | translate}}</a></li>
       <!--TODO: Replace feature with Questionnaire Management-->
       <li *ngIf="hasAccess('Patient Management')"><a class="mouse-pointer" [ngClass]="{'active': this.currentUrl === '/showQuestionnaires' || this.currentUrl === '/addQuestionnaire' || this.currentUrl.includes('/updateQuestionnaire')}" 
         routerLink="/showQuestionnaires"><i class="bi bi-people nav-link_icon"></i>Questionnaire
           Management</a></li>
       <li *ngIf="hasAccess('Location Management')">
-        <a class="mouse-pointer"
-          [ngClass]="{'active': this.currentUrl === '/locationFilter' || this.currentUrl === '/showLocation' 
+        <a class="mouse-pointer" [ngClass]="{'active': this.currentUrl === '/locationFilter' || this.currentUrl === '/showLocation' 
           || this.currentUrl === '/addLocation' || this.currentUrl === '/showLocationType' 
           || this.currentUrl === '/addLocationType' || this.currentUrl.includes('/editLocation')}"
           (click)="hideCurrentDropdown(2)">
-          <i class="bi bi-map nav-link_icon"></i>Manage Locations
+          <i class="bi bi-map nav-link_icon"></i>{{'SidebarAndHeader.ManageLocations' | translate}}
           <ng-container *ngIf="isLocationDropdownOpen; else upIcon">
             <i class="bi bi-chevron-up drop-icon"></i>
           </ng-container>
@@ -76,21 +73,25 @@
         <div *ngIf="isLocationDropdownOpen" class="dropdown_list_wrapper">
           <ul class="dropdown_list">
             <li><a class="mouse-pointer" routerLink="/showLocation"
-                [ngClass]="{'dropdown-link_active': this.currentUrl === '/showLocation' || this.currentUrl === '/addLocation' || this.currentUrl.split('/')[1] === 'editLocation'}">Locations</a>
+                [ngClass]="{'dropdown-link_active': this.currentUrl === '/showLocation' || this.currentUrl === '/addLocation' || this.currentUrl.split('/')[1] === 'editLocation'}">{{'SidebarAndHeader.Locations' | translate}}</a>
             </li>
             <li><a class="mouse-pointer" routerLink="/showLocationType"
-                [ngClass]="{'dropdown-link_active': this.currentUrl === '/showLocationType' || this.currentUrl === '/addLocationType' || this.currentUrl.includes('/editLocationType')}">Location
-                Type</a></li>
+                [ngClass]="{'dropdown-link_active': this.currentUrl === '/showLocationType' || this.currentUrl === '/addLocationType' || this.currentUrl.includes('/editLocationType')}">{{'SidebarAndHeader.LocationType' | translate}}</a>
+            </li>
           </ul>
         </div>
       </li>
-      <li *ngIf="hasAccess('Device Management')"><a class="mouse-pointer" [ngClass]="{'active': this.currentUrl === '/showDevices'}"
-          routerLink="/showDevices"><i class="bi bi-hdd-network nav-link_icon"></i>Manage
-          Devices</a></li>
-      <li *ngIf="hasAccess('Feature Management')"><a class="mouse-pointer" 
+      <li *ngIf="hasAccess('Device Management')"><a class="mouse-pointer"
+          [ngClass]="{'active': this.currentUrl === '/showDevices'}" routerLink="/showDevices"><i
+            class="bi bi-hdd-network nav-link_icon"></i>{{'SidebarAndHeader.ManageDevices' | translate}}</a></li>
+      <li *ngIf="hasAccess('Feature Management')"><a class="mouse-pointer"
           [ngClass]="{'active': this.currentUrl === '/showFeatures' || this.currentUrl.includes('/editFeature')}"
-          routerLink="/showFeatures"><i class="bi bi-list nav-link_icon"></i>Manage
-          Features</a>
+          routerLink="/showFeatures"><i
+            class="bi bi-list nav-link_icon"></i>{{'SidebarAndHeader.ManageFeatures' | translate}}</a>
+      </li>
+      <li><a class="mouse-pointer" [ngClass]="{'active': this.currentUrl === '/manage-translation'}"
+          routerLink="/manage-translation"><i
+            class="bi bi-list nav-link_icon"></i>{{'ManageTranslations.ManageTranslations' | translate}}</a>
       </li>
       <!-- <li><a> <i class="bi bi-recycle nav-link_icon"></i> Manage Conficts</a></li> -->
     </ul>

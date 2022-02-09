@@ -2,27 +2,38 @@
   <div class="form-wrapper">
     <form [formGroup]="locationTypeForm" name="locationTypeForm" novalidate>
       <div class="mb-5">
-        <h1 class="heading">{{ !isEdit ? 'Add Location Type' : 'Update Location Type'}}</h1>
+        <h1 class="heading">
+          <ng-container *ngIf="!isEdit">
+            {{'Location.LocationTypeManagement.AddLocationType' | translate}}
+          </ng-container>
+          <ng-template>
+            {{'Location.LocationTypeManagement.UpdateLocationType' | translate}}
+          </ng-template>
+        </h1>
         <hr>
       </div>
       <div class="row">
         <div class="col-12 col-sm-6">
           <div class="mb-3">
-            <label class="form-label">Location Type</label>
+            <label class="form-label">{{'Location.LocationTypeManagement.LocationType' | translate}}</label>
             <input class="form-control custom-input" formControlName="type" type="text" id="type"
-              placeholder="Enter type" [ngClass]="{ 'is-invalid': submitted && f.type.errors }">
+              placeholder="{{'Location.LocationTypeManagement.LocationTypePlaceholder' | translate}}"
+              [ngClass]="{ 'is-invalid': submitted && f.type.errors }">
             <div *ngIf="submitted && f.type.errors" class="invalid-feedback">
-              <div class="cst-error-style" *ngIf="f.type.errors.required">*Location type is required</div>
+              <div class="cst-error-style" *ngIf="f.type.errors.required">
+                {{'Location.LocationTypeManagement.LocationTypeReqMsg' | translate}}</div>
             </div>
           </div>
         </div>
         <div class="col-12 col-sm-6">
           <div class="mb-3">
-            <label class="form-label">Name</label>
+            <label class="form-label">{{'Location.LocationTypeManagement.Name' | translate}}</label>
             <input class="form-control custom-input" formControlName="name" type="text" id="name"
-              placeholder="Enter name" [ngClass]="{ 'is-invalid': submitted && f.name.errors }">
+              placeholder="{{'Location.LocationTypeManagement.NamePlaceholder' | translate}}"
+              [ngClass]="{ 'is-invalid': submitted && f.name.errors }">
             <div *ngIf="submitted && f.name.errors" class="invalid-feedback">
-              <div class="cst-error-style" *ngIf="f.name.errors.required">*Location type name is required</div>
+              <div class="cst-error-style" *ngIf="f.name.errors.required">
+                {{'Location.LocationTypeManagement.NameReqMsg' | translate}}</div>
             </div>
           </div>
         </div>
@@ -30,10 +41,15 @@
       <div class="text-end mt-5">
         <hr>
         <button routerLink="/showLocationType" class="btn-red btn mr-3">
-          <i class="bi bi-chevron-left"></i> Back
+          <i class="bi bi-chevron-left"></i> {{'Common.Back' | translate}}
         </button>
         <button (click)="saveData()" class="btn-red btn">
-          {{ !isEdit ? 'Add Location Type' : 'Update Location Type'}}
+          <ng-container *ngIf="!isEdit">
+            {{'Location.LocationTypeManagement.AddLocationType' | translate}}
+          </ng-container>
+          <ng-template>
+            {{'Location.LocationTypeManagement.AddLocationType' | translate}}
+          </ng-template>
         </button>
       </div>
     </form>

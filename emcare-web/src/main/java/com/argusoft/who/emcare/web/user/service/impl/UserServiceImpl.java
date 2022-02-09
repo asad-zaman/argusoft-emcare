@@ -67,6 +67,7 @@ public class UserServiceImpl implements UserService {
     public UserMasterDto getCurrentUser() {
         AccessToken user = emCareSecurityUser.getLoggedInUser();
         Keycloak keycloak = keyCloakConfig.getInstance();
+        UserRepresentation userInfo = keycloak.realm(KeyCloakConfig.REALM).users().get(user.getSubject()).toRepresentation();
         List<UserLocationMapping> userLocationList = userLocationMappingRepository.findByUserId(user.getSubject());
         UserLocationMapping userLocationMapping;
         LocationMaster userLocation;
@@ -76,7 +77,7 @@ public class UserServiceImpl implements UserService {
             userLocationMapping = userLocationMappingRepository.findByUserId(user.getSubject()).get(0);
             userLocation = locationService.getLocationById(userLocationMapping.getLocationId());
         }
-        UserMasterDto masterUser = UserMapper.getMasterUser(user, userLocation);
+        UserMasterDto masterUser = UserMapper.getMasterUser(user, userLocation, userInfo);
         List<RoleRepresentation> roleRepresentationList = keycloak.realm(KeyCloakConfig.REALM).users().get(masterUser.getUserId()).roles().realmLevel().listAll();
         List<String> roleIds = new ArrayList<>();
         for (RoleRepresentation role : roleRepresentationList) {
@@ -191,6 +192,9 @@ public class UserServiceImpl implements UserService {
         kcUser.setEmail(user.getEmail());
         kcUser.setEnabled(Boolean.FALSE);
         kcUser.setEmailVerified(false);
+        Map<String, List<String>> languageAttribute = new HashMap<>();
+        languageAttribute.put(CommonConstant.LANGUAGE_KEY, Arrays.asList(CommonConstant.ENGLISH));
+        kcUser.setAttributes(languageAttribute);
 
         try {
             javax.ws.rs.core.Response response = usersResource.create(kcUser);
@@ -200,7 +204,7 @@ public class UserServiceImpl implements UserService {
 
 //        Set Realm Role
             RoleRepresentation testerRealmRole = realmResource.roles().get(user.getRoleName()).toRepresentation();
-            RoleRepresentation defaultRole = realmResource.roles().get("default-roles-emcare").toRepresentation();
+            RoleRepresentation defaultRole = realmResource.roles().get(CommonConstant.DEFAULT_ROLE_EMCARE).toRepresentation();
             userResource.roles().realmLevel().add(Arrays.asList(testerRealmRole));
             userResource.roles().realmLevel().remove(Arrays.asList(defaultRole));
         } catch (Exception ex) {
@@ -227,6 +231,9 @@ public class UserServiceImpl implements UserService {
         kcUser.setEmail(user.getEmail());
         kcUser.setEnabled(true);
         kcUser.setEmailVerified(false);
+        Map<String, List<String>> languageAttribute = new HashMap<>();
+        languageAttribute.put(CommonConstant.LANGUAGE_KEY, Arrays.asList(CommonConstant.ENGLISH));
+        kcUser.setAttributes(languageAttribute);
 
         try {
             javax.ws.rs.core.Response response = usersResource.create(kcUser);
@@ -380,7 +387,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserListDto getUserDtoById(String userId) {
         Keycloak keycloak = keyCloakConfig.getInstanceByAuth();
-        UserListDto user = new UserListDto();
+        UserListDto user;
         UserRepresentation userRepresentation = keycloak.realm(KeyCloakConfig.REALM).users().get(userId).toRepresentation();
         List<RoleRepresentation> roleRepresentationList = keycloak.realm(KeyCloakConfig.REALM).users().get(userRepresentation.getId()).roles().realmLevel().listAll();
         List<String> roles = new ArrayList<>();
@@ -402,7 +409,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserRepresentation getUserById(String userId) {
         Keycloak keycloak = keyCloakConfig.getInstanceByAuth();
-        UserListDto user = new UserListDto();
         return keycloak.realm(KeyCloakConfig.REALM).users().get(userId).toRepresentation();
     }
 
@@ -417,6 +423,7 @@ public class UserServiceImpl implements UserService {
         List<UserLocationMapping> userLocationMappingList = userLocationMappingRepository.findByUserId(userId);
         UserLocationMapping ulm = new UserLocationMapping();
         if (!userLocationMappingList.isEmpty()) {
+
             ulm = userLocationMappingList.get(0);
             ulm.setLocationId(userDto.getLocationId());
         } else {
@@ -428,26 +435,27 @@ public class UserServiceImpl implements UserService {
         }
         userLocationMappingRepository.save(ulm);
 
-
-        newUser.setEnabled(userDto.getRegRequestFrom().equalsIgnoreCase(UserConst.WEB));
+        Map<String, List<String>> languageAttribute = new HashMap<>();
+        languageAttribute.put(CommonConstant.LANGUAGE_KEY, Arrays.asList(userDto.getLanguage()));
+        newUser.setAttributes(languageAttribute);
+        newUser.setEnabled(ulm.isState());
         userResource.update(newUser);
-        return ResponseEntity.ok(HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.OK).body(new Response(CommonConstant.UPDATE_SUCCESS, HttpStatus.OK.value()));
     }
-    
+
     @Override
     public ResponseEntity<Object> updatePassword(UserDto userDto, String userId) {
         Keycloak keycloak = keyCloakConfig.getInstance();
-        UserResource userResource = keycloak.realm(KeyCloakConfig.REALM)
-            .users().get(userId);
+        UserResource userResource = keycloak.realm(KeyCloakConfig.REALM).users().get(userId);
         UserRepresentation newUser = userResource.toRepresentation();
 
         if (userDto.getPassword() != null) {
-            CredentialRepresentation credentialRepresentation = 
-                createPasswordCredentials(userDto.getPassword());
+            CredentialRepresentation credentialRepresentation =
+                    createPasswordCredentials(userDto.getPassword());
             newUser.setCredentials(Collections
-                .singletonList(credentialRepresentation));    
+                    .singletonList(credentialRepresentation));
         }
-        
+
         userResource.update(newUser);
         return ResponseEntity.ok(HttpStatus.OK);
     }

@@ -36,7 +36,10 @@
               "./node_modules/ngx-toastr/toastr.css",
               "src/scss/style.scss"
             ],
-            "scripts": []
+            "scripts": [],
+            "allowedCommonJsDependencies": [
+              "lodash"
+            ]
           },
           "configurations": {
             "production": {

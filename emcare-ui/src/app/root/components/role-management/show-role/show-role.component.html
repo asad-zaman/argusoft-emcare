@@ -1,21 +1,22 @@
 <div class="main-wrapper">
-  <h1 class="heading">Roles</h1>
+  <h1 class="heading">{{'Role.RoleList.Roles' | translate}}</h1>
   <hr>
   <div class="row align-items-center mb-3">
     <div class=" col-lg-3 col-xxl-2 col-md-5 position-relative">
       <input class="form-control custom-input h-40" id="exampleFormControlInput1" [(ngModel)]="searchString"
-        (input)="searchFilter()" placeholder="Search">
+        (input)="searchFilter()" placeholder="{{'Role.RoleList.Search' | translate}}">
     </div>
-    <div class="col text-end"><button class="btn btn-red" routerLink="/addRole">+ Add Role</button></div>
+    <div class="col text-end"><button class="btn btn-red" routerLink="/addRole">+
+        {{'Role.RoleList.AddRole' | translate}}</button></div>
   </div>
   <!--Table-->
   <div *ngIf="!isAPIBusy" class="table-responsive">
     <table class="data-table">
       <thead>
         <tr>
-          <th>ID</th>
-          <th scope="col">Name</th>
-          <th scope="col">Description</th>
+          <th>{{'Role.RoleList.ID' | translate}}</th>
+          <th scope="col">{{'Role.RoleList.Name' | translate}}</th>
+          <th scope="col">{{'Role.RoleList.Description' | translate}}</th>
           <th></th>
         </tr>
       </thead>
@@ -23,7 +24,7 @@
         <ng-container *ngIf="filteredRoles && filteredRoles.length > 0; else noRecords">
           <ng-container *ngFor="let data of filteredRoles; let i=index">
             <tr>
-              <td>{{i+1}}</td>
+              <td>{{i + 1}}</td>
               <td>{{data.name}}</td>
               <td>{{data.description ? data.description : 'NA'}}</td>
               <td class="text-end">
@@ -35,7 +36,7 @@
         </ng-container>
         <ng-template #noRecords>
           <div class="no-record">
-            No Records Found!!
+            {{'Common.NoRecords' | translate}}
           </div>
         </ng-template>
       </tbody>

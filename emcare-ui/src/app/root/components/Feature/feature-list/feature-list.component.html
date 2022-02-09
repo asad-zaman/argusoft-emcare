@@ -1,41 +1,42 @@
 <div class="main-wrapper">
-    <h1 class="heading">Features</h1>
-    <hr>
-    <div class="row align-items-center mb-3">
-      <div class=" col-lg-3 col-xxl-2 col-md-5 position-relative">
-        <input class="form-control custom-input" id="exampleFormControlInput1" [(ngModel)]="searchString" (input)="searchFilter()" placeholder="Search">
-      </div>
+  <h1 class="heading">{{'Features.Features' | translate}}</h1>
+  <hr>
+  <div class="row align-items-center mb-3">
+    <div class=" col-lg-3 col-xxl-2 col-md-5 position-relative">
+      <input class="form-control custom-input" id="exampleFormControlInput1" [(ngModel)]="searchString"
+        (input)="searchFilter()" placeholder="{{'Common.Search' | translate}}">
     </div>
-    <!--Table-->
-    <div *ngIf="!isAPIBusy" class="table-responsive">
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Feature name</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          <ng-container *ngIf="filteredFeatureList && filteredFeatureList.length > 0; else noRecords">
-            <ng-container *ngFor="let feature of filteredFeatureList; let i=index">
-              <tr>
-                <td>{{i+1}}</td>
-                <td>{{feature.menuName}}</td>
-                <td class="text-end">
-                  <i (click)="updateFeature(i)" class="bi bi-pencil-square cursor-pointer font-size-16"></i>
-                  <!-- <i class="bi bi-trash ms-3 text-red cursor-pointer font-size-16"></i> -->
-                </td>
-              </tr>
-            </ng-container>
+  </div>
+  <!--Table-->
+  <div *ngIf="!isAPIBusy" class="table-responsive">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>{{'Features.ID' | translate}}</th>
+          <th>{{'Features.FeatureName' | translate}}</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngIf="filteredFeatureList && filteredFeatureList.length > 0; else noRecords">
+          <ng-container *ngFor="let feature of filteredFeatureList; let i=index">
+            <tr>
+              <td>{{i + 1}}</td>
+              <td>{{feature.menuName}}</td>
+              <td class="text-end">
+                <i (click)="updateFeature(i)" class="bi bi-pencil-square cursor-pointer font-size-16"></i>
+                <!-- <i class="bi bi-trash ms-3 text-red cursor-pointer font-size-16"></i> -->
+              </td>
+            </tr>
           </ng-container>
-          <ng-template #noRecords>
-            <div class="no-record">
-              No Records Found!!
-            </div>
-          </ng-template>  
-        </tbody>
-      </table>
-    </div>
-    <!--Table-END-->
+        </ng-container>
+        <ng-template #noRecords>
+          <div class="no-record">
+            {{'Common.NoRecords' | translate}}
+          </div>
+        </ng-template>
+      </tbody>
+    </table>
+  </div>
+  <!--Table-END-->
 </div>

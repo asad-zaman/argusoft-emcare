@@ -114,6 +114,15 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
         List<PatientDto> patientDtosList = EmcareResourceMapper.patientEntitiesToDtoMapper(patientsList);
         List<Integer> locationIds = locationMasterDao.getAllChildLocationId(locationId);
         List<PatientDto> list = patientDtosList.stream().filter(patient -> locationIds.contains(Integer.parseInt(patient.getLocation()))).collect(Collectors.toList());
+        
+        //Converting locationid to name
+        for(PatientDto patientDto: list) {
+            if (patientDto.getLocation() != null) {
+                LocationMaster location = locationService.getLocationMasterById(Integer.parseInt(patientDto.getLocation()));
+                patientDto.setLocation(location.getName());
+            }
+        }
+        
         PageDto pageDto = new PageDto();
         pageDto.setList(list);
         pageDto.setTotalCount(totalCount.longValue());
