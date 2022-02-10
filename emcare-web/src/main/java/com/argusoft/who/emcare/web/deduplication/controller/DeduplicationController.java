@@ -1,5 +1,7 @@
 package com.argusoft.who.emcare.web.deduplication.controller;
 
+import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.parser.IParser;
 import com.argusoft.who.emcare.web.deduplication.service.DeduplicationService;
 import org.hl7.fhir.r4.model.Patient;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +21,12 @@ public class DeduplicationController {
     
     @PostMapping("/compare")
     public Boolean comparePatients(
-            @RequestBody Patient[] p) {
-        return deduplicationService.comparePatients(p[0], p[1]);
+            @RequestBody String[] p) {
+        FhirContext fhirCtx = FhirContext.forR4();
+        IParser parser = fhirCtx.newJsonParser().setPrettyPrint(false);
+        Patient p1 = parser.parseResource(Patient.class, p[0]);
+        Patient p2 = parser.parseResource(Patient.class,p[1]);
+        return deduplicationService.comparePatients(p1, p2);
     }
     
     @PostMapping("/check")
