@@ -10,19 +10,24 @@ public class DeduplicationServiceImpl implements DeduplicationService {
     @Override
     public Boolean comparePatients(Patient p1, Patient p2) {
 
-        //Flags | Note: Age Flag yet to be implemented.
-        Boolean isDuplicateFlag = false;
-        Boolean sameNameFlag = p1.hasName() && p2.hasName() && p1.getNameFirstRep().equalsDeep(p2.getNameFirstRep());
-        Boolean withoutNameFlag = !p1.hasName() && !p2.hasName();
-        Boolean sameAddressFlag = p1.hasAddress() && p2.hasAddress() && p1.getAddressFirstRep().equalsDeep(p2.getAddressFirstRep());
-        Boolean sameContactFlag = p1.hasContact() && p2.hasContact() && p1.getContactFirstRep().equalsDeep(p2.getContactFirstRep());
-        Boolean sameBirthDateFlag = p1.hasBirthDate() && p2.hasBirthDate() && p1.getBirthDate().equals(p2.getBirthDate());
+     
+        Boolean isDuplicateFlag;
+        Boolean withoutNameFlag = !p1.hasName() || !p2.hasName();
+        Boolean withoutAddressFlag = !p1.hasAddress() || !p2.hasAddress();
+        Boolean withoutContactFlag = !p1.hasContact() || !p2.hasContact();
+        Boolean withoutBirthDateFlag = !p1.hasBirthDate() || !p2.hasBirthDate();
+        Boolean withoutGenderFlag = !p1.hasGender() || !p2.hasGender();
+        Boolean sameNameFlag = !withoutNameFlag && p1.getNameFirstRep().equalsDeep(p2.getNameFirstRep());
+        Boolean sameAddressFlag = !withoutAddressFlag && p1.getAddressFirstRep().equalsDeep(p2.getAddressFirstRep());
+        Boolean sameContactFlag = !withoutContactFlag  && p1.getContactFirstRep().equalsDeep(p2.getContactFirstRep());
+        Boolean sameBirthDateFlag = !withoutBirthDateFlag && p1.getBirthDate().equals(p2.getBirthDate());
+        Boolean sameGenderFlag = !withoutGenderFlag && p1.getGender().equals(p2.getGender());
 
         //Tests
-        if (withoutNameFlag) {
-            isDuplicateFlag = (sameAddressFlag && sameContactFlag && sameBirthDateFlag);
+        if(withoutBirthDateFlag || (withoutAddressFlag && withoutContactFlag)) {
+            isDuplicateFlag = null;
         } else {
-            isDuplicateFlag = (sameNameFlag && sameBirthDateFlag && (sameAddressFlag || sameContactFlag)); //Add age logic here
+            isDuplicateFlag = ((withoutNameFlag || sameNameFlag) && (withoutGenderFlag || sameGenderFlag) && (withoutAddressFlag || sameAddressFlag) && (withoutContactFlag || sameContactFlag) && sameBirthDateFlag);
         }
 
         return isDuplicateFlag;
