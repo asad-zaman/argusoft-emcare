@@ -1,11 +1,10 @@
 package com.argusoft.who.emcare.web.deduplication.service.impl;
 
 import com.argusoft.who.emcare.web.deduplication.service.DeduplicationService;
-import java.util.List;
-import org.hl7.fhir.r4.model.Address;
-import org.hl7.fhir.r4.model.HumanName;
 import org.hl7.fhir.r4.model.Patient;
+import org.springframework.stereotype.Service;
 
+@Service
 public class DeduplicationServiceImpl implements DeduplicationService {
 
     @Override
