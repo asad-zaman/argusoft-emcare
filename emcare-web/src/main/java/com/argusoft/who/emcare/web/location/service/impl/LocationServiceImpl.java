@@ -93,13 +93,21 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
-    public ResponseEntity<Object> getLocationPage(Integer pageNo, String orderBy, String order) {
+    public ResponseEntity<Object> getLocationPage(Integer pageNo, String orderBy, String order, String searchString) {
         if (orderBy.equalsIgnoreCase("null")) {
             orderBy = "name";
         }
+        Long totalCount = 0L;
         Sort sort = order.equalsIgnoreCase(CommonConstant.DESC) ? Sort.by(orderBy).descending() : Sort.by(orderBy).ascending();
         Pageable page = PageRequest.of(pageNo, CommonConstant.PAGE_SIZE, !sort.isEmpty() ? sort : null);
-        Page<LocationMaster> locationMasters = locationMasterDao.findAll(page);
+        Page<LocationMaster> locationMasters;
+        if (searchString != null && !searchString.isEmpty()) {
+            totalCount = Long.valueOf(locationMasterDao.findByNameContainingIgnoreCaseOrTypeContainingIgnoreCase(searchString, searchString).size());
+            locationMasters = locationMasterDao.findByNameContainingIgnoreCaseOrTypeContainingIgnoreCase(searchString, searchString, page);
+        } else {
+            totalCount = Long.valueOf(locationMasterDao.findAll().size());
+            locationMasters = locationMasterDao.findAll(page);
+        }
         List<LocationaListDto> locationList = new ArrayList<>();
         for (LocationMaster locationMaster : locationMasters) {
             if (locationMaster.getParent() == null || locationMaster.getParent() == 0) {
@@ -110,7 +118,7 @@ public class LocationServiceImpl implements LocationService {
         }
         PageDto pageDto = new PageDto();
         pageDto.setList(locationList);
-        pageDto.setTotalCount(locationMasterDao.count());
+        pageDto.setTotalCount(totalCount);
         return ResponseEntity.ok(pageDto);
     }
 
