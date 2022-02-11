@@ -62,7 +62,9 @@ export class ComparePatientComponent implements OnInit {
           this.comparePatientForm.get("firstPatientDetails").value,
           this.comparePatientForm.get("secondPatientDetails").value
         ];
-        console.log(data);
+        this.fhirService.comparePatients(data).subscribe(res => {
+          console.log(res);
+        });
       }
     }
 

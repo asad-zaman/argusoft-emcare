@@ -177,17 +177,11 @@ export class AppComponent implements OnInit {
     switch (id) {
       case 1:
         this.isUserDropdownOpen = !this.isUserDropdownOpen;
-        this.isLocationDropdownOpen = !this.isLocationDropdownOpen;
-        this.isPatientDropdownOpen = !this.isPatientDropdownOpen;
         break;
       case 2:
-        this.isUserDropdownOpen = !this.isUserDropdownOpen;
         this.isLocationDropdownOpen = !this.isLocationDropdownOpen;
-        this.isPatientDropdownOpen = !this.isPatientDropdownOpen;
         break;
       case 3:
-        this.isUserDropdownOpen = !this.isUserDropdownOpen;
-        this.isLocationDropdownOpen = !this.isLocationDropdownOpen;
         this.isPatientDropdownOpen = !this.isPatientDropdownOpen;
         break;
     }
