@@ -72,6 +72,9 @@
           </ul>
         </div>
       </li>
+      <li *ngIf="hasAccess('Questionnaire Management')"><a class="mouse-pointer" [ngClass]="{'active': this.currentUrl === '/showQuestionnaires' || this.currentUrl === '/addQuestionnaire' || this.currentUrl.includes('/updateQuestionnaire')}" 
+        routerLink="/showQuestionnaires"><i class="bi bi-people nav-link_icon"></i>Questionnaire
+          Management</a></li>
       <li *ngIf="hasAccess('Location Management')">
         <a class="mouse-pointer" [ngClass]="{'active': this.currentUrl === '/locationFilter' || this.currentUrl === '/showLocation' 
           || this.currentUrl === '/addLocation' || this.currentUrl === '/showLocationType' 

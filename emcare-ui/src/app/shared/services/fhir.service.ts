@@ -9,6 +9,7 @@ export class FhirService {
 
     fhirBaseURL= `${environment.apiUrl}/api/emcare`;
     deduplicationBaseURL = `${environment.apiUrl}/api/deduplication`;
+    fhirResourceBaseURL = `${environment.apiUrl}/fhir`;
 
     constructor(private http: HttpClient){ }
 
@@ -44,6 +45,22 @@ export class FhirService {
         return this.http.get(`${this.fhirBaseURL}/patient/page?pageNo=${pageIndex}`,this.getHeaders());
     }
 
+    //Questionnaire Endpoints
+    getAllQuestionnaires() {
+        return this.http.get(`${this.fhirBaseURL}/questionnaire`,this.getHeaders());
+    }
+
+    getQuestionnaireById(id: String) {
+        return this.http.get(`${this.fhirBaseURL}/questionnaire/${id}`,this.getHeaders());
+    }
+
+    getQuestionnaireResourceById(id: String) {
+        return this.http.get(`${this.fhirResourceBaseURL}/Questionnaire/${id}`,this.getHeaders());
+    }
+
+    getQuestionnairesByPageIndex(pageIndex) {
+        return this.http.get(`${this.fhirBaseURL}/questionnaire/page?pageNo=${pageIndex}`,this.getHeaders());
+    }
     getPatientsByLocationAndPageIndex(locationId, pageIndex) {
         return this.http.get(`${this.fhirBaseURL}/patient/locationId/${locationId}?pageNo=${pageIndex}`, this.getHeaders());
     }

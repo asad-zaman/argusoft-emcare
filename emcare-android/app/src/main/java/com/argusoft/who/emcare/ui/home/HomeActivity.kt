@@ -1,25 +1,19 @@
 package com.argusoft.who.emcare.ui.home
 
-import android.content.Intent
-import android.graphics.Color
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupWithNavController
 import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.databinding.ActivityHomeBinding
-import com.argusoft.who.emcare.ui.auth.AuthenticationActivity
 import com.argusoft.who.emcare.ui.auth.signup.SignUpViewModel
 import com.argusoft.who.emcare.ui.common.base.BaseActivity
 import com.argusoft.who.emcare.utils.avatar.AvatarGenerator
-import com.argusoft.who.emcare.utils.avatar.AvatarGenerator.Companion.CIRCLE
 import com.argusoft.who.emcare.utils.extention.alertDialog
 import com.bumptech.glide.Glide
 import com.google.android.material.navigation.NavigationView

@@ -1,7 +1,6 @@
 package com.argusoft.who.emcare.web.fhir.service;
 
 import com.argusoft.who.emcare.web.common.dto.PageDto;
-import com.argusoft.who.emcare.web.fhir.dto.PatientDto;
 import com.argusoft.who.emcare.web.fhir.model.EmcareResource;
 
 import java.util.List;

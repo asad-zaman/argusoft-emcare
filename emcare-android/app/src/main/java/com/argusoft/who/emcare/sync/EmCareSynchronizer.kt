@@ -16,7 +16,6 @@
 
 package com.argusoft.who.emcare.sync
 
-import android.content.Context
 import com.argusoft.who.emcare.data.local.database.Database
 import com.argusoft.who.emcare.data.local.pref.Preference
 import com.argusoft.who.emcare.data.remote.Api

@@ -4,87 +4,58 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.data.remote.ApiResponse
 import com.argusoft.who.emcare.ui.common.model.PatientItem
 import com.argusoft.who.emcare.ui.common.model.PatientItemData
-import com.argusoft.who.emcare.utils.extention.navigate
+import com.argusoft.who.emcare.ui.home.patient.PatientRepository
 import com.google.android.fhir.FhirEngine
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import org.hl7.fhir.r4.model.Patient
 import javax.inject.Inject
 
 @HiltViewModel
 class PatientDetailsViewModel @Inject constructor(
-    private val fhirEngine: FhirEngine
+    private val fhirEngine: FhirEngine,
+    private val patientRepository: PatientRepository
 ) : ViewModel() {
 
 
-    private val _patientItem = MutableLiveData<PatientItem>()
-    val patientItem : LiveData<PatientItem> = _patientItem
+    private val _patientItem = MutableLiveData<ApiResponse<PatientItem>>()
+    val patientItem: LiveData<ApiResponse<PatientItem>> = _patientItem
 
     private val _deletePatientSuccessState = MutableLiveData<Int>()
-    val deletePatientSuccessState : LiveData<Int> = _deletePatientSuccessState
+    val deletePatientSuccessState: LiveData<Int> = _deletePatientSuccessState
 
     private val _deletePatientLoadingState = MutableLiveData<ApiResponse<Patient>>()
     val deletePatientLoadingState: LiveData<ApiResponse<Patient>> = _deletePatientLoadingState
 
 
     fun getPatientDetails(patientId: String?) {
+        _patientItem.value = ApiResponse.Loading()
         viewModelScope.launch {
-            if(patientId != null) {
-                _patientItem.value = convertPatientToPatientItem(fhirEngine.load(Patient::class.java, patientId))
+            patientRepository.getPatientDetails(patientId).collect {
+                _patientItem.value = it
             }
         }
     }
 
     fun deletePatient(patientId: String?) {
+        _deletePatientLoadingState.value = ApiResponse.Loading()
         viewModelScope.launch {
-            _deletePatientLoadingState.value = ApiResponse.Loading()
-            if(patientId != null) {
-                fhirEngine.remove(Patient::class.java, patientId)
-            }
-            _deletePatientSuccessState.value = 1
+            patientRepository.deletePatient(patientId)
         }
     }
 
-    fun createPatientItemDataListFromPatientItem(patientItem: PatientItem) : List<PatientItemData> {
+    fun createPatientItemDataListFromPatientItem(patientItem: PatientItem?): List<PatientItemData> {
         val patientItemDataList = mutableListOf<PatientItemData>()
 
-        patientItemDataList.add(PatientItemData("Identifier",patientItem.identifier))
-        patientItemDataList.add(PatientItemData("Gender",patientItem.gender))
-        patientItemDataList.add(PatientItemData("Date Of Birth",patientItem.dob))
-        patientItemDataList.add(PatientItemData("Address","${patientItem.line}, ${patientItem.city}, ${patientItem.country} "))
+        patientItemDataList.add(PatientItemData("Identifier", patientItem?.identifier))
+        patientItemDataList.add(PatientItemData("Gender", patientItem?.gender))
+        patientItemDataList.add(PatientItemData("Date Of Birth", patientItem?.dob))
+        patientItemDataList.add(PatientItemData("Address", "${patientItem?.line}, ${patientItem?.city}, ${patientItem?.country} "))
 
         return patientItemDataList
-    }
-
-    private fun convertPatientToPatientItem(patient: Patient) : PatientItem {
-
-        val patientId = if (patient.hasIdElement()) patient.idElement.idPart else ""
-        val name = if (patient.hasName()) patient.name[0].nameAsSingleString else ""
-        val gender = if (patient.hasGenderElement()) patient.genderElement.valueAsString else ""
-        val dob = if (patient.hasBirthDateElement()) patient.birthDateElement.valueAsString else ""
-        val identifier = if (patient.hasIdentifier()) patient.identifier[0].value else ""
-        val line = if(patient.hasAddress() && patient.address[0].line.isNotEmpty()) patient.address[0].line[0].toString() else ""
-        val city = if (patient.hasAddress()) patient.address[0].city else ""
-        val country = if (patient.hasAddress()) patient.address[0].country else ""
-        val isActive = patient.active
-        val html: String = if (patient.hasText()) patient.text.div.valueAsString else ""
-
-        return PatientItem(
-            id = patientId,
-            name = name,
-            gender = gender,
-            dob = dob,
-            identifier = identifier,
-            line = line,
-            city = city,
-            country = country,
-            isActive = isActive,
-            html = html
-        )
-
     }
 }

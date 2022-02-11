@@ -3,7 +3,6 @@ package com.argusoft.who.emcare.data.remote
 import ca.uhn.fhir.context.FhirContext
 import com.argusoft.who.emcare.BuildConfig
 import com.argusoft.who.emcare.data.local.pref.Preference
-import com.argusoft.who.emcare.oldstruct.api.FhirConverterFactory
 import com.argusoft.who.emcare.ui.common.model.*
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor

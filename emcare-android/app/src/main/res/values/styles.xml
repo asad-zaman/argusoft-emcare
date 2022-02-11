@@ -28,29 +28,31 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style
-        name="AppTheme.AppBarOverlay"
-        parent="ThemeOverlay.AppCompat.Dark.ActionBar"
-        />
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
     <style name="AppCard" parent="Widget.MaterialComponents.CardView">
         <item name="cardElevation">8dp</item>
     </style>
+
     <style name="AppTheme.PatientDetails">
         <item name="android:layout_marginTop">8dp</item>
         <item name="android:layout_marginStart">8dp</item>
         <item name="android:layout_marginEnd">8dp</item>
         <item name="android:gravity">center_vertical</item>
     </style>
+
     <style name="AppTheme.PatientDetails.headline">
         <item name="android:textAppearance">?attr/textAppearanceHeadline6</item>
         <item name="android:textSize">24sp</item>
         <item name="android:textStyle">normal</item>
     </style>
+
     <style name="AppTheme.PatientDetails.Subtitle2">
         <item name="android:textAppearance">?attr/textAppearanceSubtitle2</item>
     </style>
+
     <style name="AppTheme.PatientDetails.body2">
         <item name="android:textAppearance">?attr/textAppearanceBody2</item>
     </style>
@@ -154,10 +156,46 @@
         <item name="strokeColor">@color/textColorLightBlue</item>
         <item name="strokeWidth">@dimen/_1sdp</item>
     </style>
-    
+
+    <style name="Questionnaire.Button" parent="Widget.MaterialComponents.Button">
+        <item name="cornerRadius">@dimen/_24sdp</item>
+        <item name="elevation">@dimen/_8sdp</item>
+        <item name="backgroundTint">@color/buttonColor</item>
+        <item name="android:minHeight">@dimen/_42sdp</item>
+        <item name="android:minWidth">@dimen/_84sdp</item>
+        <item name="android:textColor">@color/questioner_button_text_color</item>
+    </style>
+
+    <style name="Questionnaire.TextInputEditText" parent="TextInputEditText">
+        <item name="android:paddingTop">10dp</item>
+    </style>
+
+    <style name="Questionnaire.DropDownTextInputEditText" parent="TextAppearance.MaterialComponents.Subtitle1">
+        <item name="android:paddingStart">0dp</item>
+        <item name="android:paddingEnd">0dp</item>
+    </style>
+
+    <style name="Questionnaire.DropDownTextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu">
+        <item name="boxBackgroundColor">@color/colorWhite</item>
+    </style>
+
     <style name="Questionnaire" parent="Theme.MaterialComponents.Light.DarkActionBar">
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="groupHeaderTextAppearance">@style/TextAppearance.MaterialComponents.Headline6
-        </item>
+        <item name="groupHeaderTextAppearanceQuestionnaire">@style/TextAppearance.MaterialComponents.Headline6</item>
+        <item name="headerTextAppearanceQuestionnaire">@style/TextAppearance.MaterialComponents.Body2</item>
+        <item name="checkBoxStyleQuestionnaire">@style/Widget.AppCompat.CompoundButton.CheckBox</item>
+        <item name="radioButtonStyleQuestionnaire">@style/Widget.AppCompat.CompoundButton.RadioButton</item>
+        <item name="dropDownTextAppearanceQuestionnaire">@style/Questionnaire.DropDownTextInputEditText</item>
+        <item name="dropDownSelectedTextAppearanceQuestionnaire">@style/Questionnaire.DropDownTextInputEditText</item>
+        <item name="dropDownStyleQuestionnaire">@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu</item>
+        <item name="editTextInputTextAppearanceQuestionnaire">@style/Questionnaire.TextInputEditText</item>
+        <item name="editTextLayoutStyleQuestionnaire">@style/Questionnaire.TextInputEditText</item>
+        <item name="chipStyleQuestionnaire">@style/Widget.MaterialComponents.Chip.Entry</item>
+        <item name="buttonStyleQuestionnaire">@style/Questionnaire.Button</item>
+        <item name="inputErrorTextAppearanceQuestionnaire">@style/Questionnaire.TextAppearance.Error</item>
+        <item name="questionnaireTextInputLayoutStyle">@style/TextInputLayout</item>
+        <item name="questionnaireExposedMenuLayoutStyle">@style/Questionnaire.DropDownTextInputLayout</item>
+        <item name="chipStyle">@style/Questionnaire.Widget.MaterialComponents.Chip.Action</item>
+        <item name="questionnaireTextColor">@color/text_color</item>
     </style>
 </resources>
