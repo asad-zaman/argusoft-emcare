@@ -56,6 +56,7 @@
                   {{'Role' | translate}}
                 </ng-template>
               </td>
+              <td>{{ featureConfig.userId ? featureConfig.userName : featureConfig.roleName }}</td>
               <td class="text-end">
                 <i (click)="deleteFeatureConfig(i)" class="bi bi-trash cursor-pointer font-size-16"></i>
                 <!-- <i class="bi bi-trash ms-3 text-red cursor-pointer font-size-16"></i> -->

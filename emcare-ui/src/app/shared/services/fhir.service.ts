@@ -8,6 +8,7 @@ import { environment } from "src/environments/environment";
 export class FhirService {
 
     fhirBaseURL= `${environment.apiUrl}/api/emcare`;
+    deduplicationBaseURL = `${environment.apiUrl}/api/deduplication`;
     fhirResourceBaseURL = `${environment.apiUrl}/fhir`;
 
     constructor(private http: HttpClient){ }
@@ -76,6 +77,11 @@ export class FhirService {
 
     updateTranslation(data) {
         const url = `${environment.apiUrl}/api/language/add`;
+        return this.http.post(url, data, this.getHeaders());
+    }
+
+    comparePatients(data) {
+        const url = `${this.deduplicationBaseURL}/compare`;
         return this.http.post(url, data, this.getHeaders());
     }
 }

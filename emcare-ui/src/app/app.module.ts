@@ -20,6 +20,7 @@ import {
   ConfirmUserComponent,
   FeatureListComponent,
   ManageFeatureComponent,
+  ComparePatientComponent,
   UserManagementService,
   FeatureManagementService
 } from './root/index';
@@ -75,7 +76,8 @@ import { QuestionnaireBuilderComponent } from './root/components/questionnaire-m
     QuestionnaireListComponent,
     QuestionnaireBuilderComponent,
     ManageProfileComponent,
-    ManageTranslationsComponent
+    ManageTranslationsComponent,
+    ComparePatientComponent
   ],
   imports: [
     BrowserModule,

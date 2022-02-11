@@ -24,7 +24,6 @@ export class QuestionnaireBuilderComponent implements OnInit {
     ) {};
 
     ngOnInit(): void{
-        console.log(this.questionnaireBuilderUrl);
         this.questionnaireBuilderUrl= this.sanitizer.bypassSecurityTrustResourceUrl(environment.questionnaireBuilderUrl);
         this.questionnaireBuilderEditUrl= this.sanitizer.bypassSecurityTrustResourceUrl(environment.questionnaireBuilderUrl + '/?isEdit=true');
         this.prerequisite();

@@ -78,6 +78,7 @@ public class WebConfig extends KeycloakWebSecurityConfigurerAdapter {
                 .antMatchers("/api/emcare/**").authenticated()
                 .antMatchers("/api/menu/**").authenticated()
                 .antMatchers("/api/language/**").authenticated()
+                .antMatchers("/api/deduplication/**").authenticated()
                 .antMatchers("/fhir/**").authenticated()
                 .anyRequest().authenticated();
         http.csrf().disable();

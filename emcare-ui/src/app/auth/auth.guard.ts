@@ -85,7 +85,8 @@ export class AuthGuard implements CanActivate {
         ) {
             return !!this.user.feature.find(f => f.menu_name === 'Users');
         } else if (
-            route.routeConfig.path == 'showPatients'
+            route.routeConfig.path === 'showPatients'
+            || route.routeConfig.path === 'comparePatients'
         ) {
             return !!this.user.feature.find(f => f.menu_name === 'Patient Management');
         } else if (

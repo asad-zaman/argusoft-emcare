@@ -25,7 +25,8 @@ import {
   ConfirmUserComponent,
   FeatureListComponent,
   ManageFeatureComponent,
-  ManageTranslationsComponent
+  ManageTranslationsComponent,
+  ComparePatientComponent
 } from './root/index';
 
 const routes: Routes = [
@@ -50,6 +51,7 @@ const routes: Routes = [
   { path: 'updateUser/:id', component: ManageUserComponent, canActivate: [AuthGuard] },
   { path: 'confirmUsers', component: ConfirmUserComponent, canActivate: [AuthGuard] },
   { path: 'showPatients', component: PatientListComponent, canActivate: [AuthGuard] },
+  { path: 'comparePatients', component: ComparePatientComponent, canActivate: [AuthGuard] },
   { path: 'showQuestionnaires', component: QuestionnaireListComponent, canActivate: [AuthGuard] },
   { path: 'addQuestionnaire', component: QuestionnaireBuilderComponent, canActivate: [AuthGuard] },
   { path: 'updateQuestionnaire/:id', component: QuestionnaireBuilderComponent, canActivate: [AuthGuard] },
