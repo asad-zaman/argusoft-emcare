@@ -1,6 +1,8 @@
 package com.argusoft.who.emcare.web.location.dao;
 
 import com.argusoft.who.emcare.web.location.model.LocationMaster;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,6 +18,10 @@ public interface LocationMasterDao extends JpaRepository<LocationMaster, Integer
     public List<LocationMaster> getChildLocation(@Param("id") Integer id);
 
     List<LocationMaster> findByType(String locationType);
+
+    public Page<LocationMaster> findByNameContainingIgnoreCaseOrTypeContainingIgnoreCase(String searchString1, String searchString2, Pageable pageable);
+
+    public List<LocationMaster> findByNameContainingIgnoreCaseOrTypeContainingIgnoreCase(String searchString1, String searchString2);
 
     List<LocationMaster> findByParent(Long locationId);
 

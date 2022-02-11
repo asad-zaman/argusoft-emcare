@@ -15,7 +15,7 @@
         </div>
         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
           <li><a class="dropdown-item" routerLink="/editProfile">Edit Profile</a></li>
-          <li><a class="dropdown-item" (click)="logout()">{{'SidebarAndHeader.Logout' | translate}}</a></li>
+          <li><a class="dropdown-item" (click)="logout()">{{'Logout' | translate}}</a></li>
         </ul>
       </li>
     </ul>
@@ -28,7 +28,7 @@
         <a class="mouse-pointer" [ngClass]="{'active': this.currentUrl === '/showUsers' || this.currentUrl === '/addUser' || this.currentUrl.includes('/updateUser') 
           || this.currentUrl === '/showRoles' || this.currentUrl === '/addRole' || this.currentUrl.includes('/editRole')
           || this.currentUrl === '/confirmUsers'}" (click)="hideCurrentDropdown(1)">
-          <i class="bi bi-people nav-link_icon"></i>{{'SidebarAndHeader.UserManagement' | translate}}
+          <i class="bi bi-people nav-link_icon"></i>{{'User Management' | translate}}
           <ng-container *ngIf="isUserDropdownOpen; else upIcon">
             <i class="bi bi-chevron-up drop-icon"></i>
           </ng-container>
@@ -39,13 +39,13 @@
         <div *ngIf="isUserDropdownOpen" class="dropdown_list_wrapper">
           <ul class="dropdown_list">
             <li *ngIf="hasAccess('Users')"><a class="mouse-pointer" routerLink="/showUsers"
-                [ngClass]="{'dropdown-link_active': this.currentUrl === '/showUsers' || this.currentUrl === '/addUser' || this.currentUrl.includes('/updateUser')}">{{'SidebarAndHeader.Users' | translate}}</a>
+                [ngClass]="{'dropdown-link_active': this.currentUrl === '/showUsers' || this.currentUrl === '/addUser' || this.currentUrl.includes('/updateUser')}">{{'Users' | translate}}</a>
             </li>
             <li *ngIf="hasAccess('Roles')"><a class="mouse-pointer" routerLink="/showRoles"
-                [ngClass]="{'dropdown-link_active': this.currentUrl === '/showRoles' || this.currentUrl === '/addRole' || this.currentUrl.includes('/editRole')}">{{'SidebarAndHeader.Roles' | translate}}
+                [ngClass]="{'dropdown-link_active': this.currentUrl === '/showRoles' || this.currentUrl === '/addRole' || this.currentUrl.includes('/editRole')}">{{'Roles' | translate}}
               </a></li>
             <li *ngIf="hasAccess('Users')"><a class="mouse-pointer" routerLink="/confirmUsers"
-                [ngClass]="{'dropdown-link_active': this.currentUrl === '/confirmUsers'}">{{'SidebarAndHeader.RegistrationRequest' | translate}}</a>
+                [ngClass]="{'dropdown-link_active': this.currentUrl === '/confirmUsers'}">{{'Registration Request' | translate}}</a>
             </li>
           </ul>
         </div>
@@ -80,7 +80,7 @@
           || this.currentUrl === '/addLocation' || this.currentUrl === '/showLocationType' 
           || this.currentUrl === '/addLocationType' || this.currentUrl.includes('/editLocation')}"
           (click)="hideCurrentDropdown(2)">
-          <i class="bi bi-map nav-link_icon"></i>{{'SidebarAndHeader.ManageLocations' | translate}}
+          <i class="bi bi-map nav-link_icon"></i>{{'Manage Locations' | translate}}
           <ng-container *ngIf="isLocationDropdownOpen; else upIcon">
             <i class="bi bi-chevron-up drop-icon"></i>
           </ng-container>
@@ -91,28 +91,31 @@
         <div *ngIf="isLocationDropdownOpen" class="dropdown_list_wrapper">
           <ul class="dropdown_list">
             <li><a class="mouse-pointer" routerLink="/showLocation"
-                [ngClass]="{'dropdown-link_active': this.currentUrl === '/showLocation' || this.currentUrl === '/addLocation' || this.currentUrl.split('/')[1] === 'editLocation'}">{{'SidebarAndHeader.Locations' | translate}}</a>
+                [ngClass]="{'dropdown-link_active': this.currentUrl === '/showLocation' || this.currentUrl === '/addLocation' || this.currentUrl.split('/')[1] === 'editLocation'}">{{'Locations' | translate}}</a>
             </li>
             <li><a class="mouse-pointer" routerLink="/showLocationType"
-                [ngClass]="{'dropdown-link_active': this.currentUrl === '/showLocationType' || this.currentUrl === '/addLocationType' || this.currentUrl.includes('/editLocationType')}">{{'SidebarAndHeader.LocationType' | translate}}</a>
+                [ngClass]="{'dropdown-link_active': this.currentUrl === '/showLocationType' || this.currentUrl === '/addLocationType' || this.currentUrl.includes('/editLocationType')}">{{'Location Type' | translate}}</a>
             </li>
           </ul>
         </div>
       </li>
       <li *ngIf="hasAccess('Device Management')"><a class="mouse-pointer"
           [ngClass]="{'active': this.currentUrl === '/showDevices'}" routerLink="/showDevices"><i
-            class="bi bi-hdd-network nav-link_icon"></i>{{'SidebarAndHeader.ManageDevices' | translate}}</a></li>
+            class="bi bi-hdd-network nav-link_icon"></i>{{'Manage Devices' | translate}}</a></li>
       <li *ngIf="hasAccess('Feature Management')"><a class="mouse-pointer"
           [ngClass]="{'active': this.currentUrl === '/showFeatures' || this.currentUrl.includes('/editFeature')}"
-          routerLink="/showFeatures"><i
-            class="bi bi-list nav-link_icon"></i>{{'SidebarAndHeader.ManageFeatures' | translate}}</a>
+          routerLink="/showFeatures"><i class="bi bi-list nav-link_icon"></i>{{'Manage Features' | translate}}</a>
       </li>
       <li><a class="mouse-pointer" [ngClass]="{'active': this.currentUrl === '/manage-translation'}"
           routerLink="/manage-translation"><i
-            class="bi bi-list nav-link_icon"></i>{{'ManageTranslations.ManageTranslations' | translate}}</a>
+            class="bi bi-list nav-link_icon"></i>{{'Manage Translations' | translate}}</a>
       </li>
       <!-- <li><a> <i class="bi bi-recycle nav-link_icon"></i> Manage Conficts</a></li> -->
     </ul>
   </div>
 </ng-container>
-<router-outlet></router-outlet>
+<!-- this will change the html direction from right to left when arabic launguages are there -->
+<!-- [ngStyle]="{'direction': getCurrentLaunguage() === 'fr' ? 'rtl' : 'ltr'}" -->
+<div>
+  <router-outlet></router-outlet>
+</div>

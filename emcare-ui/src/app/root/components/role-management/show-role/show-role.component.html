@@ -1,22 +1,22 @@
 <div class="main-wrapper">
-  <h1 class="heading">{{'Role.RoleList.Roles' | translate}}</h1>
+  <h1 class="heading">{{'Roles' | translate}}</h1>
   <hr>
   <div class="row align-items-center mb-3">
     <div class=" col-lg-3 col-xxl-2 col-md-5 position-relative">
       <input class="form-control custom-input h-40" id="exampleFormControlInput1" [(ngModel)]="searchString"
-        (input)="searchFilter()" placeholder="{{'Role.RoleList.Search' | translate}}">
+        (input)="searchFilter()" placeholder="{{'Search Placeholder' | translate}}">
     </div>
     <div class="col text-end"><button class="btn btn-red" routerLink="/addRole">+
-        {{'Role.RoleList.AddRole' | translate}}</button></div>
+        {{'Add Role' | translate}}</button></div>
   </div>
   <!--Table-->
   <div *ngIf="!isAPIBusy" class="table-responsive">
     <table class="data-table">
       <thead>
         <tr>
-          <th>{{'Role.RoleList.ID' | translate}}</th>
-          <th scope="col">{{'Role.RoleList.Name' | translate}}</th>
-          <th scope="col">{{'Role.RoleList.Description' | translate}}</th>
+          <th>{{'ID' | translate}}</th>
+          <th scope="col">{{'Name' | translate}}</th>
+          <th scope="col">{{'Description' | translate}}</th>
           <th></th>
         </tr>
       </thead>
@@ -36,7 +36,7 @@
         </ng-container>
         <ng-template #noRecords>
           <div class="no-record">
-            {{'Common.NoRecords' | translate}}
+            {{'No Records' | translate}}
           </div>
         </ng-template>
       </tbody>

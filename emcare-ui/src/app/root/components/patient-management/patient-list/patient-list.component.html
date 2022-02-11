@@ -1,11 +1,11 @@
 <app-location-filter (locationId)="getLocationId($event)"></app-location-filter>
 <div class="main-wrapper">
-  <h1 class="heading">{{'Patients.Patients' | translate}}</h1>
+  <h1 class="heading">{{'Patients' | translate}}</h1>
   <hr>
   <div class="row align-items-center mb-3">
     <div class=" col-lg-3 col-xxl-2 col-md-5 position-relative">
       <input class="form-control custom-input h-40" id="exampleFormControlInput1" [(ngModel)]="searchString"
-        (input)="searchFilter()" placeholder="{{'Common.Search' | translate}}">
+        (input)="searchFilter()" placeholder="{{'Search Placeholder' | translate}}">
     </div>
   </div>
   <!--Table-->
@@ -13,13 +13,13 @@
     <table class="data-table">
       <thead>
         <tr>
-          <th>{{'Patients.No' | translate}}.</th>
-          <th>{{'Patients.Identifier' | translate}}</th>
-          <th>{{'Patients.Name' | translate}}</th>
-          <th>{{'Patients.Gender' | translate}}</th>
-          <th>{{'Patients.DateofBirth' | translate}}</th>
-          <th>{{'Patients.CaregiverName' | translate}}</th>
-          <th>{{'Patients.Location' | translate}}</th>
+          <th>{{'ID' | translate}}.</th>
+          <th>{{'Identifier' | translate}}</th>
+          <th>{{'Name' | translate}}</th>
+          <th>{{'Gender' | translate}}</th>
+          <th>{{'Date of Birth' | translate}}</th>
+          <th>{{'Caregiver Name' | translate}}</th>
+          <th>{{'Location' | translate}}</th>
         </tr>
       </thead>
       <tbody>
@@ -29,9 +29,16 @@
             <tr>
               <td>{{currentPage == 0 ? ((currentPage)*10 + i + 1) : ((currentPage-1)*10 + i + 1)}}</td>
               <td>{{patient.identifier}}</td>
-              <td><a style="cursor: pointer;" (click)="showPatientDetails(patient.id)"
-                  class="link">{{patient.givenName}}
-                  {{patient.familyName}}</a></td>
+              <td>
+                <ng-container *ngIf="patient.givenName || patient.familyName; else blankName">
+                  <a style="cursor: pointer;" (click)="showPatientDetails(patient.id)"
+                    class="link">{{patient.givenName}}
+                    {{patient.familyName}}</a>
+                </ng-container>
+                <ng-template #blankName>
+                  NA
+                </ng-template>
+              </td>
               <td>{{patient.gender}}</td>
               <td>{{patient.dob ? (patient.dob | date:'mediumDate') : 'NA'}}</td>
               <td>{{patient.caregiver || "NOT PROVIDED"}}</td>
@@ -41,7 +48,7 @@
         </ng-container>
         <ng-template #noRecords>
           <div class="no-record">
-            {{'Common.NoRecords' | translate}}
+            {{'No Records' | translate}}
           </div>
         </ng-template>
       </tbody>
@@ -56,42 +63,42 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h4 class="modal-title">{{'Patients.Modal.PatientDetails' | translate}}</h4>
+          <h4 class="modal-title">{{'Patient Details' | translate}}</h4>
         </div>
         <div class="modal-body">
           <table class="table table-borderless">
             <tbody>
               <tr>
-                <td class="font-weight-bold">{{'Patients.Identifier' | translate}}:</td>
+                <td class="font-weight-bold">{{'Identifier' | translate}}:</td>
                 <td>{{patientDetails.identifier}}</td>
               </tr>
               <tr *ngIf="!!patientDetails.id">
-                <td class="font-weight-bold">{{'Patients.Modal.ID' | translate}}:</td>
+                <td class="font-weight-bold">{{'ID' | translate}}:</td>
                 <td>{{patientDetails.id}}</td>
               </tr>
               <tr *ngIf="!!patientDetails.givenName">
-                <td class="font-weight-bold">{{'Patients.Modal.PatientDetails' | translate}}:</td>
+                <td class="font-weight-bold">{{'Patient Details' | translate}}:</td>
                 <td>{{patientDetails.givenName}}</td>
               </tr>
               <tr *ngIf="!!patientDetails.familyName">
-                <td class="font-weight-bold">{{'Patients.Modal.PatientDetails' | translate}}:</td>
+                <td class="font-weight-bold">{{'Patient Details' | translate}}:</td>
                 <td>{{patientDetails.familyName}}</td>
               </tr>
               <tr *ngIf="!!patientDetails.gender">
-                <td class="font-weight-bold">{{'Patients.Gender' | translate}}:</td>
+                <td class="font-weight-bold">{{'Gender' | translate}}:</td>
                 <td>{{patientDetails.gender}}</td>
               </tr>
               <tr *ngIf="!!patientDetails.dob">
-                <td class="font-weight-bold">{{'Patients.DateofBirth' | translate}}::</td>
+                <td class="font-weight-bold">{{'Date of Birth' | translate}}::</td>
                 <td>{{patientDetails.dob | date:'mediumDate'}}</td>
               </tr>
               <tr *ngIf="!!patientDetails.caregiver">
-                <td class="font-weight-bold">{{'Patients.Modal.PatientDetails' | translate}}:</td>
+                <td class="font-weight-bold">{{'Patient Details' | translate}}:</td>
                 <td>{{patientDetails.caregiver}}</td>
               </tr>
               <tr
                 *ngIf="!!patientDetails.addressLine || !!patientDetails.addressCity || !!patientDetails.addressCountry">
-                <td class="font-weight-bold">{{'Patients.Modal.PatientDetails' | translate}}:</td>
+                <td class="font-weight-bold">{{'Patient Details' | translate}}:</td>
                 <td>
                   <div>
                     <span *ngIf="!!patientDetails.addressLine">{{patientDetails.addressLine}},<br /></span>
@@ -101,11 +108,11 @@
                 </td>
               </tr>
               <tr *ngIf="!!patientDetails.addressPostalCode">
-                <td class="font-weight-bold">{{'Patients.Modal.PatientDetails' | translate}}:</td>
+                <td class="font-weight-bold">{{'Patient Details' | translate}}:</td>
                 <td>{{patientDetails.addressPostalCode}}</td>
               </tr>
               <tr *ngIf="!!patientDetails.location">
-                <td class="font-weight-bold">{{'Patients.Location' | translate}}:</td>
+                <td class="font-weight-bold">{{'Location' | translate}}:</td>
                 <td>{{patientDetails.location}}</td>
               </tr>
             </tbody>
@@ -113,7 +120,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-red" (click)="closePopup()">
-            {{'Patients.Modal.Close' | translate}}
+            {{'Close' | translate}}
           </button>
         </div>
       </div>

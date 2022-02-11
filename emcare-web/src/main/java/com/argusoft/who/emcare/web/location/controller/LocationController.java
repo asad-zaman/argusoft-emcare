@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Nullable;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
@@ -64,8 +65,9 @@ public class LocationController {
     @GetMapping("/page")
     public ResponseEntity<Object> getLocationPage(@RequestParam(value = "pageNo") Integer pageNo,
                                                   @RequestParam(value = "orderBy", defaultValue = "name") String orderBy,
-                                                  @RequestParam(value = "order") String order) {
-        return locationConfigService.getLocationPage(pageNo, orderBy, order);
+                                                  @RequestParam(value = "order") String order,
+                                                  @Nullable @RequestParam(value = "search",required = false) String searchString) {
+        return locationConfigService.getLocationPage(pageNo, orderBy, order,searchString);
     }
 
     @PutMapping("/update")

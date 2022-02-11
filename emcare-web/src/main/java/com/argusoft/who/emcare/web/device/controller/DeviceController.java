@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Nullable;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -38,8 +39,9 @@ public class DeviceController {
     public ResponseEntity<Object> getDevicePage(HttpServletRequest request,
                                                 @RequestParam(value = "pageNo") Integer pageNo,
                                                 @RequestParam(value = "orderBy", defaultValue = "deviceName") String orderBy,
-                                                @RequestParam(value = "order") String order) {
-        return deviceService.getDevicePage(request, pageNo, orderBy, order);
+                                                @RequestParam(value = "order") String order,
+                                                @Nullable @RequestParam(value = "search", required = false) String searchString) {
+        return deviceService.getDevicePage(request, pageNo, orderBy, order, searchString);
     }
 
     @GetMapping("/status/{deviceId}/{status}")

@@ -13,13 +13,14 @@ import com.argusoft.who.emcare.web.fhir.service.QuestionnaireMasterService;
 import com.argusoft.who.emcare.web.location.model.LocationMaster;
 import com.argusoft.who.emcare.web.location.service.LocationService;
 import org.hl7.fhir.r4.model.Patient;
+import org.hl7.fhir.r4.model.Questionnaire;
 import org.hl7.fhir.r4.model.RelatedPerson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
-import org.hl7.fhir.r4.model.Questionnaire;
 
 @CrossOrigin(origins = "**")
 @RestController
@@ -31,7 +32,7 @@ public class EmcareResourceController {
 
     @Autowired
     private EmcareResourceService emcareResourceService;
-    
+
     @Autowired
     private QuestionnaireMasterService questionnaireMasterService;
 
@@ -72,8 +73,9 @@ public class EmcareResourceController {
     }
 
     @GetMapping("/patient/page")
-    public PageDto getPatientsPage(@RequestParam(value = "pageNo") Integer pageNo) {
-        return emcareResourceService.getPatientsPage(pageNo);
+    public PageDto getPatientsPage(@RequestParam(value = "pageNo") Integer pageNo,
+                                   @Nullable @RequestParam(value = "search", required = false) String searchString) {
+        return emcareResourceService.getPatientsPage(pageNo, searchString);
     }
 
     @GetMapping("/patient/locationId/{locationId}")
@@ -100,30 +102,30 @@ public class EmcareResourceController {
 
         return patientDto;
     }
-    
+
     @GetMapping("/questionnaire")
     public List<QuestionnaireDto> getAllQuestionnaires() {
         List<QuestionnaireMaster> questionnaireMasters = questionnaireMasterService.retrieveAllQuestionnaires();
         List<Questionnaire> questionnaires = new ArrayList<>();
-        
-        for(QuestionnaireMaster qm : questionnaireMasters) {
+
+        for (QuestionnaireMaster qm : questionnaireMasters) {
             Questionnaire q = parser.parseResource(Questionnaire.class, qm.getText());
             questionnaires.add(q);
         }
-        
+
         return EmcareResourceMapper.questionnaireEntitiesToDtoMapper(questionnaires);
     }
-    
+
     @GetMapping("/questionnaire/page")
     public PageDto getQuestionnairesPage(@RequestParam(value = "pageNo") Integer pageNo) {
         return questionnaireMasterService.getQuestionnaireDtosPage(pageNo);
     }
-    
+
     @GetMapping("/questionnaire/{questionnaireId}")
-    public Questionnaire getQuestionnaireById(@PathVariable String questionnaireId){
+    public Questionnaire getQuestionnaireById(@PathVariable String questionnaireId) {
         QuestionnaireMaster qm = questionnaireMasterService.retrieveQuestionnaireByResourceId(questionnaireId);
         Questionnaire q = null;
-        if(qm != null){
+        if (qm != null) {
             q = parser.parseResource(Questionnaire.class, qm.getText());
         }
         return q;

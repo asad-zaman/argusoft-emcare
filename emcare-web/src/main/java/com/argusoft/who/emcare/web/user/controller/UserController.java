@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Nullable;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -37,8 +38,9 @@ public class UserController {
 
     @GetMapping("/user/page")
     public ResponseEntity<Object> getUserPage(HttpServletRequest request,
-                                              @RequestParam(value = "pageNo") Integer pageNo) {
-        return ResponseEntity.ok(userService.getUserPage(request, pageNo));
+                                              @RequestParam(value = "pageNo") Integer pageNo,
+                                              @Nullable @RequestParam(value = "search",required = false) String searchString) {
+        return ResponseEntity.ok(userService.getUserPage(request, pageNo, searchString));
     }
 
     @GetMapping("/user/signedup")
@@ -91,7 +93,7 @@ public class UserController {
     public ResponseEntity<Object> updateUser(@RequestBody UserDto userDto, @PathVariable(value = "userId") String userId) {
         return userService.updateUser(userDto, userId);
     }
-    
+
     @PutMapping("/user/update/password/{userId}")
     public ResponseEntity<Object> updatePassword(@RequestBody UserDto userDto, @PathVariable(value = "userId") String userId) {
         return userService.updatePassword(userDto, userId);

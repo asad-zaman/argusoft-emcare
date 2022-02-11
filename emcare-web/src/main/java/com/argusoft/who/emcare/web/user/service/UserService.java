@@ -24,7 +24,7 @@ public interface UserService {
 
     public List<UserListDto> getAllUser(HttpServletRequest request);
 
-    public PageDto getUserPage(HttpServletRequest request, Integer pageNo);
+    public PageDto getUserPage(HttpServletRequest request, Integer pageNo,String searchString);
 
     public List<UserListDto> getAllSignedUpUser(HttpServletRequest request);
 

@@ -125,7 +125,7 @@ public class DeviceServiceImpl implements DeviceService {
     }
 
     @Override
-    public ResponseEntity<Object> getDevicePage(HttpServletRequest request, Integer pageNo, String orderBy, String order) {
+    public ResponseEntity<Object> getDevicePage(HttpServletRequest request, Integer pageNo, String orderBy, String order, String searchString) {
         List<UserListDto> allUsers = userService.getAllUser(request);
         List<DeviceWithUserDetails> list = new ArrayList<>();
         if (orderBy.equalsIgnoreCase("null")) {
@@ -133,12 +133,21 @@ public class DeviceServiceImpl implements DeviceService {
         }
         Sort sort = order.equalsIgnoreCase(CommonConstant.DESC) ? Sort.by(orderBy).descending() : Sort.by(orderBy).ascending();
         Pageable page = PageRequest.of(pageNo, CommonConstant.PAGE_SIZE, !sort.isEmpty() ? sort : null);
-        Page<DeviceMaster> allDevice = deviceRepository.findAll(page);
+        Long totalCount = 0L;
+        Page<DeviceMaster> allDevice;
+        if (searchString != null && !searchString.isEmpty()) {
+            totalCount = Long.valueOf(deviceRepository.findByAndroidVersionContainingIgnoreCaseOrDeviceNameContainingIgnoreCaseOrDeviceOsContainingIgnoreCaseOrDeviceModelContainingIgnoreCase(searchString, searchString, searchString, searchString).size());
+            allDevice = deviceRepository.findByAndroidVersionContainingIgnoreCaseOrDeviceNameContainingIgnoreCaseOrDeviceOsContainingIgnoreCaseOrDeviceModelContainingIgnoreCase(searchString, searchString, searchString, searchString, page);
+        } else {
+            totalCount = deviceRepository.count();
+            allDevice = deviceRepository.findAll(page);
+        }
+//        Page<DeviceMaster> allDevice = deviceRepository.findAll(page);
         allDevice.forEach(deviceMaster -> list.add(DeviceMapper.getDeviceWithUser(deviceMaster, allUsers)));
 
         PageDto pageDto = new PageDto();
         pageDto.setList(list);
-        pageDto.setTotalCount(deviceRepository.count());
+        pageDto.setTotalCount(totalCount);
         return ResponseEntity.ok(pageDto);
     }
 
