@@ -1,13 +1,13 @@
 <div class="main-wrapper">
-  <h1 class="heading">{{'Location.LocationTypeList.LocationType' | translate}}</h1>
+  <h1 class="heading">{{'Location Type' | translate}}</h1>
   <hr>
   <div class="row align-items-center mb-3">
     <div class="col-lg-3 col-xxl-2 col-md-5 position-relative">
       <input class="form-control custom-input h-40" id="exampleFormControlInput1" [(ngModel)]="searchString"
-        (input)="searchFilter()" placeholder="{{'Common.Search' | translate}}">
+        (input)="searchFilter()" placeholder="{{'Search Placeholder' | translate}}">
     </div>
     <div class="col text-end"> <button class="btn btn-red" routerLink="/addLocationType">+
-        {{'Location.LocationTypeList.AddLocationType' | translate}}</button>
+        {{'Add Location Type' | translate}}</button>
     </div>
   </div>
   <!--Table-->
@@ -15,9 +15,9 @@
     <table class="data-table">
       <thead>
         <tr>
-          <th>{{'Location.LocationTypeList.ID' | translate}}</th>
-          <th>{{'Location.LocationTypeList.Name' | translate}}</th>
-          <th>{{'Location.LocationTypeList.Type' | translate}}</th>
+          <th>{{'ID' | translate}}</th>
+          <th>{{'Name' | translate}}</th>
+          <th>{{'Type' | translate}}</th>
           <th></th>
         </tr>
       </thead>
@@ -37,7 +37,7 @@
         </ng-container>
         <ng-template #noRecords>
           <div class="no-record">
-            {{'Common.NoRecords' | translate}}
+            {{'No Records' | translate}}
           </div>
         </ng-template>
       </tbody>

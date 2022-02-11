@@ -93,23 +93,6 @@ export class AppComponent implements OnInit {
     this.translate.setDefaultLang('en');
   }
 
-  changeLaunguage(lIndex) {
-    switch (lIndex) {
-      case 1:
-        this.translate.use('french');
-        break;
-      case 2:
-        this.translate.use('english');
-        break;
-      case 3:
-        this.translate.use('hindi');
-        break;
-      default:
-        this.translate.use('english');
-        break;
-    }
-  }
-
   checkTOkenExpiresOrNot() {
     const tokenExpiryDate = JSON.parse(localStorage.getItem('refresh_token_expiry_time'));
     const tokenExpiry = tokenExpiryDate
@@ -192,5 +175,9 @@ export class AppComponent implements OnInit {
 
   hasAccess(feature: string) {
     return !!this.featureList.find(f => f === feature);
+  }
+
+  getCurrentLaunguage() {
+    return localStorage.getItem('language');
   }
 }

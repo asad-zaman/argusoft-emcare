@@ -1,11 +1,11 @@
 <div class="main-wrapper">
-  <h1 class="heading">{{'Features.UpdateFeatureConfig' | translate}}</h1>
+  <h1 class="heading">{{'Update Feature Config' | translate}}</h1>
   <hr>
   <h4 class="mb-2">{{ featureName }}</h4>
   <div class="row align-items-center mb-3">
     <div class="col-3 col-sm-3">
       <div class="mb-3">
-        <label class="form-label">{{'Features.User' | translate}}</label>
+        <label class="form-label">{{'User' | translate}}</label>
         <ng-container>
           <select class="form-control custom-input" [(ngModel)]="selectedUser" (change)="selectedRole=null" id="user">
             <ng-container *ngFor="let user of userList">
@@ -17,7 +17,7 @@
     </div>
     <div class="col-3 col-sm-3">
       <div class="mb-3">
-        <label class="form-label">{{'Features.Role' | translate}}</label>
+        <label class="form-label">{{'Role' | translate}}</label>
         <ng-container>
           <select class="form-control custom-input" [(ngModel)]="selectedRole" (change)="selectedUser=null" id="role">
             <ng-container *ngFor="let role of roleList">
@@ -29,7 +29,7 @@
     </div>
     <div class="col-3 col-sm-3">
       <button (click)="AddFeatureConfig()" [disabled]="!selectedUser && !selectedRole"
-        class="btn btn-red p-l-70 p-r-70 mt-3">+ {{'Features.ADD' | translate}}</button>
+        class="btn btn-red p-l-70 p-r-70 mt-3">+ {{'ADD' | translate}}</button>
     </div>
   </div>
   <!--Table-->
@@ -37,9 +37,9 @@
     <table class="data-table">
       <thead>
         <tr>
-          <th>{{'Features.ID' | translate}}</th>
-          <th>{{'Features.Type' | translate}}</th>
-          <th>{{'Features.Name' | translate}}</th>
+          <th>{{'ID' | translate}}</th>
+          <th>{{'Type' | translate}}</th>
+          <th>{{'Name' | translate}}</th>
           <th></th>
         </tr>
       </thead>
@@ -47,13 +47,13 @@
         <ng-container *ngIf="featureConfigList && featureConfigList.length > 0; else noRecords">
           <ng-container *ngFor="let featureConfig of featureConfigList; let i=index">
             <tr>
-              <td>{{currentPage == 0 ? ((currentPage)*10 + i + 1) : ((currentPage-1)*10 + i + 1)}}</td>
+              <td>{{i + 1}}</td>
               <td>
                 <ng-container *ngIf="featureConfig.userId; else Role">
-                  {{'Features.User' | translate}}
+                  {{'User' | translate}}
                 </ng-container>
                 <ng-template #Role>
-                  {{'Features.Role' | translate}}
+                  {{'Role' | translate}}
                 </ng-template>
               </td>
               <td class="text-end">
@@ -65,7 +65,7 @@
         </ng-container>
         <ng-template #noRecords>
           <div class="no-record">
-            {{'Common.NoRecords' | translate}}
+            {{'No Records' | translate}}
           </div>
         </ng-template>
       </tbody>
@@ -75,7 +75,7 @@
   <div class="row">
     <div class="col-3 col-sm-3">
       <button routerLink="/showFeatures" class="btn btn-red mt-3 mr-5 text-center" style="width: 150px;">
-        <i class="bi bi-chevron-left"></i>{{'Common.Back' | translate}}
+        <i class="bi bi-chevron-left"></i>{{'Back' | translate}}
       </button>
     </div>
   </div>
