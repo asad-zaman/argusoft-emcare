@@ -71,7 +71,7 @@ export class ComparePatientComponent implements OnInit {
             this.toasterService.showWarning("Cannot determine Duplication status");
           }
         }, err => {
-          this.toasterService.showError("Error encoutnered, please check Patient data.");
+          this.toasterService.showError("Error encountered, please check Patient data.");
         });
       }
     }
