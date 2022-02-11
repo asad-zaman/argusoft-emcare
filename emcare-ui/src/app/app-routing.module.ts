@@ -23,7 +23,8 @@ import {
   ConfirmUserComponent,
   FeatureListComponent,
   ManageFeatureComponent,
-  ManageTranslationsComponent
+  ManageTranslationsComponent,
+  ComparePatientComponent
 } from './root/index';
 
 const routes: Routes = [
@@ -48,6 +49,7 @@ const routes: Routes = [
   { path: 'updateUser/:id', component: ManageUserComponent, canActivate: [AuthGuard] },
   { path: 'confirmUsers', component: ConfirmUserComponent, canActivate: [AuthGuard] },
   { path: 'showPatients', component: PatientListComponent, canActivate: [AuthGuard] },
+  { path: 'comparePatients', component: ComparePatientComponent, canActivate: [AuthGuard] },
   { path: 'showRoles', component: ShowRoleComponent, canActivate: [AuthGuard] },
   { path: 'addRole', component: ManageRoleComponent, canActivate: [AuthGuard] },
   { path: 'editRole/:id', component: ManageRoleComponent, canActivate: [AuthGuard] },

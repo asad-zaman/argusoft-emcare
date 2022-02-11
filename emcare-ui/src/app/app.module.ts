@@ -20,6 +20,7 @@ import {
   ConfirmUserComponent,
   FeatureListComponent,
   ManageFeatureComponent,
+  ComparePatientComponent,
   UserManagementService,
   FeatureManagementService
 } from './root/index';
@@ -71,7 +72,8 @@ import { ManageTranslationsComponent } from './root/components/manage-translatio
     ManageFeatureComponent,
     ManageFeatureComponent,
     ManageProfileComponent,
-    ManageTranslationsComponent
+    ManageTranslationsComponent,
+    ComparePatientComponent
   ],
   imports: [
     BrowserModule,
