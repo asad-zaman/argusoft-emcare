@@ -63,7 +63,15 @@ export class ComparePatientComponent implements OnInit {
           this.comparePatientForm.get("secondPatientDetails").value
         ];
         this.fhirService.comparePatients(data).subscribe(res => {
-          console.log(res);
+          if(res == true){
+            this.toasterService.showInfo("Duplicate Patients Detected");
+          } else  if (res == false) {
+            this.toasterService.showSuccess("Unique Patients Detected");
+          } else {
+            this.toasterService.showWarning("Cannot determine Duplication status");
+          }
+        }, err => {
+          this.toasterService.showError("Error encoutnered, please check Patient data.");
         });
       }
     }

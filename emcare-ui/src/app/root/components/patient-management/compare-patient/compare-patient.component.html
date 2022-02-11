@@ -43,7 +43,7 @@
               <textarea formControlName="secondPatientDetails" id="secondPatientDetails"
                 placeholder="Second Patient Details" class="form-control custom-input" rows="8"
                 [ngClass]="{ 'is-invalid': submitted && f.secondPatientDetails.errors }"></textarea>
-                <div *ngIf="submitted && f.firstPatientDetails.errors" class="invalid-feedback">
+                <div *ngIf="submitted && f.secondPatientDetails.errors" class="invalid-feedback">
                   Patient data is required
                 </div>
             </div>
