@@ -1,5 +1,5 @@
 <div class="main-wrapper">
-    <h1>Questionnaire Builder</h1>
+    <h1 class="heading">Questionnaire Builder</h1>
     <iframe id="iframe" *ngIf="!isEdit" style="height: 720px; width: 100%;" [src]="questionnaireBuilderUrl" title="Questionnaire Builder" (load) = "sendAuthToken()"></iframe>
     <iframe *ngIf="!!isEdit" id="iframe" style="height: 720px; width: 100%;" [src]="questionnaireBuilderEditUrl" title="Questionnaire Builder" (load) = "sendAuthToken()"></iframe>
     <div class="text-end mt-5">
