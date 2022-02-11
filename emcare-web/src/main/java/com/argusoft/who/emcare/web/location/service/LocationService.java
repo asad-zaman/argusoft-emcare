@@ -27,7 +27,7 @@ public interface LocationService {
 
     public ResponseEntity<Object> getAllLocation();
 
-    public ResponseEntity<Object> getLocationPage(Integer pageNo, String orderBy, String order);
+    public ResponseEntity<Object> getLocationPage(Integer pageNo, String orderBy, String order, String searchString);
 
     public ResponseEntity<Object> updateLocation(LocationMasterDto locationMasterDto);
 

@@ -51,13 +51,19 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
     }
 
     @Override
-    public PageDto getPatientsPage(Integer pageNo) {
+    public PageDto getPatientsPage(Integer pageNo, String searchString) {
         List<Patient> patientsList = new ArrayList<>();
         List<PatientDto> patientDtosList;
-
+        Integer totalCount = 0;
+        List<EmcareResource> resourcesList;
         Pageable page = PageRequest.of(pageNo, CommonConstant.PAGE_SIZE);
-        Integer totalCount = repository.findAllByType("PATIENT").size();
-        List<EmcareResource> resourcesList = repository.findAllByType("PATIENT", page);
+        if (searchString != null && !searchString.isEmpty()) {
+            totalCount = repository.findByTypeContainingAndTextContainingIgnoreCase("PATIENT", searchString).size();
+            resourcesList = repository.findByTypeContainingAndTextContainingIgnoreCase("PATIENT", searchString, page);
+        } else {
+            totalCount = repository.findAllByType("PATIENT").size();
+            resourcesList = repository.findAllByType("PATIENT", page);
+        }
 
         for (EmcareResource emcareResource : resourcesList) {
             Patient patient = parser.parseResource(Patient.class, emcareResource.getText());
@@ -114,15 +120,15 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
         List<PatientDto> patientDtosList = EmcareResourceMapper.patientEntitiesToDtoMapper(patientsList);
         List<Integer> locationIds = locationMasterDao.getAllChildLocationId(locationId);
         List<PatientDto> list = patientDtosList.stream().filter(patient -> locationIds.contains(Integer.parseInt(patient.getLocation()))).collect(Collectors.toList());
-        
+
         //Converting locationid to name
-        for(PatientDto patientDto: list) {
+        for (PatientDto patientDto : list) {
             if (patientDto.getLocation() != null) {
                 LocationMaster location = locationService.getLocationMasterById(Integer.parseInt(patientDto.getLocation()));
                 patientDto.setLocation(location.getName());
             }
         }
-        
+
         PageDto pageDto = new PageDto();
         pageDto.setList(list);
         pageDto.setTotalCount(totalCount.longValue());

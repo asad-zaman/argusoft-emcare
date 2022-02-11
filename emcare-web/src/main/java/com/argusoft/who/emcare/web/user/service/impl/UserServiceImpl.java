@@ -113,7 +113,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public PageDto getUserPage(HttpServletRequest request, Integer pageNo) {
+    public PageDto getUserPage(HttpServletRequest request, Integer pageNo, String searchString) {
         Integer pageSize = CommonConstant.PAGE_SIZE;
         Integer startIndex = pageNo * pageSize;
         Integer endIndex = (pageNo + 1) * pageSize;
@@ -123,7 +123,23 @@ public class UserServiceImpl implements UserService {
         if (endIndex > userTotalCount) {
             endIndex = userTotalCount;
         }
-        List<UserRepresentation> userRepresentations = keycloak.realm(KeyCloakConfig.REALM).users().list().subList(startIndex, endIndex);
+        List<UserRepresentation> userRepresentations;
+        if (searchString != null && !searchString.isEmpty()) {
+            userRepresentations = keycloak.realm(KeyCloakConfig.REALM).users().search(searchString);
+            if (userRepresentations.size() <= endIndex) {
+                endIndex = userRepresentations.size();
+
+            }
+            userTotalCount = userRepresentations.size();
+            if (startIndex > endIndex) {
+                userRepresentations = new ArrayList<>();
+            } else {
+                userRepresentations = userRepresentations.subList(startIndex, endIndex);
+            }
+        } else {
+            userRepresentations = keycloak.realm(KeyCloakConfig.REALM).users().list().subList(startIndex, endIndex);
+        }
+
         for (UserRepresentation representation : userRepresentations) {
             List<RoleRepresentation> roleRepresentationList = keycloak.realm(KeyCloakConfig.REALM).users().get(representation.getId()).roles().realmLevel().listAll();
             List<String> roles = new ArrayList<>();

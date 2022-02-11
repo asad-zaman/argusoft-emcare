@@ -20,6 +20,6 @@ public interface DeviceService {
 
     public ResponseEntity<Object> getAllDevice(HttpServletRequest request);
 
-    public ResponseEntity<Object> getDevicePage(HttpServletRequest request, Integer pageNo, String orderBy, String order);
+    public ResponseEntity<Object> getDevicePage(HttpServletRequest request, Integer pageNo, String orderBy, String order, String searchString);
 
 }

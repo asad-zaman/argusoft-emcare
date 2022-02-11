@@ -1,21 +1,25 @@
 package com.argusoft.who.emcare.web.device.dao;
 
 import com.argusoft.who.emcare.web.device.model.DeviceMaster;
-import javax.transaction.Transactional;
+import com.argusoft.who.emcare.web.location.model.LocationMaster;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import javax.transaction.Transactional;
+import java.util.List;
+
 /**
- *
  * @author jay
  */
 public interface DeviceRepository extends JpaRepository<DeviceMaster, Integer> {
 
     @Query(value = "select * from device_master where imei_number = :imei", nativeQuery = true)
     public DeviceMaster getDeviceByImei(@Param("imei") String imei);
-    
+
     @Query(value = "select * from device_master where mac_address = :macAddress", nativeQuery = true)
     public DeviceMaster getDeviceByMacAddress(@Param("macAddress") String macAddress);
 
@@ -37,4 +41,17 @@ public interface DeviceRepository extends JpaRepository<DeviceMaster, Integer> {
             @Param("is_blocked") Boolean is_blocked,
             @Param("device_id") Integer device_id
     );
+
+    public List<DeviceMaster> findByAndroidVersionContainingIgnoreCaseOrDeviceNameContainingIgnoreCaseOrDeviceOsContainingIgnoreCaseOrDeviceModelContainingIgnoreCase(
+            String searchString1,
+            String searchString2,
+            String searchString3,
+            String searchString4);
+
+    public Page<DeviceMaster> findByAndroidVersionContainingIgnoreCaseOrDeviceNameContainingIgnoreCaseOrDeviceOsContainingIgnoreCaseOrDeviceModelContainingIgnoreCase(
+            String searchString1,
+            String searchString2,
+            String searchString3,
+            String searchString4,
+            Pageable pageable);
 }

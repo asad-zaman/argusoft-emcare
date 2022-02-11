@@ -11,7 +11,7 @@ public interface EmcareResourceService {
 
     public List<EmcareResource> retrieveResources();
 
-    public PageDto getPatientsPage(Integer pageNo);
+    public PageDto getPatientsPage(Integer pageNo,String searchString);
 
     public List<EmcareResource> retrieveResourcesByType(String type);
 
