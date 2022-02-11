@@ -1,10 +1,10 @@
 <div class="main-wrapper">
-  <h1 class="heading">{{'Features.Features' | translate}}</h1>
+  <h1 class="heading">{{'Features' | translate}}</h1>
   <hr>
   <div class="row align-items-center mb-3">
     <div class=" col-lg-3 col-xxl-2 col-md-5 position-relative">
       <input class="form-control custom-input" id="exampleFormControlInput1" [(ngModel)]="searchString"
-        (input)="searchFilter()" placeholder="{{'Common.Search' | translate}}">
+        (input)="searchFilter()" placeholder="{{'Search Placeholder' | translate}}">
     </div>
   </div>
   <!--Table-->
@@ -12,8 +12,8 @@
     <table class="data-table">
       <thead>
         <tr>
-          <th>{{'Features.ID' | translate}}</th>
-          <th>{{'Features.FeatureName' | translate}}</th>
+          <th>{{'ID' | translate}}</th>
+          <th>{{'Feature Name' | translate}}</th>
           <th></th>
         </tr>
       </thead>
@@ -32,7 +32,7 @@
         </ng-container>
         <ng-template #noRecords>
           <div class="no-record">
-            {{'Common.NoRecords' | translate}}
+            {{'No Records' | translate}}
           </div>
         </ng-template>
       </tbody>

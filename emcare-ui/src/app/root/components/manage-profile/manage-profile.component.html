@@ -3,39 +3,39 @@
     <form [formGroup]="currentUserForm" name="currentUserForm" novalidate>
       <div class="mb-5">
         <h1 class="heading">
-          {{'Common.EditProfile' | translate}}
+          {{'Edit Profile' | translate}}
         </h1>
         <hr>
       </div>
       <div class="row">
         <div class="col-12 col-sm-6">
           <div class="mb-3">
-            <label class="form-label">{{'User.UserList.TableColumns.FirstName' | translate}}'</label>
+            <label class="form-label">{{'First Name' | translate}}'</label>
             <input class="form-control custom-input" formControlName="firstName" type="text" id="firstName"
-              placeholder="{{'User.UserManagement.Placeholder.FirstName' | translate}}"
+              placeholder="{{'FirstName Placeholder' | translate}}"
               [ngClass]="{ 'is-invalid': submitted && f.firstName.errors }">
             <div *ngIf="submitted && f.firstName.errors" class="invalid-feedback">
               <div class="cst-error-style" *ngIf="f.firstName.errors.required">
-                {{'User.UserManagement.FirstNameReqMsg' | translate}}
+                {{'FirstName Required Message' | translate}}
               </div>
             </div>
           </div>
         </div>
         <div class="col-12 col-sm-6">
           <div class="mb-3">
-            <label class="form-label">{{'User.UserList.TableColumns.LastName' | translate}}</label>
+            <label class="form-label">{{'Last Name' | translate}}</label>
             <input class="form-control custom-input" formControlName="lastName" type="text" id="lastName"
-              placeholder="{{'User.UserManagement.Placeholder.LastName' | translate}}"
+              placeholder="{{'LastName Placeholder' | translate}}"
               [ngClass]="{ 'is-invalid': submitted && f.lastName.errors }">
             <div *ngIf="submitted && f.lastName.errors" class="invalid-feedback">
               <div class="cst-error-style" *ngIf="f.lastName.errors.required">
-                {{'User.UserManagement.LastNameReqMsg' | translate}}</div>
+                {{'LastName Required Message' | translate}}</div>
             </div>
           </div>
         </div>
         <div class="col-12 col-sm-12">
           <div class="mb-3">
-            <label class="form-label">{{'Common.Language' | translate}}</label>
+            <label class="form-label">{{'Language' | translate}}</label>
             <select class="form-control custom-input" formControlName="language" id="language">
               <ng-container *ngFor="let data of lanArr">
                 <option value="{{data.id}}">{{data.name}}</option>
@@ -47,10 +47,10 @@
       <div class="text-end mt-5">
         <hr>
         <button routerLink="/showUsers" class="btn-red btn mr-3">
-          <i class="bi bi-chevron-left"></i> {{'Common.Back' | translate}}
+          <i class="bi bi-chevron-left"></i> {{'Back' | translate}}
         </button>
         <button (click)="saveData()" class="btn-red btn">
-          {{'Common.SaveDetails' | translate}}
+          {{'Save Details' | translate}}
         </button>
       </div>
     </form>

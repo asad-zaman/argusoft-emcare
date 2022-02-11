@@ -1,10 +1,10 @@
 <div class="main-wrapper">
-  <h1 class="heading">{{'RegistrationRequests.RegistrationRequests' | translate}}</h1>
+  <h1 class="heading">{{'Registration Requests' | translate}}</h1>
   <hr>
   <div class="row align-items-center mb-3">
     <div class=" col-lg-3 col-xxl-2 col-md-5 position-relative">
       <input class="form-control custom-input h-40" id="exampleFormControlInput1" [(ngModel)]="searchString"
-        (input)="searchFilter()" placeholder="{{'Common.Search' | translate}}">
+        (input)="searchFilter()" placeholder="{{'Search Placeholder' | translate}}">
     </div>
   </div>
   <!--Table-->
@@ -12,12 +12,12 @@
     <table class="data-table">
       <thead>
         <tr>
-          <th>{{'RegistrationRequests.ID' | translate}}</th>
-          <th>{{'RegistrationRequests.Firstname' | translate}}</th>
-          <th>{{'RegistrationRequests.Lastname' | translate}}</th>
-          <th>{{'RegistrationRequests.Email' | translate}}</th>
-          <th>{{'RegistrationRequests.Location' | translate}}</th>
-          <th>{{'RegistrationRequests.Role' | translate}}</th>
+          <th>{{'ID' | translate}}</th>
+          <th>{{'First Name' | translate}}</th>
+          <th>{{'Last Name' | translate}}</th>
+          <th>{{'Email' | translate}}</th>
+          <th>{{'Location' | translate}}</th>
+          <th>{{'Role' | translate}}</th>
           <th></th>
           <th></th>
         </tr>
@@ -43,7 +43,7 @@
         </ng-container>
         <ng-template #noRecords>
           <div class="no-record">
-            {{'Common.NoRecords' | translate}}
+            {{'No Records' | translate}}
           </div>
         </ng-template>
       </tbody>
@@ -56,26 +56,26 @@
         <div class="modal-body">
           <h2 class="modal-title text-center">
             <ng-container *ngIf="isApproveUser; else disapprove">
-              {{'RegistrationRequests.ApproveUser' | translate}}
+              {{'Approve User' | translate}}
             </ng-container>
             <ng-template #disapprove>
-              {{'RegistrationRequests.DisapproveUser' | translate}}
+              {{'Disapprove User' | translate}}
             </ng-template>
           </h2>
           <div class="text-center my-3">
             <p class="font-size-15">
               <ng-container *ngIf="isApproveUser; else disapprove">
-                {{'RegistrationRequests.ConfirmApproval' | translate}}
+                {{'Confirm Approval' | translate}}
               </ng-container>
               <ng-template #disapprove>
-                {{'RegistrationRequests.DisApproval' | translate}}
+                {{'DisApproval' | translate}}
               </ng-template>
           </div>
           <div class="text-center">
             <button type="button" class="btn-red btn mr-2" style="width: 100px;"
-              (click)="authorizeUser()">{{'RegistrationRequests.Ok' | translate}}</button>
+              (click)="authorizeUser()">{{'Ok' | translate}}</button>
             <button type="button" class="btn-red btn" style="width: 100px;"
-              (click)="showConfirmDialogFlag = false">{{'RegistrationRequests.Cancel' | translate}}</button>
+              (click)="showConfirmDialogFlag = false">{{'Cancel' | translate}}</button>
           </div>
         </div>
       </div>

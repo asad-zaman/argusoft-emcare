@@ -2,8 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { FhirService, ToasterService } from 'src/app/shared';
 import * as _ from 'lodash';
 import { LaunguageSubjects } from 'src/app/auth/token-interceptor';
-// import frTrans from '../../../../assets/i18n/fr.json';
-// import hinTrans from '../../../../assets/i18n/hin.json';
+import frTrans from '../../../../assets/i18n/fr.json';
+import hinTrans from '../../../../assets/i18n/hin.json';
+import enTrans from '../../../../assets/i18n/en.json';
 
 @Component({
   selector: 'app-manage-translations',
@@ -48,7 +49,7 @@ export class ManageTranslationsComponent implements OnInit {
       }
     });
     this.setAlphabetArr();
-    
+
     // incase we want to update translation file in future
     // const data = {
     //   "id": value['id'],
@@ -143,11 +144,5 @@ export class ManageTranslationsComponent implements OnInit {
     } else {
       this.noRecords = false;
     }
-  }
-
-  getArr(key) {
-    const arr = key.split('.');
-    const arrLength = key.split('.').length;
-    return { arr: arr, length: arrLength };
   }
 }
