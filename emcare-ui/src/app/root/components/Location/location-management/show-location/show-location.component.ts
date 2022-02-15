@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { LocationService } from 'src/app/root/services/location.service';
 import { ToasterService } from 'src/app/shared';
@@ -16,6 +18,7 @@ export class ShowLocationComponent implements OnInit {
   currentPage = 0;
   totalCount = 0;
   tableSize = 10;
+  searchTermChanged: Subject<string> = new Subject<string>();
 
   constructor(
     private readonly router: Router,
@@ -31,15 +34,19 @@ export class ShowLocationComponent implements OnInit {
     this.getLocationsByPageIndex(this.currentPage);
   }
 
+  manipulateResponse(res) {
+    if (res && res['list']) {
+      this.locationArr = res['list'];
+      this.filteredLocations = this.locationArr;
+      this.isAPIBusy = false;
+      this.totalCount = res['totalCount'];
+    }
+  }
+
   getLocationsByPageIndex(index) {
     this.locationArr = [];
     this.locationService.getLocationsByPageIndex(index).subscribe(res => {
-      if (res && res['list']) {
-        this.locationArr = res['list'];
-        this.filteredLocations = this.locationArr;
-        this.isAPIBusy = false;
-        this.totalCount = res['totalCount'];
-      }
+      this.manipulateResponse(res);
     });
   }
 
@@ -71,11 +78,22 @@ export class ShowLocationComponent implements OnInit {
   }
 
   searchFilter() {
-    const lowerCasedSearchString = this.searchString?.toLowerCase();
-    this.filteredLocations = this.locationArr.filter(location => {
-      return (location.name?.toLowerCase().includes(lowerCasedSearchString)
-        || location.type?.toLowerCase().includes(lowerCasedSearchString)
-        || location.parentName?.toLowerCase().includes(lowerCasedSearchString));
-    });
+    this.resetCurrentPage();
+    if (this.searchTermChanged.observers.length === 0) {
+      this.searchTermChanged.pipe(
+        debounceTime(1000),
+        distinctUntilChanged()
+      ).subscribe(_term => {
+        if (this.searchString && this.searchString.length >= 1) {
+          this.locationArr = [];
+          this.locationService.getLocationsByPageIndex(this.currentPage, this.searchString).subscribe(res => {
+            this.manipulateResponse(res);
+          });
+        } else {
+          this.getLocationsByPageIndex(this.currentPage);
+        }
+      });
+    }
+    this.searchTermChanged.next(this.searchString);
   }
 }

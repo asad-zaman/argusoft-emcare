@@ -13,7 +13,7 @@ export class DeviceManagementService {
 
     getHeaders() {
         let authToken = localStorage.getItem("access_token");
-        authToken = authToken && authToken.substring(1,authToken.length - 1);
+        authToken = authToken && authToken.substring(1, authToken.length - 1);
         const headerObj = {
             headers: new HttpHeaders({
                 'Content-Type': 'application/json',
@@ -30,7 +30,7 @@ export class DeviceManagementService {
         return this.http.get(`${this.backendURL}/all`, this.getHeaders());
     }
 
-    updateDeviceStatusById(deviceId,status) {
+    updateDeviceStatusById(deviceId, status) {
         return this.http.get(`${this.backendURL}/status/${deviceId}/${status}`, this.getHeaders());
     }
 
@@ -38,7 +38,13 @@ export class DeviceManagementService {
         return this.http.put(`${this.backendURL}/update`, obj, this.getHeaders());
     }
 
-    getDevicesByPageIndex(pageIndex) {
-        return this.http.get(`${this.backendURL}/page?pageNo=${pageIndex}&orderBy=null&order=null`, this.getHeaders());
+    getDevicesByPageIndex(pageIndex, search?) {
+        let url;
+        if (search) {
+            url = `${this.backendURL}/page?pageNo=${pageIndex}&orderBy=null&order=null&search=${search}`;
+        } else {
+            url = `${this.backendURL}/page?pageNo=${pageIndex}&orderBy=null&order=null`;
+        }
+        return this.http.get(url, this.getHeaders());
     }
 }
