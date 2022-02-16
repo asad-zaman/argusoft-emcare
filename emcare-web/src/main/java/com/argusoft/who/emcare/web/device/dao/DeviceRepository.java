@@ -42,16 +42,21 @@ public interface DeviceRepository extends JpaRepository<DeviceMaster, Integer> {
             @Param("device_id") Integer device_id
     );
 
-    public List<DeviceMaster> findByAndroidVersionContainingIgnoreCaseOrDeviceNameContainingIgnoreCaseOrDeviceOsContainingIgnoreCaseOrDeviceModelContainingIgnoreCase(
-            String searchString1,
-            String searchString2,
-            String searchString3,
-            String searchString4);
-
-    public Page<DeviceMaster> findByAndroidVersionContainingIgnoreCaseOrDeviceNameContainingIgnoreCaseOrDeviceOsContainingIgnoreCaseOrDeviceModelContainingIgnoreCase(
+    public List<DeviceMaster> findByAndroidVersionContainingIgnoreCaseOrDeviceNameContainingIgnoreCaseOrDeviceOsContainingIgnoreCaseOrDeviceModelContainingIgnoreCaseOrDeviceUUIDContainingIgnoreCaseOrUserNameContainingIgnoreCase(
             String searchString1,
             String searchString2,
             String searchString3,
             String searchString4,
+            String searchString5,
+            String searchString6
+            );
+
+    public Page<DeviceMaster> findByAndroidVersionContainingIgnoreCaseOrDeviceNameContainingIgnoreCaseOrDeviceOsContainingIgnoreCaseOrDeviceModelContainingIgnoreCaseOrDeviceUUIDContainingIgnoreCaseOrUserNameContainingIgnoreCase(
+            String searchString1,
+            String searchString2,
+            String searchString3,
+            String searchString4,
+            String searchString5,
+            String searchString6,
             Pageable pageable);
 }
