@@ -56,8 +56,14 @@ export class UserManagementService {
     return this.http.get(`${this.userURL}/locationId/${id}`, this.getHeaders());
   }
 
-  getUsersByPage(pageIndex) {
-    return this.http.get(`${this.userURL}/page?pageNo=${pageIndex}`, this.getHeaders());
+  getUsersByPage(pageIndex, search?) {
+    let url;
+    if (search) {
+      url = `${this.userURL}/page?pageNo=${pageIndex}&search=${search}`;
+    } else {
+      url = `${this.userURL}/page?pageNo=${pageIndex}`;
+    }
+    return this.http.get(url, this.getHeaders());
   }
 
   updatePassword(user, id) {

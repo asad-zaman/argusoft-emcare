@@ -41,8 +41,14 @@ export class FhirService {
         return this.http.get(`${this.fhirBaseURL}/patient/locationId/${id}`,this.getHeaders());
     }
 
-    getPatientsByPageIndex(pageIndex) {
-        return this.http.get(`${this.fhirBaseURL}/patient/page?pageNo=${pageIndex}`,this.getHeaders());
+    getPatientsByPageIndex(pageIndex, search?) {
+        let url;
+        if (search) {
+            url = `${this.fhirBaseURL}/patient/page?pageNo=${pageIndex}&search=${search}`;
+        } else {
+            url = `${this.fhirBaseURL}/patient/page?pageNo=${pageIndex}`;
+        }
+        return this.http.get(url, this.getHeaders());
     }
 
     //Questionnaire Endpoints

@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UserManagementService } from 'src/app/root/services/user-management.service';
@@ -25,6 +27,7 @@ export class UserListComponent implements OnInit {
   isAPIBusy: boolean = true;
   isLocationFilterOn: boolean = false;
   selectedId: any;
+  searchTermChanged: Subject<string> = new Subject<string>();
 
   constructor(
     private readonly router: Router,
@@ -41,15 +44,19 @@ export class UserListComponent implements OnInit {
     this.getUsersByPageIndex(this.currentPage);
   }
 
+  manipulateResponse(res) {
+    if (res && res['list']) {
+      this.mainUserList = res['list'];
+      this.filteredUserList = this.mainUserList;
+      this.totalCount = res['totalCount'];
+      this.isAPIBusy = false;
+    }
+  }
+
   getUsersByPageIndex(index) {
     this.mainUserList = [];
     this.userService.getUsersByPage(index).subscribe(res => {
-      if (res && res['list']) {
-        this.mainUserList = res['list'];
-        this.filteredUserList = this.mainUserList;
-        this.totalCount = res['totalCount'];
-        this.isAPIBusy = false;
-      }
+      this.manipulateResponse(res);
     });
   }
 
@@ -63,23 +70,23 @@ export class UserListComponent implements OnInit {
   }
 
   searchFilter() {
-    const lowerCasedSearchString = this.searchString?.toLowerCase();
-    this.filteredUserList = this.mainUserList.filter(user => {
-      let roleFlag = false;
-      user.realmRoles.every(role => {
-        if (role.toLowerCase().includes(lowerCasedSearchString)) {
-          roleFlag = true;
-          return false;
+    this.resetPageIndex();
+    if (this.searchTermChanged.observers.length === 0) {
+      this.searchTermChanged.pipe(
+        debounceTime(1000),
+        distinctUntilChanged()
+      ).subscribe(_term => {
+        if (this.searchString && this.searchString.length >= 1) {
+          this.mainUserList = [];
+          this.userService.getUsersByPage(this.currentPage, this.searchString).subscribe(res => {
+            this.manipulateResponse(res);
+          });
+        } else {
+          this.getUsersByPageIndex(this.currentPage)
         }
-        return true;
       });
-
-      return (roleFlag
-        || user.id?.toLowerCase().includes(lowerCasedSearchString)
-        || user.firstName?.toLowerCase().includes(lowerCasedSearchString)
-        || user.lastName?.toLowerCase().includes(lowerCasedSearchString)
-        || user.username?.toLowerCase().includes(lowerCasedSearchString))
-    })
+    }
+    this.searchTermChanged.next(this.searchString);
   }
 
   addUser() {

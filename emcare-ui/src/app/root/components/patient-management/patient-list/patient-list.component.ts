@@ -1,4 +1,6 @@
 import { Component, OnInit } from "@angular/core";
+import { Subject } from "rxjs";
+import { debounceTime, distinctUntilChanged } from "rxjs/operators";
 import { ToasterService } from "src/app/shared";
 import { FhirService } from "src/app/shared/services/fhir.service";
 
@@ -20,6 +22,7 @@ export class PatientListComponent implements OnInit {
     isAPIBusy: boolean = true;
     isLocationFilterOn: boolean = false;
     selectedId: any;
+    searchTermChanged: Subject<string> = new Subject<string>();
 
     constructor(
         private readonly fhirService: FhirService,
@@ -34,15 +37,19 @@ export class PatientListComponent implements OnInit {
         this.getPatientsByPageIndex(this.currentPage);
     }
 
+    manipulateResponse(res) {
+        if (res && res['list']) {
+            this.patients = res['list'];
+            this.filteredPatients = this.patients;
+            this.totalCount = res['totalCount'];
+            this.isAPIBusy = false;
+        }
+    }
+
     getPatientsByPageIndex(index) {
         this.patients = [];
         this.fhirService.getPatientsByPageIndex(index).subscribe(res => {
-            if (res && res['list']) {
-                this.patients = res['list'];
-                this.filteredPatients = this.patients;
-                this.totalCount = res['totalCount'];
-                this.isAPIBusy = false;
-            }
+            this.manipulateResponse(res);
         });
     }
 
@@ -59,7 +66,7 @@ export class PatientListComponent implements OnInit {
 
     onIndexChange(event) {
         this.currentPage = event;
-        if(this.isLocationFilterOn) {
+        if (this.isLocationFilterOn) {
             this.getPatientsBasedOnLocationAndPageIndex(event - 1);
         } else {
             this.getPatientsByPageIndex(event - 1);
@@ -81,15 +88,23 @@ export class PatientListComponent implements OnInit {
     }
 
     searchFilter() {
-        const lowerCasedSearchString = this.searchString?.toLowerCase();
-        this.filteredPatients = this.patients.filter(patient => {
-            return (patient.identifier?.toLowerCase().includes(lowerCasedSearchString)
-                || patient.givenName?.toLowerCase().includes(lowerCasedSearchString)
-                || patient.familyName?.toLowerCase().includes(lowerCasedSearchString)
-                || patient.gender?.toLowerCase().includes(lowerCasedSearchString)
-                || patient.caregiver?.toLowerCase().includes(lowerCasedSearchString)
-                || patient.location?.toLowerCase().includes(lowerCasedSearchString));
-        });
+        this.resetPageIndex();
+        if (this.searchTermChanged.observers.length === 0) {
+            this.searchTermChanged.pipe(
+                debounceTime(1000),
+                distinctUntilChanged()
+            ).subscribe(_term => {
+                if (this.searchString && this.searchString.length >= 1) {
+                    this.patients = [];
+                    this.fhirService.getPatientsByPageIndex(this.currentPage, this.searchString).subscribe(res => {
+                        this.manipulateResponse(res);
+                    });
+                } else {
+                    this.getPatientsByPageIndex(this.currentPage);
+                }
+            });
+        }
+        this.searchTermChanged.next(this.searchString);
     }
 
     resetPageIndex() {
@@ -98,7 +113,7 @@ export class PatientListComponent implements OnInit {
 
     getLocationId(data) {
         this.selectedId = data;
-        if(this.selectedId) {
+        if (this.selectedId) {
             this.isLocationFilterOn = true;
             this.resetPageIndex();
             const pageIndex = this.currentPage == 0 ? this.currentPage : this.currentPage - 1;
