@@ -135,7 +135,7 @@ public class DeviceServiceImpl implements DeviceService {
         }
         Sort sort = order.equalsIgnoreCase(CommonConstant.DESC) ? Sort.by(orderBy).descending() : Sort.by(orderBy).ascending();
         Pageable page = PageRequest.of(pageNo, CommonConstant.PAGE_SIZE, !sort.isEmpty() ? sort : null);
-        Long totalCount = 0L;
+        Long totalCount;
         Page<DeviceMaster> allDevice;
         if (searchString != null && !searchString.isEmpty()) {
             totalCount = Long.valueOf(deviceRepository.findByAndroidVersionContainingIgnoreCaseOrDeviceNameContainingIgnoreCaseOrDeviceOsContainingIgnoreCaseOrDeviceModelContainingIgnoreCaseOrDeviceUUIDContainingIgnoreCaseOrUserNameContainingIgnoreCase(searchString, searchString, searchString, searchString, searchString, searchString).size());
@@ -144,7 +144,6 @@ public class DeviceServiceImpl implements DeviceService {
             totalCount = deviceRepository.count();
             allDevice = deviceRepository.findAll(page);
         }
-//        Page<DeviceMaster> allDevice = deviceRepository.findAll(page);
         allDevice.forEach(deviceMaster -> list.add(DeviceMapper.getDeviceWithUser(deviceMaster, allUsers)));
 
         PageDto pageDto = new PageDto();
