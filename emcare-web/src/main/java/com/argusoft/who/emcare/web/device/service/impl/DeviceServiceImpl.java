@@ -49,14 +49,15 @@ public class DeviceServiceImpl implements DeviceService {
     @Override
     public ResponseEntity<Object> addNewDevice(DeviceDto deviceDto) {
         String userId = emCareSecurityUser.getLoggedInUserId();
+        String userName = emCareSecurityUser.getLoggedInUserName();
         DeviceMaster oldDevice = deviceRepository.getDeviceByDeviceUUID(deviceDto.getDeviceUUID());
         if (oldDevice == null) {
-            DeviceMaster newDevice = DeviceMapper.getDeviceMatserFromDto(deviceDto, userId);
+            DeviceMaster newDevice = DeviceMapper.getDeviceMatserFromDto(deviceDto, userId, userName);
             newDevice = deviceRepository.save(newDevice);
             return ResponseEntity.status(HttpStatus.OK).body(newDevice);
 
         } else {
-            DeviceMaster updatedDevice = DeviceMapper.getDeviceMaster(oldDevice, deviceDto, userId);
+            DeviceMaster updatedDevice = DeviceMapper.getDeviceMaster(oldDevice, deviceDto, userId, userName);
             deviceRepository.updateDevice(updatedDevice.getAndroidVersion(), updatedDevice.getLastLoggedInUser(), updatedDevice.getIsBlocked(), updatedDevice.getDeviceId());
             return ResponseEntity.status(HttpStatus.OK).body(deviceDto);
         }
@@ -65,12 +66,13 @@ public class DeviceServiceImpl implements DeviceService {
     @Override
     public ResponseEntity<Object> updateDeviceDetails(DeviceDto deviceDto) {
         String userId = emCareSecurityUser.getLoggedInUser().getSubject();
+        String userName = emCareSecurityUser.getLoggedInUserName();
         DeviceMaster oldDeviceDetails = deviceRepository.findById(deviceDto.getDeviceId()).get();
         Keycloak keycloak = keyCloakConfig.getInstance();
         UserResource userResource = keycloak.realm(KeyCloakConfig.REALM).users().get(userId);
         UserSessionRepresentation sessions = userResource.getUserSessions().get(0);
         keycloak.realm(KeyCloakConfig.REALM).deleteSession(sessions.getId());
-        DeviceMaster updatedDevice = DeviceMapper.getDeviceMaster(oldDeviceDetails, deviceDto, userId);
+        DeviceMaster updatedDevice = DeviceMapper.getDeviceMaster(oldDeviceDetails, deviceDto, userId, userName);
 //        deviceRepository.updateDevice(
 //                updatedDevice.getAndroidVersion(),
 //                updatedDevice.getLastLoggedInUser(),
@@ -133,16 +135,15 @@ public class DeviceServiceImpl implements DeviceService {
         }
         Sort sort = order.equalsIgnoreCase(CommonConstant.DESC) ? Sort.by(orderBy).descending() : Sort.by(orderBy).ascending();
         Pageable page = PageRequest.of(pageNo, CommonConstant.PAGE_SIZE, !sort.isEmpty() ? sort : null);
-        Long totalCount = 0L;
+        Long totalCount;
         Page<DeviceMaster> allDevice;
         if (searchString != null && !searchString.isEmpty()) {
-            totalCount = Long.valueOf(deviceRepository.findByAndroidVersionContainingIgnoreCaseOrDeviceNameContainingIgnoreCaseOrDeviceOsContainingIgnoreCaseOrDeviceModelContainingIgnoreCase(searchString, searchString, searchString, searchString).size());
-            allDevice = deviceRepository.findByAndroidVersionContainingIgnoreCaseOrDeviceNameContainingIgnoreCaseOrDeviceOsContainingIgnoreCaseOrDeviceModelContainingIgnoreCase(searchString, searchString, searchString, searchString, page);
+            totalCount = Long.valueOf(deviceRepository.findByAndroidVersionContainingIgnoreCaseOrDeviceNameContainingIgnoreCaseOrDeviceOsContainingIgnoreCaseOrDeviceModelContainingIgnoreCaseOrDeviceUUIDContainingIgnoreCaseOrUserNameContainingIgnoreCase(searchString, searchString, searchString, searchString, searchString, searchString).size());
+            allDevice = deviceRepository.findByAndroidVersionContainingIgnoreCaseOrDeviceNameContainingIgnoreCaseOrDeviceOsContainingIgnoreCaseOrDeviceModelContainingIgnoreCaseOrDeviceUUIDContainingIgnoreCaseOrUserNameContainingIgnoreCase(searchString, searchString, searchString, searchString, searchString, searchString, page);
         } else {
             totalCount = deviceRepository.count();
             allDevice = deviceRepository.findAll(page);
         }
-//        Page<DeviceMaster> allDevice = deviceRepository.findAll(page);
         allDevice.forEach(deviceMaster -> list.add(DeviceMapper.getDeviceWithUser(deviceMaster, allUsers)));
 
         PageDto pageDto = new PageDto();

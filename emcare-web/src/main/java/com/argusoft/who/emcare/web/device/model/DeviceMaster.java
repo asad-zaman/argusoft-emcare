@@ -44,6 +44,9 @@ public class DeviceMaster extends EntityAuditInfo implements Serializable {
     @Column(name = "is_blocked", nullable = false)
     private Boolean isBlocked;
 
+    @Column(name = "user_name")
+    private String userName;
+
     public Integer getDeviceId() {
         return deviceId;
     }
@@ -124,4 +127,11 @@ public class DeviceMaster extends EntityAuditInfo implements Serializable {
         isBlocked = blocked;
     }
 
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
 }

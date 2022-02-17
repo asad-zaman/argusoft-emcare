@@ -125,7 +125,7 @@ public class UserServiceImpl implements UserService {
         }
         List<UserRepresentation> userRepresentations;
         if (searchString != null && !searchString.isEmpty()) {
-            userRepresentations = keycloak.realm(KeyCloakConfig.REALM).users().search(searchString);
+            userRepresentations = keycloak.realm(KeyCloakConfig.REALM).users().search(searchString,0,1000);
             if (userRepresentations.size() <= endIndex) {
                 endIndex = userRepresentations.size();
 
