@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.argusoft.who.emcare.ui.common.model.Language
 import com.argusoft.who.emcare.ui.common.model.Location
 import com.argusoft.who.emcare.ui.common.model.LoggedInUser
 
@@ -20,6 +21,12 @@ interface Dao {
     suspend fun getChildLocations(id: Int?): List<Location>?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun saveLanguages(languages: List<Language>)
+
+    @Query("SELECT * from language")
+    suspend fun getAllLanguages(): List<Language>?
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun saveLoginUser(loginUser: LoggedInUser)
 
     @Query("SELECT * from loggedinuser WHERE userName=:username AND password=:password")
@@ -27,4 +34,8 @@ interface Dao {
 
     @Query("SELECT * from loggedinuser")
     suspend fun getAllUser(): List<LoggedInUser>?
+
+    @Query("SELECT * from language where languageCode=:languageCode")
+    suspend fun getLanguageByCode(languageCode: String): Language?
+
 }

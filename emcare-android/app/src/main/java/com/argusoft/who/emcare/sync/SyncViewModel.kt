@@ -38,11 +38,11 @@ class SyncViewModel @Inject constructor(
                 api.getHapiFhirResourceDataSource(),
                 mapOf( ResourceType.Patient to mapOf(), ResourceType.Questionnaire to mapOf())
             )
-            val emCareResult = EmCareSync.oneTimeSync(api, database, preference, listOf(SyncType.LOCATION))
-            if (fhirResult is Result.Success && emCareResult is SyncResult.Success) {
-                _syncState.value = State.Finished(fhirResult)
+            val emCareResult = EmCareSync.oneTimeSync(api, database, preference, listOf(SyncType.LOCATION, SyncType.LANGUAGE))
+            if (fhirResult is Result.Success || emCareResult is SyncResult.Success) {
+                _syncState.value = (fhirResult as? Result.Success)?.let { State.Finished(it) }
             } else {
-                _syncState.value = State.Failed(fhirResult as Result.Error)
+                _syncState.value = (fhirResult as? Result.Error)?.let { State.Failed(it) }
             }
         }
     }

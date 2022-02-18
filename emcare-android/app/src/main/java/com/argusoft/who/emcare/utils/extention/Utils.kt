@@ -19,6 +19,7 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
+import org.json.JSONObject
 import timber.log.Timber
 import java.io.File
 
@@ -76,6 +77,12 @@ inline fun <reified T> String.fromJsonArray(): List<T>? {
     return adapter.fromJson(this)
 }
 
+inline fun <reified T> String.fromJsonMapArray(): Map<T, T>? {
+    val type = Types.newParameterizedType(Map::class.java, T::class.java, T::class.java)
+    val adapter = Moshi.Builder().build().adapter<Map<T, T>>(type)
+    return adapter.fromJson(this)
+}
+
 fun String.toRequestBody(): RequestBody {
     return this.toRequestBody("text".toMediaTypeOrNull())
 }
@@ -106,5 +113,20 @@ fun List<Int>?.toSparsBooleanArray(): SparseBooleanArray {
             put(it, true)
         }
     }
+}
+
+fun String.convertToMap(): Map<String, String> {
+    val map = hashMapOf<String, String>()
+    val dynamicjson: JSONObject = JSONObject(this)
+    val keys: Iterator<*> = dynamicjson.keys()
+
+    while (keys.hasNext()) { // loop to get the dynamic key
+        val currentDynamicKey = keys.next() as String
+        // get the value of the dynamic key
+        val currentDynamicValue: String = dynamicjson.getString(currentDynamicKey)
+        // do something here with the value... or either make another while loop to Iterate further
+        map[currentDynamicKey] = currentDynamicValue.toString()
+    }
+    return map
 }
 

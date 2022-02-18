@@ -9,7 +9,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.StringRes
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
@@ -56,7 +55,7 @@ abstract class BaseFragment<B : ViewBinding> : Fragment(), View.OnClickListener 
         initObserver()
     }
 
-    fun Toolbar.setTitleAndBack(@StringRes id: Int? = null) {
+    fun Toolbar.setTitleAndBack(id: String? = null) {
         id?.let {
             setTitle(it)
         }

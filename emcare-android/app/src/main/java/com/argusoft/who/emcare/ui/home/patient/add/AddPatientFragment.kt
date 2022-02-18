@@ -1,6 +1,7 @@
 package com.argusoft.who.emcare.ui.home.patient.add
 
 import androidx.core.os.bundleOf
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
 import ca.uhn.fhir.context.FhirContext
@@ -10,9 +11,11 @@ import com.argusoft.who.emcare.databinding.FragmentAddPatientBinding
 import com.argusoft.who.emcare.ui.common.INTENT_EXTRA_LOCATION_ID
 import com.argusoft.who.emcare.ui.common.base.BaseFragment
 import com.argusoft.who.emcare.ui.home.patient.PatientViewModel
+import com.argusoft.who.emcare.ui.home.settings.SettingsViewModel
+import com.argusoft.who.emcare.utils.extention.convertToMap
 import com.argusoft.who.emcare.utils.extention.handleApiView
 import com.argusoft.who.emcare.utils.extention.observeNotNull
-import com.argusoft.who.emcare.widget.CustomQuestionnaireFragment
+import com.argusoft.who.emcare.utils.extention.whenSuccess
 import com.google.android.fhir.datacapture.QuestionnaireFragment
 import dagger.hilt.android.AndroidEntryPoint
 import org.hl7.fhir.r4.model.Questionnaire
@@ -21,6 +24,7 @@ import org.hl7.fhir.r4.model.Questionnaire
 class AddPatientFragment : BaseFragment<FragmentAddPatientBinding>() {
 
     private val patientViewModel: PatientViewModel by viewModels()
+    private val settingsViewModel: SettingsViewModel by activityViewModels()
     private val questionnaireFragment = QuestionnaireFragment()
 
     override fun initView() {
@@ -29,7 +33,6 @@ class AddPatientFragment : BaseFragment<FragmentAddPatientBinding>() {
     }
 
     private fun setupToolbar() {
-        binding.headerLayout.toolbar.setTitleAndBack(R.string.title_add_patient)
         binding.headerLayout.toolbar.inflateMenu(R.menu.menu_save)
         binding.headerLayout.toolbar.setOnMenuItemClickListener {
             patientViewModel.questionnaireJson?.let {
@@ -69,6 +72,13 @@ class AddPatientFragment : BaseFragment<FragmentAddPatientBinding>() {
         observeNotNull(patientViewModel.questionnaire) { questionnaire ->
             questionnaire.handleApiView(binding.progressLayout, skipIds = listOf(R.id.headerLayout)) {
                 it?.let { addQuestionnaireFragment(it) }
+            }
+        }
+        observeNotNull(settingsViewModel.languageApiState) {
+            it.whenSuccess {
+                it.languageData?.convertToMap()?.apply {
+                    binding.headerLayout.toolbar.setTitleAndBack(getOrElse("Add_Patient") { getString(R.string.title_add_patient) } )
+                }
             }
         }
     }

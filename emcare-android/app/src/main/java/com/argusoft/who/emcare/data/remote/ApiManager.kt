@@ -95,6 +95,10 @@ class ApiManager(private val preference: Preference) : Api {
         return executeApiHelper { apiService.getLocations() }
     }
 
+    override suspend fun getLanguages(): ApiResponse<List<Language>> {
+        return executeApiHelper { apiService.getLanguages() }
+    }
+
     override suspend fun getLoggedInUser(): ApiResponse<LoggedInUser> {
         return executeApiHelper { apiService.getLoggedInUser() }
     }

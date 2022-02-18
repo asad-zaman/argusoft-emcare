@@ -13,8 +13,13 @@ import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.databinding.ActivityHomeBinding
 import com.argusoft.who.emcare.ui.auth.signup.SignUpViewModel
 import com.argusoft.who.emcare.ui.common.base.BaseActivity
+import com.argusoft.who.emcare.ui.home.settings.SettingsViewModel
 import com.argusoft.who.emcare.utils.avatar.AvatarGenerator
 import com.argusoft.who.emcare.utils.extention.alertDialog
+import com.argusoft.who.emcare.utils.extention.convertToMap
+import com.argusoft.who.emcare.utils.extention.observeNotNull
+import com.argusoft.who.emcare.utils.extention.whenSuccess
+import com.argusoft.who.emcare.utils.localization.LocaleHelper
 import com.bumptech.glide.Glide
 import com.google.android.material.navigation.NavigationView
 import dagger.hilt.android.AndroidEntryPoint
@@ -25,9 +30,11 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var navHostFragment: NavHostFragment
     private val signUpViewModel: SignUpViewModel by viewModels()
+    private val settingsViewModel: SettingsViewModel by viewModels()
 
     override fun initView() {
 //        signUpViewModel.getLocationsAndRoles()
+        settingsViewModel.getLanguageByCode(LocaleHelper.load(this).language)
         val drawerLayout: DrawerLayout = binding.drawerLayout
         val navView: NavigationView = binding.navView
         navHostFragment = supportFragmentManager.findFragmentById(R.id.navHostFragment) as NavHostFragment
@@ -95,6 +102,15 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
     }
 
     override fun initObserver() {
+        observeNotNull(settingsViewModel.languageApiState) {
+            it.whenSuccess {
+                it.languageData?.convertToMap()?.apply {
+                    binding.navView.menu.getItem(0).setTitle(getOrElse("Edit_Profile") { getString(R.string.menu_edit_profile) } )
+                    binding.navView.menu.getItem(1).setTitle(getOrElse("Settings") { getString(R.string.menu_settings) } )
+                    binding.navView.menu.getItem(2).setTitle(getOrElse("Logout") { getString(R.string.menu_logout) } )
+                }
+            }
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {
