@@ -4,7 +4,6 @@ import com.argusoft.who.emcare.web.device.dto.DeviceDto;
 import com.argusoft.who.emcare.web.device.dto.DeviceWithUserDetails;
 import com.argusoft.who.emcare.web.device.model.DeviceMaster;
 import com.argusoft.who.emcare.web.user.dto.UserListDto;
-import org.keycloak.representations.idm.UserRepresentation;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,7 +15,7 @@ public class DeviceMapper {
     private DeviceMapper() {
     }
 
-    public static DeviceMaster getDeviceMatserFromDto(DeviceDto deviceDto, String userId) {
+    public static DeviceMaster getDeviceMatserFromDto(DeviceDto deviceDto, String userId, String userName) {
         DeviceMaster master = new DeviceMaster();
 
         master.setAndroidVersion(deviceDto.getAndroidVersion());
@@ -28,11 +27,12 @@ public class DeviceMapper {
         master.setDeviceUUID(deviceDto.getDeviceUUID());
         master.setDeviceOs(deviceDto.getDeviceOs());
         master.setIsBlocked(deviceDto.getIsBlocked());
+        master.setUserName(userName);
 
         return master;
     }
 
-    public static DeviceMaster getDeviceMaster(DeviceMaster deviceMaster, DeviceDto deviceDto, String userId) {
+    public static DeviceMaster getDeviceMaster(DeviceMaster deviceMaster, DeviceDto deviceDto, String userId, String userName) {
         DeviceMaster master = new DeviceMaster();
 
         master.setDeviceId(deviceMaster.getDeviceId());
@@ -40,6 +40,7 @@ public class DeviceMapper {
         master.setImeiNumber(deviceMaster.getImeiNumber());
         master.setMacAddress(deviceDto.getMacAddress());
         master.setLastLoggedInUser(deviceMaster.getLastLoggedInUser());
+        master.setUserName(userName);
         master.setIsBlocked(deviceDto.getIsBlocked());
 
         return master;

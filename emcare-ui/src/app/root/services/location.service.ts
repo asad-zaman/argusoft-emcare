@@ -13,18 +13,18 @@ export class LocationService {
 
   getHeaders() {
     let authToken = localStorage.getItem("access_token");
-    authToken = authToken ? authToken.substring(1,authToken.length - 1) : '';
+    authToken = authToken ? authToken.substring(1, authToken.length - 1) : '';
     const headerObj = {
-        headers: new HttpHeaders({
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Headers': 'Content-Type',
-            'Access-Control-Allow-Methods': 'GET,POST,OPTIONS,DELETE,PUT',
-            'Authorization': `Bearer ${authToken}`
-        })
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': 'Content-Type',
+        'Access-Control-Allow-Methods': 'GET,POST,OPTIONS,DELETE,PUT',
+        'Authorization': `Bearer ${authToken}`
+      })
     };
     return headerObj;
-}
+  }
 
   // Location Type Endpoints
 
@@ -78,8 +78,13 @@ export class LocationService {
     return this.http.get(`${this.locationURL}/child/${id}`, this.getHeaders());
   }
 
-  getLocationsByPageIndex(pageIndex) {
-    return this.http.get(`${this.locationURL}/page?pageNo=${pageIndex}&orderBy=null&order=null`, this.getHeaders());
+  getLocationsByPageIndex(pageIndex, search?) {
+    let url;
+    if (search) {
+      url = `${this.locationURL}/page?pageNo=${pageIndex}&orderBy=null&order=null&search=${search}`;
+    } else {
+      url = `${this.locationURL}/page?pageNo=${pageIndex}&orderBy=null&order=null`;
+    }
+    return this.http.get(url, this.getHeaders());
   }
 }
- 

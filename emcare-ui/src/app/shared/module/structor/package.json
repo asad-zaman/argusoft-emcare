@@ -2,6 +2,7 @@
     "name": "formbuilder",
     "version": "1.0.0",
     "private": true,
+    "homepage":"questionnaireBuilder",
     "dependencies": {
         "@ckeditor/ckeditor5-react": "^3.0.0",
         "@helsenorge/ckeditor5-build-markdown": "^24.0.0",
@@ -55,7 +56,6 @@
             "last 1 safari version"
         ]
     },
-    "proxy": "http://localhost:8888",
     "devDependencies": {
         "@testing-library/jest-dom": "^5.11.9",
         "@testing-library/react": "^11.2.3",

@@ -48,7 +48,7 @@ const FormFiller = ({ showFormFiller, language }: Props): JSX.Element => {
     function reloadIframe() {
         const schemeDisplayer = document.getElementById('schemeFrame') as HTMLIFrameElement;
         if (schemeDisplayer) {
-            schemeDisplayer.src = '../../../iframe/index.html';
+            schemeDisplayer.src = '../../../questionnaireBuilder/iframe/index.html';
         }
     }
 
@@ -143,7 +143,7 @@ const FormFiller = ({ showFormFiller, language }: Props): JSX.Element => {
                         padding: '20px',
                     }}
                     onLoad={iFrameLoaded}
-                    src="../../../iframe/index.html"
+                    src="../../../questionnaireBuilder/iframe/index.html"
                 ></iframe>
             </div>
         </div>

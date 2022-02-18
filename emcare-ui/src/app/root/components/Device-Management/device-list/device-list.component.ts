@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { DeviceManagementService } from 'src/app/root/services/device-management.service';
 import { ToasterService } from 'src/app/shared';
 
@@ -16,6 +18,7 @@ export class DeviceListComponent implements OnInit {
   currentPage = 0;
   totalCount = 0;
   tableSize = 10;
+  searchTermChanged: Subject<string> = new Subject<string>();
 
   constructor(
     private readonly deviceManagementService: DeviceManagementService,
@@ -30,15 +33,19 @@ export class DeviceListComponent implements OnInit {
     this.getDevicesByPageIndex(this.currentPage);
   }
 
+  manipulateResponse(res) {
+    if (res && res['list']) {
+      this.deviceArr = res['list'];
+      this.filteredDevices = this.deviceArr;
+      this.totalCount = res['totalCount'];
+      this.isAPIBusy = false;
+    }
+  }
+  
   getDevicesByPageIndex(index) {
     this.deviceArr = [];
     this.deviceManagementService.getDevicesByPageIndex(index).subscribe(res => {
-      if (res && res['list']) {
-        this.deviceArr = res['list'];
-        this.filteredDevices = this.deviceArr;
-        this.totalCount = res['totalCount'];
-        this.isAPIBusy = false;
-      }
+      this.manipulateResponse(res);
     });
   }
 
@@ -61,11 +68,22 @@ export class DeviceListComponent implements OnInit {
   }
 
   searchFilter() {
-    const lowerCasedSearchString = this.searchString?.toLowerCase();
-    this.filteredDevices = this.deviceArr.filter(device => {
-      return (device.deviceUUID?.toLowerCase().includes(lowerCasedSearchString)
-        || device.androidVersion?.toLowerCase().includes(lowerCasedSearchString)
-        || device.usersResource.userName?.toLowerCase().includes(lowerCasedSearchString));
-    });
+    this.resetCurrentPage();
+    if (this.searchTermChanged.observers.length === 0) {
+      this.searchTermChanged.pipe(
+        debounceTime(1000),
+        distinctUntilChanged()
+      ).subscribe(_term => {
+        if (this.searchString && this.searchString.length >= 1) {
+          this.deviceArr = [];
+          this.deviceManagementService.getDevicesByPageIndex(this.currentPage, this.searchString).subscribe(res => {
+            this.manipulateResponse(res);
+          });
+        } else {
+          this.getDevicesByPageIndex(this.currentPage);
+        }
+      });
+    }
+    this.searchTermChanged.next(this.searchString);
   }
 }
