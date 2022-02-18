@@ -30,6 +30,9 @@ interface ApiService {
     @GET("signup/location")
     suspend fun getLocations(): Response<List<Location>>
 
+    @GET("language/all")
+    suspend fun getLanguages(): Response<List<Language>>
+
     @GET("user")
     suspend fun getLoggedInUser(): Response<LoggedInUser>
 }

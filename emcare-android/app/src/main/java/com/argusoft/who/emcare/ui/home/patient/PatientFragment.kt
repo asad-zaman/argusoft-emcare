@@ -3,16 +3,15 @@ package com.argusoft.who.emcare.ui.home.patient
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.widget.SearchView
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.databinding.FragmentPatientBinding
 import com.argusoft.who.emcare.sync.SyncViewModel
 import com.argusoft.who.emcare.ui.common.INTENT_EXTRA_LOCATION_ID
 import com.argusoft.who.emcare.ui.common.base.BaseFragment
-import com.argusoft.who.emcare.utils.extention.handleListApiView
-import com.argusoft.who.emcare.utils.extention.navigate
-import com.argusoft.who.emcare.utils.extention.observeNotNull
-import com.argusoft.who.emcare.utils.extention.showToast
+import com.argusoft.who.emcare.ui.home.settings.SettingsViewModel
+import com.argusoft.who.emcare.utils.extention.*
 import com.google.android.fhir.sync.State
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -20,6 +19,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class PatientFragment : BaseFragment<FragmentPatientBinding>(), SearchView.OnQueryTextListener {
 
     private val patientViewModel: PatientViewModel by viewModels()
+    private val settingsViewModel: SettingsViewModel by activityViewModels()
     private val syncViewModel: SyncViewModel by viewModels()
     private lateinit var patientAdapter: PatientAdapter
 
@@ -30,7 +30,6 @@ class PatientFragment : BaseFragment<FragmentPatientBinding>(), SearchView.OnQue
     }
 
     override fun initView() {
-        binding.headerLayout.toolbar.setTitleAndBack(R.string.title_patient)
         binding.headerLayout.toolbar.inflateMenu(R.menu.patient_menu)
         binding.headerLayout.toolbar.setOnMenuItemClickListener {
             syncViewModel.syncPatients()
@@ -76,6 +75,15 @@ class PatientFragment : BaseFragment<FragmentPatientBinding>(), SearchView.OnQue
                 is State.Started -> requireContext().showToast(messageResId = R.string.msg_sync_started)
                 is State.Finished -> requireContext().showToast(messageResId = R.string.msg_sync_successfully)
                 is State.Failed -> requireContext().showToast(messageResId = R.string.msg_sync_failed)
+            }
+        }
+        observeNotNull(settingsViewModel.languageApiState) {
+            it.whenSuccess {
+                it.languageData?.convertToMap()?.apply {
+                    binding.addPatientButton.text = getOrElse("Add_Patient") { getString(R.string.button_add_patient) }
+                    binding.searchView.queryHint = getOrElse("Find_by_Patient_Name") { getString(R.string.query_hint_patient_search) }
+                    binding.headerLayout.toolbar.setTitleAndBack(getOrElse("Registered_Patients") { getString(R.string.title_patient) } )
+                }
             }
         }
     }

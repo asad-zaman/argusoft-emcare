@@ -1,5 +1,6 @@
 package com.argusoft.who.emcare.data.local.database
 
+import com.argusoft.who.emcare.ui.common.model.Language
 import com.argusoft.who.emcare.ui.common.model.Location
 import com.argusoft.who.emcare.ui.common.model.LoggedInUser
 
@@ -19,6 +20,14 @@ class DatabaseManager(roomDatabase: RoomDatabase) : Database {
         return dao.getChildLocations(id)
     }
 
+    override suspend fun saveLanguages(languages: List<Language>) {
+        dao.saveLanguages(languages)
+    }
+
+    override suspend fun getAllLanguages(): List<Language>? {
+        return dao.getAllLanguages()
+    }
+
     override suspend fun saveLoginUser(loginUser: LoggedInUser) {
         dao.saveLoginUser(loginUser)
     }
@@ -29,5 +38,9 @@ class DatabaseManager(roomDatabase: RoomDatabase) : Database {
 
     override suspend fun getAllUser(): List<LoggedInUser>? {
         return dao.getAllUser()
+    }
+
+    override suspend fun getLanguageByCode(languageCode: String): Language? {
+        return dao.getLanguageByCode(languageCode)
     }
 }

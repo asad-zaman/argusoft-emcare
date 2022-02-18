@@ -45,7 +45,8 @@ sealed class SyncState {
 }
 
 enum class SyncType {
-    LOCATION
+    LOCATION,
+    LANGUAGE
 }
 
 /** Class that helps synchronize the data source and save it in the local database */
@@ -110,6 +111,15 @@ internal class EmCareSynchronizer(
                         database.saveLocations(it)
                     }
                     location.whenFailed {
+                        exceptions.add(SyncException(syncType))
+                    }
+                }
+                SyncType.LANGUAGE -> {
+                    val language = api.getLanguages()
+                    language.whenSuccess {
+                        database.saveLanguages(it)
+                    }
+                    language.whenFailed {
                         exceptions.add(SyncException(syncType))
                     }
                 }

@@ -19,4 +19,6 @@ interface Api {
     suspend fun getLocations(): ApiResponse<List<Location>>
 
     suspend fun getLoggedInUser(): ApiResponse<LoggedInUser>
+
+    suspend fun getLanguages(): ApiResponse<List<Language>>
 }
