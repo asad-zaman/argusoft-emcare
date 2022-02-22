@@ -24,7 +24,7 @@ public class LanguageTranslation extends EntityAuditInfo implements Serializable
     @Column(name = "language_code", nullable = false)
     private String languageCode;
 
-    @Column(name = "language_data")
+    @Column(name = "language_data", columnDefinition = "text")
     @Lob
     private String languageData;
 
