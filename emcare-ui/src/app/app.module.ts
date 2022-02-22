@@ -44,9 +44,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BaseModule } from './base.module';
 import { ManageProfileComponent } from './root/components/manage-profile/manage-profile.component';
 import { ManageTranslationsComponent } from './root/components/manage-translations/manage-translations.component';
-
 import { QuestionnaireListComponent } from './root/components/questionnaire-management/questionnaire-list/questionnaire-list.component';
 import { QuestionnaireBuilderComponent } from './root/components/questionnaire-management/questionnaire-builder/questionnaire-builder.component';
+import { DropdownModule } from 'primeng/dropdown';
 @NgModule({
   declarations: [
     AppComponent,
@@ -90,7 +90,8 @@ import { QuestionnaireBuilderComponent } from './root/components/questionnaire-m
     NgxPaginationModule,
     BrowserAnimationsModule,
     ToastrModule.forRoot(),
-    BaseModule.forRoot()
+    BaseModule.forRoot(),
+    DropdownModule
   ],
   providers: [
     AuthenticationService,

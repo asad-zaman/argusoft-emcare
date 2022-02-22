@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { FhirService, ToasterService } from 'src/app/shared';
 import * as _ from 'lodash';
 import { LaunguageSubjects } from 'src/app/auth/token-interceptor';
-import frTrans from '../../../../assets/i18n/fr.json';
-import hinTrans from '../../../../assets/i18n/hin.json';
-import enTrans from '../../../../assets/i18n/en.json';
+// import frTrans from '../../../../assets/i18n/fr.json';
+// import hinTrans from '../../../../assets/i18n/hin.json';
+// import enTrans from '../../../../assets/i18n/en.json';
 
 @Component({
   selector: 'app-manage-translations',
@@ -23,6 +23,8 @@ export class ManageTranslationsComponent implements OnInit {
   alphabetArr = [];
   noRecords: boolean;
   isChanged: boolean;
+  newSelectedLanguage;
+  availableLanguages = [];
 
   constructor(
     private readonly fhirService: FhirService,
@@ -35,7 +37,8 @@ export class ManageTranslationsComponent implements OnInit {
   }
 
   prerequisite() {
-    this.fhirService.getAllLaunguages().subscribe(res => {
+    //  for getting available Translations
+    this.fhirService.getAllLaunguagesTranslations().subscribe(res => {
       if (res) {
         _.forIn(res, (value, _key) => {
           if (value.languageCode === 'fr') {
@@ -49,6 +52,19 @@ export class ManageTranslationsComponent implements OnInit {
       }
     });
     this.setAlphabetArr();
+
+    //  for getting all available Launguages 
+    this.fhirService.getAllLaunguages().subscribe(res => {
+      if (res) {
+        res['languages'].map(lan => {
+          this.availableLanguages.push({
+            id: lan.language,
+            lanName: lan.languageName,
+            name: `${lan.languageName} => ${lan.nativeLanguageName}`
+          });
+        });
+      }
+    });
 
     // incase we want to update translation file in future
     // const data = {
@@ -87,7 +103,7 @@ export class ManageTranslationsComponent implements OnInit {
   }
 
   setKeysForObject(object) {
-    this.translationObject = {}
+    this.translationObject = {};
     this.currentNames = {};
     for (let key in object) {
       this.translationObject[key] = object[key];
@@ -144,5 +160,15 @@ export class ManageTranslationsComponent implements OnInit {
     } else {
       this.noRecords = false;
     }
+  }
+
+  addNewLanguage() {
+    const data = {
+      "languageCode": this.newSelectedLanguage.id,
+      "languageName": this.newSelectedLanguage.lanName
+    }
+    this.fhirService.addNewLaunguage(data).subscribe(res => {
+      console.log(res);
+    });
   }
 }

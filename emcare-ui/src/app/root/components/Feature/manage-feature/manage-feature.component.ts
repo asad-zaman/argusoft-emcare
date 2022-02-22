@@ -86,8 +86,8 @@ export class ManageFeatureComponent implements OnInit {
   AddFeatureConfig() {
     const data = {
       "menuId": this.featureId,
-      "userId": this.selectedUser,
-      "roleId": this.selectedRole,
+      "userId": this.selectedUser && this.selectedUser.id,
+      "roleId": this.selectedRole && this.selectedRole.id,
       "featureJson": "{\"canAdd\":true,\"canEdit\":true,\"canView\":true,\"canDelete\":true}"
     }
     this.featureService.addFeatureConfig(data).subscribe(_res => {
