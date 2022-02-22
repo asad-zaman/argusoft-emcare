@@ -1,5 +1,12 @@
 <div class="main-wrapper">
   <h1 class="heading mb-3">{{'Manage Translations' | translate}}</h1>
+  <div class="mt-5">
+    <label class="cst-label mr-4">Add Launguage</label>
+    <p-dropdown [options]="availableLanguages" [(ngModel)]="newSelectedLanguage" optionLabel="name"
+      placeholder="Select country" styleClass="custom-dropdown" [filter]="true" filterBy="name" [showClear]="true">
+    </p-dropdown>
+    <button [disabled]="!newSelectedLanguage" class="btn btn-red ml-4" (click)="addNewLanguage()">Save Launguage</button>
+  </div>
   <ul class="navigation p-0 text-end mt-5 d-flex">
     <div class="align-items-center mouse-pointer" data-bs-toggle="dropdown">
       <b>Launguage</b> <i class="bi bi-chevron-down ps-2"></i>

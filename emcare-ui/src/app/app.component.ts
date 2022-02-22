@@ -75,7 +75,7 @@ export class AppComponent implements OnInit {
 
   getAllLaunguages() {
     const currLan = localStorage.getItem('language');
-    this.fhirService.getAllLaunguages().subscribe(res => {
+    this.fhirService.getAllLaunguagesTranslations().subscribe(res => {
       if (res) {
         _.forIn(res, (value, _key) => {
           if (value.languageCode === currLan) {

@@ -39,3 +39,11 @@ body {
 .ngx-pagination .current {
     background: $color-red !important;
 }
+
+.p-dropdown {
+    width: 100%;
+
+    &.custom-dropdown {
+        width: 30%;
+    }
+}

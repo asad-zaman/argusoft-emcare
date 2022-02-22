@@ -36,11 +36,7 @@
         <div class="col-12 col-sm-12">
           <div class="mb-3">
             <label class="form-label">{{'Language' | translate}}</label>
-            <select class="form-control custom-input" formControlName="language" id="language">
-              <ng-container *ngFor="let data of lanArr">
-                <option value="{{data.id}}">{{data.name}}</option>
-              </ng-container>
-            </select>
+            <p-dropdown [options]="lanArr" formControlName="language" optionLabel="name"></p-dropdown>
           </div>
         </div>
       </div>

@@ -50,12 +50,16 @@ export class ManageProfileComponent implements OnInit {
     });
   }
 
+  getLaunguageObjFromCode(lan) {
+    return this.lanArr.find(el => el.id === lan);
+  }
+
   getLoggedInUserId() {
     this.authenticationService.getLoggedInUser().subscribe(res => {
       if (res) {
         this.userId = res['userId'];
         this.currentUserForm.patchValue({
-          language: res['language']
+          language: this.getLaunguageObjFromCode(res['language'])
         });
         this.locationId = res['location']['id'];
         this.getLoggedInUserData();
@@ -84,12 +88,12 @@ export class ManageProfileComponent implements OnInit {
       const data = {
         firstName: this.f.firstName.value,
         lastName: this.f.lastName.value,
-        language: this.f.language.value,
+        language: this.f.language.value.id,
         locationId: this.locationId
       }
       this.userService.updateUser(data, this.userId).subscribe(() => {
-        this.translate.use(this.f.language.value);
-        localStorage.setItem('language', this.f.language.value);
+        this.translate.use(this.f.language.value.id);
+        localStorage.setItem('language', this.f.language.value.id);
         this.router.navigate(['/showUsers']);
         this.toasterService.showSuccess('User profile updated successfully!', 'EMCARE');
       });

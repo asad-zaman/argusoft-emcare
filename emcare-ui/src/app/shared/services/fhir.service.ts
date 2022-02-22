@@ -76,9 +76,19 @@ export class FhirService {
         return this.http.post(url, data, this.getHeaders());
     }
 
-    getAllLaunguages() {
+    getAllLaunguagesTranslations() {
         const url = `${environment.apiUrl}/api/language/all`;
         return this.http.get(url, this.getHeaders());
+    }
+
+    getAllLaunguages() {
+        const url = `${environment.apiUrl}/api/language/availableLanguage`;
+        return this.http.get(url, this.getHeaders());
+    }
+
+    addNewLaunguage(data) {
+        const url = `${environment.apiUrl}/api/language/create`;
+        return this.http.post(url, data, this.getHeaders());
     }
 
     updateTranslation(data) {
