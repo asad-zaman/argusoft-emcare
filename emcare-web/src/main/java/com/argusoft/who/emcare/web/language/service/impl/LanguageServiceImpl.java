@@ -50,7 +50,7 @@ public class LanguageServiceImpl implements LanguageService {
         List<String> translateLabel = new ArrayList<>();
         List<String> actualList = new ArrayList<>();
         List<Translation> result = new ArrayList<>();
-        String translateTo = "en-" + languageAddDto.getLanguageCode();
+        String translateTo = "en-".concat(languageAddDto.getLanguageCode()) ;
         JSONObject newJson = new JSONObject();
         LanguageTranslation languageTranslation = new LanguageTranslation();
 
