@@ -9,7 +9,7 @@ import java.io.Serializable;
 @Data
 @Entity
 @Table(name = "language_translation")
-public class LanguageTranslation extends EntityAuditInfo implements Serializable {
+public class LanguageTranslation implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

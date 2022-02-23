@@ -11,6 +11,7 @@ import com.ibm.watson.language_translator.v3.LanguageTranslator;
 import com.ibm.watson.language_translator.v3.model.Languages;
 import com.ibm.watson.language_translator.v3.model.TranslateOptions;
 import com.ibm.watson.language_translator.v3.model.Translation;
+import org.apache.commons.compress.utils.Lists;
 import org.codehaus.jettison.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -50,7 +51,7 @@ public class LanguageServiceImpl implements LanguageService {
         List<String> translateLabel = new ArrayList<>();
         List<String> actualList = new ArrayList<>();
         List<Translation> result = new ArrayList<>();
-        String translateTo = "en-".concat(languageAddDto.getLanguageCode()) ;
+        String translateTo = "en-".concat(languageAddDto.getLanguageCode());
         JSONObject newJson = new JSONObject();
         LanguageTranslation languageTranslation = new LanguageTranslation();
 
@@ -67,13 +68,9 @@ public class LanguageServiceImpl implements LanguageService {
         } catch (Exception ex) {
         }
 
-        TranslateOptions translateOptions = new TranslateOptions.Builder()
-                .text(translateLabel)
-                .modelId(translateTo)
-                .build();
+        TranslateOptions translateOptions = new TranslateOptions.Builder().text(translateLabel).modelId(translateTo).build();
 
-        result = languageTranslator.translate(translateOptions)
-                .execute().getResult().getTranslations();
+        result = languageTranslator.translate(translateOptions).execute().getResult().getTranslations();
 
         try {
             for (int i = 0; i < actualList.size(); i++) {
@@ -92,4 +89,55 @@ public class LanguageServiceImpl implements LanguageService {
     public LanguageTranslation addOrUpdateLanguageTranslation(LanguageDto language) {
         return languageRepository.save(LanguageMapper.getLanguageTranslation(language));
     }
+
+    @Transactional
+    public void translateNewlyAddedLabels() {
+        System.out.println("-----------Start Translating Newly Added Labels---------------- ");
+        LanguageTranslator languageTranslator = IBMConfig.getLanguageTranslatorInstance();
+        List<String> englishKeys = new ArrayList<>();
+        JSONObject englishJson = new JSONObject();
+        LanguageTranslation englishLanguage = languageRepository.findByLanguageCode("en");
+        List<LanguageTranslation> otherLanguage = languageRepository.findByLanguageCodeNot("en");
+        try {
+            englishJson = new JSONObject(englishLanguage.getLanguageData());
+            englishKeys = Lists.newArrayList(englishJson.keys());
+        } catch (Exception ex) {
+            System.out.println("Can't parse English Json");
+        }
+        for (LanguageTranslation otherLanguageTranslation : otherLanguage) {
+            String translateTo = "en-".concat(otherLanguageTranslation.getLanguageCode());
+            System.out.println("Translating English to ---> " + otherLanguageTranslation.getLanguageName());
+            try {
+                JSONObject otherLangJson = new JSONObject(otherLanguageTranslation.getLanguageData());
+                List<String> otherLangKeys = Lists.newArrayList(otherLangJson.keys());
+                List<String> newKeys = new ArrayList<>();
+                List<String> translatableValue = new ArrayList<>();
+                for (String key : englishKeys) {
+                    if (!otherLangKeys.contains(key)) {
+                        newKeys.add(key);
+                        translatableValue.add(englishJson.get(key).toString());
+                    }
+                }
+                if (newKeys.size() > 0) {
+                    TranslateOptions translateOptions = new TranslateOptions.Builder().text(translatableValue).modelId(translateTo).build();
+                    List<Translation> result = languageTranslator.translate(translateOptions).execute().getResult().getTranslations();
+
+                    for (int i = 0; i < newKeys.size(); i++) {
+                        otherLangJson.put(newKeys.get(i), result.get(i).getTranslation());
+                    }
+                    LanguageDto languageDto = new LanguageDto();
+                    languageDto.setLanguageName(otherLanguageTranslation.getLanguageName());
+                    languageDto.setLanguageTranslation(otherLangJson.toString());
+                    languageDto.setLanguageCode(otherLanguageTranslation.getLanguageCode());
+                    languageDto.setId(otherLanguageTranslation.getId());
+                    addOrUpdateLanguageTranslation(languageDto);
+                }
+            } catch (Exception ex) {
+                System.out.println(ex.getMessage());
+                System.out.println("Can't parse Json");
+            }
+        }
+        System.out.println("-------- Translation Completed Server Up SuccessFully --------- ");
+    }
+
 }
