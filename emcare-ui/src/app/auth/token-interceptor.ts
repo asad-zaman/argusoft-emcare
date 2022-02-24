@@ -6,30 +6,12 @@ import { Router } from '@angular/router';
 @Injectable()
 export class LaunguageSubjects {
 
-    private readonly frenchTranslations: BehaviorSubject<any>;
-    private readonly hinTranslations: BehaviorSubject<any>;
     private readonly currentLanguage: BehaviorSubject<any>;
+    private readonly currentTranslations: BehaviorSubject<any>;
 
     constructor() {
-        this.frenchTranslations = new BehaviorSubject({});
-        this.hinTranslations = new BehaviorSubject({});
         this.currentLanguage = new BehaviorSubject({});
-    }
-
-    setFrenchTranslations(frenchObject: any) {
-        this.frenchTranslations.next(frenchObject);
-    }
-
-    setHindiTranslations(hinObject: any) {
-        this.hinTranslations.next(hinObject);
-    }
-
-    getFrenchTranslations(): Observable<any> {
-        return this.frenchTranslations.asObservable();
-    }
-
-    getHindiTranslations(): Observable<any> {
-        return this.hinTranslations.asObservable();
+        this.currentTranslations = new BehaviorSubject({});
     }
 
     setLaunguage(lan: any) {
@@ -38,6 +20,14 @@ export class LaunguageSubjects {
 
     getLaunguage(): Observable<any> {
         return this.currentLanguage.asObservable();
+    }
+
+    setCurrentTranslation(lan: any) {
+        this.currentTranslations.next(lan);
+    }
+
+    getCurrentTranslation(): Observable<any> {
+        return this.currentTranslations.asObservable();
     }
 }
 @Injectable()
