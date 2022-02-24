@@ -2,9 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FhirService, ToasterService } from 'src/app/shared';
 import * as _ from 'lodash';
 import { LaunguageSubjects } from 'src/app/auth/token-interceptor';
-// import frTrans from '../../../../assets/i18n/fr.json';
-// import hinTrans from '../../../../assets/i18n/hin.json';
-// import enTrans from '../../../../assets/i18n/en.json';
+import enTrans from '../../../../assets/i18n/en.json';
 
 @Component({
   selector: 'app-manage-translations',
@@ -13,8 +11,6 @@ import { LaunguageSubjects } from 'src/app/auth/token-interceptor';
 })
 export class ManageTranslationsComponent implements OnInit {
 
-  frNames;
-  hinNames;
   currentVal: string;
   lan: string;
   translationObject = {}; // this is the object which consists the data from backend
@@ -41,13 +37,7 @@ export class ManageTranslationsComponent implements OnInit {
     this.fhirService.getAllLaunguagesTranslations().subscribe(res => {
       if (res) {
         _.forIn(res, (value, _key) => {
-          if (value.languageCode === 'fr') {
-            this.frNames = JSON.parse(value.languageData);
-            this.lanArray.push(value);
-          } else if (value.languageCode === 'hin') {
-            this.hinNames = JSON.parse(value.languageData);
-            this.lanArray.push(value);
-          }
+          this.lanArray.push(value);
         });
       }
     });
@@ -56,7 +46,8 @@ export class ManageTranslationsComponent implements OnInit {
     //  for getting all available Launguages 
     this.fhirService.getAllLaunguages().subscribe(res => {
       if (res) {
-        res['languages'].map(lan => {
+        const availArr = _.differenceBy(res['languages'], this.lanArray, 'languageName');
+        availArr.map(lan => {
           this.availableLanguages.push({
             id: lan.language,
             lanName: lan.languageName,
@@ -68,10 +59,10 @@ export class ManageTranslationsComponent implements OnInit {
 
     // incase we want to update translation file in future
     // const data = {
-    //   "id": value['id'],
-    //   "languageCode": value['languageCode'],
-    //   "languageName": value['languageName'],
-    //   "languageTranslation": JSON.stringify(hinTrans)
+    //   "id": 201,
+    //   "languageCode": 'en',
+    //   "languageName": 'English',
+    //   "languageTranslation": JSON.stringify(enTrans)
     // }
     // this.fhirService.updateTranslation(data).subscribe(res => {
     //   this.toasterService.showSuccess('Translation changes saved successfully!', 'EMCARE');
@@ -92,14 +83,9 @@ export class ManageTranslationsComponent implements OnInit {
   }
 
   // this will set the current launguage
-  setLaunguage(lanNumber) {
-    if (lanNumber === 1) {
-      this.lan = 'fr';
-      this.setKeysForObject(this.frNames);
-    } else {
-      this.lan = 'hin';
-      this.setKeysForObject(this.hinNames);
-    }
+  setLaunguage(lan) {
+    this.lan = lan.languageCode;
+    this.setKeysForObject(JSON.parse(lan.languageData));
   }
 
   setKeysForObject(object) {
@@ -112,35 +98,24 @@ export class ManageTranslationsComponent implements OnInit {
   }
 
   saveChange(key) {
-    if (this.lan === 'fr') {
-      this.frNames[`${key}`] = this.currentVal;
-    } else if (this.lan === 'hin') {
-      this.hinNames[`${key}`] = this.currentVal;
-    }
+    this.translationObject[`${key}`] = this.currentVal;
     this.isChanged = true;
     this.toasterService.showSuccess('Translation saved successfully!', 'EMCARE');
   }
 
   saveTranslation() {
-    let currTranslation;
-    if (this.lan === 'fr') {
-      currTranslation = this.frNames;
-      this.lanSubjects.setLaunguage(this.lan);
-      this.lanSubjects.setFrenchTranslations(currTranslation);
-    } else if (this.lan === 'hin') {
-      currTranslation = this.hinNames;
-      this.lanSubjects.setLaunguage(this.lan);
-      this.lanSubjects.setHindiTranslations(currTranslation);
-    }
-
     const lanIndex = this.lanArray.findIndex(el => el.languageCode === this.lan);
     const data = {
       "id": this.lanArray[lanIndex]['id'],
       "languageCode": this.lanArray[lanIndex]['languageCode'],
       "languageName": this.lanArray[lanIndex]['languageName'],
-      "languageTranslation": JSON.stringify(currTranslation)
+      "languageTranslation": JSON.stringify(this.translationObject)
     }
     this.fhirService.updateTranslation(data).subscribe(res => {
+      if (localStorage.getItem('language') === this.lanArray[lanIndex]['languageCode']) {
+        this.lanSubjects.setLaunguage(this.lanArray[lanIndex]['languageCode']);
+        this.lanSubjects.setCurrentTranslation(JSON.stringify(this.translationObject));
+      }
       this.toasterService.showSuccess('Translation changes saved successfully!', 'EMCARE');
     });
   }
@@ -168,7 +143,14 @@ export class ManageTranslationsComponent implements OnInit {
       "languageName": this.newSelectedLanguage.lanName
     }
     this.fhirService.addNewLaunguage(data).subscribe(res => {
-      console.log(res);
+      if (res) {
+        this.lanArray.push(res);
+        this.availableLanguages = this.availableLanguages.filter(el => el.id !== this.newSelectedLanguage.id);
+        this.newSelectedLanguage = null;
+        this.toasterService.showSuccess('Launguage added successfully!', 'EMCARE');
+      }
+    }, (_error) => {
+      this.toasterService.showError('Launguage not added successfully!', 'EMCARE');
     });
   }
 }
