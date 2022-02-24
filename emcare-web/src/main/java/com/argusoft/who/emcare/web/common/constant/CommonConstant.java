@@ -18,5 +18,6 @@ public class CommonConstant {
     public static final String ENGLISH = "en";
     public static final String LOCATION_TYPE_STRING = "LOCATION";
     public static final String ORGANIZATION_TYPE_STRING = "ORGANIZATION";
+    public static final String EM_CARE_SYSTEM = "EM CARE SYSTEM";
 
 }
