@@ -6,25 +6,17 @@
     <div class="col-3 col-sm-3">
       <div class="mb-3">
         <label class="form-label">{{'User' | translate}}</label>
-        <ng-container>
-          <select class="form-control custom-input" [(ngModel)]="selectedUser" (change)="selectedRole=null" id="user">
-            <ng-container *ngFor="let user of userList">
-              <option [value]="user.id">{{user.userName}}</option>
-            </ng-container>
-          </select>
-        </ng-container>
+        <p-dropdown [options]="userList" [(ngModel)]="selectedUser" optionLabel="email" (onChange)="selectedRole=null"
+          placeholder="Select an email">
+        </p-dropdown>
       </div>
     </div>
     <div class="col-3 col-sm-3">
       <div class="mb-3">
         <label class="form-label">{{'Role' | translate}}</label>
-        <ng-container>
-          <select class="form-control custom-input" [(ngModel)]="selectedRole" (change)="selectedUser=null" id="role">
-            <ng-container *ngFor="let role of roleList">
-              <option [value]="role.id">{{role.name}}</option>
-            </ng-container>
-          </select>
-        </ng-container>
+        <p-dropdown [options]="roleList" [(ngModel)]="selectedRole" optionLabel="name" (onChange)="selectedUser=null"
+          placeholder="Select a role">
+        </p-dropdown>
       </div>
     </div>
     <div class="col-3 col-sm-3">

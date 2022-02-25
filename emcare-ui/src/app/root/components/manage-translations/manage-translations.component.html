@@ -1,22 +1,29 @@
 <div class="main-wrapper">
   <h1 class="heading mb-3">{{'Manage Translations' | translate}}</h1>
-  <ul class="navigation p-0 text-end mt-5 d-flex">
-    <div class="align-items-center mouse-pointer" data-bs-toggle="dropdown">
-      <b>Launguage</b> <i class="bi bi-chevron-down ps-2"></i>
-    </div>
-    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-      <li><a class="dropdown-item mouse-pointer" (click)="setLaunguage(1)">French</a></li>
-      <li><a class="dropdown-item mouse-pointer" (click)="setLaunguage(2)">Hindi</a></li>
-    </ul>
-    <ng-container *ngIf="this.lan">
-      <div class="ml-5">
+  <div class="mt-5">
+    <label class="cst-label mr-4">Add Launguage</label>
+    <p-dropdown [options]="availableLanguages" [(ngModel)]="newSelectedLanguage" optionLabel="name"
+      placeholder="Select country" styleClass="custom-dropdown" [filter]="true" filterBy="name" [showClear]="true">
+    </p-dropdown>
+    <button [disabled]="!newSelectedLanguage" class="btn btn-red ml-4" (click)="addNewLanguage()">Add Launguage</button>
+  </div>
+  <div class="cst-lan-dropdown d-block my-4">
+    <label class="cst-label mr-4">Launguage</label>
+    <p-dropdown [options]="lanArray" optionLabel="languageName" placeholder="Select Launguage"
+      styleClass="custom-launguage-dropdown" (onChange)="setLaunguage($event.value)">
+    </p-dropdown>
+  </div>
+  <ng-container *ngIf="this.lan">
+    <div class="d-flex">
+      <div class="align-self-center">
         <ng-container *ngFor="let item of alphabetArr; let i = index">
           <a class="mr-3 mouse-pointer cst-alpha" (click)="showCurrCharKeys(item)">{{item}}</a>
         </ng-container>
       </div>
-      <button *ngIf="isChanged" class="btn btn-red" (click)="saveTranslation()">{{'Save Changes' | translate}}</button>
-    </ng-container>
-  </ul>
+      <button *ngIf="isChanged" class="ml-4 btn btn-red"
+        (click)="saveTranslation()">{{'Save Changes' | translate}}</button>
+    </div>
+  </ng-container>
   <ng-container *ngIf="this.lan">
     <div class="cst-main-style">
       <div *ngFor="let item of currentNames | keyvalue; let i=index" class="cst-child-style">
