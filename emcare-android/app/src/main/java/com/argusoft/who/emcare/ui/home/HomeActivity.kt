@@ -117,4 +117,8 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
         val navController = navHostFragment.navController
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
+
+    fun refreshLanguages() {
+        settingsViewModel.getAllLanguages()
+    }
 }

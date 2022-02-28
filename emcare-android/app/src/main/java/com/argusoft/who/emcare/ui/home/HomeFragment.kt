@@ -72,6 +72,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
                             message = getOrElse("Sync_Successful") { getString(R.string.msg_sync_successfully) }
                         }
                     }
+                    (activity as? HomeActivity)?.refreshLanguages()
                     requireContext().showToast(message = message)
                 }
                 is State.Failed -> {

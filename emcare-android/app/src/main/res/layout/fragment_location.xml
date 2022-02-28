@@ -71,6 +71,7 @@
         android:layout_marginTop="@dimen/_18sdp"
         android:layout_marginBottom="@dimen/_16sdp"
         android:text="@string/button_select"
+        android:textSize="@dimen/_14sdp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/locationTextInputLayout"
         app:layout_constraintStart_toStartOf="@+id/locationTextInputLayout" />

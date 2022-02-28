@@ -27,7 +27,7 @@ class SettingsViewModel @Inject constructor(
         getAllLanguages()
     }
 
-    private fun getAllLanguages() {
+     fun getAllLanguages() {
         _languagesApiState.value = ApiResponse.Loading()
         viewModelScope.launch {
             languageRepository.getAllLanguages().collect {

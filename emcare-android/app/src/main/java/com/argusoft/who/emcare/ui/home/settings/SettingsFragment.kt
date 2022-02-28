@@ -20,6 +20,7 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
     private var languageList: List<Language>? = null
 
     override fun initView() {
+        settingsViewModel.getAllLanguages()
         binding.languageTextView.text = LocaleHelper.load(requireContext()).displayName.capitalize()
     }
 
