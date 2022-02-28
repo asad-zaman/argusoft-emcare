@@ -9,9 +9,11 @@ import com.argusoft.who.emcare.web.fhir.mapper.EmcareResourceMapper;
 import com.argusoft.who.emcare.web.fhir.model.EmcareResource;
 import com.argusoft.who.emcare.web.fhir.model.QuestionnaireMaster;
 import com.argusoft.who.emcare.web.fhir.service.EmcareResourceService;
+import com.argusoft.who.emcare.web.fhir.service.LocationResourceService;
 import com.argusoft.who.emcare.web.fhir.service.QuestionnaireMasterService;
 import com.argusoft.who.emcare.web.location.model.LocationMaster;
 import com.argusoft.who.emcare.web.location.service.LocationService;
+import org.hl7.fhir.r4.model.Location;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Questionnaire;
 import org.hl7.fhir.r4.model.RelatedPerson;
@@ -35,6 +37,9 @@ public class EmcareResourceController {
 
     @Autowired
     private QuestionnaireMasterService questionnaireMasterService;
+
+    @Autowired
+    private LocationResourceService locationResourceService;
 
     @Autowired
     private LocationService locationService;
@@ -130,4 +135,10 @@ public class EmcareResourceController {
         }
         return q;
     }
+
+//    @GetMapping("/resource/location/page")
+//    public PageDto getEmCareLocationResourcePage(@RequestParam(value = "pageNo") Integer pageNo,
+//                                                        @Nullable @RequestParam(value = "search", required = false) String searchString) {
+//        return locationResourceService.getEmCareLocationResourcePage(pageNo,searchString);
+//    }
 }
