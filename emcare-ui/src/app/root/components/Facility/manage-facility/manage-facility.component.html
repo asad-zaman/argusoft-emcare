@@ -1,0 +1,226 @@
+<app-location-filter (locationId)="getLocationId($event)"></app-location-filter>
+<div class="main-wrapper">
+  <div class="form-wrapper-facility">
+    <form [formGroup]="facilityForm" name="facilityForm" novalidate>
+      <div class="mb-5">
+        <h1 class="heading">
+          {{'Manage Facility' | translate}}
+        </h1>
+        <hr>
+      </div>
+      <div class="row">
+        <div class="col-12 col-sm-4">
+          <div class="mb-3">
+            <label class="form-label">Name</label>
+            <input formControlName="name" type="text" class="form-control custom-input" id="name"
+              placeholder="Enter Name" [ngClass]="{ 'is-invalid': submitted && f.name.errors }">
+            <div *ngIf="submitted && f.name.errors" class="invalid-feedback">
+              <div class="cst-error-style" *ngIf="f.name.errors.required">
+                *Name is required</div>
+            </div>
+          </div>
+        </div>
+        <!--
+        <div class="col-12 col-sm-4">
+          <div class="mb-3">
+            <label class="form-label">Location Alias</label>
+            <input formControlName="locationAlias" type="text" class="form-control custom-input" id="locationAlias"
+              placeholder="Enter Location Alias" [ngClass]="{ 'is-invalid': submitted && f.locationAlias.errors }">
+            <div *ngIf="submitted && f.locationAlias.errors" class="invalid-feedback">
+              <div class="cst-error-style" *ngIf="f.locationAlias.errors.required">
+                *Location Alias is required</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-sm-4">
+          <div class="mb-3">
+            <label class="form-label">Location Description</label>
+            <input formControlName="locationDescription" type="text" class="form-control custom-input"
+              id="locationDescription" placeholder="Enter Location Description"
+              [ngClass]="{ 'is-invalid': submitted && f.locationDescription.errors }">
+            <div *ngIf="submitted && f.locationDescription.errors" class="invalid-feedback">
+              <div class="cst-error-style" *ngIf="f.locationDescription.errors.required">
+                *Location Description is required</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-sm-4">
+          <div class="mb-3">
+            <label class="form-label">Phone</label>
+            <input formControlName="phone" type="number" class="form-control custom-input" id="phone"
+              placeholder="Enter phone" [ngClass]="{ 'is-invalid': submitted && f.phone.errors }">
+            <div *ngIf="submitted && f.phone.errors" class="invalid-feedback">
+              <div class="cst-error-style" *ngIf="f.phone.errors.required">
+                *Phone is required</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-sm-4">
+          <div class="mb-3">
+            <label class="form-label">Fax</label>
+            <input formControlName="fax" type="number" class="form-control custom-input" id="fax"
+              placeholder="Enter fax" [ngClass]="{ 'is-invalid': submitted && f.fax.errors }">
+            <div *ngIf="submitted && f.fax.errors" class="invalid-feedback">
+              <div class="cst-error-style" *ngIf="f.fax.errors.required">
+                *Fax is required</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-sm-4">
+          <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input formControlName="email" type="text" class="form-control custom-input" id="email"
+              placeholder="Enter email" [ngClass]="{ 'is-invalid': submitted && f.email.errors }">
+            <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
+              <div class="cst-error-style" *ngIf="f.email.errors.required">
+                *Email is required</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-sm-4">
+          <div class="mb-3">
+            <label class="form-label">Url</label>
+            <input formControlName="url" type="text" class="form-control custom-input" id="url" placeholder="Enter url"
+              [ngClass]="{ 'is-invalid': submitted && f.url.errors }">
+            <div *ngIf="submitted && f.url.errors" class="invalid-feedback">
+              <div class="cst-error-style" *ngIf="f.url.errors.required">
+                *Url is required</div>
+            </div>
+          </div>
+        </div>
+         -->
+        <div class="col-12 col-sm-4">
+          <div class="mb-3">
+            <label class="form-label">Address Street</label>
+            <input formControlName="addressStreet" type="text" class="form-control custom-input" id="addressStreet1"
+              placeholder="Enter address street" [ngClass]="{ 'is-invalid': submitted && f.addressStreet.errors }">
+            <div *ngIf="submitted && f.addressStreet.errors" class="invalid-feedback">
+              <div class="cst-error-style" *ngIf="f.addressStreet.errors.required">
+                *Address street is required</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-sm-4">
+          <div class="mb-3">
+            <label class="form-label">Status</label>
+            <p-dropdown formControlName="status" [options]="statusArr" optionLabel="name"
+              [ngClass]="{ 'is-invalid': submitted && f.status.errors }">
+            </p-dropdown>
+            <div *ngIf="submitted && f.status.errors" class="invalid-feedback">
+              <div class="cst-error-style" *ngIf="f.status.errors.required">
+                *status is required</div>
+            </div>
+          </div>
+        </div>
+        <!--
+        <div class="col-12 col-sm-4">
+          <div class="mb-3">
+            <label class="form-label">City</label>
+            <input formControlName="city" type="text" class="form-control custom-input" id="city"
+              placeholder="Enter city" [ngClass]="{ 'is-invalid': submitted && f.city.errors }">
+            <div *ngIf="submitted && f.city.errors" class="invalid-feedback">
+              <div class="cst-error-style" *ngIf="f.city.errors.required">
+                *City is required</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-sm-4">
+          <div class="mb-3">
+            <label class="form-label">Postal Code</label>
+            <input formControlName="postalCode" type="number" class="form-control custom-input" id="postalCode"
+              placeholder="Enter postal code" [ngClass]="{ 'is-invalid': submitted && f.postalCode.errors }">
+            <div *ngIf="submitted && f.postalCode.errors" class="invalid-feedback">
+              <div class="cst-error-style" *ngIf="f.postalCode.errors.required">
+                *Postal code is required</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-sm-4">
+          <div class="mb-3">
+            <label class="form-label">Country</label>
+            <div class="d-block">
+              <p-dropdown formControlName="country" [options]="countryArr" optionLabel="name"
+                [ngClass]="{ 'is-invalid': submitted && f.country.errors }">
+              </p-dropdown>
+            </div>
+            <div *ngIf="submitted && f.country.errors" class="invalid-feedback">
+              <div class="cst-error-style" *ngIf="f.country.errors.required">
+                *Country is required</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-sm-4">
+          <div class="mb-3">
+            <label class="form-label">Longitude</label>
+            <input formControlName="longitude" type="text" class="form-control custom-input" id="longitude"
+              placeholder="Enter longitude" [ngClass]="{ 'is-invalid': submitted && f.longitude.errors }">
+            <div *ngIf="submitted && f.longitude.errors" class="invalid-feedback">
+              <div class="cst-error-style" *ngIf="f.longitude.errors.required">
+                *Longitude is required</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-sm-4">
+          <div class="mb-3">
+            <label class="form-label">Latitude</label>
+            <input formControlName="latitude" type="text" class="form-control custom-input" id="latitude"
+              placeholder="Enter latitude" [ngClass]="{ 'is-invalid': submitted && f.latitude.errors }">
+            <div *ngIf="submitted && f.latitude.errors" class="invalid-feedback">
+              <div class="cst-error-style" *ngIf="f.latitude.errors.required">
+                *Latitude is required</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-sm-4">
+          <div class="mb-3">
+            <label class="form-label">Altitude</label>
+            <input formControlName="altitude" type="text" class="form-control custom-input" id="altitude"
+              placeholder="Enter altitude" [ngClass]="{ 'is-invalid': submitted && f.altitude.errors }">
+            <div *ngIf="submitted && f.altitude.errors" class="invalid-feedback">
+              <div class="cst-error-style" *ngIf="f.altitude.errors.required">
+                *Altitude is required</div>
+            </div>
+          </div>
+        </div>
+         -->
+        <div class="col-12 col-sm-6">
+          <div class="mb-3">
+            <label class="form-label">Organization Name</label>
+            <input formControlName="organizationName" type="text" class="form-control custom-input"
+              id="organizationName" placeholder="Enter organization name"
+              [ngClass]="{ 'is-invalid': submitted && f.organizationName.errors }">
+            <div *ngIf="submitted && f.organizationName.errors" class="invalid-feedback">
+              <div class="cst-error-style" *ngIf="f.organizationName.errors.required">
+                *Organization name is required</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-sm-6">
+          <div class="mb-3">
+            <label class="form-label">Telecom</label>
+            <input formControlName="telecom" type="text" class="form-control custom-input" id="telecom"
+              placeholder="Enter telecom" [ngClass]="{ 'is-invalid': submitted && f.telecom.errors }">
+            <div *ngIf="submitted && f.telecom.errors" class="invalid-feedback">
+              <div class="cst-error-style" *ngIf="f.telecom.errors.required">
+                *Telecom is required</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="text-end mt-5">
+        <hr>
+        <button routerLink="/showFacility" class="btn-red btn mr-3">
+          <i class="bi bi-chevron-left"></i> {{'Back' | translate}}
+        </button>
+        <button (click)="saveData()" class="btn-red btn">
+          <ng-container *ngIf="!isEdit; else updateFacility">
+            {{'Save Facility' | translate}}
+          </ng-container>
+          <ng-template #updateFacility>
+            {{'Edit Facility' | translate}}
+          </ng-template>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
