@@ -133,5 +133,6 @@
   "Please_select_location": "Please select location",
   "Sync_started": "Sync started",
   "Sync_Successful": "Sync Successful",
-  "Sync_failed" : "Sync failed"
+  "Sync_failed" : "Sync failed",
+  "Questionnaire Management": "Questionnaire Management"
 }

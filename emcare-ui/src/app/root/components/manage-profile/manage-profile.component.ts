@@ -2,9 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import { AuthenticationService, ToasterService } from 'src/app/shared';
+import { AuthenticationService, FhirService, ToasterService } from 'src/app/shared';
 import { UserManagementService } from '../../services/user-management.service';
-
+import * as _ from 'lodash';
+import { LaunguageSubjects } from 'src/app/auth/token-interceptor';
 @Component({
   selector: 'app-manage-profile',
   templateUrl: './manage-profile.component.html',
@@ -24,14 +25,10 @@ export class ManageProfileComponent implements OnInit {
     private readonly formBuilder: FormBuilder,
     private readonly toasterService: ToasterService,
     private readonly translate: TranslateService,
-    private readonly router: Router
-  ) {
-    this.lanArr = [
-      { id: 'en', name: 'English' },
-      { id: 'fr', name: 'French' },
-      { id: 'hin', name: 'Hindi' }
-    ];
-  }
+    private readonly router: Router,
+    private readonly fhirService: FhirService,
+    private readonly lanSubjects: LaunguageSubjects
+  ) { }
 
   ngOnInit(): void {
     this.prerequisite();
@@ -39,7 +36,18 @@ export class ManageProfileComponent implements OnInit {
 
   prerequisite() {
     this.initForm();
-    this.getLoggedInUserId();
+    this.getAllLaunguages();
+  }
+
+  getAllLaunguages() {
+    this.fhirService.getAllLaunguagesTranslations().subscribe(res => {
+      if (res) {
+        _.forIn(res, (value, _key) => {
+          this.lanArr.push({ id: value.languageCode, name: value.languageName, translations: value.languageData });
+        });
+        this.getLoggedInUserId();
+      }
+    });
   }
 
   initForm() {
@@ -50,12 +58,16 @@ export class ManageProfileComponent implements OnInit {
     });
   }
 
+  getLaunguageObjFromCode(lan) {
+    return this.lanArr.find(el => el.id === lan);
+  }
+
   getLoggedInUserId() {
     this.authenticationService.getLoggedInUser().subscribe(res => {
       if (res) {
         this.userId = res['userId'];
         this.currentUserForm.patchValue({
-          language: res['language']
+          language: this.getLaunguageObjFromCode(res['language'])
         });
         this.locationId = res['location']['id'];
         this.getLoggedInUserData();
@@ -84,12 +96,14 @@ export class ManageProfileComponent implements OnInit {
       const data = {
         firstName: this.f.firstName.value,
         lastName: this.f.lastName.value,
-        language: this.f.language.value,
+        language: this.f.language.value.id,
         locationId: this.locationId
       }
+      const translations = this.lanArr.find(el => el.id === this.f.language.value.id).translations;
       this.userService.updateUser(data, this.userId).subscribe(() => {
-        this.translate.use(this.f.language.value);
-        localStorage.setItem('language', this.f.language.value);
+        localStorage.setItem('language', this.f.language.value.id);
+        this.lanSubjects.setLaunguage(this.f.language.value.id);
+        this.lanSubjects.setCurrentTranslation(translations);
         this.router.navigate(['/showUsers']);
         this.toasterService.showSuccess('User profile updated successfully!', 'EMCARE');
       });

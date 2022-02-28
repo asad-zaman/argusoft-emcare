@@ -61,13 +61,12 @@ export class AppComponent implements OnInit {
 
   detectLanChange() {
     this.lanSubjects.getLaunguage().subscribe(lan => {
-      if (lan === 'fr') {
-        this.lanSubjects.getFrenchTranslations().subscribe(res => {
-          this.translate.setTranslation(lan, res, true);
-        });
-      } else if (lan === 'hin') {
-        this.lanSubjects.getHindiTranslations().subscribe(res => {
-          this.translate.setTranslation(lan, res, true);
+      if (Object.keys(lan).length !== 0) {
+        this.lanSubjects.getCurrentTranslation().subscribe(res => {
+          if (Object.keys(res).length !== 0) {
+            this.translate.setTranslation(lan, JSON.parse(res), true);
+            this.translate.use(lan);
+          }
         });
       }
     });
@@ -75,7 +74,7 @@ export class AppComponent implements OnInit {
 
   getAllLaunguages() {
     const currLan = localStorage.getItem('language');
-    this.fhirService.getAllLaunguages().subscribe(res => {
+    this.fhirService.getAllLaunguagesTranslations().subscribe(res => {
       if (res) {
         _.forIn(res, (value, _key) => {
           if (value.languageCode === currLan) {
@@ -132,7 +131,6 @@ export class AppComponent implements OnInit {
     this.authenticationService.getLoggedInUser().subscribe(res => {
       if (res) {
         localStorage.setItem('language', res['language']);
-        this.setDefaultLanguage(res['language']);
         this.authenticationService.setFeatures(res.feature.map(f => f.menu_name));
         this.getLoggedInUser(res);
         this.getAllLaunguages();
