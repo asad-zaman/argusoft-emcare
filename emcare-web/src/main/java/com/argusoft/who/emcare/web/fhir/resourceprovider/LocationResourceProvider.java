@@ -14,6 +14,7 @@ import org.hl7.fhir.r4.model.Meta;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Nullable;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -61,6 +62,13 @@ public class LocationResourceProvider implements IResourceProvider {
     @Read()
     public Location getResourceById(@IdParam IdType theId) {
         return locationResourceService.getByResourceId(theId.getIdPart());
+    }
+
+    @Search()
+    public List<Location> getEmCareLocationResourcePage(@RequiredParam(name = "pageNo") String pageNo,
+                                                        @Nullable @RequiredParam(name = "search") String searchString) {
+        List<Location> locationList = locationResourceService.getEmCareLocationResourcePage(Integer.parseInt(pageNo), searchString);
+        return locationList;
     }
 
     @Search()
