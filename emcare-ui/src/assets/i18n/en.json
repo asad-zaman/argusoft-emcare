@@ -134,5 +134,11 @@
   "Sync_started": "Sync started",
   "Sync_Successful": "Sync Successful",
   "Sync_failed" : "Sync failed",
-  "Questionnaire Management": "Questionnaire Management"
+  "Questionnaire Management": "Questionnaire Management",
+  "Manage Facility": "Manage Facility",
+  "Show Facility": "Show Facility",
+  "Save Facility": "Save Facility",
+  "Edit Facility": "Edit Facility",
+  "Add Facility": "Add Facility",
+  "Facilities": "Facilities"
 }

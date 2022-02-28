@@ -22,3 +22,11 @@ export { ManageFeatureComponent } from './components/Feature/manage-feature/mana
 export { FeatureManagementService } from './services/feature-management.service';
 export { ManageTranslationsComponent } from './components/manage-translations/manage-translations.component';
 export { ComparePatientComponent } from './components/patient-management/compare-patient/compare-patient.component';
+export { ManageFacilityComponent } from './components/Facility/manage-facility/manage-facility.component';
+export { PatientListComponent } from './components/patient-management/patient-list/patient-list.component';
+export { ManageRoleComponent } from './components/role-management/manage-role/manage-role.component';
+export { ShowRoleComponent } from './components/role-management/show-role/show-role.component';
+export { ManageProfileComponent } from './components/manage-profile/manage-profile.component';
+export { QuestionnaireBuilderComponent } from './components/questionnaire-management/questionnaire-builder/questionnaire-builder.component';
+export { QuestionnaireListComponent } from './components/questionnaire-management/questionnaire-list/questionnaire-list.component';
+export { ShowFacilityComponent } from './components/Facility/show-facility/show-facility.component';

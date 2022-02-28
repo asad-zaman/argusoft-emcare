@@ -1,10 +1,15 @@
 <div class="">
   <input type="checkbox" name="sideMenu" [(ngModel)]="sideMenu" class="openSidebarMenu" id="openSidebarMenu">
   <label for="openSidebarMenu" class="sidebarIconToggle"
-    [ngStyle]="{'right': this.currentUrl === 'showPatients' ? '100px' : (this.currentLan === 'fr' ? '330px' : (this.currentLan === 'en' ? '250px' : '275px'))}">
+    [ngStyle]="{'top': this.currentUrl === 'manageFacility' ? '100px' : '140px', 'right': this.currentUrl === 'showPatients' ? '100px' : (this.currentLan === 'fr' ? '330px' : (this.currentLan === 'en' ? '250px' : '275px'))}">
     <div class="btn btn-red cst-filter-btn">
-      <i class="bi bi-filter-circle mouse-pointer cst-filter-icon"></i>
-      {{'Filter' | translate}}
+      <ng-container *ngIf="this.currentUrl === 'manageFacility'; else Filter">
+        {{'Location' | translate}}
+      </ng-container>
+      <ng-template #Filter>
+        <i class="bi bi-filter-circle mouse-pointer cst-filter-icon"></i>
+        {{'Filter' | translate}}
+      </ng-template>
     </div>
   </label>
   <div id="sidebarMenu">
