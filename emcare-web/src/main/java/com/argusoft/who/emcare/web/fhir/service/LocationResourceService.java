@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface LocationResourceService {
 
-    public LocationResource saveResource(LocationResource locationResource);
+    public LocationResource saveResource(Location theLocation);
 
     public Location getByResourceId(String resourceId);
 
@@ -18,4 +18,6 @@ public interface LocationResourceService {
     public void deleteLocationResource(String resourceId);
 
     public MethodOutcome updateLocationResource(IdType theId, Location theLocation);
+
+    public List<Location> getEmCareLocationResourcePage(Integer pageNo, String searchString);
 }
