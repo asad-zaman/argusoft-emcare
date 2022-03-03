@@ -10,20 +10,20 @@ import com.argusoft.who.emcare.web.fhir.model.LocationResource;
 import com.argusoft.who.emcare.web.fhir.service.LocationResourceService;
 import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.Location;
-import org.hl7.fhir.r4.model.Meta;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Nullable;
-import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 @Component
 public class LocationResourceProvider implements IResourceProvider {
 
     @Autowired
     LocationResourceService locationResourceService;
+
+    @Autowired
+    OrganizationResourceProvider organizationResourceProvider;
 
     private final FhirContext fhirCtx = FhirContext.forR4();
     private final IParser parser = fhirCtx.newJsonParser().setPrettyPrint(false);
@@ -35,22 +35,7 @@ public class LocationResourceProvider implements IResourceProvider {
 
     @Create
     public MethodOutcome createLocation(@ResourceParam Location theLocation) {
-        Meta m = new Meta();
-        m.setVersionId("1");
-        m.setLastUpdated(new Date());
-        theLocation.setMeta(m);
-
-        String locationId = UUID.randomUUID().toString();
-        theLocation.setId(locationId);
-
-        String locationString = parser.encodeResourceToString(theLocation);
-
-        LocationResource locationResource = new LocationResource();
-        locationResource.setText(locationString);
-        locationResource.setType(CommonConstant.LOCATION_TYPE_STRING);
-        locationResource.setResourceId(locationId);
-
-        locationResourceService.saveResource(locationResource);
+        LocationResource locationResource = locationResourceService.saveResource(theLocation);
 
         MethodOutcome retVal = new MethodOutcome();
         retVal.setId(new IdType(CommonConstant.LOCATION_TYPE_STRING, theLocation.getId(), "1"));
