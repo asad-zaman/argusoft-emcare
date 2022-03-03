@@ -8,10 +8,12 @@ import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.fhir.dao.LocationResourceRepository;
 import com.argusoft.who.emcare.web.fhir.model.LocationResource;
 import com.argusoft.who.emcare.web.fhir.service.LocationResourceService;
+import com.argusoft.who.emcare.web.fhir.service.OrganizationResourceService;
 import org.codehaus.jettison.json.JSONObject;
 import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.Location;
 import org.hl7.fhir.r4.model.Meta;
+import org.hl7.fhir.r4.model.Organization;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,6 +24,7 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 @Transactional
 @Service
@@ -30,12 +33,32 @@ public class LocationResourceServiceImpl implements LocationResourceService {
     @Autowired
     LocationResourceRepository locationResourceRepository;
 
+    @Autowired
+    OrganizationResourceService organizationResourceService;
+
     private final FhirContext fhirCtx = FhirContext.forR4();
     private final IParser parser = fhirCtx.newJsonParser().setPrettyPrint(true);
 
     @Override
-    public LocationResource saveResource(LocationResource locationResource) {
-        return locationResourceRepository.save(locationResource);
+    public LocationResource saveResource(Location theLocation) {
+        Meta m = new Meta();
+        m.setVersionId("1");
+        m.setLastUpdated(new Date());
+        theLocation.setMeta(m);
+
+        String locationId = UUID.randomUUID().toString();
+        theLocation.setId(locationId);
+
+        String locationString = parser.encodeResourceToString(theLocation);
+
+        LocationResource locationResource = new LocationResource();
+        locationResource.setText(locationString);
+        locationResource.setType(CommonConstant.LOCATION_TYPE_STRING);
+        locationResource.setResourceId(locationId);
+
+        locationResource = locationResourceRepository.save(locationResource);
+
+        return locationResource;
     }
 
     @Override
@@ -45,6 +68,8 @@ public class LocationResourceServiceImpl implements LocationResourceService {
         if (locationResource != null) {
             location = parser.parseResource(Location.class, locationResource.getText());
         }
+        Organization organization = organizationResourceService.getByResourceId(location.getManagingOrganization().getId());
+        location.getManagingOrganization().setDisplay(organization.getName());
         return location;
     }
 
@@ -87,7 +112,7 @@ public class LocationResourceServiceImpl implements LocationResourceService {
         locationResource.setResourceId(updatableLocationResource.getResourceId());
         locationResource.setId(updatableLocationResource.getId());
 
-        saveResource(locationResource);
+        locationResource = locationResourceRepository.save(locationResource);
 
         MethodOutcome retVal = new MethodOutcome();
         retVal.setId(new IdType(CommonConstant.LOCATION_TYPE_STRING, theLocation.getId(), "1"));
