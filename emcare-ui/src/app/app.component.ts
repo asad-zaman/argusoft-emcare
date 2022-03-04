@@ -15,7 +15,7 @@ export class AppComponent implements OnInit {
 
   currentUrl: string = '';
   userName: any;
-  isUserDropdownOpen: boolean = true;
+  isUserDropdownOpen: boolean = false;
   isPatientDropdownOpen: boolean = false;
   isLocationDropdownOpen: boolean = false;
   userCharLogo: string;
@@ -23,6 +23,7 @@ export class AppComponent implements OnInit {
   featureList: any = [];
   isLoggedIn: boolean = false;
   currTranslations: any;
+  isFacilityDropdownOpen: any;
 
   constructor(
     private readonly router: Router,
@@ -164,6 +165,9 @@ export class AppComponent implements OnInit {
         break;
       case 3:
         this.isPatientDropdownOpen = !this.isPatientDropdownOpen;
+        break;
+      case 4:
+        this.isFacilityDropdownOpen = !this.isFacilityDropdownOpen;
         break;
     }
   }

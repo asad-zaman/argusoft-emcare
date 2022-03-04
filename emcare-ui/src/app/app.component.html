@@ -22,7 +22,7 @@
   </header>
   <!--header-END-->
   <!--Sidenav-->
-  <div class="sidenav" *ngIf="featureList.length !== 0">
+  <div class="sidenav cst-overflow" *ngIf="featureList.length !== 0">
     <ul class="nav-link">
       <li *ngIf="hasAccess('Users') || hasAccess('Roles')">
         <a class="mouse-pointer" [ngClass]="{'active': this.currentUrl === '/showUsers' || this.currentUrl === '/addUser' || this.currentUrl.includes('/updateUser') 
@@ -51,7 +51,8 @@
         </div>
       </li>
       <li *ngIf="hasAccess('Patient Management')">
-        <a class="mouse-pointer" [ngClass]="{'active': this.currentUrl === '/showPatients' || this.currentUrl === '/comparePatients'}"
+        <a class="mouse-pointer"
+          [ngClass]="{'active': this.currentUrl === '/showPatients' || this.currentUrl === '/comparePatients'}"
           (click)="hideCurrentDropdown(3)">
           <i class="bi bi-map nav-link_icon"></i>{{'Manage Patients' | translate}}
           <ng-container *ngIf="isPatientDropdownOpen; else upIcon">
@@ -64,16 +65,17 @@
         <div *ngIf="isPatientDropdownOpen" class="dropdown_list_wrapper">
           <ul class="dropdown_list">
             <li><a class="mouse-pointer" routerLink="/showPatients"
-              [ngClass]="{'dropdown-link_active': this.currentUrl === '/showPatients'}">Patients</a>
+                [ngClass]="{'dropdown-link_active': this.currentUrl === '/showPatients'}">Patients</a>
             </li>
             <li><a class="mouse-pointer" routerLink="/comparePatients"
-              [ngClass]="{'dropdown-link_active': this.currentUrl === '/comparePatients'}">Compare Patients</a>
+                [ngClass]="{'dropdown-link_active': this.currentUrl === '/comparePatients'}">Compare Patients</a>
             </li>
           </ul>
         </div>
       </li>
-      <li *ngIf="hasAccess('Questionnaire Management')"><a class="mouse-pointer" [ngClass]="{'active': this.currentUrl === '/showQuestionnaires' || this.currentUrl === '/addQuestionnaire' || this.currentUrl.includes('/updateQuestionnaire')}" 
-        routerLink="/showQuestionnaires"><i class="bi bi-people nav-link_icon"></i>Questionnaire
+      <li *ngIf="hasAccess('Questionnaire Management')"><a class="mouse-pointer"
+          [ngClass]="{'active': this.currentUrl === '/showQuestionnaires' || this.currentUrl === '/addQuestionnaire' || this.currentUrl.includes('/updateQuestionnaire')}"
+          routerLink="/showQuestionnaires"><i class="bi bi-people nav-link_icon"></i>Questionnaire
           Management</a></li>
       <li *ngIf="hasAccess('Location Management')">
         <a class="mouse-pointer" [ngClass]="{'active': this.currentUrl === '/locationFilter' || this.currentUrl === '/showLocation' 
@@ -110,7 +112,10 @@
           routerLink="/manage-translation"><i
             class="bi bi-list nav-link_icon"></i>{{'Manage Translations' | translate}}</a>
       </li>
-      <!-- <li><a> <i class="bi bi-recycle nav-link_icon"></i> Manage Conficts</a></li> -->
+      <li><a class="mouse-pointer"
+          [ngClass]="{'active': this.currentUrl === '/manage-facility' || this.currentUrl === '/showFacility' || this.currentUrl.includes('/editFacility')}"
+          routerLink="/showFacility"><i class="bi bi-list nav-link_icon"></i>{{'Manage Facility' | translate}}</a>
+      </li>
     </ul>
   </div>
 </ng-container>

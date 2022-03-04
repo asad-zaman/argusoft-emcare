@@ -100,4 +100,57 @@ export class FhirService {
         const url = `${this.deduplicationBaseURL}/compare`;
         return this.http.post(url, data, this.getHeaders());
     }
+
+    addFacility(data) {
+        const url = `${environment.apiUrl}/fhir/Location`;
+        return this.http.post(url, data, this.getHeaders());
+    }
+
+    editFacility(data, id) {
+        const url = `${environment.apiUrl}/fhir/Location/${id}`;
+        return this.http.put(url, data, this.getHeaders());
+    }
+
+    getFacility() {
+        const url = `${environment.apiUrl}/fhir/Location`;
+        return this.http.get(url, this.getHeaders());
+    }
+
+    deleteFacility(id) {
+        const url = `${environment.apiUrl}/fhir/Location/${id}`;
+        return this.http.delete(url, this.getHeaders());
+    }
+
+    getFacilityById(id) {
+        const url = `${environment.apiUrl}/fhir/Location/${id}`;
+        return this.http.get(url, this.getHeaders());
+    }
+
+    addOrganization(data) {
+        const url = `${environment.apiUrl}/fhir/Organization`;
+        return this.http.post(url, data, this.getHeaders());
+    }
+
+    updateOrganization(data, id) {
+        const url = `${environment.apiUrl}/fhir/Organization/${id}`;
+        return this.http.put(url, data, this.getHeaders());
+    }
+
+    getOrganizationById(id) {
+        const url = `${environment.apiUrl}/fhir/Organization/${id}`;
+        return this.http.get(url, this.getHeaders());
+    }
+
+    deleteOrganization(id) {
+        const url = `${environment.apiUrl}/fhir/Organization/${id}`;
+        return this.http.delete(url, this.getHeaders());
+    }
+
+    getOrganizationByPageIndexAndSearch(pageIndex, search?) {
+        let url;
+        if (search) {
+            url = `${environment.apiUrl}/fhir/Location?pageNo=${pageIndex}&search=${search}`;
+        }
+        return this.http.get(url, this.getHeaders());
+    }
 }

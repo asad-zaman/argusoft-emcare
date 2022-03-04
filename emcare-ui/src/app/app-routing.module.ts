@@ -2,12 +2,6 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { AuthGuard } from './auth/auth.guard';
 import { HomeComponent } from './root/components/home/home.component';
-import { ManageProfileComponent } from './root/components/manage-profile/manage-profile.component';
-import { PatientListComponent } from './root/components/patient-management/patient-list/patient-list.component';
-import { QuestionnaireBuilderComponent } from './root/components/questionnaire-management/questionnaire-builder/questionnaire-builder.component';
-import { QuestionnaireListComponent } from './root/components/questionnaire-management/questionnaire-list/questionnaire-list.component';
-import { ManageRoleComponent } from './root/components/role-management/manage-role/manage-role.component';
-import { ShowRoleComponent } from './root/components/role-management/show-role/show-role.component';
 import {
   LoginComponent,
   SignupComponent,
@@ -22,7 +16,15 @@ import {
   FeatureListComponent,
   ManageFeatureComponent,
   ManageTranslationsComponent,
-  ComparePatientComponent
+  ComparePatientComponent,
+  ManageFacilityComponent,
+  ManageProfileComponent,
+  PatientListComponent,
+  QuestionnaireBuilderComponent,
+  QuestionnaireListComponent,
+  ManageRoleComponent,
+  ShowRoleComponent,
+  ShowFacilityComponent
 } from './root/index';
 
 const routes: Routes = [
@@ -52,6 +54,9 @@ const routes: Routes = [
   { path: 'editFeature/:id', component: ManageFeatureComponent, canActivate: [AuthGuard] },
   { path: 'manage-translation', component: ManageTranslationsComponent },
   { path: 'editProfile', component: ManageProfileComponent },
+  { path: 'manageFacility', component: ManageFacilityComponent },
+  { path: 'manageFacility/:id', component: ManageFacilityComponent },
+  { path: 'showFacility', component: ShowFacilityComponent },
   { path: '**', redirectTo: 'login' }
 ];
 @NgModule({
