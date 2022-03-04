@@ -80,6 +80,8 @@ public class LocationResourceServiceImpl implements LocationResourceService {
         List<LocationResource> locationResources = locationResourceRepository.findAll();
         for (LocationResource locationResource : locationResources) {
             Location location = parser.parseResource(Location.class, locationResource.getText());
+            Organization organization = organizationResourceService.getByResourceId(location.getManagingOrganization().getId());
+            location.getManagingOrganization().setDisplay(organization.getName());
             locationList.add(location);
         }
         return locationList;
