@@ -6,7 +6,9 @@ import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
 import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.fhir.dao.LocationResourceRepository;
+import com.argusoft.who.emcare.web.fhir.dao.OrganizationResourceRepository;
 import com.argusoft.who.emcare.web.fhir.model.LocationResource;
+import com.argusoft.who.emcare.web.fhir.model.OrganizationResource;
 import com.argusoft.who.emcare.web.fhir.service.LocationResourceService;
 import com.argusoft.who.emcare.web.fhir.service.OrganizationResourceService;
 import org.codehaus.jettison.json.JSONObject;
@@ -34,6 +36,9 @@ public class LocationResourceServiceImpl implements LocationResourceService {
     LocationResourceRepository locationResourceRepository;
 
     @Autowired
+    OrganizationResourceRepository organizationResourceRepository;
+
+    @Autowired
     OrganizationResourceService organizationResourceService;
 
     private final FhirContext fhirCtx = FhirContext.forR4();
@@ -48,6 +53,9 @@ public class LocationResourceServiceImpl implements LocationResourceService {
 
         String locationId = UUID.randomUUID().toString();
         theLocation.setId(locationId);
+
+        Organization organization = organizationResourceService.getByResourceId(theLocation.getManagingOrganization().getId());
+        theLocation.getManagingOrganization().setDisplay(organization.getName());
 
         String locationString = parser.encodeResourceToString(theLocation);
 
@@ -105,6 +113,8 @@ public class LocationResourceServiceImpl implements LocationResourceService {
         m.setLastUpdated(new Date());
         theLocation.setMeta(m);
 
+        Organization organization = organizationResourceService.getByResourceId(theLocation.getManagingOrganization().getId());
+        theLocation.getManagingOrganization().setDisplay(organization.getName());
 
         String locationString = parser.encodeResourceToString(theLocation);
         LocationResource updatableLocationResource = locationResourceRepository.findByResourceId(theId.getIdPart());
