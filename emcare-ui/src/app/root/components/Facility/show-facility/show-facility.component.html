@@ -16,7 +16,9 @@
         <tr>
           <th>{{'ID' | translate}}</th>
           <th scope="col">{{'Name' | translate}}</th>
-          <th scope="col">{{'Description' | translate}}</th>
+          <th scope="col">{{'Address' | translate}}</th>
+          <th scope="col">{{'Status' | translate}}</th>
+          <th scope="col">{{'Location' | translate}}</th>
           <th></th>
         </tr>
       </thead>
@@ -25,8 +27,10 @@
           <ng-container *ngFor="let data of facilityArr; let i=index">
             <tr>
               <td>{{i + 1}}</td>
-              <td>{{data.name}}</td>
-              <td>{{data.description ? data.description : 'NA'}}</td>
+              <td>{{data.managingOrganization.display}}</td>
+              <td>{{data.address && data.address.line[0]}}</td>
+              <td>{{data.status ? capitalizeFirstLetter(data.status) : 'NA'}}</td>
+              <td>{{data.extension ? getLocationNameByID(data.extension[0].valueIdentifier.value) : 'NA'}}</td>
               <td class="text-end">
                 <i (click)="editFacility(i)" class="bi bi-pencil-square cursor-pointer font-size-16"></i>
                 <i (click)="deleteFacility(i)" class="bi bi-trash ms-3 text-red cursor-pointer font-size-16"></i>
