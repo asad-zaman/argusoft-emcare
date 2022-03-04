@@ -15,10 +15,17 @@ export class ManageFacilityComponent implements OnInit {
   isEdit: boolean = false;
   editId: string;
   submitted: boolean;
-  countryArr: Array<any> = [];
   locationArr: Array<any> = [];
   statusArr: Array<any> = [];
   selectedId: any;
+  locationFilterForm: FormGroup;
+  countryArr: Array<any> = [];
+  stateArr = [];
+  cityArr = [];
+  regionArr = [];
+  otherArr = [];
+  dropdownActiveArr = [true, false, false, false, false];
+  organizationId;
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -41,6 +48,7 @@ export class ManageFacilityComponent implements OnInit {
 
   prerequisite() {
     this.initFacilityForm();
+    this.initLocationFilterForm();
     this.getAllLocations();
   }
 
@@ -51,30 +59,29 @@ export class ManageFacilityComponent implements OnInit {
       this.isEdit = true;
       this.fhirService.getFacilityById(this.editId).subscribe(res => {
         if (res) {
-          this.mapValuesToFacilityForm(res);
+          this.organizationId = res['managingOrganization']['id'];
+          this.fhirService.getOrganizationById(this.organizationId).subscribe(orgRes => {
+            if (orgRes) {
+              this.mapValuesToFacilityForm(res, orgRes);
+            }
+          });
         }
       });
     }
   }
 
-  mapValuesToFacilityForm(obj) {
+  getStatusObjById(status) {
+    return this.statusArr.find(el => el.id === status);
+  }
+
+  mapValuesToFacilityForm(obj, orgObj) {
     // to remove
     this.facilityForm.patchValue({
-      locationName: obj.name,
-      // locationAlias: obj.alias[0],
-      // locationDescription: obj.description,
-      phone: obj.telecom[0].value,
-      fax: obj.telecom[1].value,
-      email: obj.telecom[2].value,
-      // url: obj.telecom[3].value,
+      organizationName: orgObj.name,
+      status: this.getStatusObjById(obj.status),
       addressStreet: obj.address.line[0],
-      // city: obj.address.city,
-      // postalCode: obj.address.postalCode,
-      // country: obj.address.country,
-      // longitude: obj.position.longitude,
-      // latitude: obj.position.latitude,
-      // altitude: obj.position.altitude,
-      managingOrganization: this.getLocationObjFromName(obj.managingOrganization.identifier.id)
+      telecom: orgObj.telecom[0].value,
+      location: this.getLocationObjFromName((obj.extension[0].valueIdentifier.value))
     });
   }
 
@@ -88,32 +95,40 @@ export class ManageFacilityComponent implements OnInit {
     this.locationService.getAllLocations().subscribe((res: Array<Object>) => {
       if (res) {
         this.locationArr = res;
-        const data = res.filter(el => el['parent'] === 0);
-        this.countryArr = data;
+        const data = res.find(el => el['parent'] === 0);
         this.checkEditParam();
+        this.getAllLocationsByType(data['type'], true);
       }
     })
   }
 
+  getAllLocationsByType(type, isFirstDropdown) {
+    // getting locations by type
+    this.locationService.getAllLocationByType(type).subscribe((res: Array<Object>) => {
+      if (isFirstDropdown) {
+        this.countryArr.push({ id: 'default', name: '-- Select --' });
+        this.countryArr = this.countryArr.concat(res);
+      }
+    });
+  }
+
   initFacilityForm() {
     this.facilityForm = this.formBuilder.group({
-      name: ['', [Validators.required]],
-      // locationAlias: ['', [Validators.required]],
-      // locationDescription: ['', [Validators.required]],
-      // phone: ['', [Validators.required, Validators.pattern('^[0-9]*$')]],
-      // fax: ['', [Validators.required]],
-      // email: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-]+$')]],
-      // url: ['', [Validators.required]],
+      organizationName: ['', [Validators.required]],
       addressStreet: ['', [Validators.required]],
       status: ['', [Validators.required]],
-      // city: ['', [Validators.required]],
-      // postalCode: ['', [Validators.required]],
-      // country: ['', [Validators.required]],
-      // longitude: ['', [Validators.required]],
-      // latitude: ['', [Validators.required]],
-      // altitude: ['', [Validators.required]],
-      organizationName: ['', [Validators.required]],
-      telecom: ['', [Validators.required]]
+      telecom: ['', [Validators.required]],
+      location: ['', [Validators.required]]
+    });
+  }
+
+  initLocationFilterForm() {
+    this.locationFilterForm = this.formBuilder.group({
+      country: [''],
+      state: [''],
+      city: [''],
+      region: [''],
+      other: ['']
     });
   }
 
@@ -124,24 +139,39 @@ export class ManageFacilityComponent implements OnInit {
   saveData() {
     this.submitted = true;
     if (this.facilityForm.valid) {
-      console.log(this.facilityForm.value);
-      // const jsonObj = this.getData(this.facilityForm.value);
-      // if (this.isEdit) {
-      //   jsonObj['id'] = this.editId;
-      //   this.fhirService.editFacility(jsonObj, this.editId).subscribe(_res => {
-      //     this.toasterService.showSuccess('Facility updated successfully!', 'EMCARE');
-      //     this.showFacilities();
-      //   }, (_error) => {
-      //     this.toasterService.showError('Facility could not be updated successfully!', 'EMCARE');
-      //   });
-      // } else {
-      //   this.fhirService.addFacility(jsonObj).subscribe(_res => {
-      //     this.toasterService.showSuccess('Facility added successfully!', 'EMCARE');
-      //     this.showFacilities();
-      //   }, (_error) => {
-      //     this.toasterService.showError('Facility could not be added successfully!', 'EMCARE');
-      //   });
-      // }
+      const organizationObj = this.getOrganizationJSON(this.facilityForm.value);
+      if (this.isEdit) {
+        organizationObj['id'] = this.organizationId;
+        this.fhirService.updateOrganization(organizationObj, this.organizationId).subscribe(res => {
+          if (res) {
+            const jsonObj = this.getData(this.facilityForm.value);
+            jsonObj['id'] = this.editId;
+            this.fhirService.editFacility(jsonObj, this.editId).subscribe(_res => {
+              this.toasterService.showSuccess('Facility updated successfully!', 'EMCARE');
+              this.showFacilities();
+            }, (_error) => {
+              this.toasterService.showError('Facility could not be updated successfully!', 'EMCARE');
+            });
+          }
+        }, (_error) => {
+          this.toasterService.showError('Organization could not be updated successfully!', 'EMCARE');
+        });
+      } else {
+        this.fhirService.addOrganization(organizationObj).subscribe(res => {
+          if (res) {
+            this.organizationId = res['id'];
+            const jsonObj = this.getData(this.facilityForm.value);
+            this.fhirService.addFacility(jsonObj).subscribe(_res => {
+              this.toasterService.showSuccess('Facility added successfully!', 'EMCARE');
+              this.showFacilities();
+            }, (_error) => {
+              this.toasterService.showError('Facility could not be added successfully!', 'EMCARE');
+            });
+          }
+        }, (_error) => {
+          this.toasterService.showError('Organization could not be added successfully!', 'EMCARE');
+        });
+      }
     }
   }
 
@@ -152,59 +182,115 @@ export class ManageFacilityComponent implements OnInit {
   getData(facilityObj) {
     return {
       "resourceType": "Location",
-      "name": facilityObj.locationName,
-      "alias": [
-        facilityObj.locationAlias
-      ],
-      "description": facilityObj.locationDescription,
-      "mode": "instance",
-      "telecom": [
-        {
-          "system": "phone",
-          "value": facilityObj.phone,
-          "use": "work"
-        },
-        {
-          "system": "fax",
-          "value": facilityObj.fax,
-          "use": "work"
-        },
-        {
-          "system": "email",
-          "value": facilityObj.email
-        },
-        {
-          "system": "url",
-          "value": facilityObj.url,
-          "use": "work"
-        }
-      ],
       "address": {
         "use": "work",
         "line": [
           facilityObj.addressStreet
-        ],
-        "city": facilityObj.city,
-        "postalCode": facilityObj.postalCode,
-        "country": facilityObj.country.name
+        ]
       },
-      "position": {
-        "longitude": facilityObj.longitude,
-        "latitude": facilityObj.latitude,
-        "altitude": facilityObj.altitude
-      },
+      "status": facilityObj.status && facilityObj.status.id,
       "managingOrganization": {
-        "type": "Location", // Type the reference refers to (e.g. "Patient")
-        "identifier": facilityObj.managingOrganization, // Logical reference, when literal reference is not known
-        "display": facilityObj.managingOrganization.name // Text alternative for the resource
+        "id": this.organizationId
+      },
+      "extension": [
+        {
+          "valueIdentifier": {
+            "use": "official",
+            "value": facilityObj.location.id
+          }
+        }
+      ]
+    }
+  }
+
+  getOrganizationJSON(facilityObj) {
+    return {
+      "resourceType": "Organization",
+      "name": facilityObj.organizationName,
+      "telecom": [
+        {
+          "system": "phone",
+          "value": facilityObj.telecom,
+          "use": "work"
+        }
+      ]
+    }
+  }
+
+  onClicked(event, dropdownNum) {
+    // getting child locations based on dropdown
+    if (dropdownNum == 1 && event.target.value !== 'default') {
+      this.dropdownActiveArr = [true, true, false, false, false];
+      this.stateArr = [];
+      this.locationFilterForm.patchValue({
+        state: '',
+        city: '',
+        region: '',
+        other: ''
+      });
+      this.getChildLocations(event.target.value, this.stateArr);
+    } else if (dropdownNum == 2 && event.target.value !== 'default') {
+      this.dropdownActiveArr[2] = true;
+      this.cityArr = [];
+      this.locationFilterForm.patchValue({
+        city: '',
+        region: '',
+        other: ''
+      });
+      this.getChildLocations(event.target.value, this.cityArr);
+    } else if (dropdownNum == 3 && event.target.value !== 'default') {
+      this.dropdownActiveArr[3] = true;
+      this.regionArr = [];
+      this.locationFilterForm.patchValue({
+        region: '',
+        other: ''
+      });
+      this.getChildLocations(event.target.value, this.regionArr);
+    } else if (dropdownNum == 4 && event.target.value !== 'default') {
+      this.dropdownActiveArr[4] = true;
+      this.otherArr = [];
+      this.locationFilterForm.patchValue({
+        other: ''
+      });
+      this.getChildLocations(event.target.value, this.otherArr);
+    }
+    // to remove dropdowns if value is reset
+    if (event.target.value === 'default') {
+      for (let index = dropdownNum; index < this.dropdownActiveArr.length; index++) {
+        this.dropdownActiveArr[index] = false;
       }
     }
   }
 
-  getLocationId(data) {
-    this.selectedId = data;
-    if (this.selectedId) {
-      console.log(this.selectedId);
+  getChildLocations(id, arr) {
+    // getting child locations by id
+    this.locationService.getChildLocationById(id).subscribe((res: Array<Object>) => {
+      arr.push({ id: 'default', name: '-- Select --' });
+      if (res) {
+        res.forEach(element => {
+          arr.push(element)
+        });
+      }
+    })
+  }
+
+  saveLocationData() {
+    const valueArr = [
+      this.locationFilterForm.value.country, this.locationFilterForm.value.state,
+      this.locationFilterForm.value.city, this.locationFilterForm.value.region,
+      this.locationFilterForm.value.other
+    ];
+    let selectedId;
+    for (let index = this.dropdownActiveArr.length - 1; index >= 0; index--) {
+      const data = this.dropdownActiveArr[index];
+      //  if value is not selected and showing --select-- in dropdown then the parent valus should be emitted as selectedId
+      if (data && (valueArr[index] !== "" && valueArr[index] !== "default") && !selectedId) {
+        selectedId = valueArr[index];
+      }
     }
+    const selectedLocation = this.locationArr.find(el => el.id == selectedId);
+    this.facilityForm.patchValue({
+      location: selectedLocation
+    });
   }
 }

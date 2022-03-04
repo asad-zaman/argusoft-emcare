@@ -1,4 +1,3 @@
-<app-location-filter (locationId)="getLocationId($event)"></app-location-filter>
 <div class="main-wrapper">
   <div class="form-wrapper-facility">
     <form [formGroup]="facilityForm" name="facilityForm" novalidate>
@@ -9,87 +8,19 @@
         <hr>
       </div>
       <div class="row">
-        <div class="col-12 col-sm-4">
+        <div class="col-12 col-sm-6">
           <div class="mb-3">
             <label class="form-label">Name</label>
-            <input formControlName="name" type="text" class="form-control custom-input" id="name"
-              placeholder="Enter Name" [ngClass]="{ 'is-invalid': submitted && f.name.errors }">
-            <div *ngIf="submitted && f.name.errors" class="invalid-feedback">
-              <div class="cst-error-style" *ngIf="f.name.errors.required">
+            <input formControlName="organizationName" type="text" class="form-control custom-input"
+              id="organizationName" placeholder="Enter organization name"
+              [ngClass]="{ 'is-invalid': submitted && f.organizationName.errors }">
+            <div *ngIf="submitted && f.organizationName.errors" class="invalid-feedback">
+              <div class="cst-error-style" *ngIf="f.organizationName.errors.required">
                 *Name is required</div>
             </div>
           </div>
         </div>
-        <!--
-        <div class="col-12 col-sm-4">
-          <div class="mb-3">
-            <label class="form-label">Location Alias</label>
-            <input formControlName="locationAlias" type="text" class="form-control custom-input" id="locationAlias"
-              placeholder="Enter Location Alias" [ngClass]="{ 'is-invalid': submitted && f.locationAlias.errors }">
-            <div *ngIf="submitted && f.locationAlias.errors" class="invalid-feedback">
-              <div class="cst-error-style" *ngIf="f.locationAlias.errors.required">
-                *Location Alias is required</div>
-            </div>
-          </div>
-        </div>
-        <div class="col-12 col-sm-4">
-          <div class="mb-3">
-            <label class="form-label">Location Description</label>
-            <input formControlName="locationDescription" type="text" class="form-control custom-input"
-              id="locationDescription" placeholder="Enter Location Description"
-              [ngClass]="{ 'is-invalid': submitted && f.locationDescription.errors }">
-            <div *ngIf="submitted && f.locationDescription.errors" class="invalid-feedback">
-              <div class="cst-error-style" *ngIf="f.locationDescription.errors.required">
-                *Location Description is required</div>
-            </div>
-          </div>
-        </div>
-        <div class="col-12 col-sm-4">
-          <div class="mb-3">
-            <label class="form-label">Phone</label>
-            <input formControlName="phone" type="number" class="form-control custom-input" id="phone"
-              placeholder="Enter phone" [ngClass]="{ 'is-invalid': submitted && f.phone.errors }">
-            <div *ngIf="submitted && f.phone.errors" class="invalid-feedback">
-              <div class="cst-error-style" *ngIf="f.phone.errors.required">
-                *Phone is required</div>
-            </div>
-          </div>
-        </div>
-        <div class="col-12 col-sm-4">
-          <div class="mb-3">
-            <label class="form-label">Fax</label>
-            <input formControlName="fax" type="number" class="form-control custom-input" id="fax"
-              placeholder="Enter fax" [ngClass]="{ 'is-invalid': submitted && f.fax.errors }">
-            <div *ngIf="submitted && f.fax.errors" class="invalid-feedback">
-              <div class="cst-error-style" *ngIf="f.fax.errors.required">
-                *Fax is required</div>
-            </div>
-          </div>
-        </div>
-        <div class="col-12 col-sm-4">
-          <div class="mb-3">
-            <label class="form-label">Email</label>
-            <input formControlName="email" type="text" class="form-control custom-input" id="email"
-              placeholder="Enter email" [ngClass]="{ 'is-invalid': submitted && f.email.errors }">
-            <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
-              <div class="cst-error-style" *ngIf="f.email.errors.required">
-                *Email is required</div>
-            </div>
-          </div>
-        </div>
-        <div class="col-12 col-sm-4">
-          <div class="mb-3">
-            <label class="form-label">Url</label>
-            <input formControlName="url" type="text" class="form-control custom-input" id="url" placeholder="Enter url"
-              [ngClass]="{ 'is-invalid': submitted && f.url.errors }">
-            <div *ngIf="submitted && f.url.errors" class="invalid-feedback">
-              <div class="cst-error-style" *ngIf="f.url.errors.required">
-                *Url is required</div>
-            </div>
-          </div>
-        </div>
-         -->
-        <div class="col-12 col-sm-4">
+        <div class="col-12 col-sm-6">
           <div class="mb-3">
             <label class="form-label">Address Street</label>
             <input formControlName="addressStreet" type="text" class="form-control custom-input" id="addressStreet1"
@@ -97,6 +28,22 @@
             <div *ngIf="submitted && f.addressStreet.errors" class="invalid-feedback">
               <div class="cst-error-style" *ngIf="f.addressStreet.errors.required">
                 *Address street is required</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-sm-4">
+          <div class="mb-3">
+            <label class="form-label">Location</label>
+            <div class="d-block">
+              <button type="button" class="btn btn-primary cst-primary" data-bs-toggle="modal"
+                data-bs-target="#locationModal">
+                <ng-container *ngIf="f.location.value; else noLocation">
+                  {{f.location.value.name}}
+                </ng-container>
+                <ng-template #noLocation>
+                  Select Location
+                </ng-template>
+              </button>
             </div>
           </div>
         </div>
@@ -112,43 +59,7 @@
             </div>
           </div>
         </div>
-        <!--
-        <div class="col-12 col-sm-4">
-          <div class="mb-3">
-            <label class="form-label">City</label>
-            <input formControlName="city" type="text" class="form-control custom-input" id="city"
-              placeholder="Enter city" [ngClass]="{ 'is-invalid': submitted && f.city.errors }">
-            <div *ngIf="submitted && f.city.errors" class="invalid-feedback">
-              <div class="cst-error-style" *ngIf="f.city.errors.required">
-                *City is required</div>
-            </div>
-          </div>
-        </div>
-        <div class="col-12 col-sm-4">
-          <div class="mb-3">
-            <label class="form-label">Postal Code</label>
-            <input formControlName="postalCode" type="number" class="form-control custom-input" id="postalCode"
-              placeholder="Enter postal code" [ngClass]="{ 'is-invalid': submitted && f.postalCode.errors }">
-            <div *ngIf="submitted && f.postalCode.errors" class="invalid-feedback">
-              <div class="cst-error-style" *ngIf="f.postalCode.errors.required">
-                *Postal code is required</div>
-            </div>
-          </div>
-        </div>
-        <div class="col-12 col-sm-4">
-          <div class="mb-3">
-            <label class="form-label">Country</label>
-            <div class="d-block">
-              <p-dropdown formControlName="country" [options]="countryArr" optionLabel="name"
-                [ngClass]="{ 'is-invalid': submitted && f.country.errors }">
-              </p-dropdown>
-            </div>
-            <div *ngIf="submitted && f.country.errors" class="invalid-feedback">
-              <div class="cst-error-style" *ngIf="f.country.errors.required">
-                *Country is required</div>
-            </div>
-          </div>
-        </div>
+        <!-- 
         <div class="col-12 col-sm-4">
           <div class="mb-3">
             <label class="form-label">Longitude</label>
@@ -183,19 +94,7 @@
           </div>
         </div>
          -->
-        <div class="col-12 col-sm-6">
-          <div class="mb-3">
-            <label class="form-label">Organization Name</label>
-            <input formControlName="organizationName" type="text" class="form-control custom-input"
-              id="organizationName" placeholder="Enter organization name"
-              [ngClass]="{ 'is-invalid': submitted && f.organizationName.errors }">
-            <div *ngIf="submitted && f.organizationName.errors" class="invalid-feedback">
-              <div class="cst-error-style" *ngIf="f.organizationName.errors.required">
-                *Organization name is required</div>
-            </div>
-          </div>
-        </div>
-        <div class="col-12 col-sm-6">
+        <div class="col-12 col-sm-4">
           <div class="mb-3">
             <label class="form-label">Telecom</label>
             <input formControlName="telecom" type="text" class="form-control custom-input" id="telecom"
@@ -222,5 +121,79 @@
         </button>
       </div>
     </form>
+  </div>
+</div>
+<div class="modal fade" id="locationModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header cst-header">
+        <h5 class="modal-title" id="exampleModalLabel">Select Location</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body cst-body">
+        <form [formGroup]="locationFilterForm" name="locationFilterForm" novalidate>
+          <div class="row">
+            <div *ngIf="dropdownActiveArr[0] == true" class="col-12 col-sm-6">
+              <div class="mb-3">
+                <label class="form-label">{{'Country' | translate}}</label>
+                <select (click)="onClicked($event, 1)" class="form-control custom-input" formControlName="country"
+                  id="country">
+                  <ng-container *ngFor="let data of countryArr">
+                    <option value="{{data.id}}">{{data.name}}</option>
+                  </ng-container>
+                </select>
+              </div>
+            </div>
+            <div *ngIf="dropdownActiveArr[1] == true" class="col-12 col-sm-6">
+              <div class="mb-3">
+                <label class="form-label">{{'State' | translate}}</label>
+                <select (click)="onClicked($event, 2)" class="form-control custom-input" formControlName="state"
+                  id="state">
+                  <ng-container *ngFor="let data of stateArr">
+                    <option value="{{data.id}}">{{data.name}}</option>
+                  </ng-container>
+                </select>
+              </div>
+            </div>
+            <div *ngIf="dropdownActiveArr[2] == true" class="col-12 col-sm-6">
+              <div class="mb-3">
+                <label class="form-label">{{'City' | translate}}</label>
+                <select (click)="onClicked($event, 3)" class="form-control custom-input" formControlName="city"
+                  id="city">
+                  <ng-container *ngFor="let data of cityArr">
+                    <option value="{{data.id}}">{{data.name}}</option>
+                  </ng-container>
+                </select>
+              </div>
+            </div>
+            <div *ngIf="dropdownActiveArr[3] == true" class="col-12 col-sm-6">
+              <div class="mb-3">
+                <label class="form-label">{{'Region' | translate}}</label>
+                <select (click)="onClicked($event, 4)" class="form-control custom-input" formControlName="region"
+                  id="region">
+                  <ng-container *ngFor="let data of regionArr">
+                    <option value="{{data.id}}">{{data.name}}</option>
+                  </ng-container>
+                </select>
+              </div>
+            </div>
+            <div *ngIf="dropdownActiveArr[4] == true" class="col-12 col-sm-6">
+              <div class="mb-3">
+                <label class="form-label">{{'Other' | translate}}</label>
+                <select (click)="onClicked($event, 5)" class="form-control custom-input" formControlName="other"
+                  id="other">
+                  <ng-container *ngFor="let data of otherArr">
+                    <option value="{{data.id}}">{{data.name}}</option>
+                  </ng-container>
+                </select>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-red" (click)="saveLocationData()" data-bs-dismiss="modal">Save</button>
+      </div>
+    </div>
   </div>
 </div>
