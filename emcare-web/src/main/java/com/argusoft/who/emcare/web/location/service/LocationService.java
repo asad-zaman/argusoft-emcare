@@ -40,4 +40,6 @@ public interface LocationService {
     public List<LocationMaster> getLocationByType(String type);
 
     public List<LocationaListDto> getChildLocation(Integer locationId);
+
+    public List<LocationaListDto> getAllParent(Integer locationId);
 }

@@ -32,5 +32,12 @@ public interface LocationMasterDao extends JpaRepository<LocationMaster, Integer
             " SELECT child.id FROM child;", nativeQuery = true)
     public List<Integer> getAllChildLocationId(@Param("id") Integer id);
 
+    @Query(value = "WITH RECURSIVE child AS (\n" +
+            "SELECT * FROM location_master WHERE id = :id\n" +
+            " UNION SELECT l.* FROM location_master l \n" +
+            " INNER JOIN child s ON s.parent = l.id)\n" +
+            " SELECT child.* FROM child;", nativeQuery = true)
+    public List<LocationMaster> getAllParent(@Param("id") Integer id);
+
 
 }
