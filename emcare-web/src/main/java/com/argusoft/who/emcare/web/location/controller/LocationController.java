@@ -94,4 +94,9 @@ public class LocationController {
     public List<LocationaListDto> getChildLocation(@PathVariable(value = "locationId") Integer locationId) {
         return locationConfigService.getChildLocation(locationId);
     }
+
+    @GetMapping("/parent/{locationId}")
+    public List<LocationaListDto> getAllParent(@PathVariable(value = "locationId") Integer locationId) {
+        return locationConfigService.getAllParent(locationId);
+    }
 }
