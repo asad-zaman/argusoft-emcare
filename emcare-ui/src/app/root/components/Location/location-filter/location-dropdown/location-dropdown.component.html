@@ -1,0 +1,54 @@
+<form [formGroup]="locationFilterForm" name="locationFilterForm" novalidate>
+  <div class="row">
+    <div *ngIf="dropdownActiveArr[0] == true" class="col-12 col-sm-6">
+      <div class="mb-3">
+        <label class="form-label">{{'Country' | translate}}</label>
+        <select (click)="onClicked($event, 1)" class="form-control custom-input" formControlName="country" id="country">
+          <ng-container *ngFor="let data of countryArr">
+            <option value="{{data.id}}">{{data.name}}</option>
+          </ng-container>
+        </select>
+      </div>
+    </div>
+    <div *ngIf="dropdownActiveArr[1] == true" class="col-12 col-sm-6">
+      <div class="mb-3">
+        <label class="form-label">{{'State' | translate}}</label>
+        <select (click)="onClicked($event, 2)" class="form-control custom-input" formControlName="state" id="state">
+          <ng-container *ngFor="let data of stateArr">
+            <option value="{{data.id}}">{{data.name}}</option>
+          </ng-container>
+        </select>
+      </div>
+    </div>
+    <div *ngIf="dropdownActiveArr[2] == true" class="col-12 col-sm-6">
+      <div class="mb-3">
+        <label class="form-label">{{'City' | translate}}</label>
+        <select (click)="onClicked($event, 3)" class="form-control custom-input" formControlName="city" id="city">
+          <ng-container *ngFor="let data of cityArr">
+            <option value="{{data.id}}">{{data.name}}</option>
+          </ng-container>
+        </select>
+      </div>
+    </div>
+    <div *ngIf="dropdownActiveArr[3] == true" class="col-12 col-sm-6">
+      <div class="mb-3">
+        <label class="form-label">{{'Region' | translate}}</label>
+        <select (click)="onClicked($event, 4)" class="form-control custom-input" formControlName="region" id="region">
+          <ng-container *ngFor="let data of regionArr">
+            <option value="{{data.id}}">{{data.name}}</option>
+          </ng-container>
+        </select>
+      </div>
+    </div>
+    <div *ngIf="dropdownActiveArr[4] == true" class="col-12 col-sm-6">
+      <div class="mb-3">
+        <label class="form-label">{{'Other' | translate}}</label>
+        <select (click)="onClicked($event, 5)" class="form-control custom-input" formControlName="other" id="other">
+          <ng-container *ngFor="let data of otherArr">
+            <option value="{{data.id}}">{{data.name}}</option>
+          </ng-container>
+        </select>
+      </div>
+    </div>
+  </div>
+</form>

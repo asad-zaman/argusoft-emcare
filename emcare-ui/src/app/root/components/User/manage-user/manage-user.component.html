@@ -28,7 +28,7 @@
         </div>
         <div class="col-12 col-sm-6">
           <div class="mb-3">
-            <label class="form-label">{{'LastName' | translate}}</label>
+            <label class="form-label">{{'Last Name' | translate}}</label>
             <input class="form-control custom-input" formControlName="lastName" type="text" id="lastName"
               placeholder="{{'LastName Placeholder' | translate}}"
               [ngClass]="{ 'is-invalid': submitted && f.lastName.errors }">
@@ -99,31 +99,23 @@
       </div>
       <div class="row">
         <div class="col-12">
-          <div class="mb-3">
+          <div class="mb-3 d-grid">
             <label class="form-label">{{'Location' | translate}}</label>
-            <ng-container *ngIf="locationArr.length>0; else noLocation">
-              <select class="form-control custom-input" [ngClass]="{ 'is-invalid': submitted && f.location.errors }"
-                formControlName="location" id="location">
-                <ng-container *ngFor="let location of locationArr">
-                  <option value="{{location.id}}">{{location.name}}</option>
-                </ng-container>
-              </select>
-            </ng-container>
-            <ng-template #noLocation>
-              <input formControlName="location" type="text" class="form-control custom-input"
-                [ngClass]="{ 'is-invalid': submitted && f.location.errors }" id="location"
-                placeholder="{{'Location Placeholder' | translate}}">
-            </ng-template>
-            <div *ngIf="submitted && f.location.errors" class="invalid-feedback">
-              <div class="cst-error-style" *ngIf="f.location.errors.required">
-                {{'Location Required Message' | translate}}</div>
-            </div>
+            <button type="button" class="btn btn-primary cst-primary-user" data-bs-toggle="modal"
+              data-bs-target="#locationModal">
+              <ng-container *ngIf="f.location.value; else noLocation">
+                {{f.location.value.name}}
+              </ng-container>
+              <ng-template #noLocation>
+                Select Location
+              </ng-template>
+            </button>
           </div>
         </div>
       </div>
       <div class="text-end mt-5">
         <hr>
-        <button routerLink="/showUsers" class="btn-red btn mr-3">
+        <button routerLink="/showUsers" class="btn-red btn ms-3">
           <i class="bi bi-chevron-left"></i> {{'Back' | translate}}
         </button>
         <button (click)="saveData()" class="btn-red btn">
@@ -136,5 +128,22 @@
         </button>
       </div>
     </form>
+  </div>
+</div>
+<div class="modal fade" id="locationModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header cst-header">
+        <h5 class="modal-title" id="exampleModalLabel">Select Location</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body cst-body">
+        <app-location-dropdown [idArr]="locationIdArr" (locationFormValueAndDropdownArr)="getFormValue($event)">
+        </app-location-dropdown>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-red" (click)="saveLocationData()" data-bs-dismiss="modal">Save</button>
+      </div>
+    </div>
   </div>
 </div>

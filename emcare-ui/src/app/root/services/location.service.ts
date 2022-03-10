@@ -87,4 +87,8 @@ export class LocationService {
     }
     return this.http.get(url, this.getHeaders());
   }
+
+  getParentLocationsById(id) {
+    return this.http.get(`${this.locationURL}/parent/${id}`, this.getHeaders());
+  }
 }

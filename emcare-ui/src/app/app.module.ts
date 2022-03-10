@@ -30,7 +30,8 @@ import {
   ManageProfileComponent,
   ManageTranslationsComponent,
   QuestionnaireListComponent,
-  QuestionnaireBuilderComponent
+  QuestionnaireBuilderComponent,
+  LocationDropdownComponent
 } from './root/index';
 import { AuthenticationService, ToasterService } from './shared';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -50,10 +51,6 @@ import { ShowFacilityComponent } from './root/components/Facility/show-facility/
     LoginComponent,
     HomeComponent,
     SignupComponent,
-    // ManagePatientComponent,
-    // ShowPatientComponent,
-    // ManageOrganizationComponent,
-    // ShowOrganizationComponent,
     LocationTypeComponent,
     LocationManagementComponent,
     ShowLocationTypeComponent,
@@ -76,7 +73,8 @@ import { ShowFacilityComponent } from './root/components/Facility/show-facility/
     ManageTranslationsComponent,
     ComparePatientComponent,
     ManageFacilityComponent,
-    ShowFacilityComponent
+    ShowFacilityComponent,
+    LocationDropdownComponent
   ],
   imports: [
     BrowserModule,
