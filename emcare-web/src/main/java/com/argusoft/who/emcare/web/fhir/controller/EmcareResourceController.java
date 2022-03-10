@@ -13,7 +13,6 @@ import com.argusoft.who.emcare.web.fhir.service.LocationResourceService;
 import com.argusoft.who.emcare.web.fhir.service.QuestionnaireMasterService;
 import com.argusoft.who.emcare.web.location.model.LocationMaster;
 import com.argusoft.who.emcare.web.location.service.LocationService;
-import org.hl7.fhir.r4.model.Location;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Questionnaire;
 import org.hl7.fhir.r4.model.RelatedPerson;
@@ -46,35 +45,7 @@ public class EmcareResourceController {
 
     @GetMapping("/patient")
     public List<PatientDto> getAllPatients() {
-
-        List<Patient> patientsList = new ArrayList<>();
-        List<PatientDto> patientDtosList;
-
-        List<EmcareResource> resourcesList = emcareResourceService.retrieveResourcesByType("PATIENT");
-
-        for (EmcareResource emcareResource : resourcesList) {
-            Patient patient = parser.parseResource(Patient.class, emcareResource.getText());
-            patientsList.add(patient);
-        }
-
-        patientDtosList = EmcareResourceMapper.patientEntitiesToDtoMapper(patientsList);
-
-        //Converting caregiverId and locationid to name
-        for (PatientDto patientDto : patientDtosList) {
-
-            if (patientDto.getCaregiver() != null) {
-                EmcareResource caregiverResource = emcareResourceService.findByResourceId(patientDto.getCaregiver());
-                RelatedPerson caregiver = parser.parseResource(RelatedPerson.class, caregiverResource.getText());
-                patientDto.setCaregiver(caregiver.getNameFirstRep().getGiven().get(0) + " " + caregiver.getNameFirstRep().getFamily());
-            }
-
-            if (patientDto.getLocation() != null) {
-                LocationMaster location = locationService.getLocationMasterById(Integer.parseInt(patientDto.getLocation()));
-                patientDto.setLocation(location.getName());
-            }
-        }
-
-        return patientDtosList;
+        return emcareResourceService.getAllPatients();
     }
 
     @GetMapping("/patient/page")

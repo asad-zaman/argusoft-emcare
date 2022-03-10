@@ -12,6 +12,11 @@ import com.argusoft.who.emcare.web.fhir.service.EmcareResourceService;
 import com.argusoft.who.emcare.web.location.dao.LocationMasterDao;
 import com.argusoft.who.emcare.web.location.model.LocationMaster;
 import com.argusoft.who.emcare.web.location.service.LocationService;
+import com.argusoft.who.emcare.web.secuirty.EmCareSecurityUser;
+import com.argusoft.who.emcare.web.userLocationMapping.dao.UserLocationMappingRepository;
+import com.argusoft.who.emcare.web.userLocationMapping.model.UserLocationMapping;
+import org.hl7.fhir.r4.model.Extension;
+import org.hl7.fhir.r4.model.Identifier;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.RelatedPerson;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +44,12 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
 
     @Autowired
     private LocationService locationService;
+
+    @Autowired
+    EmCareSecurityUser emCareSecurityUser;
+
+    @Autowired
+    UserLocationMappingRepository userLocationMappingRepository;
 
     @Override
     public EmcareResource saveResource(EmcareResource emcareResource) {
@@ -133,6 +144,46 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
         pageDto.setList(list);
         pageDto.setTotalCount(totalCount.longValue());
         return pageDto;
+    }
+
+    @Override
+    public List<PatientDto> getAllPatients() {
+        List<Patient> patientsList = new ArrayList<>();
+        List<PatientDto> patientDtosList;
+
+        List<EmcareResource> resourcesList = retrieveResourcesByType("PATIENT");
+
+        for (EmcareResource emcareResource : resourcesList) {
+            Patient patient = parser.parseResource(Patient.class, emcareResource.getText());
+            patientsList.add(patient);
+        }
+
+        String loggedInUserId = emCareSecurityUser.getLoggedInUserId();
+        List<UserLocationMapping> userLocationMapping = userLocationMappingRepository.findByUserId(loggedInUserId);
+        if (!userLocationMapping.isEmpty()) {
+            List<Integer> childLocations = locationMasterDao.getAllChildLocationId(userLocationMapping.get(0).getLocationId());
+            patientsList = patientsList.stream().filter(e -> childLocations.contains( Integer.parseInt(((Identifier) e.getExtension().get(0).getValue()).getValue()))).collect(Collectors.toList());
+        }
+
+//        patientsList =
+        patientDtosList = EmcareResourceMapper.patientEntitiesToDtoMapper(patientsList);
+
+        //Converting caregiverId and locationid to name
+        for (PatientDto patientDto : patientDtosList) {
+
+            if (patientDto.getCaregiver() != null) {
+                EmcareResource caregiverResource = findByResourceId(patientDto.getCaregiver());
+                RelatedPerson caregiver = parser.parseResource(RelatedPerson.class, caregiverResource.getText());
+                patientDto.setCaregiver(caregiver.getNameFirstRep().getGiven().get(0) + " " + caregiver.getNameFirstRep().getFamily());
+            }
+
+            if (patientDto.getLocation() != null) {
+                LocationMaster location = locationService.getLocationMasterById(Integer.parseInt(patientDto.getLocation()));
+                patientDto.setLocation(location.getName());
+            }
+        }
+
+        return patientDtosList;
     }
 
 }
