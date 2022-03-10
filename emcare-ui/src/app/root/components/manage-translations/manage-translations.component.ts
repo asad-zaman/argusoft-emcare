@@ -3,7 +3,7 @@ import { FhirService, ToasterService } from 'src/app/shared';
 import * as _ from 'lodash';
 import { LaunguageSubjects } from 'src/app/auth/token-interceptor';
 import enTrans from '../../../../assets/i18n/en.json';
-
+import { forkJoin } from 'rxjs';
 @Component({
   selector: 'app-manage-translations',
   templateUrl: './manage-translations.component.html',
@@ -33,29 +33,19 @@ export class ManageTranslationsComponent implements OnInit {
   }
 
   prerequisite() {
-    //  for getting available Translations
-    this.fhirService.getAllLaunguagesTranslations().subscribe(res => {
-      if (res) {
-        _.forIn(res, (value, _key) => {
-          this.lanArray.push(value);
-        });
+    forkJoin([
+      this.fhirService.getAllLaunguagesTranslations(),
+      this.fhirService.getAllLaunguages()
+    ]).subscribe(result => {
+      if (result && result.length > 0) {
+        this.manipulateFirstResult(result[0]);
+        this.manipulateSecondResult(result[1]);
       }
+    }, () => {
+      this.toasterService.showError('API issue!', 'EMCARE');
     });
-    this.setAlphabetArr();
 
-    //  for getting all available Launguages 
-    this.fhirService.getAllLaunguages().subscribe(res => {
-      if (res) {
-        const availArr = _.differenceBy(res['languages'], this.lanArray, 'languageName');
-        availArr.map(lan => {
-          this.availableLanguages.push({
-            id: lan.language,
-            lanName: lan.languageName,
-            name: `${lan.languageName} => ${lan.nativeLanguageName}`
-          });
-        });
-      }
-    });
+    this.setAlphabetArr();
 
     // incase we want to update translation file in future
     // const data = {
@@ -67,6 +57,27 @@ export class ManageTranslationsComponent implements OnInit {
     // this.fhirService.updateTranslation(data).subscribe(res => {
     //   this.toasterService.showSuccess('Translation changes saved successfully!', 'EMCARE');
     // });
+  }
+
+  manipulateFirstResult(res) {
+    if (res) {
+      _.forIn(res, (value, _key) => {
+        this.lanArray.push(value);
+      });
+    }
+  }
+
+  manipulateSecondResult(res) {
+    if (res) {
+      const availArr = _.differenceBy(res['languages'], this.lanArray, 'languageName');
+      availArr.map(lan => {
+        this.availableLanguages.push({
+          id: lan.language,
+          lanName: lan.languageName,
+          name: `${lan.languageName} => ${lan.nativeLanguageName}`
+        });
+      });
+    }
   }
 
   setAlphabetArr() {
