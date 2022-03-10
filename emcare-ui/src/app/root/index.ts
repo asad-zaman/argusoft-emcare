@@ -30,3 +30,4 @@ export { ManageProfileComponent } from './components/manage-profile/manage-profi
 export { QuestionnaireBuilderComponent } from './components/questionnaire-management/questionnaire-builder/questionnaire-builder.component';
 export { QuestionnaireListComponent } from './components/questionnaire-management/questionnaire-list/questionnaire-list.component';
 export { ShowFacilityComponent } from './components/Facility/show-facility/show-facility.component';
+export { LocationDropdownComponent } from './components/Location/location-filter/location-dropdown/location-dropdown.component';

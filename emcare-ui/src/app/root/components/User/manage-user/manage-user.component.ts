@@ -20,6 +20,9 @@ export class ManageUserComponent implements OnInit {
   roles: any;
   locationArr: any = [];
   submitted = false;
+  fornData;
+  locationIdArr: Array<any> = [];
+  dropdownActiveArr = [];
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -38,26 +41,40 @@ export class ManageUserComponent implements OnInit {
   prerequisite() {
     const routeParams = this.route.snapshot.paramMap;
     this.editId = routeParams.get('id');
-    this.getAllLocations();
-    if (this.editId) {
-      this.isEdit = true;
-      this.initUpdateForm();
-    } else {
-      this.getRoles();
-    }
+    this.checkEditParams();
     this.initUserForm();
+    this.getAllLocations();
   }
 
-  initUpdateForm() {
+  checkEditParams() {
+    if (this.editId) {
+      this.isEdit = true;
+    } else {
+      this.isEdit = false;
+    }
+  }
+
+  mapUpdateForm() {
     this.userService.getUserById(this.editId).subscribe(res => {
       if (res) {
         const data = {
           firstName: res['firstName'],
           lastName: res['lastName'],
-          location: res['locationId']
+          location: this.getLocationObjFromName(res['locationId'])
         };
+        if (res['locationId']) {
+          this.locationService.getParentLocationsById(res['locationId']).subscribe((res: Array<any>) => {
+            this.locationIdArr = res.map(el => el.id).reverse();
+          });
+        }
         this.userForm.patchValue(data);
       }
+    });
+  }
+
+  getLocationObjFromName(id) {
+    return this.locationArr.find(loc => {
+      return loc.id == Number(id)
     });
   }
 
@@ -88,6 +105,8 @@ export class ManageUserComponent implements OnInit {
       if (res) {
         this.roles = res;
       }
+    }, () => {
+      this.toasterService.showError('Server issue!', 'EMCARE');
     });
   }
 
@@ -95,7 +114,14 @@ export class ManageUserComponent implements OnInit {
     this.locationService.getAllLocations().subscribe(res => {
       if (res) {
         this.locationArr = res;
+        if (this.isEdit) {
+          this.mapUpdateForm();
+        } else {
+          this.getRoles();
+        }
       }
+    }, () => {
+      this.toasterService.showError('Server issue!', 'EMCARE');
     });
   }
 
@@ -137,5 +163,30 @@ export class ManageUserComponent implements OnInit {
 
   showUser() {
     this.router.navigate([`showUsers`]);
+  }
+
+  saveLocationData() {
+    const valueArr = [
+      this.fornData.country, this.fornData.state,
+      this.fornData.city, this.fornData.region,
+      this.fornData.other
+    ];
+    let selectedId;
+    for (let index = this.dropdownActiveArr.length - 1; index >= 0; index--) {
+      const data = this.dropdownActiveArr[index];
+      //  if value is not selected and showing --select-- in dropdown then the parent valus should be emitted as selectedId
+      if (data && (valueArr[index] !== "" && valueArr[index] !== "default") && !selectedId) {
+        selectedId = valueArr[index];
+      }
+    }
+    const selectedLocation = this.locationArr.find(el => el.id == selectedId);
+    this.userForm.patchValue({
+      location: selectedLocation
+    });
+  }
+
+  getFormValue(event) {
+    this.fornData = event.formData;
+    this.dropdownActiveArr = event.dropdownArr
   }
 }
