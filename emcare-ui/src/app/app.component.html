@@ -14,7 +14,7 @@
           {{ userName }}<i class="bi bi-chevron-down ps-2"></i>
         </div>
         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-          <li><a class="dropdown-item" routerLink="/editProfile">Edit Profile</a></li>
+          <li><a class="dropdown-item" routerLink="/editProfile">{{'Edit_Profile' | translate}}</a></li>
           <li><a class="dropdown-item" (click)="logout()">{{'Logout' | translate}}</a></li>
         </ul>
       </li>
@@ -65,18 +65,18 @@
         <div *ngIf="isPatientDropdownOpen" class="dropdown_list_wrapper">
           <ul class="dropdown_list">
             <li><a class="mouse-pointer" routerLink="/showPatients"
-                [ngClass]="{'dropdown-link_active': this.currentUrl === '/showPatients'}">Patients</a>
+                [ngClass]="{'dropdown-link_active': this.currentUrl === '/showPatients'}">{{'Patients' | translate}}</a>
             </li>
             <li><a class="mouse-pointer" routerLink="/comparePatients"
-                [ngClass]="{'dropdown-link_active': this.currentUrl === '/comparePatients'}">Compare Patients</a>
+                [ngClass]="{'dropdown-link_active': this.currentUrl === '/comparePatients'}">{{'Compare Patients' | translate}}</a>
             </li>
           </ul>
         </div>
       </li>
       <li *ngIf="hasAccess('Questionnaire Management')"><a class="mouse-pointer"
           [ngClass]="{'active': this.currentUrl === '/showQuestionnaires' || this.currentUrl === '/addQuestionnaire' || this.currentUrl.includes('/updateQuestionnaire')}"
-          routerLink="/showQuestionnaires"><i class="bi bi-people nav-link_icon"></i>Questionnaire
-          Management</a></li>
+          routerLink="/showQuestionnaires"><i
+            class="bi bi-people nav-link_icon"></i>{{'Questionnaire Management' | translate}}</a></li>
       <li *ngIf="hasAccess('Location Management')">
         <a class="mouse-pointer" [ngClass]="{'active': this.currentUrl === '/locationFilter' || this.currentUrl === '/showLocation' 
           || this.currentUrl === '/addLocation' || this.currentUrl === '/showLocationType' 
@@ -119,8 +119,6 @@
     </ul>
   </div>
 </ng-container>
-<!-- this will change the html direction from right to left when arabic launguages are there -->
-<!-- [ngStyle]="{'direction': getCurrentLaunguage() === 'fr' ? 'rtl' : 'ltr'}" -->
 <div>
   <router-outlet></router-outlet>
 </div>

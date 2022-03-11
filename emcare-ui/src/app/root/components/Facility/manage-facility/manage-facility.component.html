@@ -10,70 +10,68 @@
       <div class="row">
         <div class="col-12 col-sm-6">
           <div class="mb-3">
-            <label class="form-label">Name</label>
+            <label class="form-label">{{'Name' | translate}}</label>
             <input formControlName="organizationName" type="text" class="form-control custom-input"
               id="organizationName" placeholder="Enter organization name"
               [ngClass]="{ 'is-invalid': submitted && f.organizationName.errors }">
             <div *ngIf="submitted && f.organizationName.errors" class="invalid-feedback">
               <div class="cst-error-style" *ngIf="f.organizationName.errors.required">
-                *Name is required</div>
+                *{{'Name is required' | translate}}</div>
             </div>
           </div>
         </div>
         <div class="col-12 col-sm-6">
           <div class="mb-3">
-            <label class="form-label">Address Street</label>
+            <label class="form-label">{{'Address Street' | translate}}</label>
             <input formControlName="addressStreet" type="text" class="form-control custom-input" id="addressStreet1"
               placeholder="Enter address street" [ngClass]="{ 'is-invalid': submitted && f.addressStreet.errors }">
             <div *ngIf="submitted && f.addressStreet.errors" class="invalid-feedback">
               <div class="cst-error-style" *ngIf="f.addressStreet.errors.required">
-                *Address street is required</div>
+                *{{'Address street is required' | translate}}</div>
             </div>
           </div>
         </div>
         <div class="col-12 col-sm-4">
-          <div class="mb-3">
-            <label class="form-label">Location</label>
-            <div class="d-block">
-              <button type="button" class="btn btn-primary cst-primary" data-bs-toggle="modal"
-                data-bs-target="#locationModal">
-                <ng-container *ngIf="f.location.value; else noLocation">
-                  {{f.location.value.name}}
-                </ng-container>
-                <ng-template #noLocation>
-                  Select Location
-                </ng-template>
-              </button>
-            </div>
+          <div class="mb-3 d-grid">
+            <label class="form-label">{{'Location' | translate}}</label>
+            <button type="button" class="btn btn-primary cst-primary" data-bs-toggle="modal"
+              data-bs-target="#locationModal">
+              <ng-container *ngIf="f.location.value; else noLocation">
+                {{f.location.value.name}}
+              </ng-container>
+              <ng-template #noLocation>
+                {{'Select_Location' | translate}}
+              </ng-template>
+            </button>
           </div>
         </div>
         <div class="col-12 col-sm-4">
           <div class="mb-3">
-            <label class="form-label">Status</label>
+            <label class="form-label">{{'Status' | translate}}</label>
             <p-dropdown formControlName="status" [options]="statusArr" optionLabel="name"
               [ngClass]="{ 'is-invalid': submitted && f.status.errors }">
             </p-dropdown>
             <div *ngIf="submitted && f.status.errors" class="invalid-feedback">
               <div class="cst-error-style" *ngIf="f.status.errors.required">
-                *status is required</div>
+                *{{'Status is required' | translate}}</div>
             </div>
           </div>
         </div>
         <div class="col-12 col-sm-4">
           <div class="mb-3">
-            <label class="form-label">Telecom</label>
+            <label class="form-label">{{'Telecom' | translate}}</label>
             <input formControlName="telecom" type="text" class="form-control custom-input" id="telecom"
               placeholder="Enter telecom" [ngClass]="{ 'is-invalid': submitted && f.telecom.errors }">
             <div *ngIf="submitted && f.telecom.errors" class="invalid-feedback">
               <div class="cst-error-style" *ngIf="f.telecom.errors.required">
-                *Telecom is required</div>
+                *{{'Telecom is required' | translate}}</div>
             </div>
           </div>
         </div>
       </div>
       <div class="text-end mt-5">
         <hr>
-        <button routerLink="/showFacility" class="btn-red btn mr-3">
+        <button routerLink="/showFacility" class="btn-red btn ms-3">
           <i class="bi bi-chevron-left"></i> {{'Back' | translate}}
         </button>
         <button (click)="saveData()" class="btn-red btn">
@@ -92,7 +90,7 @@
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header cst-header">
-        <h5 class="modal-title" id="exampleModalLabel">Select Location</h5>
+        <h5 class="modal-title" id="exampleModalLabel">{{'Select_Location' | translate}}</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body cst-body">
@@ -100,7 +98,8 @@
         </app-location-dropdown>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-red" (click)="saveLocationData()" data-bs-dismiss="modal">Save</button>
+        <button type="button" class="btn btn-red" (click)="saveLocationData()"
+          data-bs-dismiss="modal">{{'Save' | translate}}</button>
       </div>
     </div>
   </div>
