@@ -1,61 +1,60 @@
 <div class="main-wrapper">
-    <div class="form-wrapper">
-      <form [formGroup]="comparePatientForm" name="comparePatientForm" novalidate>
-        <div class="mb-5">
-          <h1 class="heading">
-            Compare Patients
-          </h1>
-          <hr>
-        </div>
-        <div class="row">
-          <div class="col-12 col-sm-6">
-            <div class="mb-3">
-              <label class="form-label">First Patient</label>
-              <input class="form-control" formControlName="firstPatient" type="file" id="firstPatient"
-                placeholder="Upload first Patient" accept=".json,.txt"
-                (change)="onFileUploaded($event)">
-            </div>
-          </div>
-          <div class="col-12 col-sm-6">
-            <div class="mb-3">
-              <label class="form-label">Second Patient</label>
-              <input class="form-control" formControlName="secondPatient" type="file" id="secondPatient"
-                placeholder="Upload Second Patient" accept=".json,.txt"
-                (change)="onFileUploaded($event)">
-            </div>
+  <div class="form-wrapper">
+    <form [formGroup]="comparePatientForm" name="comparePatientForm" novalidate>
+      <div class="mb-5">
+        <h1 class="heading">
+          {{'Compare Patients' | translate}}
+        </h1>
+        <hr>
+      </div>
+      <div class="row">
+        <div class="col-12 col-sm-6">
+          <div class="mb-3">
+            <label class="form-label">{{'First Patient' | translate}}</label>
+            <input class="form-control" formControlName="firstPatient" type="file" id="firstPatient"
+              placeholder="{{'Upload first Patient' | translate}}" accept=".json,.txt"
+              (change)="onFileUploaded($event)">
           </div>
         </div>
-        <div class="row mt-3">
-          <div class="col-12 col-sm-6">
-            <div class="mb-3">
-              <label class="form-label">First Patient JSON</label>
-              <textarea formControlName="firstPatientDetails" id="firstPatientDetails"
-                placeholder="First Patient Details" class="form-control custom-input" rows="8" 
-                [ngClass]="{ 'is-invalid': submitted && f.firstPatientDetails.errors }"></textarea>
-                <div *ngIf="submitted && f.firstPatientDetails.errors" class="invalid-feedback">
-                  Patient data is required
-                </div>
-            </div>
+        <div class="col-12 col-sm-6">
+          <div class="mb-3">
+            <label class="form-label">{{'Second Patient' | translate}}</label>
+            <input class="form-control" formControlName="secondPatient" type="file" id="secondPatient"
+              placeholder="{{'Upload Second Patient' | translate}}" accept=".json,.txt"
+              (change)="onFileUploaded($event)">
           </div>
-          <div class="col-12 col-sm-6">
-            <div class="mb-3">
-              <label class="form-label">Second Patient JSON</label>
-              <textarea formControlName="secondPatientDetails" id="secondPatientDetails"
-                placeholder="Second Patient Details" class="form-control custom-input" rows="8"
-                [ngClass]="{ 'is-invalid': submitted && f.secondPatientDetails.errors }"></textarea>
-                <div *ngIf="submitted && f.secondPatientDetails.errors" class="invalid-feedback">
-                  Patient data is required
-                </div>
+        </div>
+      </div>
+      <div class="row mt-3">
+        <div class="col-12 col-sm-6">
+          <div class="mb-3">
+            <label class="form-label">{{'First Patient JSON' | translate}}</label>
+            <textarea formControlName="firstPatientDetails" id="firstPatientDetails"
+              placeholder="{{'First Patient Details' | translate}}" class="form-control custom-input" rows="8"
+              [ngClass]="{ 'is-invalid': submitted && f.firstPatientDetails.errors }"></textarea>
+            <div *ngIf="submitted && f.firstPatientDetails.errors" class="invalid-feedback">
+              {{'Patient data is required' | translate}}
             </div>
           </div>
         </div>
-        <div class="text-end mt-5">
-          <hr>
-          <button (click)="comparePatients()" class="btn-red btn">
-            Compare
-          </button>
+        <div class="col-12 col-sm-6">
+          <div class="mb-3">
+            <label class="form-label">{{'Second Patient JSON' | translate}}</label>
+            <textarea formControlName="secondPatientDetails" id="secondPatientDetails"
+              placeholder="{{'Second Patient Details' | translate}}" class="form-control custom-input" rows="8"
+              [ngClass]="{ 'is-invalid': submitted && f.secondPatientDetails.errors }"></textarea>
+            <div *ngIf="submitted && f.secondPatientDetails.errors" class="invalid-feedback">
+              {{'Patient data is required' | translate}}
+            </div>
+          </div>
         </div>
-      </form>
-    </div>
+      </div>
+      <div class="text-end mt-5">
+        <hr>
+        <button (click)="comparePatients()" class="btn-red btn">
+          {{'Compare' | translate}}
+        </button>
+      </div>
+    </form>
   </div>
-  
+</div>
