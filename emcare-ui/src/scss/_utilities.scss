@@ -12,7 +12,7 @@ and open the template in the editor.
 }
 @for $i from 0 through 100 {
     width-percentage-#{$i} {
-        width: round(percentage($i/100));
+        width: round(percentage($i*0.01));
     }
 }
 $spaceamounts: (
@@ -52,7 +52,7 @@ $sides: (top, bottom, left, right); // Leave this variable alone
 }
 @for $i from 0 through 100 {
     .opacity-#{$i} {
-        opacity: round(percentage($i/100));
+        opacity: round(percentage($i*0.01));
     }
 }
 .cursor-pointer {

@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, Renderer2 } from '@angular/core';
 import { Router, NavigationStart, Event as NavigationEvent } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { HTTPStatus, LaunguageSubjects } from './auth/token-interceptor';
@@ -23,7 +23,7 @@ export class AppComponent implements OnInit {
   featureList: any = [];
   isLoggedIn: boolean = false;
   currTranslations: any;
-  isFacilityDropdownOpen: any;
+  rtlLaunguages = ['ar', 'he', 'ku', 'fa', 'ur'];
 
   constructor(
     private readonly router: Router,
@@ -32,7 +32,8 @@ export class AppComponent implements OnInit {
     private readonly cdr: ChangeDetectorRef,
     private readonly translate: TranslateService,
     private readonly fhirService: FhirService,
-    private readonly lanSubjects: LaunguageSubjects
+    private readonly lanSubjects: LaunguageSubjects,
+    private readonly renderer: Renderer2
   ) { }
 
   ngOnInit() {
@@ -69,6 +70,7 @@ export class AppComponent implements OnInit {
             this.translate.use(lan);
           }
         });
+        this.checkRTLLaunguage();
       }
     });
   }
@@ -86,12 +88,6 @@ export class AppComponent implements OnInit {
         });
       }
     });
-  }
-
-  setDefaultLanguage(lan) {
-    this.translate.use(lan);
-    // the lang to use, if the lang isn't available, it will use the current loader to get them
-    this.translate.setDefaultLang('en');
   }
 
   checkTOkenExpiresOrNot() {
@@ -132,6 +128,7 @@ export class AppComponent implements OnInit {
     this.authenticationService.getLoggedInUser().subscribe(res => {
       if (res) {
         localStorage.setItem('language', res['language']);
+        this.checkRTLLaunguage();
         this.authenticationService.setFeatures(res.feature.map(f => f.menu_name));
         this.getLoggedInUser(res);
         this.getAllLaunguages();
@@ -166,13 +163,12 @@ export class AppComponent implements OnInit {
       case 3:
         this.isPatientDropdownOpen = !this.isPatientDropdownOpen;
         break;
-      case 4:
-        this.isFacilityDropdownOpen = !this.isFacilityDropdownOpen;
-        break;
     }
   }
 
   logout() {
+    //  on logout direction should be set to ltr as it's english language
+    this.renderer.setAttribute(document.body, 'dir', 'ltr');
     this.router.navigate(['/login']);
     localStorage.clear();
   }
@@ -181,7 +177,13 @@ export class AppComponent implements OnInit {
     return !!this.featureList.find(f => f === feature);
   }
 
-  getCurrentLaunguage() {
-    return localStorage.getItem('language');
+  checkRTLLaunguage() {
+    const lan = localStorage.getItem('language');
+    const isRTL = this.rtlLaunguages.indexOf(lan) !== -1;
+    if (isRTL) {
+      this.renderer.setAttribute(document.body, 'dir', 'rtl');
+    } else {
+      this.renderer.setAttribute(document.body, 'dir', 'ltr');
+    }
   }
 }
