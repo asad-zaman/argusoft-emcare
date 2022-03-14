@@ -29,9 +29,9 @@
             <tr>
               <td>{{i+1}}</td>
               <td>{{questionnaire.id}}</td>
-              <td>{{questionnaire.title}}</td>
-              <td>{{questionnaire.description}}
-              <td class="text-end">
+              <td>{{questionnaire.title ? questionnaire.title : 'NA'}}</td>
+              <td>{{questionnaire.description ? questionnaire.description : 'NA'}}
+              <td>
                 <ul class="navigation" style="list-style-type: none;">
                   <li class="dropdown mt-3 cursor-pointer">
                     <div class="d-flex align-items-center" data-bs-toggle="dropdown">

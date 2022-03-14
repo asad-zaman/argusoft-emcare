@@ -1,19 +1,20 @@
 <div class="main-wrapper">
   <h1 class="heading mb-3">{{'Manage Translations' | translate}}</h1>
   <ng-container *ngIf="availableLanguages.length>0">
-    <div class="mt-5">
-      <label class="cst-label mr-4">Add Launguage</label>
+    <div class="mt-5 cst-rtl">
+      <label class="cst-label mr-4">{{'Add Launguage' | translate}}</label>
       <p-dropdown [options]="availableLanguages" [(ngModel)]="newSelectedLanguage" optionLabel="name"
-        placeholder="Select country" styleClass="custom-dropdown" [filter]="true" filterBy="name" [showClear]="true">
+        placeholder="{{'Select country' | translate}}" styleClass="custom-dropdown" [filter]="true" filterBy="name"
+        [showClear]="true">
       </p-dropdown>
-      <button [disabled]="!newSelectedLanguage" class="btn btn-red ml-4" (click)="addNewLanguage()">Add
-        Launguage</button>
+      <button [disabled]="!newSelectedLanguage" class="btn btn-red ml-4"
+        (click)="addNewLanguage()">{{'Add Launguage' | translate}}</button>
     </div>
   </ng-container>
   <ng-container *ngIf="lanArray.length>0">
-    <div class="cst-lan-dropdown d-block my-4">
-      <label class="cst-label mr-4">Launguage</label>
-      <p-dropdown [options]="lanArray" optionLabel="languageName" placeholder="Select Launguage"
+    <div class="cst-lan-dropdown d-block my-4 cst-rtl">
+      <label class="cst-label mr-4">{{'Launguage' | translate}}</label>
+      <p-dropdown [options]="lanArray" optionLabel="languageName" placeholder="{{'Select Launguage' | translate}}"
         styleClass="custom-launguage-dropdown" (onChange)="setLaunguage($event.value)">
       </p-dropdown>
     </div>
@@ -45,7 +46,7 @@
         </div>
       </div>
       <div *ngIf="noRecords" class="p-10">
-        <h4 class="m-0">There are no translations with the selected alphabet!!</h4>
+        <h4 class="m-0">{{'No Translations' | translate}}</h4>
       </div>
     </div>
   </ng-container>

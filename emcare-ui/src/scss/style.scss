@@ -11,6 +11,60 @@ html,
 body {
     font-family: "Roboto", sans-serif;
     font-size: 14px;
+
+    &[dir="rtl"] {
+        .user-char-logo {
+            margin-left: 10px;
+        }
+
+        .dropdown {
+            div {
+                i {
+                    padding-right: 0.5rem;
+                }
+            }
+        }
+
+        .sidebarIconToggle {
+            right: 470px !important;
+
+            .cst-filter-btn {
+                width: 150px;
+
+                .cst-filter-icon {
+                    margin-left: 5px;
+                }
+            }
+        }
+
+        label {
+            float: right;
+
+            &.form-label {
+                text-align: start;
+            }
+        }
+
+        .btn-close {
+            align-self: center;
+            padding-right: 20px;
+        }
+
+        .cst-rtl {
+            label {
+                margin-left: 10px;
+                float: initial;
+            }
+
+            button {
+                margin-right: 10px;
+            }
+        }
+    }
+}
+
+.ms-3 {
+    margin-right: 1rem !important;
 }
 
 .main-wrapper {
@@ -49,5 +103,15 @@ body {
 
     &.custom-launguage-dropdown {
         width: 33%;
+    }
+}
+
+.cst-primary {
+    height: 45px;
+    width: 50%;
+
+    &-user {
+        width: 30%;
+        height: 45px;
     }
 }
