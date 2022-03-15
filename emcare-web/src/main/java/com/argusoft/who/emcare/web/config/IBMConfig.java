@@ -7,8 +7,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class IBMConfig {
 
-    public static final String IBM_KEY = "mOtkmk184J0EipDrfQAwi4MQv_zS3oSrWWd1RUVgrBsa";
-    public static final String IBM_URL = "https://api.au-syd.language-translator.watson.cloud.ibm.com/instances/48aeb1e3-672a-405b-b769-ead24a6dd824";
+    public static final String IBM_KEY = "WXI-fgndQ07mYNqMEHcTC5CnqZvqfxy2IjgD-4fgY9z5";
+    public static final String IBM_URL = "https://api.eu-gb.language-translator.watson.cloud.ibm.com/instances/98adcf9c-495d-4334-834a-a6b3b6f527ca";
 
     public static LanguageTranslator getLanguageTranslatorInstance() {
         IamAuthenticator authenticator = new IamAuthenticator(IBM_KEY);
