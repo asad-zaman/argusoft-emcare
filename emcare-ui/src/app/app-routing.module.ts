@@ -52,12 +52,12 @@ const routes: Routes = [
   { path: 'editRole/:id', component: ManageRoleComponent, canActivate: [AuthGuard] },
   { path: 'showFeatures', component: FeatureListComponent, canActivate: [AuthGuard] },
   { path: 'editFeature/:id', component: ManageFeatureComponent, canActivate: [AuthGuard] },
-  { path: 'manage-translation', component: ManageTranslationsComponent },
+  { path: 'manage-translation', component: ManageTranslationsComponent, canActivate: [AuthGuard] },
   { path: 'editProfile', component: ManageProfileComponent },
-  { path: 'manageFacility', component: ManageFacilityComponent },
-  { path: 'manageFacility/:id', component: ManageFacilityComponent },
-  { path: 'showFacility', component: ShowFacilityComponent },
-  { path: '**', redirectTo: 'login' }
+  { path: 'manageFacility', component: ManageFacilityComponent, canActivate: [AuthGuard] },
+  { path: 'manageFacility/:id', component: ManageFacilityComponent, canActivate: [AuthGuard] },
+  { path: 'showFacility', component: ShowFacilityComponent, canActivate: [AuthGuard] },
+  { path: '**', redirectTo: 'dashboard' }
 ];
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
