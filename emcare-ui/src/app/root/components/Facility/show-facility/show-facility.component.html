@@ -31,7 +31,7 @@
               <td>{{data.address && data.address.line[0]}}</td>
               <td>{{data.status ? capitalizeFirstLetter(data.status) : 'NA'}}</td>
               <td>{{data.extension ? getLocationNameByID(data.extension[0].valueIdentifier.value) : 'NA'}}</td>
-              <td class="text-end">
+              <td class="">
                 <i (click)="editFacility(i)" class="bi bi-pencil-square cursor-pointer font-size-16"></i>
                 <i (click)="deleteFacility(i)" class="bi bi-trash ms-3 text-red cursor-pointer font-size-16"></i>
               </td>

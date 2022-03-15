@@ -107,7 +107,7 @@
                 {{f.location.value.name}}
               </ng-container>
               <ng-template #noLocation>
-                Select Location
+                {{'Select_Location' | translate}}
               </ng-template>
             </button>
           </div>
@@ -134,7 +134,7 @@
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header cst-header">
-        <h5 class="modal-title" id="exampleModalLabel">Select Location</h5>
+        <h5 class="modal-title" id="exampleModalLabel">{{'Select_Location' | translate}}</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body cst-body">
@@ -142,7 +142,8 @@
         </app-location-dropdown>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-red" (click)="saveLocationData()" data-bs-dismiss="modal">Save</button>
+        <button type="button" class="btn btn-red" (click)="saveLocationData()"
+          data-bs-dismiss="modal">{{'Save' | translate}}</button>
       </div>
     </div>
   </div>
