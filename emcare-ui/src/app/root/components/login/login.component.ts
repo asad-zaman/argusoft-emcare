@@ -24,8 +24,8 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {
     this.loginForm = this.formBuilder.group({
-      username: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-]+$')]],
-      password: ['', Validators.required]
+      username: ['emcare@gmail.com', [Validators.required, Validators.pattern('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-]+$')]],
+      password: ['argusadmin', Validators.required]
     });
   }
 
@@ -52,7 +52,7 @@ export class LoginComponent implements OnInit {
             refreshTokenexpiration.setSeconds(new Date().getSeconds() + data.refresh_expires_in);
             localStorage.setItem('refresh_token', JSON.stringify(data.refresh_token));
             localStorage.setItem('refresh_token_expiry_time', JSON.stringify(refreshTokenexpiration));
-            this.router.navigate(["/showUsers"]);
+            this.router.navigate(["/dashboard"]);
             this.toasterService.showSuccess('Welcome to EmCare!');
             this.authService.setIsLoggedIn(true);
           }

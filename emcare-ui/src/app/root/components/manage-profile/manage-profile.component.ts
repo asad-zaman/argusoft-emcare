@@ -104,7 +104,7 @@ export class ManageProfileComponent implements OnInit {
         localStorage.setItem('language', this.f.language.value.id);
         this.lanSubjects.setLaunguage(this.f.language.value.id);
         this.lanSubjects.setCurrentTranslation(translations);
-        this.router.navigate(['/showUsers']);
+        this.router.navigate(['/dashboard']);
         this.toasterService.showSuccess('User profile updated successfully!', 'EMCARE');
       });
     }

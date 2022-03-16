@@ -7,11 +7,24 @@ export class AuthGuard implements CanActivate {
 
     user: any;
     result: boolean;
+    featureRouteArr: Object;
 
     constructor(
         private router: Router,
         private authService: AuthenticationService
-    ) { }
+    ) {
+        this.featureRouteArr = {
+            'Users': '/showUsers',
+            'Location Management': '/showLocation',
+            'Patient Management': '/showPatients',
+            'Feature Management': '/showFeatures',
+            'Roles': '/showRoles',
+            'Device Management': '/showDevices',
+            'Questionnaire Management': '/showQuestionnaires',
+            'Language Management': '/manage-translation',
+            'Manage Facility': '/showFacility'
+        }
+    }
 
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean | UrlTree | Observable<boolean | UrlTree> | Promise<boolean | UrlTree> {
         const token = JSON.parse(localStorage.getItem('access_token'));
@@ -27,22 +40,10 @@ export class AuthGuard implements CanActivate {
                 localStorage.clear();
                 return false;
             } else {
-                /*  every time getLoogedInUser api should not be called
-                    first check if features are already present or not
-                    if not then only it should be fetched   */
-                this.authService.getFeatures().subscribe(res => {
-                    if (res && res.length !== 0) {
-                        this.user = res;
-                        this.getResultAndRedirect(route);
-                        return true;
-                    } else {
-                        this.authService.getLoggedInUser().subscribe(res => {
-                            this.user = res;
-                            this.getResultAndRedirect(route);
-                            return true;
-                        });
-                        return true;
-                    }
+                this.authService.getLoggedInUser().subscribe(res => {
+                    this.user = res;
+                    this.getResultAndRedirect(route);
+                    return true;
                 });
                 return true;
             }
@@ -58,9 +59,14 @@ export class AuthGuard implements CanActivate {
         if (this.user.feature) {
             this.result = this.checkFeature(route);
             if (!this.result) {
-                this.router.navigate(['/dashboard']);
+                const route = this.getFeatureAndRedirectUser(this.user.feature[0].menu_name);
+                this.router.navigate([route]);
             }
         }
+    }
+
+    getFeatureAndRedirectUser(feature) {
+        return this.featureRouteArr[feature];
     }
 
     checkFeature(route) {
@@ -89,7 +95,7 @@ export class AuthGuard implements CanActivate {
         ) {
             return !!this.user.feature.find(f => f.menu_name === 'Patient Management');
         } else if (
-            route.routeConfig.path == 'showQuestionnaires' 
+            route.routeConfig.path == 'showQuestionnaires'
             || route.routeConfig.path === 'addQuestionnaire'
             || route.routeConfig.path.includes('updateQuestionnaire')
         ) {
@@ -105,6 +111,15 @@ export class AuthGuard implements CanActivate {
             || route.routeConfig.path.includes('editFeature')
         ) {
             return !!this.user.feature.find(f => f.menu_name === 'Feature Management');
+        } else if (
+            route.routeConfig.path === 'manage-translation'
+        ) {
+            return !!this.user.feature.find(f => f.menu_name === 'Language Management');
+        } else if (
+            route.routeConfig.path === 'showFacility'
+            || route.routeConfig.path.includes('manageFacility')
+        ) {
+            return !!this.user.feature.find(f => f.menu_name === 'Manage Facility');
         } else {
             return false;
         }

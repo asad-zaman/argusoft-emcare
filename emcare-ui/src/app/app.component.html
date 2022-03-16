@@ -108,11 +108,11 @@
           [ngClass]="{'active': this.currentUrl === '/showFeatures' || this.currentUrl.includes('/editFeature')}"
           routerLink="/showFeatures"><i class="bi bi-list nav-link_icon"></i>{{'Manage Features' | translate}}</a>
       </li>
-      <li><a class="mouse-pointer" [ngClass]="{'active': this.currentUrl === '/manage-translation'}"
-          routerLink="/manage-translation"><i
+      <li *ngIf="hasAccess('Language Management')"><a class="mouse-pointer"
+          [ngClass]="{'active': this.currentUrl === '/manage-translation'}" routerLink="/manage-translation"><i
             class="bi bi-list nav-link_icon"></i>{{'Manage Translations' | translate}}</a>
       </li>
-      <li><a class="mouse-pointer"
+      <li *ngIf="hasAccess('Manage Facility')"><a class="mouse-pointer"
           [ngClass]="{'active': this.currentUrl === '/manage-facility' || this.currentUrl === '/showFacility' || this.currentUrl.includes('/editFacility')}"
           routerLink="/showFacility"><i class="bi bi-list nav-link_icon"></i>{{'Manage Facility' | translate}}</a>
       </li>
