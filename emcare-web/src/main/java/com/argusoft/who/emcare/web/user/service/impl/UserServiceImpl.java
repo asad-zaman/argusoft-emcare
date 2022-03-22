@@ -9,6 +9,10 @@ import com.argusoft.who.emcare.web.location.model.LocationMaster;
 import com.argusoft.who.emcare.web.location.service.LocationService;
 import com.argusoft.who.emcare.web.menu.dao.MenuConfigRepository;
 import com.argusoft.who.emcare.web.menu.dao.UserMenuConfigRepository;
+import com.argusoft.who.emcare.web.menu.dto.CurrentUserFeatureJson;
+import com.argusoft.who.emcare.web.menu.dto.FeatureJSON;
+import com.argusoft.who.emcare.web.menu.dto.UserFeatureJson;
+import com.argusoft.who.emcare.web.menu.mapper.MenuConfigMapper;
 import com.argusoft.who.emcare.web.menu.model.MenuConfig;
 import com.argusoft.who.emcare.web.menu.model.UserMenuConfig;
 import com.argusoft.who.emcare.web.secuirty.EmCareSecurityUser;
@@ -18,6 +22,7 @@ import com.argusoft.who.emcare.web.user.mapper.UserMapper;
 import com.argusoft.who.emcare.web.user.service.UserService;
 import com.argusoft.who.emcare.web.userLocationMapping.dao.UserLocationMappingRepository;
 import com.argusoft.who.emcare.web.userLocationMapping.model.UserLocationMapping;
+import com.google.gson.Gson;
 import org.keycloak.admin.client.CreatedResponseUtil;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.resource.*;
@@ -83,7 +88,8 @@ public class UserServiceImpl implements UserService {
         for (RoleRepresentation role : roleRepresentationList) {
             roleIds.add(role.getId());
         }
-        masterUser.setFeature(userMenuConfigRepository.getMenuByUser(roleIds, masterUser.getUserId()));
+
+        masterUser.setFeature(getUserFeatureJson(roleIds, masterUser.getUserId()));
         return masterUser;
     }
 
@@ -125,7 +131,7 @@ public class UserServiceImpl implements UserService {
         }
         List<UserRepresentation> userRepresentations;
         if (searchString != null && !searchString.isEmpty()) {
-            userRepresentations = keycloak.realm(KeyCloakConfig.REALM).users().search(searchString,0,1000);
+            userRepresentations = keycloak.realm(KeyCloakConfig.REALM).users().search(searchString, 0, 1000);
             if (userRepresentations.size() <= endIndex) {
                 endIndex = userRepresentations.size();
 
@@ -474,6 +480,49 @@ public class UserServiceImpl implements UserService {
 
         userResource.update(newUser);
         return ResponseEntity.ok(HttpStatus.OK);
+    }
+
+    private List<CurrentUserFeatureJson> getUserFeatureJson(List<String> roleIds, String userId) {
+        List<UserFeatureJson> userFeatureJSONs = userMenuConfigRepository.getMenuByUser(roleIds, userId);
+        List<CurrentUserFeatureJson> featureJsons = new ArrayList<>();
+
+        for (UserFeatureJson ufj : userFeatureJSONs) {
+            List<UserFeatureJson> list = userFeatureJSONs.stream().filter(feature -> ufj.getId().equals(feature.getId())).collect(Collectors.toList());
+            List<CurrentUserFeatureJson> originalList = featureJsons.stream().filter(feature -> ufj.getMenuName().equals(feature.getMenuName())).collect(Collectors.toList());
+            if (originalList.size() < 1) {
+                if (list.size() > 1) {
+                    String json = getMargedStringOfFeatureJson(list);
+                    featureJsons.add(MenuConfigMapper.getCurrentUserFeatureJson(ufj, json));
+                } else {
+                    featureJsons.add(MenuConfigMapper.getCurrentUserFeatureJson(ufj, null));
+                }
+            }
+        }
+        return featureJsons;
+    }
+
+    private String getMargedStringOfFeatureJson(List<UserFeatureJson> featureJsonList) {
+        if (featureJsonList.size() > 2) {
+            return featureJsonList.get(0).getFeatureJson();
+        } else {
+            FeatureJSON featureJSON = new FeatureJSON(true, true, true, true);
+            Gson g = new Gson();
+            FeatureJSON f1 = g.fromJson(featureJsonList.get(0).getFeatureJson(), FeatureJSON.class);
+            FeatureJSON f2 = g.fromJson(featureJsonList.get(1).getFeatureJson(), FeatureJSON.class);
+            if (!f1.getCanAdd() && !f2.getCanAdd()) {
+                featureJSON.setCanAdd(false);
+            }
+            if (!f1.getCanDelete() && !f2.getCanDelete()) {
+                featureJSON.setCanDelete(false);
+            }
+            if (!f1.getCanEdit() && !f2.getCanEdit()) {
+                featureJSON.setCanEdit(false);
+            }
+            if (!f1.getCanView() && !f2.getCanView()) {
+                featureJSON.setCanView(false);
+            }
+            return featureJSON.toString();
+        }
     }
 
 }
