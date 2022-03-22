@@ -1,9 +1,9 @@
 package com.argusoft.who.emcare.web.user.dto;
 
 import com.argusoft.who.emcare.web.location.model.LocationMaster;
+import com.argusoft.who.emcare.web.menu.dto.CurrentUserFeatureJson;
 
 import java.util.List;
-import java.util.Map;
 
 public class UserMasterDto {
 
@@ -13,7 +13,7 @@ public class UserMasterDto {
     private String language;
     private LocationMaster location;
     private String[] roles;
-    private List<Map<String, Object>> feature;
+    private List<CurrentUserFeatureJson> feature;
     private String firstName;
     private String lastName;
 
@@ -57,8 +57,12 @@ public class UserMasterDto {
         this.roles = roles;
     }
 
-    public List<Map<String, Object>> getFeature() {
+    public List<CurrentUserFeatureJson> getFeature() {
         return feature;
+    }
+
+    public void setFeature(List<CurrentUserFeatureJson> feature) {
+        this.feature = feature;
     }
 
     public String getLanguage() {
@@ -67,10 +71,6 @@ public class UserMasterDto {
 
     public void setLanguage(String language) {
         this.language = language;
-    }
-
-    public void setFeature(List<Map<String, Object>> feature) {
-        this.feature = feature;
     }
 
     public String getFirstName() {

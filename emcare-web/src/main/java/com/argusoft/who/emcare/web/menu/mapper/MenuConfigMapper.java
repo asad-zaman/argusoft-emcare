@@ -1,6 +1,8 @@
 package com.argusoft.who.emcare.web.menu.mapper;
 
+import com.argusoft.who.emcare.web.menu.dto.CurrentUserFeatureJson;
 import com.argusoft.who.emcare.web.menu.dto.MenuConfigDto;
+import com.argusoft.who.emcare.web.menu.dto.UserFeatureJson;
 import com.argusoft.who.emcare.web.menu.model.UserMenuConfig;
 
 public class MenuConfigMapper {
@@ -28,5 +30,17 @@ public class MenuConfigMapper {
         menuConfig.setUserId(menuConfigDto.getUserId());
         menuConfig.setId(menuConfigDto.getId());
         return menuConfig;
+    }
+
+    public static CurrentUserFeatureJson getCurrentUserFeatureJson(UserFeatureJson ufj, String customeFeatureJSON) {
+        CurrentUserFeatureJson fJSON = new CurrentUserFeatureJson();
+        if (customeFeatureJSON == null) {
+            fJSON.setFeatureJson(ufj.getFeatureJson());
+        } else {
+            fJSON.setFeatureJson(customeFeatureJSON);
+        }
+        fJSON.setMenuName(ufj.getMenuName());
+        fJSON.setId(Integer.parseInt(ufj.getId()));
+        return fJSON;
     }
 }
