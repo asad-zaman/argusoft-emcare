@@ -1,4 +1,4 @@
-<div class="main-wrapper">
+<div *ngIf="isView" class="main-wrapper">
   <h1 class="heading">{{'Features' | translate}}</h1>
   <hr>
   <div class="row align-items-center mb-3">
@@ -14,7 +14,7 @@
         <tr>
           <th>{{'ID' | translate}}</th>
           <th>{{'Feature Name' | translate}}</th>
-          <th></th>
+          <th *ngIf="isEdit"></th>
         </tr>
       </thead>
       <tbody>
@@ -23,7 +23,7 @@
             <tr>
               <td>{{i + 1}}</td>
               <td>{{feature.menuName}}</td>
-              <td>
+              <td *ngIf="isEdit">
                 <i (click)="updateFeature(i)" class="bi bi-pencil-square cursor-pointer font-size-16"></i>
                 <!-- <i class="bi bi-trash ms-3 text-red cursor-pointer font-size-16"></i> -->
               </td>
@@ -39,4 +39,7 @@
     </table>
   </div>
   <!--Table-END-->
+</div>
+<div *ngIf="!isView" class="main-wrapper-nodata">
+  Sorry you don't have access to this page!!
 </div>

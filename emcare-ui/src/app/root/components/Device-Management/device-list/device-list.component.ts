@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { AuthGuard } from 'src/app/auth/auth.guard';
 import { DeviceManagementService } from 'src/app/root/services/device-management.service';
 import { ToasterService } from 'src/app/shared';
 
@@ -19,10 +20,13 @@ export class DeviceListComponent implements OnInit {
   totalCount = 0;
   tableSize = 10;
   searchTermChanged: Subject<string> = new Subject<string>();
+  isView: boolean = true;
+  isAllowed: boolean = true;
 
   constructor(
     private readonly deviceManagementService: DeviceManagementService,
-    private readonly toasterService: ToasterService
+    private readonly toasterService: ToasterService,
+    private readonly authGuard: AuthGuard
   ) { }
 
   ngOnInit(): void {
@@ -30,7 +34,19 @@ export class DeviceListComponent implements OnInit {
   }
 
   prerequisite() {
+    this.checkFeatures();
     this.getDevicesByPageIndex(this.currentPage);
+  }
+
+  checkFeatures() {
+    this.authGuard.getFeatureData().subscribe(res => {
+      if (res.relatedFeature && res.relatedFeature.length > 0) {
+        this.isView = res.featureJSON['canView'];
+        if (this.isView === false) {
+          this.toasterService.showInfo("Sorry! You don't have access to this page!", 'EMCARE');
+        }
+      }
+    });
   }
 
   manipulateResponse(res) {
@@ -41,7 +57,7 @@ export class DeviceListComponent implements OnInit {
       this.isAPIBusy = false;
     }
   }
-  
+
   getDevicesByPageIndex(index) {
     this.deviceArr = [];
     this.deviceManagementService.getDevicesByPageIndex(index).subscribe(res => {

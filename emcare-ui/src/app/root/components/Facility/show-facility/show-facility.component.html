@@ -1,4 +1,4 @@
-<div class="main-wrapper">
+<div *ngIf="isView" class="main-wrapper">
   <h1 class="heading">{{'Facilities' | translate}}</h1>
   <hr>
   <div class="row align-items-center mb-3">
@@ -6,7 +6,7 @@
       <input class="form-control custom-input h-40" id="exampleFormControlInput1" [(ngModel)]="searchString"
         (input)="searchFilter()" placeholder="{{'Search Placeholder' | translate}}">
     </div>
-    <div class="col text-end"><button class="btn btn-red" routerLink="/manageFacility">+
+    <div *ngIf="isAdd" class="col text-end"><button class="btn btn-red" routerLink="/addFacility">+
         {{'Add Facility' | translate}}</button></div>
   </div>
   <!--Table-->
@@ -32,8 +32,9 @@
               <td>{{data.status ? capitalizeFirstLetter(data.status) : 'NA'}}</td>
               <td>{{data.extension ? getLocationNameByID(data.extension[0].valueIdentifier.value) : 'NA'}}</td>
               <td class="">
-                <i (click)="editFacility(i)" class="bi bi-pencil-square cursor-pointer font-size-16"></i>
-                <i (click)="deleteFacility(i)" class="bi bi-trash ms-3 text-red cursor-pointer font-size-16"></i>
+                <i *ngIf="isEdit" (click)="editFacility(i)" class="bi bi-pencil-square cursor-pointer font-size-16"></i>
+                <i *ngIf="isDelete" (click)="deleteFacility(i)"
+                  class="bi bi-trash ms-3 text-red cursor-pointer font-size-16"></i>
               </td>
             </tr>
           </ng-container>
@@ -47,4 +48,7 @@
     </table>
   </div>
   <!--Table-END-->
+</div>
+<div *ngIf="!isView" class="main-wrapper-nodata">
+  Sorry you don't have access to this page!!
 </div>

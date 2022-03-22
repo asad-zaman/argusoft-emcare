@@ -4,6 +4,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { LocationService } from 'src/app/root/services/location.service';
 import { ToasterService } from 'src/app/shared';
+import { AuthGuard } from 'src/app/auth/auth.guard';
 @Component({
   selector: 'app-show-location',
   templateUrl: './show-location.component.html',
@@ -19,11 +20,15 @@ export class ShowLocationComponent implements OnInit {
   totalCount = 0;
   tableSize = 10;
   searchTermChanged: Subject<string> = new Subject<string>();
+  isAdd: boolean = true;
+  isEdit: boolean = true;
+  isView: boolean = true;
 
   constructor(
     private readonly router: Router,
     private readonly locationService: LocationService,
-    private readonly toasterService: ToasterService
+    private readonly toasterService: ToasterService,
+    private readonly authGuard: AuthGuard
   ) { }
 
   ngOnInit(): void {
@@ -31,7 +36,18 @@ export class ShowLocationComponent implements OnInit {
   }
 
   prerequisite() {
+    this.checkFeatures();
     this.getLocationsByPageIndex(this.currentPage);
+  }
+
+  checkFeatures() {
+    this.authGuard.getFeatureData().subscribe(res => {
+      if (res.relatedFeature && res.relatedFeature.length > 0) {
+        this.isAdd = res.featureJSON['canAdd'];
+        this.isEdit = res.featureJSON['canEdit'];
+        this.isView = res.featureJSON['canView'];
+      }
+    });
   }
 
   manipulateResponse(res) {

@@ -1,5 +1,5 @@
-<app-location-filter (locationId)="getLocationId($event)"></app-location-filter>
-<div class="main-wrapper">
+<app-location-filter *ngIf="isView" (locationId)="getLocationId($event)"></app-location-filter>
+<div *ngIf="isView" class="main-wrapper">
   <h1 class="heading">{{'User list Heading' | translate}}</h1>
   <hr>
   <div class="row align-items-center mb-3">
@@ -7,7 +7,7 @@
       <input class="form-control custom-input h-40" id="exampleFormControlInput1" [(ngModel)]="searchString"
         (input)="searchFilter()" placeholder="{{'Search Placeholder' | translate}}">
     </div>
-    <div class="col text-end">
+    <div *ngIf="isAdd" class="col text-end">
       <button class="btn btn-red" routerLink="/addUser">+ {{'Add User' | translate}}</button>
     </div>
   </div>
@@ -23,7 +23,7 @@
           <th>{{'Role' | translate}}</th>
           <th>{{'Location' | translate}}</th>
           <th>{{'Status' | translate}}</th>
-          <th></th>
+          <th *ngIf="isEdit"></th>
         </tr>
       </thead>
       <tbody>
@@ -45,7 +45,7 @@
                     {{'Not Verified' | translate}}
                   </ng-template>
                 </span>
-              <td>
+              <td *ngIf="isEdit">
                 <ul class="navigation" style="list-style-type: none;">
                   <li class="dropdown mt-3 cursor-pointer">
                     <div class="d-flex align-items-center" data-bs-toggle="dropdown">
@@ -132,4 +132,7 @@
       </div>
     </div>
   </div>
+</div>
+<div *ngIf="!isView" class="main-wrapper-nodata">
+  Sorry you don't have access to this page!!
 </div>

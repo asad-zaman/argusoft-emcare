@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { UserManagementService } from 'src/app/root/services/user-management.service';
 import { ToasterService } from 'src/app/shared';
 import { MustMatch } from 'src/app/shared/validators/must-match.validator';
+import { AuthGuard } from 'src/app/auth/auth.guard';
 @Component({
   selector: 'app-user-list',
   templateUrl: './user-list.component.html',
@@ -28,12 +29,16 @@ export class UserListComponent implements OnInit {
   isLocationFilterOn: boolean = false;
   selectedId: any;
   searchTermChanged: Subject<string> = new Subject<string>();
+  isAdd: boolean = true;
+  isEdit: boolean = true;
+  isView: boolean = true;
 
   constructor(
     private readonly router: Router,
     private readonly userService: UserManagementService,
     private readonly formBuilder: FormBuilder,
-    private readonly toasterService: ToasterService
+    private readonly toasterService: ToasterService,
+    private readonly authGuard: AuthGuard
   ) { }
 
   ngOnInit(): void {
@@ -41,7 +46,18 @@ export class UserListComponent implements OnInit {
   }
 
   prerequisite() {
+    this.checkFeatures();
     this.getUsersByPageIndex(this.currentPage);
+  }
+
+  checkFeatures() {
+    this.authGuard.getFeatureData().subscribe(res => {
+      if (res.relatedFeature && res.relatedFeature.length > 0) {
+        this.isAdd = res.featureJSON['canAdd'];
+        this.isEdit = res.featureJSON['canEdit'];
+        this.isView = res.featureJSON['canView'];
+      }
+    });
   }
 
   manipulateResponse(res) {

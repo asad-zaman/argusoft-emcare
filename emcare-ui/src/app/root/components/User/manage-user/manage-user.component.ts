@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { AuthGuard } from 'src/app/auth/auth.guard';
 import { LocationService } from 'src/app/root/services/location.service';
 import { RoleManagementService } from 'src/app/root/services/role-management.service';
 import { UserManagementService } from 'src/app/root/services/user-management.service';
@@ -23,6 +24,9 @@ export class ManageUserComponent implements OnInit {
   fornData;
   locationIdArr: Array<any> = [];
   dropdownActiveArr = [];
+  isAddFeature: boolean = true;
+  isEditFeature: boolean = true;
+  isAllowed: boolean = true;
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -31,7 +35,8 @@ export class ManageUserComponent implements OnInit {
     private readonly userService: UserManagementService,
     private readonly roleService: RoleManagementService,
     private readonly locationService: LocationService,
-    private readonly toasterService: ToasterService
+    private readonly toasterService: ToasterService,
+    private readonly authGuard: AuthGuard
   ) { }
 
   ngOnInit(): void {
@@ -39,11 +44,34 @@ export class ManageUserComponent implements OnInit {
   }
 
   prerequisite() {
+    this.checkFeatures();
     const routeParams = this.route.snapshot.paramMap;
     this.editId = routeParams.get('id');
     this.checkEditParams();
     this.initUserForm();
     this.getAllLocations();
+  }
+
+  checkFeatures() {
+    this.authGuard.getFeatureData().subscribe(res => {
+      if (res.relatedFeature && res.relatedFeature.length > 0) {
+        this.isAddFeature = res.featureJSON['canAdd'];
+        this.isEditFeature = res.featureJSON['canEdit'];
+        if (this.isAddFeature && this.isEditFeature) {
+          this.isAllowed = true;
+        } else if (this.isAddFeature && !this.isEdit) {
+          this.isAllowed = true;
+        } else if (!this.isEditFeature && this.isEdit) {
+          this.isAllowed = false;
+        } else if (!this.isAddFeature && this.isEdit) {
+          this.isAllowed = true;
+        } else if (this.isEditFeature && this.isEdit) {
+          this.isAllowed = true;
+        } else {
+          this.isAllowed = false;
+        }
+      }
+    });
   }
 
   checkEditParams() {

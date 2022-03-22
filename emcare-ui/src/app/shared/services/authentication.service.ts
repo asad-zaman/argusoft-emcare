@@ -92,7 +92,8 @@ export class AuthenticationService {
         return this.features;
     }
 
-    setFeatures(features: string[]): void {
+    setFeatures(featuresRes: any): void {
+        const features = featuresRes.feature.map(f => f.menuName)
         this.features.next(features);
     }
 

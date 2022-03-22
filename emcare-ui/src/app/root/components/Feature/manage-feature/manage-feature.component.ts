@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { AuthGuard } from 'src/app/auth/auth.guard';
 import { FeatureManagementService } from 'src/app/root/services/feature-management.service';
 import { RoleManagementService } from 'src/app/root/services/role-management.service';
 import { UserManagementService } from 'src/app/root/services/user-management.service';
@@ -20,6 +22,10 @@ export class ManageFeatureComponent implements OnInit {
   selectedUser: any = null;
   selectedRole: any = null;
   isAPIBusy: boolean = true;
+  sepFeatureForm: FormGroup;
+  featureArr = ['canAdd', 'canEdit', 'canView', 'canDelete'];
+  isAdd = true;
+  isDelete = true;
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -27,7 +33,9 @@ export class ManageFeatureComponent implements OnInit {
     private readonly roleService: RoleManagementService,
     private readonly featureService: FeatureManagementService,
     private readonly toasterService: ToasterService,
-    private readonly authenticationService: AuthenticationService
+    private readonly authenticationService: AuthenticationService,
+    private readonly formBuilder: FormBuilder,
+    private readonly authGuard: AuthGuard
   ) { }
 
   ngOnInit(): void {
@@ -35,22 +43,80 @@ export class ManageFeatureComponent implements OnInit {
   }
 
   prerequisite() {
+    this.checkFeatures();
     this.featureId = this.route.snapshot.paramMap.get('id');
     this.route.queryParams.subscribe(params => {
       this.featureName = params.name;
     })
     this.getFeatureConfig();
+    this.initFeatureForm();
+  }
+
+  checkFeatures() {
+    this.authGuard.getFeatureData().subscribe(res => {
+      if (res.relatedFeature && res.relatedFeature.length > 0) {
+        this.isAdd = res.featureJSON['canAdd'];
+        this.isDelete = res.featureJSON['canDelete'];
+      }
+    });
+  }
+
+  initFeatureForm() {
+    this.sepFeatureForm = this.formBuilder.group({
+      add: ['', []],
+      edit: ['', []],
+      view: ['', []],
+      delete: ['', []]
+    });
+  }
+
+  getArrOfControls(obj) {
+    const tempArr = [];
+    for (let el in obj) {
+      if (obj[el] === true) {
+        tempArr.push(el);
+      }
+    }
+    return tempArr;
   }
 
   getFeatureConfig() {
     this.featureService.getFeatureConfigById(this.featureId).subscribe(res => {
       if (res) {
         this.featureConfigList = res;
+        for (let el in this.featureConfigList) {
+          this.featureConfigList[el]['selectedFeatures'] = this.getArrOfControls(JSON.parse(res[el]['featureJson']));
+        }
         this.isAPIBusy = false;
         this.getUsers();
         this.getRoles();
       }
-    })
+    });
+  }
+
+  onCheckboxClicked(index) {
+    let featureJSON = {};
+    this.featureConfigList[index]['selectedFeatures'].forEach(element => {
+      featureJSON[element] = true;
+    });
+    this.featureArr.forEach(f => {
+      if (!featureJSON[f]) {
+        featureJSON[f] = false;
+      }
+    });
+    this.featureConfigList[index]['featureJson'] = JSON.stringify(featureJSON);
+    const data = {
+      "id": this.featureConfigList[index]['id'],
+      "userId": this.featureConfigList[index]['userId'],
+      "userName": this.featureConfigList[index]['userName'],
+      "roleId": this.featureConfigList[index]['roleId'],
+      "roleName": this.featureConfigList[index]['roleName'],
+      "featureJson": this.featureConfigList[index]['featureJson'],
+      "menuId": this.featureConfigList[index]['menuId']
+    }
+    this.featureService.updateFeatureConfig(data).subscribe(() => { 
+      this.toasterService.showSuccess('Feature changes have been saved!', 'EMCARE');
+    });
   }
 
   getUsers() {
@@ -96,14 +162,14 @@ export class ManageFeatureComponent implements OnInit {
       this.selectedRole = null;
       this.prerequisite();
       this.getFeatureList();
-    })
+    });
   }
 
   getFeatureList() {
     this.authenticationService.getLoggedInUser().subscribe(res => {
       if (res) {
-        this.authenticationService.setFeatures(res.feature.map(f => f.menu_name));
+        this.authenticationService.setFeatures(res);
       }
-    })
+    });
   }
 }

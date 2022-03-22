@@ -45,6 +45,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BaseModule } from './base.module';
 import { DropdownModule } from 'primeng/dropdown';
 import { ShowFacilityComponent } from './root/components/Facility/show-facility/show-facility.component';
+import { CheckboxModule } from 'primeng/checkbox';
 @NgModule({
   declarations: [
     AppComponent,
@@ -88,7 +89,8 @@ import { ShowFacilityComponent } from './root/components/Facility/show-facility/
     BrowserAnimationsModule,
     ToastrModule.forRoot(),
     BaseModule.forRoot(),
-    DropdownModule
+    DropdownModule,
+    CheckboxModule
   ],
   providers: [
     AuthenticationService,

@@ -1,7 +1,7 @@
 .heading {
     font-size: 26px;
     font-weight: 500;
-    color: $color-balck;
+    color: $color-black;
     margin-bottom: 0px;
     text-align: start;
 }
@@ -27,13 +27,13 @@
     background: $color-green;
 }
 .link-text {
-    color: $color-balck !important;
+    color: $color-black !important;
     text-decoration: underline;
 }
 .custom-pagination {
     font-size: 12px;
     .page-link {
-        color: $color-balck;
+        color: $color-black;
         background: transparent !important;
         border: 0px;
         &:focus {
@@ -56,7 +56,7 @@
         font-weight: 500;
     }
     .modal-header {
-        background: $color-balck;
+        background: $color-black;
         color: $color-white;
         border-top-left-radius: 5px;
         border-top-right-radius: 5px;
