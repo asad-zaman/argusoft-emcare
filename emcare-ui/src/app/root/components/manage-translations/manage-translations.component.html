@@ -1,4 +1,4 @@
-<div class="main-wrapper">
+<div *ngIf="isEdit" class="main-wrapper">
   <h1 class="heading mb-3">{{'Manage Translations' | translate}}</h1>
   <ng-container *ngIf="availableLanguages.length>0">
     <div class="mt-5 cst-rtl">
@@ -50,4 +50,7 @@
       </div>
     </div>
   </ng-container>
+</div>
+<div *ngIf="!isEdit" class="main-wrapper-nodata">
+  Sorry you don't have access to this page!!
 </div>

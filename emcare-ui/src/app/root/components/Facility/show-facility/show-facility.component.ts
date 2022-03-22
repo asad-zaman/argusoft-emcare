@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { AuthGuard } from 'src/app/auth/auth.guard';
 import { LocationService } from 'src/app/root/services/location.service';
 import { FhirService, ToasterService } from 'src/app/shared';
 
@@ -17,12 +18,17 @@ export class ShowFacilityComponent implements OnInit {
   isAPIBusy: boolean = true;
   locationArr: Array<any> = [];
   searchTermChanged: Subject<string> = new Subject<string>();
+  isAdd: boolean = true;
+  isEdit: boolean = true;
+  isView: boolean = true;
+  isDelete: boolean = true;
 
   constructor(
     private readonly router: Router,
     private readonly fhirService: FhirService,
     private readonly toasterService: ToasterService,
-    private readonly locationService: LocationService
+    private readonly locationService: LocationService,
+    private readonly authGuard: AuthGuard
   ) { }
 
   ngOnInit(): void {
@@ -30,8 +36,20 @@ export class ShowFacilityComponent implements OnInit {
   }
 
   prerequisite() {
+    this.checkFeatures();
     this.getFacilities();
     this.getAllLocations();
+  }
+
+  checkFeatures() {
+    this.authGuard.getFeatureData().subscribe(res => {
+      if (res.relatedFeature && res.relatedFeature.length > 0) {
+        this.isAdd = res.featureJSON['canAdd'];
+        this.isEdit = res.featureJSON['canEdit'];
+        this.isView = res.featureJSON['canView'];
+        this.isDelete = res.featureJSON['canDelete'];
+      }
+    });
   }
 
   getLocationNameByID(id) {
@@ -59,7 +77,7 @@ export class ShowFacilityComponent implements OnInit {
   }
 
   editFacility(index) {
-    this.router.navigate([`manageFacility/${this.facilityArr[index]['id']}`]);
+    this.router.navigate([`editFacility/${this.facilityArr[index]['id']}`]);
   }
 
   deleteFacility(index) {

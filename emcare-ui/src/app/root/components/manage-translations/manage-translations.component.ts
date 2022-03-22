@@ -4,6 +4,7 @@ import * as _ from 'lodash';
 import { LaunguageSubjects } from 'src/app/auth/token-interceptor';
 import enTrans from '../../../../assets/i18n/en.json';
 import { forkJoin } from 'rxjs';
+import { AuthGuard } from 'src/app/auth/auth.guard';
 @Component({
   selector: 'app-manage-translations',
   templateUrl: './manage-translations.component.html',
@@ -21,11 +22,13 @@ export class ManageTranslationsComponent implements OnInit {
   isChanged: boolean;
   newSelectedLanguage;
   availableLanguages = [];
+  isEdit: boolean = true;
 
   constructor(
     private readonly fhirService: FhirService,
     private readonly toasterService: ToasterService,
-    private readonly lanSubjects: LaunguageSubjects
+    private readonly lanSubjects: LaunguageSubjects,
+    private readonly authGuard: AuthGuard
   ) { }
 
   ngOnInit(): void {
@@ -33,6 +36,7 @@ export class ManageTranslationsComponent implements OnInit {
   }
 
   prerequisite() {
+    this.checkFeatures();
     forkJoin([
       this.fhirService.getAllLaunguagesTranslations(),
       this.fhirService.getAllLaunguages()
@@ -57,6 +61,14 @@ export class ManageTranslationsComponent implements OnInit {
     // this.fhirService.updateTranslation(data).subscribe(res => {
     //   this.toasterService.showSuccess('Translation changes saved successfully!', 'EMCARE');
     // });
+  }
+
+  checkFeatures() {
+    this.authGuard.getFeatureData().subscribe(res => {
+      if (res.relatedFeature && res.relatedFeature.length > 0) {
+        this.isEdit = res.featureJSON['canEdit'];
+      }
+    });
   }
 
   manipulateFirstResult(res) {

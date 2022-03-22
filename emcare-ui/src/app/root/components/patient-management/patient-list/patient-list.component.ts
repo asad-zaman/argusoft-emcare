@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { Subject } from "rxjs";
 import { debounceTime, distinctUntilChanged } from "rxjs/operators";
+import { AuthGuard } from "src/app/auth/auth.guard";
 import { ToasterService } from "src/app/shared";
 import { FhirService } from "src/app/shared/services/fhir.service";
 
@@ -23,10 +24,12 @@ export class PatientListComponent implements OnInit {
     isLocationFilterOn: boolean = false;
     selectedId: any;
     searchTermChanged: Subject<string> = new Subject<string>();
+    isView: boolean = true;
 
     constructor(
         private readonly fhirService: FhirService,
-        private readonly toasterService: ToasterService
+        private readonly toasterService: ToasterService,
+        private readonly authGuard: AuthGuard
     ) { }
 
     ngOnInit(): void {
@@ -34,7 +37,16 @@ export class PatientListComponent implements OnInit {
     }
 
     prerequisite() {
+        this.checkFeatures();
         this.getPatientsByPageIndex(this.currentPage);
+    }
+
+    checkFeatures() {
+        this.authGuard.getFeatureData().subscribe(res => {
+            if (res.relatedFeature && res.relatedFeature.length > 0) {
+                this.isView = res.featureJSON['canView'];
+            }
+        });
     }
 
     manipulateResponse(res) {

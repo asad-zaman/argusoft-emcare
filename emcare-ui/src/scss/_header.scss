@@ -1,7 +1,7 @@
 header {
     height: 60px;
     width: 100%;
-    background: $color-balck;
+    background: $color-black;
     position: fixed;
     z-index: 100;
     left: 0px;
@@ -67,7 +67,7 @@ header {
     .notification_wrapper {
         .notification_header {
             h5 {
-                color: $color-balck;
+                color: $color-black;
                 font-weight: 500;
                 font-size: 16px;
                 margin-bottom: 0px;
@@ -93,7 +93,7 @@ header {
                     line-height: 12px;
                     white-space: nowrap;
                     overflow: hidden;
-                    color: $color-balck;
+                    color: $color-black;
                 }
                 .notification_title {
                     font-size: 11px;

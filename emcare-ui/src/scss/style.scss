@@ -71,6 +71,14 @@ body {
     margin-top: 60px;
     padding: 20px;
     padding-left: 250px;
+
+    &-nodata {
+        margin-top: 60px;
+        padding: 20px;
+        padding-left: 250px;
+        font-size: 22px;
+        font-weight: 500;
+    }
 }
 
 .mouse-pointer {
@@ -115,3 +123,33 @@ body {
         height: 45px;
     }
 }
+
+.p-checkbox .p-checkbox-box.p-highlight {
+    border-color: $color-red;
+    background: $color-red;
+}
+
+.p-checkbox:not(.p-checkbox-disabled) .p-checkbox-box.p-highlight:hover {
+    border-color: $color-red;
+    background: $color-red;
+    color: $color-white;
+}
+
+.p-checkbox-label {
+    color: $color-black;
+    text-align: center;
+}
+
+// mixin for table header dynamic width
+$columns: 5;
+$column-size: 10%;
+
+@mixin cst-theader-x {
+    @for $i from 1 through $columns {
+        .cst-theader-#{$i} {
+            width: $column-size * $i;
+        }
+    }
+}
+
+@include cst-theader-x();

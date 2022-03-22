@@ -1,4 +1,4 @@
-<div class="main-wrapper">
+<div *ngIf="isView" class="main-wrapper">
   <h1 class="heading">{{'Roles' | translate}}</h1>
   <hr>
   <div class="row align-items-center mb-3">
@@ -6,7 +6,7 @@
       <input class="form-control custom-input h-40" id="exampleFormControlInput1" [(ngModel)]="searchString"
         (input)="searchFilter()" placeholder="{{'Search Placeholder' | translate}}">
     </div>
-    <div class="col text-end"><button class="btn btn-red" routerLink="/addRole">+
+    <div *ngIf="isAdd" class="col text-end"><button class="btn btn-red" routerLink="/addRole">+
         {{'Add Role' | translate}}</button></div>
   </div>
   <!--Table-->
@@ -17,7 +17,7 @@
           <th>{{'ID' | translate}}</th>
           <th scope="col">{{'Name' | translate}}</th>
           <th scope="col">{{'Description' | translate}}</th>
-          <th></th>
+          <th *ngIf="isEdit"></th>
         </tr>
       </thead>
       <tbody>
@@ -27,7 +27,7 @@
               <td>{{i + 1}}</td>
               <td>{{data.name}}</td>
               <td>{{data.description ? data.description : 'NA'}}</td>
-              <td>
+              <td *ngIf="isEdit">
                 <i (click)="editRole(i)" class="bi bi-pencil-square cursor-pointer font-size-16"></i>
                 <!-- <i class="bi bi-trash ms-3 text-red cursor-pointer font-size-16"></i> -->
               </td>
@@ -43,4 +43,7 @@
     </table>
   </div>
   <!--Table-END-->
+</div>
+<div *ngIf="!isView" class="main-wrapper-nodata">
+  Sorry you don't have access to this page!!
 </div>

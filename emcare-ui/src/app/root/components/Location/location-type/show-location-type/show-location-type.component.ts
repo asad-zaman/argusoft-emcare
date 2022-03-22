@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { AuthGuard } from 'src/app/auth/auth.guard';
 import { LocationService } from 'src/app/root/services/location.service';
 import { ToasterService } from 'src/app/shared';
 @Component({
@@ -13,11 +14,15 @@ export class ShowLocationTypeComponent implements OnInit {
   filteredLocationTypes: any;
   searchString: string;
   isAPIBusy: boolean = true;
+  isAdd: boolean = true;
+  isEdit: boolean = true;
+  isView: boolean = true;
 
   constructor(
     private readonly router: Router,
     private readonly locationService: LocationService,
-    private readonly toasterService: ToasterService
+    private readonly toasterService: ToasterService,
+    private readonly authGuard: AuthGuard
   ) { }
 
   ngOnInit(): void {
@@ -26,6 +31,17 @@ export class ShowLocationTypeComponent implements OnInit {
 
   prerequisite() {
     this.getLocationTypes();
+    this.checkFeatures();
+  }
+
+  checkFeatures() {
+    this.authGuard.getFeatureData().subscribe(res => {
+      if (res.relatedFeature && res.relatedFeature.length > 0) {
+        this.isAdd = res.featureJSON['canAdd'];
+        this.isEdit = res.featureJSON['canEdit'];
+        this.isView = res.featureJSON['canView'];
+      }
+    });
   }
 
   getLocationTypes() {

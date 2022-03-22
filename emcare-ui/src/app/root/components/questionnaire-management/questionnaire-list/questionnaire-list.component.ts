@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { AuthGuard } from 'src/app/auth/auth.guard';
 import { FhirService, ToasterService } from 'src/app/shared';
 @Component({
   selector: 'app-questionnaire-list',
@@ -16,11 +17,15 @@ export class QuestionnaireListComponent implements OnInit {
   tableSize = 10;
   error: any = null;
   isAPIBusy: boolean = true;
+  isAdd: boolean = true;
+  isEdit: boolean = true;
+  isView: boolean = true;
 
   constructor(
     private readonly router: Router,
     private readonly fhirService: FhirService,
-    private readonly toasterService: ToasterService
+    private readonly toasterService: ToasterService,
+    private readonly authGuard: AuthGuard
   ) { }
 
   ngOnInit(): void {
@@ -28,7 +33,18 @@ export class QuestionnaireListComponent implements OnInit {
   }
 
   prerequisite() {
+    this.checkFeatures();
     this.getQuestionnairesByPageIndex(this.currentPage);
+  }
+
+  checkFeatures() {
+    this.authGuard.getFeatureData().subscribe(res => {
+      if (res.relatedFeature && res.relatedFeature.length > 0) {
+        this.isAdd = res.featureJSON['canAdd'];
+        this.isEdit = res.featureJSON['canEdit'];
+        this.isView = res.featureJSON['canView'];
+      }
+    });
   }
 
   getQuestionnairesByPageIndex(index) {
