@@ -75,7 +75,7 @@ export class AuthGuard implements CanActivate {
         if (this.user.feature) {
             this.result = this.checkFeature(route);
             if (!this.result) {
-                const route = this.getFeatureAndRedirectUser(this.user.feature[0].menu_name);
+                const route = this.getFeatureAndRedirectUser(this.user.feature[0].menuName);
                 this.router.navigate([route]);
             } else {
                 let featureJSON = this.getRouteAndFindFeature(route);
@@ -129,7 +129,7 @@ export class AuthGuard implements CanActivate {
         } else if (route.routeConfig.path.includes('Facility')) {
             feature = 'Manage Facility';
         }
-        return this.user.feature.find(f => f.menu_name === feature).feature_json;
+        return this.user.feature.find(f => f.menuName === feature).featureJson;
     }
 
     checkFeature(route) {
@@ -140,50 +140,50 @@ export class AuthGuard implements CanActivate {
             || route.routeConfig.path === 'addLocation'
             || route.routeConfig.path.includes('editLocation')
             || route.routeConfig.path === 'showLocation') {
-            return !!this.user.feature.find(f => f.menu_name === 'Location Management');
+            return !!this.user.feature.find(f => f.menuName === 'Location Management');
         } else if (
             route.routeConfig.path === 'showDevices'
         ) {
-            return !!this.user.feature.find(f => f.menu_name === 'Device Management');
+            return !!this.user.feature.find(f => f.menuName === 'Device Management');
         } else if (
             route.routeConfig.path === 'showUsers'
             || route.routeConfig.path === 'addUser'
             || route.routeConfig.path.includes('updateUser')
             || route.routeConfig.path === 'confirmUsers'
         ) {
-            return !!this.user.feature.find(f => f.menu_name === 'Users');
+            return !!this.user.feature.find(f => f.menuName === 'Users');
         } else if (
             route.routeConfig.path === 'showPatients'
             || route.routeConfig.path === 'comparePatients'
         ) {
-            return !!this.user.feature.find(f => f.menu_name === 'Patient Management');
+            return !!this.user.feature.find(f => f.menuName === 'Patient Management');
         } else if (
             route.routeConfig.path === 'showQuestionnaires'
             || route.routeConfig.path === 'addQuestionnaire'
             || route.routeConfig.path.includes('updateQuestionnaire')
         ) {
-            return !!this.user.feature.find(f => f.menu_name === 'Questionnaire Management');
+            return !!this.user.feature.find(f => f.menuName === 'Questionnaire Management');
         } else if (
             route.routeConfig.path === 'showRoles'
             || route.routeConfig.path === 'addRole'
             || route.routeConfig.path.includes('editRole')
         ) {
-            return !!this.user.feature.find(f => f.menu_name === 'Roles');
+            return !!this.user.feature.find(f => f.menuName === 'Roles');
         } else if (
             route.routeConfig.path === 'showFeatures'
             || route.routeConfig.path.includes('editFeature')
         ) {
-            return !!this.user.feature.find(f => f.menu_name === 'Feature Management');
+            return !!this.user.feature.find(f => f.menuName === 'Feature Management');
         } else if (
             route.routeConfig.path === 'manage-translation'
         ) {
-            return !!this.user.feature.find(f => f.menu_name === 'Language Management');
+            return !!this.user.feature.find(f => f.menuName === 'Language Management');
         } else if (
             route.routeConfig.path === 'showFacility'
             || route.routeConfig.path === 'addFacility'
             || route.routeConfig.path.includes('editFacility')
         ) {
-            return !!this.user.feature.find(f => f.menu_name === 'Manage Facility');
+            return !!this.user.feature.find(f => f.menuName === 'Manage Facility');
         } else {
             return false;
         }
