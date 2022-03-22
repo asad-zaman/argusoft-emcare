@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { AuthGuard } from 'src/app/auth/auth.guard';
 import { RoleManagementService } from 'src/app/root/services/role-management.service';
 @Component({
   selector: 'app-show-role',
@@ -12,10 +13,14 @@ export class ShowRoleComponent implements OnInit {
   filteredRoles: any;
   searchString: string;
   isAPIBusy: boolean = true;
+  isAdd: boolean = true;
+  isEdit: boolean = true;
+  isView: boolean = true;
 
   constructor(
     private readonly router: Router,
-    private readonly roleService: RoleManagementService
+    private readonly roleService: RoleManagementService,
+    private readonly authGuard: AuthGuard
   ) { }
 
   ngOnInit(): void {
@@ -23,7 +28,18 @@ export class ShowRoleComponent implements OnInit {
   }
 
   prerequisite() {
+    this.checkFeatures();
     this.getRoles();
+  }
+
+  checkFeatures() {
+    this.authGuard.getFeatureData().subscribe(res => {
+      if (res.relatedFeature && res.relatedFeature.length > 0) {
+        this.isAdd = res.featureJSON['canAdd'];
+        this.isEdit = res.featureJSON['canEdit'];
+        this.isView = res.featureJSON['canView'];
+      }
+    });
   }
 
   getRoles() {

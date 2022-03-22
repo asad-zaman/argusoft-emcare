@@ -54,8 +54,8 @@ const routes: Routes = [
   { path: 'editFeature/:id', component: ManageFeatureComponent, canActivate: [AuthGuard] },
   { path: 'manage-translation', component: ManageTranslationsComponent, canActivate: [AuthGuard] },
   { path: 'editProfile', component: ManageProfileComponent },
-  { path: 'manageFacility', component: ManageFacilityComponent, canActivate: [AuthGuard] },
-  { path: 'manageFacility/:id', component: ManageFacilityComponent, canActivate: [AuthGuard] },
+  { path: 'addFacility', component: ManageFacilityComponent, canActivate: [AuthGuard] },
+  { path: 'editFacility/:id', component: ManageFacilityComponent, canActivate: [AuthGuard] },
   { path: 'showFacility', component: ShowFacilityComponent, canActivate: [AuthGuard] },
   { path: '**', redirectTo: 'dashboard' }
 ];

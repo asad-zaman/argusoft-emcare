@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { AuthGuard } from 'src/app/auth/auth.guard';
 import { RoleManagementService } from 'src/app/root/services/role-management.service';
 import { ToasterService } from 'src/app/shared';
 
@@ -16,13 +17,17 @@ export class ManageRoleComponent implements OnInit {
   editId: string;
   oldRoleName: string;
   submitted: boolean;
+  isAddFeature: boolean = true;
+  isEditFeature: boolean = true;
+  isAllowed: boolean = true;
 
   constructor(
     private readonly formBuilder: FormBuilder,
     private readonly router: Router,
     private readonly route: ActivatedRoute,
     private readonly roleService: RoleManagementService,
-    private readonly toasterService: ToasterService
+    private readonly toasterService: ToasterService,
+    private readonly authGuard: AuthGuard
   ) { }
 
   ngOnInit(): void {
@@ -30,8 +35,31 @@ export class ManageRoleComponent implements OnInit {
   }
 
   prerequisite() {
+    this.checkFeatures();
     this.initRoleInputForm();
     this.checkEditParam();
+  }
+
+  checkFeatures() {
+    this.authGuard.getFeatureData().subscribe(res => {
+      if (res.relatedFeature && res.relatedFeature.length > 0) {
+        this.isAddFeature = res.featureJSON['canAdd'];
+        this.isEditFeature = res.featureJSON['canEdit'];
+        if (this.isAddFeature && this.isEditFeature) {
+          this.isAllowed = true;
+        } else if (this.isAddFeature && !this.isEdit) {
+          this.isAllowed = true;
+        } else if (!this.isEditFeature && this.isEdit) {
+          this.isAllowed = false;
+        } else if (!this.isAddFeature && this.isEdit) {
+          this.isAllowed = true;
+        } else if (this.isEditFeature && this.isEdit) {
+          this.isAllowed = true;
+        } else {
+          this.isAllowed = false;
+        }
+      }
+    });
   }
 
   checkEditParam() {

@@ -1,4 +1,4 @@
-<div class="main-wrapper">
+<div *ngIf="isView" class="main-wrapper">
   <h1 class="heading">{{'Device List' | translate}}</h1>
   <hr>
   <div class="row align-items-center mb-3">
@@ -51,4 +51,7 @@
     </div>
   </div>
   <!--Table-END-->
+</div>
+<div *ngIf="!isView" class="main-wrapper-nodata">
+  Sorry you don't have access to this page!!
 </div>

@@ -129,7 +129,7 @@ export class AppComponent implements OnInit {
       if (res) {
         localStorage.setItem('language', res['language']);
         this.checkRTLLaunguage();
-        this.authenticationService.setFeatures(res.feature.map(f => f.menu_name));
+        this.authenticationService.setFeatures(res);
         this.getLoggedInUser(res);
         this.getAllLaunguages();
       }

@@ -1,4 +1,4 @@
-<div class="main-wrapper">
+<div *ngIf="isView" class="main-wrapper">
   <h1 class="heading">{{'Questionnaires' | translate}}</h1>
   <hr>
   <div class="row align-items-center mb-3">
@@ -6,7 +6,7 @@
       <input class="form-control custom-input h-40" id="exampleFormControlInput1" [(ngModel)]="searchString"
         (input)="searchFilter()" placeholder="Search">
     </div>
-    <div class="col text-end">
+    <div *ngIf="isAdd" class="col text-end">
       <button class="btn btn-red" routerLink="/addQuestionnaire">+ {{'Add Questionnaire' | translate}}</button>
     </div>
   </div>
@@ -19,7 +19,7 @@
           <th>{{'Questionnaire ID' | translate}}</th>
           <th>{{'Title' | translate}}</th>
           <th>{{'Description' | translate}}</th>
-          <th></th>
+          <th *ngIf="isEdit"></th>
         </tr>
       </thead>
       <tbody>
@@ -31,7 +31,7 @@
               <td>{{questionnaire.id}}</td>
               <td>{{questionnaire.title ? questionnaire.title : 'NA'}}</td>
               <td>{{questionnaire.description ? questionnaire.description : 'NA'}}
-              <td>
+              <td *ngIf="isEdit">
                 <ul class="navigation" style="list-style-type: none;">
                   <li class="dropdown mt-3 cursor-pointer">
                     <div class="d-flex align-items-center" data-bs-toggle="dropdown">
@@ -63,4 +63,7 @@
     </div>
   </div>
   <!--Table-END-->
+</div>
+<div *ngIf="!isView" class="main-wrapper-nodata">
+  Sorry you don't have access to this page!!
 </div>

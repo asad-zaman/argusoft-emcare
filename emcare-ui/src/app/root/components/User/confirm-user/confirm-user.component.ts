@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AuthGuard } from 'src/app/auth/auth.guard';
 import { UserManagementService } from 'src/app/root/services/user-management.service';
 import { ToasterService } from 'src/app/shared';
 @Component({
@@ -15,10 +16,12 @@ export class ConfirmUserComponent implements OnInit {
   selectedUser: any;
   searchString: string;
   isAPIBusy: boolean = true;
+  isView: boolean = true;
 
   constructor(
     private readonly toasterService: ToasterService,
-    private readonly userService: UserManagementService
+    private readonly userService: UserManagementService,
+    private readonly authGuard: AuthGuard
   ) { }
 
   ngOnInit(): void {
@@ -26,7 +29,16 @@ export class ConfirmUserComponent implements OnInit {
   }
 
   prerequisite() {
+    this.checkFeatures();
     this.getAllSignedUpUsers();
+  }
+
+  checkFeatures() {
+    this.authGuard.getFeatureData().subscribe(res => {
+      if (res.relatedFeature && res.relatedFeature.length > 0) {
+        this.isView = res.featureJSON['canView'];
+      }
+    });
   }
 
   getAllSignedUpUsers() {
