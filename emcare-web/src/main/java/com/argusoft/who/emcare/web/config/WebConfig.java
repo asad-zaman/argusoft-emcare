@@ -31,13 +31,13 @@ import java.util.Collections;
 @ComponentScan(basePackageClasses = KeycloakSecurityComponents.class)
 public class WebConfig extends KeycloakWebSecurityConfigurerAdapter {
 
+    @SuppressWarnings("rawtypes")
     @Bean
     public FilterRegistrationBean accessControlFilterRegistrationBean() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
         config.setAllowedOriginPatterns(Collections.singletonList("*"));
-//        config.addAllowedOrigin("*");
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
         source.registerCorsConfiguration("/**", config);
@@ -47,7 +47,7 @@ public class WebConfig extends KeycloakWebSecurityConfigurerAdapter {
     }
 
     @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+    public void configureGlobal(AuthenticationManagerBuilder auth) {
 
         KeycloakAuthenticationProvider keycloakAuthenticationProvider = new KeycloakAuthenticationProvider();
         keycloakAuthenticationProvider.setGrantedAuthoritiesMapper(new SimpleAuthorityMapper());
@@ -55,7 +55,7 @@ public class WebConfig extends KeycloakWebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public KeycloakSpringBootConfigResolver KeycloakConfigResolver() {
+    public KeycloakSpringBootConfigResolver keycloakConfigResolver() {
         return new KeycloakSpringBootConfigResolver();
     }
 
