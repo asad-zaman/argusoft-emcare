@@ -80,7 +80,7 @@ public class UserServiceImpl implements UserService {
             userLocation = null;
         } else {
             userLocationMapping = userLocationMappingRepository.findByUserId(user.getSubject()).get(0);
-            userLocation = locationService.getLocationById(userLocationMapping.getLocationId());
+            userLocation = locationService.getLocationMasterById(userLocationMapping.getLocationId());
         }
         UserMasterDto masterUser = UserMapper.getMasterUser(user, userLocation, userInfo);
         List<RoleRepresentation> roleRepresentationList = keycloak.realm(KeyCloakConfig.REALM).users().get(masterUser.getUserId()).roles().realmLevel().listAll();
@@ -489,7 +489,7 @@ public class UserServiceImpl implements UserService {
         for (UserFeatureJson ufj : userFeatureJSONs) {
             List<UserFeatureJson> list = userFeatureJSONs.stream().filter(feature -> ufj.getId().equals(feature.getId())).collect(Collectors.toList());
             List<CurrentUserFeatureJson> originalList = featureJsons.stream().filter(feature -> ufj.getMenuName().equals(feature.getMenuName())).collect(Collectors.toList());
-            if (originalList.size() < 1) {
+            if (originalList.isEmpty()) {
                 if (list.size() > 1) {
                     String json = getMargedStringOfFeatureJson(list);
                     featureJsons.add(MenuConfigMapper.getCurrentUserFeatureJson(ufj, json));
@@ -509,16 +509,16 @@ public class UserServiceImpl implements UserService {
             Gson g = new Gson();
             FeatureJSON f1 = g.fromJson(featureJsonList.get(0).getFeatureJson(), FeatureJSON.class);
             FeatureJSON f2 = g.fromJson(featureJsonList.get(1).getFeatureJson(), FeatureJSON.class);
-            if (!f1.getCanAdd() && !f2.getCanAdd()) {
+            if (!f1.getCanAdd().booleanValue() && !f2.getCanAdd().booleanValue()) {
                 featureJSON.setCanAdd(false);
             }
-            if (!f1.getCanDelete() && !f2.getCanDelete()) {
+            if (!f1.getCanDelete().booleanValue() && !f2.getCanDelete().booleanValue()) {
                 featureJSON.setCanDelete(false);
             }
-            if (!f1.getCanEdit() && !f2.getCanEdit()) {
+            if (!f1.getCanEdit().booleanValue() && !f2.getCanEdit().booleanValue()) {
                 featureJSON.setCanEdit(false);
             }
-            if (!f1.getCanView() && !f2.getCanView()) {
+            if (!f1.getCanView().booleanValue() && !f2.getCanView().booleanValue()) {
                 featureJSON.setCanView(false);
             }
             return featureJSON.toString();

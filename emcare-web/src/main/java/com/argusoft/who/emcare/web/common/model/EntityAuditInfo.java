@@ -42,6 +42,9 @@ public class EntityAuditInfo {
 
     public static class Fields {
 
+        private Fields() {
+        }
+
         public static final String CREATED_BY = "createdBy";
         public static final String CREATED_ON = "createdOn";
         public static final String MODIFIED_BY = "modifiedBy";

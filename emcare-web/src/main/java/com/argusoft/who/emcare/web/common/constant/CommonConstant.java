@@ -20,4 +20,11 @@ public class CommonConstant {
     public static final String ORGANIZATION_TYPE_STRING = "ORGANIZATION";
     public static final String EM_CARE_SYSTEM = "EM CARE SYSTEM";
 
+    //    FHIR
+    public static final String FHIR_PATIENT = "PATIENT";
+    public static final String FHIR_QUESTIONNAIRE = "Questionnaire";
+
+    //    Exception Strings
+    public static final String EM_CARE_NO_DATA_FOUND = "Data Not Found";
+
 }

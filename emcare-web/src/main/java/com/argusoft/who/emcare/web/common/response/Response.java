@@ -1,7 +1,5 @@
 package com.argusoft.who.emcare.web.common.response;
 
-import org.springframework.http.HttpStatus;
-
 public class Response {
 
     private String errorMessage;

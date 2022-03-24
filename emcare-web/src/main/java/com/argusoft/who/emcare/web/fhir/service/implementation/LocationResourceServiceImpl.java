@@ -8,10 +8,8 @@ import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.fhir.dao.LocationResourceRepository;
 import com.argusoft.who.emcare.web.fhir.dao.OrganizationResourceRepository;
 import com.argusoft.who.emcare.web.fhir.model.LocationResource;
-import com.argusoft.who.emcare.web.fhir.model.OrganizationResource;
 import com.argusoft.who.emcare.web.fhir.service.LocationResourceService;
 import com.argusoft.who.emcare.web.fhir.service.OrganizationResourceService;
-import org.codehaus.jettison.json.JSONObject;
 import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.Location;
 import org.hl7.fhir.r4.model.Meta;
@@ -75,6 +73,8 @@ public class LocationResourceServiceImpl implements LocationResourceService {
         Location location = null;
         if (locationResource != null) {
             location = parser.parseResource(Location.class, locationResource.getText());
+        } else {
+            return null;
         }
         Organization organization = organizationResourceService.getByResourceId(location.getManagingOrganization().getId());
         location.getManagingOrganization().setDisplay(organization.getName());
@@ -124,8 +124,6 @@ public class LocationResourceServiceImpl implements LocationResourceService {
         locationResource.setResourceId(updatableLocationResource.getResourceId());
         locationResource.setId(updatableLocationResource.getId());
 
-        locationResource = locationResourceRepository.save(locationResource);
-
         MethodOutcome retVal = new MethodOutcome();
         retVal.setId(new IdType(CommonConstant.LOCATION_TYPE_STRING, theLocation.getId(), "1"));
         retVal.setResource(theLocation);
@@ -135,16 +133,12 @@ public class LocationResourceServiceImpl implements LocationResourceService {
     @Override
     public List<Location> getEmCareLocationResourcePage(Integer pageNo, String searchString) {
         List<Location> locationList = new ArrayList<>();
-        List<JSONObject> jsonObjects = new ArrayList<>();
         Page<LocationResource> locationResources = null;
-        Integer totalCount = 0;
         Pageable page = PageRequest.of(pageNo, CommonConstant.PAGE_SIZE);
 
         if (searchString != null && !searchString.isEmpty()) {
-            totalCount = locationResourceRepository.findByTextContainingIgnoreCase(searchString).size();
             locationResources = locationResourceRepository.findByTextContainingIgnoreCase(searchString, page);
         } else {
-            totalCount = locationResourceRepository.findAll().size();
             locationResources = locationResourceRepository.findAll(page);
         }
 
@@ -156,9 +150,6 @@ public class LocationResourceServiceImpl implements LocationResourceService {
             locationList.add(location);
         }
 
-//        PageDto pageDto = new PageDto();
-//        pageDto.setList(locationList);
-//        pageDto.setTotalCount(totalCount.longValue());
         return locationList;
     }
 }

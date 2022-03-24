@@ -14,23 +14,25 @@ import com.ibm.watson.language_translator.v3.model.Translation;
 import org.apache.commons.compress.utils.Lists;
 import org.codehaus.jettison.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Logger;
 
 @Service
 @Transactional
 public class LanguageServiceImpl implements LanguageService {
 
+    static final Logger LOGGER = Logger.getLogger("LanguageServiceImpl");
+
     @Autowired
     LanguageRepository languageRepository;
 
     @Autowired
-    Environment environment;
+    IBMConfig ibmConfig;
 
     @Override
     public List<LanguageTranslation> getAllLanguageTranslation() {
@@ -39,9 +41,8 @@ public class LanguageServiceImpl implements LanguageService {
 
     @Override
     public Languages getAvailableLanguageList() {
-        LanguageTranslator languageTranslator = IBMConfig.getLanguageTranslatorInstance();
-        Languages languages = languageTranslator.listLanguages().execute().getResult();
-        return languages;
+        LanguageTranslator languageTranslator = ibmConfig.getLanguageTranslatorInstance();
+        return languageTranslator.listLanguages().execute().getResult();
     }
 
     @Override
@@ -50,12 +51,12 @@ public class LanguageServiceImpl implements LanguageService {
         Iterator<String> keys = null;
         List<String> translateLabel = new ArrayList<>();
         List<String> actualList = new ArrayList<>();
-        List<Translation> result = new ArrayList<>();
+        List<Translation> result;
         String translateTo = "en-".concat(languageAddDto.getLanguageCode());
         JSONObject newJson = new JSONObject();
         LanguageTranslation languageTranslation = new LanguageTranslation();
 
-        LanguageTranslator languageTranslator = IBMConfig.getLanguageTranslatorInstance();
+        LanguageTranslator languageTranslator = ibmConfig.getLanguageTranslatorInstance();
         LanguageTranslation englishLanguage = languageRepository.findByLanguageCode("en");
         try {
             jsonObject = new JSONObject(englishLanguage.getLanguageData());
@@ -66,6 +67,7 @@ public class LanguageServiceImpl implements LanguageService {
                 translateLabel.add(jsonObject.get(key).toString());
             }
         } catch (Exception ex) {
+            LOGGER.info(ex.getMessage());
         }
 
         TranslateOptions translateOptions = new TranslateOptions.Builder().text(translateLabel).modelId(translateTo).build();
@@ -79,7 +81,7 @@ public class LanguageServiceImpl implements LanguageService {
             LanguageDto languageDto = LanguageMapper.getLanguageDto(languageAddDto, newJson.toString());
             languageTranslation = addOrUpdateLanguageTranslation(languageDto);
         } catch (Exception ex) {
-
+            LOGGER.info(ex.getMessage());
         }
         return languageTranslation;
     }
@@ -92,8 +94,8 @@ public class LanguageServiceImpl implements LanguageService {
 
     @Transactional
     public void translateNewlyAddedLabels() {
-        System.out.println("-----------Start Translating Newly Added Labels---------------- ");
-        LanguageTranslator languageTranslator = IBMConfig.getLanguageTranslatorInstance();
+        LOGGER.info("-----------Start Translating Newly Added Labels---------------- ");
+        LanguageTranslator languageTranslator = ibmConfig.getLanguageTranslatorInstance();
         List<String> englishKeys = new ArrayList<>();
         JSONObject englishJson = new JSONObject();
         LanguageTranslation englishLanguage = languageRepository.findByLanguageCode("en");
@@ -102,11 +104,11 @@ public class LanguageServiceImpl implements LanguageService {
             englishJson = new JSONObject(englishLanguage.getLanguageData());
             englishKeys = Lists.newArrayList(englishJson.keys());
         } catch (Exception ex) {
-            System.out.println("Can't parse English Json");
+            LOGGER.info("Can't parse English Json");
         }
         for (LanguageTranslation otherLanguageTranslation : otherLanguage) {
             String translateTo = "en-".concat(otherLanguageTranslation.getLanguageCode());
-            System.out.println("Translating English to ---> " + otherLanguageTranslation.getLanguageName());
+            LOGGER.info("Translating English to ---> " + otherLanguageTranslation.getLanguageName());
             try {
                 JSONObject otherLangJson = new JSONObject(otherLanguageTranslation.getLanguageData());
                 List<String> otherLangKeys = Lists.newArrayList(otherLangJson.keys());
@@ -118,7 +120,7 @@ public class LanguageServiceImpl implements LanguageService {
                         translatableValue.add(englishJson.get(key).toString());
                     }
                 }
-                if (newKeys.size() > 0) {
+                if (!newKeys.isEmpty()) {
                     TranslateOptions translateOptions = new TranslateOptions.Builder().text(translatableValue).modelId(translateTo).build();
                     List<Translation> result = languageTranslator.translate(translateOptions).execute().getResult().getTranslations();
 
@@ -133,11 +135,11 @@ public class LanguageServiceImpl implements LanguageService {
                     addOrUpdateLanguageTranslation(languageDto);
                 }
             } catch (Exception ex) {
-                System.out.println(ex.getMessage());
-                System.out.println("Can't parse Json");
+                LOGGER.info(ex.getMessage());
+                LOGGER.info("Can't parse Json");
             }
         }
-        System.out.println("-------- Translation Completed Server Up SuccessFully --------- ");
+        LOGGER.info("-------- Translation Completed Server Up SuccessFully --------- ");
     }
 
 }

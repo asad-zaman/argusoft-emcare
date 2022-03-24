@@ -106,10 +106,4 @@ public class EmcareResourceController {
         }
         return q;
     }
-
-//    @GetMapping("/resource/location/page")
-//    public PageDto getEmCareLocationResourcePage(@RequestParam(value = "pageNo") Integer pageNo,
-//                                                        @Nullable @RequestParam(value = "search", required = false) String searchString) {
-//        return locationResourceService.getEmCareLocationResourcePage(pageNo,searchString);
-//    }
 }

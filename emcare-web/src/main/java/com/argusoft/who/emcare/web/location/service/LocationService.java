@@ -32,9 +32,7 @@ public interface LocationService {
     public ResponseEntity<Object> updateLocation(LocationMasterDto locationMasterDto);
 
     public ResponseEntity<Object> deleteLocationById(Integer locationId);
-
-    public LocationMaster getLocationById(Integer locationId);
-
+    
     public LocationMaster getLocationMasterById(Integer locationId);
 
     public List<LocationMaster> getLocationByType(String type);

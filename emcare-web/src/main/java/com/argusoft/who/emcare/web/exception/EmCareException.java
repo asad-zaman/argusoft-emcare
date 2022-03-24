@@ -6,24 +6,24 @@ package com.argusoft.who.emcare.web.exception;
  */
 public class EmCareException extends RuntimeException {
 
-    EmCareExceptionResopnseEntity agdRes;
+    private final EmCareExceptionResponseEntity emCareExceptionResponseEntity;
 
     public EmCareException(String message, Exception exception) {
         super(message, exception);
-        this.agdRes = new EmCareExceptionResopnseEntity(message);
+        this.emCareExceptionResponseEntity = new EmCareExceptionResponseEntity(message);
     }
 
     public EmCareException(String message, int errorCode) {
         super(message);
-        this.agdRes = new EmCareExceptionResopnseEntity(message, errorCode);
+        this.emCareExceptionResponseEntity = new EmCareExceptionResponseEntity(message, errorCode);
     }
 
     public EmCareException(String message, int errorCode, Object data) {
         super(message);
-        this.agdRes = new EmCareExceptionResopnseEntity(message, data, errorCode);
+        this.emCareExceptionResponseEntity = new EmCareExceptionResponseEntity(message, data, errorCode);
     }
 
-    public EmCareExceptionResopnseEntity getResponse() {
-        return agdRes;
+    public EmCareExceptionResponseEntity getResponse() {
+        return emCareExceptionResponseEntity;
     }
 }

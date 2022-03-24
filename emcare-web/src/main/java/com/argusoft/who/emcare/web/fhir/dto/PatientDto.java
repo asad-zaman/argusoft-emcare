@@ -3,11 +3,10 @@ package com.argusoft.who.emcare.web.fhir.dto;
 import java.util.Date;
 
 /**
- *
  * @author parth
  */
 public class PatientDto {
-    
+
     private String id;
     private String identifier;
     private String givenName;
@@ -20,9 +19,10 @@ public class PatientDto {
     private String addressCity;
     private String addressCountry;
     private String addressPostalCode;
-    
+
 
     public PatientDto() {
+//        Do nothing because it's empty constructor
     }
 
     public String getId() {
@@ -32,7 +32,7 @@ public class PatientDto {
     public void setId(String id) {
         this.id = id;
     }
-    
+
     public String getIdentifier() {
         return identifier;
     }
@@ -120,7 +120,6 @@ public class PatientDto {
     public void setAddressPostalCode(String addressPostalCode) {
         this.addressPostalCode = addressPostalCode;
     }
-    
-    
-    
+
+
 }
