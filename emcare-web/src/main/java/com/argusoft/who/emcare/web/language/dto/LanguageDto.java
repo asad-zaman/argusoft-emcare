@@ -2,10 +2,10 @@ package com.argusoft.who.emcare.web.language.dto;
 
 public class LanguageDto {
 
-    public Integer id;
-    public String languageName;
-    public String languageCode;
-    public String languageTranslation;
+    private Integer id;
+    private String languageName;
+    private String languageCode;
+    private String languageTranslation;
 
     public Integer getId() {
         return id;
