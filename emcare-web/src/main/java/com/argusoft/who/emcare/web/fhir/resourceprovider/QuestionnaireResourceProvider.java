@@ -2,27 +2,23 @@ package com.argusoft.who.emcare.web.fhir.resourceprovider;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.IParser;
-import ca.uhn.fhir.rest.annotation.Create;
-import ca.uhn.fhir.rest.annotation.Delete;
-import ca.uhn.fhir.rest.annotation.IdParam;
-import ca.uhn.fhir.rest.annotation.Read;
-import ca.uhn.fhir.rest.annotation.ResourceParam;
-import ca.uhn.fhir.rest.annotation.Search;
-import ca.uhn.fhir.rest.annotation.Update;
+import ca.uhn.fhir.rest.annotation.*;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
+import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.fhir.model.QuestionnaireMaster;
 import com.argusoft.who.emcare.web.fhir.service.QuestionnaireMasterService;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
 import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.Meta;
 import org.hl7.fhir.r4.model.Questionnaire;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
 
 @Component
 public class QuestionnaireResourceProvider implements IResourceProvider {
@@ -30,7 +26,6 @@ public class QuestionnaireResourceProvider implements IResourceProvider {
     @Autowired
     private QuestionnaireMasterService questionnaireMasterService;
 
-    private final String QUESTIONNAIRE = "Questionnaire";
     private final FhirContext fhirCtx = FhirContext.forR4();
     private final IParser parser = fhirCtx.newJsonParser().setPrettyPrint(false);
 
@@ -41,15 +36,15 @@ public class QuestionnaireResourceProvider implements IResourceProvider {
 
     @Create
     public MethodOutcome createQuestionnaire(@ResourceParam Questionnaire questionnaire) {
-        
+
         String questionnaireId = UUID.randomUUID().toString();
         questionnaire.setId(questionnaireId);
 
         Meta m = new Meta();
         m.setVersionId("1");
         m.setLastUpdated(new Date());
-        
-        
+
+
         Integer versionId = 1;
 
         if (questionnaire.getMeta() != null && questionnaire.getMeta().getVersionId() != null) {
@@ -61,7 +56,7 @@ public class QuestionnaireResourceProvider implements IResourceProvider {
         String questionnaireString = parser.encodeResourceToString(questionnaire);
 
         QuestionnaireMaster questionnaireMaster = questionnaireMasterService.retrieveQuestionnaireByResourceId(questionnaire.getId());
-        
+
         if (questionnaireMaster == null) {
             questionnaireMaster = new QuestionnaireMaster();
             questionnaireMaster.setVersion("1.0");
@@ -75,7 +70,7 @@ public class QuestionnaireResourceProvider implements IResourceProvider {
         questionnaireMasterService.saveResource(questionnaireMaster);
 
         MethodOutcome retVal = new MethodOutcome();
-        retVal.setId(new IdType(QUESTIONNAIRE, questionnaire.getId(), versionId.toString()));
+        retVal.setId(new IdType(CommonConstant.FHIR_QUESTIONNAIRE, questionnaire.getId(), versionId.toString()));
         retVal.setResource(questionnaire);
 
         return retVal;
@@ -109,7 +104,7 @@ public class QuestionnaireResourceProvider implements IResourceProvider {
         Meta m = new Meta();
         m.setVersionId("1");
         m.setLastUpdated(new Date());
-        
+
         Integer versionId = 1;
 
         if (questionnaire.getMeta() != null && questionnaire.getMeta().getVersionId() != null) {
@@ -118,7 +113,7 @@ public class QuestionnaireResourceProvider implements IResourceProvider {
         }
         questionnaire.setMeta(m);
 
-        
+
         String questionnaireString = parser.encodeResourceToString(questionnaire);
         QuestionnaireMaster questionnaireMaster = questionnaireMasterService.retrieveQuestionnaireByResourceId(questionnaire.getIdElement().getIdPart());
         if (questionnaireMaster == null) {
@@ -134,7 +129,7 @@ public class QuestionnaireResourceProvider implements IResourceProvider {
         questionnaireMaster = questionnaireMasterService.saveResource(questionnaireMaster);
 
         MethodOutcome retVal = new MethodOutcome();
-        retVal.setId(new IdType(QUESTIONNAIRE, questionnaire.getId(), questionnaireMaster.getVersion()));
+        retVal.setId(new IdType(CommonConstant.FHIR_QUESTIONNAIRE, questionnaire.getId(), questionnaireMaster.getVersion()));
         retVal.setResource(questionnaire);
 
         return retVal;

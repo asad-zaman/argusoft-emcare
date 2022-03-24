@@ -6,7 +6,6 @@ import ca.uhn.fhir.rest.annotation.*;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import com.argusoft.who.emcare.web.common.constant.CommonConstant;
-import com.argusoft.who.emcare.web.fhir.model.LocationResource;
 import com.argusoft.who.emcare.web.fhir.service.LocationResourceService;
 import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.Location;
@@ -35,8 +34,6 @@ public class LocationResourceProvider implements IResourceProvider {
 
     @Create
     public MethodOutcome createLocation(@ResourceParam Location theLocation) {
-        LocationResource locationResource = locationResourceService.saveResource(theLocation);
-
         MethodOutcome retVal = new MethodOutcome();
         retVal.setId(new IdType(CommonConstant.LOCATION_TYPE_STRING, theLocation.getId(), "1"));
         retVal.setResource(theLocation);
@@ -52,8 +49,7 @@ public class LocationResourceProvider implements IResourceProvider {
     @Search()
     public List<Location> getEmCareLocationResourcePage(@RequiredParam(name = "pageNo") String pageNo,
                                                         @Nullable @RequiredParam(name = "search") String searchString) {
-        List<Location> locationList = locationResourceService.getEmCareLocationResourcePage(Integer.parseInt(pageNo), searchString);
-        return locationList;
+        return locationResourceService.getEmCareLocationResourcePage(Integer.parseInt(pageNo), searchString);
     }
 
     @Search()

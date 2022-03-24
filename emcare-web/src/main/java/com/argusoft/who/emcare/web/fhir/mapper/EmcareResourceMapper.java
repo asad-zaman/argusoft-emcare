@@ -2,18 +2,21 @@ package com.argusoft.who.emcare.web.fhir.mapper;
 
 import com.argusoft.who.emcare.web.fhir.dto.PatientDto;
 import com.argusoft.who.emcare.web.fhir.dto.QuestionnaireDto;
-import java.util.ArrayList;
-import java.util.List;
 import org.hl7.fhir.r4.model.Extension;
 import org.hl7.fhir.r4.model.Identifier;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Questionnaire;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- *
  * @author parth
  */
 public class EmcareResourceMapper {
+
+    private EmcareResourceMapper() {
+    }
 
     public static PatientDto patientEntityToDtoMapper(Patient p) {
         PatientDto pDto = new PatientDto();
