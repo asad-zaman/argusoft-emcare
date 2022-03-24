@@ -20,17 +20,17 @@ public class DeviceController {
     @Autowired
     DeviceService deviceService;
 
-    @RequestMapping(value = "/add", method = RequestMethod.POST)
+    @PostMapping("/add")
     public ResponseEntity<Object> addNewDevice(@RequestBody DeviceDto deviceDto) {
         return deviceService.addNewDevice(deviceDto);
     }
 
-    @RequestMapping(value = "/update", method = RequestMethod.PUT)
+    @PutMapping("/update")
     public ResponseEntity<Object> updateDeviceDetails(@RequestBody DeviceDto deviceDto) {
         return deviceService.updateDeviceDetails(deviceDto);
     }
 
-    @RequestMapping(value = "/all", method = RequestMethod.GET)
+    @GetMapping("/all")
     public ResponseEntity<Object> getAllDevice(HttpServletRequest request) {
         return deviceService.getAllDevice(request);
     }
@@ -49,7 +49,7 @@ public class DeviceController {
         return deviceService.changeDeviceStatus(deviceId, status);
     }
 
-    @RequestMapping(value = "", method = RequestMethod.GET)
+    @GetMapping("")
     public ResponseEntity<Object> getDeviceByImei(
             @RequestParam(value = "imei", required = false) String imei,
             @RequestParam(value = "macAddress", required = false) String macAddress,
