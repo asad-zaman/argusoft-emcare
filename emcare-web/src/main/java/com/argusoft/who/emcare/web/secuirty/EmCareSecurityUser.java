@@ -1,6 +1,5 @@
 package com.argusoft.who.emcare.web.secuirty;
 
-import com.argusoft.who.emcare.web.config.KeyCloakConfig;
 import org.keycloak.KeycloakPrincipal;
 import org.keycloak.KeycloakSecurityContext;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
@@ -19,7 +18,7 @@ public class EmCareSecurityUser {
 
     private String loggedInUserId;
     private String loggedInUserName;
-    private Set<String> LoggedInUserRole;
+    private Set<String> loggedInUserRole;
 
     public String getLoggedInUserId() {
         getLoggedInUser();
@@ -41,11 +40,11 @@ public class EmCareSecurityUser {
 
     public Set<String> getLoggedInUserRole() {
         getLoggedInUser();
-        return LoggedInUserRole;
+        return loggedInUserRole;
     }
 
     public void setLoggedInUserRole(Set<String> loggedInUserRole) {
-        LoggedInUserRole = loggedInUserRole;
+        this.loggedInUserRole = loggedInUserRole;
     }
 
     @Autowired
@@ -53,12 +52,11 @@ public class EmCareSecurityUser {
 
     public AccessToken getLoggedInUser() {
         KeycloakAuthenticationToken token = (KeycloakAuthenticationToken) request.getUserPrincipal();
-        KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
+        @SuppressWarnings("rawtypes") KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
         KeycloakSecurityContext session = principal.getKeycloakSecurityContext();
         AccessToken accessToken = session.getToken();
         setLoggedInUserId(accessToken.getSubject());
         setLoggedInUserName(accessToken.getPreferredUsername());
-//        setLoggedInUserRole(accessToken.getResourceAccess().get(KeyCloakConfig.clientId).getRoles());
         return accessToken;
     }
 }
