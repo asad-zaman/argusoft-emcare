@@ -2,6 +2,8 @@ package com.argusoft.who.emcare.web.location.service.impl;
 
 import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.common.dto.PageDto;
+import com.argusoft.who.emcare.web.common.response.Response;
+import com.argusoft.who.emcare.web.exception.EmCareException;
 import com.argusoft.who.emcare.web.location.dao.HierarchyMasterDao;
 import com.argusoft.who.emcare.web.location.dao.LocationMasterDao;
 import com.argusoft.who.emcare.web.location.dto.HierarchyMasterDto;
@@ -22,9 +24,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author jay
@@ -64,7 +64,12 @@ public class LocationServiceImpl implements LocationService {
 
     @Override
     public ResponseEntity<Object> getHierarchyMasterById(String type) {
-        return ResponseEntity.ok(hierarchyMasterDao.findById(type).get());
+        Optional<HierarchyMaster> optionalHierarchyMaster = hierarchyMasterDao.findById(type);
+        if (!optionalHierarchyMaster.isEmpty()) {
+            return ResponseEntity.ok(optionalHierarchyMaster.get());
+        } else {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new Response(CommonConstant.EM_CARE_NO_DATA_FOUND, HttpStatus.NO_CONTENT.value()));
+        }
     }
 
     @Override
@@ -97,9 +102,14 @@ public class LocationServiceImpl implements LocationService {
         if (orderBy.equalsIgnoreCase("null")) {
             orderBy = "name";
         }
-        Long totalCount = 0L;
+        Long totalCount;
         Sort sort = order.equalsIgnoreCase(CommonConstant.DESC) ? Sort.by(orderBy).descending() : Sort.by(orderBy).ascending();
-        Pageable page = PageRequest.of(pageNo, CommonConstant.PAGE_SIZE, !sort.isEmpty() ? sort : null);
+        Pageable page;
+        if (!sort.isEmpty()) {
+            page = PageRequest.of(pageNo, CommonConstant.PAGE_SIZE, sort);
+        } else {
+            page = PageRequest.of(pageNo, CommonConstant.PAGE_SIZE);
+        }
         Page<LocationMaster> locationMasters;
         if (searchString != null && !searchString.isEmpty()) {
             totalCount = Long.valueOf(locationMasterDao.findByNameContainingIgnoreCaseOrTypeContainingIgnoreCase(searchString, searchString).size());
@@ -141,19 +151,19 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
-    public LocationMaster getLocationById(Integer locationId) {
-        return locationMasterDao.findById(locationId).get();
-    }
-
-    @Override
     public LocationMaster getLocationMasterById(Integer locationId) {
-        return locationMasterDao.findById(locationId).get();
+        Optional<LocationMaster> locationMaster = locationMasterDao.findById(locationId);
+        if (!locationMaster.isEmpty()) {
+            return locationMaster.get();
+        } else {
+            throw new EmCareException(CommonConstant.EM_CARE_NO_DATA_FOUND, HttpStatus.NO_CONTENT.value());
+        }
     }
 
     @Override
     public List<LocationMaster> getLocationByType(String type) {
         List<LocationMaster> locations = locationMasterDao.findByType(type);
-        Collections.sort(locations, (LocationMaster l1, LocationMaster l2) -> l1.getName().compareTo(l2.getName()));
+        Collections.sort(locations, Comparator.comparing(LocationMaster::getName));
         return locations;
     }
 

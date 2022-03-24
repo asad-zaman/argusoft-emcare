@@ -80,7 +80,7 @@ public class UserServiceImpl implements UserService {
             userLocation = null;
         } else {
             userLocationMapping = userLocationMappingRepository.findByUserId(user.getSubject()).get(0);
-            userLocation = locationService.getLocationById(userLocationMapping.getLocationId());
+            userLocation = locationService.getLocationMasterById(userLocationMapping.getLocationId());
         }
         UserMasterDto masterUser = UserMapper.getMasterUser(user, userLocation, userInfo);
         List<RoleRepresentation> roleRepresentationList = keycloak.realm(KeyCloakConfig.REALM).users().get(masterUser.getUserId()).roles().realmLevel().listAll();

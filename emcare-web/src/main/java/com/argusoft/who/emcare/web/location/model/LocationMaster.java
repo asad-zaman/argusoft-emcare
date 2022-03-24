@@ -37,20 +37,6 @@ public class LocationMaster extends EntityAuditInfo implements Serializable {
     @Column(name = "is_active", nullable = false)
     private boolean isActive;
 
-//        @Basic(optional = false)
-//        @Column(name = "created_by", nullable = false, length = 50)
-//        private String createdBy;
-//
-//        @Basic(optional = false)
-//        @Column(name = "created_on", nullable = false)
-//        @Temporal(TemporalType.TIMESTAMP)
-//        private Date createdOn;
-//
-//        @Column(name = "modified_by", length = 50)
-//        private String modifiedBy;
-//        @Column(name = "modified_on")
-//        @Temporal(TemporalType.TIMESTAMP)
-//        private Date modifiedOn;
     @Column(name = "parent")
     private Long parent;
 
