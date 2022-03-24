@@ -2,6 +2,7 @@ package com.argusoft.who.emcare.web.device.service.impl;
 
 import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.common.dto.PageDto;
+import com.argusoft.who.emcare.web.common.response.Response;
 import com.argusoft.who.emcare.web.config.KeyCloakConfig;
 import com.argusoft.who.emcare.web.device.dao.DeviceRepository;
 import com.argusoft.who.emcare.web.device.dto.DeviceDto;
@@ -27,6 +28,7 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author jay
@@ -57,7 +59,7 @@ public class DeviceServiceImpl implements DeviceService {
             return ResponseEntity.status(HttpStatus.OK).body(newDevice);
 
         } else {
-            DeviceMaster updatedDevice = DeviceMapper.getDeviceMaster(oldDevice, deviceDto, userId, userName);
+            DeviceMaster updatedDevice = DeviceMapper.getDeviceMaster(oldDevice, deviceDto, userName);
             deviceRepository.updateDevice(updatedDevice.getAndroidVersion(), updatedDevice.getLastLoggedInUser(), updatedDevice.getIsBlocked(), updatedDevice.getDeviceId());
             return ResponseEntity.status(HttpStatus.OK).body(deviceDto);
         }
@@ -67,24 +69,30 @@ public class DeviceServiceImpl implements DeviceService {
     public ResponseEntity<Object> updateDeviceDetails(DeviceDto deviceDto) {
         String userId = emCareSecurityUser.getLoggedInUser().getSubject();
         String userName = emCareSecurityUser.getLoggedInUserName();
-        DeviceMaster oldDeviceDetails = deviceRepository.findById(deviceDto.getDeviceId()).get();
+        DeviceMaster oldDeviceDetails;
+        Optional<DeviceMaster> deviceMaster = deviceRepository.findById(deviceDto.getDeviceId());
+        if (deviceMaster.isPresent()) {
+            oldDeviceDetails = deviceMaster.get();
+        } else {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new Response("Device Data Not Found", HttpStatus.NO_CONTENT.value()));
+        }
         Keycloak keycloak = keyCloakConfig.getInstance();
         UserResource userResource = keycloak.realm(KeyCloakConfig.REALM).users().get(userId);
         UserSessionRepresentation sessions = userResource.getUserSessions().get(0);
         keycloak.realm(KeyCloakConfig.REALM).deleteSession(sessions.getId());
-        DeviceMaster updatedDevice = DeviceMapper.getDeviceMaster(oldDeviceDetails, deviceDto, userId, userName);
-//        deviceRepository.updateDevice(
-//                updatedDevice.getAndroidVersion(),
-//                updatedDevice.getLastLoggedInUser(),
-//                updatedDevice.getIsBlocked(),
-//                updatedDevice.getDeviceId()
-//        );
+        DeviceMaster updatedDevice = DeviceMapper.getDeviceMaster(oldDeviceDetails, deviceDto, userName);
         return ResponseEntity.status(HttpStatus.OK).body(updatedDevice);
     }
 
     @Override
     public ResponseEntity<Object> changeDeviceStatus(Integer deviceId, Boolean status) {
-        DeviceMaster deviceInfo = deviceRepository.findById(deviceId).get();
+        DeviceMaster deviceInfo;
+        Optional<DeviceMaster> deviceMaster = deviceRepository.findById(deviceId);
+        if (deviceMaster.isPresent()) {
+            deviceInfo = deviceMaster.get();
+        } else {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new Response("Device Data Not Found", HttpStatus.NO_CONTENT.value()));
+        }
         deviceInfo.setIsBlocked(status);
         deviceRepository.save(deviceInfo);
         Keycloak keycloak = keyCloakConfig.getInstance();
@@ -134,7 +142,12 @@ public class DeviceServiceImpl implements DeviceService {
             orderBy = "deviceName";
         }
         Sort sort = order.equalsIgnoreCase(CommonConstant.DESC) ? Sort.by(orderBy).descending() : Sort.by(orderBy).ascending();
-        Pageable page = PageRequest.of(pageNo, CommonConstant.PAGE_SIZE, !sort.isEmpty() ? sort : null);
+        Pageable page;
+        if (!sort.isEmpty()) {
+            page = PageRequest.of(pageNo, CommonConstant.PAGE_SIZE, sort);
+        } else {
+            page = PageRequest.of(pageNo, CommonConstant.PAGE_SIZE);
+        }
         Long totalCount;
         Page<DeviceMaster> allDevice;
         if (searchString != null && !searchString.isEmpty()) {

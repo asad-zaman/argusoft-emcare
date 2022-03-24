@@ -32,7 +32,7 @@ public class DeviceMapper {
         return master;
     }
 
-    public static DeviceMaster getDeviceMaster(DeviceMaster deviceMaster, DeviceDto deviceDto, String userId, String userName) {
+    public static DeviceMaster getDeviceMaster(DeviceMaster deviceMaster, DeviceDto deviceDto, String userName) {
         DeviceMaster master = new DeviceMaster();
 
         master.setDeviceId(deviceMaster.getDeviceId());
