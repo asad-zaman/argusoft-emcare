@@ -82,7 +82,7 @@ public class LocationController {
 
     @GetMapping("/{locationId}")
     public LocationMaster getLocationById(@PathVariable(value = "locationId") Integer locationId) {
-        return locationConfigService.getLocationById(locationId);
+        return locationConfigService.getLocationMasterById(locationId);
     }
 
     @GetMapping("/type/{type}")

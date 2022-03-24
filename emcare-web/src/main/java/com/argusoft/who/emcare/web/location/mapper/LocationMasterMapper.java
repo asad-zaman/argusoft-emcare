@@ -9,6 +9,9 @@ import com.argusoft.who.emcare.web.location.model.LocationMaster;
  */
 public class LocationMasterMapper {
 
+    private LocationMasterMapper() {
+    }
+
     public static LocationMaster firstEntity(LocationMasterDto locationMasterDto) {
 
         LocationMaster locationMaster = new LocationMaster();

@@ -1,15 +1,15 @@
 package com.argusoft.who.emcare.web.location.model;
 
 import com.argusoft.who.emcare.web.common.model.EntityAuditInfo;
-import java.io.Serializable;
+import lombok.Data;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import lombok.Data;
+import java.io.Serializable;
 
 /**
- *
  * @author jay
  */
 @Data
@@ -26,6 +26,9 @@ public class HierarchyMaster extends EntityAuditInfo implements Serializable {
     private String code;
 
     public static class Fields {
+
+        private Fields() {
+        }
 
         public static final String HIERARCHY_TYPE = "hierarchyType";
         public static final String NAME = "name";
