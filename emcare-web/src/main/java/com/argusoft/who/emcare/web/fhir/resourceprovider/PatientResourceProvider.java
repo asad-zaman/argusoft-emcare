@@ -7,24 +7,14 @@ import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.param.StringParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
-
+import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.fhir.model.EmcareResource;
 import com.argusoft.who.emcare.web.fhir.service.EmcareResourceService;
-
-import org.hl7.fhir.r4.model.Enumerations;
-import org.hl7.fhir.r4.model.IdType;
-import org.hl7.fhir.r4.model.Identifier;
-import org.hl7.fhir.r4.model.Meta;
-import org.hl7.fhir.r4.model.Patient;
+import org.hl7.fhir.r4.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
-import org.hl7.fhir.r4.model.RelatedPerson;
+import java.util.*;
 
 @Component
 public class PatientResourceProvider implements IResourceProvider {
@@ -49,7 +39,7 @@ public class PatientResourceProvider implements IResourceProvider {
      * operation. Read operations should return a single resource instance.
      *
      * @param theId The read operation takes one parameter, which must be of
-     * type IdType and must be annotated with the "@Read.IdParam" annotation.
+     *              type IdType and must be annotated with the "@Read.IdParam" annotation.
      * @return Returns a resource matching this identifier, or null if none
      * exists.
      */
@@ -72,10 +62,10 @@ public class PatientResourceProvider implements IResourceProvider {
      * searches by family name.
      *
      * @param theFamilyName This operation takes one parameter which is the
-     * search criteria. It is annotated with the "@Required" annotation. This
-     * annotation takes one argument, a string containing the name of the search
-     * criteria. The datatype here is StringParam, but there are other possible
-     * parameter types depending on the specific search criteria.
+     *                      search criteria. It is annotated with the "@Required" annotation. This
+     *                      annotation takes one argument, a string containing the name of the search
+     *                      criteria. The datatype here is StringParam, but there are other possible
+     *                      parameter types depending on the specific search criteria.
      * @return This method returns a list of Patients. This list may contain
      * multiple matching resources, or it may also be empty.
      */
@@ -111,7 +101,7 @@ public class PatientResourceProvider implements IResourceProvider {
         EmcareResource emcareResource = new EmcareResource();
         emcareResource.setText(patientString);
         emcareResource.setResourceId(patientId);
-        emcareResource.setType("PATIENT");
+        emcareResource.setType(CommonConstant.FHIR_PATIENT);
 
         emcareResourceService.saveResource(emcareResource);
 
@@ -197,7 +187,7 @@ public class PatientResourceProvider implements IResourceProvider {
     }
 
     /*
-    * Related Person APIs
+     * Related Person APIs
      */
     @Update
     public MethodOutcome updateRelatedPerson(@IdParam IdType theId, @ResourceParam RelatedPerson theRelatedPerson) {

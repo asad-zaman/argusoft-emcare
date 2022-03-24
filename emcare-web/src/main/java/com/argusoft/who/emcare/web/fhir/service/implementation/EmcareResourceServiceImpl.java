@@ -15,7 +15,6 @@ import com.argusoft.who.emcare.web.location.service.LocationService;
 import com.argusoft.who.emcare.web.secuirty.EmCareSecurityUser;
 import com.argusoft.who.emcare.web.userLocationMapping.dao.UserLocationMappingRepository;
 import com.argusoft.who.emcare.web.userLocationMapping.model.UserLocationMapping;
-import org.hl7.fhir.r4.model.Extension;
 import org.hl7.fhir.r4.model.Identifier;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.RelatedPerson;
@@ -69,11 +68,11 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
         List<EmcareResource> resourcesList;
         Pageable page = PageRequest.of(pageNo, CommonConstant.PAGE_SIZE);
         if (searchString != null && !searchString.isEmpty()) {
-            totalCount = repository.findByTypeContainingAndTextContainingIgnoreCase("PATIENT", searchString).size();
-            resourcesList = repository.findByTypeContainingAndTextContainingIgnoreCase("PATIENT", searchString, page);
+            totalCount = repository.findByTypeContainingAndTextContainingIgnoreCase(CommonConstant.FHIR_PATIENT, searchString).size();
+            resourcesList = repository.findByTypeContainingAndTextContainingIgnoreCase(CommonConstant.FHIR_PATIENT, searchString, page);
         } else {
-            totalCount = repository.findAllByType("PATIENT").size();
-            resourcesList = repository.findAllByType("PATIENT", page);
+            totalCount = repository.findAllByType(CommonConstant.FHIR_PATIENT).size();
+            resourcesList = repository.findAllByType(CommonConstant.FHIR_PATIENT, page);
         }
 
         for (EmcareResource emcareResource : resourcesList) {
@@ -122,8 +121,8 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
     public PageDto getPatientUnderLocationId(Integer locationId, Integer pageNo) {
         List<Patient> patientsList = new ArrayList<>();
         Pageable page = PageRequest.of(pageNo, CommonConstant.PAGE_SIZE);
-        Integer totalCount = repository.findAllByType("PATIENT").size();
-        List<EmcareResource> resourcesList = repository.findAllByType("PATIENT", page);
+        Integer totalCount = repository.findAllByType(CommonConstant.FHIR_PATIENT).size();
+        List<EmcareResource> resourcesList = repository.findAllByType(CommonConstant.FHIR_PATIENT, page);
         for (EmcareResource emcareResource : resourcesList) {
             Patient patient = parser.parseResource(Patient.class, emcareResource.getText());
             patientsList.add(patient);
@@ -162,7 +161,7 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
         List<UserLocationMapping> userLocationMapping = userLocationMappingRepository.findByUserId(loggedInUserId);
         if (!userLocationMapping.isEmpty()) {
             List<Integer> childLocations = locationMasterDao.getAllChildLocationId(userLocationMapping.get(0).getLocationId());
-            patientsList = patientsList.stream().filter(e -> childLocations.contains( Integer.parseInt(((Identifier) e.getExtension().get(0).getValue()).getValue()))).collect(Collectors.toList());
+            patientsList = patientsList.stream().filter(e -> childLocations.contains(Integer.parseInt(((Identifier) e.getExtension().get(0).getValue()).getValue()))).collect(Collectors.toList());
         }
 
 //        patientsList =
