@@ -26,7 +26,7 @@ body {
         }
 
         .sidebarIconToggle {
-            right: 470px !important;
+            right: 690px !important;
 
             .cst-filter-btn {
                 width: 150px;
@@ -59,6 +59,15 @@ body {
             button {
                 margin-right: 10px;
             }
+        }
+
+        .sidenav {
+            right: 0px;
+        }
+
+        .main-wrapper {
+            padding: 20px;
+            padding-right: 250px;
         }
     }
 }
