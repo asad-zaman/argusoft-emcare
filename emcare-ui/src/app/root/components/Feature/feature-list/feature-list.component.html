@@ -9,7 +9,7 @@
   </div>
   <!--Table-->
   <div *ngIf="!isAPIBusy" class="table-responsive">
-    <table class="data-table">
+    <table class="data-table" aria-labelledby="feature-list">
       <thead>
         <tr>
           <th>{{'ID' | translate}}</th>
@@ -24,8 +24,8 @@
               <td>{{i + 1}}</td>
               <td>{{feature.menuName}}</td>
               <td *ngIf="isEdit">
-                <i (click)="updateFeature(i)" class="bi bi-pencil-square cursor-pointer font-size-16"></i>
-                <!-- <i class="bi bi-trash ms-3 text-red cursor-pointer font-size-16"></i> -->
+                <i aria-hidden="true" (click)="updateFeature(i)"
+                  class="bi bi-pencil-square cursor-pointer font-size-16"></i>
               </td>
             </tr>
           </ng-container>

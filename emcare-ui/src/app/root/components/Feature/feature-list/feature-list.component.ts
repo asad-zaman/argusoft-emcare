@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthGuard } from 'src/app/auth/auth.guard';
 import { FeatureManagementService } from 'src/app/root/services/feature-management.service';
-import { ToasterService } from 'src/app/shared';
 @Component({
   selector: 'app-feature-list',
   templateUrl: './feature-list.component.html',
@@ -20,8 +19,7 @@ export class FeatureListComponent implements OnInit {
   constructor(
     private readonly router: Router,
     private readonly featureService: FeatureManagementService,
-    private readonly authGuard: AuthGuard,
-    private readonly toasterService: ToasterService
+    private readonly authGuard: AuthGuard
   ) { }
 
   ngOnInit(): void {

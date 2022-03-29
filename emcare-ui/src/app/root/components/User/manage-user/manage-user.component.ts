@@ -164,7 +164,7 @@ export class ManageUserComponent implements OnInit {
         const data = {
           "firstName": this.userForm.get('firstName').value,
           "lastName": this.userForm.get('lastName').value,
-          "locationId": this.userForm.get('location').value,
+          "locationId": this.userForm.get('location').value && this.userForm.get('location').value.id,
           "regRequestFrom": "web"
         }
         this.userService.updateUser(data, this.editId).subscribe(res => {
@@ -178,7 +178,7 @@ export class ManageUserComponent implements OnInit {
           "email": this.userForm.get('email').value,
           "password": this.userForm.get('password').value,
           "roleName": this.userForm.get('role').value,
-          "locationId": this.userForm.get('location').value,
+          "locationId": this.userForm.get('location').value && this.userForm.get('location').value.id,
           "regRequestFrom": "web"
         }
         this.userService.createUser(data).subscribe(res => {

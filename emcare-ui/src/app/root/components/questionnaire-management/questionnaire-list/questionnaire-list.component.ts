@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthGuard } from 'src/app/auth/auth.guard';
-import { FhirService, ToasterService } from 'src/app/shared';
+import { FhirService } from 'src/app/shared';
 @Component({
   selector: 'app-questionnaire-list',
   templateUrl: './questionnaire-list.component.html',
@@ -24,7 +24,6 @@ export class QuestionnaireListComponent implements OnInit {
   constructor(
     private readonly router: Router,
     private readonly fhirService: FhirService,
-    private readonly toasterService: ToasterService,
     private readonly authGuard: AuthGuard
   ) { }
 
