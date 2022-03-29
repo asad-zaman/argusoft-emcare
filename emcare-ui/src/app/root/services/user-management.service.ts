@@ -9,7 +9,7 @@ export class UserManagementService {
 
   userURL = `${environment.apiUrl}/api/user`;
 
-  constructor(private http: HttpClient) { }
+  constructor(private readonly http: HttpClient) { }
 
   getHeaders() {
     let authToken = localStorage.getItem("access_token");

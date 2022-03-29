@@ -4,14 +4,14 @@
 <ng-container *ngIf="currentUrl !== '/' && currentUrl !== '/login' && currentUrl !== '/signup'">
   <!--header-->
   <header>
-    <div class="logo"><img src="assets/images/emcare-logo.svg"></div>
+    <div class="logo"><img src="assets/images/emcare-logo.svg" alt="EMCARE"></div>
     <ul class="navigation">
       <li class="dropdown">
         <div class="d-flex align-items-center" data-bs-toggle="dropdown">
           <span class="user-char-logo">
             {{userCharLogo}}
           </span>
-          {{ userName }}<i class="bi bi-chevron-down ps-2"></i>
+          {{ userName }}<i class="bi bi-chevron-down ps-2" aria-hidden="true"></i>
         </div>
         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
           <li><a class="dropdown-item" routerLink="/editProfile">{{'Edit_Profile' | translate}}</a></li>
@@ -28,12 +28,12 @@
         <a class="mouse-pointer" [ngClass]="{'active': this.currentUrl === '/showUsers' || this.currentUrl === '/addUser' || this.currentUrl.includes('/updateUser') 
           || this.currentUrl === '/showRoles' || this.currentUrl === '/addRole' || this.currentUrl.includes('/editRole')
           || this.currentUrl === '/confirmUsers'}" (click)="hideCurrentDropdown(1)">
-          <i class="bi bi-people nav-link_icon"></i>{{'User Management' | translate}}
+          <i class="bi bi-people nav-link_icon" aria-hidden="true"></i>{{'User Management' | translate}}
           <ng-container *ngIf="isUserDropdownOpen; else upIcon">
-            <i class="bi bi-chevron-up drop-icon"></i>
+            <i class="bi bi-chevron-up drop-icon" aria-hidden="true"></i>
           </ng-container>
           <ng-template #upIcon>
-            <i class="bi bi-chevron-down drop-icon"></i>
+            <i class="bi bi-chevron-down drop-icon" aria-hidden="true"></i>
           </ng-template>
         </a>
         <div *ngIf="isUserDropdownOpen" class="dropdown_list_wrapper">
@@ -54,12 +54,12 @@
         <a class="mouse-pointer"
           [ngClass]="{'active': this.currentUrl === '/showPatients' || this.currentUrl === '/comparePatients'}"
           (click)="hideCurrentDropdown(3)">
-          <i class="bi bi-map nav-link_icon"></i>{{'Manage Patients' | translate}}
+          <i class="bi bi-map nav-link_icon" aria-hidden="true"></i>{{'Manage Patients' | translate}}
           <ng-container *ngIf="isPatientDropdownOpen; else upIcon">
-            <i class="bi bi-chevron-up drop-icon"></i>
+            <i class="bi bi-chevron-up drop-icon" aria-hidden="true"></i>
           </ng-container>
           <ng-template #upIcon>
-            <i class="bi bi-chevron-down drop-icon"></i>
+            <i class="bi bi-chevron-down drop-icon" aria-hidden="true"></i>
           </ng-template>
         </a>
         <div *ngIf="isPatientDropdownOpen" class="dropdown_list_wrapper">
@@ -75,19 +75,19 @@
       </li>
       <li *ngIf="hasAccess('Questionnaire Management')"><a class="mouse-pointer"
           [ngClass]="{'active': this.currentUrl === '/showQuestionnaires' || this.currentUrl === '/addQuestionnaire' || this.currentUrl.includes('/updateQuestionnaire')}"
-          routerLink="/showQuestionnaires"><i
-            class="bi bi-people nav-link_icon"></i>{{'Questionnaire Management' | translate}}</a></li>
+          routerLink="/showQuestionnaires"><i class="bi bi-people nav-link_icon"
+            aria-hidden="true"></i>{{'Questionnaire Management' | translate}}</a></li>
       <li *ngIf="hasAccess('Location Management')">
         <a class="mouse-pointer" [ngClass]="{'active': this.currentUrl === '/locationFilter' || this.currentUrl === '/showLocation' 
           || this.currentUrl === '/addLocation' || this.currentUrl === '/showLocationType' 
           || this.currentUrl === '/addLocationType' || this.currentUrl.includes('/editLocation')}"
           (click)="hideCurrentDropdown(2)">
-          <i class="bi bi-map nav-link_icon"></i>{{'Manage Locations' | translate}}
+          <i class="bi bi-map nav-link_icon" aria-hidden="true"></i>{{'Manage Locations' | translate}}
           <ng-container *ngIf="isLocationDropdownOpen; else upIcon">
-            <i class="bi bi-chevron-up drop-icon"></i>
+            <i class="bi bi-chevron-up drop-icon" aria-hidden="true"></i>
           </ng-container>
           <ng-template #upIcon>
-            <i class="bi bi-chevron-down drop-icon"></i>
+            <i class="bi bi-chevron-down drop-icon" aria-hidden="true"></i>
           </ng-template>
         </a>
         <div *ngIf="isLocationDropdownOpen" class="dropdown_list_wrapper">
@@ -103,18 +103,20 @@
       </li>
       <li *ngIf="hasAccess('Device Management')"><a class="mouse-pointer"
           [ngClass]="{'active': this.currentUrl === '/showDevices'}" routerLink="/showDevices"><i
-            class="bi bi-hdd-network nav-link_icon"></i>{{'Manage Devices' | translate}}</a></li>
+            class="bi bi-hdd-network nav-link_icon" aria-hidden="true"></i>{{'Manage Devices' | translate}}</a></li>
       <li *ngIf="hasAccess('Feature Management')"><a class="mouse-pointer"
           [ngClass]="{'active': this.currentUrl === '/showFeatures' || this.currentUrl.includes('/editFeature')}"
-          routerLink="/showFeatures"><i class="bi bi-list nav-link_icon"></i>{{'Manage Features' | translate}}</a>
+          routerLink="/showFeatures"><i class="bi bi-list nav-link_icon"
+            aria-hidden="true"></i>{{'Manage Features' | translate}}</a>
       </li>
       <li *ngIf="hasAccess('Language Management')"><a class="mouse-pointer"
           [ngClass]="{'active': this.currentUrl === '/manage-translation'}" routerLink="/manage-translation"><i
-            class="bi bi-list nav-link_icon"></i>{{'Manage Translations' | translate}}</a>
+            class="bi bi-list nav-link_icon" aria-hidden="true"></i>{{'Manage Translations' | translate}}</a>
       </li>
       <li *ngIf="hasAccess('Manage Facility')"><a class="mouse-pointer"
           [ngClass]="{'active': this.currentUrl === '/manage-facility' || this.currentUrl === '/showFacility' || this.currentUrl.includes('/editFacility')}"
-          routerLink="/showFacility"><i class="bi bi-list nav-link_icon"></i>{{'Manage Facility' | translate}}</a>
+          routerLink="/showFacility"><i class="bi bi-list nav-link_icon"
+            aria-hidden="true"></i>{{'Manage Facility' | translate}}</a>
       </li>
     </ul>
   </div>

@@ -7,7 +7,7 @@
         {{'Location' | translate}}
       </ng-container>
       <ng-template #Filter>
-        <i class="bi bi-filter-circle mouse-pointer cst-filter-icon"></i>
+        <i class="bi bi-filter-circle mouse-pointer cst-filter-icon" aria-hidden="true"></i>
         {{'Filter' | translate}}
       </ng-template>
     </div>
@@ -15,7 +15,7 @@
   <div id="sidebarMenu">
     <div class="mb-5">
       <h1 class="heading d-inline">{{'Location Filter' | translate}}</h1>
-      <i class="bi bi-x-lg close-filter mouse-pointer" (click)="this.sideMenu=false"></i>
+      <i class="bi bi-x-lg close-filter mouse-pointer" (click)="this.sideMenu=false" aria-hidden="true"></i>
       <hr>
     </div>
     <app-location-dropdown (locationFormValueAndDropdownArr)="getFormValue($event)"></app-location-dropdown>

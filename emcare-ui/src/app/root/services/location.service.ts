@@ -9,7 +9,7 @@ export class LocationService {
 
   locationURL = `${environment.apiUrl}/api/location`;
 
-  constructor(private http: HttpClient) { }
+  constructor(private readonly http: HttpClient) { }
 
   getHeaders() {
     let authToken = localStorage.getItem("access_token");

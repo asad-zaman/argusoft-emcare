@@ -16,8 +16,8 @@ export class DeviceManagementComponent implements OnInit {
 
   constructor(
     private readonly formBuilder: FormBuilder,
-    private router: Router,
-    private route: ActivatedRoute
+    private readonly router: Router,
+    private readonly route: ActivatedRoute
   ) { }
 
   ngOnInit(): void {

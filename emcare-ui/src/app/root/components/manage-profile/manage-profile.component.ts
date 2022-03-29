@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { TranslateService } from '@ngx-translate/core';
 import { AuthenticationService, FhirService, ToasterService } from 'src/app/shared';
 import { UserManagementService } from '../../services/user-management.service';
 import * as _ from 'lodash';
@@ -24,7 +23,6 @@ export class ManageProfileComponent implements OnInit {
     private readonly userService: UserManagementService,
     private readonly formBuilder: FormBuilder,
     private readonly toasterService: ToasterService,
-    private readonly translate: TranslateService,
     private readonly router: Router,
     private readonly fhirService: FhirService,
     private readonly lanSubjects: LaunguageSubjects

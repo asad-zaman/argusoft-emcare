@@ -3,7 +3,6 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
 
 @Injectable({ providedIn: 'root' })
@@ -13,10 +12,13 @@ export class AuthenticationService {
     userInfo = new BehaviorSubject(null);
     jwtHelper = new JwtHelperService();
     userKey = 'sample-login-page';
+
     private isLoggedIn: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
     private features: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
 
-    constructor(private http: HttpClient, private router: Router) {
+    constructor(
+        private readonly http: HttpClient
+    ) {
         this.loadUserInfo();
     }
 

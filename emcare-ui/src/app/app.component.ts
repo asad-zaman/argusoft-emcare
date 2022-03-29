@@ -102,7 +102,7 @@ export class AppComponent implements OnInit {
       localStorage.clear();
     } else if (!!tokenExpiryDate) {
       this.authenticationService.setIsLoggedIn(true);
-    } else { }
+    }
   }
 
   checkAPIStatus() {

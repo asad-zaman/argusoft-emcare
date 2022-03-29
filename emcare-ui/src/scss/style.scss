@@ -69,6 +69,38 @@ body {
             padding: 20px;
             padding-right: 250px;
         }
+
+        .sidenav .dropdown_list_wrapper .dropdown_list {
+            border: none;
+            border-right: 1px solid #ccc;
+            margin-right: 45px;
+
+            li {
+                display: flex;
+
+                a {
+                    float: right;
+                }
+            }
+        }
+
+        .dropdown-link_active:before {
+            left: 0px !important;
+            right: -5px;
+        }
+
+        .sidenav .dropdown_list_wrapper {
+            padding-left: 0px;
+        }
+
+        .sidenav .nav-link li a .nav-link_icon {
+            position: relative;
+            left: 10px;
+        }
+
+        .sidenav .dropdown_list_wrapper .dropdown_list a {
+            padding-right: 25px;
+        }
     }
 }
 
