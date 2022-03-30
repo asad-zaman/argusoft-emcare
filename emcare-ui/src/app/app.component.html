@@ -82,7 +82,7 @@
           || this.currentUrl === '/addLocation' || this.currentUrl === '/showLocationType' 
           || this.currentUrl === '/addLocationType' || this.currentUrl.includes('/editLocation')}"
           (click)="hideCurrentDropdown(2)">
-          <i class="bi bi-map nav-link_icon" aria-hidden="true"></i>{{'Manage Locations' | translate}}
+          <i class="bi bi-cursor nav-link_icon" aria-hidden="true"></i>{{'Manage Locations' | translate}}
           <ng-container *ngIf="isLocationDropdownOpen; else upIcon">
             <i class="bi bi-chevron-up drop-icon" aria-hidden="true"></i>
           </ng-container>
@@ -106,16 +106,16 @@
             class="bi bi-hdd-network nav-link_icon" aria-hidden="true"></i>{{'Manage Devices' | translate}}</a></li>
       <li *ngIf="hasAccess('Feature Management')"><a class="mouse-pointer"
           [ngClass]="{'active': this.currentUrl === '/showFeatures' || this.currentUrl.includes('/editFeature')}"
-          routerLink="/showFeatures"><i class="bi bi-list nav-link_icon"
+          routerLink="/showFeatures"><i class="bi bi-diagram-3 nav-link_icon"
             aria-hidden="true"></i>{{'Manage Features' | translate}}</a>
       </li>
       <li *ngIf="hasAccess('Language Management')"><a class="mouse-pointer"
-          [ngClass]="{'active': this.currentUrl === '/manage-translation'}" routerLink="/manage-translation"><i
-            class="bi bi-list nav-link_icon" aria-hidden="true"></i>{{'Manage Translations' | translate}}</a>
+          [ngClass]="{'active': this.currentUrl === '/manage-language'}" routerLink="/language-list"><i
+            class="bi bi-calendar2-range nav-link_icon" aria-hidden="true"></i>{{'Manage Translations' | translate}}</a>
       </li>
       <li *ngIf="hasAccess('Manage Facility')"><a class="mouse-pointer"
           [ngClass]="{'active': this.currentUrl === '/manage-facility' || this.currentUrl === '/showFacility' || this.currentUrl.includes('/editFacility')}"
-          routerLink="/showFacility"><i class="bi bi-list nav-link_icon"
+          routerLink="/showFacility"><i class="bi bi-house-door nav-link_icon"
             aria-hidden="true"></i>{{'Manage Facility' | translate}}</a>
       </li>
     </ul>
