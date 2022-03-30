@@ -9,6 +9,7 @@ export class AuthGuard implements CanActivate {
     result: boolean;
     featureRouteArr: Object;
     routeFeatureMapper: Object;
+
     private readonly handleFeature: BehaviorSubject<any>;
 
     constructor(

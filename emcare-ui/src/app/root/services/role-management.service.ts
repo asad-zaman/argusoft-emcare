@@ -9,7 +9,7 @@ export class RoleManagementService {
 
     roleBaseURL = `${environment.apiUrl}/api/role`
 
-    constructor(private http: HttpClient) { }
+    constructor(private readonly http: HttpClient) { }
 
     getHeaders() {
         let authToken = localStorage.getItem("access_token");
@@ -43,5 +43,4 @@ export class RoleManagementService {
     updateRole(obj) {
         return this.http.put(`${this.roleBaseURL}/update`, obj, this.getHeaders());
     }
-
 }

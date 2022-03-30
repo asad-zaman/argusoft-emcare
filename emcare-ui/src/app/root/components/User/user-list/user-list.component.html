@@ -13,7 +13,7 @@
   </div>
   <!--Table-->
   <div *ngIf="!isAPIBusy" class="table-responsive">
-    <table class="data-table">
+    <table class="data-table" aria-labelledby="user-list">
       <thead>
         <tr>
           <th>{{'ID' | translate}}</th>
@@ -49,17 +49,18 @@
                 <ul class="navigation" style="list-style-type: none;">
                   <li class="dropdown mt-3 cursor-pointer">
                     <div class="d-flex align-items-center" data-bs-toggle="dropdown">
-                      <i class="bi bi-three-dots-vertical ps-2"></i>
+                      <i class="bi bi-three-dots-vertical ps-2" aria-hidden="true"></i>
                     </div>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                       <li (click)="updateUser(i)">
                         <a class="dropdown-item">
-                          <i class="bi bi-pencil font-size-16 mr-2"></i>{{'Update User' | translate}}
+                          <i class="bi bi-pencil font-size-16 mr-2" aria-hidden="true"></i>{{'Update User' | translate}}
                         </a>
                       </li>
                       <li (click)="onResetPassword(i)">
                         <a class="dropdown-item">
-                          <i class="bi bi-pencil font-size-16 mr-2"></i>{{'Reset Password' | translate}}
+                          <i class="bi bi-pencil font-size-16 mr-2"
+                            aria-hidden="true"></i>{{'Reset Password' | translate}}
                         </a>
                       </li>
                     </ul>
@@ -87,7 +88,7 @@
       <div class="modal-content">
         <div class="modal-header">
           <h4 class="modal-title">{{'Reset Password' | translate}}</h4>
-          <i class="bi bi-x font-size-20 text-end cursor-pointer" (click)="closeDialog()"></i>
+          <i class="bi bi-x font-size-20 text-end cursor-pointer" (click)="closeDialog()" aria-hidden="true"></i>
         </div>
         <div class="modal-body">
           <form [formGroup]="resetPasswordForm">

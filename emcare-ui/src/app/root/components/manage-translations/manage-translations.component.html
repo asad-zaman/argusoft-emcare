@@ -40,7 +40,7 @@
           <div class="cst-value d-flex">
             <input (input)="setValue($event)" type="text" class="form-control custom-input ml-3" name="item.key"
               value="{{item.value}}">
-            <i (click)="saveChange(item.key)"
+            <i aria-hidden="true" (click)="saveChange(item.key)"
               class="bi bi-check-circle text-success cursor-pointer font-size-32 ml-3 cst-checkmark"></i>
           </div>
         </div>

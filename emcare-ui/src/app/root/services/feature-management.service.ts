@@ -9,7 +9,7 @@ export class FeatureManagementService {
 
   featureURL = `${environment.apiUrl}/api/menu`;
 
-  constructor(private http: HttpClient) { }
+  constructor(private readonly http: HttpClient) { }
 
   getHeaders() {
     let authToken = localStorage.getItem("access_token");

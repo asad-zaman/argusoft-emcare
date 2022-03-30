@@ -12,7 +12,7 @@
   </div>
   <!--Table-->
   <div *ngIf="!isAPIBusy" class="table-responsive">
-    <table class="data-table">
+    <table class="data-table" aria-labelledby="questionnaire-list">
       <thead>
         <tr>
           <th>{{'ID' | translate}}</th>
@@ -35,12 +35,13 @@
                 <ul class="navigation" style="list-style-type: none;">
                   <li class="dropdown mt-3 cursor-pointer">
                     <div class="d-flex align-items-center" data-bs-toggle="dropdown">
-                      <i class="bi bi-three-dots-vertical ps-2"></i>
+                      <i class="bi bi-three-dots-vertical ps-2" aria-hidden="true"></i>
                     </div>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                       <li (click)="updateQuestionnaire(i)">
                         <a class="dropdown-item">
-                          <i class="bi bi-pencil font-size-16 mr-2"></i>{{'Update Questionnaire' | translate}}
+                          <i class="bi bi-pencil font-size-16 mr-2"
+                            aria-hidden="true"></i>{{'Update Questionnaire' | translate}}
                         </a>
                       </li>
                     </ul>

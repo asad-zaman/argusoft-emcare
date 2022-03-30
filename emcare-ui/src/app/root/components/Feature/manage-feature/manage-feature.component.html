@@ -26,7 +26,7 @@
   </div>
   <!--Table-->
   <div *ngIf="!isAPIBusy" class="table-responsive">
-    <table class="data-table">
+    <table class="data-table" aria-labelledby="manage-feature">
       <thead>
         <tr>
           <th class="cst-theader-1">{{'ID' | translate}}</th>
@@ -65,7 +65,8 @@
                 </p-checkbox>
               </td>
               <td *ngIf="isDelete">
-                <i (click)="deleteFeatureConfig(i)" class="bi bi-trash cursor-pointer font-size-16"></i>
+                <i aria-hidden="true" (click)="deleteFeatureConfig(i)"
+                  class="bi bi-trash cursor-pointer font-size-16"></i>
               </td>
             </tr>
           </ng-container>
@@ -82,7 +83,7 @@
   <div class="row">
     <div class="col-3 col-sm-3">
       <button routerLink="/showFeatures" class="btn btn-red mt-3 mr-5 text-center" style="width: 150px;">
-        <i class="bi bi-chevron-left"></i>{{'Back' | translate}}
+        <i class="bi bi-chevron-left" aria-hidden="true"></i>{{'Back' | translate}}
       </button>
     </div>
   </div>

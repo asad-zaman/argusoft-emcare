@@ -9,7 +9,7 @@
   </div>
   <!--Table-->
   <div *ngIf="!isAPIBusy" class="table-responsive">
-    <table class="data-table">
+    <table class="data-table" aria-labelledby="confirm-user-list">
       <thead>
         <tr>
           <th>{{'ID' | translate}}</th>
@@ -33,10 +33,12 @@
               <td>{{user.locationName ? user.locationName : 'NA'}}</td>
               <td>{{user.realmRoles[0]}}</td>
               <td>
-                <i (click)="onApproveUser(i)" class="bi bi-check-circle text-success cursor-pointer font-size-32"></i>
+                <i (click)="onApproveUser(i)" class="bi bi-check-circle text-success cursor-pointer font-size-32"
+                  aria-hidden="true"></i>
               </td>
               <td>
-                <i (click)="onDisapproveUser(i)" class="bi bi-x-circle text-red cursor-pointer font-size-32"></i>
+                <i (click)="onDisapproveUser(i)" class="bi bi-x-circle text-red cursor-pointer font-size-32"
+                  aria-hidden="true"></i>
               </td>
             </tr>
           </ng-container>
