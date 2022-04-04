@@ -1,0 +1,48 @@
+<div *ngIf="isView" class="main-wrapper">
+  <h1 class="heading">{{'Languages' | translate}}</h1>
+  <hr>
+  <div class="row align-items-center mb-3">
+    <div *ngIf="isAdd" class="col text-end">
+      <button class="btn btn-red" routerLink="/manage-language">+ {{'Add Language' | translate}}</button>
+    </div>
+  </div>
+  <!--Table-->
+  <div *ngIf="!isAPIBusy" class="table-responsive">
+    <table class="data-table" aria-labelledby="user-list">
+      <thead>
+        <tr>
+          <th>{{'ID' | translate}}</th>
+          <th>{{'Name' | translate}}</th>
+          <th>{{'Code' | translate}}</th>
+          <th>{{'Date Created' | translate}}</th>
+          <th *ngIf="isEdit">{{'Action' | translate}}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngIf="lanArray && lanArray.length > 0; else noRecords">
+          <ng-container *ngFor="let lan of lanArray; let i=index">
+            <tr>
+              <td>{{i + 1}}</td>
+              <td>{{lan.languageName}}</td>
+              <td><strong>{{lan.languageCode}}</strong></td>
+              <td>{{lan.createdOn | date: longDate}}</td>
+              <td *ngIf="isEdit">
+                <i aria-hidden="true" (click)="updateLanguage(i)"
+                  class="bi bi-pencil-square cursor-pointer font-size-16"></i>
+              </td>
+            </tr>
+          </ng-container>
+        </ng-container>
+        <ng-template #noRecords>
+          <div class="no-record">
+            {{'No Records' | translate}}
+          </div>
+        </ng-template>
+      </tbody>
+    </table>
+  </div>
+  <!--Table-END-->
+</div>
+<div *ngIf="!isView" class="main-wrapper-nodata">
+  Sorry you don't have access to this page!!
+</div>

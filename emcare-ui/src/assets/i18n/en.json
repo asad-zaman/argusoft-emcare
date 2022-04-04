@@ -150,7 +150,7 @@
   "Update Questionnaire": "Update Questionnaire",
   "Locations": "Locations",
   "Device List": "Device List",
-  "Launguage": "language",
+  "Launguage": "Language",
   "Add Launguage": "Add language",
   "No Translations": "There are no translations with the selected alphabet!!",
   "Address Street": "Address Street",
@@ -171,5 +171,9 @@
   "Compare": "Compare",
   "Select Launguage": "Select language",
   "Select country": "Select country",
-  "Select Location": "Select Location"
+  "Select Location": "Select Location",
+  "Languages": "Languages",
+  "Date Created": "Date Created",
+  "Action": "Action",
+  "Manage Language": "Manage Language"
 }

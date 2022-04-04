@@ -1,25 +1,45 @@
-<div *ngIf="isEdit" class="main-wrapper">
-  <h1 class="heading mb-3">{{'Manage Translations' | translate}}</h1>
-  <ng-container *ngIf="availableLanguages.length>0">
-    <div class="mt-5 cst-rtl">
-      <label class="cst-label mr-4">{{'Add Launguage' | translate}}</label>
-      <p-dropdown [options]="availableLanguages" [(ngModel)]="newSelectedLanguage" optionLabel="name"
-        placeholder="{{'Select country' | translate}}" styleClass="custom-dropdown" [filter]="true" filterBy="name"
-        [showClear]="true">
-      </p-dropdown>
-      <button [disabled]="!newSelectedLanguage" class="btn btn-red ml-4"
+<div *ngIf="isAllowed" class="main-wrapper">
+  <div *ngIf="!editLanCode" class="form-wrapper">
+    <div class="mb-5">
+      <h1 class="heading">{{'Manage Language' | translate}}</h1>
+      <hr>
+    </div>
+    <div class="row">
+      <div *ngIf="availableLanguages.length>0; else loading" class="col-12 col-sm-6">
+        <div class="mb-3">
+          <label class="form-label">{{'Launguage' | translate}}</label>
+          <p-dropdown [options]="availableLanguages" [(ngModel)]="newSelectedLanguage" optionLabel="name"
+            placeholder="{{'Select Launguage' | translate}}" [filter]="true" filterBy="name" [showClear]="true">
+          </p-dropdown>
+        </div>
+      </div>
+      <ng-template #loading>
+        <div class="col-12 col-sm-6">
+          <span><strong>Loading ...</strong></span>
+        </div>
+      </ng-template>
+    </div>
+    <div class="text-end mt-5">
+      <hr>
+      <button routerLink="/language-list" class="btn-red btn ms-3">
+        <i class="bi bi-chevron-left" aria-hidden="true"></i> {{'Back' | translate}}
+      </button>
+      <button [disabled]="!newSelectedLanguage" class="btn btn-red"
         (click)="addNewLanguage()">{{'Add Launguage' | translate}}</button>
     </div>
-  </ng-container>
-  <ng-container *ngIf="lanArray.length>0">
-    <div class="cst-lan-dropdown d-block my-4 cst-rtl">
-      <label class="cst-label mr-4">{{'Launguage' | translate}}</label>
-      <p-dropdown [options]="lanArray" optionLabel="languageName" placeholder="{{'Select Launguage' | translate}}"
-        styleClass="custom-launguage-dropdown" (onChange)="setLaunguage($event.value)">
-      </p-dropdown>
+  </div>
+  <div *ngIf="editLanCode">
+    <div class="row align-items-center mb-3">
+      <div class="col-lg-6 col-xxl-2 col-md-5 position-relative">
+        <h1 class="heading">Manage Translations</h1>
+      </div>
+      <div class="col text-end">
+        <button routerLink="/language-list" class="btn-red btn ms-3">
+          <i class="bi bi-chevron-left" aria-hidden="true"></i> {{'Back' | translate}}
+        </button>
+      </div>
     </div>
-  </ng-container>
-  <ng-container *ngIf="this.lan">
+    <hr>
     <div class="d-flex">
       <div class="ms-2 align-self-center">
         <ng-container *ngFor="let item of alphabetArr; let i = index">
@@ -29,8 +49,6 @@
       <button *ngIf="isChanged" class="ml-4 btn btn-red"
         (click)="saveTranslation()">{{'Save Changes' | translate}}</button>
     </div>
-  </ng-container>
-  <ng-container *ngIf="this.lan">
     <div class="cst-main-style">
       <div *ngFor="let item of currentNames | keyvalue; let i=index" class="cst-child-style">
         <div class="cst-parent d-flex">
@@ -49,8 +67,8 @@
         <h4 class="m-0">{{'No Translations' | translate}}</h4>
       </div>
     </div>
-  </ng-container>
+  </div>
 </div>
-<div *ngIf="!isEdit" class="main-wrapper-nodata">
+<div *ngIf="!isAllowed" class="main-wrapper-nodata">
   Sorry you don't have access to this page!!
 </div>
