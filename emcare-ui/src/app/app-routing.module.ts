@@ -24,7 +24,8 @@ import {
   QuestionnaireListComponent,
   ManageRoleComponent,
   ShowRoleComponent,
-  ShowFacilityComponent
+  ShowFacilityComponent,
+  LanguageListComponent
 } from './root/index';
 
 const routes: Routes = [
@@ -52,11 +53,13 @@ const routes: Routes = [
   { path: 'editRole/:id', component: ManageRoleComponent, canActivate: [AuthGuard] },
   { path: 'showFeatures', component: FeatureListComponent, canActivate: [AuthGuard] },
   { path: 'editFeature/:id', component: ManageFeatureComponent, canActivate: [AuthGuard] },
-  { path: 'manage-translation', component: ManageTranslationsComponent, canActivate: [AuthGuard] },
+  { path: 'manage-language', component: ManageTranslationsComponent, canActivate: [AuthGuard] },
+  { path: 'manage-language/:code', component: ManageTranslationsComponent, canActivate: [AuthGuard] },
   { path: 'editProfile', component: ManageProfileComponent },
   { path: 'addFacility', component: ManageFacilityComponent, canActivate: [AuthGuard] },
   { path: 'editFacility/:id', component: ManageFacilityComponent, canActivate: [AuthGuard] },
   { path: 'showFacility', component: ShowFacilityComponent, canActivate: [AuthGuard] },
+  { path: 'language-list', component: LanguageListComponent, canActivate: [AuthGuard] },
   { path: '**', redirectTo: 'dashboard' }
 ];
 @NgModule({

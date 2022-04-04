@@ -25,7 +25,7 @@ export class AuthGuard implements CanActivate {
             'Roles': '/showRoles',
             'Device Management': '/showDevices',
             'Questionnaire Management': '/showQuestionnaires',
-            'Language Management': '/manage-translation',
+            'Language Management': '/language-list',
             'Manage Facility': '/showFacility'
         }
         this.routeFeatureMapper = {
@@ -38,8 +38,9 @@ export class AuthGuard implements CanActivate {
             'showPatients': ['canView'], 'showQuestionnaires': ['canView', 'canAdd', 'canEdit'],
             'addQuestionnaire': ['canAdd'], 'showRoles': ['canView', 'canAdd', 'canEdit'],
             'addRole': ['canAdd'], 'showFeatures': ['canView', 'canEdit'],
-            'manage-translation': ['canEdit'], 'editFeature': ['canAdd', 'canDelete'],
-            'showFacility': ['canAdd', 'canEdit', 'canView', 'canDelete'], 'comparePatients': ['canAdd']
+            'manage-language': ['canEdit', 'canAdd'], 'editFeature': ['canAdd', 'canDelete'],
+            'showFacility': ['canAdd', 'canEdit', 'canView', 'canDelete'], 'comparePatients': ['canAdd'],
+            'language-list': ['canAdd', 'canEdit', 'canView']
         }
     }
 
@@ -125,7 +126,7 @@ export class AuthGuard implements CanActivate {
             feature = 'Roles';
         } else if (route.routeConfig.path.includes('Feature')) {
             feature = 'Feature Management';
-        } else if (route.routeConfig.path.includes('translation')) {
+        } else if (route.routeConfig.path.includes('language')) {
             feature = 'Language Management';
         } else if (route.routeConfig.path.includes('Facility')) {
             feature = 'Manage Facility';
@@ -176,7 +177,8 @@ export class AuthGuard implements CanActivate {
         ) {
             return !!this.user.feature.find(f => f.menuName === 'Feature Management');
         } else if (
-            route.routeConfig.path === 'manage-translation'
+            route.routeConfig.path.includes('manage-language')
+            || route.routeConfig.path === 'language-list'
         ) {
             return !!this.user.feature.find(f => f.menuName === 'Language Management');
         } else if (
