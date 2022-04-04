@@ -49,6 +49,6 @@ export class LocationFilterComponent implements OnInit {
 
   getFormValue(event) {
     this.fornData = event.formData;
-    this.dropdownActiveArr = event.dropdownArr
+    this.dropdownActiveArr = event.dropdownArr;
   }
 }

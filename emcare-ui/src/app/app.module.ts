@@ -31,7 +31,8 @@ import {
   ManageTranslationsComponent,
   QuestionnaireListComponent,
   QuestionnaireBuilderComponent,
-  LocationDropdownComponent
+  LocationDropdownComponent,
+  LanguageListComponent
 } from './root/index';
 import { AuthenticationService, ToasterService } from './shared';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -75,7 +76,8 @@ import { CheckboxModule } from 'primeng/checkbox';
     ComparePatientComponent,
     ManageFacilityComponent,
     ShowFacilityComponent,
-    LocationDropdownComponent
+    LocationDropdownComponent,
+    LanguageListComponent
   ],
   imports: [
     BrowserModule,

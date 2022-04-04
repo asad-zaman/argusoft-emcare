@@ -12,8 +12,11 @@
           <div class="mb-3">
             <label class="form-label">{{'First Patient' | translate}}</label>
             <input class="form-control" formControlName="firstPatient" type="file" id="firstPatient"
-              placeholder="{{'Upload first Patient' | translate}}" accept=".json,.txt"
-              (change)="onFileUploaded($event)">
+              placeholder="{{'Upload first Patient' | translate}}" accept=".json,.txt" (change)="onFileUploaded($event)"
+              [ngClass]="{ 'is-invalid': submitted && f.firstPatient.errors }">
+            <div *ngIf="submitted && f.firstPatient.errors" class="invalid-feedback">
+              {{'Patient data is required' | translate}}
+            </div>
           </div>
         </div>
         <div class="col-12 col-sm-6">
@@ -21,7 +24,10 @@
             <label class="form-label">{{'Second Patient' | translate}}</label>
             <input class="form-control" formControlName="secondPatient" type="file" id="secondPatient"
               placeholder="{{'Upload Second Patient' | translate}}" accept=".json,.txt"
-              (change)="onFileUploaded($event)">
+              (change)="onFileUploaded($event)" [ngClass]="{ 'is-invalid': submitted && f.secondPatient.errors }">
+            <div *ngIf="submitted && f.secondPatient.errors" class="invalid-feedback">
+              {{'Patient data is required' | translate}}
+            </div>
           </div>
         </div>
       </div>

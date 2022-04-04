@@ -2,9 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { FhirService, ToasterService } from 'src/app/shared';
 import * as _ from 'lodash';
 import { LaunguageSubjects } from 'src/app/auth/token-interceptor';
-import enTrans from '../../../../assets/i18n/en.json';
 import { forkJoin } from 'rxjs';
 import { AuthGuard } from 'src/app/auth/auth.guard';
+import { ActivatedRoute } from '@angular/router';
+// import enTrans from '../../../../assets/i18n/en.json';
 @Component({
   selector: 'app-manage-translations',
   templateUrl: './manage-translations.component.html',
@@ -22,13 +23,18 @@ export class ManageTranslationsComponent implements OnInit {
   isChanged: boolean;
   newSelectedLanguage;
   availableLanguages = [];
-  isEdit: boolean = true;
+  editLanCode: string;
+  isAddFeature: boolean;
+  isEditFeature: boolean;
+  isAllowed: boolean = true;
+  isEdit: boolean;
 
   constructor(
     private readonly fhirService: FhirService,
     private readonly toasterService: ToasterService,
     private readonly lanSubjects: LaunguageSubjects,
-    private readonly authGuard: AuthGuard
+    private readonly authGuard: AuthGuard,
+    private readonly route: ActivatedRoute
   ) { }
 
   ngOnInit(): void {
@@ -36,6 +42,7 @@ export class ManageTranslationsComponent implements OnInit {
   }
 
   prerequisite() {
+    this.checkEditParams();
     this.checkFeatures();
     forkJoin([
       this.fhirService.getAllLaunguagesTranslations(),
@@ -59,14 +66,36 @@ export class ManageTranslationsComponent implements OnInit {
     //   "languageTranslation": JSON.stringify(enTrans)
     // }
     // this.fhirService.updateTranslation(data).subscribe(res => {
-    //   this.toasterService.showSuccess('Translation changes saved successfully!', 'EMCARE');
+    //   this.toasterService.showSuccess('New Translations added successfully!', 'EMCARE');
     // });
+  }
+
+  checkEditParams() {
+    const routeParams = this.route.snapshot.paramMap;
+    this.editLanCode = routeParams.get('code');
+    if (this.editLanCode) {
+      this.isEdit = true;
+    }
   }
 
   checkFeatures() {
     this.authGuard.getFeatureData().subscribe(res => {
       if (res.relatedFeature && res.relatedFeature.length > 0) {
-        this.isEdit = res.featureJSON['canEdit'];
+        this.isAddFeature = res.featureJSON['canAdd'];
+        this.isEditFeature = res.featureJSON['canEdit'];
+        if (this.isAddFeature && this.isEditFeature) {
+          this.isAllowed = true;
+        } else if (this.isAddFeature && !this.isEdit) {
+          this.isAllowed = true;
+        } else if (!this.isEditFeature && this.isEdit) {
+          this.isAllowed = false;
+        } else if (!this.isAddFeature && this.isEdit) {
+          this.isAllowed = true;
+        } else if (this.isEditFeature && this.isEdit) {
+          this.isAllowed = true;
+        } else {
+          this.isAllowed = false;
+        }
       }
     });
   }
@@ -76,6 +105,10 @@ export class ManageTranslationsComponent implements OnInit {
       _.forIn(res, (value, _key) => {
         this.lanArray.push(value);
       });
+      if (this.editLanCode) {
+        const lan = this.lanArray.find(l => l.languageCode === this.editLanCode);
+        this.setLaunguage(lan);
+      }
     }
   }
 

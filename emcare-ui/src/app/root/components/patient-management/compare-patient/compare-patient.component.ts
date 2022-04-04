@@ -42,8 +42,8 @@ export class ComparePatientComponent implements OnInit {
 
   initForm() {
     this.comparePatientForm = this.formBuilder.group({
-      firstPatient: [''],
-      secondPatient: [''],
+      firstPatient: ['', [Validators.required]],
+      secondPatient: ['', [Validators.required]],
       firstPatientDetails: ['', [Validators.required]],
       secondPatientDetails: ['', [Validators.required]],
     });
