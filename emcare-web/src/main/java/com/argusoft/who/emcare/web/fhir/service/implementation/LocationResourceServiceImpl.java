@@ -117,12 +117,15 @@ public class LocationResourceServiceImpl implements LocationResourceService {
         theLocation.getManagingOrganization().setDisplay(organization.getName());
 
         String locationString = parser.encodeResourceToString(theLocation);
+        System.out.println(locationString);
         LocationResource updatableLocationResource = locationResourceRepository.findByResourceId(theId.getIdPart());
         LocationResource locationResource = new LocationResource();
         locationResource.setText(locationString);
         locationResource.setType(CommonConstant.LOCATION_TYPE_STRING);
         locationResource.setResourceId(updatableLocationResource.getResourceId());
         locationResource.setId(updatableLocationResource.getId());
+
+        locationResourceRepository.save(locationResource);
 
         MethodOutcome retVal = new MethodOutcome();
         retVal.setId(new IdType(CommonConstant.LOCATION_TYPE_STRING, theLocation.getId(), "1"));
