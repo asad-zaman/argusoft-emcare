@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.argusoft.who.emcare.widget.ApiViewStateConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/patientActionsLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include
+        android:id="@+id/headerLayout"
+        layout="@layout/layout_header"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/_8sdp"
+        android:padding="@dimen/_2sdp"
+        app:layout_constraintTop_toBottomOf="@id/headerLayout">
+
+        <com.argusoft.who.emcare.widget.ApiViewStateConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/patient_name"
+                style="@style/TextView.Big"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_8sdp"
+                android:layout_marginTop="@dimen/_12sdp"
+                android:padding="@dimen/_2sdp" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"
+                android:orientation="vertical"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintTop_toBottomOf="@id/patient_name"
+                tools:listitem="@layout/patient_actions_item" />
+
+        </com.argusoft.who.emcare.widget.ApiViewStateConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+
+
+</com.argusoft.who.emcare.widget.ApiViewStateConstraintLayout>
