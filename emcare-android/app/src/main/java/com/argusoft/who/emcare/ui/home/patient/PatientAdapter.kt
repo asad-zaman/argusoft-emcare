@@ -37,7 +37,7 @@ class PatientAdapter(
     inner class ViewHolder(val binding: ListItemPatientBinding) : RecyclerView.ViewHolder(binding.root) {
         init {
             itemView.setOnClickListener {
-                it.navigate(R.id.action_patientFragment_to_patientDetailsFragment) {
+                it.navigate(R.id.action_patientFragment_to_patientActionsFragment) {
                     putString(INTENT_EXTRA_PATIENT_ID,list[bindingAdapterPosition]?.resourceId)
                     putString(INTENT_EXTRA_PATIENT_NAME,list[bindingAdapterPosition]?.name)
                 }
