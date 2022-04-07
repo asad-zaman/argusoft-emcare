@@ -34,6 +34,7 @@ public class LocationResourceProvider implements IResourceProvider {
 
     @Create
     public MethodOutcome createLocation(@ResourceParam Location theLocation) {
+        locationResourceService.saveResource(theLocation);
         MethodOutcome retVal = new MethodOutcome();
         retVal.setId(new IdType(CommonConstant.LOCATION_TYPE_STRING, theLocation.getId(), "1"));
         retVal.setResource(theLocation);
