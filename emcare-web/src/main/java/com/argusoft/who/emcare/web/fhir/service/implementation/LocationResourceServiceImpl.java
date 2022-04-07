@@ -117,7 +117,6 @@ public class LocationResourceServiceImpl implements LocationResourceService {
         theLocation.getManagingOrganization().setDisplay(organization.getName());
 
         String locationString = parser.encodeResourceToString(theLocation);
-        System.out.println(locationString);
         LocationResource updatableLocationResource = locationResourceRepository.findByResourceId(theId.getIdPart());
         LocationResource locationResource = new LocationResource();
         locationResource.setText(locationString);
