@@ -9,9 +9,7 @@ import ca.uhn.fhir.parser.IParser
 import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.databinding.FragmentAddPatientBinding
 import com.argusoft.who.emcare.databinding.FragmentPatientQuestionnaireBinding
-import com.argusoft.who.emcare.ui.common.INTENT_EXTRA_LOCATION_ID
-import com.argusoft.who.emcare.ui.common.INTENT_EXTRA_QUESTIONNAIRE_HEADER
-import com.argusoft.who.emcare.ui.common.INTENT_EXTRA_QUESTIONNAIRE_NAME
+import com.argusoft.who.emcare.ui.common.*
 import com.argusoft.who.emcare.ui.common.base.BaseFragment
 import com.argusoft.who.emcare.ui.home.patient.PatientViewModel
 import com.argusoft.who.emcare.ui.home.settings.SettingsViewModel
@@ -29,26 +27,31 @@ class PatientQuestionnaireFragment : BaseFragment<FragmentPatientQuestionnaireBi
     private val patientActionsViewModel: PatientActionsViewModel by viewModels()
     private val settingsViewModel: SettingsViewModel by activityViewModels()
     private val questionnaireFragment = QuestionnaireFragment()
-
+    private var patientId:String? = ""
 
     override fun initView() {
         setupToolbar()
         requireArguments().getString(
-            INTENT_EXTRA_QUESTIONNAIRE_NAME)?.let { patientActionsViewModel.getQuestionnaire(it) } //TODO: replace hardcoded questionnaire id.
+            INTENT_EXTRA_QUESTIONNAIRE_NAME)?.let { patientActionsViewModel.getQuestionnaire(it) }
+        patientId = requireArguments().getString(INTENT_EXTRA_PATIENT_ID)
     }
 
     private fun setupToolbar() {
         binding.headerLayout.toolbar.inflateMenu(R.menu.menu_save)
         //TODO: add save functionality
-//        binding.headerLayout.toolbar.setOnMenuItemClickListener {
-//            patientViewModel.questionnaireJson?.let {
-//                patientViewModel.savePatient(
-//                    questionnaireFragment.getQuestionnaireResponse(), it,
-//                    requireArguments().getInt(INTENT_EXTRA_LOCATION_ID)
-//                )
-//            }
-//            return@setOnMenuItemClickListener true
-//        }
+        binding.headerLayout.toolbar.setOnMenuItemClickListener {
+            patientActionsViewModel.questionnaireJson?.let {
+                if(patientId != null){
+                    patientActionsViewModel.saveQuestionnaire(
+                        questionnaireFragment.getQuestionnaireResponse(), it,
+                        patientId!!,
+                        requireArguments().getString(INTENT_EXTRA_STRUCTUREMAP_NAME),
+                        requireArguments().getInt(INTENT_EXTRA_LOCATION_ID)
+                    )
+                }
+            }
+            return@setOnMenuItemClickListener true
+        }
     }
 
     private fun addQuestionnaireFragment(questionnaire: Questionnaire) {
@@ -69,13 +72,13 @@ class PatientQuestionnaireFragment : BaseFragment<FragmentPatientQuestionnaireBi
 
     override fun initObserver() {
         //TODO: Add option on saving
-//        observeNotNull(patientViewModel.addPatients) { apiResponse ->
-//            apiResponse.handleApiView(binding.progressLayout, skipIds = listOf(R.id.headerLayout)) {
-//                if (it == 1) {
-//                    requireActivity().onBackPressed()
-//                }
-//            }
-//        }
+        observeNotNull(patientActionsViewModel.saveQuestionnaire) { apiResponse ->
+            apiResponse.handleApiView(binding.progressLayout, skipIds = listOf(R.id.headerLayout)) {
+                if (it == 1) {
+                    requireActivity().onBackPressed()
+                }
+            }
+        }
         observeNotNull(patientActionsViewModel.questionnaire) { questionnaire ->
             questionnaire.handleApiView(binding.progressLayout, skipIds = listOf(R.id.headerLayout)) {
                 it?.let { addQuestionnaireFragment(it) }

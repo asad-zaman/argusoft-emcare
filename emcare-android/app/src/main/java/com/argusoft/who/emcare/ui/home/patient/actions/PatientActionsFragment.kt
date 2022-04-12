@@ -26,7 +26,7 @@ class PatientActionsFragment : BaseFragment<FragmentPatientActionsBinding>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        patientActionsAdapter = PatientActionsAdapter()
+        patientActionsAdapter = PatientActionsAdapter(requireArguments().getString(INTENT_EXTRA_PATIENT_ID))
     }
 
     override fun initView() {

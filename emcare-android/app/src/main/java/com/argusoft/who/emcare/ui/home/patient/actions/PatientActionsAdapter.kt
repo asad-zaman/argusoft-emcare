@@ -11,7 +11,8 @@ import com.argusoft.who.emcare.utils.extention.navigate
 import com.argusoft.who.emcare.utils.extention.toBinding
 
 class PatientActionsAdapter(
-    val list: ArrayList<PatientQuestionnaireData?> = arrayListOf()
+    val patientId: String?,
+    val list: ArrayList<PatientQuestionnaireData?> = arrayListOf(),
 ) : BaseAdapter<PatientQuestionnaireData>(list) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -32,7 +33,9 @@ class PatientActionsAdapter(
             itemView.setOnClickListener {
                 it.navigate(R.id.action_patientActionsFragment_to_patientQuestionnaireFragment){
                     putString(INTENT_EXTRA_QUESTIONNAIRE_NAME, list[bindingAdapterPosition]?.questionnaireName)
+                    putString(INTENT_EXTRA_STRUCTUREMAP_NAME, list[bindingAdapterPosition]?.questionnaireName)
                     putString(INTENT_EXTRA_QUESTIONNAIRE_HEADER, list[bindingAdapterPosition]?.header)
+                    putString(INTENT_EXTRA_PATIENT_ID,patientId)
                 }
             }
         }
