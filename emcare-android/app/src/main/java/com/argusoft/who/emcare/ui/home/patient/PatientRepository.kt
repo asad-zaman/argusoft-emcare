@@ -15,6 +15,7 @@ import com.google.android.fhir.search.search
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import org.hl7.fhir.r4.model.*
+import org.hl7.fhir.r4.utils.StructureMapUtilities
 import java.util.*
 import javax.inject.Inject
 
@@ -63,6 +64,16 @@ class PatientRepository @Inject constructor(
         }
     }
 
+    fun saveQuestionnaire(questionnaireResponse: QuestionnaireResponse, questionnaire: String, patientId: String, structureMap: String?, locationId: Int) = flow {
+        val questionnaireResource: Questionnaire = FhirContext.forR4().newJsonParser().parseResource(questionnaire) as Questionnaire
+        val entry = ResourceMapper.extract(application, questionnaireResource, questionnaireResponse) {
+                _,
+                worker ->
+            StructureMapUtilities(worker).parse(structureMap, "")
+        }.entryFirstRep
+        //TODO: save resource using structuremap.
+        emit(ApiResponse.Success(1))
+    }
 
     fun savePatient(questionnaireResponse: QuestionnaireResponse, questionnaire: String, locationId: Int) = flow {
         val questionnaireResource: Questionnaire = FhirContext.forR4().newJsonParser().parseResource(questionnaire) as Questionnaire
