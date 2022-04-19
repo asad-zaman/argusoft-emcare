@@ -16,7 +16,9 @@ export class LocationDropdownComponent implements OnInit {
   regionArr = [];
   otherArr = [];
   dropdownActiveArr = [true, false, false, false, false];
+  locationArr = [];
 
+  @Input() isMultipleLocation?: boolean;
   @Input() idArr?: Array<any>;
   @Output() locationFormValueAndDropdownArr = new EventEmitter<any>();
 
@@ -43,13 +45,18 @@ export class LocationDropdownComponent implements OnInit {
 
   insertDataFromIdArr(arr) {
     if (arr.length > 0) {
-      this.locationFilterForm.patchValue({ country: arr[0] });
+      this.locationFilterForm.patchValue({ country: this.getObjFromId(arr[0]) });
       //  it means there are more ids apart from countries
       if (arr.length > 1) {
         arr.forEach((element, index) => {
-          const event = { target: { value: element } };
-          this.onClicked(event, index + 1);
-          this.mapFormValue(index + 1, element)
+          const event = { value: { id: element } };
+          console.log(event);
+          if (this.isMultipleLocation) {
+            this.onClickedMultipleDropdown(event, index + 1);
+          } else {
+            this.onClickedSingleDropdown(event, index + 1);
+          }
+          this.mapFormValue(index + 1, element);
         });
       }
     }
@@ -58,18 +65,22 @@ export class LocationDropdownComponent implements OnInit {
   mapFormValue(index, id) {
     switch (index) {
       case 2:
-        this.locationFilterForm.patchValue({ state: id });
+        this.locationFilterForm.patchValue({ state: this.getObjFromId(id) });
         break;
       case 3:
-        this.locationFilterForm.patchValue({ city: id });
+        this.locationFilterForm.patchValue({ city: this.getObjFromId(id) });
         break;
       case 4:
-        this.locationFilterForm.patchValue({ region: id });
+        this.locationFilterForm.patchValue({ region: this.getObjFromId(id) });
         break;
       case 5:
-        this.locationFilterForm.patchValue({ other: id });
+        this.locationFilterForm.patchValue({ other: this.getObjFromId(id) });
         break;
     }
+  }
+
+  getObjFromId(id) {
+    return this.locationArr.find(l => l.id === id);
   }
 
   initLocationFilterForm() {
@@ -85,6 +96,7 @@ export class LocationDropdownComponent implements OnInit {
   getAllLocations() {
     this.locationService.getAllLocations().subscribe((res: Array<Object>) => {
       if (res) {
+        this.locationArr = res;
         const data = res.find(el => el['parent'] === 0);
         this.getAllLocationsByType(data['type'], true);
       }
@@ -95,7 +107,9 @@ export class LocationDropdownComponent implements OnInit {
     // getting locations by type
     this.locationService.getAllLocationByType(type).subscribe((res: Array<Object>) => {
       if (isFirstDropdown) {
-        this.countryArr.push({ id: 'default', name: '-- Select --' });
+        if (!this.isMultipleLocation) {
+          this.countryArr.push({ id: 'default', name: '-- Select --' });
+        }
         this.countryArr = this.countryArr.concat(res);
       }
     });
@@ -104,7 +118,9 @@ export class LocationDropdownComponent implements OnInit {
   getChildLocations(id, arr) {
     // getting child locations by id
     this.locationService.getChildLocationById(id).subscribe((res: Array<Object>) => {
-      arr.push({ id: 'default', name: '-- Select --' });
+      if (!this.isMultipleLocation) {
+        arr.push({ id: 'default', name: '-- Select --' });
+      }
       if (res) {
         res.forEach(element => {
           arr.push(element)
@@ -113,9 +129,109 @@ export class LocationDropdownComponent implements OnInit {
     });
   }
 
-  onClicked(event, dropdownNum) {
+  checkIfNextDropdownVisible(valArr) {
+    if (valArr.length === 1) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  proceedOnDropdownValue(dropdownNum) {
+    switch (dropdownNum) {
+      case 1:
+        this.stateArr = [];
+        this.locationFilterForm.patchValue({
+          state: '',
+          city: '',
+          region: '',
+          other: ''
+        });
+        break;
+      case 2:
+        this.dropdownActiveArr[2] = true;
+        this.cityArr = [];
+        this.locationFilterForm.patchValue({
+          city: '',
+          region: '',
+          other: ''
+        });
+        break;
+      case 3:
+        this.regionArr = [];
+        this.locationFilterForm.patchValue({
+          region: '',
+          other: ''
+        });
+        break;
+      case 4:
+        this.otherArr = [];
+        this.locationFilterForm.patchValue({
+          other: ''
+        });
+        break;
+      default:
+        break;
+    }
+  }
+
+  onClickedMultipleDropdown(event, dropdownNum) {
+    const result = this.checkIfNextDropdownVisible(event.value);
+    if (result) {
+      const val = event.value[0].id;
+      if (dropdownNum == 1) {
+        this.dropdownActiveArr = [true, true, false, false, false];
+        this.proceedOnDropdownValue(dropdownNum);
+        this.getChildLocations(val, this.stateArr);
+      } else if (dropdownNum == 2) {
+        this.dropdownActiveArr = [true, true, true, false, false];
+        this.proceedOnDropdownValue(dropdownNum);
+        this.getChildLocations(val, this.cityArr);
+      } else if (dropdownNum == 3) {
+        this.dropdownActiveArr = [true, true, true, true, false];
+        this.proceedOnDropdownValue(dropdownNum);
+        this.getChildLocations(val, this.regionArr);
+      } else if (dropdownNum == 4) {
+        this.dropdownActiveArr = [true, true, true, true, true];
+        this.proceedOnDropdownValue(dropdownNum);
+        this.getChildLocations(val, this.otherArr);
+      }
+    } else {
+      if (dropdownNum == 1) {
+        this.dropdownActiveArr = [true, false, false, false, false];
+        this.proceedOnDropdownValue(dropdownNum);
+      } else if (dropdownNum == 2) {
+        this.dropdownActiveArr = [true, true, false, false, false];
+        this.proceedOnDropdownValue(dropdownNum);
+      } else if (dropdownNum == 3) {
+        this.dropdownActiveArr = [true, true, true, false, false];
+        this.proceedOnDropdownValue(dropdownNum);
+      } else if (dropdownNum == 4) {
+        this.dropdownActiveArr = [true, true, true, true, false];
+        this.proceedOnDropdownValue(dropdownNum);
+      }
+    }
+    this.locationFormValueAndDropdownArr.emit({
+      formData: this.getIdFromFormValueForMultipleDropdown(this.locationFilterForm.value),
+      dropdownArr: this.dropdownActiveArr
+    });
+  }
+
+  getIdFromFormValueForMultipleDropdown(formValue) {
+    console.log(this.locationFilterForm.value);
+    return {
+      country: formValue.country ? formValue.country = formValue.country.map(e => e.id) : '',
+      state: formValue.state ? formValue.state = formValue.state.map(e => e.id) : '',
+      city: formValue.city ? formValue.city = formValue.city.map(e => e.id) : '',
+      region: formValue.region ? formValue.region = formValue.region.map(e => e.id) : '',
+      other: formValue.other ? formValue.other = formValue.other.map(e => e.id) : ''
+    }
+  }
+
+  onClickedSingleDropdown(event, dropdownNum) {
+    const val = event.value.id;
     // getting child locations based on dropdown
-    if (dropdownNum == 1 && event.target.value !== 'default') {
+    if (dropdownNum == 1 && val !== 'default') {
       this.dropdownActiveArr = [true, true, false, false, false];
       this.stateArr = [];
       this.locationFilterForm.patchValue({
@@ -124,8 +240,8 @@ export class LocationDropdownComponent implements OnInit {
         region: '',
         other: ''
       });
-      this.getChildLocations(event.target.value, this.stateArr);
-    } else if (dropdownNum == 2 && event.target.value !== 'default') {
+      this.getChildLocations(val, this.stateArr);
+    } else if (dropdownNum == 2 && val !== 'default') {
       this.dropdownActiveArr[2] = true;
       this.cityArr = [];
       this.locationFilterForm.patchValue({
@@ -133,32 +249,42 @@ export class LocationDropdownComponent implements OnInit {
         region: '',
         other: ''
       });
-      this.getChildLocations(event.target.value, this.cityArr);
-    } else if (dropdownNum == 3 && event.target.value !== 'default') {
+      this.getChildLocations(val, this.cityArr);
+    } else if (dropdownNum == 3 && val !== 'default') {
       this.dropdownActiveArr[3] = true;
       this.regionArr = [];
       this.locationFilterForm.patchValue({
         region: '',
         other: ''
       });
-      this.getChildLocations(event.target.value, this.regionArr);
-    } else if (dropdownNum == 4 && event.target.value !== 'default') {
+      this.getChildLocations(val, this.regionArr);
+    } else if (dropdownNum == 4 && val !== 'default') {
       this.dropdownActiveArr[4] = true;
       this.otherArr = [];
       this.locationFilterForm.patchValue({
         other: ''
       });
-      this.getChildLocations(event.target.value, this.otherArr);
+      this.getChildLocations(val, this.otherArr);
     }
     // to remove dropdowns if value is reset
-    if (event.target.value === 'default') {
+    if (val === 'default') {
       for (let index = dropdownNum; index < this.dropdownActiveArr.length; index++) {
         this.dropdownActiveArr[index] = false;
       }
     }
     this.locationFormValueAndDropdownArr.emit({
-      formData: this.locationFilterForm.value,
+      formData: this.getIdFromFormValueForSingleDropdown(this.locationFilterForm.value),
       dropdownArr: this.dropdownActiveArr
     });
+  }
+
+  getIdFromFormValueForSingleDropdown(formValue) {
+    return {
+      country: formValue.country ? formValue.country.id : '',
+      state: formValue.state ? formValue.state.id : '',
+      city: formValue.city ? formValue.city.id : '',
+      region: formValue.region ? formValue.region.id : '',
+      other: formValue.other ? formValue.other.id : ''
+    }
   }
 }
