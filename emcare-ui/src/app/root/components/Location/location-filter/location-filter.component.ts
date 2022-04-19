@@ -10,7 +10,7 @@ export class LocationFilterComponent implements OnInit {
   sideMenu = false;
   currentUrl: string;
   currentLan;
-  fornData;
+  formData;
   dropdownActiveArr = [];
 
   constructor() { }
@@ -31,15 +31,15 @@ export class LocationFilterComponent implements OnInit {
 
   saveData() {
     const valueArr = [
-      this.fornData.country, this.fornData.state,
-      this.fornData.city, this.fornData.region,
-      this.fornData.other
+      this.formData.country, this.formData.state,
+      this.formData.city, this.formData.region,
+      this.formData.other
     ];
     let selectedId;
     for (let index = this.dropdownActiveArr.length - 1; index >= 0; index--) {
       const data = this.dropdownActiveArr[index];
       //  if value is not selected and showing --select-- in dropdown then the parent valus should be emitted as selectedId
-      if (data && (valueArr[index] !== "" && valueArr[index] !== "default") && !selectedId) {
+      if (data && (valueArr[index] !== "") && !selectedId) {
         selectedId = valueArr[index];
       }
     }
@@ -48,7 +48,7 @@ export class LocationFilterComponent implements OnInit {
   }
 
   getFormValue(event) {
-    this.fornData = event.formData;
+    this.formData = event.formData;
     this.dropdownActiveArr = event.dropdownArr;
   }
 }

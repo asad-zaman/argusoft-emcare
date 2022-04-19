@@ -21,7 +21,7 @@ export class ManageUserComponent implements OnInit {
   roles: any;
   locationArr: any = [];
   submitted = false;
-  fornData;
+  formData;
   locationIdArr: Array<any> = [];
   dropdownActiveArr = [];
   isAddFeature: boolean = true;
@@ -195,26 +195,25 @@ export class ManageUserComponent implements OnInit {
 
   saveLocationData() {
     const valueArr = [
-      this.fornData.country, this.fornData.state,
-      this.fornData.city, this.fornData.region,
-      this.fornData.other
+      this.formData.country, this.formData.state,
+      this.formData.city, this.formData.region,
+      this.formData.other
     ];
     let selectedId;
     for (let index = this.dropdownActiveArr.length - 1; index >= 0; index--) {
       const data = this.dropdownActiveArr[index];
       //  if value is not selected and showing --select-- in dropdown then the parent valus should be emitted as selectedId
-      if (data && (valueArr[index] !== "" && valueArr[index] !== "default") && !selectedId) {
+      if (data && (valueArr[index] !== "") && !selectedId) {
         selectedId = valueArr[index];
       }
     }
-    const selectedLocation = this.locationArr.find(el => el.id == selectedId);
     this.userForm.patchValue({
-      location: selectedLocation
+      location: selectedId
     });
   }
 
   getFormValue(event) {
-    this.fornData = event.formData;
+    this.formData = event.formData;
     this.dropdownActiveArr = event.dropdownArr
   }
 }

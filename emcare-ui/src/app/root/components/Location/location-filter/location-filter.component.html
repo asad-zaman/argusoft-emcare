@@ -18,7 +18,8 @@
       <i class="bi bi-x-lg close-filter mouse-pointer" (click)="this.sideMenu=false" aria-hidden="true"></i>
       <hr>
     </div>
-    <app-location-dropdown (locationFormValueAndDropdownArr)="getFormValue($event)"></app-location-dropdown>
+    <app-location-dropdown [isMultipleLocation]="false" (locationFormValueAndDropdownArr)="getFormValue($event)">
+    </app-location-dropdown>
     <div class="text-end mt-5">
       <hr>
       <button (click)="saveData()" class="btn-red btn">

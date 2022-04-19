@@ -47,6 +47,8 @@ import { BaseModule } from './base.module';
 import { DropdownModule } from 'primeng/dropdown';
 import { ShowFacilityComponent } from './root/components/Facility/show-facility/show-facility.component';
 import { CheckboxModule } from 'primeng/checkbox';
+import { MultiSelectModule } from 'primeng/multiselect';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -92,7 +94,8 @@ import { CheckboxModule } from 'primeng/checkbox';
     ToastrModule.forRoot(),
     BaseModule.forRoot(),
     DropdownModule,
-    CheckboxModule
+    CheckboxModule,
+    MultiSelectModule
   ],
   providers: [
     AuthenticationService,
