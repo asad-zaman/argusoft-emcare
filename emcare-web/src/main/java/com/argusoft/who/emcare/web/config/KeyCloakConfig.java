@@ -75,7 +75,12 @@ public class KeyCloakConfig {
         map.add("client_secret", CLIENT_SECRET);
         HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(map, headers);
         String url = SERVER_URL + "/realms/" + REALM + "/protocol/openid-connect/token";
-        return restTemplate.postForObject(url, entity, AccessTokenForUser.class).getAccess_token();
+        String token = null;
+        AccessTokenForUser accessToken = restTemplate.postForObject(url, entity, AccessTokenForUser.class);
+        if (accessToken != null) {
+            token = accessToken.getAccess_token();
+        }
+        return token;
     }
 
     public Keycloak getInsideInstance() {

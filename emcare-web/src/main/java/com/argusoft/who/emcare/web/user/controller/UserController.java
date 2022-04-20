@@ -33,7 +33,7 @@ public class UserController {
 
     @GetMapping("/user/all")
     public ResponseEntity<Object> getAllUser(HttpServletRequest request) {
-        return ResponseEntity.ok(userService.getAllUser(request));
+        return ResponseEntity.ok(userService.getAllUserWithMultiLocation(request));
     }
 
     @GetMapping("/user/page")
