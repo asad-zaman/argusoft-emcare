@@ -3,12 +3,16 @@ package com.argusoft.who.emcare.web.user.mapper;
 import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.location.model.LocationMaster;
 import com.argusoft.who.emcare.web.user.cons.UserConst;
+import com.argusoft.who.emcare.web.user.dto.MultiLocationUserListDto;
 import com.argusoft.who.emcare.web.user.dto.UserDto;
 import com.argusoft.who.emcare.web.user.dto.UserListDto;
 import com.argusoft.who.emcare.web.user.dto.UserMasterDto;
 import com.argusoft.who.emcare.web.userLocationMapping.model.UserLocationMapping;
 import org.keycloak.representations.AccessToken;
 import org.keycloak.representations.idm.UserRepresentation;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserMapper {
 
@@ -46,7 +50,7 @@ public class UserMapper {
         return user;
     }
 
-    public static UserMasterDto getMasterUser(AccessToken token, LocationMaster locationMaster, UserRepresentation userInfo) {
+    public static UserMasterDto getMasterUser(AccessToken token, List<LocationMaster> locationMaster, UserRepresentation userInfo) {
         UserMasterDto userMaster = new UserMasterDto();
         userMaster.setUserName(token.getName());
         userMaster.setFirstName(userInfo.getFirstName());
@@ -76,5 +80,40 @@ public class UserMapper {
         user.setLocationId(locationMaster != null ? locationMaster.getId() : null);
         user.setLocationType(locationMaster != null ? locationMaster.getType() : null);
         return user;
+    }
+
+    public static MultiLocationUserListDto getMultiLocationUserListDto(UserRepresentation userRepresentation, List<LocationMaster> locationMaster) {
+        MultiLocationUserListDto user = new MultiLocationUserListDto();
+        user.setId(userRepresentation.getId());
+        user.setFirstName(userRepresentation.getFirstName());
+        user.setLastName(userRepresentation.getLastName());
+        user.setUserName(userRepresentation.getUsername());
+        user.setEmail(userRepresentation.getEmail());
+        user.setEnabled(userRepresentation.isEnabled());
+        user.setRealmRoles(userRepresentation.getRealmRoles());
+        user.setLocations(locationMaster);
+        return user;
+    }
+
+    public static List<UserLocationMapping> getUserMappingEntityPerLocation(UserDto userDto, String userId) {
+        List<UserLocationMapping> users = new ArrayList<>();
+
+        for (Integer locationId : userDto.getLocationIds()) {
+            UserLocationMapping user = new UserLocationMapping();
+            user.setUserId(userId);
+            user.setLocationId(locationId);
+            user.setIsFirst(true);
+            if (userDto.getRegRequestFrom().equalsIgnoreCase(UserConst.MOBILE)) {
+                user.setRegRequestFrom(UserConst.MOBILE);
+                user.setState(false);
+            } else {
+                user.setRegRequestFrom(UserConst.WEB);
+                user.setState(true);
+            }
+
+            users.add(user);
+        }
+
+        return users;
     }
 }
