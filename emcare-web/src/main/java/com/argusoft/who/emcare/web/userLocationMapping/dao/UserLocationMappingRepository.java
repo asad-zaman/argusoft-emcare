@@ -34,4 +34,6 @@ public interface UserLocationMappingRepository extends JpaRepository<UserLocatio
 
     List<UserLocationMapping> findByIsFirst(boolean isFirst);
 
+    UserLocationMapping findByUserIdAndLocationId(String userId, Integer locationId);
+
 }
