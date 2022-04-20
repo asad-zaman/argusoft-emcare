@@ -511,24 +511,29 @@ public class UserServiceImpl implements UserService {
         newUser.setFirstName(userDto.getFirstName());
         newUser.setLastName(userDto.getLastName());
         List<UserLocationMapping> userLocationMappingList = userLocationMappingRepository.findByUserId(userId);
-        UserLocationMapping ulm = new UserLocationMapping();
-        if (!userLocationMappingList.isEmpty()) {
 
-            ulm = userLocationMappingList.get(0);
-            ulm.setLocationId(userDto.getLocationId());
-        } else {
-            ulm.setLocationId(userDto.getLocationId());
-            ulm.setUserId(userId);
-            ulm.setIsFirst(false);
-            ulm.setRegRequestFrom(UserConst.WEB);
-            ulm.setState(true);
+        for (UserLocationMapping userLocationMapping : userLocationMappingList) {
+            if (!userDto.getLocationIds().contains(userLocationMapping.getLocationId())) {
+                userLocationMappingRepository.delete(userLocationMapping);
+            }
         }
-        userLocationMappingRepository.save(ulm);
+        for (Integer locationId : userDto.getLocationIds()) {
+            UserLocationMapping assignedLocation = userLocationMappingRepository.findByUserIdAndLocationId(userId, locationId);
+            UserLocationMapping ulm = new UserLocationMapping();
+            if (assignedLocation == null) {
+                ulm.setLocationId(locationId);
+                ulm.setUserId(userId);
+                ulm.setIsFirst(false);
+                ulm.setRegRequestFrom(UserConst.WEB);
+                ulm.setState(true);
+                userLocationMappingRepository.save(ulm);
+            }
+        }
 
         Map<String, List<String>> languageAttribute = new HashMap<>();
         languageAttribute.put(CommonConstant.LANGUAGE_KEY, Arrays.asList(userDto.getLanguage()));
         newUser.setAttributes(languageAttribute);
-        newUser.setEnabled(ulm.isState());
+        newUser.setEnabled(newUser.isEnabled());
         userResource.update(newUser);
         return ResponseEntity.status(HttpStatus.OK).body(new Response(CommonConstant.UPDATE_SUCCESS, HttpStatus.OK.value()));
     }
