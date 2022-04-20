@@ -11,7 +11,7 @@ public class UserMasterDto {
     private String userName;
     private String email;
     private String language;
-    private LocationMaster location;
+    private List<LocationMaster> location;
     private String[] roles;
     private List<CurrentUserFeatureJson> feature;
     private String firstName;
@@ -41,11 +41,11 @@ public class UserMasterDto {
         this.email = email;
     }
 
-    public LocationMaster getLocation() {
+    public List<LocationMaster> getLocation() {
         return location;
     }
 
-    public void setLocation(LocationMaster location) {
+    public void setLocation(List<LocationMaster> location) {
         this.location = location;
     }
 
