@@ -44,7 +44,7 @@ public interface UserService {
 
     public UserRepresentation getUserById(String userId);
 
-    public UserListDto getUserDtoById(String userId);
+    public MultiLocationUserListDto getUserDtoById(String userId);
 
     public ResponseEntity<Object> getUserRolesById(String userId);
 

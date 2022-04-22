@@ -80,7 +80,7 @@ public class UserController {
     }
 
     @GetMapping("/user/{userId}")
-    public UserListDto getUserById(@PathVariable(value = "userId") String userId) {
+    public MultiLocationUserListDto getUserById(@PathVariable(value = "userId") String userId) {
         return userService.getUserDtoById(userId);
     }
 
