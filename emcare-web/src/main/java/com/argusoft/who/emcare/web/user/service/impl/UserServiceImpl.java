@@ -405,7 +405,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public PageDto getUsersUnderLocation(Integer locationId, Integer pageNo) {
-        List<UserListDto> userList = new ArrayList<>();
+        List<MultiLocationUserListDto> userList = new ArrayList<>();
 
         Keycloak keycloak = keyCloakConfig.getInstance();
         Integer totalCount = userLocationMappingRepository.getAllUserOnChildLocations(locationId).size();
@@ -424,11 +424,12 @@ public class UserServiceImpl implements UserService {
         }
         for (UserRepresentation representation : userRepresentations) {
             List<UserLocationMapping> userLocation = userLocationMappingRepository.findByUserId(representation.getId());
+            Iterable<Integer> locationIds = userLocation.stream().map(UserLocationMapping::getLocationId).collect(Collectors.toList());
             if (!userLocation.isEmpty()) {
-                Optional<LocationMaster> locationMaster = locationMasterDao.findById(userLocation.get(0).getLocationId());
-                userList.add(UserMapper.getUserListDto(representation, locationMaster.isPresent() ? locationMaster.get() : null));
+                List<LocationMaster> locationMaster = locationMasterDao.findAllById(locationIds);
+                userList.add(UserMapper.getMultiLocationUserListDto(representation, locationMaster));
             } else {
-                userList.add(UserMapper.getUserListDto(representation, null));
+                userList.add(UserMapper.getMultiLocationUserListDto(representation, null));
             }
         }
         PageDto pageDto = new PageDto();
