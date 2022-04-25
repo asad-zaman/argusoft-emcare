@@ -49,14 +49,23 @@ export class LocationDropdownComponent implements OnInit {
       //  it means there are more ids apart from countries
       if (arr.length > 1) {
         arr.forEach((element, index) => {
-          const event = { value: { id: element } };
-          console.log(event);
+          this.mapFormValue(index + 1, element);
           if (this.isMultipleLocation) {
-            this.onClickedMultipleDropdown(event, index + 1);
+            if (Array.isArray(element)) {
+              const idArr = [];
+              element.forEach(id => {
+                idArr.push({ id: id });
+              });
+              const event = { value: idArr };
+              this.onClickedMultipleDropdown(event, index + 1);
+            } else {
+              const event = { value: [{ id: element }] };
+              this.onClickedMultipleDropdown(event, index + 1);
+            }
           } else {
+            const event = { value: { id: element } };
             this.onClickedSingleDropdown(event, index + 1);
           }
-          this.mapFormValue(index + 1, element);
         });
       }
     }
@@ -80,7 +89,21 @@ export class LocationDropdownComponent implements OnInit {
   }
 
   getObjFromId(id) {
-    return this.locationArr.find(l => l.id === id);
+    if (this.isMultipleLocation) {
+      if (Array.isArray(id)) {
+        const locationObjArr = [];
+        id.forEach(id => {
+          locationObjArr.push(this.locationArr.find(l => l.id === id));
+        });
+        return locationObjArr;
+      } else {
+        const data = this.locationArr.find(l => l.id === id);
+        return [data];
+      }
+    } else {
+      const data = this.locationArr.find(l => l.id === id);
+      return data;
+    }
   }
 
   initLocationFilterForm() {
@@ -218,7 +241,6 @@ export class LocationDropdownComponent implements OnInit {
   }
 
   getIdFromFormValueForMultipleDropdown(formValue) {
-    console.log(this.locationFilterForm.value);
     return {
       country: formValue.country ? formValue.country = formValue.country.map(e => e.id) : '',
       state: formValue.state ? formValue.state = formValue.state.map(e => e.id) : '',
@@ -242,7 +264,7 @@ export class LocationDropdownComponent implements OnInit {
       });
       this.getChildLocations(val, this.stateArr);
     } else if (dropdownNum == 2 && val !== 'default') {
-      this.dropdownActiveArr[2] = true;
+      this.dropdownActiveArr = [true, true, true, false, false];
       this.cityArr = [];
       this.locationFilterForm.patchValue({
         city: '',
@@ -251,7 +273,7 @@ export class LocationDropdownComponent implements OnInit {
       });
       this.getChildLocations(val, this.cityArr);
     } else if (dropdownNum == 3 && val !== 'default') {
-      this.dropdownActiveArr[3] = true;
+      this.dropdownActiveArr = [true, true, true, true, false];
       this.regionArr = [];
       this.locationFilterForm.patchValue({
         region: '',
@@ -259,7 +281,7 @@ export class LocationDropdownComponent implements OnInit {
       });
       this.getChildLocations(val, this.regionArr);
     } else if (dropdownNum == 4 && val !== 'default') {
-      this.dropdownActiveArr[4] = true;
+      this.dropdownActiveArr = [true, true, true, true, true];
       this.otherArr = [];
       this.locationFilterForm.patchValue({
         other: ''

@@ -36,7 +36,7 @@
               <td>{{user.lastName}}</td>
               <td>{{user.userName}}</td>
               <td>{{user.realmRoles[0]}}</td>
-              <td>{{user.locationName ? user.locationName : 'NA'}}</td>
+              <td>{{user.locations && user.locations.length>0 ? getLocationNames(user.locations) : 'NA'}}</td>
               <td><span [ngClass]="(!!user.enabled) ? 'badges-red bg-green' : 'badges-red'">
                   <ng-container *ngIf="!!user.enabled; else NotVerified">
                     {{'Verifed' | translate}}

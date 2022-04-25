@@ -104,8 +104,8 @@
             <button type="button" class="btn btn-primary cst-primary-user" data-bs-toggle="modal"
               data-bs-target="#locationModal">
               <ng-container *ngIf="f.location.value.length > 0; else noLocation">
-                <ng-container *ngFor="let locationObj of f.location.value; let i=index">
-                  {{locationObj.name}}
+                <ng-container *ngFor="let location of f.location.value; let i=index">
+                  {{getLocationObjFromName(location).name}}
                   <span *ngIf="i !== f.location.value.length-1">,</span>
                 </ng-container>
               </ng-container>

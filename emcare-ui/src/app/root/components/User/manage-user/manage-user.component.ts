@@ -82,17 +82,27 @@ export class ManageUserComponent implements OnInit {
     }
   }
 
+  getLocationIdArr(locationsArr) {
+    return locationsArr.map(l => l.id);
+  }
+
   mapUpdateForm() {
     this.userService.getUserById(this.editId).subscribe(res => {
       if (res) {
+        const currentLevelIdArr = this.getLocationIdArr(res['locations']);
+        const isMultiple = currentLevelIdArr.length > 1;
         const data = {
           firstName: res['firstName'],
           lastName: res['lastName'],
-          location: this.getLocationObjFromName(res['locationId'])
+          location: currentLevelIdArr
         };
-        if (res['locationId']) {
-          this.locationService.getParentLocationsById(res['locationId']).subscribe((res: Array<any>) => {
-            this.locationIdArr = res.map(el => el.id).reverse();
+        if (res['locations'].length > 0) {
+          this.locationService.getParentLocationsById(res['locations'][0].id).subscribe((parentRes: Array<any>) => {
+            this.locationIdArr = parentRes.map(el => el.id).reverse();
+            if (isMultiple) {
+              this.locationIdArr.pop();
+              this.locationIdArr.push(currentLevelIdArr);
+            }
           });
         }
         this.userForm.patchValue(data);
@@ -164,7 +174,7 @@ export class ManageUserComponent implements OnInit {
         const data = {
           "firstName": this.userForm.get('firstName').value,
           "lastName": this.userForm.get('lastName').value,
-          "locationId": this.userForm.get('location').value && this.userForm.get('location').value.id,
+          "locationIds": this.userForm.get('location').value,
           "regRequestFrom": "web"
         }
         this.userService.updateUser(data, this.editId).subscribe(res => {
@@ -178,7 +188,7 @@ export class ManageUserComponent implements OnInit {
           "email": this.userForm.get('email').value,
           "password": this.userForm.get('password').value,
           "roleName": this.userForm.get('role').value,
-          "locationId": this.userForm.get('location').value && this.userForm.get('location').value.id,
+          "locationIds": this.userForm.get('location').value,
           "regRequestFrom": "web"
         }
         this.userService.createUser(data).subscribe(res => {
