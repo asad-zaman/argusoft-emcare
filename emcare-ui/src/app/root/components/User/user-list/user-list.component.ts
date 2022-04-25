@@ -180,4 +180,15 @@ export class UserListComponent implements OnInit {
     this.showResetPasswordDialog = false;
     this.resetPasswordForm.reset();
   }
+
+  getLocationNames(data) {
+    let locationStr = '';
+    data.map((d, index) => {
+      locationStr += d.name;
+      if (index !== data.length - 1) {
+        locationStr += ', ';
+      }
+    });
+    return locationStr;
+  }
 }

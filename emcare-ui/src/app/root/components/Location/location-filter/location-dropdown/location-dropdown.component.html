@@ -1,5 +1,6 @@
 <form [formGroup]="locationFilterForm" name="locationFilterForm" novalidate>
-  <div class="row cst-height">
+  <!-- cst-height -->
+  <div class="row">
     <div *ngIf="dropdownActiveArr[0] == true && countryArr.length > 0" class="col-12 col-sm-6">
       <div class="mb-3">
         <label class="form-label">{{'Country' | translate}}</label>
