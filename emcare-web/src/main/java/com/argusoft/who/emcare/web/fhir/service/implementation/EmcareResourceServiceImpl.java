@@ -25,8 +25,12 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
+import org.hl7.fhir.r4.model.Meta;
+import org.hl7.fhir.r4.model.Resource;
 
 @Transactional
 @Service
@@ -53,6 +57,50 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
     @Override
     public EmcareResource saveResource(EmcareResource emcareResource) {
         return repository.save(emcareResource);
+    }
+
+    @Override
+    public String saveOrUpdateResourceByRequestType(Resource resource, String resourceType, String requestType) {
+        //Saving meta
+        Meta m = new Meta();
+        m.setVersionId("1");
+        m.setLastUpdated(new Date());
+        
+        Integer versionId = 1;
+        
+        if (resource.getMeta() != null && resource.getMeta().getVersionId() != null) {
+            versionId = Integer.parseInt(resource.getMeta().getVersionId()) + 1;
+            m.setVersionId(String.valueOf(versionId));
+        }
+        
+        resource.setMeta(m);
+        
+        //Setting Resource ID
+        String resourceId;
+        if(resource.getId() != null){
+            resourceId = resource.getIdElement().getIdPart();
+        } else {
+            resourceId = UUID.randomUUID().toString();
+            resource.setId(resourceId);
+        }
+        
+        String resourceString = parser.encodeResourceToString(resource);
+        
+        
+        EmcareResource emcareResource = findByResourceId(resourceId);
+        
+        if (emcareResource == null) {
+            emcareResource = new EmcareResource();
+        }
+        
+        emcareResource.setText(resourceString);
+        emcareResource.setResourceId(resourceId);
+        emcareResource.setType(resourceType.toUpperCase());
+        
+        saveResource(emcareResource);
+        
+        return resourceId;
+
     }
 
     @Override

@@ -5,10 +5,13 @@ import com.argusoft.who.emcare.web.fhir.dto.PatientDto;
 import com.argusoft.who.emcare.web.fhir.model.EmcareResource;
 
 import java.util.List;
+import org.hl7.fhir.r4.model.Resource;
 
 public interface EmcareResourceService {
 
     public EmcareResource saveResource(EmcareResource emcareResource);
+    
+    public String saveOrUpdateResourceByRequestType(Resource resource, String resourceType, String requestType);
 
     public List<EmcareResource> retrieveResources();
 
