@@ -53,18 +53,6 @@ class ApiManager(private val preference: Preference) : Api {
             .create(ApiService::class.java)
     }
 
-    private val hapiFhirResourceCommonDataSource: HapiFhirResourceDataSource by lazy {
-        return@lazy HapiFhirResourceDataSource(
-            Retrofit.Builder()
-                .baseUrl(BuildConfig.FHIR_BASE_URL)
-                .client(okHttpClientBuilder.build())
-                .addConverterFactory(FhirConverterFactory(FhirContext.forR4().newJsonParser()))
-                .addConverterFactory(MoshiConverterFactory.create())
-                .build()
-                .create(ServerFhirService::class.java)
-        )
-    }
-
     override suspend fun login(requestMap: Map<String, String>): ApiResponse<User> {
         return executeApiHelper {
             keyCloakApiService.getAccessToken(requestMap)
@@ -83,9 +71,6 @@ class ApiManager(private val preference: Preference) : Api {
         return executeApiHelper { apiService.signup(signupRequest) }
     }
 
-    override fun getHapiFhirResourceDataSource(): HapiFhirResourceDataSource {
-        return hapiFhirResourceCommonDataSource
-    }
 
     override suspend fun getRoles(): ApiResponse<List<Role>> {
         return executeApiHelper { apiService.getRoles() }

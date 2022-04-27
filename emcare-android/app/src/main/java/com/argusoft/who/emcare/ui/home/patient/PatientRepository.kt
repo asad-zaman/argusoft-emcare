@@ -66,18 +66,18 @@ class PatientRepository @Inject constructor(
 
     fun saveQuestionnaire(questionnaireResponse: QuestionnaireResponse, questionnaire: String, patientId: String, structureMap: String?, locationId: Int) = flow {
         val questionnaireResource: Questionnaire = FhirContext.forR4().newJsonParser().parseResource(questionnaire) as Questionnaire
-        val entry = ResourceMapper.extract(application, questionnaireResource, questionnaireResponse) {
-                _,
-                worker ->
-            StructureMapUtilities(worker).parse(structureMap, "")
-        }.entryFirstRep
+//        val entry = ResourceMapper.extract(application, questionnaireResource, questionnaireResponse) {
+//                _,
+//                worker ->
+//            StructureMapUtilities(worker).parse(structureMap, "")
+//        }.entryFirstRep
         //TODO: save resource using structuremap.
         emit(ApiResponse.Success(1))
     }
 
     fun savePatient(questionnaireResponse: QuestionnaireResponse, questionnaire: String, locationId: Int) = flow {
         val questionnaireResource: Questionnaire = FhirContext.forR4().newJsonParser().parseResource(questionnaire) as Questionnaire
-        val entry = ResourceMapper.extract(application, questionnaireResource, questionnaireResponse).entryFirstRep
+        val entry = ResourceMapper.extract(questionnaireResource, questionnaireResponse).entryFirstRep
         if (entry.resource !is Patient) return@flow
         val patient = entry.resource as Patient
         if (patient.identifier.isNotEmpty()
@@ -104,7 +104,7 @@ class PatientRepository @Inject constructor(
                 caregiver.name = listOf(caregiverHumanName)
 
                 //Saving Caregiver
-                fhirEngine.save(caregiver)
+                fhirEngine.create(caregiver)
 
                 //adding caregiver reference to the patient
                 val caregiverReference: Reference = Reference()
@@ -126,7 +126,7 @@ class PatientRepository @Inject constructor(
                 .setUrl(LOCATION_EXTENSION_URL)
             patient.addExtension(extension)
             //End of location Id
-            fhirEngine.save(patient)
+            fhirEngine.create(patient)
             emit(ApiResponse.Success(1))
         }
     }
