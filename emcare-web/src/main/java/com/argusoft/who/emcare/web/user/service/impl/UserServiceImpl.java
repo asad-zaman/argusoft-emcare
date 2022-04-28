@@ -5,6 +5,8 @@ import com.argusoft.who.emcare.web.common.dto.PageDto;
 import com.argusoft.who.emcare.web.common.response.Response;
 import com.argusoft.who.emcare.web.config.KeyCloakConfig;
 import com.argusoft.who.emcare.web.location.dao.LocationMasterDao;
+import com.argusoft.who.emcare.web.location.dto.LocationMasterWithHierarchy;
+import com.argusoft.who.emcare.web.location.mapper.LocationMasterMapper;
 import com.argusoft.who.emcare.web.location.model.LocationMaster;
 import com.argusoft.who.emcare.web.location.service.LocationService;
 import com.argusoft.who.emcare.web.menu.dao.MenuConfigRepository;
@@ -138,7 +140,11 @@ public class UserServiceImpl implements UserService {
             if (!userLocation.isEmpty()) {
                 Iterable<Integer> iterableLocationIds = locationIds;
                 List<LocationMaster> locationMaster = locationMasterDao.findAllById(iterableLocationIds);
-                userList.add(UserMapper.getMultiLocationUserListDto(representation, locationMaster));
+                List<LocationMasterWithHierarchy> locationMasterWithHierarchies = new ArrayList<>();
+                for (LocationMaster master : locationMaster) {
+                    locationMasterWithHierarchies.add(LocationMasterMapper.getLocationMasterWithHierarchy(master, locationMasterDao.getNameHierarchy(master.getId())));
+                }
+                userList.add(UserMapper.getMultiLocationUserListDto(representation, locationMasterWithHierarchies));
             } else {
                 userList.add(UserMapper.getMultiLocationUserListDto(representation, null));
             }
@@ -187,7 +193,11 @@ public class UserServiceImpl implements UserService {
             Iterable<Integer> locationIds = userLocation.stream().map(UserLocationMapping::getLocationId).collect(Collectors.toList());
             if (!userLocation.isEmpty()) {
                 List<LocationMaster> locationMaster = locationMasterDao.findAllById(locationIds);
-                userList.add(UserMapper.getMultiLocationUserListDto(representation, locationMaster));
+                List<LocationMasterWithHierarchy> locationMasterWithHierarchies = new ArrayList<>();
+                for (LocationMaster master : locationMaster) {
+                    locationMasterWithHierarchies.add(LocationMasterMapper.getLocationMasterWithHierarchy(master, locationMasterDao.getNameHierarchy(master.getId())));
+                }
+                userList.add(UserMapper.getMultiLocationUserListDto(representation, locationMasterWithHierarchies));
             } else {
                 userList.add(UserMapper.getMultiLocationUserListDto(representation, null));
             }
@@ -422,7 +432,11 @@ public class UserServiceImpl implements UserService {
             Iterable<Integer> locationIds = userLocation.stream().map(UserLocationMapping::getLocationId).collect(Collectors.toList());
             if (!userLocation.isEmpty()) {
                 List<LocationMaster> locationMaster = locationMasterDao.findAllById(locationIds);
-                userList.add(UserMapper.getMultiLocationUserListDto(representation, locationMaster));
+                List<LocationMasterWithHierarchy> locationMasterWithHierarchies = new ArrayList<>();
+                for (LocationMaster master : locationMaster) {
+                    locationMasterWithHierarchies.add(LocationMasterMapper.getLocationMasterWithHierarchy(master, locationMasterDao.getNameHierarchy(master.getId())));
+                }
+                userList.add(UserMapper.getMultiLocationUserListDto(representation, locationMasterWithHierarchies));
             } else {
                 userList.add(UserMapper.getMultiLocationUserListDto(representation, null));
             }
@@ -457,11 +471,15 @@ public class UserServiceImpl implements UserService {
         Iterable<Integer> locationIds = userLocation.stream().map(UserLocationMapping::getLocationId).collect(Collectors.toList());
         if (!userLocation.isEmpty()) {
             List<LocationMaster> locationMaster = locationMasterDao.findAllById(locationIds);
-            user = UserMapper.getMultiLocationUserListDto(userRepresentation, locationMaster);
+            List<LocationMasterWithHierarchy> locationMasterWithHierarchies = new ArrayList<>();
+            for (LocationMaster master : locationMaster) {
+                locationMasterWithHierarchies.add(LocationMasterMapper.getLocationMasterWithHierarchy(master, locationMasterDao.getNameHierarchy(master.getId())));
+            }
+            user = UserMapper.getMultiLocationUserListDto(userRepresentation, locationMasterWithHierarchies);
         } else {
             user = UserMapper.getMultiLocationUserListDto(userRepresentation, null);
         }
-        
+
         return user;
     }
 
