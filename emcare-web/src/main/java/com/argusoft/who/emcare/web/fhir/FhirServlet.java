@@ -4,11 +4,7 @@ import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.openapi.OpenApiInterceptor;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.RestfulServer;
-import com.argusoft.who.emcare.web.fhir.resourceprovider.BundleResourceProvider;
-import com.argusoft.who.emcare.web.fhir.resourceprovider.LocationResourceProvider;
-import com.argusoft.who.emcare.web.fhir.resourceprovider.OrganizationResourceProvider;
-import com.argusoft.who.emcare.web.fhir.resourceprovider.PatientResourceProvider;
-import com.argusoft.who.emcare.web.fhir.resourceprovider.QuestionnaireResourceProvider;
+import com.argusoft.who.emcare.web.fhir.resourceprovider.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
@@ -35,6 +31,9 @@ public class FhirServlet extends RestfulServer {
     @Autowired
     private BundleResourceProvider bundleResourceProvider;
 
+    @Autowired
+    private PlanDefinitionResourceProvider planDefinitionResourceProvider;
+
     @Override
     protected void initialize() throws ServletException {
         super.initialize();
@@ -52,6 +51,7 @@ public class FhirServlet extends RestfulServer {
         resourceProviders.add(locationResourceProvider);
         resourceProviders.add(organizationResourceProvider);
         resourceProviders.add(bundleResourceProvider);
+        resourceProviders.add(planDefinitionResourceProvider);
         setResourceProviders(resourceProviders);
     }
 

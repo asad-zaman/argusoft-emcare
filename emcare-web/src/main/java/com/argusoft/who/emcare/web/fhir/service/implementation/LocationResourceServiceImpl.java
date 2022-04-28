@@ -124,6 +124,8 @@ public class LocationResourceServiceImpl implements LocationResourceService {
         locationResource.setResourceId(updatableLocationResource.getResourceId());
         locationResource.setId(updatableLocationResource.getId());
 
+        locationResourceRepository.save(locationResource);
+
         MethodOutcome retVal = new MethodOutcome();
         retVal.setId(new IdType(CommonConstant.LOCATION_TYPE_STRING, theLocation.getId(), "1"));
         retVal.setResource(theLocation);
