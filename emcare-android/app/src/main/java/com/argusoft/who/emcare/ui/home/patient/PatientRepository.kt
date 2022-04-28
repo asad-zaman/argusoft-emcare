@@ -9,6 +9,7 @@ import com.argusoft.who.emcare.ui.common.model.PatientItem
 import com.argusoft.who.emcare.utils.extention.toPatientItem
 import com.google.android.fhir.FhirEngine
 import com.google.android.fhir.datacapture.mapping.ResourceMapper
+import com.google.android.fhir.datacapture.mapping.StructureMapExtractionContext
 import com.google.android.fhir.search.Order
 import com.google.android.fhir.search.StringFilterModifier
 import com.google.android.fhir.search.search
@@ -66,11 +67,13 @@ class PatientRepository @Inject constructor(
 
     fun saveQuestionnaire(questionnaireResponse: QuestionnaireResponse, questionnaire: String, patientId: String, structureMap: String?, locationId: Int) = flow {
         val questionnaireResource: Questionnaire = FhirContext.forR4().newJsonParser().parseResource(questionnaire) as Questionnaire
-//        val entry = ResourceMapper.extract(application, questionnaireResource, questionnaireResponse) {
-//                _,
-//                worker ->
-//            StructureMapUtilities(worker).parse(structureMap, "")
-//        }.entryFirstRep
+        val entry = ResourceMapper.extract(
+            questionnaireResource,
+            questionnaireResponse,
+            StructureMapExtractionContext(context = application) { _, worker ->
+                StructureMapUtilities(worker).parse(structureMap, "")
+            },
+        )
         //TODO: save resource using structuremap.
         emit(ApiResponse.Success(1))
     }
