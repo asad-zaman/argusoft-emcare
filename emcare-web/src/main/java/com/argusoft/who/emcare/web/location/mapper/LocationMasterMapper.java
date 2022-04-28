@@ -1,6 +1,7 @@
 package com.argusoft.who.emcare.web.location.mapper;
 
 import com.argusoft.who.emcare.web.location.dto.LocationMasterDto;
+import com.argusoft.who.emcare.web.location.dto.LocationMasterWithHierarchy;
 import com.argusoft.who.emcare.web.location.dto.LocationaListDto;
 import com.argusoft.who.emcare.web.location.model.LocationMaster;
 
@@ -68,5 +69,19 @@ public class LocationMasterMapper {
         locationDto.setParentName(locationName);
 
         return locationDto;
+    }
+
+    public static LocationMasterWithHierarchy getLocationMasterWithHierarchy(LocationMaster lMaster, String hierarchy) {
+
+        LocationMasterWithHierarchy master = new LocationMasterWithHierarchy();
+
+        master.setActive(lMaster.isActive());
+        master.setHierarch(hierarchy);
+        master.setId(lMaster.getId());
+        master.setName(lMaster.getName());
+        master.setParent(lMaster.getParent());
+        master.setType(lMaster.getType());
+
+        return master;
     }
 }

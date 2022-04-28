@@ -1,6 +1,7 @@
 package com.argusoft.who.emcare.web.user.mapper;
 
 import com.argusoft.who.emcare.web.common.constant.CommonConstant;
+import com.argusoft.who.emcare.web.location.dto.LocationMasterWithHierarchy;
 import com.argusoft.who.emcare.web.location.model.LocationMaster;
 import com.argusoft.who.emcare.web.user.cons.UserConst;
 import com.argusoft.who.emcare.web.user.dto.MultiLocationUserListDto;
@@ -82,7 +83,7 @@ public class UserMapper {
         return user;
     }
 
-    public static MultiLocationUserListDto getMultiLocationUserListDto(UserRepresentation userRepresentation, List<LocationMaster> locationMaster) {
+    public static MultiLocationUserListDto getMultiLocationUserListDto(UserRepresentation userRepresentation, List<LocationMasterWithHierarchy> locationMaster) {
         MultiLocationUserListDto user = new MultiLocationUserListDto();
         user.setId(userRepresentation.getId());
         user.setFirstName(userRepresentation.getFirstName());
