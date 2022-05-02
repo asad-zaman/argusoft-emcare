@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Subject } from 'rxjs';
 import { AuthGuard } from 'src/app/auth/auth.guard';
 import { LocationService } from 'src/app/root/services/location.service';
 import { RoleManagementService } from 'src/app/root/services/role-management.service';
@@ -22,11 +23,12 @@ export class ManageUserComponent implements OnInit {
   locationArr: any = [];
   submitted = false;
   formData;
-  locationIdArr: Array<any> = [];
   dropdownActiveArr = [];
   isAddFeature: boolean = true;
   isEditFeature: boolean = true;
   isAllowed: boolean = true;
+  selectedAreasArr = [];
+  eventsSubject: Subject<boolean> = new Subject<boolean>();
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -82,29 +84,24 @@ export class ManageUserComponent implements OnInit {
     }
   }
 
-  getLocationIdArr(locationsArr) {
-    return locationsArr.map(l => l.id);
+  manipulateLocationResponse(locations) {
+    locations.forEach(el => {
+      this.selectedAreasArr.push({
+        id: el.id,
+        string: el.hierarch
+      });
+    });
   }
 
   mapUpdateForm() {
     this.userService.getUserById(this.editId).subscribe(res => {
       if (res) {
-        const currentLevelIdArr = this.getLocationIdArr(res['locations']);
-        const isMultiple = currentLevelIdArr.length > 1;
         const data = {
           firstName: res['firstName'],
           lastName: res['lastName'],
-          location: currentLevelIdArr
+          location: ''
         };
-        if (res['locations'].length > 0) {
-          this.locationService.getParentLocationsById(res['locations'][0].id).subscribe((parentRes: Array<any>) => {
-            this.locationIdArr = parentRes.map(el => el.id).reverse();
-            if (isMultiple) {
-              this.locationIdArr.pop();
-              this.locationIdArr.push(currentLevelIdArr);
-            }
-          });
-        }
+        this.manipulateLocationResponse(res['locations']);
         this.userForm.patchValue(data);
       }
     });
@@ -217,13 +214,41 @@ export class ManageUserComponent implements OnInit {
         selectedId = valueArr[index];
       }
     }
+    const isAlreadyStored = this.selectedAreasArr.find(obj => obj.id === selectedId);
+    if (!isAlreadyStored) {
+      this.selectedAreasArr.push({
+        id: selectedId,
+        string: this.getLocationStringFromArr(valueArr)
+      });
+    }
     this.userForm.patchValue({
-      location: selectedId
+      location: this.getSelectedLocations(this.selectedAreasArr)
     });
+    this.eventsSubject.next(true);
+  }
+
+  getSelectedLocations(data) {
+    let idArr = [];
+    idArr = data.map(el => el.id);
+    return idArr;
+  }
+
+  getLocationStringFromArr(arr) {
+    let locationStr = "";
+    arr.forEach(id => {
+      if (id) {
+        locationStr = locationStr + this.getLocationObjFromName(id).name + '->';
+      }
+    });
+    return locationStr.substring(0, locationStr.length - 2);
   }
 
   getFormValue(event) {
     this.formData = event.formData;
-    this.dropdownActiveArr = event.dropdownArr
+    this.dropdownActiveArr = event.dropdownArr;
+  }
+
+  removeLocation(selectedLoc) {
+    this.selectedAreasArr = this.selectedAreasArr.filter(loc => loc !== selectedLoc);
   }
 }

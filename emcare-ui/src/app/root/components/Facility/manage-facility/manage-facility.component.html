@@ -34,15 +34,18 @@
         <div class="col-12 col-sm-4">
           <div class="mb-3 d-grid">
             <label class="form-label">{{'Location' | translate}}</label>
-            <button type="button" class="btn btn-primary cst-primary" data-bs-toggle="modal"
-              data-bs-target="#locationModal">
+            <div class="d-flex">
               <ng-container *ngIf="f.location.value; else noLocation">
-                {{f.location.value.name}}
+                <span class="f-16 cursor-pointer" data-bs-toggle="modal"
+                  data-bs-target="#locationModal">{{f.location.value.name}}</span>
+                <i class="bi bi-x f-16 cursor-pointer" data-bs-toggle="modal" data-bs-target="#locationModal"
+                  aria-hidden="true"></i>
               </ng-container>
               <ng-template #noLocation>
-                {{'Select_Location' | translate}}
+                <a class="cursor-pointer" data-bs-toggle="modal"
+                  data-bs-target="#locationModal">{{'Select_Location' | translate}}</a>
               </ng-template>
-            </button>
+            </div>
           </div>
         </div>
         <div class="col-12 col-sm-4">
@@ -97,8 +100,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body cst-body">
-        <app-location-dropdown [isMultipleLocation]="false" [idArr]="locationIdArr"
-          (locationFormValueAndDropdownArr)="getFormValue($event)">
+        <app-location-dropdown [idArr]="locationIdArr" (locationFormValueAndDropdownArr)="getFormValue($event)">
         </app-location-dropdown>
       </div>
       <div class="modal-footer">
