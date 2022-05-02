@@ -48,6 +48,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { ShowFacilityComponent } from './root/components/Facility/show-facility/show-facility.component';
 import { CheckboxModule } from 'primeng/checkbox';
 import { MultiSelectModule } from 'primeng/multiselect';
+import { TooltipModule } from 'primeng/tooltip';
 
 @NgModule({
   declarations: [
@@ -95,7 +96,8 @@ import { MultiSelectModule } from 'primeng/multiselect';
     BaseModule.forRoot(),
     DropdownModule,
     CheckboxModule,
-    MultiSelectModule
+    MultiSelectModule,
+    TooltipModule
   ],
   providers: [
     AuthenticationService,

@@ -28,6 +28,7 @@ export class ManageTranslationsComponent implements OnInit {
   isEditFeature: boolean;
   isAllowed: boolean = true;
   isEdit: boolean;
+  isTranslationSaved: boolean = true;
 
   constructor(
     private readonly fhirService: FhirService,
@@ -154,9 +155,14 @@ export class ManageTranslationsComponent implements OnInit {
   }
 
   saveChange(key) {
-    this.translationObject[`${key}`] = this.currentVal;
-    this.isChanged = true;
-    this.toasterService.showSuccess('Translation saved successfully!', 'EMCARE');
+    if (this.currentVal) {
+      this.translationObject[`${key}`] = this.currentVal;
+      this.isChanged = true;
+      this.toasterService.showSuccess('Translation saved successfully!', 'EMCARE');
+      this.isTranslationSaved = false;
+    } else {
+      this.toasterService.showInfo('Please provide some translation!', 'EMCARE');
+    }
   }
 
   saveTranslation() {
@@ -174,6 +180,7 @@ export class ManageTranslationsComponent implements OnInit {
       }
       this.toasterService.showSuccess('Translation changes saved successfully!', 'EMCARE');
     });
+    this.isTranslationSaved = true;
   }
 
   showCurrCharKeys(alpha) {

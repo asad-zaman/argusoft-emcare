@@ -1,75 +1,43 @@
 <form [formGroup]="locationFilterForm" name="locationFilterForm" novalidate>
-  <!-- cst-height -->
   <div class="row">
-    <div *ngIf="dropdownActiveArr[0] == true && countryArr.length > 0" class="col-12 col-sm-6">
+    <div *ngIf="dropdownActiveArr[0] == true && countryArr.length > 0" class="col-12 col-sm-12">
       <div class="mb-3">
         <label class="form-label">{{'Country' | translate}}</label>
-        <ng-container *ngIf="isMultipleLocation; else singleDropdown">
-          <p-multiSelect placeholder="Select" (onChange)="onClickedMultipleDropdown($event, 1)" [options]="countryArr"
-            formControlName="country" optionLabel="name" dataKey="id"></p-multiSelect>
-        </ng-container>
-        <ng-template #singleDropdown>
-          <p-dropdown placeholder="Select" (onChange)="onClickedSingleDropdown($event, 1)" [options]="countryArr"
-            formControlName="country" optionLabel="name" dataKey="id">
-          </p-dropdown>
-        </ng-template>
+        <p-dropdown placeholder="Select" (onChange)="onClicked($event, 1)" [options]="countryArr"
+          formControlName="country" optionLabel="name" dataKey="id">
+        </p-dropdown>
       </div>
     </div>
-    <div *ngIf="dropdownActiveArr[1] == true && stateArr.length > 0" class="col-12 col-sm-6">
+    <div *ngIf="dropdownActiveArr[1] == true && stateArr.length > 0" class="col-12 col-sm-12">
       <div class="mb-3">
         <label class="form-label">{{'State' | translate}}</label>
-        <ng-container *ngIf="isMultipleLocation; else singleDropdown">
-          <p-multiSelect placeholder="Select" (onChange)="onClickedMultipleDropdown($event, 2)" [options]="stateArr"
-            formControlName="state" optionLabel="name" dataKey="id"></p-multiSelect>
-        </ng-container>
-        <ng-template #singleDropdown>
-          <p-dropdown placeholder="Select" (onChange)="onClickedSingleDropdown($event, 2)" [options]="stateArr"
-            formControlName="state" optionLabel="name" dataKey="id">
-          </p-dropdown>
-        </ng-template>
+        <p-dropdown placeholder="Select" (onChange)="onClicked($event, 2)" [options]="stateArr"
+          formControlName="state" optionLabel="name" dataKey="id">
+        </p-dropdown>
       </div>
     </div>
-    <div *ngIf="dropdownActiveArr[2] == true && cityArr.length > 0" class="col-12 col-sm-6">
+    <div *ngIf="dropdownActiveArr[2] == true && cityArr.length > 0" class="col-12 col-sm-12">
       <div class="mb-3">
         <label class="form-label">{{'City' | translate}}</label>
-        <ng-container *ngIf="isMultipleLocation; else singleDropdown">
-          <p-multiSelect placeholder="Select" (onChange)="onClickedMultipleDropdown($event, 3)" [options]="cityArr"
-            formControlName="city" optionLabel="name" dataKey="id">
-          </p-multiSelect>
-        </ng-container>
-        <ng-template #singleDropdown>
-          <p-dropdown placeholder="Select" (onChange)="onClickedSingleDropdown($event, 3)" [options]="cityArr"
-            formControlName="city" optionLabel="name" dataKey="id">
-          </p-dropdown>
-        </ng-template>
+        <p-dropdown placeholder="Select" (onChange)="onClicked($event, 3)" [options]="cityArr"
+          formControlName="city" optionLabel="name" dataKey="id">
+        </p-dropdown>
       </div>
     </div>
-    <div *ngIf="dropdownActiveArr[3] == true && regionArr.length > 0" class="col-12 col-sm-6">
+    <div *ngIf="dropdownActiveArr[3] == true && regionArr.length > 0" class="col-12 col-sm-12">
       <div class="mb-3">
         <label class="form-label">{{'Region' | translate}}</label>
-        <ng-container *ngIf="isMultipleLocation; else singleDropdown">
-          <p-multiSelect placeholder="Select" (onChange)="onClickedMultipleDropdown($event, 4)" [options]="regionArr"
-            formControlName="region" optionLabel="name" dataKey="id"></p-multiSelect>
-        </ng-container>
-        <ng-template #singleDropdown>
-          <p-dropdown placeholder="Select" (onChange)="onClickedSingleDropdown($event, 4)" [options]="regionArr"
-            formControlName="region" optionLabel="name" dataKey="id">
-          </p-dropdown>
-        </ng-template>
+        <p-dropdown placeholder="Select" (onChange)="onClicked($event, 4)" [options]="regionArr"
+          formControlName="region" optionLabel="name" dataKey="id">
+        </p-dropdown>
       </div>
     </div>
-    <div *ngIf="dropdownActiveArr[4] == true && otherArr.length > 0" class="col-12 col-sm-6">
+    <div *ngIf="dropdownActiveArr[4] == true && otherArr.length > 0" class="col-12 col-sm-12">
       <div class="mb-3">
         <label class="form-label">{{'Other' | translate}}</label>
-        <ng-container *ngIf="isMultipleLocation; else singleDropdown">
-          <p-multiSelect placeholder="Select" (onChange)="onClickedMultipleDropdown($event, 5)" [options]="otherArr"
-            formControlName="other" optionLabel="name" dataKey="id"></p-multiSelect>
-        </ng-container>
-        <ng-template #singleDropdown>
-          <p-dropdown placeholder="Select" (onChange)="onClickedSingleDropdown($event, 5)" [options]="otherArr"
-            formControlName="other" optionLabel="name" dataKey="id">
-          </p-dropdown>
-        </ng-template>
+        <p-dropdown placeholder="Select" (onChange)="onClicked($event, 5)" [options]="otherArr"
+          formControlName="other" optionLabel="name" dataKey="id">
+        </p-dropdown>
       </div>
     </div>
   </div>

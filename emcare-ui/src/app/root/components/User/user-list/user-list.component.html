@@ -15,15 +15,15 @@
   <div *ngIf="!isAPIBusy" class="table-responsive">
     <table class="data-table" aria-labelledby="user-list">
       <thead>
-        <tr>
-          <th>{{'ID' | translate}}</th>
-          <th>{{'First Name' | translate}}</th>
-          <th>{{'Last Name' | translate}}</th>
-          <th>{{'Email' | translate}}</th>
-          <th>{{'Role' | translate}}</th>
-          <th>{{'Location' | translate}}</th>
-          <th>{{'Status' | translate}}</th>
-          <th *ngIf="isEdit"></th>
+        <tr class="w-100">
+          <th class="w-5">{{'ID' | translate}}</th>
+          <th class="w-10">{{'First Name' | translate}}</th>
+          <th class="w-10">{{'Last Name' | translate}}</th>
+          <th class="w-20">{{'Email' | translate}}</th>
+          <th class="w-15">{{'Role' | translate}}</th>
+          <th class="w-20">{{'Location' | translate}}</th>
+          <th class="w-10">{{'Status' | translate}}</th>
+          <th class="w-10" *ngIf="isEdit"></th>
         </tr>
       </thead>
       <tbody>
@@ -36,7 +36,9 @@
               <td>{{user.lastName}}</td>
               <td>{{user.userName}}</td>
               <td>{{user.realmRoles[0]}}</td>
-              <td>{{user.locations && user.locations.length>0 ? getLocationNames(user.locations) : 'NA'}}</td>
+              <ng-container></ng-container>
+              <td class="cst-text-overflow" pTooltip={{getLocationNames(user.locations)}} tooltipPosition="bottom">
+                {{getLocationNames(user.locations)}}</td>
               <td><span [ngClass]="(!!user.enabled) ? 'badges-red bg-green' : 'badges-red'">
                   <ng-container *ngIf="!!user.enabled; else NotVerified">
                     {{'Verifed' | translate}}
