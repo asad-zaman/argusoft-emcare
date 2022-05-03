@@ -187,7 +187,7 @@ export class UserListComponent implements OnInit {
       data.map((d, index) => {
         locationStr += d.name;
         if (index !== data.length - 1) {
-          locationStr += ', ';
+          locationStr += ' ';
         }
       });
       return locationStr;

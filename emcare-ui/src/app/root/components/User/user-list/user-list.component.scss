@@ -20,8 +20,6 @@
 
 .cst-text-overflow {
     cursor: pointer;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    white-space: normal;
     max-width: 100px;
 }
