@@ -38,8 +38,8 @@
               <ng-container *ngIf="f.location.value; else noLocation">
                 <span class="f-16 cursor-pointer" data-bs-toggle="modal"
                   data-bs-target="#locationModal">{{f.location.value.name}}</span>
-                <i class="bi bi-x f-16 cursor-pointer" data-bs-toggle="modal" data-bs-target="#locationModal"
-                  aria-hidden="true"></i>
+                <i class="ml-3 bi bi-pencil-square f-16 cursor-pointer" data-bs-toggle="modal"
+                  data-bs-target="#locationModal" aria-hidden="true"></i>
               </ng-container>
               <ng-template #noLocation>
                 <a class="cursor-pointer" data-bs-toggle="modal"

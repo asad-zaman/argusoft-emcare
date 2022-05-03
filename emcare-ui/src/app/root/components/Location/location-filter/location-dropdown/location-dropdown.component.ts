@@ -111,7 +111,6 @@ export class LocationDropdownComponent implements OnInit {
     this.locationService.getAllLocationByType(type).subscribe((res: Array<Object>) => {
       if (isFirstDropdown) {
         this.countryArr = this.countryArr.concat(res);
-        console.log(this.countryArr);
       }
     });
   }
