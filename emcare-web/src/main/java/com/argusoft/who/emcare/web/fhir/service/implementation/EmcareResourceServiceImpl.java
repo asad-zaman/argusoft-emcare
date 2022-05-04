@@ -160,7 +160,8 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
         String loggedInUserId = emCareSecurityUser.getLoggedInUserId();
         List<UserLocationMapping> userLocationMapping = userLocationMappingRepository.findByUserId(loggedInUserId);
         if (!userLocationMapping.isEmpty()) {
-            List<Integer> childLocations = locationMasterDao.getAllChildLocationId(userLocationMapping.get(0).getLocationId());
+            List<Integer> assignedlocationId = userLocationMapping.stream().map(UserLocationMapping::getLocationId).collect(Collectors.toList());
+            List<Integer> childLocations = locationMasterDao.getAllChildLocationIdWithMultipalLocationId(assignedlocationId);
             patientsList = patientsList.stream().filter(e -> childLocations.contains(Integer.parseInt(((Identifier) e.getExtension().get(0).getValue()).getValue()))).collect(Collectors.toList());
         }
 

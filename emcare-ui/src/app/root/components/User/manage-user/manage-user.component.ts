@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Subject } from 'rxjs';
 import { AuthGuard } from 'src/app/auth/auth.guard';
 import { LocationService } from 'src/app/root/services/location.service';
 import { RoleManagementService } from 'src/app/root/services/role-management.service';
@@ -21,12 +22,13 @@ export class ManageUserComponent implements OnInit {
   roles: any;
   locationArr: any = [];
   submitted = false;
-  fornData;
-  locationIdArr: Array<any> = [];
+  formData;
   dropdownActiveArr = [];
   isAddFeature: boolean = true;
   isEditFeature: boolean = true;
   isAllowed: boolean = true;
+  selectedAreasArr = [];
+  eventsSubject: Subject<boolean> = new Subject<boolean>();
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -82,19 +84,24 @@ export class ManageUserComponent implements OnInit {
     }
   }
 
+  manipulateLocationResponse(locations) {
+    locations.forEach(el => {
+      this.selectedAreasArr.push({
+        id: el.id,
+        string: el.hierarch
+      });
+    });
+  }
+
   mapUpdateForm() {
     this.userService.getUserById(this.editId).subscribe(res => {
       if (res) {
         const data = {
           firstName: res['firstName'],
           lastName: res['lastName'],
-          location: this.getLocationObjFromName(res['locationId'])
+          location: ''
         };
-        if (res['locationId']) {
-          this.locationService.getParentLocationsById(res['locationId']).subscribe((res: Array<any>) => {
-            this.locationIdArr = res.map(el => el.id).reverse();
-          });
-        }
+        this.manipulateLocationResponse(res['locations']);
         this.userForm.patchValue(data);
       }
     });
@@ -164,7 +171,7 @@ export class ManageUserComponent implements OnInit {
         const data = {
           "firstName": this.userForm.get('firstName').value,
           "lastName": this.userForm.get('lastName').value,
-          "locationId": this.userForm.get('location').value && this.userForm.get('location').value.id,
+          "locationIds": this.userForm.get('location').value,
           "regRequestFrom": "web"
         }
         this.userService.updateUser(data, this.editId).subscribe(res => {
@@ -178,7 +185,7 @@ export class ManageUserComponent implements OnInit {
           "email": this.userForm.get('email').value,
           "password": this.userForm.get('password').value,
           "roleName": this.userForm.get('role').value,
-          "locationId": this.userForm.get('location').value && this.userForm.get('location').value.id,
+          "locationIds": this.userForm.get('location').value,
           "regRequestFrom": "web"
         }
         this.userService.createUser(data).subscribe(res => {
@@ -195,26 +202,53 @@ export class ManageUserComponent implements OnInit {
 
   saveLocationData() {
     const valueArr = [
-      this.fornData.country, this.fornData.state,
-      this.fornData.city, this.fornData.region,
-      this.fornData.other
+      this.formData.country, this.formData.state,
+      this.formData.city, this.formData.region,
+      this.formData.other
     ];
     let selectedId;
     for (let index = this.dropdownActiveArr.length - 1; index >= 0; index--) {
       const data = this.dropdownActiveArr[index];
       //  if value is not selected and showing --select-- in dropdown then the parent valus should be emitted as selectedId
-      if (data && (valueArr[index] !== "" && valueArr[index] !== "default") && !selectedId) {
+      if (data && (valueArr[index] !== "") && !selectedId) {
         selectedId = valueArr[index];
       }
     }
-    const selectedLocation = this.locationArr.find(el => el.id == selectedId);
+    const isAlreadyStored = this.selectedAreasArr.find(obj => obj.id === selectedId);
+    if (!isAlreadyStored) {
+      this.selectedAreasArr.push({
+        id: selectedId,
+        string: this.getLocationStringFromArr(valueArr)
+      });
+    }
     this.userForm.patchValue({
-      location: selectedLocation
+      location: this.getSelectedLocations(this.selectedAreasArr)
     });
+    this.eventsSubject.next(true);
+  }
+
+  getSelectedLocations(data) {
+    let idArr = [];
+    idArr = data.map(el => el.id);
+    return idArr;
+  }
+
+  getLocationStringFromArr(arr) {
+    let locationStr = "";
+    arr.forEach(id => {
+      if (id) {
+        locationStr = locationStr + this.getLocationObjFromName(id).name + '->';
+      }
+    });
+    return locationStr.substring(0, locationStr.length - 2);
   }
 
   getFormValue(event) {
-    this.fornData = event.formData;
-    this.dropdownActiveArr = event.dropdownArr
+    this.formData = event.formData;
+    this.dropdownActiveArr = event.dropdownArr;
+  }
+
+  removeLocation(selectedLoc) {
+    this.selectedAreasArr = this.selectedAreasArr.filter(loc => loc !== selectedLoc);
   }
 }
