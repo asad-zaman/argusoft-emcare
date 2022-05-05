@@ -29,14 +29,14 @@ export class AuthenticationService {
         }
     }
 
-    signup(firstName: string, lastName: string, email: string, password: string, locationId: Number, roleName: string) {
+    signup(firstName: string, lastName: string, email: string, password: string, locationIds: Number, roleName: string) {
         const user = {
             firstName,
             lastName,
             email,
             password,
             regRequestFrom: 'web',
-            locationId,
+            locationIds,
             roleName
         }
         return this.http.post<any>(`${this.backendURL}/api/signup`, user)

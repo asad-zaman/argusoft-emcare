@@ -1,7 +1,7 @@
 <div class="">
   <input type="checkbox" name="sideMenu" [(ngModel)]="sideMenu" class="openSidebarMenu" id="openSidebarMenu">
   <label for="openSidebarMenu" class="sidebarIconToggle"
-    [ngStyle]="{'top': this.currentUrl === 'manageFacility' ? '100px' : '140px', 'right': this.currentUrl === 'showPatients' ? '100px' : (this.currentLan === 'fr' ? '330px' : (this.currentLan === 'en' ? '250px' : '275px'))}">
+    [ngStyle]="{'top': this.currentUrl === 'manageFacility' ? '100px' : '143px', 'right': this.currentUrl === 'showPatients' ? '100px' : (this.currentLan === 'fr' ? '330px' : (this.currentLan === 'en' ? '250px' : '275px'))}">
     <div class="btn btn-red cst-filter-btn">
       <ng-container *ngIf="this.currentUrl === 'manageFacility'; else Filter">
         {{'Location' | translate}}
@@ -18,7 +18,8 @@
       <i class="bi bi-x-lg close-filter mouse-pointer" (click)="this.sideMenu=false" aria-hidden="true"></i>
       <hr>
     </div>
-    <app-location-dropdown (locationFormValueAndDropdownArr)="getFormValue($event)"></app-location-dropdown>
+    <app-location-dropdown (locationFormValueAndDropdownArr)="getFormValue($event)">
+    </app-location-dropdown>
     <div class="text-end mt-5">
       <hr>
       <button (click)="saveData()" class="btn-red btn">

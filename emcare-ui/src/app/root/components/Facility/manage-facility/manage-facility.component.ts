@@ -21,7 +21,7 @@ export class ManageFacilityComponent implements OnInit {
   selectedId: any;
   dropdownActiveArr = [];
   organizationId;
-  fornData;
+  formData;
   locationIdArr: Array<any> = [];
   isAddFeature: boolean = true;
   isEditFeature: boolean = true;
@@ -227,9 +227,9 @@ export class ManageFacilityComponent implements OnInit {
 
   saveLocationData() {
     const valueArr = [
-      this.fornData.country, this.fornData.state,
-      this.fornData.city, this.fornData.region,
-      this.fornData.other
+      this.formData.country, this.formData.state,
+      this.formData.city, this.formData.region,
+      this.formData.other
     ];
     let selectedId;
     for (let index = this.dropdownActiveArr.length - 1; index >= 0; index--) {
@@ -246,7 +246,7 @@ export class ManageFacilityComponent implements OnInit {
   }
 
   getFormValue(event) {
-    this.fornData = event.formData;
+    this.formData = event.formData;
     this.dropdownActiveArr = event.dropdownArr
   }
 }

@@ -13,103 +13,119 @@
         <hr>
       </div>
       <div class="row">
-        <div class="col-12 col-sm-6">
-          <div class="mb-3">
-            <label class="form-label">{{'First Name' | translate}}'</label>
-            <input class="form-control custom-input" formControlName="firstName" type="text" id="firstName"
-              placeholder="{{'FirstName Placeholder' | translate}}"
-              [ngClass]="{ 'is-invalid': submitted && f.firstName.errors }">
-            <div *ngIf="submitted && f.firstName.errors" class="invalid-feedback">
-              <div class="cst-error-style" *ngIf="f.firstName.errors.required">
-                {{'FirstName Required Message' | translate}}
+        <div class="col-6">
+          <div class="row">
+            <div class="col-12 col-sm-12">
+              <div class="mb-3">
+                <label class="form-label">{{'First Name' | translate}}'</label>
+                <input class="form-control custom-input" formControlName="firstName" type="text" id="firstName"
+                  placeholder="{{'FirstName Placeholder' | translate}}"
+                  [ngClass]="{ 'is-invalid': submitted && f.firstName.errors }">
+                <div *ngIf="submitted && f.firstName.errors" class="invalid-feedback">
+                  <div class="cst-error-style" *ngIf="f.firstName.errors.required">
+                    {{'FirstName Required Message' | translate}}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-sm-12">
+              <div class="mb-3">
+                <label class="form-label">{{'Last Name' | translate}}</label>
+                <input class="form-control custom-input" formControlName="lastName" type="text" id="lastName"
+                  placeholder="{{'LastName Placeholder' | translate}}"
+                  [ngClass]="{ 'is-invalid': submitted && f.lastName.errors }">
+                <div *ngIf="submitted && f.lastName.errors" class="invalid-feedback">
+                  <div class="cst-error-style" *ngIf="f.lastName.errors.required">
+                    {{'LastName Required Message' | translate}}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="!isEdit" class="row">
+            <div class="col-12 col-sm-12">
+              <div class="mb-3">
+                <label class="form-label">{{'Email' | translate}}</label>
+                <input formControlName="email" id="email" placeholder="{{'Email Placeholder' | translate}}" type="email"
+                  class="form-control custom-input" [ngClass]="{ 'is-invalid': submitted && f.email.errors }">
+                <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
+                  <div class="cst-error-style" *ngIf="f.email.errors.required">
+                    {{'Email Required Message' | translate}}</div>
+                  <div class="cst-error-style" *ngIf="f.email.errors.pattern">
+                    {{'Email Invalid Message' | translate}}</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-sm-12">
+              <div class="mb-3">
+                <label class="form-label">{{'Role' | translate}}</label>
+                <select formControlName="role" [ngClass]="{ 'is-invalid': submitted && f.role.errors }"
+                  class="form-control custom-input" id="role">
+                  <ng-container *ngFor="let role of roles">
+                    <option value="{{role.name}}">{{role.name}}</option>
+                  </ng-container>
+                </select>
+                <div *ngIf="submitted && f.role.errors" class="invalid-feedback">
+                  <div class="cst-error-style" *ngIf="f.role.errors.required">
+                    {{'Role Required Message' | translate}}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="!isEdit" class="row">
+            <div class="col-12 col-sm-12">
+              <div class="mb-3">
+                <label class="form-label">{{'Password' | translate}}</label>
+                <input type="password" formControlName="password" class="form-control custom-input"
+                  placeholder="{{'Password Placeholder' | translate}}"
+                  [ngClass]="{ 'is-invalid': submitted && f.password.errors }" />
+                <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
+                  <div class="cst-error-style" *ngIf="f.password.errors.required">
+                    {{'Password Required Message' | translate}}</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-sm-12">
+              <div class="mb-3">
+                <label class="form-label">{{'ConfirmPassword' | translate}}</label>
+                <input type="password" formControlName="confirmPassword" class="form-control custom-input"
+                  placeholder="{{'ConfirmPassword Placeholder' | translate}}"
+                  [ngClass]="{ 'is-invalid': submitted && f.confirmPassword.errors }" />
+                <div *ngIf="submitted && f.confirmPassword.errors" class="invalid-feedback">
+                  <div class="cst-error-style" *ngIf="f.confirmPassword.errors.required">
+                    {{'Confirm Password Required Message' | translate}}</div>
+                  <div class="cst-error-style" *ngIf="f.confirmPassword.errors.mustMatch">
+                    {{'Passwords Match Message' | translate}}</div>
+                </div>
               </div>
             </div>
           </div>
         </div>
-        <div class="col-12 col-sm-6">
-          <div class="mb-3">
-            <label class="form-label">{{'Last Name' | translate}}</label>
-            <input class="form-control custom-input" formControlName="lastName" type="text" id="lastName"
-              placeholder="{{'LastName Placeholder' | translate}}"
-              [ngClass]="{ 'is-invalid': submitted && f.lastName.errors }">
-            <div *ngIf="submitted && f.lastName.errors" class="invalid-feedback">
-              <div class="cst-error-style" *ngIf="f.lastName.errors.required">
-                {{'LastName Required Message' | translate}}</div>
+        <div class="col-6">
+          <div class="row">
+            <div class="col-12">
+              <div class="mb-3 d-grid">
+                <app-location-dropdown [isMultiplePage]="true" [events]="eventsSubject.asObservable()" [idArr]="[]"
+                  (locationFormValueAndDropdownArr)="getFormValue($event)">
+                </app-location-dropdown>
+              </div>
             </div>
-          </div>
-        </div>
-      </div>
-      <div *ngIf="!isEdit" class="row mt-3">
-        <div class="col-12 col-sm-6">
-          <div class="mb-3">
-            <label class="form-label">{{'Email' | translate}}</label>
-            <input formControlName="email" id="email" placeholder="{{'Email Placeholder' | translate}}" type="email"
-              class="form-control custom-input" [ngClass]="{ 'is-invalid': submitted && f.email.errors }">
-            <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
-              <div class="cst-error-style" *ngIf="f.email.errors.required">
-                {{'Email Required Message' | translate}}</div>
-              <div class="cst-error-style" *ngIf="f.email.errors.pattern">
-                {{'Email Invalid Message' | translate}}</div>
+            <div class="col-4 offset-8">
+              <button [disabled]="!formData" type="button" class="btn btn-red" (click)="saveLocationData()"
+                data-bs-dismiss="modal">{{'Save' | translate}}</button>
             </div>
-          </div>
-        </div>
-        <div class="col-12 col-sm-6">
-          <div class="mb-3">
-            <label class="form-label">{{'Role' | translate}}</label>
-            <select formControlName="role" [ngClass]="{ 'is-invalid': submitted && f.role.errors }"
-              class="form-control custom-input" id="role">
-              <ng-container *ngFor="let role of roles">
-                <option value="{{role.name}}">{{role.name}}</option>
-              </ng-container>
-            </select>
-            <div *ngIf="submitted && f.role.errors" class="invalid-feedback">
-              <div class="cst-error-style" *ngIf="f.role.errors.required">
-                {{'Role Required Message' | translate}}</div>
+            <div class="col-12">
+              <div class="mb-3 customd-div">
+                <label class="form-label f-16">Selected Areas</label>
+                <ul>
+                  <ng-container *ngFor="let location of selectedAreasArr">
+                    <li>
+                      <span class="f-16">{{location.string}}</span>
+                      <i class="bi bi-x f-18 cursor-pointer" (click)="removeLocation(location)" aria-hidden="true"></i>
+                    </li>
+                  </ng-container>
+                </ul>
+              </div>
             </div>
-          </div>
-        </div>
-      </div>
-      <div *ngIf="!isEdit" class="row mt-3">
-        <div class="col-12 col-sm-6">
-          <div class="mb-3">
-            <label class="form-label">{{'Password' | translate}}</label>
-            <input type="password" formControlName="password" class="form-control custom-input"
-              placeholder="{{'Password Placeholder' | translate}}"
-              [ngClass]="{ 'is-invalid': submitted && f.password.errors }" />
-            <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
-              <div class="cst-error-style" *ngIf="f.password.errors.required">
-                {{'Password Required Message' | translate}}</div>
-            </div>
-          </div>
-        </div>
-        <div class="col-12 col-sm-6">
-          <div class="mb-3">
-            <label class="form-label">{{'ConfirmPassword' | translate}}</label>
-            <input type="password" formControlName="confirmPassword" class="form-control custom-input"
-              placeholder="{{'ConfirmPassword Placeholder' | translate}}"
-              [ngClass]="{ 'is-invalid': submitted && f.confirmPassword.errors }" />
-            <div *ngIf="submitted && f.confirmPassword.errors" class="invalid-feedback">
-              <div class="cst-error-style" *ngIf="f.confirmPassword.errors.required">
-                {{'Confirm Password Required Message' | translate}}</div>
-              <div class="cst-error-style" *ngIf="f.confirmPassword.errors.mustMatch">
-                {{'Passwords Match Message' | translate}}</div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-12">
-          <div class="mb-3 d-grid">
-            <label class="form-label">{{'Location' | translate}}</label>
-            <button type="button" class="btn btn-primary cst-primary-user" data-bs-toggle="modal"
-              data-bs-target="#locationModal">
-              <ng-container *ngIf="f.location.value; else noLocation">
-                {{f.location.value.name}}
-              </ng-container>
-              <ng-template #noLocation>
-                {{'Select_Location' | translate}}
-              </ng-template>
-            </button>
           </div>
         </div>
       </div>
@@ -132,22 +148,4 @@
 </div>
 <div *ngIf="!isAllowed" class="main-wrapper-nodata">
   Sorry you don't have access to this page!!
-</div>
-<div class="modal fade" id="locationModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header cst-header">
-        <h5 class="modal-title" id="exampleModalLabel">{{'Select_Location' | translate}}</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body cst-body">
-        <app-location-dropdown [idArr]="locationIdArr" (locationFormValueAndDropdownArr)="getFormValue($event)">
-        </app-location-dropdown>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-red" (click)="saveLocationData()"
-          data-bs-dismiss="modal">{{'Save' | translate}}</button>
-      </div>
-    </div>
-  </div>
 </div>

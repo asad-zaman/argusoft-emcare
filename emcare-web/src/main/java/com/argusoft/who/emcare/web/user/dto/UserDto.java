@@ -1,5 +1,7 @@
 package com.argusoft.who.emcare.web.user.dto;
 
+import java.util.List;
+
 /**
  * @author jay
  */
@@ -13,6 +15,7 @@ public class UserDto {
     private Integer locationId;
     private String roleName;
     private String language;
+    private List<Integer> locationIds;
 
 
     public String getFirstName() {
@@ -77,5 +80,13 @@ public class UserDto {
 
     public void setLanguage(String language) {
         this.language = language;
+    }
+
+    public List<Integer> getLocationIds() {
+        return locationIds;
+    }
+
+    public void setLocationIds(List<Integer> locationIds) {
+        this.locationIds = locationIds;
     }
 }

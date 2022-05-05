@@ -24,6 +24,8 @@ public interface UserService {
 
     public List<UserListDto> getAllUser(HttpServletRequest request);
 
+    public List<MultiLocationUserListDto> getAllUserWithMultiLocation(HttpServletRequest request);
+
     public PageDto getUserPage(HttpServletRequest request, Integer pageNo, String searchString);
 
     public List<UserListDto> getAllSignedUpUser(HttpServletRequest request);
@@ -44,7 +46,7 @@ public interface UserService {
 
     public UserRepresentation getUserById(String userId);
 
-    public UserListDto getUserDtoById(String userId);
+    public MultiLocationUserListDto getUserDtoById(String userId);
 
     public ResponseEntity<Object> getUserRolesById(String userId);
 
