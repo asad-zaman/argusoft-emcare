@@ -28,4 +28,9 @@ public class CommonConstant {
     //    Exception Strings
     public static final String EM_CARE_NO_DATA_FOUND = "Data Not Found";
 
+
+    public static final String MAIL_FOR_ADD_USER = "ADD_USER";
+
+
+
 }
