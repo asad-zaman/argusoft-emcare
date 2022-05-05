@@ -82,4 +82,14 @@ public class KeyCloakConfig {
         }
         return token;
     }
+
+    public Keycloak getInsideInstance() {
+        String token = getAccessToken();
+        return KeycloakBuilder.builder()
+                .serverUrl(SERVER_URL)
+                .realm(REALM)
+                .authorization(token)
+                .resteasyClient(new ResteasyClientBuilder().connectionPoolSize(20).build())
+                .build();
+    }
 }

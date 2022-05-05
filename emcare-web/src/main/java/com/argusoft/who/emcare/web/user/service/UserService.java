@@ -62,6 +62,10 @@ public interface UserService {
 
     public PageDto getUsersUnderLocation(Integer locationId, Integer pageNo);
 
+    public UserRepresentation getUserByEmailId(String emailId);
+
+    public UserRepresentation resetPassword(String emailId, String password);
+
     public default Keycloak getKeyCloakInstance() {
         return KeycloakBuilder.builder()
                 .serverUrl(KeyCloakConfig.SERVER_URL)
