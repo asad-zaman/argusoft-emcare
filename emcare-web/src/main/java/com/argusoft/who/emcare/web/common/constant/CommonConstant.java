@@ -30,7 +30,7 @@ public class CommonConstant {
 
 
     public static final String MAIL_FOR_ADD_USER = "ADD_USER";
-
+    public static final String MAIL_FOR_GENERATE_OTP = "GENERATE_OTP";
 
 
 }

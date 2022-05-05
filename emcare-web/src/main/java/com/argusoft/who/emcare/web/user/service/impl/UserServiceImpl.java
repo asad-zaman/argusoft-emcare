@@ -7,6 +7,7 @@ import com.argusoft.who.emcare.web.config.KeyCloakConfig;
 import com.argusoft.who.emcare.web.location.dao.LocationMasterDao;
 import com.argusoft.who.emcare.web.location.model.LocationMaster;
 import com.argusoft.who.emcare.web.location.service.LocationService;
+import com.argusoft.who.emcare.web.mail.MailService;
 import com.argusoft.who.emcare.web.menu.dao.MenuConfigRepository;
 import com.argusoft.who.emcare.web.menu.dao.UserMenuConfigRepository;
 import com.argusoft.who.emcare.web.menu.dto.CurrentUserFeatureJson;
@@ -67,6 +68,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     LocationMasterDao locationMasterDao;
+
+    @Autowired
+    MailService mailService;
 
     @Override
     public UserMasterDto getCurrentUser() {
@@ -271,6 +275,7 @@ public class UserServiceImpl implements UserService {
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response(CommonConstant.EMAIL_ALREADY_EXISTS, HttpStatus.BAD_REQUEST.value()));
         }
+        mailService.sendBasicMail(user.getEmail(), CommonConstant.MAIL_FOR_ADD_USER, user.getEmail());
         return ResponseEntity.ok(new Response(CommonConstant.REGISTER_SUCCESS, HttpStatus.OK.value()));
     }
 
@@ -396,6 +401,35 @@ public class UserServiceImpl implements UserService {
         pageDto.setTotalCount(totalCount.longValue());
         pageDto.setList(userList);
         return pageDto;
+    }
+
+    @Override
+    public UserRepresentation getUserByEmailId(String emailId) {
+        Keycloak keycloak = keyCloakConfig.getInsideInstance();
+        UsersResource usersResource = keycloak.realm(KeyCloakConfig.REALM).users();
+        List<UserRepresentation> userRepresentation = keycloak.realm(KeyCloakConfig.REALM).users().search(emailId);
+        if (!userRepresentation.isEmpty()) {
+            return userRepresentation.get(0);
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public UserRepresentation resetPassword(String emailId, String password) {
+        Keycloak keycloak = keyCloakConfig.getInsideInstance();
+        UserRepresentation userRepresentation = null;
+        UsersResource usersResource = keycloak.realm(KeyCloakConfig.REALM).users();
+
+        List<UserRepresentation> userRepresentations = keycloak.realm(KeyCloakConfig.REALM).users().search(emailId);
+        if (!userRepresentations.isEmpty()) {
+            userRepresentation = userRepresentations.get(0);
+            CredentialRepresentation credentialRepresentation = createPasswordCredentials(password);
+            userRepresentation.setCredentials(Collections.singletonList(credentialRepresentation));
+            usersResource.get(userRepresentation.getId()).update(userRepresentation);
+            return userRepresentation;
+        }
+        return null;
     }
 
     private static CredentialRepresentation createPasswordCredentials(String password) {

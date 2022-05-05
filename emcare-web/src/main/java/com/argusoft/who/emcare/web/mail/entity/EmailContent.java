@@ -18,6 +18,9 @@ public class EmailContent implements Serializable {
     @Column(name = "code", nullable = false)
     private String code;
 
+    @Column(name = "subject", nullable = false)
+    private String subject;
+
     @Column(name = "content", nullable = false)
     private String content;
     @CreationTimestamp
@@ -55,5 +58,13 @@ public class EmailContent implements Serializable {
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public String getSubject() {
+        return subject;
+    }
+
+    public void setSubject(String subject) {
+        this.subject = subject;
     }
 }
