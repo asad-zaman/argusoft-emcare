@@ -37,7 +37,6 @@ public class KeyCloakConfig {
     public static final String MASTER_USER_PASSWORD = "argusadmin";
 
     public Keycloak getInstance() {
-//        if (keycloak == null) {
         KeycloakSecurityContext context = (KeycloakSecurityContext) request.getAttribute(KeycloakSecurityContext.class.getName());
         keycloak = KeycloakBuilder.builder()
                 .serverUrl(KeyCloakConfig.SERVER_URL)
@@ -50,7 +49,6 @@ public class KeyCloakConfig {
                 .clientSecret(KeyCloakConfig.CLIENT_SECRET)
                 .resteasyClient(new ResteasyClientBuilder().connectionPoolSize(10).build())
                 .build();
-//        }
         return keycloak;
     }
 
@@ -78,5 +76,15 @@ public class KeyCloakConfig {
         HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(map, headers);
         String url = SERVER_URL + "/realms/" + REALM + "/protocol/openid-connect/token";
         return restTemplate.postForObject(url, entity, AccessTokenForUser.class).getAccess_token();
+    }
+
+    public Keycloak getInsideInstance() {
+        String token = getAccessToken();
+        return KeycloakBuilder.builder()
+                .serverUrl(SERVER_URL)
+                .realm(REALM)
+                .authorization(token)
+                .resteasyClient(new ResteasyClientBuilder().connectionPoolSize(20).build())
+                .build();
     }
 }

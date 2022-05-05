@@ -24,7 +24,7 @@ public interface UserService {
 
     public List<UserListDto> getAllUser(HttpServletRequest request);
 
-    public PageDto getUserPage(HttpServletRequest request, Integer pageNo,String searchString);
+    public PageDto getUserPage(HttpServletRequest request, Integer pageNo, String searchString);
 
     public List<UserListDto> getAllSignedUpUser(HttpServletRequest request);
 
@@ -49,7 +49,7 @@ public interface UserService {
     public ResponseEntity<Object> getUserRolesById(String userId);
 
     public ResponseEntity<Object> updateUser(UserDto userDto, String userId);
-    
+
     public ResponseEntity<Object> updatePassword(UserDto userDto, String userId);
 
     public ResponseEntity<Object> updateRole(RoleUpdateDto roleUpdateDto);
@@ -58,7 +58,11 @@ public interface UserService {
 
     public String getRoleNameById(String roleId);
 
-    public PageDto getUsersUnderLocation(Integer locationId,Integer pageNo);
+    public PageDto getUsersUnderLocation(Integer locationId, Integer pageNo);
+
+    public UserRepresentation getUserByEmailId(String emailId);
+
+    public UserRepresentation resetPassword(String emailId, String password);
 
     public default Keycloak getKeyCloakInstance() {
         return KeycloakBuilder.builder()
