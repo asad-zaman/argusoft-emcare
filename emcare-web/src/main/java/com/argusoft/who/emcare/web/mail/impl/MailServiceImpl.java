@@ -2,7 +2,6 @@ package com.argusoft.who.emcare.web.mail.impl;
 
 import com.argusoft.who.emcare.web.mail.MailService;
 import com.argusoft.who.emcare.web.mail.dao.MailRepository;
-import com.argusoft.who.emcare.web.mail.entity.EmailContent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
@@ -27,16 +26,14 @@ public class MailServiceImpl implements MailService {
 
     @Async
     @Override
-    public void sendBasicMail(String to, String mailType, String bodyContent) {
-
-        EmailContent emailContent = mailRepository.findByCode(mailType);
+    public void sendBasicMail(String to, String subject, String bodyContent) {
 
         try {
             SimpleMailMessage message = new SimpleMailMessage();
-            message.setFrom("jaykalariya100@gmail.com");
+            message.setFrom(emailSentFrom);
             message.setTo(to);
-            message.setSubject(emailContent.getSubject());
-            message.setText(emailContent.getContent() + " " + bodyContent);
+            message.setSubject(subject);
+            message.setText(bodyContent);
             javaMailSender.send(message);
         } catch (Exception ex) {
             System.out.println(ex.getMessage());

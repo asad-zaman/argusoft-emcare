@@ -7,6 +7,8 @@ import com.argusoft.who.emcare.web.commonApi.dto.UserPasswordDto;
 import com.argusoft.who.emcare.web.commonApi.model.OTP;
 import com.argusoft.who.emcare.web.commonApi.service.OpenApiService;
 import com.argusoft.who.emcare.web.mail.MailService;
+import com.argusoft.who.emcare.web.mail.dto.MailDto;
+import com.argusoft.who.emcare.web.mail.impl.MailDataSetterService;
 import com.argusoft.who.emcare.web.user.service.UserService;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +36,9 @@ public class OpenApiServiceImpl implements OpenApiService {
     @Autowired
     UserService userService;
 
+    @Autowired
+    MailDataSetterService mailDataSetterService;
+
     @Override
     public ResponseEntity<?> generateOTP(String emailId) {
         UserRepresentation userRepresentation = userService.getUserByEmailId(emailId);
@@ -52,7 +57,10 @@ public class OpenApiServiceImpl implements OpenApiService {
 
         OTP savedOTP = otpRepository.save(otp);
 
-        mailService.sendBasicMail(emailId, CommonConstant.MAIL_FOR_GENERATE_OTP, otp.getOtp());
+        MailDto mailDto = new MailDto();
+        mailDto = mailDataSetterService.mailSubjectSetter(CommonConstant.MAIL_FOR_GENERATE_OTP);
+        String body = mailDto.getBody() + " " + otp.getOtp();
+        mailService.sendBasicMail(emailId, mailDto.getSubject(), body);
         return ResponseEntity.ok(savedOTP);
     }
 
@@ -96,7 +104,7 @@ public class OpenApiServiceImpl implements OpenApiService {
                 userService.resetPassword(userPasswordDto.getEmailId(), userPasswordDto.getPassword());
                 invalidateOtp(userPasswordDto.getEmailId(), userPasswordDto.getOtp());
                 return ResponseEntity.ok().body(new Response("Password Reset Successfully", HttpStatus.OK.value()));
-            }else{
+            } else {
                 return ResponseEntity.badRequest().body(new Response("OTP Validation Failed, Retry", HttpStatus.BAD_REQUEST.value()));
             }
         } else {

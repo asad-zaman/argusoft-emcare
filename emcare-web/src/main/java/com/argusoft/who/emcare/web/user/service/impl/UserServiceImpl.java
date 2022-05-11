@@ -10,6 +10,8 @@ import com.argusoft.who.emcare.web.location.mapper.LocationMasterMapper;
 import com.argusoft.who.emcare.web.location.model.LocationMaster;
 import com.argusoft.who.emcare.web.location.service.LocationService;
 import com.argusoft.who.emcare.web.mail.MailService;
+import com.argusoft.who.emcare.web.mail.dto.MailDto;
+import com.argusoft.who.emcare.web.mail.impl.MailDataSetterService;
 import com.argusoft.who.emcare.web.menu.dao.MenuConfigRepository;
 import com.argusoft.who.emcare.web.menu.dao.UserMenuConfigRepository;
 import com.argusoft.who.emcare.web.menu.dto.CurrentUserFeatureJson;
@@ -73,6 +75,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     MailService mailService;
+
+    @Autowired
+    MailDataSetterService mailDataSetterService;
 
     @Override
     public UserMasterDto getCurrentUser() {
@@ -319,7 +324,12 @@ public class UserServiceImpl implements UserService {
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response(CommonConstant.EMAIL_ALREADY_EXISTS, HttpStatus.BAD_REQUEST.value()));
         }
-        mailService.sendBasicMail(user.getEmail(), CommonConstant.MAIL_FOR_ADD_USER, user.getEmail());
+
+        MailDto mailDto = new MailDto();
+        mailDto = mailDataSetterService.mailSubjectSetter(CommonConstant.MAIL_FOR_ADD_USER);
+        String mailBody = mailDto.getBody() + " " + user.getEmail();
+        mailService.sendBasicMail(user.getEmail(), mailDto.getSubject(), mailBody);
+        
         return ResponseEntity.ok(new Response(CommonConstant.REGISTER_SUCCESS, HttpStatus.OK.value()));
     }
 
@@ -566,10 +576,8 @@ public class UserServiceImpl implements UserService {
         UserRepresentation newUser = userResource.toRepresentation();
 
         if (userDto.getPassword() != null) {
-            CredentialRepresentation credentialRepresentation =
-                    createPasswordCredentials(userDto.getPassword());
-            newUser.setCredentials(Collections
-                    .singletonList(credentialRepresentation));
+            CredentialRepresentation credentialRepresentation = createPasswordCredentials(userDto.getPassword());
+            newUser.setCredentials(Collections.singletonList(credentialRepresentation));
         }
 
         userResource.update(newUser);
