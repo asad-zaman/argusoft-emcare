@@ -1,4 +1,4 @@
-package com.argusoft.who.emcare.ui.home.patient.details
+package com.argusoft.who.emcare.ui.home.patient.actions
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -6,22 +6,24 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.argusoft.who.emcare.data.remote.ApiResponse
 import com.argusoft.who.emcare.ui.common.model.PatientItem
-import com.argusoft.who.emcare.ui.common.model.PatientItemData
 import com.argusoft.who.emcare.ui.home.patient.PatientRepository
+import com.argusoft.who.emcare.utils.listener.SingleLiveEvent
 import com.google.android.fhir.FhirEngine
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import org.hl7.fhir.r4.model.Patient
+import org.hl7.fhir.r4.model.Questionnaire
+import org.hl7.fhir.r4.model.QuestionnaireResponse
 import javax.inject.Inject
 
 @HiltViewModel
-class PatientDetailsViewModel @Inject constructor(
+class PatientActionsViewModel @Inject constructor(
     private val fhirEngine: FhirEngine,
     private val patientRepository: PatientRepository
 ) : ViewModel() {
 
-
+    var questionnaireJson: String? = null
     private val _patientItem = MutableLiveData<ApiResponse<PatientItem>>()
     val patientItem: LiveData<ApiResponse<PatientItem>> = _patientItem
 
@@ -30,6 +32,12 @@ class PatientDetailsViewModel @Inject constructor(
 
     private val _deletePatientLoadingState = MutableLiveData<ApiResponse<Patient>>()
     val deletePatientLoadingState: LiveData<ApiResponse<Patient>> = _deletePatientLoadingState
+
+    private val _questionnaire = SingleLiveEvent<ApiResponse<Questionnaire>>()
+    val questionnaire: LiveData<ApiResponse<Questionnaire>> = _questionnaire
+
+    private val _saveQuestionnaire = MutableLiveData<ApiResponse<Int>>()
+    val saveQuestionnaire: LiveData<ApiResponse<Int>> = _saveQuestionnaire
 
 
     fun getPatientDetails(patientId: String?) {
@@ -41,6 +49,23 @@ class PatientDetailsViewModel @Inject constructor(
         }
     }
 
+    fun getQuestionnaire(questionnaireId: String) {
+        _questionnaire.value = ApiResponse.Loading()
+        viewModelScope.launch {
+            patientRepository.getQuestionnaire(questionnaireId).collect {
+                _questionnaire.value = it
+            }
+        }
+    }
+
+    fun saveQuestionnaire(questionnaireResponse: QuestionnaireResponse, questionnaire: String, patientId: String, structureMap: String?, locationId: Int) {
+        viewModelScope.launch {
+            patientRepository.saveQuestionnaire(questionnaireResponse, questionnaire, patientId, structureMap,locationId).collect {
+                _saveQuestionnaire.value = it
+            }
+        }
+    }
+
     fun deletePatient(patientId: String?) {
         _deletePatientLoadingState.value = ApiResponse.Loading()
         viewModelScope.launch {
@@ -48,14 +73,4 @@ class PatientDetailsViewModel @Inject constructor(
         }
     }
 
-    fun createPatientItemDataListFromPatientItem(patientItem: PatientItem?): List<PatientItemData> {
-        val patientItemDataList = mutableListOf<PatientItemData>()
-
-        patientItemDataList.add(PatientItemData("Identifier", patientItem?.identifier))
-        patientItemDataList.add(PatientItemData("Gender", patientItem?.gender))
-        patientItemDataList.add(PatientItemData("Date Of Birth", patientItem?.dob))
-        patientItemDataList.add(PatientItemData("Address", "${patientItem?.line}, ${patientItem?.city}, ${patientItem?.country} "))
-
-        return patientItemDataList
-    }
 }

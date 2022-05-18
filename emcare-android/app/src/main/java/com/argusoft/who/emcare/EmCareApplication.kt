@@ -7,7 +7,12 @@ import androidx.work.Configuration
 import com.argusoft.who.emcare.data.local.database.Database
 import com.argusoft.who.emcare.data.local.pref.Preference
 import com.argusoft.who.emcare.data.remote.Api
+import com.argusoft.who.emcare.sync.EmcareAuthenticator
 import com.argusoft.who.emcare.utils.localization.LocaleHelperApplicationDelegate
+import com.google.android.fhir.DatabaseErrorStrategy
+import com.google.android.fhir.FhirEngineConfiguration
+import com.google.android.fhir.FhirEngineProvider
+import com.google.android.fhir.ServerConfiguration
 import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
 import javax.inject.Inject
@@ -39,6 +44,13 @@ class EmCareApplication : Application(), Configuration.Provider {
         if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
         }
+        FhirEngineProvider.init(
+            FhirEngineConfiguration(
+                enableEncryptionIfSupported = false,
+                DatabaseErrorStrategy.RECREATE_AT_OPEN,
+                ServerConfiguration(BuildConfig.FHIR_BASE_URL, EmcareAuthenticator(preference))
+            )
+        )
     }
 
     override fun attachBaseContext(base: Context) {

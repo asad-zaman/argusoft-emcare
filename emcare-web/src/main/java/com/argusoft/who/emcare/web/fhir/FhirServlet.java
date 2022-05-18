@@ -27,6 +27,9 @@ public class FhirServlet extends RestfulServer {
 
     @Autowired
     private OrganizationResourceProvider organizationResourceProvider;
+    
+    @Autowired
+    private BundleResourceProvider bundleResourceProvider;
 
     @Autowired
     private PlanDefinitionResourceProvider planDefinitionResourceProvider;
@@ -47,6 +50,7 @@ public class FhirServlet extends RestfulServer {
         resourceProviders.add(questionnaireResourceProvider);
         resourceProviders.add(locationResourceProvider);
         resourceProviders.add(organizationResourceProvider);
+        resourceProviders.add(bundleResourceProvider);
         resourceProviders.add(planDefinitionResourceProvider);
         setResourceProviders(resourceProviders);
     }

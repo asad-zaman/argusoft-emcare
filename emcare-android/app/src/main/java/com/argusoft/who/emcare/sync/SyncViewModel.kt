@@ -35,8 +35,7 @@ class SyncViewModel @Inject constructor(
             val fhirResult = Sync.oneTimeSync(
                 applicationContext,
                 fhirEngine,
-                api.getHapiFhirResourceDataSource(),
-                mapOf( ResourceType.Patient to mapOf(), ResourceType.Questionnaire to mapOf())
+                DownloadWorkManagerImpl()
             )
             val emCareResult = EmCareSync.oneTimeSync(api, database, preference, listOf(SyncType.LOCATION, SyncType.LANGUAGE))
             if (fhirResult is Result.Success || emCareResult is SyncResult.Success) {

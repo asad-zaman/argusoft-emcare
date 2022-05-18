@@ -12,8 +12,6 @@ interface Api {
 
     suspend fun signup(signupRequest: SignupRequest) : ApiResponse<Any>
 
-    fun getHapiFhirResourceDataSource() : HapiFhirResourceDataSource
-
     suspend fun getRoles(): ApiResponse<List<Role>>
 
     suspend fun getLocations(): ApiResponse<List<Location>>

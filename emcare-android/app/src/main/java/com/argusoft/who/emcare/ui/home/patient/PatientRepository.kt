@@ -9,12 +9,14 @@ import com.argusoft.who.emcare.ui.common.model.PatientItem
 import com.argusoft.who.emcare.utils.extention.toPatientItem
 import com.google.android.fhir.FhirEngine
 import com.google.android.fhir.datacapture.mapping.ResourceMapper
+import com.google.android.fhir.datacapture.mapping.StructureMapExtractionContext
 import com.google.android.fhir.search.Order
 import com.google.android.fhir.search.StringFilterModifier
 import com.google.android.fhir.search.search
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import org.hl7.fhir.r4.model.*
+import org.hl7.fhir.r4.utils.StructureMapUtilities
 import java.util.*
 import javax.inject.Inject
 
@@ -63,10 +65,22 @@ class PatientRepository @Inject constructor(
         }
     }
 
+    fun saveQuestionnaire(questionnaireResponse: QuestionnaireResponse, questionnaire: String, patientId: String, structureMap: String?, locationId: Int) = flow {
+        val questionnaireResource: Questionnaire = FhirContext.forR4().newJsonParser().parseResource(questionnaire) as Questionnaire
+        val entry = ResourceMapper.extract(
+            questionnaireResource,
+            questionnaireResponse,
+            StructureMapExtractionContext(context = application) { _, worker ->
+                StructureMapUtilities(worker).parse(structureMap, "")
+            },
+        )
+        //TODO: save resource using structuremap.
+        emit(ApiResponse.Success(1))
+    }
 
     fun savePatient(questionnaireResponse: QuestionnaireResponse, questionnaire: String, locationId: Int) = flow {
         val questionnaireResource: Questionnaire = FhirContext.forR4().newJsonParser().parseResource(questionnaire) as Questionnaire
-        val entry = ResourceMapper.extract(application, questionnaireResource, questionnaireResponse).entryFirstRep
+        val entry = ResourceMapper.extract(questionnaireResource, questionnaireResponse).entryFirstRep
         if (entry.resource !is Patient) return@flow
         val patient = entry.resource as Patient
         if (patient.identifier.isNotEmpty()
@@ -93,7 +107,7 @@ class PatientRepository @Inject constructor(
                 caregiver.name = listOf(caregiverHumanName)
 
                 //Saving Caregiver
-                fhirEngine.save(caregiver)
+                fhirEngine.create(caregiver)
 
                 //adding caregiver reference to the patient
                 val caregiverReference: Reference = Reference()
@@ -115,7 +129,7 @@ class PatientRepository @Inject constructor(
                 .setUrl(LOCATION_EXTENSION_URL)
             patient.addExtension(extension)
             //End of location Id
-            fhirEngine.save(patient)
+            fhirEngine.create(patient)
             emit(ApiResponse.Success(1))
         }
     }
