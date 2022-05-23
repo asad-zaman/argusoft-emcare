@@ -2,8 +2,8 @@
     border-right: 1px solid $color-gray-50;
     position: fixed;
     left: 0px;
-    top: 60px;
-    width: 230px;
+    top: 53px;
+    width: 210px;
     height: 100%;
     background: $color-light-gray;
     .nav-link {
@@ -14,10 +14,10 @@
             a {
                 text-decoration: none;
                 color: $color-gray-80;
-                font-size: 14px;
+                font-size: 12px;
                 font-weight: 500;
                 position: relative;
-                padding: 15px;
+                padding: 14px;
                 padding-left: 45px;
                 display: block;
                 .nav-link_icon {
@@ -69,7 +69,7 @@
                 a {
                     text-decoration: none;
                     color: $color-gray-80;
-                    font-size: 14px;
+                    font-size: 12px;
                     font-weight: 500;
                     position: relative;
                     padding: 6px 10px;

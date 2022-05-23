@@ -3,7 +3,7 @@
   <hr>
   <div class="row align-items-center mb-3">
     <div class=" col-lg-3 col-xxl-2 col-md-5 position-relative">
-      <input class="form-control custom-input h-40" id="exampleFormControlInput1" [(ngModel)]="searchString"
+      <input class="form-control custom-input h-35" id="exampleFormControlInput1" [(ngModel)]="searchString"
         (input)="searchFilter()" placeholder="{{'Search Placeholder' | translate}}">
     </div>
     <div *ngIf="isAdd" class="col text-end"><button class="btn btn-red" routerLink="/addFacility">+
@@ -33,9 +33,9 @@
               <td>{{data.extension ? getLocationNameByID(data.extension[0].valueIdentifier.value) : 'NA'}}</td>
               <td class="">
                 <i aria-hidden="true" *ngIf="isEdit" (click)="editFacility(i)"
-                  class="bi bi-pencil-square cursor-pointer font-size-16"></i>
+                  class="bi bi-pencil-square cursor-pointer font-size-14"></i>
                 <i aria-hidden="true" *ngIf="isDelete" (click)="deleteFacility(i)"
-                  class="bi bi-trash ms-3 text-red cursor-pointer font-size-16"></i>
+                  class="bi bi-trash ms-3 text-red cursor-pointer font-size-14"></i>
               </td>
             </tr>
           </ng-container>

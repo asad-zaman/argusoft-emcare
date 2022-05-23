@@ -4,7 +4,7 @@
   <hr>
   <div class="row align-items-center mb-3">
     <div class="col-lg-3 col-xxl-2 col-md-5 position-relative">
-      <input class="form-control custom-input h-40" id="exampleFormControlInput1" [(ngModel)]="searchString"
+      <input class="form-control custom-input h-35" id="exampleFormControlInput1" [(ngModel)]="searchString"
         (input)="searchFilter()" placeholder="{{'Search Placeholder' | translate}}">
     </div>
     <div *ngIf="isAdd" class="col text-end">
@@ -56,12 +56,12 @@
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                       <li (click)="updateUser(i)">
                         <a class="dropdown-item">
-                          <i class="bi bi-pencil font-size-16 mr-2" aria-hidden="true"></i>{{'Update User' | translate}}
+                          <i class="bi bi-pencil font-size-14 mr-2" aria-hidden="true"></i>{{'Update User' | translate}}
                         </a>
                       </li>
                       <li (click)="onResetPassword(i)">
                         <a class="dropdown-item">
-                          <i class="bi bi-pencil font-size-16 mr-2"
+                          <i class="bi bi-pencil font-size-14 mr-2"
                             aria-hidden="true"></i>{{'Reset Password' | translate}}
                         </a>
                       </li>
