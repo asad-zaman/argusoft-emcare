@@ -53,7 +53,7 @@ public class UserMapper {
 
     public static UserMasterDto getMasterUser(AccessToken token, List<LocationMaster> locationMaster, UserRepresentation userInfo) {
         UserMasterDto userMaster = new UserMasterDto();
-        userMaster.setUserName(token.getName());
+        userMaster.setUserName(token.getPreferredUsername());
         userMaster.setFirstName(userInfo.getFirstName());
         userMaster.setLastName(userInfo.getLastName());
         userMaster.setLocation(locationMaster);
