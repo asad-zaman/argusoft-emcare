@@ -56,7 +56,8 @@ export class AuthenticationService {
     }
 
     login(username: string, password: string) {
-        const url = `${this.backendURL}/auth/realms/emcare/protocol/openid-connect/token`;
+        const url = `http://192.1.200.197:8180/auth/realms/emcare/protocol/openid-connect/token`;
+        // const url = `${this.backendURL}/auth/realms/emcare/protocol/openid-connect/token`;
         const body = new HttpParams()
             .set('username', username)
             .set('password', password)
@@ -119,5 +120,21 @@ export class AuthenticationService {
         const url = `${this.backendURL}/api/signup/location`;
         const headerObj = this.getHeaders();
         return this.http.get<any>(url, headerObj);
+    }
+
+    generateOTPFromUsername(username) {
+        const url = `${this.backendURL}/api/open/forgotpassword/generateotp`;
+        const body = { "emailId": username };
+        return this.http.post<any>(url, body);
+    }
+
+    verifyOTP(body) {
+        const url = `${this.backendURL}/api/open/forgotpassword/verifyotp`;
+        return this.http.post<any>(url, body);
+    }
+
+    resetPassword(body) {
+        const url = `${this.backendURL}/api/open/resetpassword`;
+        return this.http.put<any>(url, body);
     }
 }
