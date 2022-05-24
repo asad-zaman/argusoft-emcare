@@ -1,5 +1,7 @@
 package com.argusoft.who.emcare.web.user.service.impl;
 
+import com.argusoft.who.emcare.web.adminSetting.Entity.Settings;
+import com.argusoft.who.emcare.web.adminSetting.repository.AdminSettingRepository;
 import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.common.dto.PageDto;
 import com.argusoft.who.emcare.web.common.response.Response;
@@ -73,6 +75,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     MailService mailService;
+
+    @Autowired
+    AdminSettingRepository adminSettingRepository;
 
     @Override
     public UserMasterDto getCurrentUser() {
@@ -255,7 +260,12 @@ public class UserServiceImpl implements UserService {
 
 //        Create User Representation
         UserRepresentation kcUser = new UserRepresentation();
-        kcUser.setUsername(user.getEmail());
+        Settings usernameSetting = adminSettingRepository.findBySettingType(CommonConstant.SETTING_TYPE_REGISTRATION_EMAIL_AS_USERNAME);
+        if (usernameSetting.getSettingStatus()) {
+            kcUser.setUsername(user.getEmail());
+        } else {
+            kcUser.setUsername(user.getUserName());
+        }
         kcUser.setCredentials(Collections.singletonList(credentialRepresentation));
         kcUser.setFirstName(user.getFirstName());
         kcUser.setLastName(user.getLastName());
@@ -294,7 +304,13 @@ public class UserServiceImpl implements UserService {
         CredentialRepresentation credentialRepresentation = createPasswordCredentials(user.getPassword());
 //        Create User Representation
         UserRepresentation kcUser = new UserRepresentation();
-        kcUser.setUsername(user.getEmail());
+        Settings usernameSetting = adminSettingRepository.findBySettingType(CommonConstant.SETTING_TYPE_REGISTRATION_EMAIL_AS_USERNAME);
+        if (usernameSetting.getSettingStatus()) {
+            kcUser.setUsername(user.getEmail());
+        } else {
+            kcUser.setUsername(user.getUserName());
+        }
+        kcUser.setUsername(user.getUserName());
         kcUser.setCredentials(Collections.singletonList(credentialRepresentation));
         kcUser.setFirstName(user.getFirstName());
         kcUser.setLastName(user.getLastName());

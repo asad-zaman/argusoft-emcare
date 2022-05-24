@@ -4,7 +4,7 @@ public class CommonConstant {
     private CommonConstant() {
     }
 
-    public static final String EMAIL_ALREADY_EXISTS = "This Email Already Register With Em-Care";
+    public static final String EMAIL_ALREADY_EXISTS = "This Email Or Username Already Register With Em-Care";
     public static final String REGISTER_SUCCESS = "Successfully Register";
     public static final String UPDATE_SUCCESS = "Successfully Update";
     public static final String USER_NOT_FOUND = "User Not Found";
@@ -31,6 +31,10 @@ public class CommonConstant {
 
     public static final String MAIL_FOR_ADD_USER = "ADD_USER";
     public static final String MAIL_FOR_GENERATE_OTP = "GENERATE_OTP";
+
+
+    public static final String SETTING_TYPE_REGISTRATION_EMAIL_AS_USERNAME = "Registration Email As Username";
+    public static final String SETTING_TYPE_WELCOME_EMAIL = "Welcome Email";
 
 
 }
