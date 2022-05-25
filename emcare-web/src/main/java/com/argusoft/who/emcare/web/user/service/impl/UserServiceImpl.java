@@ -2,6 +2,7 @@ package com.argusoft.who.emcare.web.user.service.impl;
 
 import com.argusoft.who.emcare.web.adminSetting.Entity.Settings;
 import com.argusoft.who.emcare.web.adminSetting.repository.AdminSettingRepository;
+import com.argusoft.who.emcare.web.adminSetting.service.AdminSettingService;
 import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.common.dto.PageDto;
 import com.argusoft.who.emcare.web.common.response.Response;
@@ -12,6 +13,8 @@ import com.argusoft.who.emcare.web.location.mapper.LocationMasterMapper;
 import com.argusoft.who.emcare.web.location.model.LocationMaster;
 import com.argusoft.who.emcare.web.location.service.LocationService;
 import com.argusoft.who.emcare.web.mail.MailService;
+import com.argusoft.who.emcare.web.mail.dto.MailDto;
+import com.argusoft.who.emcare.web.mail.impl.MailDataSetterService;
 import com.argusoft.who.emcare.web.menu.dao.MenuConfigRepository;
 import com.argusoft.who.emcare.web.menu.dao.UserMenuConfigRepository;
 import com.argusoft.who.emcare.web.menu.dto.CurrentUserFeatureJson;
@@ -43,6 +46,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 /**
@@ -290,6 +294,16 @@ public class UserServiceImpl implements UserService {
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response(CommonConstant.EMAIL_ALREADY_EXISTS, HttpStatus.BAD_REQUEST.value()));
         }
+
+        CompletableFuture.runAsync(() -> {
+            Settings settings = adminSettingService.getAdminSettingByName(CommonConstant.SETTING_TYPE_WELCOME_EMAIL);
+            if (settings.getSettingStatus()) {
+                MailDto mailDto = mailDataSetterService.mailSubjectSetter(CommonConstant.MAIL_FOR_ADD_USER);
+                String mailBody = mailDto.getBody() + " " + user.getEmail();
+                mailService.sendBasicMail(user.getEmail(), mailDto.getSubject(), mailBody);
+            }
+        });
+
         return ResponseEntity.ok(new Response(CommonConstant.REGISTER_SUCCESS, HttpStatus.OK.value()));
     }
 
@@ -335,7 +349,16 @@ public class UserServiceImpl implements UserService {
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response(CommonConstant.EMAIL_ALREADY_EXISTS, HttpStatus.BAD_REQUEST.value()));
         }
-        mailService.sendBasicMail(user.getEmail(), CommonConstant.MAIL_FOR_ADD_USER, user.getEmail());
+
+        CompletableFuture.runAsync(() -> {
+            Settings settings = adminSettingService.getAdminSettingByName(CommonConstant.SETTING_TYPE_WELCOME_EMAIL);
+            if (settings.getSettingStatus()) {
+                MailDto mailDto = mailDataSetterService.mailSubjectSetter(CommonConstant.MAIL_FOR_ADD_USER);
+                String mailBody = mailDto.getBody() + " " + user.getEmail();
+                mailService.sendBasicMail(user.getEmail(), mailDto.getSubject(), mailBody);
+            }
+        });
+
         return ResponseEntity.ok(new Response(CommonConstant.REGISTER_SUCCESS, HttpStatus.OK.value()));
     }
 
@@ -389,6 +412,27 @@ public class UserServiceImpl implements UserService {
         oldUser.setState(userUpdateDto.getIsEnabled());
         oldUser.setIsFirst(false);
         userLocationMappingRepository.save(oldUser);
+
+        if (userUpdateDto.getIsEnabled()) {
+            CompletableFuture.runAsync(() -> {
+                Settings settings = adminSettingService.getAdminSettingByName(CommonConstant.SETTING_TYPE_SEND_CONFIRMATION_EMAIL);
+                if (settings.getSettingStatus()) {
+                    MailDto mailDto = mailDataSetterService.mailSubjectSetter(CommonConstant.MAIL_FOR_CONFIRMATION_EMAIL_APPROVED);
+                    String mailBody = mailDto.getBody();
+                    mailService.sendBasicMail(user.getEmail(), mailDto.getSubject(), mailBody);
+                }
+            });
+        } else {
+            CompletableFuture.runAsync(() -> {
+                Settings settings = adminSettingService.getAdminSettingByName(CommonConstant.SETTING_TYPE_SEND_CONFIRMATION_EMAIL);
+                if (settings.getSettingStatus()) {
+                    MailDto mailDto = mailDataSetterService.mailSubjectSetter(CommonConstant.MAIL_FOR_CONFIRMATION_EMAIL_REJECTED);
+                    String mailBody = mailDto.getBody();
+                    mailService.sendBasicMail(user.getEmail(), mailDto.getSubject(), mailBody);
+                }
+            });
+        }
+
         return ResponseEntity.ok(oldUser);
 
     }
@@ -582,10 +626,8 @@ public class UserServiceImpl implements UserService {
         UserRepresentation newUser = userResource.toRepresentation();
 
         if (userDto.getPassword() != null) {
-            CredentialRepresentation credentialRepresentation =
-                    createPasswordCredentials(userDto.getPassword());
-            newUser.setCredentials(Collections
-                    .singletonList(credentialRepresentation));
+            CredentialRepresentation credentialRepresentation = createPasswordCredentials(userDto.getPassword());
+            newUser.setCredentials(Collections.singletonList(credentialRepresentation));
         }
 
         userResource.update(newUser);
