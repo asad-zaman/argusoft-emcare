@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { AuthGuard } from 'src/app/auth/auth.guard';
 import { LocationService } from 'src/app/root/services/location.service';
 import { RoleManagementService } from 'src/app/root/services/role-management.service';
 import { UserManagementService } from 'src/app/root/services/user-management.service';
-import { ToasterService } from 'src/app/shared';
+import { FhirService, ToasterService } from 'src/app/shared';
 import { MustMatch } from 'src/app/shared/validators/must-match.validator';
 
 @Component({
@@ -29,6 +29,7 @@ export class ManageUserComponent implements OnInit {
   isAllowed: boolean = true;
   selectedAreasArr = [];
   eventsSubject: Subject<boolean> = new Subject<boolean>();
+  isUsernameAllowed: boolean;
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -38,7 +39,9 @@ export class ManageUserComponent implements OnInit {
     private readonly roleService: RoleManagementService,
     private readonly locationService: LocationService,
     private readonly toasterService: ToasterService,
-    private readonly authGuard: AuthGuard
+    private readonly authGuard: AuthGuard,
+    private readonly fhirService: FhirService
+
   ) { }
 
   ngOnInit(): void {
@@ -99,10 +102,13 @@ export class ManageUserComponent implements OnInit {
         const data = {
           firstName: res['firstName'],
           lastName: res['lastName'],
-          location: ''
+          username: res['userName'],
         };
         this.manipulateLocationResponse(res['locations']);
         this.userForm.patchValue(data);
+        this.userForm.patchValue({
+          location: this.getSelectedLocations(this.selectedAreasArr)
+        });
       }
     });
   }
@@ -118,8 +124,9 @@ export class ManageUserComponent implements OnInit {
       this.userForm = this.formBuilder.group({
         firstName: ['', [Validators.required]],
         lastName: ['', [Validators.required]],
-        location: ['', Validators.required]
+        location: ['']
       });
+      this.userForm.addControl('username', new FormControl({ value: '', disabled: true }, Validators.required));
     } else {
       this.userForm = this.formBuilder.group({
         firstName: ['', [Validators.required]],
@@ -132,6 +139,7 @@ export class ManageUserComponent implements OnInit {
       }, {
         validator: MustMatch('password', 'confirmPassword')
       });
+      this.userForm.addControl('username', new FormControl('', Validators.required));
     }
   }
 
@@ -186,7 +194,8 @@ export class ManageUserComponent implements OnInit {
           "password": this.userForm.get('password').value,
           "roleName": this.userForm.get('role').value,
           "locationIds": this.userForm.get('location').value,
-          "regRequestFrom": "web"
+          "regRequestFrom": "web",
+          "userName": this.userForm.get('username').value
         }
         this.userService.createUser(data).subscribe(res => {
           this.toasterService.showSuccess('User added successfully!', 'EMCARE');
@@ -251,4 +260,13 @@ export class ManageUserComponent implements OnInit {
   removeLocation(selectedLoc) {
     this.selectedAreasArr = this.selectedAreasArr.filter(loc => loc !== selectedLoc);
   }
+
+  // getAllAdminSettings() {
+  //   this.fhirService.getAllAdminSettings().subscribe((data: any) => {
+  //     if (data) {
+  //       const el = data.find(e => e.settingType === 'Registration Email As Username');
+  //       this.isUsernameAllowed = el.settingStatus;
+  //     }
+  //   });
+  // }
 }

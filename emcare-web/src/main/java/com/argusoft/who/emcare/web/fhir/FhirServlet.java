@@ -5,6 +5,11 @@ import ca.uhn.fhir.rest.openapi.OpenApiInterceptor;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.RestfulServer;
 import com.argusoft.who.emcare.web.fhir.resourceprovider.*;
+import com.argusoft.who.emcare.web.fhir.resourceprovider.BundleResourceProvider;
+import com.argusoft.who.emcare.web.fhir.resourceprovider.LocationResourceProvider;
+import com.argusoft.who.emcare.web.fhir.resourceprovider.OrganizationResourceProvider;
+import com.argusoft.who.emcare.web.fhir.resourceprovider.PatientResourceProvider;
+import com.argusoft.who.emcare.web.fhir.resourceprovider.QuestionnaireResourceProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;

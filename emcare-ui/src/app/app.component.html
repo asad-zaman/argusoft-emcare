@@ -24,6 +24,9 @@
   <!--Sidenav-->
   <div class="sidenav cst-overflow" *ngIf="featureList.length !== 0">
     <ul class="nav-link">
+      <li *ngIf="1"><a class="mouse-pointer" routerLink="/admin-settings"><i class="bi bi-clipboard-plus nav-link_icon"
+            aria-hidden="true"></i>Settings</a>
+      </li>
       <li *ngIf="hasAccess('Users') || hasAccess('Roles')">
         <a class="mouse-pointer" [ngClass]="{'active': this.currentUrl === '/showUsers' || this.currentUrl === '/addUser' || this.currentUrl.includes('/updateUser') 
           || this.currentUrl === '/showRoles' || this.currentUrl === '/addRole' || this.currentUrl.includes('/editRole')

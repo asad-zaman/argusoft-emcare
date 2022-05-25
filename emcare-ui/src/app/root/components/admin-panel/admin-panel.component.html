@@ -1,0 +1,29 @@
+<div class="main-wrapper">
+  <h1 class="heading">Welcome, {{ userName }}!</h1>
+  <hr>
+  <div class="">
+    <h5>Manage Settings!</h5>
+    <div class="py-3">
+      <p-button [icon]="activeState[0] ? 'pi pi-times' : 'pi pi-check'" (click)="toggle(0)" styleClass="p-button-text"
+        label="Send Welcome email for user registration?"></p-button>
+      <p-button [icon]="activeState[1] ? 'pi pi-times' : 'pi pi-check'" (click)="toggle(1)"
+        styleClass="p-button-text ml-2" label="Send confirmation email for user registration?"></p-button>
+      <p-button [icon]="activeState[2] ? 'pi pi-times' : 'pi pi-check'" (click)="toggle(2)"
+        styleClass="p-button-text ml-2" label="Register email as username?"></p-button>
+    </div>
+    <p-accordion>
+      <p-accordionTab class="cursor-pointer" (click)="checkToast(0)" [disabled]="true" header="Welcome Email Template"
+        [(selected)]="activeState[0]">
+        <h5>Title: {{templateArr[0].code}}</h5>
+        <h6>Subject: {{templateArr[0].subject}}</h6>
+        <h6>Content: {{templateArr[0].content}}</h6>
+      </p-accordionTab>
+      <p-accordionTab class="cursor-pointer" (click)="checkToast(1)" [disabled]="true"
+        header="Registration Email Template" [(selected)]="activeState[1]">
+        <h5>Title: {{templateArr[0].code}}</h5>
+        <h6>Subject: {{templateArr[0].subject}}</h6>
+        <h6>Content: {{templateArr[0].content}} </h6>
+      </p-accordionTab>
+    </p-accordion>
+  </div>
+</div>

@@ -40,6 +40,18 @@
                 </div>
               </div>
             </div>
+            <div class="col-12 col-sm-12">
+              <div class="mb-3">
+                <label class="form-label">{{'Username' | translate}}</label>
+                <input formControlName="username" id="username" placeholder="{{'Username Placeholder' | translate}}"
+                  type="text" class="form-control custom-input"
+                  [ngClass]="{ 'is-invalid': submitted && f.username.errors }">
+                <div *ngIf="submitted && f.username.errors" class="invalid-feedback">
+                  <div class="cst-error-style" *ngIf="f.username.errors.required">
+                    {{'Username Required Message' | translate}}</div>
+                </div>
+              </div>
+            </div>
           </div>
           <div *ngIf="!isEdit" class="row">
             <div class="col-12 col-sm-12">

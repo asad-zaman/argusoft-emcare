@@ -120,8 +120,7 @@ export class AppComponent implements OnInit {
   }
 
   getUserCharLogo(username) {
-    const userNameArr = username.split(' ');
-    return `${userNameArr[0].toString().charAt(0).toUpperCase()}${userNameArr[1].toString().charAt(0).toUpperCase()}`;
+    return username.substring(0, 1).toUpperCase();
   }
 
   getFeatureList() {
