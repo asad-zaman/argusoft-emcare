@@ -49,6 +49,7 @@ import { ShowFacilityComponent } from './root/components/Facility/show-facility/
 import { CheckboxModule } from 'primeng/checkbox';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { TooltipModule } from 'primeng/tooltip';
+import { ForgotPasswordComponent } from './root/components/forgot-password/forgot-password.component';
 
 @NgModule({
   declarations: [
@@ -80,7 +81,8 @@ import { TooltipModule } from 'primeng/tooltip';
     ManageFacilityComponent,
     ShowFacilityComponent,
     LocationDropdownComponent,
-    LanguageListComponent
+    LanguageListComponent,
+    ForgotPasswordComponent
   ],
   imports: [
     BrowserModule,

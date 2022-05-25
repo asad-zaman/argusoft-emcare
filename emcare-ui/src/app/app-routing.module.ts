@@ -25,13 +25,15 @@ import {
   ManageRoleComponent,
   ShowRoleComponent,
   ShowFacilityComponent,
-  LanguageListComponent
+  LanguageListComponent,
+  ForgotPasswordComponent
 } from './root/index';
 
 const routes: Routes = [
   { path: 'dashboard', component: HomeComponent, canActivate: [AuthGuard] },
   { path: 'login', component: LoginComponent, canActivate: [AuthGuard] },
   { path: 'signup', component: SignupComponent, canActivate: [AuthGuard] },
+  { path: 'forgotPassword', component: ForgotPasswordComponent },
   { path: 'addLocationType', component: LocationTypeComponent, canActivate: [AuthGuard] },
   { path: 'editLocationType/:id', component: LocationTypeComponent, canActivate: [AuthGuard] },
   { path: 'showLocationType', component: ShowLocationTypeComponent, canActivate: [AuthGuard] },

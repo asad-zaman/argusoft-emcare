@@ -55,8 +55,8 @@ public class FhirServlet extends RestfulServer {
         resourceProviders.add(questionnaireResourceProvider);
         resourceProviders.add(locationResourceProvider);
         resourceProviders.add(organizationResourceProvider);
-        resourceProviders.add(planDefinitionResourceProvider);
         resourceProviders.add(bundleResourceProvider);
+        resourceProviders.add(planDefinitionResourceProvider);
         setResourceProviders(resourceProviders);
     }
 

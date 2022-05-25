@@ -32,3 +32,4 @@ export { QuestionnaireListComponent } from './components/questionnaire-managemen
 export { ShowFacilityComponent } from './components/Facility/show-facility/show-facility.component';
 export { LocationDropdownComponent } from './components/Location/location-filter/location-dropdown/location-dropdown.component';
 export { LanguageListComponent } from './components/language-list/language-list.component';
+export { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';

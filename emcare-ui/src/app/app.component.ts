@@ -186,4 +186,9 @@ export class AppComponent implements OnInit {
       this.renderer.setAttribute(document.body, 'dir', 'ltr');
     }
   }
+
+  checkCurrentUrlAndShowHeaderBar() {
+    const arr = ['/', '/login', '/signup', '/forgotPassword'];
+    return arr.includes(this.currentUrl);
+  }
 }
