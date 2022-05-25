@@ -47,6 +47,7 @@ public class AdminSettingServiceImpl implements AdminSettingService {
                     adminSettingRepository.save(settings);
                     break;
                 case CommonConstant.SETTING_TYPE_WELCOME_EMAIL:
+                case CommonConstant.SETTING_TYPE_SEND_CONFIRMATION_EMAIL:
                     adminSettingRepository.save(settings);
                     break;
                 default:
@@ -61,6 +62,11 @@ public class AdminSettingServiceImpl implements AdminSettingService {
     @Override
     public List<EmailContent> getAllMailTemplate() {
         return mailRepository.findAll();
+    }
+
+    @Override
+    public Settings getAdminSettingByName(String settingName) {
+        return adminSettingRepository.findBySettingType(settingName);
     }
 
     private void updateRegistrationEmailAsUsername(Boolean status) {

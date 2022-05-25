@@ -31,10 +31,13 @@ public class CommonConstant {
 
     public static final String MAIL_FOR_ADD_USER = "ADD_USER";
     public static final String MAIL_FOR_GENERATE_OTP = "GENERATE_OTP";
+    public static final String MAIL_FOR_CONFIRMATION_EMAIL_APPROVED = "CONFIRMATION_EMAIL_APPROVED";
+    public static final String MAIL_FOR_CONFIRMATION_EMAIL_REJECTED = "CONFIRMATION_EMAIL_REJECTED";
 
 
     public static final String SETTING_TYPE_REGISTRATION_EMAIL_AS_USERNAME = "Registration Email As Username";
     public static final String SETTING_TYPE_WELCOME_EMAIL = "Welcome Email";
+    public static final String SETTING_TYPE_SEND_CONFIRMATION_EMAIL = "Send Confirmation Email";
 
 
 }

@@ -13,5 +13,7 @@ public interface AdminSettingService {
 
     public List<EmailContent> getAllMailTemplate();
 
+    public Settings getAdminSettingByName(String settingName);
+
 
 }
