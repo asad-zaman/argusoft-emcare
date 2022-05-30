@@ -266,3 +266,24 @@ input:checked + .slider:before {
 .p-accordion .p-accordion-header .p-accordion-header-link {
     color: #000;
 }
+
+.p-button.p-button-text {
+    color: $color-red;
+}
+
+.p-button.p-button-text {
+    border-color: $color-red;
+
+    &:enabled {
+        &:active,
+        &:hover {
+            color: $color-red;
+            border-color: $color-red;
+        }
+        box-shadow: none;
+    }
+}
+
+.p-accordion .p-accordion-header .p-accordion-header-link {
+    padding: 10px 15px;
+}

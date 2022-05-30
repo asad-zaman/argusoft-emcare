@@ -2,27 +2,69 @@
   <h1 class="heading">Welcome, {{ userName }}!</h1>
   <hr>
   <div class="">
-    <h5>Manage Settings!</h5>
-    <div class="py-3">
-      <p-button [icon]="activeState[0] ? 'pi pi-times' : 'pi pi-check'" (click)="toggle(0)" styleClass="p-button-text"
-        label="Send Welcome email for user registration?"></p-button>
-      <p-button [icon]="activeState[1] ? 'pi pi-times' : 'pi pi-check'" (click)="toggle(1)"
-        styleClass="p-button-text ml-2" label="Send confirmation email for user registration?"></p-button>
-      <p-button [icon]="activeState[2] ? 'pi pi-times' : 'pi pi-check'" (click)="toggle(2)"
-        styleClass="p-button-text ml-2" label="Register email as username?"></p-button>
-    </div>
-    <p-accordion>
-      <p-accordionTab class="cursor-pointer" (click)="checkToast(0)" [disabled]="true" header="Welcome Email Template"
-        [(selected)]="activeState[0]">
-        <h5>Title: {{templateArr[0].code}}</h5>
-        <h6>Subject: {{templateArr[0].subject}}</h6>
-        <h6>Content: {{templateArr[0].content}}</h6>
+    <h5 class="my-4">Manage Settings!</h5>
+    <p-accordion *ngIf="userSettingObj.length>0 && templateArr.length>0" [multiple]="true"
+      (onOpen)="updateSetting($event)" (onClose)="updateSetting($event)">
+      <p-accordionTab class="cursor-pointer" [(selected)]="userSettingObj[0].status">
+        <ng-template pTemplate="header">
+          <div class="row w-100 align-items-center">
+            <div class="col-10">
+              Send confirmation email for user registration?
+            </div>
+            <div class="col-2">
+              <label class="switch ml-5">
+                <input [(ngModel)]="userSettingObj[0].status" id="confirmationEmail" type="checkbox" checked>
+                <span class="slider round"></span>
+              </label>
+            </div>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="content">
+          <h5>{{templateArr[1].code}}</h5>
+          <h6>Subject: {{templateArr[1].subject}}</h6>
+          <h6>Content: {{templateArr[1].content}} </h6>
+          <hr>
+          <h5>{{templateArr[2].code}}</h5>
+          <h6>Subject: {{templateArr[2].subject}}</h6>
+          <h6>Content: {{templateArr[2].content}} </h6>
+        </ng-template>
       </p-accordionTab>
-      <p-accordionTab class="cursor-pointer" (click)="checkToast(1)" [disabled]="true"
-        header="Registration Email Template" [(selected)]="activeState[1]">
-        <h5>Title: {{templateArr[0].code}}</h5>
-        <h6>Subject: {{templateArr[0].subject}}</h6>
-        <h6>Content: {{templateArr[0].content}} </h6>
+      <p-accordionTab class="cursor-pointer" [(selected)]="userSettingObj[1].status">
+        <ng-template pTemplate="header">
+          <div class="row w-100 align-items-center">
+            <div class="col-10">
+              Send Welcome email for user registration?
+            </div>
+            <div class="col-2">
+              <label class="switch ml-5">
+                <input [(ngModel)]="userSettingObj[1].status" id="welcomeEmail" type="checkbox" checked>
+                <span class="slider round"></span>
+              </label>
+            </div>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="content">
+          <h5>{{templateArr[0].code}}</h5>
+          <h6>Subject: {{templateArr[0].subject}}</h6>
+          <h6>Content: {{templateArr[0].content}}</h6>
+        </ng-template>
+      </p-accordionTab>
+      <p-accordionTab class="cursor-pointer" [(selected)]="userSettingObj[2].status">
+        <ng-template pTemplate="header">
+          <div class="row w-100 align-items-center">
+            <div class="col-10">
+              Register email as username?
+            </div>
+            <div class="col-2">
+              <label class="switch ml-5">
+                <input [(ngModel)]="userSettingObj[2].status" id="emailAsUsername" type="checkbox" checked>
+                <span class="slider round"></span>
+              </label>
+            </div>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="content">
+        </ng-template>
       </p-accordionTab>
     </p-accordion>
   </div>

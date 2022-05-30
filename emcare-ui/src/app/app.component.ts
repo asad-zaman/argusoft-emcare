@@ -15,6 +15,7 @@ export class AppComponent implements OnInit {
 
   currentUrl: string = '';
   userName: any;
+  isSettingDropdownOpen: boolean = false;
   isUserDropdownOpen: boolean = false;
   isPatientDropdownOpen: boolean = false;
   isLocationDropdownOpen: boolean = false;
@@ -161,6 +162,9 @@ export class AppComponent implements OnInit {
         break;
       case 3:
         this.isPatientDropdownOpen = !this.isPatientDropdownOpen;
+        break;
+      case 4:
+        this.isSettingDropdownOpen = !this.isSettingDropdownOpen;
         break;
     }
   }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FhirService, ToasterService } from 'src/app/shared';
 
 @Component({
@@ -9,11 +9,9 @@ import { FhirService, ToasterService } from 'src/app/shared';
 export class AdminPanelComponent implements OnInit {
 
   userName;
-  userWelcome = false;
-  userConfirmation = false;
-  activeState: boolean[] = [false, false, false];
   settingArr: any = [];
   templateArr: any = [];
+  userSettingObj: any[] = [];
 
   constructor(
     private readonly toasterService: ToasterService,
@@ -34,17 +32,18 @@ export class AdminPanelComponent implements OnInit {
     this.fhirService.getAllEmailTemplates().subscribe(res => {
       this.templateArr.push(res[1]);
       this.templateArr.push(res[2]);
-      console.log(this.templateArr);
+      this.templateArr.push(res[3]);
     }, () => {
       this.toasterService.showError('Server issue!, EMCARE');
     });
   }
 
   getAllSettings() {
-    this.fhirService.getAllAdminSettings().subscribe(res => {
+    this.fhirService.getAllAdminSettings().subscribe((res: any) => {
       if (res) {
         this.mapSettings(res);
         this.settingArr = res;
+        console.log(res);
       }
     }, () => {
       this.toasterService.showError('Server issue!, EMCARE');
@@ -53,43 +52,43 @@ export class AdminPanelComponent implements OnInit {
 
   mapSettings(data) {
     data.forEach(el => {
-      if (el.settingType === 'Welcome Email') {
-        this.activeState[0] = el.settingStatus;
-      } else if (el.settingType === 'Send Confirmation Email') {
-        this.activeState[1] = el.settingStatus;
-      } else if (el.settingType === 'Registration Email As Username') {
-        this.activeState[2] = el.settingStatus;
-      }
+      this.userSettingObj.push({ settingType: el.settingType, status: el.settingStatus });
+      // if (el.settingType === 'Send Confirmation Email') {
+      //   this.userSettingObj[0] = { setting: el.settingType, status: el.settingStatus };
+      // } if (el.settingType === 'Welcome Email') {
+      //   this.userSettingObj[1] = { setting: el.settingType, status: el.settingStatus };
+      // } if (el.settingType === 'Registration Email As Username') {
+      //   this.userSettingObj[2] = el.settingStatus;
+      // }
     });
+    console.log(this.userSettingObj);
   }
 
-  toggle(index: number) {
-    this.activeState[index] = !this.activeState[index];
-    // this.updateSetting(index);
-  }
-
-  checkToast(index) {
-    if (!this.activeState[index])
-      this.toasterService.showInfo('Enable Toggle first to view template!', 'EMCARE');
-    else {
-      this.activeState[index] = !this.activeState[index];
-      // this.updateSetting(index);
+  updateSetting(event) {
+    // console.log(this.userSettingObj);
+    let settingType;
+    if (event.index === 0) {
+      settingType = 'Send Confirmation Email';
+    } else if(event.index === 1) {
+      settingType = 'Welcome Email';
+    } else if(event.index === 2){
+      settingType = 'Registration Email As Username';
     }
-  }
-
-  updateSetting(index) {
-    let data = this.settingArr[index]
-    data['settingStatus'] = this.activeState[index];
-    this.fhirService.updateSetting(data).subscribe(() => {
-      this.toasterService.showSuccess('Setting updated!', 'EMCARE');
-    }, () => {
-      this.toasterService.showError('Server issue!', 'EMCARE');
-    })
+    let i = this.userSettingObj.findIndex(e => e.settingType === settingType);
+    this.userSettingObj[i].status = !this.userSettingObj[i].status;
+    let data = this.settingArr.find(e => e.settingType == this.userSettingObj[i].settingType);
+    data['settingStatus'] = this.userSettingObj[i].status;
+    // console.log(data);
+    // this.fhirService.updateSetting(data).subscribe(() => {
+    //   this.toasterService.showSuccess('Setting updated!', 'EMCARE');
+    // }, () => {
+    //   this.toasterService.showError('Server issue!', 'EMCARE');
+    // });
+    // console.log(this.userSettingObj);
   }
 
   getTemplateData(id) {
     const obj = this.templateArr.find(e => e.id === id);
-    console.log(obj);
     return obj;
   }
 }
