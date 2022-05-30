@@ -35,15 +35,15 @@ public class AdminSettingServiceImpl implements AdminSettingService {
 
     @Override
     public List<Settings> getAdminSetting() {
-        return adminSettingRepository.findAll();
+        return adminSettingRepository.findAllWithOrderById();
     }
 
     @Override
     public Settings updateAdminSettings(Settings settings) {
         try {
-            switch (settings.getSettingType()) {
+            switch (settings.getKey()) {
                 case CommonConstant.SETTING_TYPE_REGISTRATION_EMAIL_AS_USERNAME:
-                    updateRegistrationEmailAsUsername(settings.getSettingStatus());
+                    updateRegistrationEmailAsUsername(settings.getValue());
                     adminSettingRepository.save(settings);
                     break;
                 case CommonConstant.SETTING_TYPE_WELCOME_EMAIL:
@@ -66,15 +66,19 @@ public class AdminSettingServiceImpl implements AdminSettingService {
 
     @Override
     public Settings getAdminSettingByName(String settingName) {
-        return adminSettingRepository.findBySettingType(settingName);
+        return adminSettingRepository.findByKey(settingName);
     }
 
-    private void updateRegistrationEmailAsUsername(Boolean status) {
+    private void updateRegistrationEmailAsUsername(String status) {
         try {
             Keycloak keycloak = userService.getKeyCloakInstance();
             RealmResource realmResource = keycloak.realm(KeyCloakConfig.REALM);
             RealmRepresentation realmRepresentation = new RealmRepresentation();
-            realmRepresentation.setRegistrationEmailAsUsername(status);
+            if (CommonConstant.ACTIVE.equals(status)) {
+                realmRepresentation.setRegistrationEmailAsUsername(true);
+            } else {
+                realmRepresentation.setRegistrationEmailAsUsername(false);
+            }
             realmResource.update(realmRepresentation);
         } catch (Exception ex) {
             throw new RuntimeException();

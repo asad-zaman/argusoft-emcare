@@ -20,6 +20,8 @@ public class CommonConstant {
     public static final String ORGANIZATION_TYPE_STRING = "ORGANIZATION";
     public static final String PLANDEFINITION_TYPE_STRING = "PLANDEFINITION";
     public static final String EM_CARE_SYSTEM = "EM CARE SYSTEM";
+    public static final String ACTIVE = "Active";
+    public static final String INACTIVE = "Inactive";
 
     //    FHIR
     public static final String FHIR_PATIENT = "PATIENT";
@@ -35,9 +37,9 @@ public class CommonConstant {
     public static final String MAIL_FOR_CONFIRMATION_EMAIL_REJECTED = "CONFIRMATION_EMAIL_REJECTED";
 
 
-    public static final String SETTING_TYPE_REGISTRATION_EMAIL_AS_USERNAME = "Registration Email As Username";
-    public static final String SETTING_TYPE_WELCOME_EMAIL = "Welcome Email";
-    public static final String SETTING_TYPE_SEND_CONFIRMATION_EMAIL = "Send Confirmation Email";
+    public static final String SETTING_TYPE_REGISTRATION_EMAIL_AS_USERNAME = "REGISTRATION_EMAIL_AS_USERNAME";
+    public static final String SETTING_TYPE_WELCOME_EMAIL = "WELCOME_EMAIL";
+    public static final String SETTING_TYPE_SEND_CONFIRMATION_EMAIL = "SEND_CONFIRMATION_EMAIL";
 
 
 }
