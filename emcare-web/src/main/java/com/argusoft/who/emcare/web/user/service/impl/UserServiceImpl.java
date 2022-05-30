@@ -270,8 +270,8 @@ public class UserServiceImpl implements UserService {
 
 //        Create User Representation
         UserRepresentation kcUser = new UserRepresentation();
-        Settings usernameSetting = adminSettingRepository.findBySettingType(CommonConstant.SETTING_TYPE_REGISTRATION_EMAIL_AS_USERNAME);
-        if (usernameSetting.getSettingStatus()) {
+        Settings usernameSetting = adminSettingRepository.findByKey(CommonConstant.SETTING_TYPE_REGISTRATION_EMAIL_AS_USERNAME);
+        if (usernameSetting.getValue().equals(CommonConstant.ACTIVE)) {
             kcUser.setUsername(user.getEmail());
         } else {
             kcUser.setUsername(user.getUserName());
@@ -303,7 +303,7 @@ public class UserServiceImpl implements UserService {
 
         CompletableFuture.runAsync(() -> {
             Settings settings = adminSettingService.getAdminSettingByName(CommonConstant.SETTING_TYPE_WELCOME_EMAIL);
-            if (settings.getSettingStatus()) {
+            if (settings.getValue().equals(CommonConstant.ACTIVE)) {
                 MailDto mailDto = mailDataSetterService.mailSubjectSetter(CommonConstant.MAIL_FOR_ADD_USER);
                 String mailBody = mailDto.getBody() + " " + user.getEmail();
                 mailService.sendBasicMail(user.getEmail(), mailDto.getSubject(), mailBody);
@@ -324,8 +324,8 @@ public class UserServiceImpl implements UserService {
         CredentialRepresentation credentialRepresentation = createPasswordCredentials(user.getPassword());
 //        Create User Representation
         UserRepresentation kcUser = new UserRepresentation();
-        Settings usernameSetting = adminSettingRepository.findBySettingType(CommonConstant.SETTING_TYPE_REGISTRATION_EMAIL_AS_USERNAME);
-        if (usernameSetting.getSettingStatus()) {
+        Settings usernameSetting = adminSettingRepository.findByKey(CommonConstant.SETTING_TYPE_REGISTRATION_EMAIL_AS_USERNAME);
+        if (usernameSetting.getValue().equals(CommonConstant.ACTIVE)) {
             kcUser.setUsername(user.getEmail());
         } else {
             kcUser.setUsername(user.getUserName());
@@ -358,7 +358,7 @@ public class UserServiceImpl implements UserService {
 
         CompletableFuture.runAsync(() -> {
             Settings settings = adminSettingService.getAdminSettingByName(CommonConstant.SETTING_TYPE_WELCOME_EMAIL);
-            if (settings.getSettingStatus()) {
+            if (settings.getValue().equals(CommonConstant.ACTIVE)) {
                 MailDto mailDto = mailDataSetterService.mailSubjectSetter(CommonConstant.MAIL_FOR_ADD_USER);
                 String mailBody = mailDto.getBody() + " " + user.getEmail();
                 mailService.sendBasicMail(user.getEmail(), mailDto.getSubject(), mailBody);
@@ -422,7 +422,7 @@ public class UserServiceImpl implements UserService {
         if (userUpdateDto.getIsEnabled()) {
             CompletableFuture.runAsync(() -> {
                 Settings settings = adminSettingService.getAdminSettingByName(CommonConstant.SETTING_TYPE_SEND_CONFIRMATION_EMAIL);
-                if (settings.getSettingStatus()) {
+                if (settings.getValue().equals(CommonConstant.ACTIVE)) {
                     MailDto mailDto = mailDataSetterService.mailSubjectSetter(CommonConstant.MAIL_FOR_CONFIRMATION_EMAIL_APPROVED);
                     String mailBody = mailDto.getBody();
                     mailService.sendBasicMail(user.getEmail(), mailDto.getSubject(), mailBody);
@@ -431,7 +431,7 @@ public class UserServiceImpl implements UserService {
         } else {
             CompletableFuture.runAsync(() -> {
                 Settings settings = adminSettingService.getAdminSettingByName(CommonConstant.SETTING_TYPE_SEND_CONFIRMATION_EMAIL);
-                if (settings.getSettingStatus()) {
+                if (settings.getValue().equals(CommonConstant.ACTIVE)) {
                     MailDto mailDto = mailDataSetterService.mailSubjectSetter(CommonConstant.MAIL_FOR_CONFIRMATION_EMAIL_REJECTED);
                     String mailBody = mailDto.getBody();
                     mailService.sendBasicMail(user.getEmail(), mailDto.getSubject(), mailBody);

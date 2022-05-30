@@ -12,11 +12,14 @@ public class Settings implements Serializable {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "setting_type", nullable = false)
-    private String settingType;
+    @Column(name = "name", nullable = false)
+    private String name;
 
-    @Column(name = "setting_status", nullable = false)
-    private Boolean settingStatus;
+    @Column(name = "key", nullable = false)
+    private String key;
+
+    @Column(name = "value", nullable = false)
+    private String value;
 
     public Long getId() {
         return id;
@@ -26,19 +29,27 @@ public class Settings implements Serializable {
         this.id = id;
     }
 
-    public String getSettingType() {
-        return settingType;
+    public String getName() {
+        return name;
     }
 
-    public void setSettingType(String settingType) {
-        this.settingType = settingType;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public Boolean getSettingStatus() {
-        return settingStatus;
+    public String getKey() {
+        return key;
     }
 
-    public void setSettingStatus(Boolean settingStatus) {
-        this.settingStatus = settingStatus;
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
     }
 }
