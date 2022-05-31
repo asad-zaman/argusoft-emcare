@@ -25,7 +25,7 @@
   <div class="sidenav cst-overflow" *ngIf="featureList.length !== 0">
     <ul class="nav-link">
       <li>
-        <a class="mouse-pointer" [ngClass]="{'active': this.currentUrl === '/admin-settings'}"
+        <a class="mouse-pointer" [ngClass]="{'active': this.currentUrl === '/user-admin-settings'}"
           (click)="hideCurrentDropdown(4)">
           <i class="bi bi-people nav-link_icon" aria-hidden="true"></i>Settings
           <ng-container *ngIf="isSettingDropdownOpen; else upIcon">
@@ -37,8 +37,8 @@
         </a>
         <div *ngIf="isSettingDropdownOpen" class="dropdown_list_wrapper">
           <ul class="dropdown_list">
-            <li><a class="mouse-pointer" routerLink="/admin-settings"
-                [ngClass]="{'dropdown-link_active': this.currentUrl === '/admin-settings'}">{{'User Management' | translate}}</a>
+            <li><a class="mouse-pointer" routerLink="/user-admin-settings"
+                [ngClass]="{'dropdown-link_active': this.currentUrl === '/user-admin-settings'}">{{'User Management' | translate}}</a>
             </li>
           </ul>
         </div>

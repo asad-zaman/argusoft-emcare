@@ -63,7 +63,7 @@ const routes: Routes = [
   { path: 'editFacility/:id', component: ManageFacilityComponent, canActivate: [AuthGuard] },
   { path: 'showFacility', component: ShowFacilityComponent, canActivate: [AuthGuard] },
   { path: 'language-list', component: LanguageListComponent, canActivate: [AuthGuard] },
-  { path: 'admin-settings', component: AdminPanelComponent },
+  { path: 'user-admin-settings', component: AdminPanelComponent },
   { path: '**', redirectTo: 'dashboard' }
 ];
 @NgModule({
