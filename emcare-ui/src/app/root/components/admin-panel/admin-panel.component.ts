@@ -43,7 +43,6 @@ export class AdminPanelComponent implements OnInit {
       if (res) {
         this.mapSettings(res);
         this.settingArr = res;
-        console.log(res);
       }
     }, () => {
       this.toasterService.showError('Server issue!, EMCARE');
@@ -52,39 +51,20 @@ export class AdminPanelComponent implements OnInit {
 
   mapSettings(data) {
     data.forEach(el => {
-      this.userSettingObj.push({ settingType: el.settingType, status: el.settingStatus });
-      // if (el.settingType === 'Send Confirmation Email') {
-      //   this.userSettingObj[0] = { setting: el.settingType, status: el.settingStatus };
-      // } if (el.settingType === 'Welcome Email') {
-      //   this.userSettingObj[1] = { setting: el.settingType, status: el.settingStatus };
-      // } if (el.settingType === 'Registration Email As Username') {
-      //   this.userSettingObj[2] = el.settingStatus;
-      // }
+      this.userSettingObj.push({ key: el.key, value: el.value === 'Active' ? true : false });
     });
-    console.log(this.userSettingObj);
   }
 
   updateSetting(event) {
-    // console.log(this.userSettingObj);
-    let settingType;
-    if (event.index === 0) {
-      settingType = 'Send Confirmation Email';
-    } else if(event.index === 1) {
-      settingType = 'Welcome Email';
-    } else if(event.index === 2){
-      settingType = 'Registration Email As Username';
-    }
-    let i = this.userSettingObj.findIndex(e => e.settingType === settingType);
-    this.userSettingObj[i].status = !this.userSettingObj[i].status;
-    let data = this.settingArr.find(e => e.settingType == this.userSettingObj[i].settingType);
-    data['settingStatus'] = this.userSettingObj[i].status;
-    // console.log(data);
-    // this.fhirService.updateSetting(data).subscribe(() => {
-    //   this.toasterService.showSuccess('Setting updated!', 'EMCARE');
-    // }, () => {
-    //   this.toasterService.showError('Server issue!', 'EMCARE');
-    // });
-    // console.log(this.userSettingObj);
+    this.userSettingObj[event.index].value = !this.userSettingObj[event.index].value;
+    let data = this.settingArr.find(e => e.key == this.userSettingObj[event.index].key);
+    data['value'] = this.userSettingObj[event.index].value === true ? 'Active' : 'Inactive';
+    console.log(this.userSettingObj[event.index], data);
+    this.fhirService.updateSetting(data).subscribe(() => {
+      this.toasterService.showSuccess('Setting updated!', 'EMCARE');
+    }, () => {
+      this.toasterService.showError('Server issue!', 'EMCARE');
+    });
   }
 
   getTemplateData(id) {

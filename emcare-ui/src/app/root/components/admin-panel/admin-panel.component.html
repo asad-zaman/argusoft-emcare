@@ -5,7 +5,44 @@
     <h5 class="my-4">Manage Settings!</h5>
     <p-accordion *ngIf="userSettingObj.length>0 && templateArr.length>0" [multiple]="true"
       (onOpen)="updateSetting($event)" (onClose)="updateSetting($event)">
-      <p-accordionTab class="cursor-pointer" [(selected)]="userSettingObj[0].status">
+      <p-accordionTab class="cursor-pointer" [(selected)]="userSettingObj[0].value">
+        <ng-template pTemplate="header">
+          <div class="row w-100 align-items-center">
+            <div class="col-10">
+              Register email as username?
+            </div>
+            <div class="col-2">
+              <label class="switch ml-5">
+                <input [(ngModel)]="userSettingObj[0].value" id="emailAsUsername" type="checkbox" checked>
+                <span class="slider round"></span>
+              </label>
+            </div>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="content">
+        </ng-template>
+      </p-accordionTab>
+      <p-accordionTab class="cursor-pointer" [(selected)]="userSettingObj[1].value">
+        <ng-template pTemplate="header">
+          <div class="row w-100 align-items-center">
+            <div class="col-10">
+              Send Welcome email for user registration?
+            </div>
+            <div class="col-2">
+              <label class="switch ml-5">
+                <input [(ngModel)]="userSettingObj[1].value" id="welcomeEmail" type="checkbox" checked>
+                <span class="slider round"></span>
+              </label>
+            </div>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="content">
+          <h5>{{templateArr[0].code}}</h5>
+          <h6>Subject: {{templateArr[0].subject}}</h6>
+          <h6>Content: {{templateArr[0].content}}</h6>
+        </ng-template>
+      </p-accordionTab>
+      <p-accordionTab class="cursor-pointer" [(selected)]="userSettingObj[2].value">
         <ng-template pTemplate="header">
           <div class="row w-100 align-items-center">
             <div class="col-10">
@@ -13,7 +50,7 @@
             </div>
             <div class="col-2">
               <label class="switch ml-5">
-                <input [(ngModel)]="userSettingObj[0].status" id="confirmationEmail" type="checkbox" checked>
+                <input [(ngModel)]="userSettingObj[2].value" id="confirmationEmail" type="checkbox" checked>
                 <span class="slider round"></span>
               </label>
             </div>
@@ -27,43 +64,6 @@
           <h5>{{templateArr[2].code}}</h5>
           <h6>Subject: {{templateArr[2].subject}}</h6>
           <h6>Content: {{templateArr[2].content}} </h6>
-        </ng-template>
-      </p-accordionTab>
-      <p-accordionTab class="cursor-pointer" [(selected)]="userSettingObj[1].status">
-        <ng-template pTemplate="header">
-          <div class="row w-100 align-items-center">
-            <div class="col-10">
-              Send Welcome email for user registration?
-            </div>
-            <div class="col-2">
-              <label class="switch ml-5">
-                <input [(ngModel)]="userSettingObj[1].status" id="welcomeEmail" type="checkbox" checked>
-                <span class="slider round"></span>
-              </label>
-            </div>
-          </div>
-        </ng-template>
-        <ng-template pTemplate="content">
-          <h5>{{templateArr[0].code}}</h5>
-          <h6>Subject: {{templateArr[0].subject}}</h6>
-          <h6>Content: {{templateArr[0].content}}</h6>
-        </ng-template>
-      </p-accordionTab>
-      <p-accordionTab class="cursor-pointer" [(selected)]="userSettingObj[2].status">
-        <ng-template pTemplate="header">
-          <div class="row w-100 align-items-center">
-            <div class="col-10">
-              Register email as username?
-            </div>
-            <div class="col-2">
-              <label class="switch ml-5">
-                <input [(ngModel)]="userSettingObj[2].status" id="emailAsUsername" type="checkbox" checked>
-                <span class="slider round"></span>
-              </label>
-            </div>
-          </div>
-        </ng-template>
-        <ng-template pTemplate="content">
         </ng-template>
       </p-accordionTab>
     </p-accordion>
