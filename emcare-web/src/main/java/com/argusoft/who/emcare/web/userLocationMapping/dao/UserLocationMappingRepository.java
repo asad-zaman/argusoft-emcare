@@ -1,5 +1,6 @@
 package com.argusoft.who.emcare.web.userLocationMapping.dao;
 
+import com.argusoft.who.emcare.web.dashboard.dto.DashboardDto;
 import com.argusoft.who.emcare.web.userLocationMapping.model.UserLocationMapping;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -35,5 +36,22 @@ public interface UserLocationMappingRepository extends JpaRepository<UserLocatio
     List<UserLocationMapping> findByIsFirst(boolean isFirst);
 
     UserLocationMapping findByUserIdAndLocationId(String userId, Integer locationId);
+
+    @Query(value = "WITH TOTAL_USER AS\n" +
+            "\t(SELECT COUNT(DISTINCT USER_ID) AS \"totalUser\"\n" +
+            "\t\tFROM USER_LOCATION_MAPPING),\n" +
+            "\tPENDING_REQUEST AS\n" +
+            "\t(SELECT COUNT(DISTINCT USER_ID) AS \"pendingRequest\"\n" +
+            "\t\tFROM USER_LOCATION_MAPPING\n" +
+            "\t\tWHERE IS_FIRST = TRUE),\n" +
+            "\tLAST_SEVEN_DAY_REQUEST AS\n" +
+            "\t(SELECT COUNT (DISTINCT USER_ID) AS \"lastSevenDayRequest\"\n" +
+            "\t\tFROM USER_LOCATION_MAPPING\n" +
+            "\t\tWHERE CREATE_DATE > NOW() - INTERVAL '7 DAY')\n" +
+            "SELECT *\n" +
+            "FROM TOTAL_USER,\n" +
+            "\tPENDING_REQUEST,\n" +
+            "\tLAST_SEVEN_DAY_REQUEST;", nativeQuery = true)
+    DashboardDto getDashboardData();
 
 }

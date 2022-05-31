@@ -1,7 +1,10 @@
 package com.argusoft.who.emcare.web.userLocationMapping.model;
 
+import org.hibernate.annotations.CreationTimestamp;
+
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Date;
 
 @Entity
 @Table(name = "user_location_mapping")
@@ -24,10 +27,15 @@ public class UserLocationMapping implements Serializable {
     @Basic(optional = false)
     @Column(name = "state", nullable = false)
     private boolean state;
-    
+
     @Basic(optional = false)
     @Column(name = "is_first", nullable = false)
     private boolean isFirst;
+
+    @CreationTimestamp
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "create_date")
+    private Date createDate;
 
     public Integer getId() {
         return id;
@@ -76,5 +84,12 @@ public class UserLocationMapping implements Serializable {
     public void setIsFirst(boolean isFirst) {
         this.isFirst = isFirst;
     }
-    
+
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
+    }
 }
