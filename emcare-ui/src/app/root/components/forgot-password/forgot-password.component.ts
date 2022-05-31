@@ -92,7 +92,6 @@ export class ForgotPasswordComponent implements OnInit {
     this.authService.verifyOTP(body)
       .subscribe(data => {
         if (data) {
-          console.log(data);
           this.isEmailInputsVisible = false;
           this.isOTPInputsVisible = false;
           this.isNewPasswordInputsVisible = true;

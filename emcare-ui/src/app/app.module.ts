@@ -50,6 +50,9 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { TooltipModule } from 'primeng/tooltip';
 import { ForgotPasswordComponent } from './root/components/forgot-password/forgot-password.component';
+import { AdminPanelComponent } from './root/components/admin-panel/admin-panel.component';
+import { AccordionModule } from 'primeng/accordion';
+import { ButtonModule } from 'primeng/button';
 
 @NgModule({
   declarations: [
@@ -82,7 +85,8 @@ import { ForgotPasswordComponent } from './root/components/forgot-password/forgo
     ShowFacilityComponent,
     LocationDropdownComponent,
     LanguageListComponent,
-    ForgotPasswordComponent
+    ForgotPasswordComponent,
+    AdminPanelComponent
   ],
   imports: [
     BrowserModule,
@@ -99,7 +103,9 @@ import { ForgotPasswordComponent } from './root/components/forgot-password/forgo
     DropdownModule,
     CheckboxModule,
     MultiSelectModule,
-    TooltipModule
+    TooltipModule,
+    AccordionModule,
+    ButtonModule
   ],
   providers: [
     AuthenticationService,

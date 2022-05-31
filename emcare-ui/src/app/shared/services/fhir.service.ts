@@ -154,4 +154,19 @@ export class FhirService {
         }
         return this.http.get(url, this.getHeaders());
     }
+
+    getAllAdminSettings() {
+        const url = `${environment.apiUrl}/api/admin/setting`;
+        return this.http.get(url, this.getHeaders());
+    }
+
+    updateSetting(body) {
+        const url = `${environment.apiUrl}/api/admin/update`;
+        return this.http.put(url, body, this.getHeaders());
+    }
+
+    getAllEmailTemplates() {
+        const url = `${environment.apiUrl}/api/admin/mail/template`;
+        return this.http.get(url, this.getHeaders());
+    }
 }

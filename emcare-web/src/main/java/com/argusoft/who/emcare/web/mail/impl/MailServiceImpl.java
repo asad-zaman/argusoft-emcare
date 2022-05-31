@@ -2,6 +2,7 @@ package com.argusoft.who.emcare.web.mail.impl;
 
 import com.argusoft.who.emcare.web.mail.MailService;
 import com.argusoft.who.emcare.web.mail.dao.MailRepository;
+import com.argusoft.who.emcare.web.mail.entity.EmailContent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;

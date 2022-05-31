@@ -175,5 +175,8 @@
   "Languages": "Languages",
   "Date Created": "Date Created",
   "Action": "Action",
-  "Manage Language": "Manage Language"
+  "Manage Language": "Manage Language",
+  "Username": "Username",
+  "Username Placeholder": "Enter Username",
+  "Username Required Message": "Username is required"
 }

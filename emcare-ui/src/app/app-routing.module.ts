@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { AuthGuard } from './auth/auth.guard';
+import { AdminPanelComponent } from './root/components/admin-panel/admin-panel.component';
 import { HomeComponent } from './root/components/home/home.component';
 import {
   LoginComponent,
@@ -62,6 +63,7 @@ const routes: Routes = [
   { path: 'editFacility/:id', component: ManageFacilityComponent, canActivate: [AuthGuard] },
   { path: 'showFacility', component: ShowFacilityComponent, canActivate: [AuthGuard] },
   { path: 'language-list', component: LanguageListComponent, canActivate: [AuthGuard] },
+  { path: 'admin-settings', component: AdminPanelComponent },
   { path: '**', redirectTo: 'dashboard' }
 ];
 @NgModule({

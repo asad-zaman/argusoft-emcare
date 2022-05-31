@@ -11,6 +11,7 @@ public class UserDto {
     private String lastName;
     private String password;
     private String email;
+    private String userName;
     private String regRequestFrom;
     private Integer locationId;
     private String roleName;
@@ -88,5 +89,13 @@ public class UserDto {
 
     public void setLocationIds(List<Integer> locationIds) {
         this.locationIds = locationIds;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 }

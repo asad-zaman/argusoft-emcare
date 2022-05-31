@@ -33,3 +33,4 @@ export { ShowFacilityComponent } from './components/Facility/show-facility/show-
 export { LocationDropdownComponent } from './components/Location/location-filter/location-dropdown/location-dropdown.component';
 export { LanguageListComponent } from './components/language-list/language-list.component';
 export { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
+export { AdminPanelComponent } from './components/admin-panel/admin-panel.component';

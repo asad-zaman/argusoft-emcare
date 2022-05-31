@@ -15,6 +15,7 @@ export class AppComponent implements OnInit {
 
   currentUrl: string = '';
   userName: any;
+  isSettingDropdownOpen: boolean = false;
   isUserDropdownOpen: boolean = false;
   isPatientDropdownOpen: boolean = false;
   isLocationDropdownOpen: boolean = false;
@@ -120,8 +121,7 @@ export class AppComponent implements OnInit {
   }
 
   getUserCharLogo(username) {
-    const userNameArr = username.split(' ');
-    return `${userNameArr[0].toString().charAt(0).toUpperCase()}${userNameArr[1].toString().charAt(0).toUpperCase()}`;
+    return username.substring(0, 1).toUpperCase();
   }
 
   getFeatureList() {
@@ -162,6 +162,9 @@ export class AppComponent implements OnInit {
         break;
       case 3:
         this.isPatientDropdownOpen = !this.isPatientDropdownOpen;
+        break;
+      case 4:
+        this.isSettingDropdownOpen = !this.isSettingDropdownOpen;
         break;
     }
   }
