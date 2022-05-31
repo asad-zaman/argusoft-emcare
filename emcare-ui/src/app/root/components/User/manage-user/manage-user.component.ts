@@ -260,13 +260,4 @@ export class ManageUserComponent implements OnInit {
   removeLocation(selectedLoc) {
     this.selectedAreasArr = this.selectedAreasArr.filter(loc => loc !== selectedLoc);
   }
-
-  // getAllAdminSettings() {
-  //   this.fhirService.getAllAdminSettings().subscribe((data: any) => {
-  //     if (data) {
-  //       const el = data.find(e => e.settingType === 'Registration Email As Username');
-  //       this.isUsernameAllowed = el.settingStatus;
-  //     }
-  //   });
-  // }
 }
