@@ -11,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author jay
@@ -24,7 +25,7 @@ public interface DeviceRepository extends JpaRepository<DeviceMaster, Integer> {
     public DeviceMaster getDeviceByMacAddress(@Param("macAddress") String macAddress);
 
     @Query(value = "select * from device_master where device_uuid = :deviceUUID", nativeQuery = true)
-    public DeviceMaster getDeviceByDeviceUUID(@Param("deviceUUID") String deviceUUID);
+    public Optional<DeviceMaster> getDeviceByDeviceUUID(@Param("deviceUUID") String deviceUUID);
 
     @Query(value = "select * from device_master where user_id = :userId", nativeQuery = true)
     public DeviceMaster getDeviceByuserId(@Param("userId") String userId);

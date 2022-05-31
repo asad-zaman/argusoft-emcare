@@ -52,14 +52,14 @@ public class DeviceServiceImpl implements DeviceService {
     public ResponseEntity<Object> addNewDevice(DeviceDto deviceDto) {
         String userId = emCareSecurityUser.getLoggedInUserId();
         String userName = emCareSecurityUser.getLoggedInUserName();
-        DeviceMaster oldDevice = deviceRepository.getDeviceByDeviceUUID(deviceDto.getDeviceUUID());
-        if (oldDevice == null) {
+        Optional<DeviceMaster> oldDevice = deviceRepository.getDeviceByDeviceUUID(deviceDto.getDeviceUUID());
+        if (oldDevice.isEmpty()) {
             DeviceMaster newDevice = DeviceMapper.getDeviceMatserFromDto(deviceDto, userId, userName);
             newDevice = deviceRepository.save(newDevice);
             return ResponseEntity.status(HttpStatus.OK).body(newDevice);
 
         } else {
-            DeviceMaster updatedDevice = DeviceMapper.getDeviceMaster(oldDevice, deviceDto, userName);
+            DeviceMaster updatedDevice = DeviceMapper.getDeviceMaster(oldDevice.get(), deviceDto, userName);
             deviceRepository.updateDevice(updatedDevice.getAndroidVersion(), updatedDevice.getLastLoggedInUser(), updatedDevice.getIsBlocked(), updatedDevice.getDeviceId());
             return ResponseEntity.status(HttpStatus.OK).body(deviceDto);
         }
@@ -118,7 +118,7 @@ public class DeviceServiceImpl implements DeviceService {
             device = deviceRepository.getDeviceByMacAddress(macAddress);
         }
         if (deviceUUID != null) {
-            device = deviceRepository.getDeviceByDeviceUUID(deviceUUID);
+            device = deviceRepository.getDeviceByDeviceUUID(deviceUUID).get();
         }
 
 
