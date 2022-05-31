@@ -83,6 +83,12 @@ public class UserServiceImpl implements UserService {
     @Autowired
     AdminSettingRepository adminSettingRepository;
 
+    @Autowired
+    AdminSettingService adminSettingService;
+
+    @Autowired
+    MailDataSetterService mailDataSetterService;
+
     @Override
     public UserMasterDto getCurrentUser() {
         AccessToken user = emCareSecurityUser.getLoggedInUser();
