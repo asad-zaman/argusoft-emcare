@@ -135,7 +135,7 @@ public class LocationServiceImpl implements LocationService {
     @Override
     public ResponseEntity<Object> getLocationByLocationFilter(Integer pageNo, Integer locationId) {
         List<Integer> childIds = locationMasterDao.getAllChildLocationId(locationId);
-        Integer offset = (pageNo - 1) * CommonConstant.PAGE_SIZE;
+        Integer offset = (pageNo) * CommonConstant.PAGE_SIZE;
         Integer limit = CommonConstant.PAGE_SIZE;
         List<LocationMaster> locationMasters = locationMasterDao.getLocationByLocationIds(childIds, limit, offset);
         Long totalCount = locationMasterDao.getLocationByLocationIdsCount(childIds);

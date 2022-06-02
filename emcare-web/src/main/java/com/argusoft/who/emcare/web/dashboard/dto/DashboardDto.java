@@ -6,5 +6,5 @@ public interface DashboardDto {
 
     public Long getPendingRequest();
 
-    public Long getLastSevenDayRequest();
+    public Long getTotalPatient();
 }
