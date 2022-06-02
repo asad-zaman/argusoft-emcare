@@ -66,8 +66,14 @@ public class LocationController {
     public ResponseEntity<Object> getLocationPage(@RequestParam(value = "pageNo") Integer pageNo,
                                                   @RequestParam(value = "orderBy", defaultValue = "name") String orderBy,
                                                   @RequestParam(value = "order") String order,
-                                                  @Nullable @RequestParam(value = "search",required = false) String searchString) {
-        return locationConfigService.getLocationPage(pageNo, orderBy, order,searchString);
+                                                  @Nullable @RequestParam(value = "search", required = false) String searchString) {
+        return locationConfigService.getLocationPage(pageNo, orderBy, order, searchString);
+    }
+
+    @GetMapping("/page/location")
+    public ResponseEntity<Object> getLocationPageByLocationFilter(@RequestParam(value = "pageNo") Integer pageNo,
+                                                                  @RequestParam(value = "locationId") Integer locationId) {
+        return locationConfigService.getLocationByLocationFilter(pageNo, locationId);
     }
 
     @PutMapping("/update")
