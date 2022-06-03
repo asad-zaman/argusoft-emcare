@@ -287,3 +287,18 @@ input:checked + .slider:before {
 .p-accordion .p-accordion-header .p-accordion-header-link {
     padding: 10px 15px;
 }
+
+.p-card {
+    color: $color-gray-80;
+    border-top: 5px solid $color-red;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+}
+
+.p-card .p-card-content {
+    padding: 0;
+}
+
+.w-700 {
+    font-weight: 700;
+    font-size: 35px;
+}

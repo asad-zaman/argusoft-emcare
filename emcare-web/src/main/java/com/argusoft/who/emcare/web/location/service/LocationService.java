@@ -29,10 +29,12 @@ public interface LocationService {
 
     public ResponseEntity<Object> getLocationPage(Integer pageNo, String orderBy, String order, String searchString);
 
+    public ResponseEntity<Object> getLocationByLocationFilter(Integer pageNo, Integer locationId);
+
     public ResponseEntity<Object> updateLocation(LocationMasterDto locationMasterDto);
 
     public ResponseEntity<Object> deleteLocationById(Integer locationId);
-    
+
     public LocationMaster getLocationMasterById(Integer locationId);
 
     public List<LocationMaster> getLocationByType(String type);

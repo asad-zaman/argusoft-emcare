@@ -1,0 +1,57 @@
+<div class="main-wrapper">
+  <div class="d-flex">
+    <p-card [style]="{'width': '200px', 'height': '120px', 'margin-right': '2em'}">
+      <div class="">
+        <h3 class="w-700">{{dashboardData.totalPatient}}</h3>
+      </div>
+      <ng-template pTemplate="footer" styleClass="p-card-footer c-red">
+        <div class="">
+          <h6>Total Patients</h6>
+        </div>
+      </ng-template>
+    </p-card>
+    <p-card [style]="{'width': '200px', 'height': '120px', 'margin-right': '2em'}">
+      <div class="">
+        <h3 class="w-700">{{dashboardData.totalUser}}</h3>
+      </div>
+      <ng-template pTemplate="footer">
+        <div class="">
+          <h6>Total Users</h6>
+        </div>
+      </ng-template>
+    </p-card>
+    <p-card [style]="{'width': '200px', 'height': '120px', 'margin-right': '2em'}">
+      <div class="">
+        <h3 class="w-700">{{dashboardData.pendingRequest}}</h3>
+      </div>
+      <ng-template pTemplate="footer">
+        <div class="">
+          <h6>Pending User Requests</h6>
+        </div>
+      </ng-template>
+    </p-card>
+  </div>
+  <div class="container mt-5">
+    <h3 class="mt-2">Analysis</h3>
+    <div class="row">
+      <div class="col-6">
+        <div id="barChart" style="min-width: 310px; max-width: 800px; height: 400px; margin: 0 auto"></div>
+        <h5 class="card-title text-center">Bar Chart - Patients</h5>
+      </div>
+      <div class="col-6">
+        <div id="pieChart" style="width:100%; height:400px;"></div>
+        <h5 class="card-title text-center">Pie Chart - Browser market</h5>
+      </div>
+    </div>
+  </div>
+  <div class="row mt-5">
+    <div class="col-md-12">
+      <h2 class="text-left">Map</h2>
+      <div class="card mt-3">
+        <div class="card-body">
+          <div #mapRef style="width:100%;height:300px"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

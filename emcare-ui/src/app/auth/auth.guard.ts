@@ -60,7 +60,7 @@ export class AuthGuard implements CanActivate {
             } else {
                 this.authService.getLoggedInUser().subscribe(res => {
                     this.user = res;
-                    this.getResultAndRedirect(route);
+                    // this.getResultAndRedirect(route);
                     return true;
                 });
                 return true;

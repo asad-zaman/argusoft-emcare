@@ -194,4 +194,8 @@ export class AppComponent implements OnInit {
     const arr = ['/', '/login', '/signup', '/forgotPassword'];
     return arr.includes(this.currentUrl);
   }
+
+  navigateToDashboard() {
+    this.router.navigate(['/dashboard']);
+  }
 }

@@ -55,5 +55,11 @@ public interface LocationMasterDao extends JpaRepository<LocationMaster, Integer
             "         From alldata", nativeQuery = true)
     public String getNameHierarchy(@Param("id") Integer id);
 
+    @Query(value = "select * from location_master where id in :ids offset :offset limit :limit ;", nativeQuery = true)
+    public List<LocationMaster> getLocationByLocationIds(@Param("ids") List<Integer> ids, @Param("limit") Integer limit, @Param("offset") Integer offset);
+
+    @Query(value = "select count(*) from location_master where id in :ids ;", nativeQuery = true)
+    public Long getLocationByLocationIdsCount(@Param("ids") List<Integer> ids);
+
 
 }

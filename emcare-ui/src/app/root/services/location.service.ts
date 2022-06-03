@@ -91,4 +91,9 @@ export class LocationService {
   getParentLocationsById(id) {
     return this.http.get(`${this.locationURL}/parent/${id}`, this.getHeaders());
   }
+
+  getLocationBasedOnFilterAndPageIndex(locationId, pageIndex) {
+    const url = `${this.locationURL}/page/location?pageNo=${pageIndex}&locationId=${locationId}`;
+    return this.http.get(url, this.getHeaders());
+  }
 }
