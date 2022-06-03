@@ -53,6 +53,8 @@ import { ForgotPasswordComponent } from './root/components/forgot-password/forgo
 import { AdminPanelComponent } from './root/components/admin-panel/admin-panel.component';
 import { AccordionModule } from 'primeng/accordion';
 import { ButtonModule } from 'primeng/button';
+import { CardModule } from 'primeng/card';
+import { ChartModule } from 'angular-highcharts';
 
 @NgModule({
   declarations: [
@@ -105,7 +107,9 @@ import { ButtonModule } from 'primeng/button';
     MultiSelectModule,
     TooltipModule,
     AccordionModule,
-    ButtonModule
+    ButtonModule,
+    CardModule,
+    ChartModule
   ],
   providers: [
     AuthenticationService,

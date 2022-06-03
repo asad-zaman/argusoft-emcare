@@ -169,4 +169,9 @@ export class FhirService {
         const url = `${environment.apiUrl}/api/admin/mail/template`;
         return this.http.get(url, this.getHeaders());
     }
+
+    getDashboardData() {
+        const url = `${environment.apiUrl}/api/dashboard`;
+        return this.http.get(url, this.getHeaders());
+    }
 }

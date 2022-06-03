@@ -33,7 +33,9 @@
     "primeng": "^13.2.0",
     "rxjs": "~6.6.0",
     "tslib": "^2.0.0",
-    "zone.js": "~0.11.4"
+    "zone.js": "~0.11.4",
+    "angular-highcharts": "^8.0.3",
+    "highcharts": "^7.0.0"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~12.2.16",

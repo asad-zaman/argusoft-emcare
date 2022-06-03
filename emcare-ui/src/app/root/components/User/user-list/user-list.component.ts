@@ -122,8 +122,7 @@ export class UserListComponent implements OnInit {
     if (this.selectedId) {
       this.isLocationFilterOn = true;
       this.resetPageIndex();
-      const pageIndex = this.currentPage === 0 ? this.currentPage : this.currentPage - 1;
-      this.getUsersBasedOnLocationAndPageIndex(pageIndex);
+      this.getUsersBasedOnLocationAndPageIndex(this.currentPage);
     } else {
       this.toasterService.showInfo('Please select Location!', 'EMCARE')
     }

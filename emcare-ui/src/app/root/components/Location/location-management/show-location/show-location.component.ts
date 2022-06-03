@@ -23,6 +23,8 @@ export class ShowLocationComponent implements OnInit {
   isAdd: boolean = true;
   isEdit: boolean = true;
   isView: boolean = true;
+  selectedId: any;
+  isLocationFilterOn: boolean = false;
 
   constructor(
     private readonly router: Router,
@@ -68,7 +70,22 @@ export class ShowLocationComponent implements OnInit {
 
   onIndexChange(event) {
     this.currentPage = event;
-    this.getLocationsByPageIndex(event - 1);
+    if (this.isLocationFilterOn) {
+      this.getLocationsBasedOnFilteredLocationAndPageIndex(event - 1);
+    } else {
+      this.getLocationsByPageIndex(event - 1);
+    }
+  }
+
+  getLocationsBasedOnFilteredLocationAndPageIndex(pageIndex) {
+    this.locationService.getLocationBasedOnFilterAndPageIndex(this.selectedId, pageIndex).subscribe(res => {
+      if (res) {
+        this.filteredLocations = [];
+        this.filteredLocations = res['list'];
+        this.totalCount = res['totalCount'];
+        this.isAPIBusy = false;
+      }
+    });
   }
 
   resetCurrentPage() {
@@ -111,5 +128,20 @@ export class ShowLocationComponent implements OnInit {
       });
     }
     this.searchTermChanged.next(this.searchString);
+  }
+
+  resetPageIndex() {
+    this.currentPage = 0;
+  }
+
+  getLocationId(data) {
+    this.selectedId = data;
+    if (this.selectedId) {
+      this.isLocationFilterOn = true;
+      this.resetPageIndex();
+      this.getLocationsBasedOnFilteredLocationAndPageIndex(this.currentPage);
+    } else {
+      this.toasterService.showInfo('Please select Location!', 'EMCARE')
+    }
   }
 }
