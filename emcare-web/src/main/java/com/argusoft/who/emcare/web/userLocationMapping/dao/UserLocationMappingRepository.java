@@ -41,7 +41,7 @@ public interface UserLocationMappingRepository extends JpaRepository<UserLocatio
             " (SELECT COUNT(DISTINCT USER_ID) AS \"totalUser\"\n" +
             "  FROM USER_LOCATION_MAPPING),\n" +
             " PENDING_REQUEST AS\n" +
-            " (SELECT COUNT(DISTINCT USER_ID) AS \"pendingRequest\"\n" +
+            " (SELECT COUNT(*) AS \"pendingRequest\"\n" +
             "  FROM USER_LOCATION_MAPPING\n" +
             "  WHERE IS_FIRST = TRUE),\n" +
             " LAST_SEVEN_DAY_REQUEST AS\n" +

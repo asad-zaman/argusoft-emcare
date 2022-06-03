@@ -41,10 +41,10 @@
                 {{getLocationNames(user.locations)}}</td>
               <td><span [ngClass]="(!!user.enabled) ? 'badges-red bg-green' : 'badges-red'">
                   <ng-container *ngIf="!!user.enabled; else NotVerified">
-                    {{'Verifed' | translate}}
+                    Active
                   </ng-container>
                   <ng-template #NotVerified>
-                    {{'Not Verified' | translate}}
+                    In Active
                   </ng-template>
                 </span>
               <td *ngIf="isEdit">

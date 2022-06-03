@@ -1,6 +1,6 @@
 <div class="main-wrapper">
   <div class="d-flex">
-    <p-card [style]="{'width': '200px', 'height': '120px', 'margin-right': '2em'}">
+    <p-card [style]="{'width': '200px', 'height': '120px', 'margin-right': '2em','cursor': 'pointer'}" (click)="redirectToRoute('/showPatients')">
       <div class="">
         <h3 class="w-700">{{dashboardData.totalPatient}}</h3>
       </div>
@@ -10,7 +10,7 @@
         </div>
       </ng-template>
     </p-card>
-    <p-card [style]="{'width': '200px', 'height': '120px', 'margin-right': '2em'}">
+    <p-card [style]="{'width': '200px', 'height': '120px', 'margin-right': '2em','cursor': 'pointer'}" (click)="redirectToRoute('/showUsers')">
       <div class="">
         <h3 class="w-700">{{dashboardData.totalUser}}</h3>
       </div>
@@ -20,7 +20,7 @@
         </div>
       </ng-template>
     </p-card>
-    <p-card [style]="{'width': '200px', 'height': '120px', 'margin-right': '2em'}">
+    <p-card [style]="{'width': '200px', 'height': '120px', 'margin-right': '2em','cursor': 'pointer'}" (click)="redirectToRoute('/confirmUsers')">
       <div class="">
         <h3 class="w-700">{{dashboardData.pendingRequest}}</h3>
       </div>
