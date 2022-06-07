@@ -131,8 +131,12 @@
                 <ul>
                   <ng-container *ngFor="let location of selectedAreasArr">
                     <li>
-                      <span class="f-16">{{location.string}}</span>
-                      <i class="bi bi-x f-18 cursor-pointer" (click)="removeLocation(location)" aria-hidden="true"></i>
+                      <div class="chip">
+                        {{location.string}}
+                        <i class="bi bi-x f-18 cursor-pointer" (click)="removeLocation(location)" aria-hidden="true"></i>
+                      </div>
+                      <!-- <span class="f-16">{{location.string}}</span> -->
+                     
                     </li>
                   </ng-container>
                 </ul>
