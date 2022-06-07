@@ -12,17 +12,18 @@
       </ng-template>
     </div>
   </label>
-  <div id="sidebarMenu">
-    <div class="mb-5">
-      <h1 class="heading d-inline">{{'Location Filter' | translate}}</h1>
-      <i class="bi bi-x-lg close-filter mouse-pointer" (click)="this.sideMenu=false" aria-hidden="true"></i>
+  <div id="sidebarMenu" class="right-side-menu">
+    <div class="side-menu-header">
+      {{'Location Filter' | translate}}
+      <i class="bi bi-x-lg mouse-pointer" (click)="this.sideMenu=false" aria-hidden="true"></i>
       <hr>
     </div>
-    <app-location-dropdown (locationFormValueAndDropdownArr)="getFormValue($event)">
-    </app-location-dropdown>
-    <div class="text-end mt-5">
-      <hr>
-      <button (click)="saveData()" class="btn-red btn">
+    <div class="right-side-menu-inner">
+      <app-location-dropdown (locationFormValueAndDropdownArr)="getFormValue($event)">
+      </app-location-dropdown>
+    </div>
+    <div class="side-menu-footer">
+      <button (click)="saveData()" class="btn btn-blue">
         {{'Get Results' | translate}}
       </button>
     </div>

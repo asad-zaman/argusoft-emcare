@@ -1,34 +1,31 @@
 <div class="main-wrapper">
   <div class="d-flex">
-    <p-card [style]="{'width': '200px', 'height': '120px', 'margin-right': '2em','cursor': 'pointer'}" (click)="redirectToRoute('/showPatients')">
-      <div class="">
-        <h3 class="w-700">{{dashboardData.totalPatient}}</h3>
-      </div>
-      <ng-template pTemplate="footer" styleClass="p-card-footer c-red">
-        <div class="">
+    <p-card [style]="{'width': '200px', 'height': '80px', 'margin-right': '2em','cursor': 'pointer'}"
+      (click)="redirectToRoute('/showPatients')">
+      <div class="row">
+        <h3 class="col-4 w-700 ctype-1">{{dashboardData.totalPatient}}</h3>
+        <div class="col-8 c-style">
           <h6>Total Patients</h6>
         </div>
-      </ng-template>
-    </p-card>
-    <p-card [style]="{'width': '200px', 'height': '120px', 'margin-right': '2em','cursor': 'pointer'}" (click)="redirectToRoute('/showUsers')">
-      <div class="">
-        <h3 class="w-700">{{dashboardData.totalUser}}</h3>
       </div>
-      <ng-template pTemplate="footer">
-        <div class="">
+    </p-card>
+    <p-card [style]="{'width': '200px', 'height': '80px', 'margin-right': '2em','cursor': 'pointer'}"
+      (click)="redirectToRoute('/showUsers')">
+      <div class="row">
+        <h3 class="col-4 w-700 ctype-2">{{dashboardData.totalUser}}</h3>
+        <div class="col-8 c-style">
           <h6>Total Users</h6>
         </div>
-      </ng-template>
-    </p-card>
-    <p-card [style]="{'width': '200px', 'height': '120px', 'margin-right': '2em','cursor': 'pointer'}" (click)="redirectToRoute('/confirmUsers')">
-      <div class="">
-        <h3 class="w-700">{{dashboardData.pendingRequest}}</h3>
       </div>
-      <ng-template pTemplate="footer">
-        <div class="">
+    </p-card>
+    <p-card [style]="{'width': '200px', 'height': '80px', 'margin-right': '2em','cursor': 'pointer'}"
+      (click)="redirectToRoute('/confirmUsers')">
+      <div class="row">
+        <h3 class="col-4 w-700 ctype-3">{{dashboardData.pendingRequest}}</h3>
+        <div class="col-8 c-style">
           <h6>Pending User Requests</h6>
         </div>
-      </ng-template>
+      </div>
     </p-card>
   </div>
   <div class="container mt-5">
