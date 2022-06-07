@@ -206,8 +206,8 @@ $column-size: 10%;
 .switch {
   position: relative;
   display: inline-block;
-  width: 60px;
-  height: 34px;
+  width: 50px;
+  height:24px;
 }
 
 .switch input {
@@ -223,7 +223,7 @@ $column-size: 10%;
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: red;
+  background-color: #4d4d4d;
   -webkit-transition: 0.4s;
   transition: 0.4s;
 }
@@ -231,14 +231,26 @@ $column-size: 10%;
 .slider:before {
   position: absolute;
   content: "";
-  height: 26px;
-  width: 26px;
+  height:16px;
+  width: 16px;
   left: 4px;
   bottom: 4px;
   background-color: white;
   -webkit-transition: 0.4s;
   transition: 0.4s;
 }
+
+.p-accordion-header a{
+  text-decoration: none !important;
+}
+
+.p-accordion-header a:hover{
+  text-decoration: none !important;
+}
+.p-accordion-tab-active{
+  box-shadow: none;
+}
+.p-accordion .p-accordion-header:not(.p-disabled) .p-accordion-header-link:focus{box-shadow: none;}
 
 input:checked+.slider {
   background-color: green;
