@@ -16,6 +16,7 @@ export class ManageProfileComponent implements OnInit {
   currentUserForm: FormGroup;
   submitted: boolean;
   locationId;
+  locationIds;
   lanArr = [];
 
   constructor(
@@ -68,6 +69,8 @@ export class ManageProfileComponent implements OnInit {
           language: this.getLaunguageObjFromCode(res['language'])
         });
         this.locationId = res['location']['id'];
+        const zeroSymbol = 0;
+        this.locationIds = res['location'].filter(l => l.id != zeroSymbol).map(({id}) => id);
         this.getLoggedInUserData();
       }
     });
@@ -95,7 +98,8 @@ export class ManageProfileComponent implements OnInit {
         firstName: this.f.firstName.value,
         lastName: this.f.lastName.value,
         language: this.f.language.value.id,
-        locationId: this.locationId
+        locationId: this.locationId,
+        locationIds: this.locationIds
       }
       const translations = this.lanArr.find(el => el.id === this.f.language.value.id).translations;
       this.userService.updateUser(data, this.userId).subscribe(() => {
