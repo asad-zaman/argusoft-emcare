@@ -115,8 +115,9 @@
             aria-hidden="true"></i>{{'Manage Features' | translate}}</a>
       </li>
       <li *ngIf="hasAccess('Language Management')"><a class="mouse-pointer"
-          [ngClass]="{'active': this.currentUrl === '/manage-language'}" routerLink="/language-list"><i
-            class="bi bi-calendar2-range nav-link_icon" aria-hidden="true"></i>{{'Manage Translations' | translate}}</a>
+          [ngClass]="{'active': this.currentUrl === '/language-list' || this.currentUrl === '/manage-language'}"
+          routerLink="/language-list"><i class="bi bi-calendar2-range nav-link_icon"
+            aria-hidden="true"></i>{{'Manage Translations' | translate}}</a>
       </li>
       <li *ngIf="hasAccess('Manage Facility')"><a class="mouse-pointer"
           [ngClass]="{'active': this.currentUrl === '/manage-facility' || this.currentUrl === '/showFacility' || this.currentUrl.includes('/editFacility')}"
