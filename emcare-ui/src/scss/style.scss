@@ -207,7 +207,7 @@ $column-size: 10%;
   position: relative;
   display: inline-block;
   width: 50px;
-  height:24px;
+  height: 24px;
 }
 
 .switch input {
@@ -231,7 +231,7 @@ $column-size: 10%;
 .slider:before {
   position: absolute;
   content: "";
-  height:16px;
+  height: 16px;
   width: 16px;
   left: 4px;
   bottom: 4px;
@@ -240,17 +240,21 @@ $column-size: 10%;
   transition: 0.4s;
 }
 
-.p-accordion-header a{
+.p-accordion-header a {
   text-decoration: none !important;
 }
 
-.p-accordion-header a:hover{
+.p-accordion-header a:hover {
   text-decoration: none !important;
 }
-.p-accordion-tab-active{
+
+.p-accordion-tab-active {
   box-shadow: none;
 }
-.p-accordion .p-accordion-header:not(.p-disabled) .p-accordion-header-link:focus{box-shadow: none;}
+
+.p-accordion .p-accordion-header:not(.p-disabled) .p-accordion-header-link:focus {
+  box-shadow: none;
+}
 
 input:checked+.slider {
   background-color: green;
@@ -328,4 +332,13 @@ input:checked+.slider:before {
   font-size: 22px;
   text-align: center;
   align-self: center;
+}
+
+.p-toast {
+  margin-top: 40px;
+}
+
+.p-toast-message-content {
+  background-color: white;
+  opacity: 1;
 }

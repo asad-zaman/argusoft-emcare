@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FhirService, ToasterService } from 'src/app/shared';
 
 @Component({
@@ -34,7 +34,7 @@ export class AdminPanelComponent implements OnInit {
       this.templateArr.push(res[2]);
       this.templateArr.push(res[3]);
     }, () => {
-      this.toasterService.showError('Server issue!, EMCARE');
+      this.toasterService.showToast('error', 'Server issue!', 'EMCARE');
     });
   }
 
@@ -45,7 +45,7 @@ export class AdminPanelComponent implements OnInit {
         this.settingArr = res;
       }
     }, () => {
-      this.toasterService.showError('Server issue!, EMCARE');
+      this.toasterService.showToast('error', 'Server issue!', 'EMCARE');
     });
   }
 
@@ -61,9 +61,9 @@ export class AdminPanelComponent implements OnInit {
     data['value'] = this.userSettingObj[event.index].value === true ? 'Active' : 'Inactive';
     console.log(this.userSettingObj[event.index], data);
     this.fhirService.updateSetting(data).subscribe(() => {
-      this.toasterService.showSuccess('Setting updated!', 'EMCARE');
+      this.toasterService.showToast('success', 'Setting updated!', 'EMCARE');
     }, () => {
-      this.toasterService.showError('Server issue!', 'EMCARE');
+      this.toasterService.showToast('error', 'Server issue!', 'EMCARE');
     });
   }
 

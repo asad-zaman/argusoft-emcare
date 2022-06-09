@@ -37,10 +37,10 @@ export class QuestionnaireBuilderComponent implements OnInit {
     //For Toasters on iframe api calls.
     @HostListener('window:message', ['$event']) onPostMessage(e) {
         if (e.data?.apiMessage == 'save') {
-            this.toasterService.showSuccess('Questionnaire Saved Successfully!', 'EMCARE');
+            this.toasterService.showToast('success', 'Questionnaire Saved Successfully!', 'EMCARE');
         }
         else if (e.data?.apiMessage == 'failure') {
-            this.toasterService.showError('Error encountered while saving questionnaire!', 'EMCARE');
+            this.toasterService.showToast('error', 'Error encountered while saving questionnaire!', 'EMCARE');
         }
     }
 

@@ -59,7 +59,7 @@ export class ForgotPasswordComponent implements OnInit {
     // stop here if form is invalid
     if (this.forgotPasswordForm.invalid) {
       if (this.isNewPasswordInputsVisible) {
-        this.toasterService.showInfo('Password does not match', 'EMCARE!');
+        this.toasterService.showToast('info', 'Password does not match', 'EMCARE!');
       }
       return;
     }
@@ -97,7 +97,7 @@ export class ForgotPasswordComponent implements OnInit {
           this.isNewPasswordInputsVisible = true;
         }
       }, error => {
-        this.toasterService.showError(error.error.errorMessage, 'EMCARE!');
+        this.toasterService.showToast('error', error.error.errorMessage, 'EMCARE!');
         if (error.error.errorMessage === 'OTP is expired. Please re-generate new OTP') {
           this.isEmailInputsVisible = true;
           this.isOTPInputsVisible = false;

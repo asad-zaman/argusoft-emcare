@@ -1,3 +1,4 @@
 /node_modules
 emcare-ui/node_modules
 ./emcare-web/.idea
+emcare-ui/.angular/cache/

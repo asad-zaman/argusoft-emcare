@@ -43,7 +43,7 @@ export class DeviceListComponent implements OnInit {
       if (res.relatedFeature && res.relatedFeature.length > 0) {
         this.isView = res.featureJSON['canView'];
         if (this.isView === false) {
-          this.toasterService.showInfo("Sorry! You don't have access to this page!", 'EMCARE');
+          this.toasterService.showToast('info', "Sorry! You don't have access to this page!", 'EMCARE');
         }
       }
     });
@@ -73,7 +73,7 @@ export class DeviceListComponent implements OnInit {
   editDevice(event, deviceId) {
     const status = !event;
     this.deviceManagementService.updateDeviceStatusById(deviceId, status).subscribe(res => {
-      this.toasterService.showSuccess('Device updated successfully!', 'EMCARE');
+      this.toasterService.showToast('success', 'Device updated successfully!', 'EMCARE');
       this.resetCurrentPage();
       this.getDevicesByPageIndex(this.currentPage);
     });

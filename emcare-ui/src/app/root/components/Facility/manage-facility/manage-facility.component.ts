@@ -155,14 +155,14 @@ export class ManageFacilityComponent implements OnInit {
             const jsonObj = this.getData(this.facilityForm.value);
             jsonObj['id'] = this.editId;
             this.fhirService.editFacility(jsonObj, this.editId).subscribe(_res => {
-              this.toasterService.showSuccess('Facility updated successfully!', 'EMCARE');
+              this.toasterService.showToast('success', 'Facility updated successfully!', 'EMCARE');
               this.showFacilities();
             }, (_error) => {
-              this.toasterService.showError('Facility could not be updated successfully!', 'EMCARE');
+              this.toasterService.showToast('error', 'Facility could not be updated successfully!', 'EMCARE');
             });
           }
         }, (_error) => {
-          this.toasterService.showError('Organization could not be updated successfully!', 'EMCARE');
+          this.toasterService.showToast('error', 'Organization could not be updated successfully!', 'EMCARE');
         });
       } else {
         this.fhirService.addOrganization(organizationObj).subscribe(res => {
@@ -170,14 +170,14 @@ export class ManageFacilityComponent implements OnInit {
             this.organizationId = res['id'];
             const jsonObj = this.getData(this.facilityForm.value);
             this.fhirService.addFacility(jsonObj).subscribe(_res => {
-              this.toasterService.showSuccess('Facility added successfully!', 'EMCARE');
+              this.toasterService.showToast('success', 'Facility added successfully!', 'EMCARE');
               this.showFacilities();
             }, (_error) => {
-              this.toasterService.showError('Facility could not be added successfully!', 'EMCARE');
+              this.toasterService.showToast('error', 'Facility could not be added successfully!', 'EMCARE');
             });
           }
         }, (_error) => {
-          this.toasterService.showError('Organization could not be added successfully!', 'EMCARE');
+          this.toasterService.showToast('error', 'Organization could not be added successfully!', 'EMCARE');
         });
       }
     }

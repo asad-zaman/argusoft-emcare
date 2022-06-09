@@ -107,7 +107,7 @@ export class ManageProfileComponent implements OnInit {
         this.lanSubjects.setLaunguage(this.f.language.value.id);
         this.lanSubjects.setCurrentTranslation(translations);
         this.router.navigate(['/dashboard']);
-        this.toasterService.showSuccess('User profile updated successfully!', 'EMCARE');
+        this.toasterService.showToast('success', 'User profile updated successfully!', 'EMCARE');
       });
     }
   }

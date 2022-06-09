@@ -98,7 +98,7 @@ export class LocationTypeComponent implements OnInit {
           "code": this.locationTypeForm.get('type').value
         };
         this.locationService.updateLocationTypeById(data).subscribe(() => {
-          this.toasterService.showSuccess('Location Type updated successfully!', 'EM CARE');
+          this.toasterService.showToast('success', 'Location Type updated successfully!', 'EM CARE');
           this.showLocationType();
         });
       } else {
@@ -108,7 +108,7 @@ export class LocationTypeComponent implements OnInit {
           "code": this.locationTypeForm.get('type').value
         };
         this.locationService.createLocationType(data).subscribe((res) => {
-          this.toasterService.showSuccess('Location Type added successfully!', 'EM CARE');
+          this.toasterService.showToast('success', 'Location Type added successfully!', 'EM CARE');
           this.showLocationType();
         });
       }

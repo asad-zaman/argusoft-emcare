@@ -123,7 +123,7 @@ export class LocationManagementComponent implements OnInit {
         }
         this.locationService.updateLocationById(data).subscribe(res => {
           if (res) {
-            this.toasterService.showSuccess('Location updated successfully!', 'EMCARE');
+            this.toasterService.showToast('success', 'Location updated successfully!', 'EMCARE');
             this.showLocation();
           }
         });
@@ -135,7 +135,7 @@ export class LocationManagementComponent implements OnInit {
         }
         this.locationService.createLocation(data).subscribe(res => {
           if (res) {
-            this.toasterService.showSuccess('Location added successfully!', 'EMCARE');
+            this.toasterService.showToast('success', 'Location added successfully!', 'EMCARE');
             this.showLocation();
           }
         });

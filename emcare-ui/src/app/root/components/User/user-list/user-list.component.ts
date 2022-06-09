@@ -124,7 +124,7 @@ export class UserListComponent implements OnInit {
       this.resetPageIndex();
       this.getUsersBasedOnLocationAndPageIndex(this.currentPage);
     } else {
-      this.toasterService.showInfo('Please select Location!', 'EMCARE')
+      this.toasterService.showToast('info', 'Please select Location!', 'EMCARE')
     }
   }
 

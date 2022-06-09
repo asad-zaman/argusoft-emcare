@@ -55,6 +55,8 @@ import { AccordionModule } from 'primeng/accordion';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { ChartModule } from 'angular-highcharts';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
 
 @NgModule({
   declarations: [
@@ -109,7 +111,8 @@ import { ChartModule } from 'angular-highcharts';
     AccordionModule,
     ButtonModule,
     CardModule,
-    ChartModule
+    ChartModule,
+    ToastModule
   ],
   providers: [
     AuthenticationService,
@@ -124,7 +127,8 @@ import { ChartModule } from 'angular-highcharts';
     FeatureManagementService,
     HTTPStatus,
     ToasterService,
-    LaunguageSubjects
+    LaunguageSubjects,
+    MessageService,
   ],
   bootstrap: [AppComponent]
 })

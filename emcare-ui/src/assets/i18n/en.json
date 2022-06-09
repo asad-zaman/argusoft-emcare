@@ -178,5 +178,17 @@
   "Manage Language": "Language",
   "Username": "Username",
   "Username Placeholder": "Enter Username",
-  "Username Required Message": "Username is required"
+  "Username Required Message": "Username is required",
+  "Manage Settings": "Manage Settings!",
+  "RegisterEmail": "Register email as username?",
+  "WelcomeEmail": "Send Welcome email for user registration?",
+  "Subject": "Subject",
+  "Content": "Content",
+  "ConfirmationEmail": "Send confirmation email for user registration?",
+  "Total Patients": "Total Patients",
+  "Total Users": "Total Users",
+  "Pending User Requests": "Pending User Requests",
+  "Analysis": "Analysis",
+  "Map": "Map",
+  "Dashboard": "Dashboard"
 }

@@ -74,14 +74,14 @@ export class ComparePatientComponent implements OnInit {
       ];
       this.fhirService.comparePatients(data).subscribe(res => {
         if (res == true) {
-          this.toasterService.showInfo("Duplicate Patients Detected");
+          this.toasterService.showToast('info', "Duplicate Patients Detected", 'EMCARE');
         } else if (res == false) {
-          this.toasterService.showSuccess("Unique Patients Detected");
+          this.toasterService.showToast('success', "Unique Patients Detected", 'EMCARE');
         } else {
-          this.toasterService.showWarning("Cannot determine Duplication status");
+          this.toasterService.showToast('warn', "Cannot determine Duplication status", 'EMCARE');
         }
       }, err => {
-        this.toasterService.showError("Error encountered, please check Patient data.");
+        this.toasterService.showToast('error', "Error encountered, please check Patient data.", 'EMCARE');
       });
     }
   }

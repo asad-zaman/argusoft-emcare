@@ -54,7 +54,7 @@ export class ManageTranslationsComponent implements OnInit {
         this.manipulateSecondResult(result[1]);
       }
     }, () => {
-      this.toasterService.showError('API issue!', 'EMCARE');
+      this.toasterService.showToast('error', 'API issue!', 'EMCARE');
     });
 
     this.setAlphabetArr();
@@ -67,7 +67,7 @@ export class ManageTranslationsComponent implements OnInit {
     //   "languageTranslation": JSON.stringify(enTrans)
     // }
     // this.fhirService.updateTranslation(data).subscribe(res => {
-    //   this.toasterService.showSuccess('New Translations added successfully!', 'EMCARE');
+    //   this.toasterService.showToast('success', 'New Translations added successfully!', 'EMCARE');
     // });
   }
 
@@ -158,10 +158,10 @@ export class ManageTranslationsComponent implements OnInit {
     if (this.currentVal) {
       this.translationObject[`${key}`] = this.currentVal;
       this.isChanged = true;
-      this.toasterService.showSuccess('Translation saved successfully!', 'EMCARE');
+      this.toasterService.showToast('success', 'Translation saved successfully!', 'EMCARE');
       this.isTranslationSaved = false;
     } else {
-      this.toasterService.showInfo('Please provide some translation!', 'EMCARE');
+      this.toasterService.showToast('info', 'Please provide some translation!', 'EMCARE');
     }
   }
 
@@ -178,7 +178,7 @@ export class ManageTranslationsComponent implements OnInit {
         this.lanSubjects.setLaunguage(this.lanArray[lanIndex]['languageCode']);
         this.lanSubjects.setCurrentTranslation(JSON.stringify(this.translationObject));
       }
-      this.toasterService.showSuccess('Translation changes saved successfully!', 'EMCARE');
+      this.toasterService.showToast('success', 'Translation changes saved successfully!', 'EMCARE');
     });
     this.isTranslationSaved = true;
   }
@@ -210,10 +210,10 @@ export class ManageTranslationsComponent implements OnInit {
         this.lanArray.push(res);
         this.availableLanguages = this.availableLanguages.filter(el => el.id !== this.newSelectedLanguage.id);
         this.newSelectedLanguage = null;
-        this.toasterService.showSuccess('Launguage added successfully!', 'EMCARE');
+        this.toasterService.showToast('success', 'Launguage added successfully!', 'EMCARE');
       }
     }, (_error) => {
-      this.toasterService.showError('Launguage not added successfully!', 'EMCARE');
+      this.toasterService.showToast('error', 'Launguage not added successfully!', 'EMCARE');
     });
   }
 }
