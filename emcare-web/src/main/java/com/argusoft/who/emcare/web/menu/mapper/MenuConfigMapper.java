@@ -41,6 +41,7 @@ public class MenuConfigMapper {
         }
         fJSON.setMenuName(ufj.getMenuName());
         fJSON.setId(Integer.parseInt(ufj.getId()));
+        fJSON.setParent(ufj.getParent());
         return fJSON;
     }
 }

@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface UserMenuConfigRepository extends JpaRepository<UserMenuConfig, Integer> {
 
-    @Query(value = "select mc.id as \"id\",mc.menu_name AS \"menuName\",\n" +
+    @Query(value = "select mc.id as \"id\",mc.menu_name AS \"menuName\", mc.parent as \"parent\", \n" +
             "CASE WHEN umc.feature_json is NULL\n" +
             "THEN mc.feature_json\n" +
             "ELSE umc.feature_json\n" +

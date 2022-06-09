@@ -656,7 +656,20 @@ public class UserServiceImpl implements UserService {
                 }
             }
         }
-        return featureJsons;
+
+        List<CurrentUserFeatureJson> mainMenuList = featureJsons.stream().filter(feature -> feature.getParent() == null || feature.getParent() == 0).collect(Collectors.toList());
+        List<CurrentUserFeatureJson> finalMenuList = new ArrayList<>();
+        for (CurrentUserFeatureJson mainMenu : mainMenuList) {
+            List<CurrentUserFeatureJson> subMenu = featureJsons.stream().filter(feature -> feature.getParent() != null && feature.getParent() == mainMenu.getId().longValue()).collect(Collectors.toList());
+            CurrentUserFeatureJson menu = new CurrentUserFeatureJson();
+            menu.setSubMenu(subMenu);
+            menu.setFeatureJson(mainMenu.getFeatureJson());
+            menu.setMenuName(mainMenu.getMenuName());
+            menu.setId(mainMenu.getId());
+            menu.setParent(mainMenu.getParent());
+            finalMenuList.add(menu);
+        }
+        return finalMenuList;
     }
 
     private String getMargedStringOfFeatureJson(List<UserFeatureJson> featureJsonList) {
