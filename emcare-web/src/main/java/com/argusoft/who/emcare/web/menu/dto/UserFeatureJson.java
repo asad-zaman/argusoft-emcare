@@ -8,4 +8,6 @@ public interface UserFeatureJson {
 
     public String getFeatureJson();
 
+    public Long getParent();
+
 }

@@ -28,6 +28,9 @@ public class MenuConfig extends EntityAuditInfo implements Serializable {
     @Column(name = "is_active", nullable = false)
     private String isActive;
 
+    @Column(name = "parent")
+    private String parent;
+
     public Integer getId() {
         return id;
     }
@@ -58,5 +61,13 @@ public class MenuConfig extends EntityAuditInfo implements Serializable {
 
     public void setIsActive(String isActive) {
         this.isActive = isActive;
+    }
+
+    public String getParent() {
+        return parent;
+    }
+
+    public void setParent(String parent) {
+        this.parent = parent;
     }
 }
