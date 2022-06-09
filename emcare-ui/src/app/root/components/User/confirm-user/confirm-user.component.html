@@ -33,11 +33,11 @@
               <td>{{user.locationName ? user.locationName : 'NA'}}</td>
               <td>{{user.realmRoles[0]}}</td>
               <td>
-                <i (click)="onApproveUser(i)" class="bi bi-check-circle text-success cursor-pointer font-size-32"
+                <i (click)="onApproveUser(i)" class="bi bi-check-circle text-success cursor-pointer font-size-18"
                   aria-hidden="true"></i>
               </td>
               <td>
-                <i (click)="onDisapproveUser(i)" class="bi bi-x-circle text-red cursor-pointer font-size-32"
+                <i (click)="onDisapproveUser(i)" class="bi bi-x-circle text-red cursor-pointer font-size-18"
                   aria-hidden="true"></i>
               </td>
             </tr>
@@ -74,9 +74,9 @@
               </ng-template>
           </div>
           <div class="text-center">
-            <button type="button" class="btn-red btn mr-2" style="width: 100px;"
+            <button type="button" class="btn-blue btn mr-2" style="width: 100px;"
               (click)="authorizeUser()">{{'Ok' | translate}}</button>
-            <button type="button" class="btn-red btn" style="width: 100px;"
+            <button type="button" class="btn-blue btn" style="width: 100px;"
               (click)="showConfirmDialogFlag = false">{{'Cancel' | translate}}</button>
           </div>
         </div>

@@ -20,8 +20,8 @@
       </div>
     </div>
     <div class="col-3 col-sm-3">
-      <button (click)="AddFeatureConfig()" [disabled]="!selectedUser && !selectedRole"
-        class="btn btn-red p-l-70 p-r-70 mt-3">+ {{'ADD' | translate}}</button>
+      <button (click)="AddFeatureConfig()" [disabled]="!selectedUser && !selectedRole" class="btn btn-blue mt-3">+
+        {{'ADD' | translate}}</button>
     </div>
   </div>
   <!--Table-->
@@ -82,7 +82,7 @@
   <!--Table-END-->
   <div class="row">
     <div class="col-3 col-sm-3">
-      <button routerLink="/showFeatures" class="btn btn-red mt-3 mr-5 text-center" style="width: 150px;">
+      <button routerLink="/showFeatures" class="btn btn-black mt-3 mr-5 text-center" style="width: 150px;">
         <i class="bi bi-chevron-left" aria-hidden="true"></i>{{'Back' | translate}}
       </button>
     </div>

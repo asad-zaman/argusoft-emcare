@@ -1,8 +1,8 @@
 <div class="">
   <input type="checkbox" name="sideMenu" [(ngModel)]="sideMenu" class="openSidebarMenu" id="openSidebarMenu">
   <label for="openSidebarMenu" class="sidebarIconToggle"
-    [ngStyle]="{'top': this.currentUrl === 'manageFacility' ? '100px' : '128px', 'right': this.currentUrl === 'showPatients' ? '100px' : (this.currentLan === 'fr' ? '330px' : (this.currentLan === 'en' ? '250px' : '275px'))}">
-    <div class="btn btn-red cst-filter-btn">
+    [ngStyle]="{'right': this.currentUrl === 'showPatients' ? '100px' : (this.currentLan === 'fr' ? '330px' : (this.currentLan === 'en' ? (this.currentUrl === 'showLocation' ? '255px' : '230px') : '275px'))}">
+    <div class="btn btn-black cst-filter-btn">
       <ng-container *ngIf="this.currentUrl === 'manageFacility'; else Filter">
         {{'Location' | translate}}
       </ng-container>
@@ -12,17 +12,17 @@
       </ng-template>
     </div>
   </label>
-  <div id="sidebarMenu">
-    <div class="mb-5">
-      <h1 class="heading d-inline">{{'Location Filter' | translate}}</h1>
-      <i class="bi bi-x-lg close-filter mouse-pointer" (click)="this.sideMenu=false" aria-hidden="true"></i>
-      <hr>
+  <div id="sidebarMenu" class="right-side-menu">
+    <div class="side-menu-header">
+      {{'Location Filter' | translate}}
+      <i class="bi bi-x-lg mouse-pointer" (click)="this.sideMenu=false" aria-hidden="true"></i>
     </div>
-    <app-location-dropdown (locationFormValueAndDropdownArr)="getFormValue($event)">
-    </app-location-dropdown>
-    <div class="text-end mt-5">
-      <hr>
-      <button (click)="saveData()" class="btn-red btn">
+    <div class="right-side-menu-inner">
+      <app-location-dropdown (locationFormValueAndDropdownArr)="getFormValue($event)">
+      </app-location-dropdown>
+    </div>
+    <div class="side-menu-footer">
+      <button (click)="saveData()" class="btn btn-blue">
         {{'Get Results' | translate}}
       </button>
     </div>

@@ -115,7 +115,7 @@ export class ManageFeatureComponent implements OnInit {
       "menuId": this.featureConfigList[index]['menuId']
     }
     this.featureService.updateFeatureConfig(data).subscribe(() => { 
-      this.toasterService.showSuccess('Feature changes have been saved!', 'EMCARE');
+      this.toasterService.showToast('success', 'Feature changes have been saved!', 'EMCARE');
     });
   }
 
@@ -143,7 +143,7 @@ export class ManageFeatureComponent implements OnInit {
 
   deleteFeatureConfig(index) {
     this.featureService.deleteFeatureConfig(this.featureConfigList[index]['id']).subscribe(res => {
-      this.toasterService.showSuccess('Feature deleted successfully!', 'EMCARE');
+      this.toasterService.showToast('success', 'Feature deleted successfully!', 'EMCARE');
       this.prerequisite();
       this.getFeatureList();
     });
@@ -157,7 +157,7 @@ export class ManageFeatureComponent implements OnInit {
       "featureJson": "{\"canAdd\":true,\"canEdit\":true,\"canView\":true,\"canDelete\":true}"
     }
     this.featureService.addFeatureConfig(data).subscribe(_res => {
-      this.toasterService.showSuccess('Feature added successfully!', 'EMCARE');
+      this.toasterService.showToast('success', 'Feature added successfully!', 'EMCARE');
       this.selectedUser = null;
       this.selectedRole = null;
       this.prerequisite();

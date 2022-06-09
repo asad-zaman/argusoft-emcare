@@ -122,7 +122,7 @@
               </div>
             </div>
             <div class="col-4 offset-8">
-              <button [disabled]="!formData" type="button" class="btn btn-red" (click)="saveLocationData()"
+              <button [disabled]="!formData" type="button" class=" btn btn-blue" (click)="saveLocationData()"
                 data-bs-dismiss="modal">{{'Save' | translate}}</button>
             </div>
             <div class="col-12">
@@ -131,8 +131,12 @@
                 <ul>
                   <ng-container *ngFor="let location of selectedAreasArr">
                     <li>
-                      <span class="f-16">{{location.string}}</span>
-                      <i class="bi bi-x f-18 cursor-pointer" (click)="removeLocation(location)" aria-hidden="true"></i>
+                      <div class="chip">
+                        {{location.string}}
+                        <i class="bi bi-x f-18 cursor-pointer" (click)="removeLocation(location)" aria-hidden="true"></i>
+                      </div>
+                      <!-- <span class="f-16">{{location.string}}</span> -->
+                     
                     </li>
                   </ng-container>
                 </ul>
@@ -143,10 +147,10 @@
       </div>
       <div class="text-end mt-5">
         <hr>
-        <button routerLink="/showUsers" class="btn-red btn ms-3">
+        <button routerLink="/showUsers" class="btn-black btn ms-3">
           <i class="bi bi-chevron-left" aria-hidden="true"></i> {{'Back' | translate}}
         </button>
-        <button (click)="saveData()" class="btn-red btn">
+        <button (click)="saveData()" class="btn-blue btn">
           <ng-container *ngIf="!isEdit; else UpdateUser">
             {{'Add User' | translate}}
           </ng-container>

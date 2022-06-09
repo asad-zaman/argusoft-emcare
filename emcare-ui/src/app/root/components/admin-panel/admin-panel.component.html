@@ -2,14 +2,14 @@
   <h1 class="heading">Welcome, {{ userName }}!</h1>
   <hr>
   <div class="">
-    <h5 class="my-4">Manage Settings!</h5>
+    <h5 class="my-4">{{'Manage Settings' | translate}}</h5>
     <p-accordion *ngIf="userSettingObj.length>0 && templateArr.length>0" [multiple]="true"
       (onOpen)="updateSetting($event)" (onClose)="updateSetting($event)">
       <p-accordionTab class="cursor-pointer" [(selected)]="userSettingObj[0].value">
         <ng-template pTemplate="header">
           <div class="row w-100 align-items-center">
             <div class="col-10">
-              Register email as username?
+              {{'RegisterEmail' | translate}}
             </div>
             <div class="col-2">
               <label class="switch ml-5">
@@ -26,7 +26,7 @@
         <ng-template pTemplate="header">
           <div class="row w-100 align-items-center">
             <div class="col-10">
-              Send Welcome email for user registration?
+              {{'WelcomeEmail' | translate}}
             </div>
             <div class="col-2">
               <label class="switch ml-5">
@@ -38,15 +38,15 @@
         </ng-template>
         <ng-template pTemplate="content">
           <h5>{{templateArr[0].code}}</h5>
-          <h6>Subject: {{templateArr[0].subject}}</h6>
-          <h6>Content: {{templateArr[0].content}}</h6>
+          <h6>{{'Subject' | translate}}: {{templateArr[0].subject}}</h6>
+          <h6>{{'Content' | translate}}: {{templateArr[0].content}}</h6>
         </ng-template>
       </p-accordionTab>
       <p-accordionTab class="cursor-pointer" [(selected)]="userSettingObj[2].value">
         <ng-template pTemplate="header">
           <div class="row w-100 align-items-center">
             <div class="col-10">
-              Send confirmation email for user registration?
+              {{'ConfirmationEmail' | translate}}
             </div>
             <div class="col-2">
               <label class="switch ml-5">
@@ -58,8 +58,8 @@
         </ng-template>
         <ng-template pTemplate="content">
           <h5>{{templateArr[1].code}}</h5>
-          <h6>Subject: {{templateArr[1].subject}}</h6>
-          <h6>Content: {{templateArr[1].content}} </h6>
+          <h6>{{'Subject' | translate}}: {{templateArr[1].subject}}</h6>
+          <h6>{{'Content' | translate}}: {{templateArr[1].content}} </h6>
           <hr>
           <h5>{{templateArr[2].code}}</h5>
           <h6>Subject: {{templateArr[2].subject}}</h6>

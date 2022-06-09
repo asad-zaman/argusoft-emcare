@@ -52,7 +52,7 @@ export class LanguageListComponent implements OnInit {
         });
       }
     }, () => {
-      this.toasterService.showError('API issue!', 'EMCARE');
+      this.toasterService.showToast('error', 'API issue!', 'EMCARE');
     })
   }
 

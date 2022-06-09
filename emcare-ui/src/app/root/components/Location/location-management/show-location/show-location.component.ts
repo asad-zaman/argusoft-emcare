@@ -102,7 +102,7 @@ export class ShowLocationComponent implements OnInit {
 
   deleteLocation(index) {
     this.locationService.deleteLocationById(this.filteredLocations[index]['id']).subscribe(res => {
-      this.toasterService.showSuccess('Location Deleted successfully!', 'EMCARE');
+      this.toasterService.showToast('success', 'Location Deleted successfully!', 'EMCARE');
       this.resetCurrentPage();
       this.getLocationsByPageIndex(this.currentPage);
     }, (err) => {
@@ -141,7 +141,7 @@ export class ShowLocationComponent implements OnInit {
       this.resetPageIndex();
       this.getLocationsBasedOnFilteredLocationAndPageIndex(this.currentPage);
     } else {
-      this.toasterService.showInfo('Please select Location!', 'EMCARE')
+      this.toasterService.showToast('info', 'Please select Location!', 'EMCARE')
     }
   }
 }

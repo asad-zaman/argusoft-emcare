@@ -8,7 +8,7 @@
         (input)="searchFilter()" placeholder="{{'Search Placeholder' | translate}}">
     </div>
     <div *ngIf="isAdd" class="col text-end">
-      <button class="btn btn-red" routerLink="/addUser">+ {{'Add User' | translate}}</button>
+      <button class=" btn btn-blue" routerLink="/addUser">+ {{'Add User' | translate}}</button>
     </div>
   </div>
   <!--Table-->
@@ -48,7 +48,7 @@
                   </ng-template>
                 </span>
               <td *ngIf="isEdit">
-                <ul class="navigation" style="list-style-type: none;">
+                <ul class="navigation mb-0" style="list-style-type: none;">
                   <li class="dropdown mt-3 cursor-pointer">
                     <div class="d-flex align-items-center" data-bs-toggle="dropdown">
                       <i class="bi bi-three-dots-vertical ps-2" aria-hidden="true"></i>

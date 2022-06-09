@@ -89,15 +89,15 @@ export class ShowFacilityComponent implements OnInit {
     this.fhirService.deleteFacility(id).subscribe(_res => {
       this.facilityArr = [];
       this.getFacilities();
-      this.toasterService.showSuccess('Facility deleted successfully!', 'EMCARE');
+      this.toasterService.showToast('success', 'Facility deleted successfully!', 'EMCARE');
     }, (_error) => {
-      this.toasterService.showError('Facility could not deleted successfully!', 'EMCARE');
+      this.toasterService.showToast('error', 'Facility could not deleted successfully!', 'EMCARE');
     });
   }
 
   deleteOrganization(id) {
     this.fhirService.deleteOrganization(id).subscribe(_res => { }, (_error) => {
-      this.toasterService.showError('Facility could not deleted successfully!', 'EMCARE');
+      this.toasterService.showToast('error', 'Facility could not deleted successfully!', 'EMCARE');
     });
   }
 

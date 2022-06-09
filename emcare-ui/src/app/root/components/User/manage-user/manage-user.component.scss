@@ -1,6 +1,6 @@
 .customd-div {
     padding: 10px;
-    border: 1px solid black;
+    border: 1px solid #c7c8c9;
     margin-top: 20px;
 }
 
@@ -11,3 +11,13 @@
 .f-18 {
     font-size: 18px;
 }
+
+.chip {
+    display: inline-block;
+    padding: 0 10px;
+    height: 25px;
+    line-height: 25px;
+    border-radius: 25px;
+    margin-bottom: 5px;
+    background-color: #f1f1f1;
+  }

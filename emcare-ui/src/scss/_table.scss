@@ -16,11 +16,15 @@
     }
     tbody {
         td {
-            padding: 12px;
+            padding: 10px;
             border-bottom: 1px solid $color-gray-40;
             color: $color-gray-90;
             font-size: 14px;
             white-space: nowrap;
         }
     }
+}
+
+.navigation{
+    margin-bottom: 0px;
 }

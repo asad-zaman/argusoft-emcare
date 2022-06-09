@@ -65,7 +65,7 @@ export class ShowLocationTypeComponent implements OnInit {
 
   deleteLocationType(index) {
     this.locationService.deleteLocationTypeById(this.filteredLocationTypes[index]['hierarchyType']).subscribe(res => {
-      this.toasterService.showSuccess('Location Deleted successfully!', 'EMCARE');
+      this.toasterService.showToast('success', 'Location Deleted successfully!', 'EMCARE');
       this.getLocationTypes();
     });
   }

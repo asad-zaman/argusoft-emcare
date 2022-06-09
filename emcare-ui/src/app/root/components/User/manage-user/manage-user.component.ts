@@ -149,7 +149,7 @@ export class ManageUserComponent implements OnInit {
         this.roles = res;
       }
     }, () => {
-      this.toasterService.showError('Server issue!', 'EMCARE');
+      this.toasterService.showToast('error', 'Server issue!', 'EMCARE');
     });
   }
 
@@ -164,7 +164,7 @@ export class ManageUserComponent implements OnInit {
         }
       }
     }, () => {
-      this.toasterService.showError('Server issue!', 'EMCARE');
+      this.toasterService.showToast('error', 'Server issue!', 'EMCARE');
     });
   }
 
@@ -183,7 +183,7 @@ export class ManageUserComponent implements OnInit {
           "regRequestFrom": "web"
         }
         this.userService.updateUser(data, this.editId).subscribe(res => {
-          this.toasterService.showSuccess('User updated successfully!', 'EMCARE');
+          this.toasterService.showToast('success', 'User updated successfully!', 'EMCARE');
           this.showUser();
         });
       } else {
@@ -198,7 +198,7 @@ export class ManageUserComponent implements OnInit {
           "userName": this.userForm.get('username').value
         }
         this.userService.createUser(data).subscribe(res => {
-          this.toasterService.showSuccess('User added successfully!', 'EMCARE');
+          this.toasterService.showToast('success', 'User added successfully!', 'EMCARE');
           this.showUser();
         });
       }

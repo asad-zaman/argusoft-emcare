@@ -131,7 +131,7 @@ export class PatientListComponent implements OnInit {
             const pageIndex = this.currentPage == 0 ? this.currentPage : this.currentPage - 1;
             this.getPatientsBasedOnLocationAndPageIndex(pageIndex);
         } else {
-            this.toasterService.showInfo('Please select Location!', 'EMCARE');
+            this.toasterService.showToast('info', 'Please select Location!', 'EMCARE');
         }
     }
 }

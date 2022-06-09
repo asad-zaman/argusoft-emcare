@@ -102,7 +102,7 @@ export class ManageRoleComponent implements OnInit {
           "description": this.roleForm.get('description').value
         };
         this.roleService.updateRole(data).subscribe(() => {
-          this.toasterService.showSuccess('Role updated successfully!', 'EMCARE');
+          this.toasterService.showToast('success', 'Role updated successfully!', 'EMCARE');
           this.showRoles();
         });
       } else {
@@ -111,7 +111,7 @@ export class ManageRoleComponent implements OnInit {
           "roleDescription": this.roleForm.get('description').value
         };
         this.roleService.createRole(data).subscribe((_res) => {
-          this.toasterService.showSuccess('Role created successfully!', 'EMCARE');
+          this.toasterService.showToast('success', 'Role created successfully!', 'EMCARE');
           this.showRoles();
         });
       }

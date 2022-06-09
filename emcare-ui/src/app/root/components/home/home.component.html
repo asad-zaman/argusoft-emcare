@@ -1,38 +1,35 @@
 <div class="main-wrapper">
   <div class="d-flex">
-    <p-card [style]="{'width': '200px', 'height': '120px', 'margin-right': '2em','cursor': 'pointer'}" (click)="redirectToRoute('/showPatients')">
-      <div class="">
-        <h3 class="w-700">{{dashboardData.totalPatient}}</h3>
-      </div>
-      <ng-template pTemplate="footer" styleClass="p-card-footer c-red">
-        <div class="">
-          <h6>Total Patients</h6>
+    <p-card [style]="{'width': '200px', 'height': '80px', 'margin-right': '2em','cursor': 'pointer'}"
+      (click)="redirectToRoute('/showPatients')">
+      <div class="row">
+        <h3 class="col-4 w-700 ctype-1">{{dashboardData.totalPatient}}</h3>
+        <div class="col-8 c-style">
+          <h6>{{'Total Patients' | translate}}</h6>
         </div>
-      </ng-template>
+      </div>
     </p-card>
-    <p-card [style]="{'width': '200px', 'height': '120px', 'margin-right': '2em','cursor': 'pointer'}" (click)="redirectToRoute('/showUsers')">
-      <div class="">
-        <h3 class="w-700">{{dashboardData.totalUser}}</h3>
-      </div>
-      <ng-template pTemplate="footer">
-        <div class="">
-          <h6>Total Users</h6>
+    <p-card [style]="{'width': '200px', 'height': '80px', 'margin-right': '2em','cursor': 'pointer'}"
+      (click)="redirectToRoute('/showUsers')">
+      <div class="row">
+        <h3 class="col-4 w-700 ctype-2">{{dashboardData.totalUser}}</h3>
+        <div class="col-8 c-style">
+          <h6>{{'Total Users' | translate}}</h6>
         </div>
-      </ng-template>
+      </div>
     </p-card>
-    <p-card [style]="{'width': '200px', 'height': '120px', 'margin-right': '2em','cursor': 'pointer'}" (click)="redirectToRoute('/confirmUsers')">
-      <div class="">
-        <h3 class="w-700">{{dashboardData.pendingRequest}}</h3>
-      </div>
-      <ng-template pTemplate="footer">
-        <div class="">
-          <h6>Pending User Requests</h6>
+    <p-card [style]="{'width': '200px', 'height': '80px', 'margin-right': '2em','cursor': 'pointer'}"
+      (click)="redirectToRoute('/confirmUsers')">
+      <div class="row">
+        <h3 class="col-4 w-700 ctype-3">{{dashboardData.pendingRequest}}</h3>
+        <div class="col-8 c-style">
+          <h6>{{'Pending User Requests' | translate}}</h6>
         </div>
-      </ng-template>
+      </div>
     </p-card>
   </div>
   <div class="container mt-5">
-    <h3 class="mt-2">Analysis</h3>
+    <h3 class="mt-2">{{'Analysis' | translate}}</h3>
     <div class="row">
       <div class="col-6">
         <div id="barChart" style="min-width: 310px; max-width: 800px; height: 400px; margin: 0 auto"></div>
@@ -46,7 +43,7 @@
   </div>
   <div class="row mt-5">
     <div class="col-md-12">
-      <h2 class="text-left">Map</h2>
+      <h2 class="text-left">{{'Map' | translate}}</h2>
       <div class="card mt-3">
         <div class="card-body">
           <div #mapRef style="width:100%;height:300px"></div>

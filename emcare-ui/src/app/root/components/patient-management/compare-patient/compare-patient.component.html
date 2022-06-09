@@ -35,7 +35,7 @@
         <div class="col-12 col-sm-6">
           <div class="mb-3">
             <label class="form-label">{{'First Patient JSON' | translate}}</label>
-            <textarea formControlName="firstPatientDetails" id="firstPatientDetails"
+            <textarea style="height: 100px;" formControlName="firstPatientDetails" id="firstPatientDetails"
               placeholder="{{'First Patient Details' | translate}}" class="form-control custom-input" rows="8"
               [ngClass]="{ 'is-invalid': submitted && f.firstPatientDetails.errors }"></textarea>
             <div *ngIf="submitted && f.firstPatientDetails.errors" class="invalid-feedback">
@@ -46,7 +46,7 @@
         <div class="col-12 col-sm-6">
           <div class="mb-3">
             <label class="form-label">{{'Second Patient JSON' | translate}}</label>
-            <textarea formControlName="secondPatientDetails" id="secondPatientDetails"
+            <textarea style="height: 100px;" formControlName="secondPatientDetails" id="secondPatientDetails"
               placeholder="{{'Second Patient Details' | translate}}" class="form-control custom-input" rows="8"
               [ngClass]="{ 'is-invalid': submitted && f.secondPatientDetails.errors }"></textarea>
             <div *ngIf="submitted && f.secondPatientDetails.errors" class="invalid-feedback">
@@ -57,7 +57,7 @@
       </div>
       <div class="text-end mt-5">
         <hr>
-        <button (click)="comparePatients()" class="btn-red btn">
+        <button (click)="comparePatients()" class="btn-blue btn">
           {{'Compare' | translate}}
         </button>
       </div>
