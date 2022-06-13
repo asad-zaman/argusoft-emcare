@@ -669,6 +669,7 @@ public class UserServiceImpl implements UserService {
             menu.setParent(mainMenu.getParent());
             finalMenuList.add(menu);
         }
+        Collections.sort(finalMenuList, (o1, o2) -> o1.getMenuName().compareTo(o2.getMenuName()));
         return finalMenuList;
     }
 
