@@ -1,5 +1,5 @@
-<div *ngIf="isView" class="main-wrapper">
-  <div class="d-flex">
+<div class="main-wrapper">
+  <div *ngIf="isView" class="d-flex">
     <p-card
       [style]="{'overflow': 'hidden', 'width': '200px', 'height': '80px', 'margin-right': '2em','cursor': 'pointer'}"
       (click)="redirectToRoute('/showPatients')">

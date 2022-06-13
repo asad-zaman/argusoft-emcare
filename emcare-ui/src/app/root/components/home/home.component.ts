@@ -12,7 +12,7 @@ import { FhirService } from 'src/app/shared';
 export class HomeComponent implements OnInit {
 
   dashboardData: any = {};
-  isView: boolean = true;
+  isView = true;
 
   @ViewChild('mapRef', { static: true }) mapElement: ElementRef;
 
