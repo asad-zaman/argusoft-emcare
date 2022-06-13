@@ -4,6 +4,7 @@ import com.argusoft.who.emcare.data.local.database.Database
 import com.argusoft.who.emcare.data.local.pref.Preference
 import com.argusoft.who.emcare.data.remote.ApiResponse
 import com.argusoft.who.emcare.data.remote.UNEXPECTED_INTERNAL_SERVER
+import com.argusoft.who.emcare.ui.common.model.Location
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
@@ -13,9 +14,13 @@ class LocationRepository @Inject constructor(
 ) {
 
     fun getLocations() = flow {
-        preference.getLoggedInUser()?.location?.let {
-            val list = database.getChildLocations(it.id)
-            emit(ApiResponse.Success(data = list))
-        } ?: emit(ApiResponse.ApiError(UNEXPECTED_INTERNAL_SERVER))
+        val list = mutableListOf<Location>()
+        preference.getLoggedInUser()?.location?.forEach {
+            list.addAll(database.getChildLocations(it.id)!!)
+        }
+        if(list.isEmpty())
+            emit(ApiResponse.ApiError(UNEXPECTED_INTERNAL_SERVER))
+        else
+            emit(ApiResponse.Success(list))
     }
 }

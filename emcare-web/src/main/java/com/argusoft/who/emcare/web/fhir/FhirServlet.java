@@ -38,6 +38,9 @@ public class FhirServlet extends RestfulServer {
 
     @Autowired
     private PlanDefinitionResourceProvider planDefinitionResourceProvider;
+    
+    @Autowired
+    private ValueSetResourceProvider valueSetResourceProvider;
 
     @Override
     protected void initialize() throws ServletException {
@@ -57,6 +60,7 @@ public class FhirServlet extends RestfulServer {
         resourceProviders.add(organizationResourceProvider);
         resourceProviders.add(bundleResourceProvider);
         resourceProviders.add(planDefinitionResourceProvider);
+        resourceProviders.add(valueSetResourceProvider);
         setResourceProviders(resourceProviders);
     }
 
