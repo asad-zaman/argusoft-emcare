@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AuthGuard } from 'src/app/auth/auth.guard';
 import { FhirService, ToasterService } from 'src/app/shared';
 
 @Component({
@@ -12,10 +13,13 @@ export class AdminPanelComponent implements OnInit {
   settingArr: any = [];
   templateArr: any = [];
   userSettingObj: any[] = [];
+  isEdit: boolean = true;
+  isView: boolean = true;
 
   constructor(
     private readonly toasterService: ToasterService,
-    private readonly fhirService: FhirService
+    private readonly fhirService: FhirService,
+    private readonly authGuard: AuthGuard
   ) { }
 
   ngOnInit(): void {
@@ -23,9 +27,19 @@ export class AdminPanelComponent implements OnInit {
   }
 
   prerequisite() {
+    this.checkFeatures();
     this.userName = localStorage.getItem('Username');
     this.getAllSettings();
     this.getAllEmailTemplates();
+  }
+
+  checkFeatures() {
+    this.authGuard.getFeatureData().subscribe(res => {
+      if (res.relatedFeature && res.relatedFeature.length > 0) {
+        this.isEdit = res.featureJSON['canEdit'];
+        this.isView = res.featureJSON['canView'];
+      }
+    });
   }
 
   getAllEmailTemplates() {
@@ -59,7 +73,6 @@ export class AdminPanelComponent implements OnInit {
     this.userSettingObj[event.index].value = !this.userSettingObj[event.index].value;
     let data = this.settingArr.find(e => e.key == this.userSettingObj[event.index].key);
     data['value'] = this.userSettingObj[event.index].value === true ? 'Active' : 'Inactive';
-    console.log(this.userSettingObj[event.index], data);
     this.fhirService.updateSetting(data).subscribe(() => {
       this.toasterService.showToast('success', 'Setting updated!', 'EMCARE');
     }, () => {

@@ -11,6 +11,6 @@ export class ToasterService {
     ) { }
 
     showToast(severity, detail, summary) {
-        this.messageService.add({ severity: severity, summary: summary, detail: detail });
+        this.messageService.add({ severity: severity, summary: summary, detail: detail, life: 3000 });
     }
 }

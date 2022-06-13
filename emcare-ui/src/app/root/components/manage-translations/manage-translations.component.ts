@@ -73,7 +73,7 @@ export class ManageTranslationsComponent implements OnInit {
 
   checkEditParams() {
     const routeParams = this.route.snapshot.paramMap;
-    this.editLanCode = routeParams.get('code');
+    this.editLanCode = routeParams.get('id');
     if (this.editLanCode) {
       this.isEdit = true;
     }
