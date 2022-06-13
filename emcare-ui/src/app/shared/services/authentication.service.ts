@@ -96,7 +96,16 @@ export class AuthenticationService {
     }
 
     setFeatures(featuresRes: any): void {
-        const features = featuresRes.feature.map(f => f.menuName)
+        let features = [];
+        featuresRes.feature.forEach(f => {
+            features.push(f.menuName);
+            //  if there is submenu then it should also be pushed
+            if (f.subMenu.length > 0) {
+                f.subMenu.forEach(subF => {
+                    features.push(subF.menuName);
+                });
+            }
+        });
         this.features.next(features);
     }
 

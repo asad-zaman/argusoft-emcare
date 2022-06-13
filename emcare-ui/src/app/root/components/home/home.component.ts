@@ -1,6 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import * as Highcharts from 'highcharts';
+import { AuthGuard } from 'src/app/auth/auth.guard';
 import { FhirService } from 'src/app/shared';
 
 @Component({
@@ -11,12 +12,14 @@ import { FhirService } from 'src/app/shared';
 export class HomeComponent implements OnInit {
 
   dashboardData: any = {};
+  isView = true;
 
   @ViewChild('mapRef', { static: true }) mapElement: ElementRef;
 
   constructor(
     private readonly fhirService: FhirService,
-    private routeService: Router
+    private routeService: Router,
+    private readonly authGuard: AuthGuard
   ) { }
 
   ngOnInit(): void {
@@ -24,12 +27,21 @@ export class HomeComponent implements OnInit {
   }
 
   prerequisite() {
+    this.checkFeatures();
     this.fhirService.getDashboardData().subscribe((res) => {
       this.dashboardData = res;
     });
     this.barChartPopulation();
     this.pieChartBrowser();
     this.loadMap();
+  }
+
+  checkFeatures() {
+    this.authGuard.getFeatureData().subscribe(res => {
+      if (res.relatedFeature && res.relatedFeature.length > 0) {
+        this.isView = res.featureJSON['canView'];
+      }
+    });
   }
 
   barChartPopulation() {

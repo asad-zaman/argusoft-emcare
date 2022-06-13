@@ -5,6 +5,7 @@ import { HTTPStatus, LaunguageSubjects } from './auth/token-interceptor';
 import { FhirService } from './shared';
 import { AuthenticationService } from './shared/services/authentication.service';
 import * as _ from 'lodash';
+import { AuthGuard } from './auth/auth.guard';
 
 @Component({
   selector: 'app-root',
@@ -25,6 +26,19 @@ export class AppComponent implements OnInit {
   isLoggedIn: boolean = false;
   currTranslations: any;
   rtlLaunguages = ['ar', 'he', 'ku', 'fa', 'ur'];
+  featureArr = [];
+  featureIconObj = {
+    'Users': 'bi bi-people nav-link_icon',
+    'Locations': 'bi bi-cursor nav-link_icon',
+    'Patients': 'bi bi-map nav-link_icon',
+    'Feature': 'bi bi-diagram-3 nav-link_icon',
+    'Devices': 'bi bi-hdd-network nav-link_icon',
+    'Questionnaires': 'bi bi-people nav-link_icon',
+    'Languages': 'bi bi-calendar2-range nav-link_icon',
+    'Facility': 'bi bi-columns-gap nav-link_icon',
+    'Settings': 'bi bi-people nav-link_icon',
+    'Dashboard': 'bi bi-house-door nav-link_icon'
+  }
 
   constructor(
     private readonly router: Router,
@@ -34,7 +48,8 @@ export class AppComponent implements OnInit {
     private readonly translate: TranslateService,
     private readonly fhirService: FhirService,
     private readonly lanSubjects: LaunguageSubjects,
-    private readonly renderer: Renderer2
+    private readonly renderer: Renderer2,
+    private readonly authGuard: AuthGuard
   ) { }
 
   ngOnInit() {
@@ -51,7 +66,7 @@ export class AppComponent implements OnInit {
     this.checkAPIStatus();
     this.authenticationService.getIsLoggedIn().subscribe(result => {
       if (result) {
-        this.getFeatureList();
+        this.getLoggedInUserData();
       }
     });
     this.authenticationService.getFeatures().subscribe(result => {
@@ -124,20 +139,41 @@ export class AppComponent implements OnInit {
     return username.substring(0, 1).toUpperCase();
   }
 
-  getFeatureList() {
+  getLoggedInUserData() {
     this.authenticationService.getLoggedInUser().subscribe(res => {
       if (res) {
+        this.featureArr = res['feature'];
+        this.featureArr.map(f => {
+          f['subMenuActive'] = false;
+          if (f.subMenu.length > 0) {
+            f['dropdownValue'] = false;
+          }
+        });
         localStorage.setItem('language', res['language']);
         this.checkRTLLaunguage();
         this.authenticationService.setFeatures(res);
-        this.getLoggedInUser(res);
+        this.setUserDetails(res);
         this.getAllLaunguages();
       }
     });
   }
 
+  setFeatureSubMenuFalse() {
+    this.featureArr.map(f => {
+      f['subMenuActive'] = false;
+    });
+  }
+
+  setFeatureDropdownFalse(feature) {
+    this.featureArr.map(f => {
+      if (f.subMenu.length > 0 && f !== feature) {
+        f['dropdownValue'] = false;
+      }
+    });
+  }
+
   // api should be called only once in page if not then it needs optimization
-  getLoggedInUser(res) {
+  setUserDetails(res) {
     this.userName = localStorage.getItem('Username');
     this.userCharLogo = this.userName && this.getUserCharLogo(this.userName);
     const token = JSON.parse(localStorage.getItem('access_token'));
@@ -197,5 +233,34 @@ export class AppComponent implements OnInit {
 
   navigateToDashboard() {
     this.router.navigate(['/dashboard']);
+  }
+
+  changeDropdownValueOrRoute(feature, isSubmenu = false) {
+    if (isSubmenu) {
+      const route = this.authGuard.getFeatureAndRedirectUser(feature)[0];
+      this.router.navigate([`${route}`]);
+    } else {
+      if (feature.hasOwnProperty('dropdownValue')) {
+        this.setFeatureDropdownFalse(feature);
+        feature['dropdownValue'] = !feature['dropdownValue'];
+      } else {
+        this.setFeatureDropdownFalse(feature);
+        const route = this.authGuard.getFeatureAndRedirectUser(feature.menuName)[0];
+        this.router.navigate([`${route}`]);
+      }
+    }
+    this.setFeatureSubMenuFalse();
+  }
+
+  getIconClassFromFeatureName(fName) {
+    return this.featureIconObj[fName];
+  }
+
+  checkIsActiveOrNot(feature, featureName, subMenu = false) {
+    if (subMenu) {
+      feature['subMenuActive'] = true;
+    }
+    const routeArr = this.authGuard.getFeatureAndRedirectUser(featureName);
+    return routeArr.includes(this.currentUrl);
   }
 }

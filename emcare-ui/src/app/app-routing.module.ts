@@ -57,13 +57,13 @@ const routes: Routes = [
   { path: 'showFeatures', component: FeatureListComponent, canActivate: [AuthGuard] },
   { path: 'editFeature/:id', component: ManageFeatureComponent, canActivate: [AuthGuard] },
   { path: 'manage-language', component: ManageTranslationsComponent, canActivate: [AuthGuard] },
-  { path: 'manage-language/:code', component: ManageTranslationsComponent, canActivate: [AuthGuard] },
+  { path: 'manage-language/:id', component: ManageTranslationsComponent, canActivate: [AuthGuard] },
   { path: 'editProfile', component: ManageProfileComponent },
   { path: 'addFacility', component: ManageFacilityComponent, canActivate: [AuthGuard] },
   { path: 'editFacility/:id', component: ManageFacilityComponent, canActivate: [AuthGuard] },
   { path: 'showFacility', component: ShowFacilityComponent, canActivate: [AuthGuard] },
   { path: 'language-list', component: LanguageListComponent, canActivate: [AuthGuard] },
-  { path: 'user-admin-settings', component: AdminPanelComponent },
+  { path: 'user-admin-settings', component: AdminPanelComponent, canActivate: [AuthGuard] },
   { path: '**', redirectTo: 'dashboard' }
 ];
 @NgModule({

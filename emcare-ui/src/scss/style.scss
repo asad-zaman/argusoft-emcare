@@ -306,6 +306,16 @@ input:checked+.slider:before {
   padding: 10px 15px;
 }
 
+.cst-register-email {
+  .p-accordion-tab .p-toggleable-content .p-accordion-content {
+    display: none;
+  }
+
+  // .p-accordion-tab .p-accordion-header .p-accordion-header-link .p-accordion-toggle-icon {
+  //   display: none;
+  // }
+}
+
 .p-card {
   color: $color-gray-80;
   //   border-top: 5px solid $color-red;
@@ -321,7 +331,7 @@ input:checked+.slider:before {
 }
 
 .w-700 {
-  font-weight: 400;
+  font-weight: 500;
   font-size: 30px;
   padding: 23px 15px;
   color: white;
@@ -341,4 +351,18 @@ input:checked+.slider:before {
 .p-toast-message-content {
   background-color: white;
   opacity: 1;
+}
+
+.p-toast .p-toast-message.p-toast-message-success {
+  color: #4bca61;
+  border-color: #4bca61;
+}
+
+.p-toast .p-toast-message .p-toast-message-content .p-toast-detail {
+  font-weight: 600;
+}
+
+.p-toast .p-toast-message.p-toast-message-error {
+  color: #f17a7a;
+  border-color: #f17a7a;
 }

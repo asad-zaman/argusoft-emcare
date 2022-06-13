@@ -68,7 +68,6 @@ export class SignupComponent implements OnInit {
 
   userSignup() {
     const locationIdArr = this.signupForm.value.location.map(l => l.id);
-    console.log(locationIdArr);
     this.submitted = true;
     // stop here if form is invalid
     if (this.signupForm.invalid || !!this.error) {

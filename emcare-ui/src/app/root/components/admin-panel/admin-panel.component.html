@@ -1,11 +1,11 @@
-<div class="main-wrapper">
+<div *ngIf="isView" class="main-wrapper">
   <h1 class="heading">Welcome, {{ userName }}!</h1>
   <hr>
-  <div class="">
+  <div *ngIf="isEdit">
     <h5 class="my-4">{{'Manage Settings' | translate}}</h5>
     <p-accordion *ngIf="userSettingObj.length>0 && templateArr.length>0" [multiple]="true"
       (onOpen)="updateSetting($event)" (onClose)="updateSetting($event)">
-      <p-accordionTab class="cursor-pointer" [(selected)]="userSettingObj[0].value">
+      <p-accordionTab class="cst-register-email cursor-pointer" [(selected)]="userSettingObj[0].value">
         <ng-template pTemplate="header">
           <div class="row w-100 align-items-center">
             <div class="col-10">
@@ -68,4 +68,7 @@
       </p-accordionTab>
     </p-accordion>
   </div>
+</div>
+<div *ngIf="!isView" class="main-wrapper-nodata">
+  Sorry you don't have access to this page!!
 </div>
