@@ -12,7 +12,7 @@ import { ToasterService } from 'src/app/shared';
 export class LocationTypeComponent implements OnInit {
 
   locationTypeForm: FormGroup;
-  isEdit: boolean;
+  isEdit: boolean = false;
   editId: string;
   submitted: boolean;
   isAddFeature = true;
@@ -34,8 +34,10 @@ export class LocationTypeComponent implements OnInit {
 
   prerequisite() {
     this.checkFeatures();
-    this.initLocationTypeInputForm();
+    const routeParams = this.route.snapshot.paramMap;
+    this.editId = routeParams.get('id');
     this.checkEditParam();
+    this.initLocationTypeInputForm();
   }
 
   checkFeatures() {
@@ -61,8 +63,7 @@ export class LocationTypeComponent implements OnInit {
   }
 
   checkEditParam() {
-    const routeParams = this.route.snapshot.paramMap;
-    this.editId = routeParams.get('id');
+    console.log(this.editId, 'ss');
     if (this.editId) {
       this.isEdit = true;
       this.locationService.getLocationTypeById(this.editId).subscribe(res => {
