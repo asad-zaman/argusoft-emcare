@@ -51,11 +51,18 @@ export class DeviceListComponent implements OnInit {
 
   manipulateResponse(res) {
     if (res && res['list']) {
-      this.deviceArr = res['list'];
+      this.deviceArr = this.mapToggleButtonData(res['list']);
       this.filteredDevices = this.deviceArr;
       this.totalCount = res['totalCount'];
       this.isAPIBusy = false;
     }
+  }
+
+  mapToggleButtonData(data) {
+    data.forEach(el => {
+      el['appUsage'] = !el.isBlocked;
+    });
+    return data;
   }
 
   getDevicesByPageIndex(index) {
@@ -71,7 +78,7 @@ export class DeviceListComponent implements OnInit {
   }
 
   editDevice(event, deviceId) {
-    const status = !event;
+    const status = !event.target.checked;
     this.deviceManagementService.updateDeviceStatusById(deviceId, status).subscribe(res => {
       this.toasterService.showToast('success', 'Device updated successfully!', 'EMCARE');
       this.resetCurrentPage();

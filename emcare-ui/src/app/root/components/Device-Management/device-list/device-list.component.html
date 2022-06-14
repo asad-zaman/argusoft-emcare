@@ -30,8 +30,8 @@
               <td>{{data.usersResource ? data.usersResource.userName : 'NA'}}</td>
               <td>
                 <label class="switch">
-                  <input [(ngModel)]="!data.isBlocked" (ngModelChange)="editDevice($event, data.deviceId)"
-                    id="isBlocked" type="checkbox" checked>
+                  <input [(ngModel)]="data.appUsage" (click)="editDevice($event, data.deviceId)"
+                    id="isBlocked" type="checkbox">
                   <span class="slider round"></span>
                 </label>
               </td>
