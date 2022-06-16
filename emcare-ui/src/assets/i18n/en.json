@@ -110,7 +110,7 @@
   "French": "French",
   "English": "English",
   "Hindi": "Hindi",
-  "Manage Translations": "Translations",
+  "Manage Translations": "Manage Translations",
   "Save Changes": "Save Changes",
   "Registration": "Registration",
   "Risk_Assessment": "Risk Assessment",
@@ -190,5 +190,15 @@
   "Pending User Requests": "Pending User Requests",
   "Analysis": "Analysis",
   "Map": "Map",
-  "Dashboard": "Dashboard"
+  "Dashboard": "Dashboard",
+  "Previous": "Previous",
+  "Next": "Next",
+  "Devices": "Devices",
+  "Facility": "Facility",
+  "Feature": "Feature",
+  "All Locations": "All Locations",
+  "Location Types": "Location Types",
+  "All Patient": "All Patient",
+  "User Settings": "User Settings",
+  "All Users": "All Users"
 }

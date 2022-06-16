@@ -30,8 +30,8 @@
               <td>{{data.usersResource ? data.usersResource.userName : 'NA'}}</td>
               <td>
                 <label class="switch">
-                  <input [(ngModel)]="data.appUsage" (click)="editDevice($event, data.deviceId)"
-                    id="isBlocked" type="checkbox">
+                  <input [(ngModel)]="data.appUsage" (click)="editDevice($event, data.deviceId)" id="isBlocked"
+                    type="checkbox">
                   <span class="slider round"></span>
                 </label>
               </td>
@@ -45,8 +45,9 @@
         </ng-template>
       </tbody>
     </table>
-    <div class="d-flex justify-content-end mt-3">
-      <pagination-controls responsive="true" previousLabel="Prev" nextLabel="Next" (pageChange)="onIndexChange($event)">
+    <div *ngIf="filteredDevices && filteredDevices.length > 0" class="d-flex justify-content-end mt-3">
+      <pagination-controls responsive="true" [previousLabel]="getLabel(0)" [nextLabel]="getLabel(1)"
+        (pageChange)="onIndexChange($event)">
       </pagination-controls>
     </div>
   </div>

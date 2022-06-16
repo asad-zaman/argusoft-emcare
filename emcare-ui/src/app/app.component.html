@@ -33,7 +33,7 @@
             [ngClass]="{'active': checkIsActiveOrNot(feature, feature.menuName) || feature.subMenuActive}"
             (click)="changeDropdownValueOrRoute(feature)">
             <i class="{{getIconClassFromFeatureName(feature.menuName)}}" aria-hidden="true"></i>
-            {{feature.menuName}}
+            {{feature.menuName | translate}}
             <ng-container *ngIf="feature.subMenu.length>0">
               <ng-container *ngIf="feature.dropdownValue; else upIcon">
                 <i class="bi bi-chevron-up drop-icon" aria-hidden="true"></i>
@@ -50,7 +50,7 @@
                   <li *ngIf="hasAccess(subMenu.menuName)">
                     <a class="mouse-pointer"
                       [ngClass]="{'dropdown-link_active': checkIsActiveOrNot(feature, subMenu.menuName, true)}"
-                      (click)="changeDropdownValueOrRoute(subMenu.menuName, true)">{{subMenu.menuName}}</a>
+                      (click)="changeDropdownValueOrRoute(subMenu.menuName, true)">{{subMenu.menuName | translate}}</a>
                   </li>
                 </ng-container>
               </ul>

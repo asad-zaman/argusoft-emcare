@@ -33,10 +33,10 @@ export class AppComponent implements OnInit {
     'Patients': 'bi bi-map nav-link_icon',
     'Feature': 'bi bi-diagram-3 nav-link_icon',
     'Devices': 'bi bi-hdd-network nav-link_icon',
-    'Questionnaires': 'bi bi-people nav-link_icon',
+    'Questionnaires': 'bi bi-window-dock nav-link_icon',
     'Languages': 'bi bi-calendar2-range nav-link_icon',
     'Facility': 'bi bi-columns-gap nav-link_icon',
-    'Settings': 'bi bi-people nav-link_icon',
+    'Settings': 'bi bi-gear nav-link_icon',
     'Dashboard': 'bi bi-house-door nav-link_icon'
   }
 

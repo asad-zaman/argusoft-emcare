@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { AuthGuard } from 'src/app/auth/auth.guard';
@@ -26,7 +27,8 @@ export class DeviceListComponent implements OnInit {
   constructor(
     private readonly deviceManagementService: DeviceManagementService,
     private readonly toasterService: ToasterService,
-    private readonly authGuard: AuthGuard
+    private readonly authGuard: AuthGuard,
+    private readonly translate: TranslateService
   ) { }
 
   ngOnInit(): void {
@@ -108,5 +110,14 @@ export class DeviceListComponent implements OnInit {
       });
     }
     this.searchTermChanged.next(this.searchString);
+  }
+
+  getLabel(index) {
+    const key = index === 0 ? 'Previous' : 'Next';
+    let tr;
+    this.translate.get(key).subscribe(res => {
+      tr = res;
+    });
+    return tr;
   }
 }

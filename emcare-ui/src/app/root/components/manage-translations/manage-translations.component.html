@@ -31,7 +31,7 @@
   <div *ngIf="editLanCode">
     <div class="row align-items-center mb-3">
       <div class="col-lg-6 col-xxl-2 col-md-5 position-relative">
-        <h1 class="heading">Manage Translations</h1>
+        <h1 class="heading">{{'Manage Translations' | translate}}</h1>
       </div>
       <div class="col text-end">
         <button [disabled]="!isTranslationSaved" routerLink="/language-list" class="btn-black btn ms-3">

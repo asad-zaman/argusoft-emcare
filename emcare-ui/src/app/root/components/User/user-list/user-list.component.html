@@ -79,7 +79,7 @@
         </ng-template>
       </tbody>
     </table>
-    <div class="d-flex justify-content-end mt-3">
+    <div *ngIf="filteredUserList && filteredUserList.length > 0" class="d-flex justify-content-end mt-3">
       <pagination-controls responsive="true" previousLabel="Prev" nextLabel="Next" (pageChange)="onIndexChange($event)">
       </pagination-controls>
     </div>
