@@ -24,6 +24,7 @@ public class TwilioServiceImpl implements TwilioService {
 
     @Override
     public void sendSms(String to, String content) {
+        //thePatient.getTelecom().get(0).getValue()
         sendMessage(to, content);
     }
 
