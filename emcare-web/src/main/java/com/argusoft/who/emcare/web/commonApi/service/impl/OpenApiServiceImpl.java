@@ -9,6 +9,7 @@ import com.argusoft.who.emcare.web.commonApi.service.OpenApiService;
 import com.argusoft.who.emcare.web.mail.MailService;
 import com.argusoft.who.emcare.web.mail.dto.MailDto;
 import com.argusoft.who.emcare.web.mail.impl.MailDataSetterService;
+import com.argusoft.who.emcare.web.twilio.service.TwilioService;
 import com.argusoft.who.emcare.web.user.service.UserService;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,9 @@ public class OpenApiServiceImpl implements OpenApiService {
     @Autowired
     MailDataSetterService mailDataSetterService;
 
+    @Autowired
+    TwilioService twilioService;
+
     @Override
     public ResponseEntity<?> generateOTP(String emailId) {
         UserRepresentation userRepresentation = userService.getUserByEmailId(emailId);
@@ -61,6 +65,7 @@ public class OpenApiServiceImpl implements OpenApiService {
         mailDto = mailDataSetterService.mailSubjectSetter(CommonConstant.MAIL_FOR_GENERATE_OTP);
         String body = mailDto.getBody() + " " + otp.getOtp();
         mailService.sendBasicMail(emailId, mailDto.getSubject(), body);
+        twilioService.sendSms("+919979943100",body);
         return ResponseEntity.ok(savedOTP);
     }
 
