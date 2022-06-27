@@ -15,8 +15,12 @@
         android:name="com.argusoft.who.emcare.ui.home.HomeFragment"
         tools:layout="@layout/fragment_home">
         <action
-            android:id="@+id/action_homeFragment_to_locationFragment"
-            app:destination="@id/locationFragment" />
+            android:id="@+id/action_homeFragment_to_addPatientFragment"
+            app:destination="@id/addPatientFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_patientActionsFragment"
+            app:destination="@id/patientActionsFragment" />
+
     </fragment>
 
     <fragment

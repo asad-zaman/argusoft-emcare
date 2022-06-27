@@ -45,64 +45,51 @@
         app:layout_constraintStart_toEndOf="@+id/welcomeTextView"
         app:layout_constraintTop_toBottomOf="@+id/headerLayout" />
 
-   <!-- <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/letsTextView"
-        style="@style/TextView.Small"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/_16sdp"
-        android:text="@string/label_let_s"
-        android:textSize="@dimen/_13ssp"
-        app:layout_constraintBottom_toBottomOf="@+id/getsTextView"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/getsTextView" />
-
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/getsTextView"
-        style="@style/TextView.SemiBold"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/_4sdp"
-        android:text="@string/label_get_started"
-        app:layout_constraintStart_toEndOf="@+id/letsTextView"
-        app:layout_constraintTop_toBottomOf="@+id/nameTextView" />-->
-
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/nestedScrollView"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="@dimen/_16sdp"
-        android:background="@drawable/bg_top_curved_white"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nameTextView">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <com.argusoft.who.emcare.widget.ApiViewStateConstraintLayout
+            android:id="@+id/progressLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="0dp"
+            android:background="@drawable/bg_top_curved_white"
+            android:layout_marginTop="@dimen/_12sdp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/nameTextView">
 
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/titleTextView"
-                style="@style/TextView.SemiBold"
+            <androidx.appcompat.widget.SearchView
+                android:id="@+id/searchView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_12sdp"
+                app:iconifiedByDefault="false"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/addPatientButton"
+                app:layout_constraintStart_toStartOf="@+id/addPatientButton"
+                app:queryHint="@string/query_hint_patient_search" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/addPatientButton"
+                style="@style/Button.Outlined"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/_18sdp"
-                android:layout_marginTop="@dimen/_18sdp"
-                android:text="@string/label_what_would_you_like_to_do_today"
-                android:textColor="@color/textColorBlack"
-                android:textSize="@dimen/_14ssp"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:layout_marginHorizontal="@dimen/_16sdp"
+                android:layout_marginTop="@dimen/_12sdp"
+                android:text="@string/button_add_patient"
+                app:layout_constraintTop_toBottomOf="@+id/searchView" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerView"
+            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                android:id="@+id/swipeRefreshLayout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:nestedScrollingEnabled="false"
-                android:padding="@dimen/_8sdp"
-                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                app:layout_constraintTop_toBottomOf="@+id/titleTextView"
-                app:spanCount="3"
-                tools:listitem="@layout/list_item_dashboard" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/addPatientButton">
 
-    </androidx.core.widget.NestedScrollView>
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false"
+                    android:orientation="vertical"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:listitem="@layout/list_item_patient" />
+            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+        </com.argusoft.who.emcare.widget.ApiViewStateConstraintLayout>
 </androidx.constraintlayout.motion.widget.MotionLayout>

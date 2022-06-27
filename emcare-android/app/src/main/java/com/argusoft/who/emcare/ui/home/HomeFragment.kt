@@ -2,6 +2,7 @@ package com.argusoft.who.emcare.ui.home
 
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.argusoft.who.emcare.R
@@ -9,8 +10,9 @@ import com.argusoft.who.emcare.databinding.FragmentHomeBinding
 import com.argusoft.who.emcare.sync.SyncViewModel
 import com.argusoft.who.emcare.ui.common.base.BaseFragment
 import com.argusoft.who.emcare.ui.common.model.Dashboard
+import com.argusoft.who.emcare.ui.home.patient.PatientAdapter
+import com.argusoft.who.emcare.ui.home.patient.PatientViewModel
 import com.argusoft.who.emcare.ui.home.settings.SettingsViewModel
-import com.argusoft.who.emcare.utils.SpacesItemDecoration
 import com.argusoft.who.emcare.utils.extention.*
 import com.argusoft.who.emcare.utils.glide.GlideApp
 import com.argusoft.who.emcare.utils.glide.GlideRequests
@@ -18,17 +20,19 @@ import com.google.android.fhir.sync.State
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class HomeFragment : BaseFragment<FragmentHomeBinding>() {
+class HomeFragment : BaseFragment<FragmentHomeBinding>(), SearchView.OnQueryTextListener {
 
-    private val syncViewModel: SyncViewModel by viewModels()
     private lateinit var glideRequests: GlideRequests
-    private lateinit var homeAdapter: HomeAdapter
+    private val syncViewModel: SyncViewModel by viewModels()
     private val settingsViewModel: SettingsViewModel by activityViewModels()
+    private val patientViewModel: PatientViewModel by viewModels()
+    private lateinit var patientAdapter: PatientAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         glideRequests = GlideApp.with(this)
-        homeAdapter = HomeAdapter(onClickListener = this)
+        patientAdapter = PatientAdapter(onClickListener = this)
+        patientViewModel.getPatients("", preference.getLoggedInUser()?.location?.get(0)?.id, patientAdapter.isNotEmpty())
     }
 
     override fun initView() {
@@ -38,11 +42,17 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
     }
 
     private fun setupRecyclerView() {
-        binding.recyclerView.addItemDecoration(SpacesItemDecoration(20))
-        binding.recyclerView.adapter = homeAdapter
+        binding.progressLayout.recyclerView = binding.recyclerView
+        binding.progressLayout.swipeRefreshLayout = binding.swipeRefreshLayout
+        binding.recyclerView.adapter = patientAdapter
+        binding.progressLayout.setOnSwipeRefreshLayout {
+            patientViewModel.getPatients(binding.searchView.query.toString(), preference.getLoggedInUser()?.location?.get(0)?.id, true)
+        }
     }
 
     override fun initListener() {
+        binding.searchView.setOnQueryTextListener(this)
+        binding.addPatientButton.setOnClickListener(this)
         binding.headerLayout.toolbar.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.action_sync -> {
@@ -51,6 +61,16 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
             }
             return@setOnMenuItemClickListener true
         }
+
+    }
+
+    override fun onQueryTextSubmit(query: String?): Boolean {
+        return true
+    }
+
+    override fun onQueryTextChange(newText: String?): Boolean {
+        patientViewModel.getPatients(binding.searchView.query.toString(), preference.getLoggedInUser()?.location?.get(0)?.id, patientAdapter.isNotEmpty())
+        return true
     }
 
     override fun initObserver() {
@@ -88,19 +108,16 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
         observeNotNull(settingsViewModel.languageApiState) {
             it.whenSuccess {
                 it.languageData?.convertToMap()?.apply {
-                    val dashboardList = arrayListOf<Dashboard?>(
-                        Dashboard(getOrElse("Registration") { "Registration" }, "#F6D1CB", "#9c5950", R.drawable.ic_registration)
-//                        Dashboard(getOrElse("Risk_Assessment") { "Risk Assessment" }, "#AFE9ED", "#478c91", R.drawable.ic_risk_assessment),
-//                        Dashboard(getOrElse("Referral") { "Referral" }, "#B9DDF5", "#5788ac", R.drawable.ic_referral),
-//                        Dashboard(getOrElse("Notification") { "Notification" }, "#DFD1F5", "#6d558a", R.drawable.ic_dashboard_notification),
-//                        Dashboard(getOrElse("Reports") { "Reports" }, "#FCE1C4", "#82603e", R.drawable.ic_reports),
-//                        Dashboard(getOrElse("Announcements") { "Announcements" }, "#C1DBD2", "#48816f", R.drawable.ic_announcements),
-                    )
-                    if (homeAdapter.getItemsList().isEmpty()) {
-                        homeAdapter.addAll(dashboardList)
-                    }
                     binding.welcomeTextView.text = getOrElse("Welcome") { getString(R.string.label_welcome) }
-                    binding.titleTextView.text = getOrElse("Home_title") { getString(R.string.label_what_would_you_like_to_do_today) }
+                }
+            }
+        }
+
+        observeNotNull(patientViewModel.patients) { apiResponse ->
+            apiResponse.handleListApiView(binding.progressLayout, skipIds = listOf(R.id.searchView, R.id.addPatientButton, R.id.swipeRefreshLayout)) {
+                it?.let { list ->
+                    patientAdapter.clearAllItems()
+                    patientAdapter.addAll(list)
                 }
             }
         }
@@ -109,12 +126,8 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
     override fun onClick(view: View?) {
         super.onClick(view)
         when (view?.id) {
-            R.id.itemRootLayout -> {
-                when (view.tag as? Int) {
-                    0 -> {
-                        navigate(R.id.action_homeFragment_to_locationFragment)
-                    }
-                }
+            R.id.addPatientButton -> {
+                navigate(R.id.action_homeFragment_to_addPatientFragment)
             }
         }
     }

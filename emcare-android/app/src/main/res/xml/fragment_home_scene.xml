@@ -28,7 +28,7 @@
             android:layout_marginTop="@dimen/status_margin_top"  />
 
         <Constraint
-            android:id="@+id/nestedScrollView"
+            android:id="@id/swipeRefreshLayout"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -43,7 +43,7 @@
         app:motionInterpolator="linear">
         <KeyFrameSet>
         </KeyFrameSet>
-        <OnSwipe app:touchAnchorId="@+id/nestedScrollView" />
+        <OnSwipe app:touchAnchorId="@id/swipeRefreshLayout" />
     </Transition>
 
 </MotionScene>
