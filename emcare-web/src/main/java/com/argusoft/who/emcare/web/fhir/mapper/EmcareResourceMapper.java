@@ -1,11 +1,7 @@
 package com.argusoft.who.emcare.web.fhir.mapper;
 
-import com.argusoft.who.emcare.web.fhir.dto.PatientDto;
-import com.argusoft.who.emcare.web.fhir.dto.QuestionnaireDto;
-import org.hl7.fhir.r4.model.Extension;
-import org.hl7.fhir.r4.model.Identifier;
-import org.hl7.fhir.r4.model.Patient;
-import org.hl7.fhir.r4.model.Questionnaire;
+import com.argusoft.who.emcare.web.fhir.dto.*;
+import org.hl7.fhir.r4.model.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,5 +84,41 @@ public class EmcareResourceMapper {
             questionnaireDtos.add(questionnaireEntityToDtoMapper(q));
         }
         return questionnaireDtos;
+    }
+
+    public static StructureMapDto getStructureMapDto(StructureMap map) {
+        StructureMapDto mapDto = new StructureMapDto();
+
+        mapDto.setId(map.getIdElement().getIdPart());
+        mapDto.setName(map.getName());
+        mapDto.setTitle(map.getTitle());
+        mapDto.setDescription(map.getDescription());
+        mapDto.setPublisher(map.getPublisher());
+
+        return mapDto;
+    }
+
+    public static StructureDefinitionDto getStructureDefinitionDto(StructureDefinition definition) {
+        StructureDefinitionDto dto = new StructureDefinitionDto();
+
+        dto.setId(definition.getIdElement().getIdPart());
+        dto.setName(definition.getName());
+        dto.setTitle(definition.getTitle());
+        dto.setDescription(definition.getDescription());
+        dto.setPublisher(definition.getPublisher());
+
+        return dto;
+    }
+
+    public static CodeSystemDto getCodeSystemDto(CodeSystem codeSystem) {
+        CodeSystemDto dto = new CodeSystemDto();
+
+        dto.setId(codeSystem.getIdElement().getIdPart());
+        dto.setName(codeSystem.getName());
+        dto.setTitle(codeSystem.getTitle());
+        dto.setDescription(codeSystem.getDescription());
+        dto.setPublisher(codeSystem.getPublisher());
+
+        return dto;
     }
 }

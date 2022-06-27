@@ -2,15 +2,14 @@ package com.argusoft.who.emcare.web.fhir.controller;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.IParser;
+import ca.uhn.fhir.rest.annotation.RequiredParam;
 import com.argusoft.who.emcare.web.common.dto.PageDto;
 import com.argusoft.who.emcare.web.fhir.dto.PatientDto;
 import com.argusoft.who.emcare.web.fhir.dto.QuestionnaireDto;
 import com.argusoft.who.emcare.web.fhir.mapper.EmcareResourceMapper;
 import com.argusoft.who.emcare.web.fhir.model.EmcareResource;
 import com.argusoft.who.emcare.web.fhir.model.QuestionnaireMaster;
-import com.argusoft.who.emcare.web.fhir.service.EmcareResourceService;
-import com.argusoft.who.emcare.web.fhir.service.LocationResourceService;
-import com.argusoft.who.emcare.web.fhir.service.QuestionnaireMasterService;
+import com.argusoft.who.emcare.web.fhir.service.*;
 import com.argusoft.who.emcare.web.location.model.LocationMaster;
 import com.argusoft.who.emcare.web.location.service.LocationService;
 import org.hl7.fhir.r4.model.Patient;
@@ -42,6 +41,15 @@ public class EmcareResourceController {
 
     @Autowired
     private LocationService locationService;
+
+    @Autowired
+    private StructureMapResourceService structureMapResourceService;
+
+    @Autowired
+    private StructureDefinitionService structureDefinitionService;
+
+    @Autowired
+    private CodeSystemResourceService codeSystemResourceService;
 
     @GetMapping("/patient")
     public List<PatientDto> getAllPatients() {
@@ -106,4 +114,23 @@ public class EmcareResourceController {
         }
         return q;
     }
+
+    @GetMapping("/structure-map")
+    public PageDto getStructureMapPage(@RequiredParam(name = "pageNo") Integer pageNo,
+                                       @Nullable @RequiredParam(name = "search") String searchString) {
+        return structureMapResourceService.getStructureMapPage(pageNo, searchString);
+    }
+
+    @GetMapping("/structure-definition")
+    public PageDto getStructureDefinitionPage(@RequiredParam(name = "pageNo") Integer pageNo,
+                                              @Nullable @RequiredParam(name = "search") String searchString) {
+        return structureDefinitionService.getStructureDefinitionPage(pageNo, searchString);
+    }
+
+    @GetMapping("/code-system")
+    public PageDto getCodeSystemPage(@RequiredParam(name = "pageNo") Integer pageNo,
+                                     @Nullable @RequiredParam(name = "search") String searchString) {
+        return codeSystemResourceService.getCodeSystemPage(pageNo, searchString);
+    }
+
 }
