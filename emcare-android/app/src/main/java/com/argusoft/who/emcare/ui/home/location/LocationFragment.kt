@@ -70,7 +70,7 @@ class LocationFragment : BaseFragment<FragmentLocationBinding>() {
                         isError = true
                     )
                 } else {
-                    navigate(R.id.action_locationFragment_to_patientFragment) {
+                    navigate(R.id.action_locationFragment_to_homeFragment) {
                         putInt(INTENT_EXTRA_LOCATION_ID, locationViewModel.locationId!!)
                     }
                 }

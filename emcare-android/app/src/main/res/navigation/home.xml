@@ -28,21 +28,10 @@
         android:name="com.argusoft.who.emcare.ui.home.location.LocationFragment"
         tools:layout="@layout/fragment_location" >
         <action
-            android:id="@+id/action_locationFragment_to_patientFragment"
-            app:destination="@id/patientFragment" />
+            android:id="@+id/action_locationFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
     </fragment>
 
-    <fragment
-        android:id="@+id/patientFragment"
-        android:name="com.argusoft.who.emcare.ui.home.patient.PatientFragment"
-        tools:layout="@layout/fragment_patient">
-        <action
-            android:id="@+id/action_patientFragment_to_addPatientFragment"
-            app:destination="@id/addPatientFragment" />
-        <action
-            android:id="@+id/action_patientFragment_to_patientActionsFragment"
-            app:destination="@id/patientActionsFragment" />
-    </fragment>
 
     <fragment
         android:id="@+id/addPatientFragment"

@@ -7,11 +7,9 @@ import androidx.fragment.app.viewModels
 import ca.uhn.fhir.context.FhirContext
 import ca.uhn.fhir.parser.IParser
 import com.argusoft.who.emcare.R
-import com.argusoft.who.emcare.databinding.FragmentAddPatientBinding
 import com.argusoft.who.emcare.databinding.FragmentPatientQuestionnaireBinding
 import com.argusoft.who.emcare.ui.common.*
 import com.argusoft.who.emcare.ui.common.base.BaseFragment
-import com.argusoft.who.emcare.ui.home.patient.PatientViewModel
 import com.argusoft.who.emcare.ui.home.settings.SettingsViewModel
 import com.argusoft.who.emcare.utils.extention.convertToMap
 import com.argusoft.who.emcare.utils.extention.handleApiView

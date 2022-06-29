@@ -9,9 +9,6 @@ import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.databinding.FragmentHomeBinding
 import com.argusoft.who.emcare.sync.SyncViewModel
 import com.argusoft.who.emcare.ui.common.base.BaseFragment
-import com.argusoft.who.emcare.ui.common.model.Dashboard
-import com.argusoft.who.emcare.ui.home.patient.PatientAdapter
-import com.argusoft.who.emcare.ui.home.patient.PatientViewModel
 import com.argusoft.who.emcare.ui.home.settings.SettingsViewModel
 import com.argusoft.who.emcare.utils.extention.*
 import com.argusoft.who.emcare.utils.glide.GlideApp
@@ -25,14 +22,14 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(), SearchView.OnQueryText
     private lateinit var glideRequests: GlideRequests
     private val syncViewModel: SyncViewModel by viewModels()
     private val settingsViewModel: SettingsViewModel by activityViewModels()
-    private val patientViewModel: PatientViewModel by viewModels()
-    private lateinit var patientAdapter: PatientAdapter
+    private val homeViewModel: HomeViewModel by viewModels()
+    private lateinit var homeAdapter: HomeAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         glideRequests = GlideApp.with(this)
-        patientAdapter = PatientAdapter(onClickListener = this)
-        patientViewModel.getPatients("", preference.getLoggedInUser()?.location?.get(0)?.id, patientAdapter.isNotEmpty())
+        homeAdapter = HomeAdapter(onClickListener = this)
+        homeViewModel.getPatients("", preference.getLoggedInUser()?.location?.get(0)?.id, homeAdapter.isNotEmpty())
     }
 
     override fun initView() {
@@ -44,9 +41,9 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(), SearchView.OnQueryText
     private fun setupRecyclerView() {
         binding.progressLayout.recyclerView = binding.recyclerView
         binding.progressLayout.swipeRefreshLayout = binding.swipeRefreshLayout
-        binding.recyclerView.adapter = patientAdapter
+        binding.recyclerView.adapter = homeAdapter
         binding.progressLayout.setOnSwipeRefreshLayout {
-            patientViewModel.getPatients(binding.searchView.query.toString(), preference.getLoggedInUser()?.location?.get(0)?.id, true)
+            homeViewModel.getPatients(binding.searchView.query.toString(), preference.getLoggedInUser()?.location?.get(0)?.id, true)
         }
     }
 
@@ -69,7 +66,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(), SearchView.OnQueryText
     }
 
     override fun onQueryTextChange(newText: String?): Boolean {
-        patientViewModel.getPatients(binding.searchView.query.toString(), preference.getLoggedInUser()?.location?.get(0)?.id, patientAdapter.isNotEmpty())
+        homeViewModel.getPatients(binding.searchView.query.toString(), preference.getLoggedInUser()?.location?.get(0)?.id, homeAdapter.isNotEmpty())
         return true
     }
 
@@ -113,11 +110,11 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(), SearchView.OnQueryText
             }
         }
 
-        observeNotNull(patientViewModel.patients) { apiResponse ->
+        observeNotNull(homeViewModel.patients) { apiResponse ->
             apiResponse.handleListApiView(binding.progressLayout, skipIds = listOf(R.id.searchView, R.id.addPatientButton, R.id.swipeRefreshLayout)) {
                 it?.let { list ->
-                    patientAdapter.clearAllItems()
-                    patientAdapter.addAll(list)
+                    homeAdapter.clearAllItems()
+                    homeAdapter.addAll(list)
                 }
             }
         }

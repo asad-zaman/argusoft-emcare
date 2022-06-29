@@ -10,7 +10,7 @@ import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.databinding.FragmentAddPatientBinding
 import com.argusoft.who.emcare.ui.common.INTENT_EXTRA_LOCATION_ID
 import com.argusoft.who.emcare.ui.common.base.BaseFragment
-import com.argusoft.who.emcare.ui.home.patient.PatientViewModel
+import com.argusoft.who.emcare.ui.home.HomeViewModel
 import com.argusoft.who.emcare.ui.home.settings.SettingsViewModel
 import com.argusoft.who.emcare.utils.extention.convertToMap
 import com.argusoft.who.emcare.utils.extention.handleApiView
@@ -23,20 +23,20 @@ import org.hl7.fhir.r4.model.Questionnaire
 @AndroidEntryPoint
 class AddPatientFragment : BaseFragment<FragmentAddPatientBinding>() {
 
-    private val patientViewModel: PatientViewModel by viewModels()
+    private val homeViewModel: HomeViewModel by viewModels()
     private val settingsViewModel: SettingsViewModel by activityViewModels()
     private val questionnaireFragment = QuestionnaireFragment()
 
     override fun initView() {
         setupToolbar()
-        patientViewModel.getQuestionnaire("emcarea.registration.p") //TODO: replace hardcoded questionnaire id.
+        homeViewModel.getQuestionnaire("emcarea.registration.p") //TODO: replace hardcoded questionnaire id.
     }
 
     private fun setupToolbar() {
         binding.headerLayout.toolbar.inflateMenu(R.menu.menu_save)
         binding.headerLayout.toolbar.setOnMenuItemClickListener {
-            patientViewModel.questionnaireJson?.let {
-                patientViewModel.savePatient(
+            homeViewModel.questionnaireJson?.let {
+                homeViewModel.savePatient(
                     questionnaireFragment.getQuestionnaireResponse(), it,
                     requireArguments().getInt(INTENT_EXTRA_LOCATION_ID)
                 )
@@ -48,8 +48,8 @@ class AddPatientFragment : BaseFragment<FragmentAddPatientBinding>() {
     private fun addQuestionnaireFragment(questionnaire: Questionnaire) {
         val fhirCtx: FhirContext = FhirContext.forR4()
         val parser: IParser = fhirCtx.newJsonParser().setPrettyPrint(false)
-        patientViewModel.questionnaireJson = parser.encodeResourceToString(questionnaire)
-        patientViewModel.questionnaireJson?.let {
+        homeViewModel.questionnaireJson = parser.encodeResourceToString(questionnaire)
+        homeViewModel.questionnaireJson?.let {
             questionnaireFragment.arguments = bundleOf(QuestionnaireFragment.EXTRA_QUESTIONNAIRE_JSON_STRING to it)
             childFragmentManager.commit {
                 add(R.id.fragmentContainerView, questionnaireFragment, QuestionnaireFragment::class.java.simpleName)
@@ -62,14 +62,14 @@ class AddPatientFragment : BaseFragment<FragmentAddPatientBinding>() {
     }
 
     override fun initObserver() {
-        observeNotNull(patientViewModel.addPatients) { apiResponse ->
+        observeNotNull(homeViewModel.addPatients) { apiResponse ->
             apiResponse.handleApiView(binding.progressLayout, skipIds = listOf(R.id.headerLayout)) {
                 if (it == 1) {
                     requireActivity().onBackPressed()
                 }
             }
         }
-        observeNotNull(patientViewModel.questionnaire) { questionnaire ->
+        observeNotNull(homeViewModel.questionnaire) { questionnaire ->
             questionnaire.handleApiView(binding.progressLayout, skipIds = listOf(R.id.headerLayout)) {
                 it?.let { addQuestionnaireFragment(it) }
             }
