@@ -142,4 +142,14 @@ public class EmcareResourceMapper {
         }
         return code;
     }
+
+    public static FacilityDto getFacilityDto(Location location,String id) {
+        FacilityDto dto = new FacilityDto();
+        dto.setFacilityName(location.getName());
+        dto.setFacilityId(id);
+        dto.setAddress(location.getAddress().getLine().get(0).getValue());
+        dto.setOrganizationId(location.getManagingOrganization().getId());
+        dto.setOrganizationName(location.getManagingOrganization().getDisplay());
+        return dto;
+    }
 }

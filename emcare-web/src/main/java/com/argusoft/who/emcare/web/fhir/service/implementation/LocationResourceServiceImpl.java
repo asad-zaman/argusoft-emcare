@@ -7,6 +7,8 @@ import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
 import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.fhir.dao.LocationResourceRepository;
 import com.argusoft.who.emcare.web.fhir.dao.OrganizationResourceRepository;
+import com.argusoft.who.emcare.web.fhir.dto.FacilityDto;
+import com.argusoft.who.emcare.web.fhir.mapper.EmcareResourceMapper;
 import com.argusoft.who.emcare.web.fhir.model.LocationResource;
 import com.argusoft.who.emcare.web.fhir.service.LocationResourceService;
 import com.argusoft.who.emcare.web.fhir.service.OrganizationResourceService;
@@ -153,5 +155,11 @@ public class LocationResourceServiceImpl implements LocationResourceService {
         }
 
         return locationList;
+    }
+
+    @Override
+    public FacilityDto getFacilityDto(String id) {
+        Location location = getByResourceId(id);
+        return EmcareResourceMapper.getFacilityDto(location,id);
     }
 }
