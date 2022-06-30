@@ -1,7 +1,7 @@
 package com.argusoft.who.emcare.web.user.dto;
 
+import com.argusoft.who.emcare.web.fhir.dto.FacilityDto;
 import com.argusoft.who.emcare.web.location.dto.LocationMasterWithHierarchy;
-import com.argusoft.who.emcare.web.location.model.LocationMaster;
 
 import java.util.List;
 
@@ -15,6 +15,7 @@ public class MultiLocationUserListDto {
     private Boolean enabled;
     private List<String> realmRoles;
     private List<LocationMasterWithHierarchy> locations;
+    private List<FacilityDto> facilities;
 
     public String getId() {
         return id;
@@ -78,5 +79,13 @@ public class MultiLocationUserListDto {
 
     public void setLocations(List<LocationMasterWithHierarchy> locations) {
         this.locations = locations;
+    }
+
+    public List<FacilityDto> getFacilities() {
+        return facilities;
+    }
+
+    public void setFacilities(List<FacilityDto> facilities) {
+        this.facilities = facilities;
     }
 }
