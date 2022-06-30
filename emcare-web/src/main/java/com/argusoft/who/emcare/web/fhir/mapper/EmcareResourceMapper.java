@@ -32,19 +32,19 @@ public class EmcareResourceMapper {
         }
         pDto.setDob(p.getBirthDate());
 
-        //Caregiver
+        // Caregiver
         if (p.hasLink()) {
             pDto.setCaregiver(p.getLinkFirstRep().getOther().getIdentifier().getValue());
         }
 
-        //Location
+        // Location
         if (p.hasExtension()) {
             Extension locationExtension = p.getExtension().get(0);
             String locationId = ((Identifier) locationExtension.getValue()).getValue();
             pDto.setLocation(locationId);
         }
 
-        //Address
+        // Address
         if (p.hasAddress()) {
             if (p.getAddressFirstRep().hasLine()) {
                 pDto.setAddressLine(p.getAddressFirstRep().getLine().get(0).toString());
@@ -143,7 +143,6 @@ public class EmcareResourceMapper {
         return code;
     }
 
-
     public static ActivityDefinitionDto getStructureMapDto(ActivityDefinition definition) {
         ActivityDefinitionDto dto = new ActivityDefinitionDto();
 
@@ -152,7 +151,16 @@ public class EmcareResourceMapper {
         dto.setTitle(definition.getTitle());
         dto.setStatus(definition.getStatus().getDisplay());
         dto.setSubTitle(definition.getSubtitle());
+        return dto;
+    }
 
+    public static FacilityDto getFacilityDto(Location location, String id) {
+        FacilityDto dto = new FacilityDto();
+        dto.setFacilityName(location.getName());
+        dto.setFacilityId(id);
+        dto.setAddress(location.getAddress().getLine().get(0).getValue());
+        dto.setOrganizationId(location.getManagingOrganization().getId());
+        dto.setOrganizationName(location.getManagingOrganization().getDisplay());
         return dto;
     }
 }

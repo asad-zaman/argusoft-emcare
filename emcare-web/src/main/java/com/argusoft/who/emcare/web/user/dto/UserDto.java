@@ -17,6 +17,7 @@ public class UserDto {
     private String roleName;
     private String language;
     private List<Integer> locationIds;
+    private List<String> facilityIds;
 
 
     public String getFirstName() {
@@ -97,5 +98,13 @@ public class UserDto {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public List<String> getFacilityIds() {
+        return facilityIds;
+    }
+
+    public void setFacilityIds(List<String> facilityIds) {
+        this.facilityIds = facilityIds;
     }
 }

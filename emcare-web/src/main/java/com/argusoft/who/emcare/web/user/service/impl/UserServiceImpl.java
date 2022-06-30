@@ -7,6 +7,8 @@ import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.common.dto.PageDto;
 import com.argusoft.who.emcare.web.common.response.Response;
 import com.argusoft.who.emcare.web.config.KeyCloakConfig;
+import com.argusoft.who.emcare.web.fhir.dto.FacilityDto;
+import com.argusoft.who.emcare.web.fhir.service.LocationResourceService;
 import com.argusoft.who.emcare.web.location.dao.LocationMasterDao;
 import com.argusoft.who.emcare.web.location.dto.LocationMasterWithHierarchy;
 import com.argusoft.who.emcare.web.location.mapper.LocationMasterMapper;
@@ -89,6 +91,9 @@ public class UserServiceImpl implements UserService {
     @Autowired
     MailDataSetterService mailDataSetterService;
 
+    @Autowired
+    LocationResourceService locationResourceService;
+
     @Override
     public UserMasterDto getCurrentUser() {
         AccessToken user = emCareSecurityUser.getLoggedInUser();
@@ -156,6 +161,7 @@ public class UserServiceImpl implements UserService {
         for (UserRepresentation representation : userRepresentations) {
             List<UserLocationMapping> userLocation = userLocationMappingRepository.findByUserId(representation.getId());
             List<Integer> locationIds = userLocation.stream().map(UserLocationMapping::getLocationId).collect(Collectors.toList());
+            List<FacilityDto> facilityDtos = new ArrayList<>();
             if (!userLocation.isEmpty()) {
                 Iterable<Integer> iterableLocationIds = locationIds;
                 List<LocationMaster> locationMaster = locationMasterDao.findAllById(iterableLocationIds);
@@ -163,9 +169,16 @@ public class UserServiceImpl implements UserService {
                 for (LocationMaster master : locationMaster) {
                     locationMasterWithHierarchies.add(LocationMasterMapper.getLocationMasterWithHierarchy(master, locationMasterDao.getNameHierarchy(master.getId())));
                 }
-                userList.add(UserMapper.getMultiLocationUserListDto(representation, locationMasterWithHierarchies));
+
+                facilityDtos = new ArrayList<>();
+                for (UserLocationMapping mapping : userLocation) {
+                    if (mapping.getFacilityId() != null) {
+                        facilityDtos.add(locationResourceService.getFacilityDto(mapping.getFacilityId()));
+                    }
+                }
+                userList.add(UserMapper.getMultiLocationUserListDto(representation, locationMasterWithHierarchies, facilityDtos));
             } else {
-                userList.add(UserMapper.getMultiLocationUserListDto(representation, null));
+                userList.add(UserMapper.getMultiLocationUserListDto(representation, null, null));
             }
         }
         return userList;
@@ -210,16 +223,26 @@ public class UserServiceImpl implements UserService {
         for (UserRepresentation representation : userRepresentations) {
             List<UserLocationMapping> userLocation = userLocationMappingRepository.findByUserId(representation.getId());
             Iterable<Integer> locationIds = userLocation.stream().map(UserLocationMapping::getLocationId).collect(Collectors.toList());
+            List<FacilityDto> facilityDtos = new ArrayList<>();
             if (!userLocation.isEmpty()) {
                 List<LocationMaster> locationMaster = locationMasterDao.findAllById(locationIds);
                 List<LocationMasterWithHierarchy> locationMasterWithHierarchies = new ArrayList<>();
                 for (LocationMaster master : locationMaster) {
                     locationMasterWithHierarchies.add(LocationMasterMapper.getLocationMasterWithHierarchy(master, locationMasterDao.getNameHierarchy(master.getId())));
                 }
-                userList.add(UserMapper.getMultiLocationUserListDto(representation, locationMasterWithHierarchies));
+                facilityDtos = new ArrayList<>();
+                for (UserLocationMapping mapping : userLocation) {
+                    if (mapping.getFacilityId() != null) {
+                        facilityDtos.add(locationResourceService.getFacilityDto(mapping.getFacilityId()));
+                    }
+                }
+
+                userList.add(UserMapper.getMultiLocationUserListDto(representation, locationMasterWithHierarchies, facilityDtos));
             } else {
-                userList.add(UserMapper.getMultiLocationUserListDto(representation, null));
+                userList.add(UserMapper.getMultiLocationUserListDto(representation, null, null));
             }
+
+
         }
         PageDto page = new PageDto();
         page.setList(userList);
@@ -501,15 +524,24 @@ public class UserServiceImpl implements UserService {
         for (UserRepresentation representation : userRepresentations) {
             List<UserLocationMapping> userLocation = userLocationMappingRepository.findByUserId(representation.getId());
             Iterable<Integer> locationIds = userLocation.stream().map(UserLocationMapping::getLocationId).collect(Collectors.toList());
+            List<FacilityDto> facilityDtos = new ArrayList<>();
             if (!userLocation.isEmpty()) {
                 List<LocationMaster> locationMaster = locationMasterDao.findAllById(locationIds);
                 List<LocationMasterWithHierarchy> locationMasterWithHierarchies = new ArrayList<>();
                 for (LocationMaster master : locationMaster) {
                     locationMasterWithHierarchies.add(LocationMasterMapper.getLocationMasterWithHierarchy(master, locationMasterDao.getNameHierarchy(master.getId())));
                 }
-                userList.add(UserMapper.getMultiLocationUserListDto(representation, locationMasterWithHierarchies));
+
+                facilityDtos = new ArrayList<>();
+                for (UserLocationMapping mapping : userLocation) {
+                    if (mapping.getFacilityId() != null) {
+                        facilityDtos.add(locationResourceService.getFacilityDto(mapping.getFacilityId()));
+                    }
+                }
+
+                userList.add(UserMapper.getMultiLocationUserListDto(representation, locationMasterWithHierarchies, facilityDtos));
             } else {
-                userList.add(UserMapper.getMultiLocationUserListDto(representation, null));
+                userList.add(UserMapper.getMultiLocationUserListDto(representation, null, null));
             }
         }
         PageDto pageDto = new PageDto();
@@ -575,9 +607,16 @@ public class UserServiceImpl implements UserService {
             for (LocationMaster master : locationMaster) {
                 locationMasterWithHierarchies.add(LocationMasterMapper.getLocationMasterWithHierarchy(master, locationMasterDao.getNameHierarchy(master.getId())));
             }
-            user = UserMapper.getMultiLocationUserListDto(userRepresentation, locationMasterWithHierarchies);
+            List<FacilityDto> facilityDtos = new ArrayList<>();
+            facilityDtos = new ArrayList<>();
+            for (UserLocationMapping mapping : userLocation) {
+                if (mapping.getFacilityId() != null) {
+                    facilityDtos.add(locationResourceService.getFacilityDto(mapping.getFacilityId()));
+                }
+            }
+            user = UserMapper.getMultiLocationUserListDto(userRepresentation, locationMasterWithHierarchies,facilityDtos);
         } else {
-            user = UserMapper.getMultiLocationUserListDto(userRepresentation, null);
+            user = UserMapper.getMultiLocationUserListDto(userRepresentation, null,null);
         }
 
         return user;
@@ -615,6 +654,14 @@ public class UserServiceImpl implements UserService {
                 ulm.setState(true);
                 userLocationMappingRepository.save(ulm);
             }
+        }
+
+//        Change After demo
+        List<UserLocationMapping> mappings = userLocationMappingRepository.findByUserId(userId);
+        for (int i = 0; i < mappings.size(); i++) {
+            UserLocationMapping mapping = mappings.get(i);
+            mapping.setFacilityId(userDto.getFacilityIds().get(i));
+            userLocationMappingRepository.save(mapping);
         }
 
         Map<String, List<String>> languageAttribute = new HashMap<>();
