@@ -121,4 +121,25 @@ public class EmcareResourceMapper {
 
         return dto;
     }
+
+    public static MedicationDto getMedicationDto(Medication medication) {
+        MedicationDto dto = new MedicationDto();
+
+        dto.setId(medication.getIdElement().getIdPart());
+        dto.setStatus(medication.getStatus() != null ? medication.getStatus().getDisplay() : "NA/NP");
+        dto.setCode(getMedicationCodeDtoList(medication.getCode().getCoding()));
+        dto.setForm(getMedicationCodeDtoList(medication.getForm().getCoding()));
+        return dto;
+    }
+
+    public static List<MedicationCodeDto> getMedicationCodeDtoList(List<Coding> codings) {
+        List<MedicationCodeDto> code = new ArrayList<>();
+        for (Coding coding : codings) {
+            MedicationCodeDto medicationCodeDto = new MedicationCodeDto();
+            medicationCodeDto.setCode(coding.getCode());
+            medicationCodeDto.setDisplay(coding.getDisplay());
+            code.add(medicationCodeDto);
+        }
+        return code;
+    }
 }

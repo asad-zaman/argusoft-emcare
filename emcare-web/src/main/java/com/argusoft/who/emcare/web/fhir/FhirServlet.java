@@ -46,6 +46,9 @@ public class FhirServlet extends RestfulServer {
     @Autowired
     private CodeSystemResourceProvider codeSystemResourceProvider;
 
+    @Autowired
+    MedicationResourceProvider medicationResourceProvider;
+
     @Override
     protected void initialize() throws ServletException {
         super.initialize();
@@ -68,6 +71,7 @@ public class FhirServlet extends RestfulServer {
         resourceProviders.add(structureMapResourceProvider);
         resourceProviders.add(structureDefinitionResourceProvider);
         resourceProviders.add(codeSystemResourceProvider);
+        resourceProviders.add(medicationResourceProvider);
         setResourceProviders(resourceProviders);
     }
 

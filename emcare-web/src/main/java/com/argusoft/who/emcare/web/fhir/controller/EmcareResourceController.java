@@ -51,6 +51,9 @@ public class EmcareResourceController {
     @Autowired
     private CodeSystemResourceService codeSystemResourceService;
 
+    @Autowired
+    private MedicationResourceService medicationResourceService;
+
     @GetMapping("/patient")
     public List<PatientDto> getAllPatients() {
         return emcareResourceService.getAllPatients();
@@ -117,20 +120,26 @@ public class EmcareResourceController {
 
     @GetMapping("/structure-map")
     public PageDto getStructureMapPage(@RequiredParam(name = "pageNo") Integer pageNo,
-                                       @Nullable @RequiredParam(name = "search") String searchString) {
-        return structureMapResourceService.getStructureMapPage(pageNo, searchString);
+                                       @Nullable @RequiredParam(name = "search") String search) {
+        return structureMapResourceService.getStructureMapPage(pageNo, search);
     }
 
     @GetMapping("/structure-definition")
     public PageDto getStructureDefinitionPage(@RequiredParam(name = "pageNo") Integer pageNo,
-                                              @Nullable @RequiredParam(name = "search") String searchString) {
-        return structureDefinitionService.getStructureDefinitionPage(pageNo, searchString);
+                                              @Nullable @RequiredParam(name = "search") String search) {
+        return structureDefinitionService.getStructureDefinitionPage(pageNo, search);
     }
 
     @GetMapping("/code-system")
     public PageDto getCodeSystemPage(@RequiredParam(name = "pageNo") Integer pageNo,
-                                     @Nullable @RequiredParam(name = "search") String searchString) {
-        return codeSystemResourceService.getCodeSystemPage(pageNo, searchString);
+                                     @Nullable @RequiredParam(name = "search") String search) {
+        return codeSystemResourceService.getCodeSystemPage(pageNo, search);
+    }
+
+    @GetMapping("/medication")
+    public PageDto getMedicationPage(@RequiredParam(name = "pageNo") Integer pageNo,
+                                     @Nullable @RequiredParam(name = "search") String search) {
+        return medicationResourceService.getMedicationPage(pageNo, search);
     }
 
 }
