@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import * as Highcharts from 'highcharts';
 import { AuthGuard } from 'src/app/auth/auth.guard';
 import { FhirService } from 'src/app/shared';
+import { UserManagementService } from '../../services/user-management.service';
 
 @Component({
   selector: 'app-home',
@@ -13,13 +14,16 @@ export class HomeComponent implements OnInit {
 
   dashboardData: any = {};
   isView = true;
+  uniqueLocArr = [];
+  userLocArr = [];
 
   @ViewChild('mapRef', { static: true }) mapElement: ElementRef;
 
   constructor(
     private readonly fhirService: FhirService,
-    private routeService: Router,
-    private readonly authGuard: AuthGuard
+    private readonly routeService: Router,
+    private readonly authGuard: AuthGuard,
+    private readonly userManagementService: UserManagementService
   ) { }
 
   ngOnInit(): void {
@@ -31,8 +35,8 @@ export class HomeComponent implements OnInit {
     this.fhirService.getDashboardData().subscribe((res) => {
       this.dashboardData = res;
     });
-    this.barChartPopulation();
-    this.pieChartBrowser();
+    this.getAllUsers();
+    this.getAllPatients();
     this.loadMap();
   }
 
@@ -44,26 +48,50 @@ export class HomeComponent implements OnInit {
     });
   }
 
+  getAllUsers() {
+    this.userManagementService.getAllUsers().subscribe((res: Array<any>) => {
+      if (res) {
+        let count = 0;
+        res.forEach(el => {
+          if (el.locations.length > 0) {
+            count += el.locations.length;
+            el.locations.forEach(l => {
+              const tempLoc = this.userLocArr.find(loc => loc.name == l.name);
+              if (tempLoc) {
+                tempLoc.y += 1;
+              } else {
+                this.userLocArr.push({ name: l.name, y: 1 });
+              }
+            });
+          }
+        });
+        this.barChartPopulation();
+      }
+    });
+  }
+
   barChartPopulation() {
+    let locArr = this.userLocArr.map(l => l.name);
+    let locDataArr = this.userLocArr.map(l => l.y);
     Highcharts.chart('barChart', {
       chart: {
         type: 'bar'
       },
       title: {
-        text: 'Patients per country'
+        text: 'Users per Location'
       },
       xAxis: {
-        categories: ['Africa', 'America', 'Asia', 'Europe', 'Oceania'],
+        categories: locArr,
       },
       yAxis: {
         min: 0,
         title: {
-          text: 'Patients (millions)',
+          text: 'Users ',
           align: 'high'
         },
       },
       tooltip: {
-        valueSuffix: ' millions'
+        valueSuffix: ''
       },
       plotOptions: {
         bar: {
@@ -74,21 +102,25 @@ export class HomeComponent implements OnInit {
       },
       series: [{
         type: undefined,
-        name: 'Year 1800',
-        data: [107, 31, 635, 203, 2]
-      }, {
-        type: undefined,
-        name: 'Year 1900',
-        data: [133, 156, 947, 408, 6]
-      }, {
-        type: undefined,
-        name: 'Year 2000',
-        data: [814, 841, 3714, 727, 31]
-      }, {
-        type: undefined,
-        name: 'Year 2016',
-        data: [1216, 1001, 4436, 738, 40]
+        name: 'Current Users',
+        data: locDataArr
       }]
+    });
+  }
+
+  getAllPatients() {
+    this.fhirService.getAllPatients().subscribe((res: Array<any>) => {
+      if (res) {
+        res.forEach(el => {
+          const tempLoc = this.uniqueLocArr.find(l => l.name == el.location);
+          if (tempLoc) {
+            tempLoc.y += 1;
+          } else {
+            this.uniqueLocArr.push({ name: el.location, y: 1 });
+          }
+        });
+        this.pieChartBrowser()
+      }
     });
   }
 
@@ -101,7 +133,7 @@ export class HomeComponent implements OnInit {
         type: 'pie'
       },
       title: {
-        text: 'Patients in October, 2021'
+        text: 'Patients in different locations'
       },
       tooltip: {
         pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
@@ -117,39 +149,10 @@ export class HomeComponent implements OnInit {
         }
       },
       series: [{
-        name: 'Countries',
+        name: 'Location',
         colorByPoint: true,
         type: undefined,
-        data: [{
-          name: 'Africa',
-          y: 61.41,
-          sliced: true,
-          selected: true
-        }, {
-          name: 'America',
-          y: 11.84
-        }, {
-          name: 'UAE',
-          y: 10.85
-        }, {
-          name: 'Europe',
-          y: 4.67
-        }, {
-          name: 'India',
-          y: 4.18
-        }, {
-          name: 'China',
-          y: 1.64
-        }, {
-          name: 'Australia',
-          y: 1.6
-        }, {
-          name: 'Russia',
-          y: 1.2
-        }, {
-          name: 'Iraq',
-          y: 2.61
-        }]
+        data: this.uniqueLocArr
       }]
     });
   }
