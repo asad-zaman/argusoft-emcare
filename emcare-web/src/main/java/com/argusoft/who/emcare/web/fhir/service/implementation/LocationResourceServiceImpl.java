@@ -5,6 +5,7 @@ import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
 import com.argusoft.who.emcare.web.common.constant.CommonConstant;
+import com.argusoft.who.emcare.web.common.dto.PageDto;
 import com.argusoft.who.emcare.web.fhir.dao.LocationResourceRepository;
 import com.argusoft.who.emcare.web.fhir.dao.OrganizationResourceRepository;
 import com.argusoft.who.emcare.web.fhir.dto.FacilityDto;
@@ -12,10 +13,9 @@ import com.argusoft.who.emcare.web.fhir.mapper.EmcareResourceMapper;
 import com.argusoft.who.emcare.web.fhir.model.LocationResource;
 import com.argusoft.who.emcare.web.fhir.service.LocationResourceService;
 import com.argusoft.who.emcare.web.fhir.service.OrganizationResourceService;
-import org.hl7.fhir.r4.model.IdType;
-import org.hl7.fhir.r4.model.Location;
-import org.hl7.fhir.r4.model.Meta;
-import org.hl7.fhir.r4.model.Organization;
+import com.argusoft.who.emcare.web.location.model.LocationMaster;
+import com.argusoft.who.emcare.web.location.service.LocationService;
+import org.hl7.fhir.r4.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -39,6 +39,9 @@ public class LocationResourceServiceImpl implements LocationResourceService {
     OrganizationResourceRepository organizationResourceRepository;
 
     @Autowired
+    LocationService locationService;
+
+    @Autowired
     OrganizationResourceService organizationResourceService;
 
     private final FhirContext fhirCtx = FhirContext.forR4();
@@ -58,9 +61,16 @@ public class LocationResourceServiceImpl implements LocationResourceService {
         theLocation.getManagingOrganization().setDisplay(organization.getName());
 
         String locationString = parser.encodeResourceToString(theLocation);
-
+        List<Extension> extentions = theLocation.getExtension();
+        Integer systemLocationId = (Integer) extentions.get(0).getValueAsPrimitive().getValue();
+        LocationMaster systemLocation = locationService.getLocationMasterById(systemLocationId);
         LocationResource locationResource = new LocationResource();
         locationResource.setText(locationString);
+        locationResource.setOrgId(theLocation.getManagingOrganization().getId());
+        locationResource.setOrganizationName(theLocation.getManagingOrganization().getDisplay());
+        locationResource.setLocationId(Long.valueOf(systemLocationId));
+        locationResource.setLocationName(systemLocation.getName());
+        locationResource.setLocationId(Long.valueOf(systemLocationId));
         locationResource.setType(CommonConstant.LOCATION_TYPE_STRING);
         locationResource.setResourceId(locationId);
 
@@ -119,10 +129,21 @@ public class LocationResourceServiceImpl implements LocationResourceService {
         theLocation.getManagingOrganization().setDisplay(organization.getName());
 
         String locationString = parser.encodeResourceToString(theLocation);
+
+        List<Extension> extentions = theLocation.getExtension();
+        Integer systemLocationId = (Integer) extentions.get(0).getValueAsPrimitive().getValue();
+        LocationMaster systemLocation = locationService.getLocationMasterById(systemLocationId);
+
         LocationResource updatableLocationResource = locationResourceRepository.findByResourceId(theId.getIdPart());
+
         LocationResource locationResource = new LocationResource();
         locationResource.setText(locationString);
         locationResource.setType(CommonConstant.LOCATION_TYPE_STRING);
+        locationResource.setOrgId(theLocation.getManagingOrganization().getId());
+        locationResource.setOrganizationName(theLocation.getManagingOrganization().getDisplay());
+        locationResource.setLocationId(Long.valueOf(systemLocationId));
+        locationResource.setLocationName(systemLocation.getName());
+        locationResource.setLocationId(Long.valueOf(systemLocationId));
         locationResource.setResourceId(updatableLocationResource.getResourceId());
         locationResource.setId(updatableLocationResource.getId());
 
@@ -135,31 +156,35 @@ public class LocationResourceServiceImpl implements LocationResourceService {
     }
 
     @Override
-    public List<Location> getEmCareLocationResourcePage(Integer pageNo, String searchString) {
-        List<Location> locationList = new ArrayList<>();
+    public PageDto getEmCareLocationResourcePage(Integer pageNo, String searchString) {
+        List<FacilityDto> facilityDtos = new ArrayList<>();
         Page<LocationResource> locationResources = null;
         Pageable page = PageRequest.of(pageNo, CommonConstant.PAGE_SIZE);
+        Long count = 0L;
 
         if (searchString != null && !searchString.isEmpty()) {
-            locationResources = locationResourceRepository.findByTextContainingIgnoreCase(searchString, page);
+            locationResources = locationResourceRepository.findByTextContainingIgnoreCaseOrOrganizationNameContainingIgnoreCaseOrLocationNameContainingIgnoreCase(searchString,searchString,searchString, page);
+            count = Long.valueOf(locationResourceRepository.findByTextContainingIgnoreCaseOrOrganizationNameContainingIgnoreCaseOrLocationNameContainingIgnoreCase(searchString,searchString,searchString).size());
         } else {
             locationResources = locationResourceRepository.findAll(page);
+            count = Long.valueOf(locationResourceRepository.findAll().size());
         }
 
 
         for (LocationResource locationResource : locationResources) {
             Location location = parser.parseResource(Location.class, locationResource.getText());
-            Organization organization = organizationResourceService.getByResourceId(location.getManagingOrganization().getId());
-            location.getManagingOrganization().setDisplay(organization.getName());
-            locationList.add(location);
+            facilityDtos.add(EmcareResourceMapper.getFacilityDtoForList(location, locationResource));
         }
+        PageDto pageDto = new PageDto();
+        pageDto.setList(facilityDtos);
+        pageDto.setTotalCount(count);
 
-        return locationList;
+        return pageDto;
     }
 
     @Override
     public FacilityDto getFacilityDto(String id) {
         Location location = getByResourceId(id);
-        return EmcareResourceMapper.getFacilityDto(location,id);
+        return EmcareResourceMapper.getFacilityDto(location, id);
     }
 }
