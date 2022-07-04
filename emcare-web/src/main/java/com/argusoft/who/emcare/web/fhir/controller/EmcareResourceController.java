@@ -54,6 +54,9 @@ public class EmcareResourceController {
     @Autowired
     private MedicationResourceService medicationResourceService;
 
+    @Autowired
+    private OrganizationResourceService organizationResourceService;
+
     @GetMapping("/patient")
     public List<PatientDto> getAllPatients() {
         return emcareResourceService.getAllPatients();
@@ -140,6 +143,18 @@ public class EmcareResourceController {
     public PageDto getMedicationPage(@RequiredParam(name = "pageNo") Integer pageNo,
                                      @Nullable @RequiredParam(name = "search") String search) {
         return medicationResourceService.getMedicationPage(pageNo, search);
+    }
+
+    @GetMapping("/organization")
+    public PageDto getOrganizationPage(@RequiredParam(name = "pageNo") Integer pageNo,
+                                       @Nullable @RequiredParam(name = "search") String search) {
+        return organizationResourceService.getOrganizationPage(pageNo, search);
+    }
+
+    @GetMapping("/facility")
+    public PageDto getFacilityPage(@RequiredParam(name = "pageNo") Integer pageNo,
+                                       @Nullable @RequiredParam(name = "search") String search) {
+        return locationResourceService.getEmCareLocationResourcePage(pageNo, search);
     }
 
 }

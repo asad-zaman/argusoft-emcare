@@ -48,12 +48,6 @@ public class LocationResourceProvider implements IResourceProvider {
     }
 
     @Search()
-    public List<Location> getEmCareLocationResourcePage(@RequiredParam(name = "pageNo") String pageNo,
-                                                        @Nullable @RequiredParam(name = "search") String searchString) {
-        return locationResourceService.getEmCareLocationResourcePage(Integer.parseInt(pageNo), searchString);
-    }
-
-    @Search()
     public List<Location> getAllLocations() {
         return locationResourceService.getAllLocations();
     }
