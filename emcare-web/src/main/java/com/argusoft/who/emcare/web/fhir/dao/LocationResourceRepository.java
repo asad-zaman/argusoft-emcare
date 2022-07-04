@@ -16,4 +16,8 @@ public interface LocationResourceRepository extends JpaRepository<LocationResour
     List<LocationResource> findByTextContainingIgnoreCase(String searchString);
 
     Page<LocationResource> findByTextContainingIgnoreCase(String searchString, Pageable page);
+
+    Page<LocationResource> findByTextContainingIgnoreCaseOrOrganizationNameContainingIgnoreCaseOrLocationNameContainingIgnoreCase(String searchString, String searchString1, String searchString2, Pageable page);
+
+    List<LocationResource> findByTextContainingIgnoreCaseOrOrganizationNameContainingIgnoreCaseOrLocationNameContainingIgnoreCase(String searchString, String searchString1, String searchString2);
 }

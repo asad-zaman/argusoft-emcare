@@ -5,13 +5,19 @@ import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
 import com.argusoft.who.emcare.web.common.constant.CommonConstant;
+import com.argusoft.who.emcare.web.common.dto.PageDto;
 import com.argusoft.who.emcare.web.fhir.dao.OrganizationResourceRepository;
+import com.argusoft.who.emcare.web.fhir.dto.OrganizationDto;
+import com.argusoft.who.emcare.web.fhir.mapper.EmcareResourceMapper;
 import com.argusoft.who.emcare.web.fhir.model.OrganizationResource;
 import com.argusoft.who.emcare.web.fhir.service.OrganizationResourceService;
 import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.Meta;
 import org.hl7.fhir.r4.model.Organization;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -89,5 +95,31 @@ public class OrganizationResourceServiceImpl implements OrganizationResourceServ
         retVal.setId(new IdType(CommonConstant.ORGANIZATION_TYPE_STRING, theOrganization.getId(), "1"));
         retVal.setResource(theOrganization);
         return retVal;
+    }
+
+    @Override
+    public PageDto getOrganizationPage(Integer pageNo, String searchString) {
+        List<OrganizationDto> organizationDtos = new ArrayList<>();
+        Page<OrganizationResource> organizationResources = null;
+        Pageable page = PageRequest.of(pageNo, CommonConstant.PAGE_SIZE);
+        Long count = 0L;
+
+        if (searchString != null && !searchString.isEmpty()) {
+            organizationResources = organizationResourceRepository.findByTextContainingIgnoreCase(searchString, page);
+            count = Long.valueOf(organizationResourceRepository.findByTextContainingIgnoreCase(searchString).size());
+        } else {
+            organizationResources = organizationResourceRepository.findAll(page);
+            count = Long.valueOf(organizationResourceRepository.findAll().size());
+        }
+
+
+        for (OrganizationResource organizationResource : organizationResources) {
+            Organization organization = parser.parseResource(Organization.class, organizationResource.getText());
+            organizationDtos.add(EmcareResourceMapper.getOrganizationDto(organization));
+        }
+        PageDto pageDto = new PageDto();
+        pageDto.setList(organizationDtos);
+        pageDto.setTotalCount(count);
+        return pageDto;
     }
 }

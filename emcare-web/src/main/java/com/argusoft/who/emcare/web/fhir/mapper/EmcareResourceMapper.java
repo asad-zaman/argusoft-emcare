@@ -1,6 +1,7 @@
 package com.argusoft.who.emcare.web.fhir.mapper;
 
 import com.argusoft.who.emcare.web.fhir.dto.*;
+import com.argusoft.who.emcare.web.fhir.model.LocationResource;
 import org.hl7.fhir.r4.model.*;
 
 import java.util.ArrayList;
@@ -143,13 +144,33 @@ public class EmcareResourceMapper {
         return code;
     }
 
-    public static FacilityDto getFacilityDto(Location location,String id) {
+    public static FacilityDto getFacilityDto(Location location, String id) {
         FacilityDto dto = new FacilityDto();
         dto.setFacilityName(location.getName());
         dto.setFacilityId(id);
         dto.setAddress(location.getAddress().getLine().get(0).getValue());
         dto.setOrganizationId(location.getManagingOrganization().getId());
         dto.setOrganizationName(location.getManagingOrganization().getDisplay());
+        return dto;
+    }
+
+    public static OrganizationDto getOrganizationDto(Organization organization) {
+        OrganizationDto dto = new OrganizationDto();
+        dto.setId(organization.getIdElement().getIdPart());
+        dto.setName(organization.getName());
+        dto.setActive(organization.getActive());
+        return dto;
+    }
+
+    public static FacilityDto getFacilityDtoForList(Location location, LocationResource locationResource) {
+        FacilityDto dto = new FacilityDto();
+        dto.setFacilityName(location.getName());
+        dto.setFacilityId(location.getIdElement().getIdPart());
+        dto.setAddress(location.getAddress().getLine().get(0).getValue());
+        dto.setOrganizationId(location.getManagingOrganization().getId());
+        dto.setOrganizationName(location.getManagingOrganization().getDisplay());
+        dto.setLocationName(locationResource.getLocationName());
+        dto.setLocationId(locationResource.getLocationId());
         return dto;
     }
 }
