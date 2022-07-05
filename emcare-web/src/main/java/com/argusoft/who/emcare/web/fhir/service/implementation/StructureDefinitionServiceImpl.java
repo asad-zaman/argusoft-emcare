@@ -79,7 +79,7 @@ public class StructureDefinitionServiceImpl implements StructureDefinitionServic
         structureDefinitionRepository.save(structureDefinitionResource);
 
         MethodOutcome retVal = new MethodOutcome();
-        retVal.setId(new IdType(CommonConstant.LOCATION_TYPE_STRING, structureDefinition.getId(), "1"));
+        retVal.setId(new IdType(CommonConstant.STRUCTURE_DEFINITION, structureDefinition.getId(), "1"));
         retVal.setResource(structureDefinition);
         return retVal;
     }

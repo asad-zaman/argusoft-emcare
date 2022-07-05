@@ -81,7 +81,7 @@ public class CodeSystemResourceServiceImpl implements CodeSystemResourceService 
         codeSystemResourceRepository.save(codeSystemResource);
 
         MethodOutcome retVal = new MethodOutcome();
-        retVal.setId(new IdType(CommonConstant.LOCATION_TYPE_STRING, codeSystem.getId(), "1"));
+        retVal.setId(new IdType(CommonConstant.CODE_SYSTEM, codeSystem.getId(), "1"));
         retVal.setResource(codeSystem);
         return retVal;
     }

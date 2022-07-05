@@ -80,7 +80,7 @@ public class MedicationResourceServiceImpl implements MedicationResourceService 
         medicationResourceRepository.save(medicationResource);
 
         MethodOutcome retVal = new MethodOutcome();
-        retVal.setId(new IdType(CommonConstant.LOCATION_TYPE_STRING, medication.getId(), "1"));
+        retVal.setId(new IdType(CommonConstant.MEDICATION, medication.getId(), "1"));
         retVal.setResource(medication);
         return retVal;
     }

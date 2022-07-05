@@ -142,4 +142,17 @@ public class EmcareResourceMapper {
         }
         return code;
     }
+
+
+    public static ActivityDefinitionDto getStructureMapDto(ActivityDefinition definition) {
+        ActivityDefinitionDto dto = new ActivityDefinitionDto();
+
+        dto.setId(definition.getIdElement().getIdPart());
+        dto.setName(definition.getName());
+        dto.setTitle(definition.getTitle());
+        dto.setStatus(definition.getStatus().getDisplay());
+        dto.setSubTitle(definition.getSubtitle());
+
+        return dto;
+    }
 }
