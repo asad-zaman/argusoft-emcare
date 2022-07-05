@@ -9,6 +9,7 @@ public class FacilityDto {
     private String facilityId;
     private String locationName;
     private Long locationId;
+    private String status;
 
     public String getOrganizationName() {
         return organizationName;
@@ -64,5 +65,13 @@ public class FacilityDto {
 
     public void setLocationId(Long locationId) {
         this.locationId = locationId;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }
