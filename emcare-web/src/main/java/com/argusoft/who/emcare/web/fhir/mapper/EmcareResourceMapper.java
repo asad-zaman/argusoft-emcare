@@ -182,6 +182,7 @@ public class EmcareResourceMapper {
         dto.setOrganizationName(location.getManagingOrganization().getDisplay());
         dto.setLocationName(locationResource.getLocationName());
         dto.setLocationId(locationResource.getLocationId());
+        dto.setStatus(location.getStatus().getDisplay());
         return dto;
     }
 }
