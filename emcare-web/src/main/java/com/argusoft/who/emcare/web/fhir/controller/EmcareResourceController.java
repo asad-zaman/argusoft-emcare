@@ -4,6 +4,7 @@ import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.rest.annotation.RequiredParam;
 import com.argusoft.who.emcare.web.common.dto.PageDto;
+import com.argusoft.who.emcare.web.fhir.dto.FacilityDto;
 import com.argusoft.who.emcare.web.fhir.dto.PatientDto;
 import com.argusoft.who.emcare.web.fhir.dto.QuestionnaireDto;
 import com.argusoft.who.emcare.web.fhir.mapper.EmcareResourceMapper;
@@ -165,6 +166,11 @@ public class EmcareResourceController {
     public PageDto getFacilityPage(@RequiredParam(name = "pageNo") Integer pageNo,
             @Nullable @RequiredParam(name = "search") String search) {
         return locationResourceService.getEmCareLocationResourcePage(pageNo, search);
+    }
+
+    @GetMapping("active/facility")
+    public List<FacilityDto> getActiveFacility() {
+        return locationResourceService.getActiveFacility();
     }
 
 }
