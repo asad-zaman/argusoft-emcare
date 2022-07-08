@@ -24,4 +24,6 @@ public interface LocationResourceService {
     public PageDto getEmCareLocationResourcePage(Integer pageNo, String searchString);
 
     public FacilityDto getFacilityDto(String id);
+
+    public List<FacilityDto> getActiveFacility();
 }

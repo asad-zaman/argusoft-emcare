@@ -12,22 +12,36 @@ public interface UserLocationMappingRepository extends JpaRepository<UserLocatio
 
     List<UserLocationMapping> findByUserId(String userId);
 
-    @Query(value = "WITH RECURSIVE child AS \n" +
-            "(SELECT * FROM location_master WHERE parent = :id or id = :id \n" +
-            "UNION SELECT l.* FROM location_master l\n" +
-            "INNER JOIN child s ON s.id = l.parent)\n" +
-            "SELECT ulm.user_id FROM child as ch \n" +
-            "left join user_location_mapping as ulm  on ch.id = ulm.location_id\n" +
-            "where ulm.user_id is not null offset :pageNo * :pageSize limit :pageSize", nativeQuery = true)
+    @Query(value = "WITH RECURSIVE CHILD AS\n" +
+            " (SELECT *\n" +
+            "   FROM LOCATION_MASTER\n" +
+            "   WHERE PARENT = :id\n" +
+            "       OR ID = :id\n" +
+            "   UNION SELECT L.*\n" +
+            "  FROM LOCATION_MASTER L\n" +
+            "       INNER JOIN CHILD S ON S.ID = L.PARENT)\n" +
+            "SELECT DISTINCT ULM.USER_ID\n" +
+            "FROM CHILD AS CH\n" +
+            "LEFT JOIN LOCATION_RESOURCES AS LR ON CH.ID = LR.LOCATION_ID\n" +
+            "LEFT JOIN USER_LOCATION_MAPPING AS ULM ON LR.RESOURCE_ID = ULM.FACILITY_ID\n" +
+            "WHERE ULM.USER_ID IS NOT NULL\n" +
+            "   AND ULM.FACILITY_ID IS NOT NULL offset :pageNo * :pageSize limit :pageSize", nativeQuery = true)
     public List<String> getAllUserOnChildLocationsWithPage(@Param("id") Integer id, @Param("pageNo") Integer pageNo, @Param("pageSize") Integer pageSize);
 
-    @Query(value = "WITH RECURSIVE child AS \n" +
-            "(SELECT * FROM location_master WHERE parent = :id or id = :id \n" +
-            "UNION SELECT l.* FROM location_master l\n" +
-            "INNER JOIN child s ON s.id = l.parent)\n" +
-            "SELECT ulm.user_id FROM child as ch \n" +
-            "left join user_location_mapping as ulm  on ch.id = ulm.location_id\n" +
-            "where ulm.user_id is not null", nativeQuery = true)
+    @Query(value = "WITH RECURSIVE CHILD AS\n" +
+            " (SELECT *\n" +
+            "   FROM LOCATION_MASTER\n" +
+            "   WHERE PARENT = :id\n" +
+            "       OR ID = :id\n" +
+            "   UNION SELECT L.*\n" +
+            "  FROM LOCATION_MASTER L\n" +
+            "       INNER JOIN CHILD S ON S.ID = L.PARENT)\n" +
+            "SELECT DISTINCT ULM.USER_ID\n" +
+            "FROM CHILD AS CH\n" +
+            "LEFT JOIN LOCATION_RESOURCES AS LR ON CH.ID = LR.LOCATION_ID\n" +
+            "LEFT JOIN USER_LOCATION_MAPPING AS ULM ON LR.RESOURCE_ID = ULM.FACILITY_ID\n" +
+            "WHERE ULM.USER_ID IS NOT NULL\n" +
+            "   AND ULM.FACILITY_ID IS NOT NULL", nativeQuery = true)
     public List<String> getAllUserOnChildLocations(@Param("id") Integer id);
 
 
@@ -36,6 +50,8 @@ public interface UserLocationMappingRepository extends JpaRepository<UserLocatio
     List<UserLocationMapping> findByIsFirst(boolean isFirst);
 
     UserLocationMapping findByUserIdAndLocationId(String userId, Integer locationId);
+
+    UserLocationMapping findByUserIdAndFacilityId(String userId, String facilityId);
 
     @Query(value = "WITH TOTAL_USER AS\n" +
             " (SELECT COUNT(DISTINCT USER_ID) AS \"totalUser\"\n" +

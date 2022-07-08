@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Transactional
 @Service
@@ -163,8 +164,8 @@ public class LocationResourceServiceImpl implements LocationResourceService {
         Long count = 0L;
 
         if (searchString != null && !searchString.isEmpty()) {
-            locationResources = locationResourceRepository.findByTextContainingIgnoreCaseOrOrganizationNameContainingIgnoreCaseOrLocationNameContainingIgnoreCase(searchString,searchString,searchString, page);
-            count = Long.valueOf(locationResourceRepository.findByTextContainingIgnoreCaseOrOrganizationNameContainingIgnoreCaseOrLocationNameContainingIgnoreCase(searchString,searchString,searchString).size());
+            locationResources = locationResourceRepository.findByTextContainingIgnoreCaseOrOrganizationNameContainingIgnoreCaseOrLocationNameContainingIgnoreCase(searchString, searchString, searchString, page);
+            count = Long.valueOf(locationResourceRepository.findByTextContainingIgnoreCaseOrOrganizationNameContainingIgnoreCaseOrLocationNameContainingIgnoreCase(searchString, searchString, searchString).size());
         } else {
             locationResources = locationResourceRepository.findAll(page);
             count = Long.valueOf(locationResourceRepository.findAll().size());
@@ -184,7 +185,20 @@ public class LocationResourceServiceImpl implements LocationResourceService {
 
     @Override
     public FacilityDto getFacilityDto(String id) {
+        LocationResource locationResource = locationResourceRepository.findByResourceId(id);
         Location location = getByResourceId(id);
-        return EmcareResourceMapper.getFacilityDto(location, id);
+        return EmcareResourceMapper.getFacilityDtoForList(location, locationResource);
+    }
+
+    @Override
+    public List<FacilityDto> getActiveFacility() {
+        List<FacilityDto> facilityDtos = new ArrayList<>();
+        List<LocationResource> locationResources = locationResourceRepository.findAll();
+        for (LocationResource locationResource : locationResources) {
+            Location location = parser.parseResource(Location.class, locationResource.getText());
+            facilityDtos.add(EmcareResourceMapper.getFacilityDtoForList(location, locationResource));
+        }
+
+        return facilityDtos.stream().filter(f -> "Active".equals(f.getStatus())).collect(Collectors.toList());
     }
 }

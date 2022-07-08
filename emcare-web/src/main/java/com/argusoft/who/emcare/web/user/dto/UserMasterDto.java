@@ -1,5 +1,6 @@
 package com.argusoft.who.emcare.web.user.dto;
 
+import com.argusoft.who.emcare.web.fhir.dto.FacilityDto;
 import com.argusoft.who.emcare.web.location.model.LocationMaster;
 import com.argusoft.who.emcare.web.menu.dto.CurrentUserFeatureJson;
 
@@ -11,11 +12,11 @@ public class UserMasterDto {
     private String userName;
     private String email;
     private String language;
-    private List<LocationMaster> location;
     private String[] roles;
     private List<CurrentUserFeatureJson> feature;
     private String firstName;
     private String lastName;
+    private List<FacilityDto> facilities;
 
     public String getUserId() {
         return userId;
@@ -39,14 +40,6 @@ public class UserMasterDto {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public List<LocationMaster> getLocation() {
-        return location;
-    }
-
-    public void setLocation(List<LocationMaster> location) {
-        this.location = location;
     }
 
     public String[] getRoles() {
@@ -87,5 +80,13 @@ public class UserMasterDto {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public List<FacilityDto> getFacilities() {
+        return facilities;
+    }
+
+    public void setFacilities(List<FacilityDto> facilities) {
+        this.facilities = facilities;
     }
 }
