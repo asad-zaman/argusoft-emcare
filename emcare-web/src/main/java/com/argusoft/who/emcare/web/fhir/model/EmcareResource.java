@@ -1,13 +1,9 @@
 package com.argusoft.who.emcare.web.fhir.model;
 
 import com.argusoft.who.emcare.web.common.model.EntityAuditInfo;
+
+import javax.persistence.*;
 import java.io.Serializable;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
 
 @Entity
 @Table(name = "emcare_resources")
@@ -19,10 +15,13 @@ public class EmcareResource extends EntityAuditInfo implements Serializable {
 
     @Column(name = "text", columnDefinition = "TEXT")
     private String text;
-    
+
     @Column(name = "type", columnDefinition = "TEXT")
     private String type;
-    
+
+    @Column(name = "facilityId")
+    private String facilityId;
+
     @Column(name = "resource_id")
     private String resourceId;
 
@@ -58,4 +57,11 @@ public class EmcareResource extends EntityAuditInfo implements Serializable {
         this.resourceId = resourceId;
     }
 
+    public String getFacilityId() {
+        return facilityId;
+    }
+
+    public void setFacilityId(String facilityId) {
+        this.facilityId = facilityId;
+    }
 }

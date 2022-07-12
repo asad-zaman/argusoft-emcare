@@ -186,6 +186,9 @@ public class LocationResourceServiceImpl implements LocationResourceService {
     @Override
     public FacilityDto getFacilityDto(String id) {
         LocationResource locationResource = locationResourceRepository.findByResourceId(id);
+        if(locationResource == null){
+            return null;
+        }
         Location location = getByResourceId(id);
         return EmcareResourceMapper.getFacilityDtoForList(location, locationResource);
     }

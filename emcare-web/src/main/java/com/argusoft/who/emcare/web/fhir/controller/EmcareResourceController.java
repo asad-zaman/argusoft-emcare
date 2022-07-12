@@ -11,7 +11,6 @@ import com.argusoft.who.emcare.web.fhir.mapper.EmcareResourceMapper;
 import com.argusoft.who.emcare.web.fhir.model.EmcareResource;
 import com.argusoft.who.emcare.web.fhir.model.QuestionnaireMaster;
 import com.argusoft.who.emcare.web.fhir.service.*;
-import com.argusoft.who.emcare.web.location.model.LocationMaster;
 import com.argusoft.who.emcare.web.location.service.LocationService;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Questionnaire;
@@ -86,9 +85,11 @@ public class EmcareResourceController {
             patientDto.setCaregiver(caregiver.getNameFirstRep().getGiven().get(0) + " " + caregiver.getNameFirstRep().getFamily());
         }
 
-        if (patientDto.getLocation() != null) {
-            LocationMaster location = locationService.getLocationMasterById(Integer.parseInt(patientDto.getLocation()));
-            patientDto.setLocation(location.getName());
+        if (patientDto.getFacility() != null) {
+            FacilityDto facilityDto = locationResourceService.getFacilityDto(patientDto.getFacility());
+            patientDto.setFacility(facilityDto.getFacilityName());
+            patientDto.setOrganizationName(facilityDto.getOrganizationName());
+            patientDto.setLocationName(facilityDto.getLocationName());
         }
 
         return patientDto;
