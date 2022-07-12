@@ -42,7 +42,7 @@ public class EmcareResourceMapper {
         if (p.hasExtension()) {
             Extension locationExtension = p.getExtension().get(0);
             String locationId = ((Identifier) locationExtension.getValue()).getValue();
-            pDto.setLocation(locationId);
+            pDto.setFacility(locationId);
         }
 
         // Address
