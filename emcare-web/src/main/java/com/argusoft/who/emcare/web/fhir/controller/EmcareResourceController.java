@@ -4,13 +4,13 @@ import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.rest.annotation.RequiredParam;
 import com.argusoft.who.emcare.web.common.dto.PageDto;
+import com.argusoft.who.emcare.web.fhir.dto.FacilityDto;
 import com.argusoft.who.emcare.web.fhir.dto.PatientDto;
 import com.argusoft.who.emcare.web.fhir.dto.QuestionnaireDto;
 import com.argusoft.who.emcare.web.fhir.mapper.EmcareResourceMapper;
 import com.argusoft.who.emcare.web.fhir.model.EmcareResource;
 import com.argusoft.who.emcare.web.fhir.model.QuestionnaireMaster;
 import com.argusoft.who.emcare.web.fhir.service.*;
-import com.argusoft.who.emcare.web.location.model.LocationMaster;
 import com.argusoft.who.emcare.web.location.service.LocationService;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Questionnaire;
@@ -51,6 +51,12 @@ public class EmcareResourceController {
     @Autowired
     private CodeSystemResourceService codeSystemResourceService;
 
+    @Autowired
+    private MedicationResourceService medicationResourceService;
+
+    @Autowired
+    private OrganizationResourceService organizationResourceService;
+
     @GetMapping("/patient")
     public List<PatientDto> getAllPatients() {
         return emcareResourceService.getAllPatients();
@@ -79,9 +85,11 @@ public class EmcareResourceController {
             patientDto.setCaregiver(caregiver.getNameFirstRep().getGiven().get(0) + " " + caregiver.getNameFirstRep().getFamily());
         }
 
-        if (patientDto.getLocation() != null) {
-            LocationMaster location = locationService.getLocationMasterById(Integer.parseInt(patientDto.getLocation()));
-            patientDto.setLocation(location.getName());
+        if (patientDto.getFacility() != null) {
+            FacilityDto facilityDto = locationResourceService.getFacilityDto(patientDto.getFacility());
+            patientDto.setFacility(facilityDto.getFacilityName());
+            patientDto.setOrganizationName(facilityDto.getOrganizationName());
+            patientDto.setLocationName(facilityDto.getLocationName());
         }
 
         return patientDto;
@@ -117,20 +125,43 @@ public class EmcareResourceController {
 
     @GetMapping("/structure-map")
     public PageDto getStructureMapPage(@RequiredParam(name = "pageNo") Integer pageNo,
-                                       @Nullable @RequiredParam(name = "search") String searchString) {
-        return structureMapResourceService.getStructureMapPage(pageNo, searchString);
+                                       @Nullable @RequiredParam(name = "search") String search) {
+        return structureMapResourceService.getStructureMapPage(pageNo, search);
     }
 
     @GetMapping("/structure-definition")
     public PageDto getStructureDefinitionPage(@RequiredParam(name = "pageNo") Integer pageNo,
-                                              @Nullable @RequiredParam(name = "search") String searchString) {
-        return structureDefinitionService.getStructureDefinitionPage(pageNo, searchString);
+                                              @Nullable @RequiredParam(name = "search") String search) {
+        return structureDefinitionService.getStructureDefinitionPage(pageNo, search);
     }
 
     @GetMapping("/code-system")
     public PageDto getCodeSystemPage(@RequiredParam(name = "pageNo") Integer pageNo,
-                                     @Nullable @RequiredParam(name = "search") String searchString) {
-        return codeSystemResourceService.getCodeSystemPage(pageNo, searchString);
+                                     @Nullable @RequiredParam(name = "search") String search) {
+        return codeSystemResourceService.getCodeSystemPage(pageNo, search);
+    }
+
+    @GetMapping("/medication")
+    public PageDto getMedicationPage(@RequiredParam(name = "pageNo") Integer pageNo,
+                                     @Nullable @RequiredParam(name = "search") String search) {
+        return medicationResourceService.getMedicationPage(pageNo, search);
+    }
+
+    @GetMapping("/organization")
+    public PageDto getOrganizationPage(@RequiredParam(name = "pageNo") Integer pageNo,
+                                       @Nullable @RequiredParam(name = "search") String search) {
+        return organizationResourceService.getOrganizationPage(pageNo, search);
+    }
+
+    @GetMapping("/facility")
+    public PageDto getFacilityPage(@RequiredParam(name = "pageNo") Integer pageNo,
+                                   @Nullable @RequiredParam(name = "search") String search) {
+        return locationResourceService.getEmCareLocationResourcePage(pageNo, search);
+    }
+
+    @GetMapping("active/facility")
+    public List<FacilityDto> getActiveFacility() {
+        return locationResourceService.getActiveFacility();
     }
 
 }

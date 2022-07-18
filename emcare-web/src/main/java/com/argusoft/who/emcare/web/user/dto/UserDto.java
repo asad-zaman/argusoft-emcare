@@ -13,10 +13,9 @@ public class UserDto {
     private String email;
     private String userName;
     private String regRequestFrom;
-    private Integer locationId;
     private String roleName;
     private String language;
-    private List<Integer> locationIds;
+    private List<String> facilityIds;
 
 
     public String getFirstName() {
@@ -59,14 +58,6 @@ public class UserDto {
         this.regRequestFrom = regRequestFrom;
     }
 
-    public Integer getLocationId() {
-        return locationId;
-    }
-
-    public void setLocationId(Integer locationId) {
-        this.locationId = locationId;
-    }
-
     public String getRoleName() {
         return roleName;
     }
@@ -83,19 +74,19 @@ public class UserDto {
         this.language = language;
     }
 
-    public List<Integer> getLocationIds() {
-        return locationIds;
-    }
-
-    public void setLocationIds(List<Integer> locationIds) {
-        this.locationIds = locationIds;
-    }
-
     public String getUserName() {
         return userName;
     }
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public List<String> getFacilityIds() {
+        return facilityIds;
+    }
+
+    public void setFacilityIds(List<String> facilityIds) {
+        this.facilityIds = facilityIds;
     }
 }

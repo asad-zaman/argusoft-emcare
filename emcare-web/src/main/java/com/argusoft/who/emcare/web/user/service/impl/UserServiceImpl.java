@@ -7,10 +7,9 @@ import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.common.dto.PageDto;
 import com.argusoft.who.emcare.web.common.response.Response;
 import com.argusoft.who.emcare.web.config.KeyCloakConfig;
+import com.argusoft.who.emcare.web.fhir.dto.FacilityDto;
+import com.argusoft.who.emcare.web.fhir.service.LocationResourceService;
 import com.argusoft.who.emcare.web.location.dao.LocationMasterDao;
-import com.argusoft.who.emcare.web.location.dto.LocationMasterWithHierarchy;
-import com.argusoft.who.emcare.web.location.mapper.LocationMasterMapper;
-import com.argusoft.who.emcare.web.location.model.LocationMaster;
 import com.argusoft.who.emcare.web.location.service.LocationService;
 import com.argusoft.who.emcare.web.mail.MailService;
 import com.argusoft.who.emcare.web.mail.dto.MailDto;
@@ -89,22 +88,24 @@ public class UserServiceImpl implements UserService {
     @Autowired
     MailDataSetterService mailDataSetterService;
 
+    @Autowired
+    LocationResourceService locationResourceService;
+
     @Override
     public UserMasterDto getCurrentUser() {
         AccessToken user = emCareSecurityUser.getLoggedInUser();
         Keycloak keycloak = keyCloakConfig.getInstance();
         UserRepresentation userInfo = keycloak.realm(KeyCloakConfig.REALM).users().get(user.getSubject()).toRepresentation();
         List<UserLocationMapping> userLocationList = userLocationMappingRepository.findByUserId(user.getSubject());
-        List<UserLocationMapping> userLocationMapping;
-        List<LocationMaster> userLocations;
-        if (userLocationList.isEmpty()) {
-            userLocations = null;
-        } else {
-            userLocationMapping = userLocationMappingRepository.findByUserId(user.getSubject());
-            Iterable<Integer> locationIds = userLocationMapping.stream().map(UserLocationMapping::getLocationId).collect(Collectors.toList());
-            userLocations = locationMasterDao.findAllById(locationIds);
+        List<UserLocationMapping> fecilitys;
+        List<FacilityDto> facilityDtos = new ArrayList<>();
+        if (!userLocationList.isEmpty()) {
+            fecilitys = userLocationMappingRepository.findByUserId(user.getSubject());
+            Iterable<String> facilityIds = fecilitys.stream().map(UserLocationMapping::getFacilityId).collect(Collectors.toList());
+            for (String id : facilityIds)
+                facilityDtos.add(locationResourceService.getFacilityDto(id));
         }
-        UserMasterDto masterUser = UserMapper.getMasterUser(user, userLocations, userInfo);
+        UserMasterDto masterUser = UserMapper.getMasterUser(user, facilityDtos, userInfo);
         List<RoleRepresentation> roleRepresentationList = keycloak.realm(KeyCloakConfig.REALM).users().get(masterUser.getUserId()).roles().realmLevel().listAll();
         List<String> roleIds = new ArrayList<>();
         for (RoleRepresentation role : roleRepresentationList) {
@@ -131,10 +132,12 @@ public class UserServiceImpl implements UserService {
         for (UserRepresentation representation : userRepresentations) {
             List<UserLocationMapping> userLocation = userLocationMappingRepository.findByUserId(representation.getId());
             if (!userLocation.isEmpty()) {
-                Optional<LocationMaster> locationMaster = locationMasterDao.findById(userLocation.get(0).getLocationId());
-                userList.add(UserMapper.getUserListDto(representation, locationMaster.isPresent() ? locationMaster.get() : null));
+//                CHNAGE IF REQUIRED
+//                Optional<LocationMaster> locationMaster = locationMasterDao.findById(userLocation.get(0).getLocationId());
+//                FacilityDto facilityDto = locationResourceService.getFacilityDto(facilityId);
+//                userList.add(UserMapper.getUserListDto(representation, locationMaster.isPresent() ? locationMaster.get() : null));
             } else {
-                userList.add(UserMapper.getUserListDto(representation, null));
+//                userList.add(UserMapper.getUserListDto(representation, null));
             }
         }
         return userList;
@@ -155,15 +158,23 @@ public class UserServiceImpl implements UserService {
         }
         for (UserRepresentation representation : userRepresentations) {
             List<UserLocationMapping> userLocation = userLocationMappingRepository.findByUserId(representation.getId());
-            List<Integer> locationIds = userLocation.stream().map(UserLocationMapping::getLocationId).collect(Collectors.toList());
+//            List<Integer> locationIds = userLocation.stream().map(UserLocationMapping::getLocationId).collect(Collectors.toList());
+            List<FacilityDto> facilityDtos = new ArrayList<>();
             if (!userLocation.isEmpty()) {
-                Iterable<Integer> iterableLocationIds = locationIds;
-                List<LocationMaster> locationMaster = locationMasterDao.findAllById(iterableLocationIds);
-                List<LocationMasterWithHierarchy> locationMasterWithHierarchies = new ArrayList<>();
-                for (LocationMaster master : locationMaster) {
-                    locationMasterWithHierarchies.add(LocationMasterMapper.getLocationMasterWithHierarchy(master, locationMasterDao.getNameHierarchy(master.getId())));
+//                Iterable<Integer> iterableLocationIds = locationIds;
+//                List<LocationMaster> locationMaster = locationMasterDao.findAllById(iterableLocationIds);
+//                List<LocationMasterWithHierarchy> locationMasterWithHierarchies = new ArrayList<>();
+//                for (LocationMaster master : locationMaster) {
+//                    locationMasterWithHierarchies.add(LocationMasterMapper.getLocationMasterWithHierarchy(master, locationMasterDao.getNameHierarchy(master.getId())));
+//                }
+
+                facilityDtos = new ArrayList<>();
+                for (UserLocationMapping mapping : userLocation) {
+                    if (mapping.getFacilityId() != null) {
+                        facilityDtos.add(locationResourceService.getFacilityDto(mapping.getFacilityId()));
+                    }
                 }
-                userList.add(UserMapper.getMultiLocationUserListDto(representation, locationMasterWithHierarchies));
+                userList.add(UserMapper.getMultiLocationUserListDto(representation, facilityDtos));
             } else {
                 userList.add(UserMapper.getMultiLocationUserListDto(representation, null));
             }
@@ -209,17 +220,27 @@ public class UserServiceImpl implements UserService {
         }
         for (UserRepresentation representation : userRepresentations) {
             List<UserLocationMapping> userLocation = userLocationMappingRepository.findByUserId(representation.getId());
-            Iterable<Integer> locationIds = userLocation.stream().map(UserLocationMapping::getLocationId).collect(Collectors.toList());
+//            Iterable<Integer> locationIds = userLocation.stream().map(UserLocationMapping::getLocationId).collect(Collectors.toList());
+            List<FacilityDto> facilityDtos = new ArrayList<>();
             if (!userLocation.isEmpty()) {
-                List<LocationMaster> locationMaster = locationMasterDao.findAllById(locationIds);
-                List<LocationMasterWithHierarchy> locationMasterWithHierarchies = new ArrayList<>();
-                for (LocationMaster master : locationMaster) {
-                    locationMasterWithHierarchies.add(LocationMasterMapper.getLocationMasterWithHierarchy(master, locationMasterDao.getNameHierarchy(master.getId())));
+//                List<LocationMaster> locationMaster = locationMasterDao.findAllById(locationIds);
+//                List<LocationMasterWithHierarchy> locationMasterWithHierarchies = new ArrayList<>();
+//                for (LocationMaster master : locationMaster) {
+//                    locationMasterWithHierarchies.add(LocationMasterMapper.getLocationMasterWithHierarchy(master, locationMasterDao.getNameHierarchy(master.getId())));
+//                }
+                facilityDtos = new ArrayList<>();
+                for (UserLocationMapping mapping : userLocation) {
+                    if (mapping.getFacilityId() != null) {
+                        facilityDtos.add(locationResourceService.getFacilityDto(mapping.getFacilityId()));
+                    }
                 }
-                userList.add(UserMapper.getMultiLocationUserListDto(representation, locationMasterWithHierarchies));
+
+                userList.add(UserMapper.getMultiLocationUserListDto(representation, facilityDtos));
             } else {
                 userList.add(UserMapper.getMultiLocationUserListDto(representation, null));
             }
+
+
         }
         PageDto page = new PageDto();
         page.setList(userList);
@@ -232,7 +253,7 @@ public class UserServiceImpl implements UserService {
         List<UserListDto> users = new ArrayList<>();
         List<UserLocationMapping> newSignedUpUser = userLocationMappingRepository.findByIsFirst(true);
         for (UserLocationMapping userLocationMapping : newSignedUpUser) {
-            UserListDto user = getUserDtoByIdAndLocation(userLocationMapping.getUserId(), userLocationMapping.getLocationId());
+            UserListDto user = getUserDtoByIdAndLocation(userLocationMapping.getUserId(), userLocationMapping.getFacilityId());
             users.add(user);
         }
         return users;
@@ -500,14 +521,23 @@ public class UserServiceImpl implements UserService {
         }
         for (UserRepresentation representation : userRepresentations) {
             List<UserLocationMapping> userLocation = userLocationMappingRepository.findByUserId(representation.getId());
-            Iterable<Integer> locationIds = userLocation.stream().map(UserLocationMapping::getLocationId).collect(Collectors.toList());
+//            Iterable<Integer> locationIds = userLocation.stream().map(UserLocationMapping::getLocationId).collect(Collectors.toList());
+            List<FacilityDto> facilityDtos = new ArrayList<>();
             if (!userLocation.isEmpty()) {
-                List<LocationMaster> locationMaster = locationMasterDao.findAllById(locationIds);
-                List<LocationMasterWithHierarchy> locationMasterWithHierarchies = new ArrayList<>();
-                for (LocationMaster master : locationMaster) {
-                    locationMasterWithHierarchies.add(LocationMasterMapper.getLocationMasterWithHierarchy(master, locationMasterDao.getNameHierarchy(master.getId())));
+//                List<LocationMaster> locationMaster = locationMasterDao.findAllById(locationIds);
+//                List<LocationMasterWithHierarchy> locationMasterWithHierarchies = new ArrayList<>();
+//                for (LocationMaster master : locationMaster) {
+//                    locationMasterWithHierarchies.add(LocationMasterMapper.getLocationMasterWithHierarchy(master, locationMasterDao.getNameHierarchy(master.getId())));
+//                }
+
+                facilityDtos = new ArrayList<>();
+                for (UserLocationMapping mapping : userLocation) {
+                    if (mapping.getFacilityId() != null) {
+                        facilityDtos.add(locationResourceService.getFacilityDto(mapping.getFacilityId()));
+                    }
                 }
-                userList.add(UserMapper.getMultiLocationUserListDto(representation, locationMasterWithHierarchies));
+
+                userList.add(UserMapper.getMultiLocationUserListDto(representation, facilityDtos));
             } else {
                 userList.add(UserMapper.getMultiLocationUserListDto(representation, null));
             }
@@ -568,14 +598,21 @@ public class UserServiceImpl implements UserService {
         userRepresentation.setRealmRoles(roles);
 
         List<UserLocationMapping> userLocation = userLocationMappingRepository.findByUserId(userRepresentation.getId());
-        Iterable<Integer> locationIds = userLocation.stream().map(UserLocationMapping::getLocationId).collect(Collectors.toList());
+//        Iterable<Integer> locationIds = userLocation.stream().map(UserLocationMapping::getLocationId).collect(Collectors.toList());
         if (!userLocation.isEmpty()) {
-            List<LocationMaster> locationMaster = locationMasterDao.findAllById(locationIds);
-            List<LocationMasterWithHierarchy> locationMasterWithHierarchies = new ArrayList<>();
-            for (LocationMaster master : locationMaster) {
-                locationMasterWithHierarchies.add(LocationMasterMapper.getLocationMasterWithHierarchy(master, locationMasterDao.getNameHierarchy(master.getId())));
+//            List<LocationMaster> locationMaster = locationMasterDao.findAllById(locationIds);
+//            List<LocationMasterWithHierarchy> locationMasterWithHierarchies = new ArrayList<>();
+//            for (LocationMaster master : locationMaster) {
+//                locationMasterWithHierarchies.add(LocationMasterMapper.getLocationMasterWithHierarchy(master, locationMasterDao.getNameHierarchy(master.getId())));
+//            }
+            List<FacilityDto> facilityDtos = new ArrayList<>();
+            facilityDtos = new ArrayList<>();
+            for (UserLocationMapping mapping : userLocation) {
+                if (mapping.getFacilityId() != null) {
+                    facilityDtos.add(locationResourceService.getFacilityDto(mapping.getFacilityId()));
+                }
             }
-            user = UserMapper.getMultiLocationUserListDto(userRepresentation, locationMasterWithHierarchies);
+            user = UserMapper.getMultiLocationUserListDto(userRepresentation, facilityDtos);
         } else {
             user = UserMapper.getMultiLocationUserListDto(userRepresentation, null);
         }
@@ -600,15 +637,15 @@ public class UserServiceImpl implements UserService {
         List<UserLocationMapping> userLocationMappingList = userLocationMappingRepository.findByUserId(userId);
 
         for (UserLocationMapping userLocationMapping : userLocationMappingList) {
-            if (!userDto.getLocationIds().contains(userLocationMapping.getLocationId())) {
+            if (!userDto.getFacilityIds().contains(userLocationMapping.getFacilityId())) {
                 userLocationMappingRepository.delete(userLocationMapping);
             }
         }
-        for (Integer locationId : userDto.getLocationIds()) {
-            UserLocationMapping assignedLocation = userLocationMappingRepository.findByUserIdAndLocationId(userId, locationId);
+        for (String facilityId : userDto.getFacilityIds()) {
+            UserLocationMapping assignedLocation = userLocationMappingRepository.findByUserIdAndFacilityId(userId, facilityId);
             UserLocationMapping ulm = new UserLocationMapping();
             if (assignedLocation == null) {
-                ulm.setLocationId(locationId);
+                ulm.setFacilityId(facilityId);
                 ulm.setUserId(userId);
                 ulm.setIsFirst(false);
                 ulm.setRegRequestFrom(UserConst.WEB);
@@ -697,7 +734,7 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    private UserListDto getUserDtoByIdAndLocation(String userId, Integer locationId) {
+    private UserListDto getUserDtoByIdAndLocation(String userId, String facilityId) {
         Keycloak keycloak = keyCloakConfig.getInstanceByAuth();
         UserListDto user;
         UserRepresentation userRepresentation = keycloak.realm(KeyCloakConfig.REALM).users().get(userId).toRepresentation();
@@ -707,9 +744,13 @@ public class UserServiceImpl implements UserService {
             roles.add(roleRepresentation.getName());
         }
         userRepresentation.setRealmRoles(roles);
+        if (facilityId == null) {
+            user = UserMapper.getUserListDto(userRepresentation, null);
+        } else {
+            FacilityDto facilityDto = locationResourceService.getFacilityDto(facilityId);
+            user = UserMapper.getUserListDto(userRepresentation, facilityDto);
+        }
 
-        Optional<LocationMaster> locationMaster = locationMasterDao.findById(locationId);
-        user = UserMapper.getUserListDto(userRepresentation, locationMaster.isPresent() ? locationMaster.get() : null);
 
         return user;
     }

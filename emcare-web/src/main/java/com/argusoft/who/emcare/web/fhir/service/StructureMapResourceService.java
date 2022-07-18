@@ -2,7 +2,6 @@ package com.argusoft.who.emcare.web.fhir.service;
 
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import com.argusoft.who.emcare.web.common.dto.PageDto;
-import com.argusoft.who.emcare.web.fhir.dto.StructureMapDto;
 import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.StructureMap;
 

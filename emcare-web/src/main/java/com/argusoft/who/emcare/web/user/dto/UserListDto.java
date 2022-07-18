@@ -1,5 +1,7 @@
 package com.argusoft.who.emcare.web.user.dto;
 
+import com.argusoft.who.emcare.web.fhir.dto.FacilityDto;
+
 import java.util.List;
 
 public class UserListDto {
@@ -10,9 +12,7 @@ public class UserListDto {
     private String email;
     private Boolean enabled;
     private List<String> realmRoles;
-    private Integer locationId;
-    private String locationName;
-    private String locationType;
+    private FacilityDto facilityDto;
 
     public String getId() {
         return id;
@@ -70,27 +70,11 @@ public class UserListDto {
         this.realmRoles = realmRoles;
     }
 
-    public Integer getLocationId() {
-        return locationId;
+    public FacilityDto getFacilityDto() {
+        return facilityDto;
     }
 
-    public void setLocationId(Integer locationId) {
-        this.locationId = locationId;
-    }
-
-    public String getLocationName() {
-        return locationName;
-    }
-
-    public void setLocationName(String locationName) {
-        this.locationName = locationName;
-    }
-
-    public String getLocationType() {
-        return locationType;
-    }
-
-    public void setLocationType(String locationType) {
-        this.locationType = locationType;
+    public void setFacilityDto(FacilityDto facilityDto) {
+        this.facilityDto = facilityDto;
     }
 }

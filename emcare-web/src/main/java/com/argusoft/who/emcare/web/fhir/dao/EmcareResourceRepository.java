@@ -19,4 +19,8 @@ public interface EmcareResourceRepository extends JpaRepository<EmcareResource, 
     List<EmcareResource> findByTypeContainingAndTextContainingIgnoreCase(String type, String searchString);
 
     EmcareResource findByResourceId(String resourceId);
+
+    List<EmcareResource> findByFacilityIdIn(List<String> ids, Pageable pageable);
+
+    List<EmcareResource> findByFacilityIdIn(List<String> ids);
 }

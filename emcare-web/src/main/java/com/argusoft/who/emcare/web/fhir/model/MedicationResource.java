@@ -1,35 +1,30 @@
 package com.argusoft.who.emcare.web.fhir.model;
 
+
 import com.argusoft.who.emcare.web.common.model.EntityAuditInfo;
 
 import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "emcare_resources")
-public class EmcareResource extends EntityAuditInfo implements Serializable {
+@Table(name = "medication_resource")
+public class MedicationResource extends EntityAuditInfo implements Serializable {
 
     @Id
+    @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+    private Long id;
 
     @Column(name = "text", columnDefinition = "TEXT")
     private String text;
 
-    @Column(name = "type", columnDefinition = "TEXT")
-    private String type;
-
-    @Column(name = "facilityId")
-    private String facilityId;
-
-    @Column(name = "resource_id")
     private String resourceId;
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -41,27 +36,11 @@ public class EmcareResource extends EntityAuditInfo implements Serializable {
         this.text = text;
     }
 
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
     public String getResourceId() {
         return resourceId;
     }
 
     public void setResourceId(String resourceId) {
         this.resourceId = resourceId;
-    }
-
-    public String getFacilityId() {
-        return facilityId;
-    }
-
-    public void setFacilityId(String facilityId) {
-        this.facilityId = facilityId;
     }
 }
