@@ -36,7 +36,7 @@ public class OpenApiController {
         return openApiService.resetPassword(userPasswordDto);
     }
 
-    @GetMapping("active/facility")
+    @GetMapping("/active/facility")
     public List<FacilityDto> getActiveFacility() {
         return locationResourceService.getActiveFacility();
     }
