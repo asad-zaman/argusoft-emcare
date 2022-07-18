@@ -57,6 +57,8 @@ import { CardModule } from 'primeng/card';
 import { ChartModule } from 'angular-highcharts';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
+import { ManageOrganizationComponent } from './root/components/manage-organization/manage-organization.component';
+import { OrganizationListComponent } from './root/components/organization-list/organization-list.component';
 
 @NgModule({
   declarations: [
@@ -90,7 +92,9 @@ import { MessageService } from 'primeng/api';
     LocationDropdownComponent,
     LanguageListComponent,
     ForgotPasswordComponent,
-    AdminPanelComponent
+    AdminPanelComponent,
+    ManageOrganizationComponent,
+    OrganizationListComponent
   ],
   imports: [
     BrowserModule,

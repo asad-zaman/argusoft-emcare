@@ -37,7 +37,8 @@ export class AppComponent implements OnInit {
     'Languages': 'bi bi-calendar2-range nav-link_icon',
     'Facility': 'bi bi-columns-gap nav-link_icon',
     'Settings': 'bi bi-gear nav-link_icon',
-    'Dashboard': 'bi bi-house-door nav-link_icon'
+    'Dashboard': 'bi bi-house-door nav-link_icon',
+    'Organizations': 'bi bi-border-outer nav-link_icon'
   }
 
   constructor(

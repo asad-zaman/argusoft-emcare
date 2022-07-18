@@ -63,7 +63,6 @@ export class LocationTypeComponent implements OnInit {
   }
 
   checkEditParam() {
-    console.log(this.editId, 'ss');
     if (this.editId) {
       this.isEdit = true;
       this.locationService.getLocationTypeById(this.editId).subscribe(res => {

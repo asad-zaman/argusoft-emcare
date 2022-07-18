@@ -19,6 +19,7 @@
           <th>{{'Gender' | translate}}</th>
           <th>{{'Date of Birth' | translate}}</th>
           <th>{{'Caregiver Name' | translate}}</th>
+          <th>{{'Facility' | translate}}</th>
           <th>{{'Location' | translate}}</th>
         </tr>
       </thead>
@@ -42,7 +43,15 @@
               <td>{{patient.gender}}</td>
               <td>{{patient.dob ? (patient.dob | date:'mediumDate') : 'NA'}}</td>
               <td>{{patient.caregiver || "NOT PROVIDED"}}</td>
-              <td>{{patient.location}}</td>
+              <td>
+                <ng-container *ngIf="patient.facility">
+                  {{patient.facility}}
+                </ng-container>
+                <ng-container *ngIf="patient.organizationName">
+                  - {{patient.organizationName}}
+                </ng-container>
+              </td>
+              <td>{{patient.locationName}}</td>
             </tr>
           </ng-container>
         </ng-container>

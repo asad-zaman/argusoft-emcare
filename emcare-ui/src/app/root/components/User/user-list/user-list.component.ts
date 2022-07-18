@@ -7,6 +7,7 @@ import { UserManagementService } from 'src/app/root/services/user-management.ser
 import { ToasterService } from 'src/app/shared';
 import { MustMatch } from 'src/app/shared/validators/must-match.validator';
 import { AuthGuard } from 'src/app/auth/auth.guard';
+
 @Component({
   selector: 'app-user-list',
   templateUrl: './user-list.component.html',
@@ -98,7 +99,11 @@ export class UserListComponent implements OnInit {
             this.manipulateResponse(res);
           });
         } else {
-          this.getUsersByPageIndex(this.currentPage);
+          if (this.isLocationFilterOn) {
+            this.getUsersBasedOnLocationAndPageIndex(this.currentPage);
+          } else {
+            this.getUsersByPageIndex(this.currentPage);
+          }
         }
       });
     }
@@ -180,13 +185,28 @@ export class UserListComponent implements OnInit {
     this.resetPasswordForm.reset();
   }
 
-  getLocationNames(data) {
+  getFacilityNames(data) {
+    if (data && data.length > 0) {
+      let facilityStr = '';
+      data.map((d, index) => {
+        facilityStr += `${d.facilityName} - ${d.organizationName}`;
+        if (index !== data.length - 1) {
+          facilityStr += ', ';
+        }
+      });
+      return facilityStr;
+    } else {
+      return 'NA';
+    }
+  }
+
+  getLocation(data) {
     if (data && data.length > 0) {
       let locationStr = '';
       data.map((d, index) => {
-        locationStr += d.name;
+        locationStr += `${d.locationName}`;
         if (index !== data.length - 1) {
-          locationStr += ' ';
+          locationStr += ', ';
         }
       });
       return locationStr;

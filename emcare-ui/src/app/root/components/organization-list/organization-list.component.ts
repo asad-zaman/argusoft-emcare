@@ -4,34 +4,29 @@ import { TranslateService } from '@ngx-translate/core';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { AuthGuard } from 'src/app/auth/auth.guard';
-import { LocationService } from 'src/app/root/services/location.service';
-import { FhirService, ToasterService } from 'src/app/shared';
+import { FhirService } from 'src/app/shared';
 
 @Component({
-  selector: 'app-show-facility',
-  templateUrl: './show-facility.component.html',
-  styleUrls: ['./show-facility.component.scss']
+  selector: 'app-organization-list',
+  templateUrl: './organization-list.component.html',
+  styleUrls: ['./organization-list.component.scss']
 })
-export class ShowFacilityComponent implements OnInit {
+export class OrganizationListComponent implements OnInit {
 
-  facilityArr: Array<any> = [];
+  orgArr: Array<any> = [];
   searchString;
   isAPIBusy: boolean = true;
-  locationArr: Array<any> = [];
   searchTermChanged: Subject<string> = new Subject<string>();
   isAdd: boolean = true;
   isEdit: boolean = true;
   isView: boolean = true;
-  isDelete: boolean = true;
   currentPage = 0;
   totalCount = 0;
   tableSize = 10;
-
+  
   constructor(
     private readonly router: Router,
     private readonly fhirService: FhirService,
-    private readonly toasterService: ToasterService,
-    private readonly locationService: LocationService,
     private readonly authGuard: AuthGuard,
     private readonly translate: TranslateService
   ) { }
@@ -42,8 +37,7 @@ export class ShowFacilityComponent implements OnInit {
 
   prerequisite() {
     this.checkFeatures();
-    this.getFacilityByPageAndSearch(this.currentPage);
-    this.getAllLocations();
+    this.getOrganizationByPageIndexAndSearch(this.currentPage);
   }
 
   checkFeatures() {
@@ -52,38 +46,12 @@ export class ShowFacilityComponent implements OnInit {
         this.isAdd = res.featureJSON['canAdd'];
         this.isEdit = res.featureJSON['canEdit'];
         this.isView = res.featureJSON['canView'];
-        this.isDelete = res.featureJSON['canDelete'];
       }
     });
   }
 
-  getLocationNameByID(id) {
-    return this.locationArr.find(el => el.id == id).name;
-  }
-
-  capitalizeFirstLetter(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-  }
-
-  getAllLocations() {
-    this.isAPIBusy = true;
-    this.locationService.getAllLocations().subscribe((res: Array<Object>) => {
-      this.isAPIBusy = false;
-      if (res) {
-        this.locationArr = res;
-      }
-    })
-  }
-
-  getFacilityByPageAndSearch(currentPage) {
-    this.fhirService.getFacilityByPageAndSearch(currentPage).subscribe(res => {
-      this.isAPIBusy = false;
-      this.manipulateRes(res);
-    });
-  }
-
-  editFacility(index) {
-    this.router.navigate([`editFacility/${this.facilityArr[index]['facilityId']}`]);
+  editOrganization(index) {
+    this.router.navigate([`/manage-organization/${this.orgArr[index]['id']}`]);
   }
 
   resetCurrentPage() {
@@ -98,13 +66,13 @@ export class ShowFacilityComponent implements OnInit {
         distinctUntilChanged()
       ).subscribe(_term => {
         if (this.searchString && this.searchString.length >= 1) {
-          this.facilityArr = [];
-          this.fhirService.getFacilityByPageAndSearch(0, this.searchString).subscribe(res => {
+          this.orgArr = [];
+          this.fhirService.getOrganizationByPageIndexAndSearch(this.currentPage, this.searchString).subscribe(res => {
             this.manipulateRes(res);
           });
         } else {
-          this.facilityArr = [];
-          this.getFacilityByPageAndSearch(this.currentPage);
+          this.orgArr = [];
+          this.getOrganizationByPageIndexAndSearch(this.currentPage);
         }
       });
     }
@@ -112,10 +80,23 @@ export class ShowFacilityComponent implements OnInit {
   }
 
   manipulateRes(res) {
-    if (res) {
-      this.facilityArr = res['list'];
-      this.totalCount = res['totalCount']; 
+    if (res && res['list']) {
+      this.orgArr = res['list'];
     }
+  }
+
+  onIndexChange(event) {
+    this.currentPage = event;
+    this.getOrganizationByPageIndexAndSearch(event - 1);
+  }
+
+  getOrganizationByPageIndexAndSearch(index) {
+    this.orgArr = [];
+    this.fhirService.getOrganizationByPageIndexAndSearch(index).subscribe(res => {
+      this.isAPIBusy = false;
+      this.manipulateRes(res);
+      this.totalCount = res['totalCount'];
+    });
   }
 
   getLabel(index) {
@@ -125,10 +106,5 @@ export class ShowFacilityComponent implements OnInit {
       tr = res;
     });
     return tr;
-  }
-
-  onIndexChange(event) {
-    this.currentPage = event;
-    this.getFacilityByPageAndSearch(event - 1);
   }
 }

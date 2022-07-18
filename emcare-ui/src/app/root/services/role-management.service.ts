@@ -26,8 +26,6 @@ export class RoleManagementService {
         return headerObj;
     }
 
-    //Endpoints TODO
-
     getAllRoles() {
         return this.http.get(`${this.roleBaseURL}`, this.getHeaders());
     }
