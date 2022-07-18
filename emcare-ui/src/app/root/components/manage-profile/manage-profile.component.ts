@@ -5,6 +5,7 @@ import { AuthenticationService, FhirService, ToasterService } from 'src/app/shar
 import { UserManagementService } from '../../services/user-management.service';
 import * as _ from 'lodash';
 import { LaunguageSubjects } from 'src/app/auth/token-interceptor';
+
 @Component({
   selector: 'app-manage-profile',
   templateUrl: './manage-profile.component.html',
@@ -15,8 +16,7 @@ export class ManageProfileComponent implements OnInit {
   userId;
   currentUserForm: FormGroup;
   submitted: boolean;
-  locationId;
-  locationIds;
+  facilityIds;
   lanArr = [];
 
   constructor(
@@ -68,9 +68,7 @@ export class ManageProfileComponent implements OnInit {
         this.currentUserForm.patchValue({
           language: this.getLaunguageObjFromCode(res['language'])
         });
-        this.locationId = res['location']['id'];
-        const zeroSymbol = 0;
-        this.locationIds = res['location'].filter(l => l.id != zeroSymbol).map(({id}) => id);
+        this.facilityIds = res['facilities'] && res['facilities'].map(f => f.facilityId);
         this.getLoggedInUserData();
       }
     });
@@ -98,8 +96,7 @@ export class ManageProfileComponent implements OnInit {
         firstName: this.f.firstName.value,
         lastName: this.f.lastName.value,
         language: this.f.language.value.id,
-        locationId: this.locationId,
-        locationIds: this.locationIds
+        facilityIds: this.facilityIds
       }
       const translations = this.lanArr.find(el => el.id === this.f.language.value.id).translations;
       this.userService.updateUser(data, this.userId).subscribe(() => {

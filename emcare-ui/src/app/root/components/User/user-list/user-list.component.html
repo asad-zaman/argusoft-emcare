@@ -20,10 +20,11 @@
           <th class="w-10">{{'First Name' | translate}}</th>
           <th class="w-10">{{'Last Name' | translate}}</th>
           <th class="w-20">{{'Email' | translate}}</th>
-          <th class="w-15">{{'Role' | translate}}</th>
-          <th class="w-20">{{'Location' | translate}}</th>
-          <th class="w-10">{{'Status' | translate}}</th>
-          <th class="w-10" *ngIf="isEdit"></th>
+          <th class="w-10">{{'Role' | translate}}</th>
+          <th class="w-20">{{'Facility' | translate}}</th>
+          <th class="w-10">{{'Location' | translate}}</th>
+          <th class="w-5">{{'Status' | translate}}</th>
+          <th class="w-5" *ngIf="isEdit"></th>
         </tr>
       </thead>
       <tbody>
@@ -37,9 +38,12 @@
               <td>{{user.userName}}</td>
               <td>{{user.realmRoles[0]}}</td>
               <ng-container></ng-container>
-              <td class="cst-text-overflow" pTooltip={{getLocationNames(user.locations)}} tooltipPosition="bottom">
-                {{getLocationNames(user.locations)}}</td>
-              <td><span [ngClass]="(!!user.enabled) ? 'badges-red bg-green' : 'badges-red'">
+              <td class="cst-text-overflow" pTooltip={{getFacilityNames(user.facilities)}} tooltipPosition="bottom">
+                {{getFacilityNames(user.facilities)}}</td>
+              <td class="cst-text-overflow" pTooltip={{getLocation(user.facilities)}} tooltipPosition="bottom">
+                {{getLocation(user.facilities)}}</td>
+              <td>
+                <span [ngClass]="(!!user.enabled) ? 'badges-red bg-green' : 'badges-red'">
                   <ng-container *ngIf="!!user.enabled; else NotVerified">
                     Active
                   </ng-container>
@@ -47,6 +51,7 @@
                     In Active
                   </ng-template>
                 </span>
+              </td>
               <td *ngIf="isEdit">
                 <ul class="navigation mb-0" style="list-style-type: none;">
                   <li class="dropdown mt-3 cursor-pointer">

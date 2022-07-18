@@ -115,28 +115,32 @@
         <div class="col-6">
           <div class="row">
             <div class="col-12">
-              <div class="mb-3 d-grid">
-                <app-location-dropdown [isMultiplePage]="true" [events]="eventsSubject.asObservable()" [idArr]="[]"
-                  (locationFormValueAndDropdownArr)="getFormValue($event)">
-                </app-location-dropdown>
+              <div class="mb-3">
+                <label class="form-label">{{'Facility' | translate}}</label>
+                <p-dropdown placeholder="Select" [options]="facilityArr" formControlName="selectedFacility"
+                  optionLabel="name" dataKey="name">
+                </p-dropdown>
               </div>
             </div>
             <div class="col-4 offset-8">
-              <button [disabled]="!formData" type="button" class=" btn btn-blue" (click)="saveLocationData()"
-                data-bs-dismiss="modal">{{'Save' | translate}}</button>
+              <button [disabled]="!userForm.get('selectedFacility').value" type="button" class=" btn btn-blue"
+                (click)="saveFacility()" data-bs-dismiss="modal">{{'Save' | translate}}</button>
             </div>
             <div class="col-12">
               <div class="mb-3 customd-div">
                 <label class="form-label f-16">Selected Areas</label>
                 <ul>
-                  <ng-container *ngFor="let location of selectedAreasArr">
+                  <ng-container *ngFor="let fac of userForm.get('facility').value">
                     <li>
                       <div class="chip">
-                        {{location.string}}
-                        <i class="bi bi-x f-18 cursor-pointer" (click)="removeLocation(location)" aria-hidden="true"></i>
+                        <ng-container *ngIf="fac.name">
+                          {{fac.name}}
+                        </ng-container>
+                        <ng-container *ngIf="fac.organizationName">
+                          - {{fac.organizationName}}
+                        </ng-container>
+                        <i class="bi bi-x f-18 cursor-pointer" (click)="removeFacility(fac)" aria-hidden="true"></i>
                       </div>
-                      <!-- <span class="f-16">{{location.string}}</span> -->
-                     
                     </li>
                   </ng-container>
                 </ul>

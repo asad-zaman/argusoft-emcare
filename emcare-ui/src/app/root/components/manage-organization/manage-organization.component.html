@@ -1,0 +1,84 @@
+<div *ngIf="isAllowed" class="main-wrapper">
+  <div class="form-wrapper-facility">
+    <form [formGroup]="orgForm" name="orgForm" novalidate>
+      <div class="mb-5">
+        <h1 class="heading">
+          {{'Manage Organization' | translate}}
+        </h1>
+        <hr>
+      </div>
+      <div class="row">
+        <div class="col-12 col-sm-6">
+          <div class="mb-3">
+            <label class="form-label">{{'Name' | translate}}</label>
+            <input formControlName="organizationName" type="text" class="form-control custom-input"
+              id="organizationName" placeholder="Enter organization name"
+              [ngClass]="{ 'is-invalid': submitted && f.organizationName.errors }">
+            <div *ngIf="submitted && f.organizationName.errors" class="invalid-feedback">
+              <div class="cst-error-style" *ngIf="f.organizationName.errors.required">
+                *{{'Name is required' | translate}}</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-sm-6">
+          <div class="mb-3">
+            <label class="form-label">{{'Alias Name' | translate}}</label>
+            <input formControlName="alias" type="text" class="form-control custom-input" id="alias"
+              placeholder="Enter alias name" [ngClass]="{ 'is-invalid': submitted && f.alias.errors }">
+            <div *ngIf="submitted && f.alias.errors" class="invalid-feedback">
+              <div class="cst-error-style" *ngIf="f.alias.errors.required">
+                *{{'Alias is required' | translate}}</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-sm-4">
+          <div class="mb-3">
+            <label class="form-label">{{'Address Street' | translate}}</label>
+            <input formControlName="addressStreet" type="text" class="form-control custom-input" id="addressStreet1"
+              placeholder="Enter address street" [ngClass]="{ 'is-invalid': submitted && f.addressStreet.errors }">
+            <div *ngIf="submitted && f.addressStreet.errors" class="invalid-feedback">
+              <div class="cst-error-style" *ngIf="f.addressStreet.errors.required">
+                *{{'Address street is required' | translate}}</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-sm-4">
+          <div class="mb-3">
+            <label class="form-label">{{'Telecom' | translate}}</label>
+            <input formControlName="telecom" type="number" class="form-control custom-input" id="telecom"
+              placeholder="Enter telecom" [ngClass]="{ 'is-invalid': submitted && f.telecom.errors }">
+            <div *ngIf="submitted && f.telecom.errors" class="invalid-feedback">
+              <div class="cst-error-style" *ngIf="f.telecom.errors.required">
+                *{{'Telecom is required' | translate}}</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-sm-4">
+          <div class="mb-3">
+            <label class="form-label">{{'Status' | translate}}</label>
+            <p-dropdown formControlName="status" [options]="statusArr" optionLabel="name"
+              [ngClass]="{ 'is-invalid': submitted && f.status.errors }">
+            </p-dropdown>
+          </div>
+        </div>
+      </div>
+      <div class="text-end mt-5">
+        <hr>
+        <button routerLink="/showOrganizations" class="btn-black btn ms-3">
+          <i class="bi bi-chevron-left" aria-hidden="true"></i> {{'Back' | translate}}
+        </button>
+        <button (click)="saveData()" class="btn-blue btn">
+          <ng-container *ngIf="!isEdit; else updateOrg">
+            {{'Save Organization' | translate}}
+          </ng-container>
+          <ng-template #updateOrg>
+            {{'Edit Organization' | translate}}
+          </ng-template>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+<div *ngIf="!isAllowed" class="main-wrapper-nodata">
+  Sorry you don't have access to this page!!
+</div>
