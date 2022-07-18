@@ -27,7 +27,9 @@ import {
   ShowRoleComponent,
   ShowFacilityComponent,
   LanguageListComponent,
-  ForgotPasswordComponent
+  ForgotPasswordComponent,
+  ManageOrganizationComponent,
+  OrganizationListComponent
 } from './root/index';
 
 const routes: Routes = [
@@ -64,6 +66,9 @@ const routes: Routes = [
   { path: 'showFacility', component: ShowFacilityComponent, canActivate: [AuthGuard] },
   { path: 'language-list', component: LanguageListComponent, canActivate: [AuthGuard] },
   { path: 'user-admin-settings', component: AdminPanelComponent, canActivate: [AuthGuard] },
+  { path: 'manage-organization', component: ManageOrganizationComponent, canActivate: [AuthGuard] },
+  { path: 'manage-organization/:id', component: ManageOrganizationComponent, canActivate: [AuthGuard] },
+  { path: 'showOrganizations', component: OrganizationListComponent, canActivate: [AuthGuard] },
   { path: '**', redirectTo: 'dashboard' }
 ];
 @NgModule({

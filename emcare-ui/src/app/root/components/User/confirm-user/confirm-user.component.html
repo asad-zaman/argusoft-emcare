@@ -16,7 +16,7 @@
           <th>{{'First Name' | translate}}</th>
           <th>{{'Last Name' | translate}}</th>
           <th>{{'Email' | translate}}</th>
-          <th>{{'Location' | translate}}</th>
+          <th>{{'Facility' | translate}}</th>
           <th>{{'Role' | translate}}</th>
           <th></th>
           <th></th>
@@ -30,7 +30,7 @@
               <td>{{user.firstName}}</td>
               <td>{{user.lastName}}</td>
               <td>{{user.email}}</td>
-              <td>{{user.locationName ? user.locationName : 'NA'}}</td>
+              <td>{{user.facilityDto ? getFacilityStr(user.facilityDto) : 'NA'}}</td>
               <td>{{user.realmRoles[0]}}</td>
               <td>
                 <i (click)="onApproveUser(i)" class="bi bi-check-circle text-success cursor-pointer font-size-18"

@@ -87,11 +87,14 @@ export class ConfirmUserComponent implements OnInit {
         }
         return true;
       });
-
       return (roleFlag
         || user.firstName?.toLowerCase().includes(lowerCasedSearchString)
         || user.lastName?.toLowerCase().includes(lowerCasedSearchString)
         || user.email?.toLowerCase().includes(lowerCasedSearchString))
-    })
+    });
+  }
+
+  getFacilityStr(facilityData) {
+    return `${facilityData.facilityName} - ${facilityData.locationName}`;
   }
 }

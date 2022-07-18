@@ -18,8 +18,11 @@ public class UserLocationMapping implements Serializable {
     @Column(name = "user_id", nullable = false)
     private String userId;
 
-    @Column(name = "location_id", nullable = false)
+    @Column(name = "location_id")
     private Integer locationId;
+
+    @Column(name = "facility_id")
+    private String facilityId;
 
     @Column(name = "reg_request_from", nullable = false)
     private String regRequestFrom;
@@ -91,5 +94,13 @@ public class UserLocationMapping implements Serializable {
 
     public void setCreateDate(Date createDate) {
         this.createDate = createDate;
+    }
+
+    public String getFacilityId() {
+        return facilityId;
+    }
+
+    public void setFacilityId(String facilityId) {
+        this.facilityId = facilityId;
     }
 }

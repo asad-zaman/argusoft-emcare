@@ -35,7 +35,8 @@ export class AuthGuard implements CanActivate {
             'Languages': ['/language-list', '/manage-language'],
             'Facility': ['/showFacility', '/addFacility', '/editFacility'],
             'User Settings': ['/user-admin-settings'],
-            'Dashboard': ['/dashboard']
+            'Dashboard': ['/dashboard'],
+            'Organizations': ['/showOrganizations', '/manage-organization'],
         }
         this.routeFeatureMapper = {
             'addLocationType': { f: 'Location Types', reqFeature: ['canAdd'] },
@@ -66,6 +67,8 @@ export class AuthGuard implements CanActivate {
             'language-list': { f: 'Languages', reqFeature: ['canAdd', 'canEdit', 'canView'] },
             'user-admin-settings': { f: 'User Settings', reqFeature: ['canEdit', 'canView'] },
             'dashboard': { f: 'Dashboard', reqFeature: ['canView'] },
+            'showOrganizations': { f: 'Organizations', reqFeature: ['canAdd', 'canEdit', 'canView'] },
+            'manage-organization': { f: 'Organizations', reqFeature: ['canAdd', 'canEdit'] },
         }
     }
 
@@ -212,6 +215,11 @@ export class AuthGuard implements CanActivate {
             route.routeConfig.path === 'user-admin-settings'
         ) {
             return this.user.feature.find(f => f.menuName === 'Settings');
+        } else if (
+            route.routeConfig.path === 'showOrganizations'
+            || route.routeConfig.path.includes('manage-organization')
+        ) {
+            return this.user.feature.find(f => f.menuName === 'Organizations');
         } else if (
             route.routeConfig.path === 'dashboard'
         ) {

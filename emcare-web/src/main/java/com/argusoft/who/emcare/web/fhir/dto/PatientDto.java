@@ -14,11 +14,13 @@ public class PatientDto {
     private String gender;
     private Date dob;
     private String caregiver;
-    private String location;
+    private String facility;
     private String addressLine;
     private String addressCity;
     private String addressCountry;
     private String addressPostalCode;
+    private String organizationName;
+    private String locationName;
 
 
     public PatientDto() {
@@ -81,12 +83,12 @@ public class PatientDto {
         this.caregiver = caregiver;
     }
 
-    public String getLocation() {
-        return location;
+    public String getFacility() {
+        return facility;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
+    public void setFacility(String facility) {
+        this.facility = facility;
     }
 
     public String getAddressLine() {
@@ -121,5 +123,19 @@ public class PatientDto {
         this.addressPostalCode = addressPostalCode;
     }
 
+    public String getOrganizationName() {
+        return organizationName;
+    }
 
+    public void setOrganizationName(String organizationName) {
+        this.organizationName = organizationName;
+    }
+
+    public String getLocationName() {
+        return locationName;
+    }
+
+    public void setLocationName(String locationName) {
+        this.locationName = locationName;
+    }
 }

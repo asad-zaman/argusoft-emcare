@@ -1,6 +1,7 @@
 package com.argusoft.who.emcare.web.fhir.mapper;
 
 import com.argusoft.who.emcare.web.fhir.dto.*;
+import com.argusoft.who.emcare.web.fhir.model.LocationResource;
 import org.hl7.fhir.r4.model.*;
 
 import java.util.ArrayList;
@@ -32,19 +33,19 @@ public class EmcareResourceMapper {
         }
         pDto.setDob(p.getBirthDate());
 
-        //Caregiver
+        // Caregiver
         if (p.hasLink()) {
             pDto.setCaregiver(p.getLinkFirstRep().getOther().getIdentifier().getValue());
         }
 
-        //Location
+        // Location
         if (p.hasExtension()) {
             Extension locationExtension = p.getExtension().get(0);
             String locationId = ((Identifier) locationExtension.getValue()).getValue();
-            pDto.setLocation(locationId);
+            pDto.setFacility(locationId);
         }
 
-        //Address
+        // Address
         if (p.hasAddress()) {
             if (p.getAddressFirstRep().hasLine()) {
                 pDto.setAddressLine(p.getAddressFirstRep().getLine().get(0).toString());
@@ -143,7 +144,6 @@ public class EmcareResourceMapper {
         return code;
     }
 
-
     public static ActivityDefinitionDto getStructureMapDto(ActivityDefinition definition) {
         ActivityDefinitionDto dto = new ActivityDefinitionDto();
 
@@ -152,7 +152,37 @@ public class EmcareResourceMapper {
         dto.setTitle(definition.getTitle());
         dto.setStatus(definition.getStatus().getDisplay());
         dto.setSubTitle(definition.getSubtitle());
+        return dto;
+    }
 
+    public static FacilityDto getFacilityDto(Location location, String id) {
+        FacilityDto dto = new FacilityDto();
+        dto.setFacilityName(location.getName());
+        dto.setFacilityId(id);
+        dto.setAddress(location.getAddress().getLine().get(0).getValue());
+        dto.setOrganizationId(location.getManagingOrganization().getId());
+        dto.setOrganizationName(location.getManagingOrganization().getDisplay());
+        return dto;
+    }
+
+    public static OrganizationDto getOrganizationDto(Organization organization) {
+        OrganizationDto dto = new OrganizationDto();
+        dto.setId(organization.getIdElement().getIdPart());
+        dto.setName(organization.getName());
+        dto.setActive(organization.getActive());
+        return dto;
+    }
+
+    public static FacilityDto getFacilityDtoForList(Location location, LocationResource locationResource) {
+        FacilityDto dto = new FacilityDto();
+        dto.setFacilityName(location.getName());
+        dto.setFacilityId(location.getIdElement().getIdPart());
+        dto.setAddress(location.getAddress().getLine().get(0).getValue());
+        dto.setOrganizationId(location.getManagingOrganization().getId());
+        dto.setOrganizationName(location.getManagingOrganization().getDisplay());
+        dto.setLocationName(locationResource.getLocationName());
+        dto.setLocationId(locationResource.getLocationId());
+        dto.setStatus(location.getStatus().getDisplay());
         return dto;
     }
 }

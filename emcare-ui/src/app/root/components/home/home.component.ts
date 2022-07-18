@@ -15,7 +15,7 @@ export class HomeComponent implements OnInit {
   dashboardData: any = {};
   isView = true;
   uniqueLocArr = [];
-  userLocArr = [];
+  userFacArr = [];
 
   @ViewChild('mapRef', { static: true }) mapElement: ElementRef;
 
@@ -51,16 +51,14 @@ export class HomeComponent implements OnInit {
   getAllUsers() {
     this.userManagementService.getAllUsers().subscribe((res: Array<any>) => {
       if (res) {
-        let count = 0;
         res.forEach(el => {
-          if (el.locations.length > 0) {
-            count += el.locations.length;
-            el.locations.forEach(l => {
-              const tempLoc = this.userLocArr.find(loc => loc.name == l.name);
+          if (el.facilities && el.facilities.length > 0) {
+            el.facilities.forEach(f => {
+              const tempLoc = this.userFacArr.find(fac => fac.name == f.facilityName);
               if (tempLoc) {
                 tempLoc.y += 1;
               } else {
-                this.userLocArr.push({ name: l.name, y: 1 });
+                this.userFacArr.push({ name: f.facilityName, y: 1 });
               }
             });
           }
@@ -71,14 +69,14 @@ export class HomeComponent implements OnInit {
   }
 
   barChartPopulation() {
-    let locArr = this.userLocArr.map(l => l.name);
-    let locDataArr = this.userLocArr.map(l => l.y);
+    let locArr = this.userFacArr.map(l => l.name);
+    let locDataArr = this.userFacArr.map(l => l.y);
     Highcharts.chart('barChart', {
       chart: {
         type: 'bar'
       },
       title: {
-        text: 'Users per Location'
+        text: 'Users per Facility'
       },
       xAxis: {
         categories: locArr,
