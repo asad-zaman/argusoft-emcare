@@ -1,8 +1,6 @@
 package com.argusoft.who.emcare.ui.home
 
 import android.os.Bundle
-import android.view.View
-import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.argusoft.who.emcare.R
@@ -14,42 +12,31 @@ import com.argusoft.who.emcare.utils.extention.*
 import com.argusoft.who.emcare.utils.glide.GlideApp
 import com.argusoft.who.emcare.utils.glide.GlideRequests
 import com.google.android.fhir.sync.State
+import com.google.android.material.tabs.TabLayout
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class HomeFragment : BaseFragment<FragmentHomeBinding>(), SearchView.OnQueryTextListener {
+class HomeFragment : BaseFragment<FragmentHomeBinding>(){
 
     private lateinit var glideRequests: GlideRequests
     private val syncViewModel: SyncViewModel by viewModels()
     private val settingsViewModel: SettingsViewModel by activityViewModels()
-    private val homeViewModel: HomeViewModel by viewModels()
-    private lateinit var homeAdapter: HomeAdapter
+    private lateinit var homePagerAdapter: HomePagerAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         glideRequests = GlideApp.with(this)
-        homeAdapter = HomeAdapter(onClickListener = this)
-        homeViewModel.getPatients("", preference.getLoggedInUser()?.location?.get(0)?.id, homeAdapter.isNotEmpty())
     }
 
     override fun initView() {
         binding.headerLayout.toolbar.setUpDashboard()
-        if (preference.getLoggedInUser() != null) binding.nameTextView.text = preference.getLoggedInUser()?.userName
-        setupRecyclerView()
+        homePagerAdapter = HomePagerAdapter(this, PatientListFragment(), ConsultationListFragment())
+        binding.viewPager2.adapter = homePagerAdapter
     }
 
-    private fun setupRecyclerView() {
-        binding.progressLayout.recyclerView = binding.recyclerView
-        binding.progressLayout.swipeRefreshLayout = binding.swipeRefreshLayout
-        binding.recyclerView.adapter = homeAdapter
-        binding.progressLayout.setOnSwipeRefreshLayout {
-            homeViewModel.getPatients(binding.searchView.query.toString(), preference.getLoggedInUser()?.location?.get(0)?.id, true)
-        }
-    }
+
 
     override fun initListener() {
-        binding.searchView.setOnQueryTextListener(this)
-        binding.addPatientButton.setOnClickListener(this)
         binding.headerLayout.toolbar.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.action_sync -> {
@@ -59,15 +46,19 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(), SearchView.OnQueryText
             return@setOnMenuItemClickListener true
         }
 
-    }
+        binding.tabLayout.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                binding.viewPager2.setCurrentItem(tab?.position!!)
+            }
 
-    override fun onQueryTextSubmit(query: String?): Boolean {
-        return true
-    }
+            override fun onTabUnselected(tab: TabLayout.Tab?) {
+            }
 
-    override fun onQueryTextChange(newText: String?): Boolean {
-        homeViewModel.getPatients(binding.searchView.query.toString(), preference.getLoggedInUser()?.location?.get(0)?.id, homeAdapter.isNotEmpty())
-        return true
+            override fun onTabReselected(tab: TabLayout.Tab?) {
+            }
+
+        })
+
     }
 
     override fun initObserver() {
@@ -105,27 +96,10 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(), SearchView.OnQueryText
         observeNotNull(settingsViewModel.languageApiState) {
             it.whenSuccess {
                 it.languageData?.convertToMap()?.apply {
-                    binding.welcomeTextView.text = getOrElse("Welcome") { getString(R.string.label_welcome) }
-                }
-            }
-        }
-
-        observeNotNull(homeViewModel.patients) { apiResponse ->
-            apiResponse.handleListApiView(binding.progressLayout, skipIds = listOf(R.id.searchView, R.id.addPatientButton, R.id.swipeRefreshLayout)) {
-                it?.let { list ->
-                    homeAdapter.clearAllItems()
-                    homeAdapter.addAll(list)
+//                    binding.welcomeTextView.text = getOrElse("Welcome") { getString(R.string.label_welcome) }
                 }
             }
         }
     }
 
-    override fun onClick(view: View?) {
-        super.onClick(view)
-        when (view?.id) {
-            R.id.addPatientButton -> {
-                navigate(R.id.action_homeFragment_to_addPatientFragment)
-            }
-        }
-    }
 }

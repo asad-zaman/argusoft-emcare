@@ -1,38 +1,47 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.argusoft.who.emcare.widget.ApiViewStateConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/progressLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
->
-    <LinearLayout
-        android:id="@+id/frameLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-    >
+    android:background="@drawable/bg_top_curved_white">
+
     <androidx.appcompat.widget.SearchView
-            android:id="@+id/search"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:iconifiedByDefault="false"
-            app:queryHint="@string/query_hint_patient_search"
-        />
-    <include
-            android:id="@+id/patient_list_container"
-            layout="@layout/patient_list_view"
-        />
-    </LinearLayout>
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        app:backgroundTint="@color/colorAccent"
-        android:foregroundTint="#ffffff"
-        android:id="@+id/add_patient"
+        android:id="@+id/searchView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_12sdp"
+        app:iconifiedByDefault="false"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/addPatientButton"
+        app:layout_constraintStart_toStartOf="@+id/addPatientButton"
+        app:queryHint="@string/query_hint_patient_search" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/addPatientButton"
+        style="@style/Button.Outlined"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="12dp"
-        android:layout_marginEnd="12dp"
-        android:layout_gravity="bottom|end"
-        android:clickable="true"
-        app:srcCompat="@drawable/ic_baseline_add_24"
-    />
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+        android:layout_marginHorizontal="@dimen/_16sdp"
+        android:layout_marginTop="@dimen/_12sdp"
+        android:text="@string/button_add_patient"
+        app:layout_constraintTop_toBottomOf="@+id/searchView" />
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshLayout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/addPatientButton">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="false"
+            android:orientation="vertical"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/list_item_patient"/>
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+</com.argusoft.who.emcare.widget.ApiViewStateConstraintLayout>

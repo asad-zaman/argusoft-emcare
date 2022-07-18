@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="@dimen/_12sdp"
+    android:paddingHorizontal="@dimen/_16sdp">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/statusImageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/description_status"
+        android:gravity="center_vertical"
+        android:src="@drawable/ic_baseline_circle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/nameTextView"
+        style="@style/TextView.Medium.Black"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_12sdp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/statusImageView"
+        app:layout_constraintTop_toTopOf="@+id/statusImageView"
+        tools:text="Name" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/dateOfBirthTextView"
+        style="@style/TextView.Small.Black"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@+id/nameTextView"
+        app:layout_constraintTop_toBottomOf="@+id/nameTextView"
+        tools:text="DOB: " />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/dateOfBirthValueTextView"
+        style="@style/TextView.Small.Black"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="@id/nameTextView"
+        app:layout_constraintStart_toEndOf="@id/dateOfBirthTextView"
+        app:layout_constraintTop_toBottomOf="@+id/nameTextView"
+        tools:text="21/06/1999" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/consultationDateTextView"
+        style="@style/TextView.Small.Black"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@+id/nameTextView"
+        app:layout_constraintTop_toBottomOf="@+id/dateOfBirthTextView"
+        tools:text="Consultation Date: " />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/consultationDateValueTextView"
+        style="@style/TextView.Small.Black"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="@id/nameTextView"
+        app:layout_constraintStart_toEndOf="@id/consultationDateTextView"
+        app:layout_constraintTop_toBottomOf="@+id/dateOfBirthTextView"
+        tools:text="21/06/1999" />
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="@dimen/_1sdp"
+        android:layout_marginTop="@dimen/_12sdp"
+        android:background="@color/colorLightGrey"
+        app:layout_constraintEnd_toEndOf="@id/nameTextView"
+        app:layout_constraintStart_toStartOf="@+id/statusImageView"
+        app:layout_constraintTop_toBottomOf="@+id/consultationDateTextView" />
+</androidx.constraintlayout.widget.ConstraintLayout>

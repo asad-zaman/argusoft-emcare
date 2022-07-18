@@ -23,73 +23,34 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/welcomeTextView"
-        style="@style/TextView.Small"
-        android:layout_width="wrap_content"
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/_16sdp"
-        android:text="@string/label_welcome"
-        app:layout_constraintBottom_toBottomOf="@+id/nameTextView"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/nameTextView" />
+        app:layout_constraintTop_toBottomOf="@id/headerLayout"
+        android:background="@color/transparent"
+        app:tabTextColor="@color/textColorWhite"
+        >
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Patient List"
 
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/nameTextView"
-        style="@style/TextView.SemiBold"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/_4sdp"
-        android:layout_marginTop="@dimen/_8sdp"
-        android:text="Jayesh Patel"
-        app:layout_constraintStart_toEndOf="@+id/welcomeTextView"
-        app:layout_constraintTop_toBottomOf="@+id/headerLayout" />
+            />
 
-        <com.argusoft.who.emcare.widget.ApiViewStateConstraintLayout
-            android:id="@+id/progressLayout"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:background="@drawable/bg_top_curved_white"
-            android:layout_marginTop="@dimen/_12sdp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/nameTextView">
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Consultation List"
+            />
 
-            <androidx.appcompat.widget.SearchView
-                android:id="@+id/searchView"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_12sdp"
-                app:iconifiedByDefault="false"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintEnd_toEndOf="@+id/addPatientButton"
-                app:layout_constraintStart_toStartOf="@+id/addPatientButton"
-                app:queryHint="@string/query_hint_patient_search" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/addPatientButton"
-                style="@style/Button.Outlined"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/_16sdp"
-                android:layout_marginTop="@dimen/_12sdp"
-                android:text="@string/button_add_patient"
-                app:layout_constraintTop_toBottomOf="@+id/searchView" />
-
-            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-                android:id="@+id/swipeRefreshLayout"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/addPatientButton">
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recyclerView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:nestedScrollingEnabled="false"
-                    android:orientation="vertical"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    tools:listitem="@layout/list_item_patient" />
-            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-        </com.argusoft.who.emcare.widget.ApiViewStateConstraintLayout>
+    </com.google.android.material.tabs.TabLayout>
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPager2"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/_12sdp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tabLayout"/>
 </androidx.constraintlayout.motion.widget.MotionLayout>

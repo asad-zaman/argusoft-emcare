@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.argusoft.who.emcare.data.remote.ApiResponse
+import com.argusoft.who.emcare.ui.common.model.ConsultationItemData
 import com.argusoft.who.emcare.ui.common.model.PatientItem
 import com.argusoft.who.emcare.ui.home.patient.PatientRepository
 import com.argusoft.who.emcare.utils.listener.SingleLiveEvent
@@ -37,6 +38,15 @@ class HomeViewModel @Inject constructor(
                 _patients.value = it
             }
         }
+    }
+
+    fun getConsultations() : ArrayList<ConsultationItemData?>{
+        return arrayListOf<ConsultationItemData?>(
+            ConsultationItemData("Emma Wright", "10/10/20", "01/01/22"),
+            ConsultationItemData("Emily Smith", "04/05/21 ", "10/09/21"),
+            ConsultationItemData("John Brown", "02/02/20", "07/06/21"),
+            ConsultationItemData("Mary Clarke", "10/10/20", "10/10/21"),
+        )
     }
 
     fun getQuestionnaire(questionnaireId: String) {
