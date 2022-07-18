@@ -82,7 +82,7 @@ public class StructureMapResourceServiceImpl implements StructureMapResourceServ
         structureMapResourceRepository.save(definitionResource);
 
         MethodOutcome retVal = new MethodOutcome();
-        retVal.setId(new IdType(CommonConstant.LOCATION_TYPE_STRING, structureMap.getId(), "1"));
+        retVal.setId(new IdType(CommonConstant.STRUCTURE_MAP, structureMap.getId(), "1"));
         retVal.setResource(structureMap);
         return retVal;
     }

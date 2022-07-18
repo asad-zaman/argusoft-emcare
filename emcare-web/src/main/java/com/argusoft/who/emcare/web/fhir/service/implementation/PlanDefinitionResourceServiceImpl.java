@@ -107,7 +107,7 @@ public class PlanDefinitionResourceServiceImpl implements PlanDefinitionResource
         planDefinitionResourceRepository.save(definitionResource);
 
         MethodOutcome retVal = new MethodOutcome();
-        retVal.setId(new IdType(CommonConstant.LOCATION_TYPE_STRING, planDefinition.getId(), "1"));
+        retVal.setId(new IdType(CommonConstant.PLANDEFINITION_TYPE_STRING, planDefinition.getId(), "1"));
         retVal.setResource(planDefinition);
         return retVal;
     }

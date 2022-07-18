@@ -33,19 +33,19 @@ public class EmcareResourceMapper {
         }
         pDto.setDob(p.getBirthDate());
 
-        //Caregiver
+        // Caregiver
         if (p.hasLink()) {
             pDto.setCaregiver(p.getLinkFirstRep().getOther().getIdentifier().getValue());
         }
 
-        //Location
+        // Location
         if (p.hasExtension()) {
             Extension locationExtension = p.getExtension().get(0);
             String locationId = ((Identifier) locationExtension.getValue()).getValue();
             pDto.setFacility(locationId);
         }
 
-        //Address
+        // Address
         if (p.hasAddress()) {
             if (p.getAddressFirstRep().hasLine()) {
                 pDto.setAddressLine(p.getAddressFirstRep().getLine().get(0).toString());
@@ -142,6 +142,17 @@ public class EmcareResourceMapper {
             code.add(medicationCodeDto);
         }
         return code;
+    }
+
+    public static ActivityDefinitionDto getStructureMapDto(ActivityDefinition definition) {
+        ActivityDefinitionDto dto = new ActivityDefinitionDto();
+
+        dto.setId(definition.getIdElement().getIdPart());
+        dto.setName(definition.getName());
+        dto.setTitle(definition.getTitle());
+        dto.setStatus(definition.getStatus().getDisplay());
+        dto.setSubTitle(definition.getSubtitle());
+        return dto;
     }
 
     public static FacilityDto getFacilityDto(Location location, String id) {
