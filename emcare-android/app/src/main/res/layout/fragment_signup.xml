@@ -116,7 +116,7 @@
                         </com.google.android.material.textfield.TextInputLayout>
 
                         <com.google.android.material.textfield.TextInputLayout
-                            android:id="@+id/locationTextInputLayout"
+                            android:id="@+id/facilityTextInputLayout"
                             style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -125,12 +125,12 @@
                             app:layout_constraintTop_toBottomOf="@+id/emailTextInputLayout">
 
                             <com.google.android.material.textfield.MaterialAutoCompleteTextView
-                                android:id="@+id/locationEditText"
+                                android:id="@+id/facilityEditText"
                                 style="@style/TextInputEditText"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:background="@color/colorWhite"
-                                android:hint="@string/hint_location" />
+                                android:hint="@string/hint_facility" />
                         </com.google.android.material.textfield.TextInputLayout>
 
                         <com.google.android.material.textfield.TextInputLayout
@@ -140,7 +140,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/_16sdp"
                             app:endIconMode="dropdown_menu"
-                            app:layout_constraintTop_toBottomOf="@+id/locationTextInputLayout">
+                            app:layout_constraintTop_toBottomOf="@+id/facilityTextInputLayout">
 
                             <com.google.android.material.textfield.MaterialAutoCompleteTextView
                                 android:id="@+id/roleEditText"

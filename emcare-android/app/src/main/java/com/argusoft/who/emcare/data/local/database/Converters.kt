@@ -1,7 +1,7 @@
 package com.argusoft.who.emcare.data.local.database
 
 import androidx.room.TypeConverter
-import com.argusoft.who.emcare.ui.common.model.Location
+import com.argusoft.who.emcare.ui.common.model.Facility
 import com.argusoft.who.emcare.ui.common.model.LoggedInUser
 import com.argusoft.who.emcare.utils.extention.fromJsonArray
 import com.argusoft.who.emcare.utils.extention.toJson
@@ -20,10 +20,10 @@ class Converters {
     }
 
     @TypeConverter
-    fun listToJson(value: List<Location>?) = Gson().toJson(value)
+    fun listToJson(value: List<Facility>?) = Gson().toJson(value)
 
     @TypeConverter
-    fun jsonToList(value: String) = Gson().fromJson(value, Array<Location>::class.java).toList()
+    fun jsonToList(value: String) = Gson().fromJson(value, Array<Facility>::class.java).toList()
 
     @TypeConverter
     fun listToJson1(value: List<LoggedInUser.Feature>?) = Gson().toJson(value)

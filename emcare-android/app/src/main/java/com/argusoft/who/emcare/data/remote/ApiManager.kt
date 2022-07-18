@@ -76,8 +76,8 @@ class ApiManager(private val preference: Preference) : Api {
         return executeApiHelper { apiService.getRoles() }
     }
 
-    override suspend fun getLocations(): ApiResponse<List<Location>> {
-        return executeApiHelper { apiService.getLocations() }
+    override suspend fun getFacilities(): ApiResponse<List<Facility>> {
+        return executeApiHelper { apiService.getFacilities() }
     }
 
     override suspend fun getLanguages(): ApiResponse<List<Language>> {

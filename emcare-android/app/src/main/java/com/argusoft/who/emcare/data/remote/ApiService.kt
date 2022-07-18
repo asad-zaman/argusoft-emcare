@@ -27,8 +27,8 @@ interface ApiService {
     @GET("signup/roles")
     suspend fun getRoles(): Response<List<Role>>
 
-    @GET("signup/location")
-    suspend fun getLocations(): Response<List<Location>>
+    @GET("open/active/facility")
+    suspend fun getFacilities(): Response<List<Facility>>
 
     @GET("language/all")
     suspend fun getLanguages(): Response<List<Language>>

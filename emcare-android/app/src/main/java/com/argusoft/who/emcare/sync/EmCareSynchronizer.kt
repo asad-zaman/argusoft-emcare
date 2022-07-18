@@ -45,7 +45,7 @@ sealed class SyncState {
 }
 
 enum class SyncType {
-    LOCATION,
+    FACILITY,
     LANGUAGE
 }
 
@@ -105,12 +105,12 @@ internal class EmCareSynchronizer(
         syncTypeParams.forEach { syncType ->
             emit(SyncState.InProgress(syncType))
             when (syncType) {
-                SyncType.LOCATION -> {
-                    val location = api.getLocations()
-                    location.whenSuccess {
-                        database.saveLocations(it)
+                SyncType.FACILITY -> {
+                    val facility = api.getFacilities()
+                    facility.whenSuccess {
+                        database.saveFacilities(it)
                     }
-                    location.whenFailed {
+                    facility.whenFailed {
                         exceptions.add(SyncException(syncType))
                     }
                 }

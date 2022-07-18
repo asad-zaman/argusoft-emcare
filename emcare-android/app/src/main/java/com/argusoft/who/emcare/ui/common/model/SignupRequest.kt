@@ -12,8 +12,8 @@ data class SignupRequest(
     var firstName: String? = null,
     @Json(name = "lastName")
     var lastName: String? = null,
-    @Json(name = "locationId")
-    var locationId: Int? = null,
+    @Json(name = "facilityIds")
+    var facilityIds: List<String?> = emptyList(),
     @Json(name = "password")
     var password: String? = null,
     @Json(name = "roleName")

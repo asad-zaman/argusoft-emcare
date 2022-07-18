@@ -31,10 +31,10 @@ class HomeViewModel @Inject constructor(
     val addPatients: LiveData<ApiResponse<Int>> = _addPatients
 
 
-    fun getPatients(search: String? = null, locationId: Int?, isRefresh: Boolean = false) {
+    fun getPatients(search: String? = null, facilityId: String?, isRefresh: Boolean = false) {
         _patients.value = ApiResponse.Loading(isRefresh)
         viewModelScope.launch {
-            patientRepository.getPatients(search, locationId).collect {
+            patientRepository.getPatients(search, facilityId).collect {
                 _patients.value = it
             }
         }

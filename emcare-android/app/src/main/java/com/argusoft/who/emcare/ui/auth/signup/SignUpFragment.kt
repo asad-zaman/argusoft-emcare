@@ -6,7 +6,7 @@ import androidx.fragment.app.viewModels
 import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.databinding.FragmentSignupBinding
 import com.argusoft.who.emcare.ui.common.base.BaseFragment
-import com.argusoft.who.emcare.ui.common.model.Location
+import com.argusoft.who.emcare.ui.common.model.Facility
 import com.argusoft.who.emcare.ui.common.model.Role
 import com.argusoft.who.emcare.utils.extention.*
 import dagger.hilt.android.AndroidEntryPoint
@@ -20,12 +20,12 @@ class SignUpFragment : BaseFragment<FragmentSignupBinding>() {
 
     }
 
-    private fun setupLocationAutoComplete(locationList: List<Location>) {
-        binding.locationTextInputLayout.tag = locationList
-        binding.locationEditText.setAdapter(
+    private fun setupFacilityAutoComplete(facilityList: List<Facility>) {
+        binding.facilityTextInputLayout.tag = facilityList
+        binding.facilityEditText.setAdapter(
             ArrayAdapter(
                 requireContext(), android.R.layout.select_dialog_item,
-                locationList.map { it.name }
+                facilityList.map { it.facilityName }
             )
         )
     }
@@ -44,8 +44,8 @@ class SignUpFragment : BaseFragment<FragmentSignupBinding>() {
         binding.nextButton.setOnClickListener(this)
         binding.submitButton.setOnClickListener(this)
         binding.headerLayout.toolbar.setNavigationOnClickListener(this)
-        binding.locationEditText.setOnItemClickListener { parent, view, position, id ->
-            binding.locationEditText.tag = (binding.locationTextInputLayout.tag as? List<Location>)?.getOrNull(position)?.id
+        binding.facilityEditText.setOnItemClickListener { parent, view, position, id ->
+            binding.facilityEditText.tag = (binding.facilityTextInputLayout.tag as? List<Facility>)?.getOrNull(position)?.facilityId
         }
         binding.roleEditText.setOnItemClickListener { parent, view, position, id ->
             binding.roleEditText.tag = (binding.roleTextInputLayout.tag as? List<Role>)?.getOrNull(position)?.name
@@ -68,9 +68,9 @@ class SignUpFragment : BaseFragment<FragmentSignupBinding>() {
                 navigate(R.id.action_signUpFragment_to_successFragment)
             }
         }
-        observeNotNull(signUpViewModel.locationAndRolesApiState) { pair ->
+        observeNotNull(signUpViewModel.facilityAndRolesApiState) { pair ->
             pair.first.handleApiView(binding.progressLayout) {
-                it?.let { list -> setupLocationAutoComplete(list) }
+                it?.let { list -> setupFacilityAutoComplete(list) }
             }
             pair.second.whenSuccess {
                 setupRoleAutoComplete(it)
@@ -86,7 +86,7 @@ class SignUpFragment : BaseFragment<FragmentSignupBinding>() {
                     binding.firstNameEditText.getEnterText(),
                     binding.lastNameEditText.getEnterText(),
                     binding.emailEditText.getEnterText(),
-                    binding.locationEditText.tag as? Int,
+                    binding.facilityEditText.tag as String,
                     binding.roleEditText.tag as? String,
                 )
             }

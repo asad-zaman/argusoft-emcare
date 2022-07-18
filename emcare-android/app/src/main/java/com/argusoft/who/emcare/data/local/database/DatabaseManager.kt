@@ -1,23 +1,15 @@
 package com.argusoft.who.emcare.data.local.database
 
+import com.argusoft.who.emcare.ui.common.model.Facility
 import com.argusoft.who.emcare.ui.common.model.Language
-import com.argusoft.who.emcare.ui.common.model.Location
 import com.argusoft.who.emcare.ui.common.model.LoggedInUser
 
 class DatabaseManager(roomDatabase: RoomDatabase) : Database {
 
     private val dao = roomDatabase.dao()
 
-    override suspend fun saveLocations(locations: List<Location>) {
-        dao.saveLocations(locations)
-    }
-
-    override suspend fun getLocationById(id: Int): Location? {
-        return dao.getLocationById(id)
-    }
-
-    override suspend fun getChildLocations(id: Int?): List<Location>? {
-        return dao.getChildLocations(id)
+    override suspend fun saveFacilities(facilities: List<Facility>) {
+        dao.saveFacilities(facilities)
     }
 
     override suspend fun saveLanguages(languages: List<Language>) {

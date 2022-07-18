@@ -24,7 +24,7 @@ class PatientListFragment: BaseFragment<FragmentPatientListBinding>(), SearchVie
         super.onCreate(savedInstanceState)
         glideRequests = GlideApp.with(this)
         homeAdapter = HomeAdapter(onClickListener = this)
-        homeViewModel.getPatients("", preference.getLoggedInUser()?.location?.get(0)?.id, homeAdapter.isNotEmpty())
+        homeViewModel.getPatients("", preference.getLoggedInUser()?.facility?.get(0)?.facilityId, homeAdapter.isNotEmpty())
     }
 
     override fun initView() {
@@ -41,7 +41,7 @@ class PatientListFragment: BaseFragment<FragmentPatientListBinding>(), SearchVie
     }
 
     override fun onQueryTextChange(newText: String?): Boolean {
-        homeViewModel.getPatients(binding.searchView.query.toString(), preference.getLoggedInUser()?.location?.get(0)?.id, homeAdapter.isNotEmpty())
+        homeViewModel.getPatients(binding.searchView.query.toString(), preference.getLoggedInUser()?.facility?.get(0)?.facilityId, homeAdapter.isNotEmpty())
         return true
     }
 
@@ -62,7 +62,7 @@ class PatientListFragment: BaseFragment<FragmentPatientListBinding>(), SearchVie
         binding.progressLayout.swipeRefreshLayout = binding.swipeRefreshLayout
         binding.recyclerView.adapter = homeAdapter
         binding.progressLayout.setOnSwipeRefreshLayout {
-            homeViewModel.getPatients(binding.searchView.query.toString(), preference.getLoggedInUser()?.location?.get(0)?.id, true)
+            homeViewModel.getPatients(binding.searchView.query.toString(), preference.getLoggedInUser()?.facility?.get(0)?.facilityId, true)
         }
     }
 

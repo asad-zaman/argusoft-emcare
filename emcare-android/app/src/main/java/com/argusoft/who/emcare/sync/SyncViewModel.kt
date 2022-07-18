@@ -14,7 +14,6 @@ import com.google.android.fhir.sync.State
 import com.google.android.fhir.sync.Sync
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import org.hl7.fhir.r4.model.ResourceType
 import javax.inject.Inject
 
 @HiltViewModel
@@ -37,7 +36,7 @@ class SyncViewModel @Inject constructor(
                 fhirEngine,
                 DownloadWorkManagerImpl()
             )
-            val emCareResult = EmCareSync.oneTimeSync(api, database, preference, listOf(SyncType.LOCATION, SyncType.LANGUAGE))
+            val emCareResult = EmCareSync.oneTimeSync(api, database, preference, listOf(SyncType.FACILITY, SyncType.LANGUAGE))
             if (fhirResult is Result.Success || emCareResult is SyncResult.Success) {
                 _syncState.value = (fhirResult as? Result.Success)?.let { State.Finished(it) }
             } else {

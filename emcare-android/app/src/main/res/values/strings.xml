@@ -103,6 +103,7 @@
     <string name="hint_last_name">Last Name</string>
     <string name="hint_email">Email</string>
     <string name="hint_location">Location</string>
+    <string name="hint_facility">Facility</string>
     <string name="hint_role">Role</string>
     <string name="button_next">Next</string>
     <string name="button_submit">Submit</string>
@@ -146,6 +147,7 @@
     <string name="error_msg_email">Please enter email</string>
     <string name="error_msg_valid_email">Please enter valid email</string>
     <string name="error_msg_location">Please select location</string>
+    <string name="error_msg_facility">Please select facility</string>
     <string name="error_msg_role">Please select role</string>
     <string name="error_msg_confirm_password">Please enter confirm password</string>
     <string name="error_msg_password_not_match">Password does\'t match</string>

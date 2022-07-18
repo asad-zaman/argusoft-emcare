@@ -13,7 +13,7 @@ class EmCarePeriodicSyncWorker @AssistedInject constructor(
 ) : EmCareSyncWorker(appContext, workerParams) {
 
     override fun syncData(): SyncTypeParams {
-        return listOf(SyncType.LOCATION)
+        return listOf(SyncType.FACILITY)
     }
 
 }

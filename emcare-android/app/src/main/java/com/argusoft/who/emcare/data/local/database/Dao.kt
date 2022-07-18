@@ -4,21 +4,16 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.argusoft.who.emcare.ui.common.model.Facility
 import com.argusoft.who.emcare.ui.common.model.Language
-import com.argusoft.who.emcare.ui.common.model.Location
 import com.argusoft.who.emcare.ui.common.model.LoggedInUser
 
 @Dao
 interface Dao {
 
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun saveLocations(locations: List<Location>)
-
-    @Query("SELECT * from location WHERE id=:id")
-    suspend fun getLocationById(id: Int): Location?
-
-    @Query("WITH RECURSIVE child AS (SELECT * FROM  location WHERE  id = :id UNION SELECT  l.* FROM location l INNER JOIN child s ON s.id =  l.parent)SELECT * FROM child;")
-    suspend fun getChildLocations(id: Int?): List<Location>?
+    suspend fun saveFacilities(facilities: List<Facility>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun saveLanguages(languages: List<Language>)

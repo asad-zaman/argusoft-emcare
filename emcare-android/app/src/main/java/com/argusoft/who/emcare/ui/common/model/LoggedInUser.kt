@@ -22,8 +22,8 @@ data class LoggedInUser(
     var language: String? = null,
     @Json(name = "lastName")
     var lastName: String? = null,
-    @Json(name = "location")
-    var location: List<Location>? = null,
+    @Json(name = "facilities")
+    var facility: List<Facility>? = null,
     @Json(name = "roles")
     var roles: List<String?>? = null,
     @PrimaryKey
