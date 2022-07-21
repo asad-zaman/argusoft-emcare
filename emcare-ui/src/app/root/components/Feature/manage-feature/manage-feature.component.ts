@@ -168,7 +168,7 @@ export class ManageFeatureComponent implements OnInit {
   getFeatureList() {
     this.authenticationService.getLoggedInUser().subscribe(res => {
       if (res) {
-        this.authenticationService.setFeatures(res);
+        this.authenticationService.setFeatures(res['feature']);
       }
     });
   }

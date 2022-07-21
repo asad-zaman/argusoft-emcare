@@ -86,11 +86,12 @@ export class AuthGuard implements CanActivate {
                 localStorage.clear();
                 return false;
             } else {
-                this.authService.getLoggedInUser().subscribe(res => {
-                    this.user = res;
+                const userFeatures = localStorage.getItem('userFeatures');
+                if (userFeatures) {
+                    this.user = JSON.parse(userFeatures);
                     this.getResultAndRedirect(route);
                     return true;
-                });
+                }
                 return true;
             }
         } else {

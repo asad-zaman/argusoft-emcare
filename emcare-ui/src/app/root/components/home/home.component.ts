@@ -3,7 +3,6 @@ import { Router } from '@angular/router';
 import * as Highcharts from 'highcharts';
 import { AuthGuard } from 'src/app/auth/auth.guard';
 import { FhirService } from 'src/app/shared';
-import { UserManagementService } from '../../services/user-management.service';
 
 @Component({
   selector: 'app-home',
@@ -15,15 +14,14 @@ export class HomeComponent implements OnInit {
   dashboardData: any = {};
   isView = true;
   uniqueLocArr = [];
-  userFacArr = [];
+  userFacObj = {};
 
   @ViewChild('mapRef', { static: true }) mapElement: ElementRef;
 
   constructor(
     private readonly fhirService: FhirService,
     private readonly routeService: Router,
-    private readonly authGuard: AuthGuard,
-    private readonly userManagementService: UserManagementService
+    private readonly authGuard: AuthGuard
   ) { }
 
   ngOnInit(): void {
@@ -35,8 +33,7 @@ export class HomeComponent implements OnInit {
     this.fhirService.getDashboardData().subscribe((res) => {
       this.dashboardData = res;
     });
-    this.getAllUsers();
-    this.getAllPatients();
+    this.getChartData();
     this.loadMap();
   }
 
@@ -48,29 +45,9 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  getAllUsers() {
-    this.userManagementService.getAllUsers().subscribe((res: Array<any>) => {
-      if (res) {
-        res.forEach(el => {
-          if (el.facilities && el.facilities.length > 0) {
-            el.facilities.forEach(f => {
-              const tempLoc = this.userFacArr.find(fac => fac.name == f.facilityName);
-              if (tempLoc) {
-                tempLoc.y += 1;
-              } else {
-                this.userFacArr.push({ name: f.facilityName, y: 1 });
-              }
-            });
-          }
-        });
-        this.barChartPopulation();
-      }
-    });
-  }
-
   barChartPopulation() {
-    let locArr = this.userFacArr.map(l => l.name);
-    let locDataArr = this.userFacArr.map(l => l.y);
+    let locArr = this.userFacObj['names'];
+    let locDataArr = this.userFacObj['count'];
     Highcharts.chart('barChart', {
       chart: {
         type: 'bar'
@@ -106,18 +83,18 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  getAllPatients() {
-    this.fhirService.getAllPatients().subscribe((res: Array<any>) => {
+  getChartData() {
+    this.fhirService.getChartData().subscribe((res: Array<any>) => {
       if (res) {
-        res.forEach(el => {
-          const tempLoc = this.uniqueLocArr.find(l => l.name == el.location);
-          if (tempLoc) {
-            tempLoc.y += 1;
-          } else {
-            this.uniqueLocArr.push({ name: el.location, y: 1 });
-          }
+        res['pieChart'].map(el => {
+          this.uniqueLocArr.push({ name: el['name'], y: el['count'] });
         });
-        this.pieChartBrowser()
+        this.userFacObj = {
+          count: res['barChart']['counts'],
+          names: res['barChart']['names']
+        }
+        this.barChartPopulation();
+        this.pieChartBrowser();
       }
     });
   }

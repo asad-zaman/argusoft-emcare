@@ -67,12 +67,20 @@ export class AppComponent implements OnInit {
     this.checkAPIStatus();
     this.authenticationService.getIsLoggedIn().subscribe(result => {
       if (result) {
-        this.getLoggedInUserData();
+        this.setLoggedInUserData();
       }
     });
     this.authenticationService.getFeatures().subscribe(result => {
-      if (result) {
+      if (result && result.length > 0) {
         this.featureList = result;
+      } else {
+        /*  on refreshing the page behaviour subject will be lost
+          so resetting the feature array to behaviour subject to render the sidebar again */
+        let userFeatures = localStorage.getItem('userFeatures');
+        if (userFeatures) {
+          this.featureArr = JSON.parse(userFeatures)['feature'];
+          this.authenticationService.setFeatures(this.featureArr);
+        }
       }
     });
     this.detectLanChange();
@@ -140,23 +148,22 @@ export class AppComponent implements OnInit {
     return username.substring(0, 1).toUpperCase();
   }
 
-  getLoggedInUserData() {
-    this.authenticationService.getLoggedInUser().subscribe(res => {
-      if (res) {
-        this.featureArr = res['feature'];
+  setLoggedInUserData() {
+    let userFeatures = localStorage.getItem('userFeatures');
+    if (userFeatures) {
+      this.featureArr = JSON.parse(userFeatures)['feature'];
+      if (this.featureArr) {
         this.featureArr.map(f => {
           f['subMenuActive'] = false;
           if (f.subMenu.length > 0) {
             f['dropdownValue'] = false;
           }
         });
-        localStorage.setItem('language', res['language']);
-        this.checkRTLLaunguage();
-        this.authenticationService.setFeatures(res);
-        this.setUserDetails(res);
-        this.getAllLaunguages();
       }
-    });
+      this.checkRTLLaunguage();
+      this.setUserDetails();
+      this.getAllLaunguages();
+    }
   }
 
   setFeatureSubMenuFalse() {
@@ -173,20 +180,9 @@ export class AppComponent implements OnInit {
     });
   }
 
-  // api should be called only once in page if not then it needs optimization
-  setUserDetails(res) {
+  setUserDetails() {
     this.userName = localStorage.getItem('Username');
     this.userCharLogo = this.userName && this.getUserCharLogo(this.userName);
-    const token = JSON.parse(localStorage.getItem('access_token'));
-    if (token) {
-      if (!this.userName) {
-        if (res) {
-          this.userName = res.userName;
-          this.userCharLogo = this.getUserCharLogo(this.userName);
-          localStorage.setItem('Username', this.userName);
-        }
-      }
-    }
   }
 
   hideCurrentDropdown(id) {
