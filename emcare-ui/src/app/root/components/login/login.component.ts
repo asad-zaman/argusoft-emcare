@@ -19,7 +19,8 @@ export class LoginComponent implements OnInit {
     private readonly formBuilder: FormBuilder,
     private readonly authService: AuthenticationService,
     private readonly router: Router,
-    private readonly toasterService: ToasterService
+    private readonly toasterService: ToasterService,
+    private readonly authenticationService: AuthenticationService
   ) { }
 
   ngOnInit() {
@@ -52,9 +53,8 @@ export class LoginComponent implements OnInit {
             refreshTokenexpiration.setSeconds(new Date().getSeconds() + data.refresh_expires_in);
             localStorage.setItem('refresh_token', JSON.stringify(data.refresh_token));
             localStorage.setItem('refresh_token_expiry_time', JSON.stringify(refreshTokenexpiration));
-            this.router.navigate(["/dashboard"]);
-            this.toasterService.showToast('success', 'Welcome to EmCare!', 'EMCARE');
-            this.authService.setIsLoggedIn(true);
+            
+            this.getLoggedInUserData();
           }
         },
         error => {
@@ -71,5 +71,20 @@ export class LoginComponent implements OnInit {
 
   navigateToForgotPassword() {
     this.router.navigate(["/forgotPassword"]);
+  }
+
+  getLoggedInUserData() {
+    this.authenticationService.getLoggedInUser().subscribe(res => {
+      if (res) {
+        const featureObj = { feature: res['feature'] };
+        localStorage.setItem('userFeatures', JSON.stringify(featureObj));
+        localStorage.setItem('language', res['language']);
+        localStorage.setItem('Username', res.userName);
+        this.authenticationService.setFeatures(res['feature']);
+        this.router.navigate(["/dashboard"]);
+        this.toasterService.showToast('success', 'Welcome to EmCare!', 'EMCARE');
+        this.authService.setIsLoggedIn(true);
+      }
+    });
   }
 }

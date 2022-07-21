@@ -187,14 +187,10 @@ export class UserListComponent implements OnInit {
 
   getFacilityNames(data) {
     if (data && data.length > 0) {
-      let facilityStr = '';
-      data.map((d, index) => {
-        facilityStr += `${d.facilityName} - ${d.organizationName}`;
-        if (index !== data.length - 1) {
-          facilityStr += ', ';
-        }
+      let facilityStrArr = data.map((d) => {
+        return `${d.facilityName} - ${d.organizationName}`;
       });
-      return facilityStr;
+      return facilityStrArr;
     } else {
       return 'NA';
     }
@@ -202,14 +198,10 @@ export class UserListComponent implements OnInit {
 
   getLocation(data) {
     if (data && data.length > 0) {
-      let locationStr = '';
-      data.map((d, index) => {
-        locationStr += `${d.locationName}`;
-        if (index !== data.length - 1) {
-          locationStr += ', ';
-        }
+      let locationStrArr = data.map((d) => {
+        return `${d.locationName}`;
       });
-      return locationStr;
+      return locationStrArr;
     } else {
       return 'NA';
     }

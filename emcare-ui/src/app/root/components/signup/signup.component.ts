@@ -16,7 +16,7 @@ export class SignupComponent implements OnInit {
   submitted = false;
   returnUrl: string | undefined;
   error = null;
-  locationArr: any = [];
+  facilityArr: any = [];
   roleArr: any = [];
 
   constructor(
@@ -47,9 +47,11 @@ export class SignupComponent implements OnInit {
   }
 
   getAllLocations() {
-    this.authService.getAllLocationsForSignUp().subscribe(res => {
+    this.authService.getAllFacilitiesForSignUp().subscribe(res => {
       if (res) {
-        this.locationArr = res;
+        res.map(el => {
+          this.facilityArr.push({ name: `${el.facilityName} - ${el.organizationName}`, id: el.facilityId });
+        });
       }
     });
   }
@@ -67,7 +69,7 @@ export class SignupComponent implements OnInit {
   }
 
   userSignup() {
-    const locationIdArr = this.signupForm.value.location.map(l => l.id);
+    const facilityIdArr = this.signupForm.value.location.map(l => l.id);
     this.submitted = true;
     // stop here if form is invalid
     if (this.signupForm.invalid || !!this.error) {
@@ -75,7 +77,7 @@ export class SignupComponent implements OnInit {
     }
     this.authService.signup(this.signupForm.value.firstname, this.signupForm.value.lastname,
       this.signupForm.value.username, this.signupForm.value.password,
-      locationIdArr, this.signupForm.value.role
+      facilityIdArr, this.signupForm.value.role
     )
       .pipe(first())
       .subscribe(

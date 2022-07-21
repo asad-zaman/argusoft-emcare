@@ -16,15 +16,14 @@
     <table class="data-table" aria-labelledby="user-list">
       <thead>
         <tr class="w-100">
-          <th class="w-5">{{'ID' | translate}}</th>
-          <th class="w-10">{{'First Name' | translate}}</th>
-          <th class="w-10">{{'Last Name' | translate}}</th>
-          <th class="w-20">{{'Email' | translate}}</th>
-          <th class="w-10">{{'Role' | translate}}</th>
-          <th class="w-20">{{'Facility' | translate}}</th>
-          <th class="w-10">{{'Location' | translate}}</th>
-          <th class="w-5">{{'Status' | translate}}</th>
-          <th class="w-5" *ngIf="isEdit"></th>
+          <th class="text-center w-5">{{'ID' | translate}}</th>
+          <th class="text-center w-10">{{'Name' | translate}}</th>
+          <th class="text-center w-15">{{'Email' | translate}}</th>
+          <th class="text-center w-10">{{'Role' | translate}}</th>
+          <th class="text-center w-30">{{'Facility' | translate}}</th>
+          <th class="text-center w-10">{{'Location' | translate}}</th>
+          <th class="text-center w-10">{{'Status' | translate}}</th>
+          <th class="text-center w-5" *ngIf="isEdit"></th>
         </tr>
       </thead>
       <tbody>
@@ -32,17 +31,41 @@
           <ng-container *ngFor="let user of filteredUserList | 
           paginate : { itemsPerPage: tableSize, currentPage: currentPage, totalItems: totalCount }; let i=index">
             <tr>
-              <td>{{currentPage == 0 ? ((currentPage)*10 + i + 1) : ((currentPage-1)*10 + i + 1)}}</td>
-              <td>{{user.firstName}}</td>
-              <td>{{user.lastName}}</td>
-              <td>{{user.userName}}</td>
-              <td>{{user.realmRoles[0]}}</td>
+              <td class="text-center">{{currentPage == 0 ? ((currentPage)*10 + i + 1) : ((currentPage-1)*10 + i + 1)}}
+              </td>
+              <td class="text-center cst-break">{{user.firstName}} {{user.lastName}}</td>
+              <td class="text-center">{{user.userName}}</td>
+              <td class="text-center">{{user.realmRoles[0]}}</td>
               <ng-container></ng-container>
-              <td class="cst-text-overflow" pTooltip={{getFacilityNames(user.facilities)}} tooltipPosition="bottom">
-                {{getFacilityNames(user.facilities)}}</td>
-              <td class="cst-text-overflow" pTooltip={{getLocation(user.facilities)}} tooltipPosition="bottom">
-                {{getLocation(user.facilities)}}</td>
-              <td>
+              <td class="cst-text-overflow"
+                [ngClass]="{'text-center': getFacilityNames(user.facilities) == 'NA'}"
+                pTooltip={{getFacilityNames(user.facilities)}} tooltipPosition="bottom">
+                <ng-container *ngIf="getFacilityNames(user.facilities) !== 'NA'; else noContent">
+                  <ul style="list-style-type:circle">
+                    <ng-container *ngFor="let str of getFacilityNames(user.facilities)">
+                      <li>{{str}}</li>
+                    </ng-container>
+                  </ul>
+                </ng-container>
+                <ng-template #noContent>
+                  <span>NA</span>
+                </ng-template>
+              </td>
+              <td class="cst-text-overflow"
+                [ngClass]="{'text-center': getFacilityNames(user.facilities) == 'NA'}"
+                pTooltip={{getLocation(user.facilities)}} tooltipPosition="bottom">
+                <ng-container *ngIf="getLocation(user.facilities) !== 'NA'; else noContent">
+                  <ul style="list-style-type:circle">
+                    <ng-container *ngFor="let str of getLocation(user.facilities)">
+                      <li>{{str}}</li>
+                    </ng-container>
+                  </ul>
+                </ng-container>
+                <ng-template #noContent>
+                  <span>NA</span>
+                </ng-template>
+              </td>
+              <td class="text-center">
                 <span [ngClass]="(!!user.enabled) ? 'badges-red bg-green' : 'badges-red'">
                   <ng-container *ngIf="!!user.enabled; else NotVerified">
                     Active
@@ -143,4 +166,7 @@
 </div>
 <div *ngIf="!isView" class="main-wrapper-nodata">
   Sorry you don't have access to this page!!
+</div>
+<div class="app-autocomplete-input">
+  <h1>hiiii</h1>
 </div>

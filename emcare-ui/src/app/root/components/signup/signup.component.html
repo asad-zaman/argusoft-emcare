@@ -93,14 +93,8 @@
           <div class="row mt-3">
             <div class="col-12 col-sm-6">
               <div class="mb-3">
-                <label class="form-label">Location</label>
-                <ng-container *ngIf="locationArr.length>0; else noLocation">
-                  <p-multiSelect [options]="locationArr" formControlName="location" optionLabel="name"></p-multiSelect>
-                </ng-container>
-                <ng-template #noLocation>
-                  <input formControlName="location" type="text" class="form-control custom-input" id="location"
-                    placeholder="Enter Location" [ngClass]="{ 'is-invalid': submitted && f.location.errors }">
-                </ng-template>
+                <label class="form-label">Facility</label>
+                <p-multiSelect [options]="facilityArr" placeholder="Select a facility" formControlName="location" optionLabel="name"></p-multiSelect>
                 <div *ngIf="submitted && f.location.errors" class="invalid-feedback">
                   <div *ngIf="f.location.errors.required">Location is required</div>
                 </div>
@@ -109,18 +103,8 @@
             <div class="col-12 col-sm-6">
               <div class="mb-3">
                 <label class="form-label">Role</label>
-                <ng-container *ngIf="roleArr.length>0; else noRole">
-                  <select class="form-control custom-input" formControlName="role" id="role"
-                    [ngClass]="{ 'is-invalid': submitted && f.role.errors }">
-                    <ng-container *ngFor="let role of roleArr">
-                      <option value="{{role.name}}">{{role.name}}</option>
-                    </ng-container>
-                  </select>
-                </ng-container>
-                <ng-template #noRole>
-                  <input formControlName="role" type="text" class="form-control custom-input" id="role"
-                    [ngClass]="{ 'is-invalid': submitted && f.role.errors }" placeholder="Enter Role">
-                </ng-template>
+                <p-dropdown [options]="roleArr" placeholder="Select a role" formControlName="role" optionLabel="name">
+                </p-dropdown>
                 <div *ngIf="submitted && f.role.errors" class="invalid-feedback">
                   <div *ngIf="f.role.errors.required">Role is required</div>
                 </div>

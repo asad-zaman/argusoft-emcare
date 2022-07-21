@@ -191,4 +191,9 @@ export class FhirService {
         }
         return this.http.get(url, this.getHeaders());
     }
+
+    getChartData() {
+        const url = `${environment.apiUrl}/api/dashboard/chart`;
+        return this.http.get(url, this.getHeaders());
+    }
 }
