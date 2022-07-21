@@ -185,4 +185,26 @@ public class EmcareResourceMapper {
         dto.setStatus(location.getStatus().getDisplay());
         return dto;
     }
+
+    public static LibraryDto getLibraryDto(Library library) {
+        LibraryDto dto = new LibraryDto();
+        dto.setId(library.getIdElement().getIdPart());
+        dto.setName(library.getName());
+        dto.setDescription(library.getDescription());
+        dto.setTitle(library.getTitle());
+        dto.setPublisher(library.getPublisher());
+        dto.setStatus(library.getStatus().getDisplay());
+        return dto;
+    }
+
+    public static OperationDefinitionDto getOperationDefinitionDto(OperationDefinition operationDefinition) {
+        OperationDefinitionDto dto = new OperationDefinitionDto();
+        dto.setId(operationDefinition.getIdElement().getIdPart());
+        dto.setName(operationDefinition.getName());
+        dto.setDescription(operationDefinition.getDescription());
+        dto.setTitle(operationDefinition.getTitle());
+        dto.setPublisher(operationDefinition.getPublisher());
+        dto.setStatus(operationDefinition.getStatus().getDisplay());
+        return dto;
+    }
 }

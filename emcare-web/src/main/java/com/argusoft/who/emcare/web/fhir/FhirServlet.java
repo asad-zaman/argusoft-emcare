@@ -47,6 +47,12 @@ public class FhirServlet extends RestfulServer {
     private CodeSystemResourceProvider codeSystemResourceProvider;
 
     @Autowired
+    private LibraryResourceProvider libraryResourceProvider;
+
+    @Autowired
+    OperationDefinitionResourceProvider operationDefinitionResourceProvider;
+
+    @Autowired
     MedicationResourceProvider medicationResourceProvider;
 
     @Autowired
@@ -76,6 +82,8 @@ public class FhirServlet extends RestfulServer {
         resourceProviders.add(codeSystemResourceProvider);
         resourceProviders.add(medicationResourceProvider);
         resourceProviders.add(activityDefinitionResourceProvider);
+        resourceProviders.add(libraryResourceProvider);
+        resourceProviders.add(operationDefinitionResourceProvider);
         setResourceProviders(resourceProviders);
     }
 
