@@ -4,14 +4,17 @@ import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.IParser;
 import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.common.dto.PageDto;
+import com.argusoft.who.emcare.web.fhir.dao.ActivityDefinitionResourceRepository;
 import com.argusoft.who.emcare.web.fhir.dao.EmcareResourceRepository;
 import com.argusoft.who.emcare.web.fhir.dao.LocationResourceRepository;
 import com.argusoft.who.emcare.web.fhir.dto.FacilityDto;
 import com.argusoft.who.emcare.web.fhir.dto.PatientDto;
 import com.argusoft.who.emcare.web.fhir.mapper.EmcareResourceMapper;
+import com.argusoft.who.emcare.web.fhir.model.ActivityDefinitionResource;
 import com.argusoft.who.emcare.web.fhir.model.EmcareResource;
-import com.argusoft.who.emcare.web.fhir.service.EmcareResourceService;
-import com.argusoft.who.emcare.web.fhir.service.LocationResourceService;
+import com.argusoft.who.emcare.web.fhir.model.QuestionnaireMaster;
+import com.argusoft.who.emcare.web.fhir.resourceprovider.QuestionnaireResourceProvider;
+import com.argusoft.who.emcare.web.fhir.service.*;
 import com.argusoft.who.emcare.web.location.dao.LocationMasterDao;
 import com.argusoft.who.emcare.web.location.service.LocationService;
 import com.argusoft.who.emcare.web.secuirty.EmCareSecurityUser;
@@ -58,6 +61,37 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
     @Autowired
     private LocationResourceRepository locationResourceRepository;
 
+    @Autowired
+    ActivityDefinitionResourceService activityDefinitionResourceService;
+
+    @Autowired
+    ActivityDefinitionResourceRepository activityDefinitionResourceRepository;
+
+    @Autowired
+    CodeSystemResourceService codeSystemResourceService;
+
+    @Autowired
+    LibraryResourceService libraryResourceService;
+
+    @Autowired
+    OperationDefinitionResourceService operationDefinitionResourceService;
+
+    @Autowired
+    PlanDefinitionResourceService planDefinitionResourceService;
+
+    @Autowired
+    QuestionnaireMasterService questionnaireMasterService;
+
+    @Autowired
+    QuestionnaireResourceProvider questionnaireResourceProvider;
+
+    @Autowired
+    StructureDefinitionService structureDefinitionService;
+
+    @Autowired
+    ValueSetResourceService valueSetResourceService;
+
+
     @Override
     public EmcareResource saveResource(EmcareResource emcareResource) {
         return repository.save(emcareResource);
@@ -89,29 +123,97 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
         }
 
         String resourceString = parser.encodeResourceToString(resource);
+        switch (resourceType.toUpperCase()) {
+            case CommonConstant.FHIR_PATIENT:
+                EmcareResource emcareResource = findByResourceId(resourceId);
+                String facilityId = null;
+                if (requestType.toUpperCase().equals(CommonConstant.FHIR_PATIENT)) {
+                    Patient patient = parser.parseResource(Patient.class, resourceString);
+                    Extension facilityExtension = patient.getExtension().get(0);
+                    facilityId = ((Identifier) facilityExtension.getValue()).getValue();
+                }
 
-        EmcareResource emcareResource = findByResourceId(resourceId);
-        String facilityId = null;
-        if (requestType.toUpperCase().equals(CommonConstant.FHIR_PATIENT)) {
-            Patient patient = parser.parseResource(Patient.class, resourceString);
-            Extension facilityExtension = patient.getExtension().get(0);
-            facilityId = ((Identifier) facilityExtension.getValue()).getValue();
+
+                if (emcareResource == null) {
+                    emcareResource = new EmcareResource();
+                }
+
+                emcareResource.setText(resourceString);
+                emcareResource.setResourceId(resourceId);
+                emcareResource.setType(resourceType.toUpperCase());
+                emcareResource.setFacilityId(facilityId);
+
+                saveResource(emcareResource);
+                break;
+            case CommonConstant.ACTIVITY_DEFINITION:
+                ActivityDefinitionResource activityDefinitionResource = activityDefinitionResourceRepository.findByResourceId(resourceId);
+                if (activityDefinitionResource != null) {
+                    activityDefinitionResourceService.updateActivityDefinitionResource(resource.getIdElement(), parser.parseResource(ActivityDefinition.class, resourceString));
+                } else {
+                    activityDefinitionResourceService.saveResource(parser.parseResource(ActivityDefinition.class, resourceString));
+                }
+                break;
+            case CommonConstant.CODE_SYSTEM:
+                CodeSystem codeSystem = codeSystemResourceService.getResourceById(resourceId);
+                if (codeSystem != null) {
+                    codeSystemResourceService.updateCodeSystem(resource.getIdElement(), parser.parseResource(CodeSystem.class, resourceString));
+                } else {
+                    codeSystemResourceService.saveResource(parser.parseResource(CodeSystem.class, resourceString));
+                }
+                break;
+            case CommonConstant.LIBRARY:
+                Library library = libraryResourceService.getResourceById(resourceId);
+                if (library != null) {
+                    libraryResourceService.updateLibraryResource(resource.getIdElement(), parser.parseResource(Library.class, resourceString));
+                } else {
+                    libraryResourceService.saveResource(parser.parseResource(Library.class, resourceString));
+                }
+                break;
+            case CommonConstant.OPERATION_DEFINITION:
+                OperationDefinition operationDefinition = operationDefinitionResourceService.getResourceById(resourceId);
+                if (operationDefinition != null) {
+                    operationDefinitionResourceService.updateOperationDefinitionResource(resource.getIdElement(), parser.parseResource(OperationDefinition.class, resourceString));
+                } else {
+                    operationDefinitionResourceService.saveResource(parser.parseResource(OperationDefinition.class, resourceString));
+                }
+                break;
+            case CommonConstant.PLANDEFINITION_TYPE_STRING:
+                PlanDefinition planDefinition = planDefinitionResourceService.getByResourceId(resourceId);
+                if (planDefinition != null) {
+                    planDefinitionResourceService.updateLocationResource(resource.getIdElement(), parser.parseResource(PlanDefinition.class, resourceString));
+                } else {
+                    planDefinitionResourceService.saveResource(parser.parseResource(PlanDefinition.class, resourceString));
+                }
+                break;
+            case CommonConstant.QUESTIONNAIRE:
+                QuestionnaireMaster questionnaireMaster = questionnaireMasterService.retrieveQuestionnaireByResourceId(resourceId);
+                if (questionnaireMaster != null) {
+                    questionnaireMasterService.updateQuestionnaireResource(resource.getIdElement(), parser.parseResource(Questionnaire.class, resourceString));
+                } else {
+                    questionnaireResourceProvider.createQuestionnaire(parser.parseResource(Questionnaire.class, resourceString));
+                }
+                break;
+            case CommonConstant.STRUCTURE_DEFINITION:
+                StructureDefinition structureDefinition = structureDefinitionService.getResourceById(resourceId);
+                if (structureDefinition != null) {
+                    structureDefinitionService.updateStructureDefinition(resource.getIdElement(), parser.parseResource(StructureDefinition.class, resourceString));
+                } else {
+                    structureDefinitionService.saveResource(parser.parseResource(StructureDefinition.class, resourceString));
+                }
+                break;
+            case CommonConstant.VALUESET_TYPE_STRING:
+                ValueSet valueSet = valueSetResourceService.getByResourceId(resourceId);
+                if (valueSet != null) {
+                    valueSetResourceService.updateValueSetResource(resource.getIdElement(), parser.parseResource(ValueSet.class, resourceString));
+                } else {
+                    valueSetResourceService.saveResource(parser.parseResource(ValueSet.class, resourceString));
+                }
+                break;
+            default:
+                break;
         }
-
-
-        if (emcareResource == null) {
-            emcareResource = new EmcareResource();
-        }
-
-        emcareResource.setText(resourceString);
-        emcareResource.setResourceId(resourceId);
-        emcareResource.setType(resourceType.toUpperCase());
-        emcareResource.setFacilityId(facilityId);
-
-        saveResource(emcareResource);
 
         return resourceId;
-
     }
 
     @Override

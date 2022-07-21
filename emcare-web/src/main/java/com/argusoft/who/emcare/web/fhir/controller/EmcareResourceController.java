@@ -60,6 +60,12 @@ public class EmcareResourceController {
     @Autowired
     private OrganizationResourceService organizationResourceService;
 
+    @Autowired
+    private OperationDefinitionResourceService operationDefinitionResourceService;
+
+    @Autowired
+    private LibraryResourceService libraryResourceService;
+
     @GetMapping("/patient")
     public List<PatientDto> getAllPatients() {
         return emcareResourceService.getAllPatients();
@@ -67,13 +73,13 @@ public class EmcareResourceController {
 
     @GetMapping("/patient/page")
     public PageDto getPatientsPage(@RequestParam(value = "pageNo") Integer pageNo,
-            @Nullable @RequestParam(value = "search", required = false) String searchString) {
+                                   @Nullable @RequestParam(value = "search", required = false) String searchString) {
         return emcareResourceService.getPatientsPage(pageNo, searchString);
     }
 
     @GetMapping("/patient/locationId/{locationId}")
     public PageDto getAllPatientsUnderLocation(@PathVariable(value = "locationId") Integer locationId,
-            @RequestParam(value = "pageNo") Integer pageNo) {
+                                               @RequestParam(value = "pageNo") Integer pageNo) {
         return emcareResourceService.getPatientUnderLocationId(locationId, pageNo);
     }
 
@@ -129,44 +135,56 @@ public class EmcareResourceController {
 
     @GetMapping("/structure-map")
     public PageDto getStructureMapPage(@RequiredParam(name = "pageNo") Integer pageNo,
-            @Nullable @RequiredParam(name = "search") String search) {
+                                       @Nullable @RequiredParam(name = "search") String search) {
         return structureMapResourceService.getStructureMapPage(pageNo, search);
     }
 
     @GetMapping("/structure-definition")
     public PageDto getStructureDefinitionPage(@RequiredParam(name = "pageNo") Integer pageNo,
-            @Nullable @RequiredParam(name = "search") String search) {
+                                              @Nullable @RequiredParam(name = "search") String search) {
         return structureDefinitionService.getStructureDefinitionPage(pageNo, search);
     }
 
     @GetMapping("/code-system")
     public PageDto getCodeSystemPage(@RequiredParam(name = "pageNo") Integer pageNo,
-            @Nullable @RequiredParam(name = "search") String search) {
+                                     @Nullable @RequiredParam(name = "search") String search) {
         return codeSystemResourceService.getCodeSystemPage(pageNo, search);
     }
 
     @GetMapping("/medication")
     public PageDto getMedicationPage(@RequiredParam(name = "pageNo") Integer pageNo,
-            @Nullable @RequiredParam(name = "search") String search) {
+                                     @Nullable @RequiredParam(name = "search") String search) {
         return medicationResourceService.getMedicationPage(pageNo, search);
     }
 
     @GetMapping("/activity-definition")
     public PageDto getActivityDefinitionPage(@RequiredParam(name = "pageNo") Integer pageNo,
-            @Nullable @RequiredParam(name = "search") String search) {
+                                             @Nullable @RequiredParam(name = "search") String search) {
         return activityDefinitionResourceService.getActivityDefinitionPage(pageNo, search);
     }
 
     @GetMapping("/organization")
     public PageDto getOrganizationPage(@RequiredParam(name = "pageNo") Integer pageNo,
-            @Nullable @RequiredParam(name = "search") String search) {
+                                       @Nullable @RequiredParam(name = "search") String search) {
         return organizationResourceService.getOrganizationPage(pageNo, search);
     }
 
     @GetMapping("/facility")
     public PageDto getFacilityPage(@RequiredParam(name = "pageNo") Integer pageNo,
-            @Nullable @RequiredParam(name = "search") String search) {
+                                   @Nullable @RequiredParam(name = "search") String search) {
         return locationResourceService.getEmCareLocationResourcePage(pageNo, search);
+    }
+
+    @GetMapping("/library")
+    public PageDto getLibraryPage(@RequiredParam(name = "pageNo") Integer pageNo,
+                                  @Nullable @RequiredParam(name = "search") String search) {
+        return libraryResourceService.getLibraryPage(pageNo, search);
+    }
+
+    @GetMapping("/operation-definition")
+    public PageDto getOperationDefinitionPage(@RequiredParam(name = "pageNo") Integer pageNo,
+                                              @Nullable @RequiredParam(name = "search") String search) {
+        return operationDefinitionResourceService.getOperationDefinitionPage(pageNo, search);
     }
 
     @GetMapping("active/facility")
