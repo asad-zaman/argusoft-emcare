@@ -37,7 +37,12 @@ public class QuestionnaireResourceProvider implements IResourceProvider {
     @Create
     public MethodOutcome createQuestionnaire(@ResourceParam Questionnaire questionnaire) {
 
-        String questionnaireId = UUID.randomUUID().toString();
+        String questionnaireId = null;
+        if (questionnaire.getId() != null) {
+            questionnaireId = questionnaire.getId();
+        } else {
+            questionnaireId = UUID.randomUUID().toString();
+        }
         questionnaire.setId(questionnaireId);
 
         Meta m = new Meta();

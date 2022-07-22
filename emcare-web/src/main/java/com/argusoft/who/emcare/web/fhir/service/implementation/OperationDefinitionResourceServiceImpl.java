@@ -41,7 +41,13 @@ public class OperationDefinitionResourceServiceImpl implements OperationDefiniti
         m.setLastUpdated(new Date());
         operationDefinition.setMeta(m);
 
-        String odId = UUID.randomUUID().toString();
+        String odId = null;
+        if (operationDefinition.getId() != null) {
+            odId = operationDefinition.getIdElement().getIdPart();
+        } else {
+            odId = UUID.randomUUID().toString();
+        }
+
         operationDefinition.setId(odId);
 
         String odString = parser.encodeResourceToString(operationDefinition);

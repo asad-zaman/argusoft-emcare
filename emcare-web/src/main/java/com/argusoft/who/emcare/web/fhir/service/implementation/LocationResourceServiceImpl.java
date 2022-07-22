@@ -55,7 +55,12 @@ public class LocationResourceServiceImpl implements LocationResourceService {
         m.setLastUpdated(new Date());
         theLocation.setMeta(m);
 
-        String locationId = UUID.randomUUID().toString();
+        String locationId = null;
+        if (theLocation.getId() != null) {
+            locationId = theLocation.getIdElement().getIdPart();
+        } else {
+            locationId = UUID.randomUUID().toString();
+        }
         theLocation.setId(locationId);
 
         Organization organization = organizationResourceService.getByResourceId(theLocation.getManagingOrganization().getId());
