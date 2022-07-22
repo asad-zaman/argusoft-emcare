@@ -1,5 +1,6 @@
 package com.argusoft.who.emcare.web.device.dto;
 
+import com.argusoft.who.emcare.web.user.dto.MultiLocationUserListDto;
 import com.argusoft.who.emcare.web.user.dto.UserListDto;
 
 /**
@@ -17,7 +18,7 @@ public class DeviceWithUserDetails {
     private String deviceModel;
     private String lastLoggedInUser;
     private Boolean isBlocked;
-    private UserListDto usersResource;
+    private MultiLocationUserListDto usersResource;
 
     public Integer getDeviceId() {
         return deviceId;
@@ -99,11 +100,11 @@ public class DeviceWithUserDetails {
         isBlocked = blocked;
     }
 
-    public UserListDto getUsersResource() {
+    public MultiLocationUserListDto getUsersResource() {
         return usersResource;
     }
 
-    public void setUsersResource(UserListDto usersResource) {
+    public void setUsersResource(MultiLocationUserListDto usersResource) {
         this.usersResource = usersResource;
     }
 }
