@@ -130,13 +130,13 @@ public class DeviceServiceImpl implements DeviceService {
         List<UserListDto> allUsers = userService.getAllUser(request);
         List<DeviceWithUserDetails> list = new ArrayList<>();
         List<DeviceMaster> allDevice = deviceRepository.findAll();
-        allDevice.forEach(deviceMaster -> list.add(DeviceMapper.getDeviceWithUser(deviceMaster, allUsers)));
+        allDevice.forEach(deviceMaster -> list.add(DeviceMapper.getDeviceWithUser(deviceMaster, userService.getUserDtoById(deviceMaster.getLastLoggedInUser()))));
         return ResponseEntity.ok(list);
     }
 
     @Override
     public ResponseEntity<Object> getDevicePage(HttpServletRequest request, Integer pageNo, String orderBy, String order, String searchString) {
-        List<UserListDto> allUsers = userService.getAllUser(request);
+//        List<UserListDto> allUsers = userService.getAllUser(request);
         List<DeviceWithUserDetails> list = new ArrayList<>();
         if (orderBy.equalsIgnoreCase("null")) {
             orderBy = "deviceName";
@@ -157,7 +157,8 @@ public class DeviceServiceImpl implements DeviceService {
             totalCount = deviceRepository.count();
             allDevice = deviceRepository.findAll(page);
         }
-        allDevice.forEach(deviceMaster -> list.add(DeviceMapper.getDeviceWithUser(deviceMaster, allUsers)));
+        allDevice.forEach(deviceMaster -> {});
+        allDevice.forEach(deviceMaster -> list.add(DeviceMapper.getDeviceWithUser(deviceMaster, userService.getUserDtoById(deviceMaster.getLastLoggedInUser()))));
 
         PageDto pageDto = new PageDto();
         pageDto.setList(list);
