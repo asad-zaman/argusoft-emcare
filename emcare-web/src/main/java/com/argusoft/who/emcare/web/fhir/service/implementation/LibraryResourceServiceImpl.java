@@ -40,7 +40,13 @@ public class LibraryResourceServiceImpl implements LibraryResourceService {
         m.setLastUpdated(new Date());
         library.setMeta(m);
 
-        String libraryId = UUID.randomUUID().toString();
+        String libraryId = null;
+        if (library.getId() != null) {
+            libraryId = library.getIdElement().getIdPart();
+        } else {
+            libraryId = UUID.randomUUID().toString();
+        }
+
         library.setId(libraryId);
 
         String libraryString = parser.encodeResourceToString(library);

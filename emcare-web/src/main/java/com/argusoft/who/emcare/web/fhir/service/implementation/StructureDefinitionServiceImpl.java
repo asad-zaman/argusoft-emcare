@@ -40,7 +40,13 @@ public class StructureDefinitionServiceImpl implements StructureDefinitionServic
         m.setLastUpdated(new Date());
         structureDefinition.setMeta(m);
 
-        String structureMapId = UUID.randomUUID().toString();
+        String structureMapId = null;
+        if (structureDefinition.getId() != null) {
+            structureMapId = structureDefinition.getIdElement().getIdPart();
+        } else {
+            structureMapId = UUID.randomUUID().toString();
+        }
+
         structureDefinition.setId(structureMapId);
 
         String locationString = parser.encodeResourceToString(structureDefinition);

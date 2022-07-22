@@ -38,7 +38,13 @@ public class PlanDefinitionResourceServiceImpl implements PlanDefinitionResource
         m.setLastUpdated(new Date());
         planDefinition.setMeta(m);
 
-        String planId = UUID.randomUUID().toString();
+        String planId = null;
+        if (planDefinition.getId() != null) {
+            planId = planDefinition.getIdElement().getIdPart();
+        } else {
+            planId = UUID.randomUUID().toString();
+        }
+
         planDefinition.setId(planId);
 
 

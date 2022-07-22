@@ -40,7 +40,12 @@ public class ActivityDefinitionServiceImpl implements ActivityDefinitionResource
         m.setLastUpdated(new Date());
         definition.setMeta(m);
 
-        String definitionId = UUID.randomUUID().toString();
+        String definitionId = null;
+        if (definition.getId() != null) {
+            definitionId = definition.getIdElement().getIdPart();
+        } else {
+            definitionId = UUID.randomUUID().toString();
+        }
         definition.setId(definitionId);
 
         String locationString = parser.encodeResourceToString(definition);

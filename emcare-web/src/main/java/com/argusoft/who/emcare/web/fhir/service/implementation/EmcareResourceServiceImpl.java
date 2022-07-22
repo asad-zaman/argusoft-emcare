@@ -91,6 +91,9 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
     @Autowired
     ValueSetResourceService valueSetResourceService;
 
+    @Autowired
+    StructureMapResourceService structureMapResourceService;
+
 
     @Override
     public EmcareResource saveResource(EmcareResource emcareResource) {
@@ -207,6 +210,14 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
                     valueSetResourceService.updateValueSetResource(resource.getIdElement(), parser.parseResource(ValueSet.class, resourceString));
                 } else {
                     valueSetResourceService.saveResource(parser.parseResource(ValueSet.class, resourceString));
+                }
+                break;
+            case CommonConstant.STRUCTURE_MAP:
+                StructureMap structureMap = structureMapResourceService.getResourceById(resourceId);
+                if (structureMap != null) {
+                    structureMapResourceService.updateStructureMapResource(resource.getIdElement(), parser.parseResource(StructureMap.class, resourceString));
+                } else {
+                    structureMapResourceService.saveResource(parser.parseResource(StructureMap.class, resourceString));
                 }
                 break;
             default:

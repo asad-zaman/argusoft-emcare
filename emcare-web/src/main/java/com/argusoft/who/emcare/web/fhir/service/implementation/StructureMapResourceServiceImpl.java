@@ -40,7 +40,13 @@ public class StructureMapResourceServiceImpl implements StructureMapResourceServ
         m.setLastUpdated(new Date());
         structureMap.setMeta(m);
 
-        String structureMapId = UUID.randomUUID().toString();
+        String structureMapId = null;
+        if (structureMap.getId() != null) {
+            structureMapId = structureMap.getIdElement().getIdPart();
+        } else {
+            structureMapId = UUID.randomUUID().toString();
+        }
+
         structureMap.setId(structureMapId);
 
         String locationString = parser.encodeResourceToString(structureMap);

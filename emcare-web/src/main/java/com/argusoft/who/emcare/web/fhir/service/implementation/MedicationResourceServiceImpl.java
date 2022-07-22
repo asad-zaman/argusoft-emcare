@@ -41,7 +41,12 @@ public class MedicationResourceServiceImpl implements MedicationResourceService 
         m.setLastUpdated(new Date());
         medication.setMeta(m);
 
-        String medicationId = UUID.randomUUID().toString();
+        String medicationId = null;
+        if (medication.getId() != null) {
+            medicationId = medication.getIdElement().getIdPart();
+        } else {
+            medicationId = UUID.randomUUID().toString();
+        }
         medication.setId(medicationId);
 
         String medicationString = parser.encodeResourceToString(medication);

@@ -38,7 +38,13 @@ public class ValueSetResourceServiceImpl implements ValueSetResourceService {
         m.setLastUpdated(new Date());
         valueSet.setMeta(m);
 
-        String valueSetId = UUID.randomUUID().toString();
+        String valueSetId = null;
+        if (valueSet.getId() != null) {
+            valueSetId = valueSet.getIdElement().getIdPart();
+        } else {
+            valueSetId = UUID.randomUUID().toString();
+        }
+
         valueSet.setId(valueSetId);
 
 

@@ -43,7 +43,12 @@ public class CodeSystemResourceServiceImpl implements CodeSystemResourceService 
         m.setLastUpdated(new Date());
         codeSystem.setMeta(m);
 
-        String codeSystemId = UUID.randomUUID().toString();
+        String codeSystemId = null;
+        if (codeSystem.getId() != null) {
+            codeSystemId = codeSystem.getIdElement().getIdPart();
+        } else {
+            codeSystemId = UUID.randomUUID().toString();
+        }
         codeSystem.setId(codeSystemId);
 
         String codeSystemString = parser.encodeResourceToString(codeSystem);
