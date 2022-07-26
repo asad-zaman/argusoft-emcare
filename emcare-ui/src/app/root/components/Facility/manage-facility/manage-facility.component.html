@@ -2,9 +2,13 @@
   <div class="form-wrapper-facility">
     <form [formGroup]="facilityForm" name="facilityForm" novalidate>
       <div class="mb-5">
-        <h1 class="heading">
+        <span class="heading">
           {{'Manage Facility' | translate}}
-        </h1>
+        </span>
+        <div class="d-inline float-right">
+          <button type="button" class="btn btn-blue" routerLink="/showOrganizations">
+            {{'Manage Organization' | translate}}</button>
+        </div>
         <hr>
       </div>
       <div class="row">
