@@ -223,4 +223,8 @@ export class ManageUserComponent implements OnInit {
     facArr = facArr.filter(f => f !== facility);
     this.userForm.get('facility').setValue(facArr);
   }
+
+  back() {
+    this.router.navigate(['/showUsers']);
+  }
 }

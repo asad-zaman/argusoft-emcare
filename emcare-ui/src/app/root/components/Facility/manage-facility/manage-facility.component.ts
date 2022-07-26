@@ -27,6 +27,7 @@ export class ManageFacilityComponent implements OnInit {
   isEditFeature: boolean = true;
   isAllowed: boolean = true;
   orgArr = [];
+  isOrganizationAsFacility = false;
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -147,7 +148,7 @@ export class ManageFacilityComponent implements OnInit {
 
   initFacilityForm() {
     this.facilityForm = this.formBuilder.group({
-      name: ['', [Validators.required]],
+      name: ['', []],
       organization: ['', [Validators.required]],
       addressStreet: ['', [Validators.required]],
       status: [this.statusArr[0], [Validators.required]],
@@ -155,7 +156,8 @@ export class ManageFacilityComponent implements OnInit {
       location: ['', [Validators.required]],
       latitude: ['', [Validators.required]],
       longitude: ['', [Validators.required]],
-      altitude: ['', [Validators.required]]
+      altitude: ['', [Validators.required]],
+      isOrganizationAsFacility: [false]
     });
   }
 
@@ -194,7 +196,7 @@ export class ManageFacilityComponent implements OnInit {
   getData(facilityObj) {
     return {
       "resourceType": "Location",
-      "name": facilityObj.name,
+      "name": facilityObj.name ? facilityObj.name : this.getOrgObjfromId(facilityObj.organization.id).name,
       "address": {
         "use": "work",
         "line": [
@@ -261,6 +263,26 @@ export class ManageFacilityComponent implements OnInit {
     }
     else {
       this.toasterService.showToast('info', 'Geolocation is not supported by this browser!!', 'EMCARE');
+    }
+  }
+
+  setFacility(e) {
+    if (e.checked[0] === 'true') {
+      this.setOrgAsFacility();
+    }
+  }
+
+  checkOrgAsFacility() {
+    const isOrganizationAsFacility = this.facilityForm.get('isOrganizationAsFacility').value[0];
+    if (isOrganizationAsFacility) {
+      this.setOrgAsFacility();
+    }
+  }
+
+  setOrgAsFacility() {
+    const org = this.facilityForm.get('organization').value;
+    if (org && org.name) {
+      this.facilityForm.get('name').setValue(org.name);
     }
   }
 }
