@@ -380,4 +380,43 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
         return patientDtosList;
     }
 
+    @Override
+    public List<Patient> getAllPatientResources() {
+        List<Patient> patientsList = new ArrayList<>();
+
+        List<EmcareResource> resourcesList = retrieveResourcesByType("PATIENT");
+
+        for (EmcareResource emcareResource : resourcesList) {
+            Patient patient = parser.parseResource(Patient.class, emcareResource.getText());
+            patientsList.add(patient);
+        }
+        return patientsList;
+    }
+
+    @Override
+    public List<PatientDto> getPatientDtoByPatient(List<Patient> patient) {
+        List<PatientDto> patientDtosList;
+
+        patientDtosList = EmcareResourceMapper.patientEntitiesToDtoMapper(patient);
+
+        //Converting caregiverId and locationid to name
+        for (PatientDto patientDto : patientDtosList) {
+
+            if (patientDto.getCaregiver() != null) {
+                EmcareResource caregiverResource = findByResourceId(patientDto.getCaregiver());
+                RelatedPerson caregiver = parser.parseResource(RelatedPerson.class, caregiverResource.getText());
+                patientDto.setCaregiver(caregiver.getNameFirstRep().getGiven().get(0) + " " + caregiver.getNameFirstRep().getFamily());
+            }
+
+            if (patientDto.getFacility() != null) {
+                FacilityDto facilityDto = locationResourceService.getFacilityDto(patientDto.getFacility());
+                patientDto.setFacility(facilityDto.getFacilityName());
+                patientDto.setOrganizationName(facilityDto.getOrganizationName());
+                patientDto.setLocationName(facilityDto.getLocationName());
+            }
+        }
+
+        return patientDtosList;
+    }
+
 }
