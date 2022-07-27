@@ -116,6 +116,9 @@ export class ManageFeatureComponent implements OnInit {
     }
     this.featureService.updateFeatureConfig(data).subscribe(() => { 
       this.toasterService.showToast('success', 'Feature changes have been saved!', 'EMCARE');
+      /*  on change of anu particular feature api should be called again and features should
+        be set again so that we can manage features properly  */
+      this.getFeatureList();
     });
   }
 
@@ -168,6 +171,8 @@ export class ManageFeatureComponent implements OnInit {
   getFeatureList() {
     this.authenticationService.getLoggedInUser().subscribe(res => {
       if (res) {
+        const featureObj = { feature: res['feature'] };
+        localStorage.setItem('userFeatures', JSON.stringify(featureObj));
         this.authenticationService.setFeatures(res['feature']);
       }
     });
