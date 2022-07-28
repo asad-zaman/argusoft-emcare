@@ -210,7 +210,7 @@ export class AppComponent implements OnInit {
   }
 
   hasAccess(feature: string) {
-    return !!this.featureList.find(f => f === feature);
+    return this.featureList.find(f => f === feature);
   }
 
   checkRTLLaunguage() {

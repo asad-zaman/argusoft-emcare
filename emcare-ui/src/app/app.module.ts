@@ -32,7 +32,8 @@ import {
   QuestionnaireListComponent,
   QuestionnaireBuilderComponent,
   LocationDropdownComponent,
-  LanguageListComponent
+  LanguageListComponent,
+  DuplicatePatientsComponent
 } from './root/index';
 import { AuthenticationService, ToasterService } from './shared';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -94,7 +95,8 @@ import { OrganizationListComponent } from './root/components/organization-list/o
     ForgotPasswordComponent,
     AdminPanelComponent,
     ManageOrganizationComponent,
-    OrganizationListComponent
+    OrganizationListComponent,
+    DuplicatePatientsComponent
   ],
   imports: [
     BrowserModule,
