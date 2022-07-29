@@ -32,3 +32,4 @@ export { ForgotPasswordComponent } from './components/forgot-password/forgot-pas
 export { AdminPanelComponent } from './components/admin-panel/admin-panel.component';
 export { ManageOrganizationComponent } from './components/manage-organization/manage-organization.component';
 export { OrganizationListComponent } from './components/organization-list/organization-list.component';
+export { DuplicatePatientsComponent } from './components/duplicate-patients/duplicate-patients.component';

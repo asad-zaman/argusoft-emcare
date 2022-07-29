@@ -20,7 +20,7 @@ export class AuthGuard implements CanActivate {
         this.featureRouteArr = {
             'Users': ['/showUsers', '/addUser', '/updateUser', '/showRoles', '/addRole', '/editRole', '/confirmUsers'],
             'Locations': ['/showLocation', '/addLocation', '/editLocation', '/showLocationType', '/addLocationType', '/editLocationType'],
-            'Patients': ['/showPatients', '/comparePatients'],
+            'Patients': ['/showPatients', '/comparePatients', '/duplicatePatients'],
             'Settings': ['/user-admin-settings'],
             'All Users': ['/showUsers', '/addUser', '/updateUser'],
             'Roles': ['/showRoles', '/addRole', '/editRole'],
@@ -37,6 +37,7 @@ export class AuthGuard implements CanActivate {
             'User Settings': ['/user-admin-settings'],
             'Dashboard': ['/dashboard'],
             'Organizations': ['/showOrganizations', '/manage-organization'],
+            'Duplicate Patients': ['/duplicatePatients'],
         }
         this.routeFeatureMapper = {
             'addLocationType': { f: 'Location Types', reqFeature: ['canAdd'] },
@@ -69,6 +70,7 @@ export class AuthGuard implements CanActivate {
             'dashboard': { f: 'Dashboard', reqFeature: ['canView'] },
             'showOrganizations': { f: 'Organizations', reqFeature: ['canAdd', 'canEdit', 'canView'] },
             'manage-organization': { f: 'Organizations', reqFeature: ['canAdd', 'canEdit'] },
+            'duplicatePatients': { f: 'Patients', reqFeature: ['canView'] }
         }
     }
 
@@ -188,6 +190,7 @@ export class AuthGuard implements CanActivate {
         } else if (
             route.routeConfig.path === 'showPatients'
             || route.routeConfig.path === 'comparePatients'
+            || route.routeConfig.path === 'duplicatePatients'
         ) {
             return this.user.feature.find(f => f.menuName === 'Patients');
         } else if (
