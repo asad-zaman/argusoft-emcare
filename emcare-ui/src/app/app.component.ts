@@ -78,7 +78,6 @@ export class AppComponent implements OnInit {
           so resetting the feature array to behaviour subject to render the sidebar again */
         let userFeatures = localStorage.getItem('userFeatures');
         if (userFeatures) {
-          this.featureArr = JSON.parse(userFeatures)['feature'];
           this.authenticationService.setFeatures(this.featureArr);
         }
       }
