@@ -42,6 +42,9 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(){
                 R.id.action_sync -> {
                     syncViewModel.syncPatients()
                 }
+                R.id.action_more -> {
+                    (activity as HomeActivity).openDrawer()
+                }
             }
             return@setOnMenuItemClickListener true
         }

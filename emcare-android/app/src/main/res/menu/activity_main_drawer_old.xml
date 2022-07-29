@@ -5,13 +5,13 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/action_healthcare_worker"
-            android:icon="@drawable/home_options_contact_icon"
-            android:title="@string/healthcare_worker" />
+            android:id="@+id/action_edit_profile"
+            android:icon="@drawable/ic_edit_profile"
+            android:title="@string/menu_edit_profile" />
         <item
-            android:id="@+id/action_facility_name"
-            android:icon="@drawable/facility_name_icon"
-            android:title="@string/facility_name" />
+            android:id="@+id/action_settings"
+            android:icon="@drawable/ic_settings"
+            android:title="@string/menu_settings" />
         <item
             android:id="@+id/action_logout"
             android:icon="@drawable/ic_logout"

@@ -29,7 +29,7 @@ class PatientRepository @Inject constructor(
         emit(ApiResponse.Success(data = fhirEngine.load(Questionnaire::class.java, questionnaireId)))
     }
 
-    fun getPatients(search: String? = null, locationId: Int?) = flow {
+    fun getPatients(search: String? = null, facilityId: String?) = flow {
         val riskAssessment = getRiskAssessments()
         val list = fhirEngine.search<Patient> {
             if (!search.isNullOrEmpty())
@@ -44,7 +44,7 @@ class PatientRepository @Inject constructor(
             count = 100
             from = 0
         }.filter {
-            (it.getExtensionByUrl(LOCATION_EXTENSION_URL)?.value as? Identifier)?.value == locationId.toString()
+            (it.getExtensionByUrl(LOCATION_EXTENSION_URL)?.value as? Identifier)?.value == facilityId
         }.mapIndexed { index, fhirPatient ->
             fhirPatient.toPatientItem(index + 1, riskAssessment)
         }

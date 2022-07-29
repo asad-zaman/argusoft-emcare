@@ -29,7 +29,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(), EasyPermissions.Perm
 
     override fun initListener() {
         binding.loginButton.setOnClickListener(this)
-        binding.signupTextView.setOnClickListener(this)
+//        binding.signupTextView.setOnClickListener(this)
     }
 
     override fun initObserver() {
@@ -75,9 +75,9 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(), EasyPermissions.Perm
             R.id.loginButton -> {
                 deviceInfo()
             }
-            R.id.signupTextView -> {
-                navigate(R.id.action_loginFragment_to_signUpFragment)
-            }
+//            R.id.signupTextView -> {
+//                navigate(R.id.action_loginFragment_to_signUpFragment)
+//            }
         }
     }
 
@@ -85,8 +85,8 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(), EasyPermissions.Perm
     fun deviceInfo() {
         if (hasReadPhoneStatePermission()) {
             loginViewModel.login(
-                binding.usernameEditText.getEnterText(),
-                binding.passwordEditText.getEnterText(),
+                binding.loginIdEditText.editText?.getEnterText()!!,
+                binding.passwordEditText.editText?.getEnterText()!!,
                 getDeviceName(),
                 getDeviceOS(),
                 getDeviceModel(),

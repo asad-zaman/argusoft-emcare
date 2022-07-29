@@ -4,6 +4,12 @@
     <color name="colorPrimary">#4D4D4D</color>
     <color name="colorPrimaryDark">#4D4D4D</color>
     <color name="colorAccent">#E2203B</color>
+    <color name="colorAccent1">#E3E8EE</color>
+    <color name="colorAccent2">#707071</color>
+    <color name="emergencyBackgroundTint">#4A494A</color>
+    <color name="emergencyBorder">#252525</color>
+
+
     <color name="colorStatusBar">#175adf</color>
     <color name="low_risk">#388e3c</color>
     <color name="low_risk_background">#e8f5e9</color>
@@ -29,7 +35,7 @@
     <color name="textColorWhite80">#CCFFFFFF</color>
     <color name="textColorBlack">#4E4E4E</color>
     <color name="textColorBlack80">#4E4E4E</color>
-    <color name="buttonColor">#E2203B</color>
+    <color name="buttonColor">#34A2DD</color>
     <color name="textColorLightBlue">#1385D7</color>
     <color name="colorLightGrey">#FFCCCCCC</color>
 </resources>

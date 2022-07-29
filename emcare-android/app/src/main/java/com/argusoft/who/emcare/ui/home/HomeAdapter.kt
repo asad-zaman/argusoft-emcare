@@ -46,17 +46,6 @@ class HomeAdapter(
         fun bind(album: PatientItem) = with(album) {
             binding.nameTextView.text = name.orEmpty { identifier ?:"" }
             binding.idTextView.text = binding.root.context.getString(R.string.label_id_with_colon, resourceId?.takeLast(3))
-            binding.statusImageView.imageTintList = ColorStateList.valueOf(
-                ContextCompat.getColor(
-                    binding.root.context,
-                    when (risk) {
-                        RiskProbability.HIGH.toCode() -> R.color.high_risk
-                        RiskProbability.MODERATE.toCode() -> R.color.moderate_risk
-                        RiskProbability.LOW.toCode() -> R.color.low_risk
-                        else -> R.color.colorLightGrey
-                    }
-                )
-            )
         }
     }
 }

@@ -49,26 +49,31 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
 //        setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
-        //Setting name & email in drawer view
-        if (preference.getLoggedInUser() != null) {
-            val headerView = binding.navView.getHeaderView(0)
-            headerView.findViewById<TextView>(R.id.nameTextView).text = preference.getLoggedInUser()?.userName
-            headerView.findViewById<TextView>(R.id.emailTextView).text = preference.getLoggedInUser()?.email
-            Glide.with(this)
-                .load("")
-                .placeholder(
-                    AvatarGenerator.AvatarBuilder(this)
-                        .setLabel(preference.getLoggedInUser()?.userName?.first().toString())
-                        .setAvatarSize(120)
-                        .setTextSize(30)
-                        .toCircle()
-                        .setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary))
-                        .build()
-                )
-                .into(headerView.findViewById(R.id.userImageView))
-            headerView.findViewById<TextView>(R.id.nameTextView).text = preference.getLoggedInUser()?.userName
-            headerView.findViewById<TextView>(R.id.emailTextView).text = preference.getLoggedInUser()?.email
+        //Setting name & Facility name in drawer view
+        if(preference.getLoggedInUser() != null){
+            binding.navView.menu.getItem(0).title = preference.getLoggedInUser()?.firstName
+            binding.navView.menu.getItem(1).title = preference.getLoggedInUser()?.facility?.get(0)?.facilityName
         }
+        //Setting name & email in drawer view
+//        if (preference.getLoggedInUser() != null) {
+//            val headerView = binding.navView.getHeaderView(0)
+//            headerView.findViewById<TextView>(R.id.nameTextView).text = preference.getLoggedInUser()?.userName
+//            headerView.findViewById<TextView>(R.id.emailTextView).text = preference.getLoggedInUser()?.email
+//            Glide.with(this)
+//                .load("")
+//                .placeholder(
+//                    AvatarGenerator.AvatarBuilder(this)
+//                        .setLabel(preference.getLoggedInUser()?.userName?.first().toString())
+//                        .setAvatarSize(120)
+//                        .setTextSize(30)
+//                        .toCircle()
+//                        .setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary))
+//                        .build()
+//                )
+//                .into(headerView.findViewById(R.id.userImageView))
+//            headerView.findViewById<TextView>(R.id.nameTextView).text = preference.getLoggedInUser()?.userName
+//            headerView.findViewById<TextView>(R.id.emailTextView).text = preference.getLoggedInUser()?.email
+//        }
     }
 
     fun openDrawer() {
@@ -92,21 +97,22 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
                         setNegativeButton(R.string.button_no) { _, _ -> }
                     }.show()
                 }
-                R.id.action_settings -> {
-                    closeDrawer()
-                    navHostFragment.navController.navigate(R.id.action_global_settingsFragment)
-                }
+//                R.id.action_settings -> {
+//                    closeDrawer()
+//                    navHostFragment.navController.navigate(R.id.action_global_settingsFragment)
+//                }
             }
             return@setNavigationItemSelectedListener true
         }
+
     }
 
     override fun initObserver() {
         observeNotNull(settingsViewModel.languageApiState) {
             it.whenSuccess {
                 it.languageData?.convertToMap()?.apply {
-                    binding.navView.menu.getItem(0).setTitle(getOrElse("Edit_Profile") { getString(R.string.menu_edit_profile) } )
-                    binding.navView.menu.getItem(1).setTitle(getOrElse("Settings") { getString(R.string.menu_settings) } )
+//                    binding.navView.menu.getItem(0).setTitle(getOrElse("Edit_Profile") { getString(R.string.menu_edit_profile) } )
+//                    binding.navView.menu.getItem(1).setTitle(getOrElse("Settings") { getString(R.string.menu_settings) } )
                     binding.navView.menu.getItem(2).setTitle(getOrElse("Logout") { getString(R.string.menu_logout) } )
                 }
             }

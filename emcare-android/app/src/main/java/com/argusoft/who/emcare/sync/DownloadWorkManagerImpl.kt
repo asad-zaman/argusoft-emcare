@@ -28,7 +28,8 @@ import org.hl7.fhir.r4.model.Resource
 import org.hl7.fhir.r4.model.ResourceType
 
 class DownloadWorkManagerImpl : DownloadWorkManager {
-  private val urls = LinkedList(listOf("Patient","Questionnaire","ValueSet"))
+//  private val urls = LinkedList(listOf("ActivityDefinition", "CodeSystem", "Library", "OperationDefinition", "PlanDefinition", "Patient", "Questionnaire", "StructureDefinition", "StructureMap", "ValueSet"))
+  private val urls = LinkedList(listOf("Patient", "Questionnaire", "StructureDefinition", "StructureMap", "ValueSet"))
 
   override suspend fun getNextRequestUrl(context: SyncDownloadContext): String? {
     var url = urls.poll() ?: return null

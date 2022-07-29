@@ -141,11 +141,11 @@
     </style>
 
     <style name="Button" parent="Widget.MaterialComponents.Button">
-        <item name="cornerRadius">@dimen/_24sdp</item>
+        <item name="cornerRadius">@dimen/_8sdp</item>
         <item name="elevation">@dimen/_8sdp</item>
         <item name="backgroundTint">@color/buttonColor</item>
         <item name="android:textSize">@dimen/_15sdp</item>
-        <item name="android:minHeight">@dimen/_56sdp</item>
+        <item name="android:minHeight">@dimen/_48sdp</item>
         <item name="android:paddingStart">@dimen/_64sdp</item>
         <item name="android:paddingEnd">@dimen/_64sdp</item>
     </style>

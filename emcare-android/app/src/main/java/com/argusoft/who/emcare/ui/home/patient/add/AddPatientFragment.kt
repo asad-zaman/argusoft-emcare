@@ -29,7 +29,7 @@ class AddPatientFragment : BaseFragment<FragmentAddPatientBinding>() {
 
     override fun initView() {
         setupToolbar()
-        homeViewModel.getQuestionnaire("emcarea.registration.p") //TODO: replace hardcoded questionnaire id.
+        homeViewModel.getQuestionnaire("emcarea.registratio.p") //TODO: replace hardcoded questionnaire id.
     }
 
     private fun setupToolbar() {

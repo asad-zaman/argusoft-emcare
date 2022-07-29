@@ -55,6 +55,7 @@
     <string name="unknown">UNKNOWN</string>
     <string name="none">none</string>
     <string name="description_status">Status</string>
+    <string name="description_arrow">Arrow</string>
     <string name="open">Open</string>
     <string name="close">Close</string>
     <string name="sync_menu">Sync</string>
@@ -67,6 +68,7 @@
     <!--Label Text-->
     <string name="label_open_gallery">Open Gallery</string>
     <string name="label_open_camera">Open Camera</string>
+    <string name="emergency_button">EMERGENCY</string>
 
     <!--Button Text-->
     <string name="button_yes">Yes</string>
@@ -93,10 +95,13 @@
     <string name="action_ok">OK</string>
     <string name="login_description">Creating a digital client record system for child and new born health conditions in emergencies</string>
     <string name="hint_username">Username</string>
+    <string name="hint_login_id">Log In ID</string>
     <string name="hint_password">Password</string>
     <string name="button_login">Login</string>
+    <string name="title_login">LOGIN</string>
     <string name="label_forgot_password">Forgot Password?</string>
     <string name="label_don_t_have_an_account">Don\'t have an account?</string>
+    <string name="label_app_version">APP VERSION:</string>
     <string name="label_signup">Signup</string>
     <string name="label_sign_up">Sign Up</string>
     <string name="hint_first_name">First Name</string>
@@ -118,6 +123,15 @@
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
+    <string name="patient_profile">PATIENT\nPROFILE</string>
+    <string name="new_consultation">NEW\nCONSULTATION</string>
+    <string name="active_consultations">ACTIVE CONSULTATIONS</string>
+    <string name="previous_consultations">PREVIOUS CONSULTATIONS</string>
+    <string name="patient_list">Patient List</string>
+    <string name="consultation_list">Consultation List</string>
+    <string name="healthcare_worker">Health Care Worker</string>
+    <string name="facility_name">Facility Name</string>
+
 
     <string name="menu_home">Home</string>
     <string name="menu_gallery">Gallery</string>
@@ -137,6 +151,7 @@
     <string name="error_msg_username">Please enter username</string>
     <string name="error_msg_password">Please enter password</string>
     <string name="button_add_patient">Add Patient</string>
+    <string name="button_add_new_patient">Add New Patient</string>
     <string name="label_id_with_colon">Id: #---%1$s</string>
     <string name="title_add_patient">Register a new child</string>
     <string name="menu_save">Save</string>
