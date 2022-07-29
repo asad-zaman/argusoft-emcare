@@ -1,0 +1,58 @@
+<div class="main-wrapper">
+  <h1 class="heading">{{'Duplicate Patients' | translate}}</h1>
+  <hr />
+  <!-- <div class="row align-items-center mb-3">
+    <div class=" col-lg-3 col-xxl-2 col-md-5 position-relative">
+      <input class="form-control custom-input h-35" id="exampleFormControlInput1" [(ngModel)]="searchString"
+        (input)="searchFilter()" placeholder="{{'Search Placeholder' | translate}}">
+    </div>
+  </div> -->
+  <ng-container *ngFor="let dPatient of duplicatePatientArr">
+    <div class="mb-4">
+      <div class="px-4 py-4">
+        <div class="row">
+          <ng-container *ngFor="let patient of dPatient">
+            <div class="col-4">
+              <p-card styleClass="duplicate-patient-card">
+                <div class="px-4 py-4">
+                  <ng-container *ngIf="patient.givenName && patient.familyName; else noName">
+                    <div class="">
+                      <label class="form-label">Name: </label>
+                      <span class="content-style"> {{patient.givenName}} {{patient.familyName}}</span>
+                    </div>
+                  </ng-container>
+                  <ng-template #noName>
+                    <div class="">
+                      <label class="form-label">Name: </label>
+                      <span class="content-style"> 'NA'</span>
+                    </div>
+                  </ng-template>
+                  <div class="">
+                    <label class="form-label">Caregiver Name: </label>
+                    <span class="content-style"> {{patient.caregiver}}</span>
+                  </div>
+                  <div class="">
+                    <label class="form-label">Gender: </label>
+                    <span class="content-style mr-2"> {{patient.gender}}</span>
+                    |
+                    <label class="ml-2 form-label">DOB: </label>
+                    <span class="content-style"> {{patient.dob | date: 'dd.MM.YYYY'}}</span>
+                  </div>
+                  <div class="">
+                    <label class="form-label">Facility: </label>
+                    <span class="content-style"> {{patient.facility}}</span>
+                  </div>
+                  <div class="">
+                    <label class="form-label">Location Name: </label>
+                    <span class="content-style"> {{patient.locationName}}</span>
+                  </div>
+                </div>
+              </p-card>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+    <hr />
+  </ng-container>
+</div>

@@ -196,4 +196,9 @@ export class FhirService {
         const url = `${environment.apiUrl}/api/dashboard/chart`;
         return this.http.get(url, this.getHeaders());
     }
+
+    getAllDuplicatePatientEntries() {
+        const url = `${environment.apiUrl}/api/deduplication/all`;
+        return this.http.get(url, this.getHeaders());
+    }
 }
