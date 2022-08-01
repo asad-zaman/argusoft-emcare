@@ -1,58 +1,66 @@
 <div class="main-wrapper">
   <h1 class="heading">{{'Duplicate Patients' | translate}}</h1>
-  <hr />
-  <!-- <div class="row align-items-center mb-3">
-    <div class=" col-lg-3 col-xxl-2 col-md-5 position-relative">
-      <input class="form-control custom-input h-35" id="exampleFormControlInput1" [(ngModel)]="searchString"
-        (input)="searchFilter()" placeholder="{{'Search Placeholder' | translate}}">
-    </div>
-  </div> -->
-  <ng-container *ngFor="let dPatient of duplicatePatientArr">
-    <div class="mb-4">
-      <div class="px-4 py-4">
-        <div class="row">
-          <ng-container *ngFor="let patient of dPatient">
-            <div class="col-4">
-              <p-card styleClass="duplicate-patient-card">
-                <div class="px-4 py-4">
-                  <ng-container *ngIf="patient.givenName && patient.familyName; else noName">
-                    <div class="">
-                      <label class="form-label">Name: </label>
-                      <span class="content-style"> {{patient.givenName}} {{patient.familyName}}</span>
-                    </div>
-                  </ng-container>
-                  <ng-template #noName>
-                    <div class="">
-                      <label class="form-label">Name: </label>
-                      <span class="content-style"> 'NA'</span>
-                    </div>
-                  </ng-template>
-                  <div class="">
-                    <label class="form-label">Caregiver Name: </label>
-                    <span class="content-style"> {{patient.caregiver}}</span>
+  <div class="custom-accordion mt-3">
+    <span class="badge-duplicate">Errors ({{duplicatePatientArr.length}})</span>
+  </div>
+  <hr>
+  <div class="custom-accordion">
+    <div class="accordion" id="accordionExample">
+      <ng-container *ngFor="let dPatient of duplicatePatientArr; let i=index">
+        <div class="accordion-item">
+          <div class="accordion-header" id="heading{{i+1}}">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" attr.data-bs-target="#col_{{i+1}}"
+              aria-expanded="true" attr.aria-controls="col_{{i+1}}">
+              <span class="badge-duplicate">Duplicate</span>
+            </button>
+            <div class="dropdown pos">
+              <i class="bi bi-three-dots-vertical" id="dropdownMenuLink" aria-hidden="true"
+                data-bs-toggle="dropdown"></i>
+              <span class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                <a href="#">Merge</a>
+              </span>
+            </div>
+          </div>
+          <div id="col_{{i+1}}" class="accordion-collapse collapse show" aria-labelledby="heading{{i+1}}"
+            data-bs-parent="#accordionExample">
+            <ng-container *ngFor="let patient of dPatient">
+              <div class="accordion-body">
+                <div class="row">
+                  <div class="col-sm-2">
+                    <span>Name</span>
+                    <ng-container *ngIf="patient.givenName && patient.familyName; else noName">
+                      <p>{{patient.givenName}} {{patient.familyName}}</p>
+                    </ng-container>
+                    <ng-template #noName>
+                      <p>'NA'</p>
+                    </ng-template>
                   </div>
-                  <div class="">
-                    <label class="form-label">Gender: </label>
-                    <span class="content-style mr-2"> {{patient.gender}}</span>
-                    |
-                    <label class="ml-2 form-label">DOB: </label>
-                    <span class="content-style"> {{patient.dob | date: 'dd.MM.YYYY'}}</span>
+                  <div class="col-sm-2">
+                    <span>Caregiver Name</span>
+                    <p>{{patient.caregiver}}</p>
                   </div>
-                  <div class="">
-                    <label class="form-label">Facility: </label>
-                    <span class="content-style"> {{patient.facility}}</span>
+                  <div class="col-sm-2">
+                    <span>Gender</span>
+                    <p>{{patient.gender}}</p>
                   </div>
-                  <div class="">
-                    <label class="form-label">Location Name: </label>
-                    <span class="content-style"> {{patient.locationName}}</span>
+                  <div class="col-sm-2">
+                    <span>DOB</span>
+                    <p>{{patient.dob | date: 'dd.MM.YYYY'}}</p>
+                  </div>
+                  <div class="col-sm-2">
+                    <span>Facility</span>
+                    <p>{{patient.facility}}</p>
+                  </div>
+                  <div class="col-sm-2">
+                    <span>Location Name</span>
+                    <p>{{patient.locationName}}</p>
                   </div>
                 </div>
-              </p-card>
-            </div>
-          </ng-container>
+              </div>
+            </ng-container>
+          </div>
         </div>
-      </div>
+      </ng-container>
     </div>
-    <hr />
-  </ng-container>
+  </div>
 </div>
