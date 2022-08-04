@@ -18,6 +18,8 @@ export class DuplicatePatientsComponent implements OnInit {
   searchTermChanged: Subject<string> = new Subject<string>();
   isView: boolean = true;
   duplicatePatientArr = [];
+  tempararyPatientData = [];
+  selectedPatientIndex = null;
 
   constructor(
     private readonly fhirService: FhirService,
@@ -36,7 +38,6 @@ export class DuplicatePatientsComponent implements OnInit {
     this.fhirService.getAllDuplicatePatientEntries().subscribe((res: Array<Array<Object>>) => {
       if (res) {
         this.duplicatePatientArr = res;
-        console.log(this.duplicatePatientArr);
       }
     }, (_error) => {
       this.toasterService.showToast('warn', 'API issue!', 'EMCARE');
@@ -63,5 +64,38 @@ export class DuplicatePatientsComponent implements OnInit {
       });
     }
     this.searchTermChanged.next(this.searchString);
+  }
+
+  deletePatient(index) {
+    console.log('deleted', index);
+  }
+
+  getPatientName(index) {
+    let pName = '';
+    this.duplicatePatientArr[index].map((p, j) => {
+      if (p.givenName && p.familyName) {
+        pName += `${p.givenName} ${p.familyName}`;
+      } else {
+        pName += 'NA';
+      }
+      if (j !== this.duplicatePatientArr[index].length - 1) {
+        pName += ' - '; 
+      }
+    });
+    return pName;
+  }
+
+  openModal(index) {
+    this.tempararyPatientData = this.duplicatePatientArr[index];
+    this.selectedPatientIndex = null;
+  }
+
+  selectedDuplicatePatient(index) {
+    console.log(this.tempararyPatientData[index]);
+    this.selectedPatientIndex = index;
+  }
+
+  mergePatient() {
+    console.log('merge done');
   }
 }

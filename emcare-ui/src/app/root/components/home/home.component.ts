@@ -167,4 +167,8 @@ export class HomeComponent implements OnInit {
   redirectToRoute(route: string) {
     this.routeService.navigate([route]);
   }
+
+  isEmpty(obj) {
+    return Object.keys(obj).length === 0;
+  }
 }
