@@ -52,7 +52,7 @@
     right: 50px;
     display: inline-block;
     top: 58%;
-    transform: translateY(-50%);
+    transform: translateY(-60%);
     z-index: 9;
 }
 
@@ -72,4 +72,39 @@
 
 .custom-accordion .accordion-header .pos .dropdown-menu {
     z-index: 100;
+}
+
+.cst-card-btn {
+    color: white;
+    background: #d96060;
+    border: none;
+
+    &:focus,
+    &:hover,
+    &:active {
+        border: none;
+        background: #d96060;
+        box-shadow: none;
+    }
+}
+
+.p-15 {
+    padding: 15px;
+}
+
+.cst-margin {
+    margin: 5px 10px;
+}
+
+.cst-top {
+    top: 10%;
+}
+
+.cst-border {
+    border-bottom: 1px solid grey;
+}
+
+.cst-patient-border {
+    border: 2px solid green;
+    border-radius: 15px;
 }
