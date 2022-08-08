@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.data.remote.ApiResponse
 import com.argusoft.who.emcare.ui.common.model.ConsultationItemData
 import com.argusoft.who.emcare.ui.common.model.PatientItem
@@ -42,10 +43,10 @@ class HomeViewModel @Inject constructor(
 
     fun getConsultations() : ArrayList<ConsultationItemData?>{
         return arrayListOf<ConsultationItemData?>(
-            ConsultationItemData("Emma Wright", "10/10/20", "01/01/22"),
-            ConsultationItemData("Emily Smith", "04/05/21 ", "10/09/21"),
-            ConsultationItemData("John Brown", "02/02/20", "07/06/21"),
-            ConsultationItemData("Mary Clarke", "10/10/20", "10/10/21"),
+            ConsultationItemData("Emma Wright", "10/10/20", "01/01/22","Consultation", R.drawable.danger_sign_icon),
+            ConsultationItemData("Emily Smith", "04/05/21 ", "10/09/21","Registration", R.drawable.registration_icon),
+            ConsultationItemData("John Brown", "02/02/20", "07/06/21","1st Access", R.drawable.measurements_icon),
+            ConsultationItemData("Mary Clarke", "10/10/20", "10/10/21","Closed",R.drawable.closed_consultation_icon_dark),
         )
     }
 

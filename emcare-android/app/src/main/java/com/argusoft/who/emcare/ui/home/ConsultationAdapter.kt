@@ -31,6 +31,8 @@ class ConsultationAdapter(
             binding.nameTextView.text = name
             binding.dateOfBirthValueTextView.text = dateOfBirth
             binding.consultationDateValueTextView.text = dateOfConsultation
+            binding.badgeTextView.text = badgeText
+            binding.rightConsultationImageView.setImageResource(consultationIcon!!)
         }
     }
 }

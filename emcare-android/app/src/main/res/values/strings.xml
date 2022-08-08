@@ -69,6 +69,9 @@
     <string name="label_open_gallery">Open Gallery</string>
     <string name="label_open_camera">Open Camera</string>
     <string name="emergency_button">EMERGENCY</string>
+    <string name="dob_label">DOB :</string>
+    <string name="consultation_date_label">Consultation Date :</string>
+
 
     <!--Button Text-->
     <string name="button_yes">Yes</string>
@@ -127,8 +130,8 @@
     <string name="new_consultation">NEW\nCONSULTATION</string>
     <string name="active_consultations">ACTIVE CONSULTATIONS</string>
     <string name="previous_consultations">PREVIOUS CONSULTATIONS</string>
-    <string name="patient_list">Patient List</string>
-    <string name="consultation_list">Consultation List</string>
+    <string name="patient_list">Patients</string>
+    <string name="consultation_list">Consultations</string>
     <string name="healthcare_worker">Health Care Worker</string>
     <string name="facility_name">Facility Name</string>
 

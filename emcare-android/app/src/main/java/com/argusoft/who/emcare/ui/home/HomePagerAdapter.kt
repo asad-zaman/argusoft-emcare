@@ -13,13 +13,18 @@ class HomePagerAdapter @Inject constructor(
     override fun getItemCount() = 2
 
     override fun createFragment(position: Int): Fragment {
-        if(position == 0) {
-            return patientListFragment
-        } else if(position == 1) {
-            return consultationListFragment
-        } else {
-            return patientListFragment
+        return when (position) {
+            0 -> {
+                patientListFragment
+            }
+            1 -> {
+                consultationListFragment
+            }
+            else -> {
+                patientListFragment
+            }
         }
     }
+
 
 }

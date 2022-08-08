@@ -27,12 +27,15 @@ class PatientListFragment: BaseFragment<FragmentPatientListBinding>(), SearchVie
         homeViewModel.getPatients("", preference.getLoggedInUser()?.facility?.get(0)?.facilityId, homeAdapter.isNotEmpty())
     }
 
+    override fun onResume() {
+        super.onStart()
+        (this.parentFragment)?.view?.findViewById<SearchView>(R.id.searchView)?.setOnQueryTextListener(this)
+    }
     override fun initView() {
         setupRecyclerView()
     }
 
     override fun initListener() {
-        binding.searchView.setOnQueryTextListener(this)
         binding.addPatientButton.setOnClickListener(this)
     }
 
@@ -41,7 +44,7 @@ class PatientListFragment: BaseFragment<FragmentPatientListBinding>(), SearchVie
     }
 
     override fun onQueryTextChange(newText: String?): Boolean {
-        homeViewModel.getPatients(binding.searchView.query.toString(), preference.getLoggedInUser()?.facility?.get(0)?.facilityId, homeAdapter.isNotEmpty())
+        homeViewModel.getPatients((this.parentFragment)?.view?.findViewById<SearchView>(R.id.searchView)?.query.toString(), preference.getLoggedInUser()?.facility?.get(0)?.facilityId, homeAdapter.isNotEmpty())
         return true
     }
 
@@ -62,7 +65,7 @@ class PatientListFragment: BaseFragment<FragmentPatientListBinding>(), SearchVie
         binding.progressLayout.swipeRefreshLayout = binding.swipeRefreshLayout
         binding.recyclerView.adapter = homeAdapter
         binding.progressLayout.setOnSwipeRefreshLayout {
-            homeViewModel.getPatients(binding.searchView.query.toString(), preference.getLoggedInUser()?.facility?.get(0)?.facilityId, true)
+            homeViewModel.getPatients((this.parentFragment)?.view?.findViewById<SearchView>(R.id.searchView)?.query.toString(), preference.getLoggedInUser()?.facility?.get(0)?.facilityId, true)
         }
     }
 

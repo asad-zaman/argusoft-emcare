@@ -32,6 +32,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(){
         binding.headerLayout.toolbar.setUpDashboard()
         homePagerAdapter = HomePagerAdapter(this, PatientListFragment(), ConsultationListFragment())
         binding.viewPager2.adapter = homePagerAdapter
+        binding.viewPager2.isUserInputEnabled = false
     }
 
 
@@ -51,7 +52,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(){
 
         binding.tabLayout.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
-                binding.viewPager2.setCurrentItem(tab?.position!!)
+                binding.viewPager2.currentItem = tab?.position!!
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {

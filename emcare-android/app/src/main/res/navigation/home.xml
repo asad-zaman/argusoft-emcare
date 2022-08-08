@@ -15,6 +15,9 @@
         android:name="com.argusoft.who.emcare.ui.home.HomeFragment"
         tools:layout="@layout/fragment_home">
         <action
+            android:id="@+id/action_homeFragment_to_BarcodeScannerFragment"
+            app:destination="@id/barcodeScannerFragment" />
+        <action
             android:id="@+id/action_homeFragment_to_addPatientFragment"
             app:destination="@id/addPatientFragment" />
         <action
@@ -23,6 +26,10 @@
 
     </fragment>
 
+    <fragment
+        android:id="@+id/barcodeScannerFragment"
+        android:name="com.argusoft.who.emcare.ui.home.barcodescanner.BarcodeScannerFragment"
+        tools:layout="@layout/fragment_barcode_scanner" />
 
     <fragment
         android:id="@+id/addPatientFragment"

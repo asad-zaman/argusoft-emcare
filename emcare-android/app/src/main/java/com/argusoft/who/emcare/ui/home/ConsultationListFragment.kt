@@ -1,6 +1,7 @@
 package com.argusoft.who.emcare.ui.home
 
 import android.os.Bundle
+import android.widget.ArrayAdapter
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.viewModels
 import com.argusoft.who.emcare.R
@@ -26,10 +27,14 @@ class ConsultationListFragment: BaseFragment<FragmentConsultationListBinding>(),
 
     override fun initView() {
         setupRecyclerView()
+        //Reasons for consultations Adapter
+        val reasonsAdapter: ArrayAdapter<String> = ArrayAdapter(context!!, R.layout.spinner_list_item,
+            listOf("Reason for Consultation", "Sick Child", "Well Child", "Immunizations"))
+        binding.consultationSpinner.adapter = reasonsAdapter
     }
 
     override fun initListener() {
-        binding.searchView.setOnQueryTextListener(this)
+        (this.parentFragment)?.view?.findViewById<SearchView>(R.id.searchView)?.setOnQueryTextListener(this)
     }
 
     override fun onQueryTextSubmit(query: String?): Boolean {

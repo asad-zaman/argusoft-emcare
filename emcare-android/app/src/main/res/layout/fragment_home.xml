@@ -5,54 +5,106 @@
     android:id="@+id/rootLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimary"
     app:layoutDescription="@xml/fragment_home_scene"
     tools:context=".ui.home.HomeFragment">
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/bgImageView"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/_220sdp"
-        android:layout_marginEnd="@dimen/_60sdp"
-        android:scaleType="fitStart"
-        android:src="@drawable/ic_shape"/>
-
     <include
         android:id="@+id/headerLayout"
-        layout="@layout/layout_header_transparent"
+        layout="@layout/layout_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
-
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tabLayout"
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/mainCardView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/transparent"
-        app:tabIndicatorHeight="@dimen/_48sdp"
-        app:tabIndicatorColor="@color/colorAccent1"
-        app:tabSelectedTextColor="@color/colorAccent2"
-        app:tabInlineLabel="true"
+        android:layout_marginTop="-16dp"
+        android:backgroundTint="@color/colorPrimary"
+        app:cardCornerRadius="@dimen/_16sdp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/headerLayout"
-        app:tabTextColor="@color/textColorWhite">
+        app:layout_constraintTop_toBottomOf="@id/headerLayout">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingTop="16dp"
+            android:layout_marginBottom="@dimen/_8sdp">
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/tabCardView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="@dimen/_16sdp"
+                app:cardElevation="@dimen/_4sdp"
+                android:background="@color/transparent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+                <com.google.android.material.tabs.TabLayout
+                    android:id="@+id/tabLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/colorPrimary"
+                    app:tabIndicatorGravity="stretch"
+                    app:tabIndicatorColor="@color/colorAccent1"
+                    app:tabSelectedTextColor="@color/colorPrimary"
+                    app:tabInlineLabel="true"
+                    app:tabMode="fixed"
+                    app:tabIconTint="@color/tab_color_selector"
+                    app:tabTextColor="@color/textColorWhite">
+                    <com.google.android.material.tabs.TabItem
 
-        <com.google.android.material.tabs.TabItem
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/patient_list"
-            />
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/patient_list"
+                        android:icon="@drawable/patient_list_icon"
+                        />
 
-        <com.google.android.material.tabs.TabItem
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/consultation_list" />
+                    <com.google.android.material.tabs.TabItem
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/consultation_list"
+                        android:icon="@drawable/closed_consultation_icon"/>
+                </com.google.android.material.tabs.TabLayout>
+            </com.google.android.material.card.MaterialCardView>
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/searchCardView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="@dimen/_16sdp"
+                android:layout_marginStart="@dimen/_8sdp"
+                app:cardElevation="@dimen/_4sdp"
+                android:layout_marginTop="@dimen/_12sdp"
+                android:background="@color/transparent"
+                app:layout_constraintTop_toBottomOf="@id/tabCardView"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/qrScannerImageView"
+                android:layout_marginEnd="@dimen/_16sdp">
+                <androidx.appcompat.widget.SearchView
+                    android:id="@+id/searchView"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_24sdp"
+                    app:iconifiedByDefault="false"
+                    app:queryBackground="@color/white"
+                    android:backgroundTint="@color/white"
+                    android:background="@color/white"
+                    app:queryHint="@string/query_hint_patient_search" />
+            </com.google.android.material.card.MaterialCardView>
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/qrScannerImageView"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/_24sdp"
+                android:layout_marginTop="@dimen/_12sdp"
+                android:gravity="center_vertical"
+                android:src="@drawable/qr_code_icon"
+                android:layout_marginEnd="@dimen/_24sdp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tabCardView" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </com.google.android.material.tabs.TabLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewPager2"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="@dimen/_12sdp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tabLayout"/>
+        app:layout_constraintTop_toBottomOf="@id/mainCardView" />
 </androidx.constraintlayout.motion.widget.MotionLayout>
