@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginVertical="@dimen/_4sdp"
+    android:layout_marginBottom="@dimen/_8sdp"
     android:layout_marginHorizontal="@dimen/_12sdp"
     app:cardCornerRadius="@dimen/_12sdp"
     app:cardBackgroundColor="@color/colorAccent1"
@@ -12,8 +12,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingVertical="@dimen/_4sdp"
-        android:paddingHorizontal="@dimen/_16sdp">
+        android:paddingStart="@dimen/_4sdp">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/stethoscopeImageView"
@@ -26,16 +25,26 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/previousConsultationStatusTextView"
-            style="@style/TextView.Medium.Black"
+            android:id="@+id/consultationNameTextView"
+            style="@style/TextView.Small.Black"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/_12sdp"
             android:layout_marginVertical="@dimen/auto_complete_item_gap"
-            app:layout_constraintEnd_toStartOf="@id/rightArrowImageView"
             app:layout_constraintStart_toEndOf="@+id/stethoscopeImageView"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             android:text="Sick Child, Follow Up" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/dateTextView"
+            style="@style/TextView.Small.Black"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toStartOf="@id/rightArrowImageView"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:text="21/06/1999" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/rightArrowImageView"

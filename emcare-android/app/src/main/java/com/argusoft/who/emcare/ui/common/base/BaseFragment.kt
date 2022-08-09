@@ -68,8 +68,14 @@ abstract class BaseFragment<B : ViewBinding> : Fragment(), View.OnClickListener 
         setNavigationIcon(R.drawable.ic_menu)
         inflateMenu(R.menu.dashboard)
         setNavigationOnClickListener {
+            (activity as? HomeActivity)?.toggleSidepane()
 //            (activity as? HomeActivity)?.openDrawer() TODO: Add sidepane on window click
         }
+    }
+
+    fun Toolbar.setUpDashboardAndTitle(id: Int? = null, name: String? = null) {
+        title = name
+        setUpDashboard(id)
     }
 
     override fun onClick(view: View?) {

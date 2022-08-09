@@ -6,6 +6,8 @@
     <string name="patient">Patient</string>
     <string name="title_patient_details">Patient Details</string>
     <string name="title_patient_actions">Patient Actions</string>
+    <string name="title_patient_profile">Patient Profile</string>
+    <string name="title_home">EM Care</string>
     <string name="title_select_location">Select Location</string>
     <string name="menu_about">About Fhir Engine</string>
     <string name="menu_load_resource">Load CQL Resources &amp; Patients</string>
@@ -14,7 +16,7 @@
 
     <!-- For display observations in brief, for a patient -->
     <string name="observation_brief_text">%1$s: %2$s\nEffective: %3$s</string>
-    <string name="query_hint_patient_search">Find by Patient Name</string>
+    <string name="query_hint_patient_search">Search for Patient Details</string>
     <string
         name="cancel_questionnaire_message"
         >Are you sure you want to discard the answers?</string>

@@ -4,16 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginVertical="@dimen/_4sdp"
+    android:layout_marginBottom="@dimen/_8sdp"
     android:layout_marginHorizontal="@dimen/_12sdp"
     app:cardCornerRadius="@dimen/_12sdp"
-    app:cardBackgroundColor="@color/colorAccent1"
-    android:padding="@dimen/_2sdp">
+    android:translationZ="@dimen/_4sdp"
+    app:cardBackgroundColor="@color/colorAccent1">
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingVertical="@dimen/_12sdp"
-        android:paddingHorizontal="@dimen/_16sdp">
+        android:paddingStart="@dimen/_4sdp"
+        android:paddingVertical="@dimen/_12sdp">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/statusImageView"
@@ -25,25 +25,44 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/nameTextView"
-            style="@style/TextView.Medium.Black"
+            android:id="@+id/consultationNameTextView"
+            style="@style/TextView.Small.Black"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/_12sdp"
+            android:layout_marginStart="@dimen/_8sdp"
             app:layout_constraintEnd_toStartOf="@id/rightArrowImageView"
-            app:layout_constraintStart_toEndOf="@+id/statusImageView"
-            app:layout_constraintTop_toTopOf="@+id/statusImageView"
-            tools:text="Name" />
+            app:layout_constraintStart_toEndOf="@id/statusImageView"
+            app:layout_constraintTop_toTopOf="@id/statusImageView"
+            tools:text="Consultation Name" />
 
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/idTextView"
+            android:id="@+id/dateTextViewLabel"
+            style="@style/TextView.Small.Black"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="@id/consultationNameTextView"
+            app:layout_constraintTop_toBottomOf="@id/consultationNameTextView"
+            android:text="Visit Date :" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/dateTextView"
+            style="@style/TextView.Small.Black"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_4sdp"
+            app:layout_constraintStart_toEndOf="@id/dateTextViewLabel"
+            app:layout_constraintTop_toBottomOf="@id/consultationNameTextView"
+            tools:text="21/06/1999" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/todayTextView"
             style="@style/TextView.Small.Black"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toStartOf="@id/rightArrowImageView"
-            app:layout_constraintStart_toStartOf="@+id/nameTextView"
-            app:layout_constraintTop_toBottomOf="@+id/nameTextView"
-            tools:text="Id" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:text="Today" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/rightArrowImageView"

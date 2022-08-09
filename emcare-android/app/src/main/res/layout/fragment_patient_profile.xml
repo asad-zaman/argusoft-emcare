@@ -1,249 +1,230 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.argusoft.who.emcare.widget.ApiViewStateConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/patientActionsLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/leftGuideLine"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.06" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/rightGuideLine"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.94" />
-
     <include
         android:id="@+id/headerLayout"
         layout="@layout/layout_header"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/childImageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:src="@drawable/ic_child_icon_white"
-        android:layout_marginTop="@dimen/_12sdp"
-        app:layout_constraintStart_toStartOf="@id/leftGuideLine"
-        app:layout_constraintTop_toBottomOf="@id/headerLayout" />
-
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/nameTextView"
-        style="@style/TextView.Medium.Black"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/_4sdp"
-        app:layout_constraintEnd_toStartOf="@id/rightArrowImageView"
-        app:layout_constraintStart_toEndOf="@+id/childImageView"
-        app:layout_constraintTop_toTopOf="@+id/childImageView"
-        tools:text="Parth Panchal" />
-
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/dobTextView"
-        style="@style/TextView.Small.Black"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toStartOf="@id/rightArrowImageView"
-        app:layout_constraintStart_toStartOf="@+id/nameTextView"
-        app:layout_constraintTop_toBottomOf="@+id/nameTextView"
-        tools:text="DOB:" />
-
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/patientProfileCardView"
-        android:layout_width="@dimen/_130sdp"
-        android:layout_height="wrap_content"
-        android:paddingHorizontal="@dimen/_100sdp"
-        android:layout_marginTop="@dimen/_12sdp"
-        app:layout_constraintTop_toBottomOf="@id/childImageView"
-        app:layout_constraintStart_toStartOf="@id/leftGuideLine"
-        app:cardCornerRadius="@dimen/_12sdp"
-        app:strokeColor="@color/black"
-        style="@style/Widget.Material3.CardView.Outlined"
-        android:padding="@dimen/_2sdp">
+    <androidx.core.widget.NestedScrollView
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/headerLayout"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="0dp">
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="@dimen/_4sdp"
-            android:layout_gravity="center_vertical">
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/patientProfileTextView"
-                style="@style/TextView.Medium.Black"
+            android:layout_height="wrap_content">
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/leftGuideLine"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/_12sdp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:text="@string/patient_profile" />
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.06" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/rightGuideLine"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.94" />
             <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/rightArrowImageView"
+                android:id="@+id/childImageView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
-                android:src="@drawable/right_arrow_icon_white"
-                android:layout_marginEnd="-6dp"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </com.google.android.material.card.MaterialCardView>
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/newConsultationCardView"
-        android:layout_width="@dimen/_130sdp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_12sdp"
-        app:layout_constraintTop_toBottomOf="@id/childImageView"
-        app:layout_constraintEnd_toStartOf="@id/rightGuideLine"
-        app:cardCornerRadius="@dimen/_12sdp"
-        app:strokeColor="@color/black"
-        style="@style/Widget.Material3.CardView.Outlined"
-        android:padding="@dimen/_2sdp">
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginVertical="@dimen/_4sdp">
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/newConsultationTextView"
-            style="@style/TextView.Medium.Black"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/_12sdp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:translationZ="@dimen/_1sdp"
-            android:text="@string/new_consultation" />
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/rightArrowImageView2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:src="@drawable/right_arrow_icon_white"
-            android:layout_marginEnd="-6dp"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </com.google.android.material.card.MaterialCardView>
-
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/activeConsultationCardView"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_12sdp"
-        app:layout_constraintTop_toBottomOf="@id/newConsultationCardView"
-        app:layout_constraintStart_toStartOf="@id/leftGuideLine"
-        app:layout_constraintEnd_toStartOf="@id/rightGuideLine"
-        app:cardCornerRadius="@dimen/_12sdp"
-        app:strokeColor="@color/black"
-        style="@style/Widget.Material3.CardView.Outlined"
-        android:padding="@dimen/_2sdp">
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/activeConsultationTextView"
-                style="@style/TextView.Medium.Black"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/_12sdp"
-                android:layout_marginTop="@dimen/_8sdp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:text="@string/active_consultations" />
-
-            <androidx.recyclerview.widget.RecyclerView
+                android:src="@drawable/ic_child_icon_white"
                 android:layout_marginTop="@dimen/_12sdp"
-                android:id="@+id/activeConsultationRecyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:nestedScrollingEnabled="false"
-                android:orientation="vertical"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                app:layout_constraintTop_toBottomOf="@id/activeConsultationTextView"
-                tools:listitem="@layout/list_item_active_consultation" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </com.google.android.material.card.MaterialCardView>
+                app:layout_constraintStart_toStartOf="@id/leftGuideLine"
+                app:layout_constraintTop_toTopOf="parent" />
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/previousConsultationCardView"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_16sdp"
-        app:layout_constraintTop_toBottomOf="@id/activeConsultationCardView"
-        app:layout_constraintStart_toStartOf="@id/leftGuideLine"
-        app:layout_constraintEnd_toStartOf="@id/rightGuideLine"
-        app:cardCornerRadius="@dimen/_12sdp"
-        app:strokeColor="@color/black"
-        style="@style/Widget.Material3.CardView.Outlined"
-        android:padding="@dimen/_2sdp">
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
             <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/previousConsultationTextView"
+                android:id="@+id/nameTextView"
                 style="@style/TextView.Medium.Black"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/_12sdp"
-                android:layout_marginTop="@dimen/_8sdp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="@string/previous_consultations" />
+                android:layout_marginStart="@dimen/_4sdp"
+                app:layout_constraintStart_toEndOf="@+id/childImageView"
+                app:layout_constraintTop_toTopOf="@+id/childImageView"
+                tools:text="Parth Panchal" />
 
-            <androidx.recyclerview.widget.RecyclerView
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/dobTextViewLabel"
+                style="@style/TextView.Small.Black"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="@+id/nameTextView"
+                app:layout_constraintTop_toBottomOf="@+id/nameTextView"
+                android:text="@string/dob_label" />
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/dobTextView"
+                style="@style/TextView.Small.Black"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_4sdp"
+                app:layout_constraintStart_toEndOf="@id/dobTextViewLabel"
+                app:layout_constraintTop_toBottomOf="@+id/nameTextView"
+                tools:text="21/06/1999" />
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/patientProfileCardView"
+                android:layout_width="@dimen/_130sdp"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="@dimen/_100sdp"
                 android:layout_marginTop="@dimen/_12sdp"
-                android:id="@+id/previousConsultationRecyclerView"
-                android:layout_width="match_parent"
+                app:layout_constraintTop_toBottomOf="@id/childImageView"
+                app:layout_constraintStart_toStartOf="@id/leftGuideLine"
+                app:cardCornerRadius="@dimen/_12sdp"
+                app:strokeColor="@color/black"
+                style="@style/Widget.Material3.CardView.Outlined"
+                android:padding="@dimen/_2sdp">
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="@dimen/_4sdp"
+                    android:layout_gravity="center_vertical">
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/patientProfileTextView"
+                        style="@style/TextView.Medium.Black"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_12sdp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        android:text="@string/patient_profile" />
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/rightArrowImageView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:src="@drawable/right_arrow_icon_white"
+                        android:layout_marginEnd="-6dp"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"/>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/newConsultationCardView"
+                android:layout_width="@dimen/_130sdp"
                 android:layout_height="wrap_content"
-                android:nestedScrollingEnabled="false"
-                android:orientation="vertical"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                app:layout_constraintTop_toBottomOf="@id/previousConsultationTextView"
-                tools:listitem="@layout/list_item_previous_consultation" />
+                android:layout_marginTop="@dimen/_12sdp"
+                app:layout_constraintTop_toBottomOf="@id/childImageView"
+                app:layout_constraintEnd_toStartOf="@id/rightGuideLine"
+                app:cardCornerRadius="@dimen/_12sdp"
+                app:strokeColor="@color/black"
+                style="@style/Widget.Material3.CardView.Outlined"
+                android:padding="@dimen/_2sdp">
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginVertical="@dimen/_4sdp">
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/newConsultationTextView"
+                        style="@style/TextView.Medium.Black"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_12sdp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        android:translationZ="@dimen/_1sdp"
+                        android:text="@string/new_consultation" />
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/rightArrowImageView2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:src="@drawable/right_arrow_icon_white"
+                        android:layout_marginEnd="-6dp"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"/>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/activeConsultationCardView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_12sdp"
+                app:layout_constraintTop_toBottomOf="@id/newConsultationCardView"
+                app:layout_constraintStart_toStartOf="@id/leftGuideLine"
+                app:layout_constraintEnd_toStartOf="@id/rightGuideLine"
+                app:cardCornerRadius="@dimen/_12sdp"
+                app:strokeColor="@color/black"
+                style="@style/Widget.Material3.CardView.Outlined"
+                android:padding="@dimen/_2sdp">
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/activeConsultationTextView"
+                        style="@style/TextView.Medium.Black"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_12sdp"
+                        android:layout_marginTop="@dimen/_8sdp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        android:text="@string/active_consultations" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:layout_marginTop="@dimen/_12sdp"
+                        android:id="@+id/activeConsultationRecyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:nestedScrollingEnabled="false"
+                        android:orientation="vertical"
+                        android:paddingBottom="@dimen/_12sdp"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        app:layout_constraintTop_toBottomOf="@id/activeConsultationTextView"
+                        tools:listitem="@layout/list_item_active_consultation" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/previousConsultationCardView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="@dimen/_16sdp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/activeConsultationCardView"
+                app:layout_constraintStart_toStartOf="@id/leftGuideLine"
+                app:layout_constraintEnd_toStartOf="@id/rightGuideLine"
+                app:cardCornerRadius="@dimen/_12sdp"
+                app:strokeColor="@color/black"
+                style="@style/Widget.Material3.CardView.Outlined"
+                android:padding="@dimen/_2sdp">
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/previousConsultationTextView"
+                        style="@style/TextView.Medium.Black"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_12sdp"
+                        android:layout_marginTop="@dimen/_8sdp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        android:text="@string/previous_consultations" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:layout_marginTop="@dimen/_12sdp"
+                        android:id="@+id/previousConsultationRecyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:nestedScrollingEnabled="false"
+                        android:orientation="vertical"
+                        android:paddingBottom="@dimen/_12sdp"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        app:layout_constraintTop_toBottomOf="@id/previousConsultationTextView"
+                        tools:listitem="@layout/list_item_previous_consultation" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.google.android.material.card.MaterialCardView>
         </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </com.google.android.material.card.MaterialCardView>
-
-<!--    <androidx.core.widget.NestedScrollView-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_margin="@dimen/_8sdp"-->
-<!--        android:padding="@dimen/_2sdp"-->
-<!--        app:layout_constraintTop_toBottomOf="@id/headerLayout">-->
-
-<!--        <com.argusoft.who.emcare.widget.ApiViewStateConstraintLayout-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content">-->
-
-<!--            <TextView-->
-<!--                android:id="@+id/patient_name"-->
-<!--                style="@style/TextView.Big"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginStart="@dimen/_8sdp"-->
-<!--                android:layout_marginTop="@dimen/_12sdp"-->
-<!--                android:padding="@dimen/_2sdp" />-->
-
-<!--            <androidx.recyclerview.widget.RecyclerView-->
-<!--                android:id="@+id/recyclerView"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:nestedScrollingEnabled="false"-->
-<!--                android:orientation="vertical"-->
-<!--                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"-->
-<!--                app:layout_constraintTop_toBottomOf="@id/patient_name"-->
-<!--                tools:listitem="@layout/patient_actions_item" />-->
-
-<!--        </com.argusoft.who.emcare.widget.ApiViewStateConstraintLayout>-->
-<!--    </androidx.core.widget.NestedScrollView>-->
-
-
-</com.argusoft.who.emcare.widget.ApiViewStateConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -7,6 +7,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.databinding.ListItemPatientBinding
+import com.argusoft.who.emcare.ui.common.INTENT_EXTRA_PATIENT_DOB
 import com.argusoft.who.emcare.ui.common.INTENT_EXTRA_PATIENT_ID
 import com.argusoft.who.emcare.ui.common.INTENT_EXTRA_PATIENT_NAME
 import com.argusoft.who.emcare.ui.common.base.BaseAdapter
@@ -37,9 +38,10 @@ class HomeAdapter(
     inner class ViewHolder(val binding: ListItemPatientBinding) : RecyclerView.ViewHolder(binding.root) {
         init {
             itemView.setOnClickListener {
-                it.navigate(R.id.action_homeFragment_to_patientActionsFragment) {
+                it.navigate(R.id.action_homeFragment_to_patientProfileFragment) {
                     putString(INTENT_EXTRA_PATIENT_ID,list[bindingAdapterPosition]?.resourceId)
                     putString(INTENT_EXTRA_PATIENT_NAME,list[bindingAdapterPosition]?.name)
+                    putString(INTENT_EXTRA_PATIENT_DOB,list[bindingAdapterPosition]?.dob)
                 }
             }
         }

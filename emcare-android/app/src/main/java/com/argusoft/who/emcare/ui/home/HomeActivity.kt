@@ -1,5 +1,7 @@
 package com.argusoft.who.emcare.ui.home
 
+import android.opengl.Visibility
+import android.view.View
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
@@ -13,6 +15,7 @@ import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.databinding.ActivityHomeBinding
 import com.argusoft.who.emcare.ui.auth.signup.SignUpViewModel
 import com.argusoft.who.emcare.ui.common.base.BaseActivity
+import com.argusoft.who.emcare.ui.common.model.SidepaneItem
 import com.argusoft.who.emcare.ui.home.settings.SettingsViewModel
 import com.argusoft.who.emcare.utils.avatar.AvatarGenerator
 import com.argusoft.who.emcare.utils.extention.alertDialog
@@ -31,6 +34,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
     private lateinit var navHostFragment: NavHostFragment
     private val signUpViewModel: SignUpViewModel by viewModels()
     private val settingsViewModel: SettingsViewModel by viewModels()
+    private lateinit var sidepaneAdapter: SidepaneAdapter
 
     override fun initView() {
 //        signUpViewModel.getLocationsAndRoles()
@@ -54,26 +58,10 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
             binding.navView.menu.getItem(0).title = preference.getLoggedInUser()?.firstName
             binding.navView.menu.getItem(1).title = preference.getLoggedInUser()?.facility?.get(0)?.facilityName
         }
-        //Setting name & email in drawer view
-//        if (preference.getLoggedInUser() != null) {
-//            val headerView = binding.navView.getHeaderView(0)
-//            headerView.findViewById<TextView>(R.id.nameTextView).text = preference.getLoggedInUser()?.userName
-//            headerView.findViewById<TextView>(R.id.emailTextView).text = preference.getLoggedInUser()?.email
-//            Glide.with(this)
-//                .load("")
-//                .placeholder(
-//                    AvatarGenerator.AvatarBuilder(this)
-//                        .setLabel(preference.getLoggedInUser()?.userName?.first().toString())
-//                        .setAvatarSize(120)
-//                        .setTextSize(30)
-//                        .toCircle()
-//                        .setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary))
-//                        .build()
-//                )
-//                .into(headerView.findViewById(R.id.userImageView))
-//            headerView.findViewById<TextView>(R.id.nameTextView).text = preference.getLoggedInUser()?.userName
-//            headerView.findViewById<TextView>(R.id.emailTextView).text = preference.getLoggedInUser()?.email
-//        }
+
+        sidepaneAdapter = SidepaneAdapter(onClickListener = this)
+        setupSidepane()
+
     }
 
     fun openDrawer() {
@@ -82,6 +70,21 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
 
     fun closeDrawer() {
         binding.drawerLayout.closeDrawer(GravityCompat.END)
+    }
+
+    private fun setupSidepane() {
+        binding.sidepaneRecyclerView.adapter = sidepaneAdapter
+        sidepaneAdapter.clearAllItems()
+        sidepaneAdapter.addAll(listOf(
+            SidepaneItem(R.drawable.registration_icon),
+            SidepaneItem(R.drawable.danger_sign_icon),
+            SidepaneItem(R.drawable.measurements_icon),
+            SidepaneItem(R.drawable.symptoms_icon),
+            SidepaneItem(R.drawable.sign_icon),
+            SidepaneItem(R.drawable.health_prevention_icon),
+            SidepaneItem(R.drawable.tests_icon),
+            SidepaneItem(R.drawable.treatment_icon),
+            ))
     }
 
     override fun initListener() {
@@ -105,6 +108,11 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
             return@setNavigationItemSelectedListener true
         }
 
+    }
+
+    fun toggleSidepane() {
+        binding.sidepaneConstraintLayout.visibility = if(binding.sidepaneConstraintLayout.visibility == View.GONE) View.VISIBLE else View.GONE
+        binding.sidepaneRecyclerView.visibility = if(binding.sidepaneRecyclerView.visibility == View.GONE) View.VISIBLE else View.GONE
     }
 
     override fun initObserver() {
