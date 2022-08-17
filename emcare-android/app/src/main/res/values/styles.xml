@@ -181,21 +181,16 @@
 
     <style name="Questionnaire" parent="Theme.MaterialComponents.Light.DarkActionBar">
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="groupHeaderTextAppearanceQuestionnaire">@style/TextAppearance.MaterialComponents.Headline6</item>
-        <item name="headerTextAppearanceQuestionnaire">@style/TextAppearance.MaterialComponents.Body2</item>
-        <item name="checkBoxStyleQuestionnaire">@style/Widget.AppCompat.CompoundButton.CheckBox</item>
-        <item name="radioButtonStyleQuestionnaire">@style/Widget.AppCompat.CompoundButton.RadioButton</item>
-        <item name="dropDownTextAppearanceQuestionnaire">@style/Questionnaire.DropDownTextInputEditText</item>
-        <item name="dropDownSelectedTextAppearanceQuestionnaire">@style/Questionnaire.DropDownTextInputEditText</item>
-        <item name="dropDownStyleQuestionnaire">@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu</item>
-        <item name="editTextInputTextAppearanceQuestionnaire">@style/Questionnaire.TextInputEditText</item>
-        <item name="editTextLayoutStyleQuestionnaire">@style/Questionnaire.TextInputEditText</item>
-        <item name="chipStyleQuestionnaire">@style/Widget.MaterialComponents.Chip.Entry</item>
-        <item name="buttonStyleQuestionnaire">@style/Questionnaire.Button</item>
-        <item name="inputErrorTextAppearanceQuestionnaire">@style/Questionnaire.TextAppearance.Error</item>
+        <item name="questionnaireQuestionTextStyle">@style/TextAppearance.MaterialComponents.Body2</item>
+        <item name="questionnaireCheckBoxStyle">@style/Widget.AppCompat.CompoundButton.CheckBox</item>
+        <item name="questionnaireRadioButtonStyle">@style/Widget.AppCompat.CompoundButton.RadioButton</item>
+        <item name="questionnaireDropDownTextStyle">@style/Questionnaire.DropDownTextInputEditText</item>
+        <item name="questionnaireDropDownSelectedTextStyle">@style/Questionnaire.DropDownTextInputEditText</item>
+        <item name="questionnaireDropdownLayoutStyle">@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu</item>
+        <item name="questionnaireTextInputEditTextStyle">@style/Questionnaire.TextInputEditText</item>
+        <item name="questionnaireChipStyle">@style/Widget.MaterialComponents.Chip.Entry</item>
+        <item name="questionnaireButtonStyle">@style/Questionnaire.Button</item>
         <item name="questionnaireTextInputLayoutStyle">@style/TextInputLayout</item>
-        <item name="questionnaireExposedMenuLayoutStyle">@style/Questionnaire.DropDownTextInputLayout</item>
-        <item name="chipStyle">@style/Questionnaire.Widget.MaterialComponents.Chip.Action</item>
 <!--        <item name="questionnaireTextColor">@color/text_color</item>-->
     </style>
 </resources>

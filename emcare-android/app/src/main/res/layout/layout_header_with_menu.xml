@@ -12,5 +12,6 @@
         android:layout_marginTop="@dimen/status_margin_top"
         android:background="?attr/colorPrimary"
         app:layout_constraintTop_toTopOf="parent"
+        app:navigationIcon="@drawable/ic_menu"
         app:titleTextColor="@color/colorWhite" />
 </androidx.constraintlayout.widget.ConstraintLayout>

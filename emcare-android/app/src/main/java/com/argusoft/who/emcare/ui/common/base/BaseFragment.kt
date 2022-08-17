@@ -57,26 +57,43 @@ abstract class BaseFragment<B : ViewBinding> : Fragment(), View.OnClickListener 
 
     fun Toolbar.setTitleAndBack(id: String? = null) {
         id?.let {
-            setTitle(it)
+            title = it
         }
         setNavigationOnClickListener {
             requireActivity().onBackPressed()
         }
+
+        setNavigationIcon(R.drawable.ic_back)
     }
 
-    fun Toolbar.setUpDashboard(id: Int? = null) {
-        setNavigationIcon(R.drawable.ic_menu)
+    fun Toolbar.setTitleDashboard(id: String?){
         inflateMenu(R.menu.dashboard)
-        setNavigationOnClickListener {
-            (activity as? HomeActivity)?.toggleSidepane()
-//            (activity as? HomeActivity)?.openDrawer() TODO: Add sidepane on window click
+        id?.let {
+            title = it
         }
     }
 
-    fun Toolbar.setUpDashboardAndTitle(id: Int? = null, name: String? = null) {
-        title = name
-        setUpDashboard(id)
+    fun Toolbar.setTitleSidepane(id: String? = null){
+        id?.let {
+            title = it
+        }
+        setNavigationOnClickListener {
+            (activity as? HomeActivity)?.toggleSidepane()
+        }
+        setNavigationIcon(R.drawable.ic_menu)
     }
+
+    fun Toolbar.setTitleDashboardSidepane(id: String?) {
+        id?.let {
+            title = it
+        }
+        inflateMenu(R.menu.dashboard)
+        setNavigationOnClickListener {
+            (activity as? HomeActivity)?.toggleSidepane()
+        }
+        setNavigationIcon(R.drawable.ic_menu)
+    }
+
 
     override fun onClick(view: View?) {
         hideKeyboard(view)

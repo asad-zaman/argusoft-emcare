@@ -7,7 +7,7 @@ xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="match_parent">
     <include
         android:id="@+id/headerLayout"
-        layout="@layout/layout_header"
+        layout="@layout/layout_header_with_menu_curved"
         app:layout_constraintTop_toTopOf="parent" />
     <androidx.core.widget.NestedScrollView
         app:layout_constraintStart_toStartOf="parent"

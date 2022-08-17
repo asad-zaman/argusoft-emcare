@@ -85,7 +85,7 @@ class PatientQuestionnaireFragment : BaseFragment<FragmentPatientQuestionnaireBi
         observeNotNull(settingsViewModel.languageApiState) {
             it.whenSuccess {
                 it.languageData?.convertToMap()?.apply {
-                    binding.headerLayout.toolbar.setTitleAndBack(
+                    binding.headerLayout.toolbar.setTitleSidepane(
                         getOrElse("Patient") { getString(R.string.patient) } + " "
                             + requireArguments().getString(INTENT_EXTRA_QUESTIONNAIRE_HEADER)  )
                 }

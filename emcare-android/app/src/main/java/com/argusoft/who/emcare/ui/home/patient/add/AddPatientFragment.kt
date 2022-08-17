@@ -77,7 +77,7 @@ class AddPatientFragment : BaseFragment<FragmentAddPatientBinding>() {
         observeNotNull(settingsViewModel.languageApiState) {
             it.whenSuccess {
                 it.languageData?.convertToMap()?.apply {
-                    binding.headerLayout.toolbar.setTitleAndBack(getOrElse("Add_Patient") { getString(R.string.title_add_patient) } )
+                    binding.headerLayout.toolbar.setTitleSidepane(getOrElse("Add_Patient") { getString(R.string.title_add_patient) } )
                 }
             }
         }

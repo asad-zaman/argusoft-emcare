@@ -71,7 +71,7 @@ class PatientActionsFragment : BaseFragment<FragmentPatientActionsBinding>() {
         observeNotNull(settingsViewModel.languageApiState) {
             it.whenSuccess {
                 it.languageData?.convertToMap()?.apply {
-                    binding.headerLayout.toolbar.setUpDashboardAndTitle(name = getOrElse("Patient_Actions") { getString(R.string.title_patient_actions) })
+                    binding.headerLayout.toolbar.setTitleDashboard(id = getOrElse("Patient_Actions") { getString(R.string.title_patient_actions) })
                 }
             }
         }

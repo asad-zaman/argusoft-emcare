@@ -9,6 +9,9 @@
     <color name="emergencyBackgroundTint">#4A494A</color>
     <color name="emergencyBorder">#252525</color>
 
+    <!--SDC Beta 04-->
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
 
     <color name="colorStatusBar">#175adf</color>
     <color name="low_risk">#388e3c</color>

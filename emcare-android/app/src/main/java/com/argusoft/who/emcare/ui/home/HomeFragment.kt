@@ -29,7 +29,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(){
     }
 
     override fun initView() {
-        binding.headerLayout.toolbar.setUpDashboardAndTitle(name = getString(R.string.title_home))
+        binding.headerLayout.toolbar.setTitleDashboard(id = getString(R.string.title_home))
         homePagerAdapter = HomePagerAdapter(this, PatientListFragment(), ConsultationListFragment())
         binding.viewPager2.adapter = homePagerAdapter
         binding.viewPager2.isUserInputEnabled = false
