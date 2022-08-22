@@ -9,19 +9,25 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/addPatientButton"
-        app:backgroundTint="@color/buttonColor"
-        app:cornerRadius="@dimen/_12sdp"
+        app:backgroundTint="@color/white"
+        style="@style/Button.Outlined"
+        app:strokeColor="@color/buttonColor"
+        app:cornerRadius="@dimen/_5sdp"
+        android:textColor="@color/buttonColor"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/_16sdp"
-        android:layout_marginTop="@dimen/_12sdp"
+        android:layout_marginVertical="@dimen/_12sdp"
         android:text="@string/button_add_new_patient"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefreshLayout"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginTop="@dimen/_8sdp"
+        app:layout_constraintStart_toStartOf="@id/addPatientButton"
+        app:layout_constraintEnd_toEndOf="@id/addPatientButton"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/addPatientButton">
 

@@ -21,6 +21,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(){
     private lateinit var glideRequests: GlideRequests
     private val syncViewModel: SyncViewModel by viewModels()
     private val settingsViewModel: SettingsViewModel by activityViewModels()
+    private val homeViewModel: HomeViewModel by activityViewModels()
     private lateinit var homePagerAdapter: HomePagerAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,9 +34,8 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(){
         homePagerAdapter = HomePagerAdapter(this, PatientListFragment(), ConsultationListFragment())
         binding.viewPager2.adapter = homePagerAdapter
         binding.viewPager2.isUserInputEnabled = false
+        binding.tabLayout.selectTab(binding.tabLayout.getTabAt(homeViewModel.currentTab))
     }
-
-
 
     override fun initListener() {
         binding.headerLayout.toolbar.setOnMenuItemClickListener {
@@ -53,12 +53,15 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(){
         binding.tabLayout.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 binding.viewPager2.currentItem = tab?.position!!
+                homeViewModel.currentTab = tab.position
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {
             }
 
             override fun onTabReselected(tab: TabLayout.Tab?) {
+                binding.viewPager2.currentItem = tab?.position!!
+                homeViewModel.currentTab = tab.position
             }
 
         })

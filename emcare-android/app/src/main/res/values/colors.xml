@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
     <color name="horizontalBackground">#6CFAFAFA</color>
-    <color name="colorPrimary">#4D4D4D</color>
+    <color name="colorPrimary">#292929</color>
     <color name="colorPrimaryDark">#4D4D4D</color>
     <color name="colorAccent">#E2203B</color>
     <color name="colorAccent1">#E3E8EE</color>
@@ -38,7 +38,8 @@
     <color name="textColorWhite80">#CCFFFFFF</color>
     <color name="textColorBlack">#4E4E4E</color>
     <color name="textColorBlack80">#4E4E4E</color>
-    <color name="buttonColor">#34A2DD</color>
+    <color name="textColorGrey">#6D6E72</color>
+    <color name="buttonColor">#E4203B</color>
     <color name="textColorLightBlue">#1385D7</color>
     <color name="colorLightGrey">#FFCCCCCC</color>
 </resources>

@@ -22,6 +22,7 @@ class HomeViewModel @Inject constructor(
 ) : ViewModel() {
 
     var questionnaireJson: String? = null
+    var currentTab: Int = 0
     private val _patients = SingleLiveEvent<ApiResponse<List<PatientItem>>>()
     val patients: LiveData<ApiResponse<List<PatientItem>>> = _patients
 
@@ -42,11 +43,11 @@ class HomeViewModel @Inject constructor(
     }
 
     fun getConsultations() : ArrayList<ConsultationItemData?>{
-        return arrayListOf<ConsultationItemData?>(
-            ConsultationItemData("Emma Wright", "10/10/20", "01/01/22","Consultation", R.drawable.danger_sign_icon),
-            ConsultationItemData("Emily Smith", "04/05/21 ", "10/09/21","Registration", R.drawable.registration_icon),
-            ConsultationItemData("John Brown", "02/02/20", "07/06/21","1st Access", R.drawable.measurements_icon),
-            ConsultationItemData("Mary Clarke", "10/10/20", "10/10/21","Closed",R.drawable.closed_consultation_icon_dark),
+        return arrayListOf(
+            ConsultationItemData(patientId="",name="Emma Wright", dateOfBirth="10/10/20", dateOfConsultation = "01/01/22","Consultation", consultationIcon = R.drawable.danger_sign_icon, header = "Consultation", questionnaireName = "EmCare.B10-16.Signs.2m.p" ),
+            ConsultationItemData(patientId="",name="Emily Smith", dateOfBirth="04/05/21 ", dateOfConsultation = "10/09/21","Registration", consultationIcon = R.drawable.registration_icon, header = "Registration", questionnaireName = "emcarea.registration.p.august"),
+            ConsultationItemData(patientId="",name="John Brown", dateOfBirth="02/02/20", dateOfConsultation = "07/06/21","1st Access", consultationIcon = R.drawable.measurements_icon, header="1st Access", questionnaireName = "emcarea.registration.p.august"),
+            ConsultationItemData(patientId="",name="Mary Clarke", dateOfBirth="10/10/20", dateOfConsultation = "10/10/21","Closed", consultationIcon = R.drawable.closed_consultation_icon_dark, header = "Closed", questionnaireName = "emcare.b10-14.symptoms.2m.p"),
         )
     }
 

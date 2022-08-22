@@ -25,40 +25,41 @@
             android:id="@+id/emergencyCardView"
             android:translationZ="@dimen/_1sdp"
             android:layout_width="@dimen/_70sdp"
-            android:layout_height="@dimen/_58sdp"
-            android:paddingHorizontal="@dimen/_100sdp"
+            android:layout_height="@dimen/_70sdp"
             android:layout_marginStart="@dimen/_12sdp"
-            android:layout_marginBottom="@dimen/_36sdp"
+            android:layout_marginBottom="@dimen/_39sdp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:cardCornerRadius="@dimen/_8sdp"
-            app:strokeColor="@color/emergencyBorder"
-            android:backgroundTint="@color/emergencyBackgroundTint"
-            style="@style/Widget.Material3.CardView.Outlined"
+            app:cardCornerRadius="@dimen/_35sdp"
             android:padding="@dimen/_2sdp">
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/emergencyImageView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_4sdp"
-                    android:src="@drawable/ic_emergency"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-                <TextView
-                    android:id="@+id/emeregencyTextView"
-                    style="@style/TextView.Small"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/textColorWhite"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/emergencyImageView"
-                    android:text="@string/emergency_button" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_emergency_icon"
+                />
+<!--            <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="match_parent">-->
+<!--                <androidx.appcompat.widget.AppCompatImageView-->
+<!--                    android:id="@+id/emergencyImageView"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginTop="@dimen/_4sdp"-->
+<!--                    android:src="@drawable/ic_emergency"-->
+<!--                    app:layout_constraintStart_toStartOf="parent"-->
+<!--                    app:layout_constraintEnd_toEndOf="parent"-->
+<!--                    app:layout_constraintTop_toTopOf="parent" />-->
+<!--                <TextView-->
+<!--                    android:id="@+id/emeregencyTextView"-->
+<!--                    style="@style/TextView.Small"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:textColor="@color/textColorWhite"-->
+<!--                    app:layout_constraintStart_toStartOf="parent"-->
+<!--                    app:layout_constraintEnd_toEndOf="parent"-->
+<!--                    app:layout_constraintTop_toBottomOf="@id/emergencyImageView"-->
+<!--                    android:text="@string/emergency_button" />-->
+<!--            </androidx.constraintlayout.widget.ConstraintLayout>-->
         </com.google.android.material.card.MaterialCardView>
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/sidepaneConstraintLayout"

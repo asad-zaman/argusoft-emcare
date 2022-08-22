@@ -1,11 +1,16 @@
 package com.argusoft.who.emcare.ui.home
 
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.databinding.ListItemConsultationBinding
+import com.argusoft.who.emcare.ui.common.INTENT_EXTRA_PATIENT_ID
+import com.argusoft.who.emcare.ui.common.INTENT_EXTRA_QUESTIONNAIRE_HEADER
+import com.argusoft.who.emcare.ui.common.INTENT_EXTRA_QUESTIONNAIRE_NAME
+import com.argusoft.who.emcare.ui.common.INTENT_EXTRA_STRUCTUREMAP_NAME
 import com.argusoft.who.emcare.ui.common.base.BaseAdapter
 import com.argusoft.who.emcare.ui.common.model.ConsultationItemData
+import com.argusoft.who.emcare.utils.extention.navigate
 import com.argusoft.who.emcare.utils.extention.toBinding
 
 class ConsultationAdapter(
@@ -26,6 +31,17 @@ class ConsultationAdapter(
     }
 
     inner class ViewHolder(val binding: ListItemConsultationBinding) : RecyclerView.ViewHolder(binding.root) {
+
+        init {
+            itemView.setOnClickListener {
+                it.navigate(R.id.action_homeFragment_to_patientQuestionnaireFragment){
+                    putString(INTENT_EXTRA_QUESTIONNAIRE_NAME, list[bindingAdapterPosition]?.questionnaireName)
+                    putString(INTENT_EXTRA_STRUCTUREMAP_NAME, list[bindingAdapterPosition]?.questionnaireName)
+                    putString(INTENT_EXTRA_QUESTIONNAIRE_HEADER, list[bindingAdapterPosition]?.header)
+                    putString(INTENT_EXTRA_PATIENT_ID,list[bindingAdapterPosition]?.patientId)
+                }
+            }
+        }
 
         fun bind(album: ConsultationItemData) = with(album) {
             binding.nameTextView.text = name

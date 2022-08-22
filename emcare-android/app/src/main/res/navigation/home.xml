@@ -23,6 +23,9 @@
         <action
             android:id="@+id/action_homeFragment_to_patientProfileFragment"
             app:destination="@id/patientProfileFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_patientQuestionnaireFragment"
+            app:destination="@id/patientQuestionnaireFragment" />
 
     </fragment>
 
@@ -53,7 +56,11 @@
     <fragment
         android:id="@+id/patientProfileFragment"
         android:name="com.argusoft.who.emcare.ui.home.patient.profile.PatientProfileFragment"
-        tools:layout="@layout/fragment_patient_profile"/>
+        tools:layout="@layout/fragment_patient_profile">
+        <action
+            android:id="@+id/action_patientProfileFragment_to_patientQuestionnaireFragment"
+            app:destination="@id/patientQuestionnaireFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/settingsFragment"
