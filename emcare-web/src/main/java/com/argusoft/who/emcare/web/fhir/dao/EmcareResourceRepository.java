@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -17,6 +18,8 @@ public interface EmcareResourceRepository extends JpaRepository<EmcareResource, 
     List<EmcareResource> findByTypeContainingAndTextContainingIgnoreCase(String type, String searchString, Pageable pageable);
 
     List<EmcareResource> findByTypeContainingAndTextContainingIgnoreCase(String type, String searchString);
+
+    List<EmcareResource> findByModifiedOnGreaterThanOrCreatedOnGreaterThan(Date modifiedOn, Date createdOn);
 
     EmcareResource findByResourceId(String resourceId);
 

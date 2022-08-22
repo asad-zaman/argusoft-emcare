@@ -4,6 +4,7 @@ import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.rest.annotation.*;
 import ca.uhn.fhir.rest.api.MethodOutcome;
+import ca.uhn.fhir.rest.param.DateParam;
 import ca.uhn.fhir.rest.param.StringParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
@@ -166,10 +167,10 @@ public class PatientResourceProvider implements IResourceProvider {
      * Reference for param: https://hapifhir.io/hapi-fhir/docs/server_plain/rest_operations_search.html#combining-multiple-parameters
      */
     @Search()
-    public List<Patient> getAllPatients() {
+    public List<Patient> getAllPatients(@OptionalParam(name = CommonConstant.RESOURCE_LAST_UPDATED_AT) DateParam theDate) {
         List<Patient> patientsList = new ArrayList<>();
 
-        List<EmcareResource> resourcesList = emcareResourceService.retrieveResourcesByType("PATIENT");
+        List<EmcareResource> resourcesList = emcareResourceService.retrieveResourcesByType("PATIENT", theDate);
         for (EmcareResource emcareResource : resourcesList) {
             Patient patient = parser.parseResource(Patient.class, emcareResource.getText());
             patientsList.add(patient);
