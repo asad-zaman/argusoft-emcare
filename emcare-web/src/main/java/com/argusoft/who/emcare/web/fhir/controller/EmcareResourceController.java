@@ -107,7 +107,7 @@ public class EmcareResourceController {
 
     @GetMapping("/questionnaire")
     public List<QuestionnaireDto> getAllQuestionnaires() {
-        List<QuestionnaireMaster> questionnaireMasters = questionnaireMasterService.retrieveAllQuestionnaires();
+        List<QuestionnaireMaster> questionnaireMasters = questionnaireMasterService.retrieveAllQuestionnaires(null);
         List<Questionnaire> questionnaires = new ArrayList<>();
 
         for (QuestionnaireMaster qm : questionnaireMasters) {

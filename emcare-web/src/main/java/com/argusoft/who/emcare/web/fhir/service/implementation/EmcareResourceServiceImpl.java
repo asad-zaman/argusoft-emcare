@@ -2,6 +2,7 @@ package com.argusoft.who.emcare.web.fhir.service.implementation;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.IParser;
+import ca.uhn.fhir.rest.param.DateParam;
 import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.common.dto.PageDto;
 import com.argusoft.who.emcare.web.fhir.dao.ActivityDefinitionResourceRepository;
@@ -279,8 +280,23 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
     }
 
     @Override
-    public List<EmcareResource> retrieveResourcesByType(String type) {
-        return repository.findAllByType(type);
+    public List<EmcareResource> retrieveResourcesByType(String type, DateParam theDate, IdType theId) {
+        List<String> childFacilityIds = new ArrayList<>();
+        if (theId != null) {
+            FacilityDto facilityDto = locationResourceService.getFacilityDto(theId.getIdPart());
+            List<Integer> locationIds = locationMasterDao.getAllChildLocationId(facilityDto.getLocationId().intValue());
+            childFacilityIds = locationResourceRepository.findResourceIdIn(locationIds);
+        }
+
+        if (theDate == null && theId == null) {
+            return repository.findAllByType(type);
+        } else if (theDate != null && theId == null) {
+            return repository.getByDateAndType(theDate.getValue(), type);
+        } else if (theDate == null && theId != null) {
+            return repository.findByFacilityIdIn(childFacilityIds);
+        } else {
+            return repository.findByTypeAndModifiedOnGreaterThanOrCreatedOnGreaterThanAndFacilityIdIn(type, theDate.getValue(), theDate.getValue(), childFacilityIds);
+        }
     }
 
     @Override
@@ -337,7 +353,7 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
         List<Patient> patientsList = new ArrayList<>();
         List<PatientDto> patientDtosList;
 
-        List<EmcareResource> resourcesList = retrieveResourcesByType("PATIENT");
+        List<EmcareResource> resourcesList = retrieveResourcesByType("PATIENT", null, null);
 
         for (EmcareResource emcareResource : resourcesList) {
             Patient patient = parser.parseResource(Patient.class, emcareResource.getText());
@@ -384,7 +400,7 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
     public List<Patient> getAllPatientResources() {
         List<Patient> patientsList = new ArrayList<>();
 
-        List<EmcareResource> resourcesList = retrieveResourcesByType("PATIENT");
+        List<EmcareResource> resourcesList = retrieveResourcesByType("PATIENT", null, null);
 
         for (EmcareResource emcareResource : resourcesList) {
             Patient patient = parser.parseResource(Patient.class, emcareResource.getText());

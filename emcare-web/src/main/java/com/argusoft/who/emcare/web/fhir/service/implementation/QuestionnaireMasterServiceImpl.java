@@ -3,6 +3,7 @@ package com.argusoft.who.emcare.web.fhir.service.implementation;
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.rest.api.MethodOutcome;
+import ca.uhn.fhir.rest.param.DateParam;
 import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.common.dto.PageDto;
 import com.argusoft.who.emcare.web.fhir.dao.QuestionnaireMasterRepository;
@@ -10,6 +11,7 @@ import com.argusoft.who.emcare.web.fhir.dto.QuestionnaireDto;
 import com.argusoft.who.emcare.web.fhir.mapper.EmcareResourceMapper;
 import com.argusoft.who.emcare.web.fhir.model.QuestionnaireMaster;
 import com.argusoft.who.emcare.web.fhir.service.QuestionnaireMasterService;
+import com.argusoft.who.emcare.web.user.service.UserService;
 import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.Meta;
 import org.hl7.fhir.r4.model.Questionnaire;
@@ -30,30 +32,37 @@ public class QuestionnaireMasterServiceImpl implements QuestionnaireMasterServic
 
     private final FhirContext fhirCtx = FhirContext.forR4();
     private final IParser parser = fhirCtx.newJsonParser().setPrettyPrint(false);
-    
+
     @Autowired
     QuestionnaireMasterRepository repository;
-    
+
+    @Autowired
+    UserService userService;
+
     @Override
     public QuestionnaireMaster saveResource(QuestionnaireMaster questionnaireMaster) {
         return repository.save(questionnaireMaster);
     }
 
     @Override
-    public List<QuestionnaireMaster> retrieveAllQuestionnaires() {
-        return repository.findAll();
+    public List<QuestionnaireMaster> retrieveAllQuestionnaires(DateParam theDate) {
+        if (theDate == null) {
+            return repository.findAll();
+        } else {
+            return repository.findByModifiedOnGreaterThanOrCreatedOnGreaterThan(theDate.getValue(), theDate.getValue());
+        }
     }
 
     @Override
     public QuestionnaireMaster retrieveQuestionnaireById(Integer id) {
         Optional<QuestionnaireMaster> qm = repository.findById(id);
-        if(qm.isPresent()){
+        if (qm.isPresent()) {
             return qm.get();
         } else {
             return null;
         }
     }
-    
+
     @Override
     public QuestionnaireMaster retrieveQuestionnaireByResourceId(String resourceId) {
         return repository.findByResourceId(resourceId);
@@ -68,18 +77,18 @@ public class QuestionnaireMasterServiceImpl implements QuestionnaireMasterServic
     public PageDto getQuestionnaireDtosPage(Integer pageNo) {
         List<Questionnaire> questionnairesList = new ArrayList<>();
         List<QuestionnaireDto> questionnaireDtosList;
-        
+
         Pageable page = PageRequest.of(pageNo, CommonConstant.PAGE_SIZE);
         Integer totalCount = repository.findAll().size();
         List<QuestionnaireMaster> questionnaireMasters = repository.findAll(page).getContent();
-        
-        for(QuestionnaireMaster qm : questionnaireMasters) {
+
+        for (QuestionnaireMaster qm : questionnaireMasters) {
             Questionnaire q = parser.parseResource(Questionnaire.class, qm.getText());
             questionnairesList.add(q);
         }
-        
+
         questionnaireDtosList = EmcareResourceMapper.questionnaireEntitiesToDtoMapper(questionnairesList);
-        
+
         PageDto pageDto = new PageDto();
         pageDto.setList(questionnaireDtosList);
         pageDto.setTotalCount(totalCount.longValue());

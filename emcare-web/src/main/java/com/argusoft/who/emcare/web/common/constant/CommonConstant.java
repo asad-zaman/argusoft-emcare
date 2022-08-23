@@ -49,6 +49,7 @@ public class CommonConstant {
     public static final String SETTING_TYPE_REGISTRATION_EMAIL_AS_USERNAME = "REGISTRATION_EMAIL_AS_USERNAME";
     public static final String SETTING_TYPE_WELCOME_EMAIL = "WELCOME_EMAIL";
     public static final String SETTING_TYPE_SEND_CONFIRMATION_EMAIL = "SEND_CONFIRMATION_EMAIL";
+    public static final String RESOURCE_LAST_UPDATED_AT = "_lastUpdated";
 
 
 }
