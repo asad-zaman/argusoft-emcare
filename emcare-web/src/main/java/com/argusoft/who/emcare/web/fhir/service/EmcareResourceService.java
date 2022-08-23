@@ -4,6 +4,7 @@ import ca.uhn.fhir.rest.param.DateParam;
 import com.argusoft.who.emcare.web.common.dto.PageDto;
 import com.argusoft.who.emcare.web.fhir.dto.PatientDto;
 import com.argusoft.who.emcare.web.fhir.model.EmcareResource;
+import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Resource;
 
@@ -19,7 +20,7 @@ public interface EmcareResourceService {
 
     public PageDto getPatientsPage(Integer pageNo, String searchString);
 
-    public List<EmcareResource> retrieveResourcesByType(String type, DateParam theDate);
+    public List<EmcareResource> retrieveResourcesByType(String type, DateParam theDate, IdType theId);
 
     public EmcareResource findByResourceId(String resourceId);
 

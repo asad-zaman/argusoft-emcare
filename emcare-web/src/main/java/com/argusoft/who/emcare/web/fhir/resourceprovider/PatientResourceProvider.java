@@ -167,10 +167,11 @@ public class PatientResourceProvider implements IResourceProvider {
      * Reference for param: https://hapifhir.io/hapi-fhir/docs/server_plain/rest_operations_search.html#combining-multiple-parameters
      */
     @Search()
-    public List<Patient> getAllPatients(@OptionalParam(name = CommonConstant.RESOURCE_LAST_UPDATED_AT) DateParam theDate) {
+    public List<Patient> getAllPatients(
+            @OptionalParam(name = CommonConstant.RESOURCE_LAST_UPDATED_AT) DateParam theDate,
+            @OptionalParam(name = Claim.SP_RES_ID) IdType theId) {
         List<Patient> patientsList = new ArrayList<>();
-
-        List<EmcareResource> resourcesList = emcareResourceService.retrieveResourcesByType("PATIENT", theDate);
+        List<EmcareResource> resourcesList = emcareResourceService.retrieveResourcesByType("PATIENT", theDate,theId);
         for (EmcareResource emcareResource : resourcesList) {
             Patient patient = parser.parseResource(Patient.class, emcareResource.getText());
             patientsList.add(patient);
