@@ -41,10 +41,12 @@
           <div class="mb-3">
             <label class="form-label">{{'Organization' | translate}}</label>
             <p-dropdown (click)="checkOrgAsFacility(f.isOrganizationAsFacility.value)" formControlName="organization"
-              placeholder="Select a organization" [options]="this.orgArr" optionLabel="name"
+              placeholder="Select an organization"
+              [ngStyle]="{'border': submitted && this.facilityForm.controls.organization.value == '' ? '1px solid red' : ''}"
+              [options]="this.orgArr" optionLabel="name"
               [ngClass]="{ 'is-invalid': submitted && f.organization.errors }">
             </p-dropdown>
-            <div *ngIf="submitted && f.organization.errors" class="invalid-feedback">
+            <div *ngIf="submitted && this.facilityForm.controls.organization.value == ''" style="color: #dc3545">
               <div class="cst-error-style" *ngIf="f.organization.errors.required">
                 *{{'Organization is required' | translate}}</div>
             </div>
@@ -70,10 +72,11 @@
         <div class="col-12 col-sm-4">
           <div class="mb-3">
             <label class="form-label">{{'Status' | translate}}</label>
-            <p-dropdown formControlName="status" [options]="statusArr" optionLabel="name"
-              [ngClass]="{ 'is-invalid': submitted && f.status.errors }">
+            <p-dropdown formControlName="status" [options]="statusArr" placeholder="Select a status"
+              [ngStyle]="{'border': submitted && this.facilityForm.controls.status.value == '' ? '1px solid red' : ''}"
+              optionLabel="name" [ngClass]="{ 'is-invalid': submitted && f.status.errors }">
             </p-dropdown>
-            <div *ngIf="submitted && f.status.errors" class="invalid-feedback">
+            <div *ngIf="submitted && this.facilityForm.controls.status.value == ''" style="color: #dc3545">
               <div class="cst-error-style" *ngIf="f.status.errors.required">
                 *{{'Status is required' | translate}}</div>
             </div>

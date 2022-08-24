@@ -70,15 +70,12 @@
             <div class="col-12 col-sm-12">
               <div class="mb-3">
                 <label class="form-label">{{'Role' | translate}}</label>
-                <select formControlName="role" [ngClass]="{ 'is-invalid': submitted && f.role.errors }"
-                  class="form-control custom-input" id="role">
-                  <ng-container *ngFor="let role of roles">
-                    <option value="{{role.name}}">{{role.name}}</option>
-                  </ng-container>
-                </select>
-                <div *ngIf="submitted && f.role.errors" class="invalid-feedback">
-                  <div class="cst-error-style" *ngIf="f.role.errors.required">
-                    {{'Role Required Message' | translate}}</div>
+                <p-dropdown
+                  [ngStyle]="{'border': submitted && this.userForm.controls.role.value == '' ? '1px solid red' : ''}"
+                  [options]="roles" placeholder="Select a role" formControlName="role" optionLabel="name">
+                </p-dropdown>
+                <div *ngIf="submitted && this.userForm.controls.role.value == ''" style="color: #dc3545">
+                  <div *ngIf="f.role.errors.required">Role is required</div>
                 </div>
               </div>
             </div>

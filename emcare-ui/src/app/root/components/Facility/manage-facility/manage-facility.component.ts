@@ -151,7 +151,7 @@ export class ManageFacilityComponent implements OnInit {
       name: ['', []],
       organization: ['', [Validators.required]],
       addressStreet: ['', [Validators.required]],
-      status: [this.statusArr[0], [Validators.required]],
+      status: ['', [Validators.required]],
       telecom: ['', [Validators.required]],
       location: ['', [Validators.required]],
       latitude: ['', [Validators.required]],
