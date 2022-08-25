@@ -5,6 +5,7 @@
     android:id="@+id/rootLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/fragmentBackground"
     app:layoutDescription="@xml/fragment_home_scene"
     tools:context=".ui.home.HomeFragment">
 
@@ -39,7 +40,7 @@
                 android:id="@+id/tabLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/white"
+                android:background="@color/fragmentBackground"
                 app:tabTextAppearance="@style/TextAppearance.Material3.LabelLarge"
                 app:tabIconTint="@color/tab_color_selector"
                 app:tabIndicatorColor="@color/buttonColor"

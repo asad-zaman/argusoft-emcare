@@ -4,7 +4,7 @@
     android:id="@+id/progressLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_top_curved_white">
+    android:background="@color/fragmentBackground">
 
 
     <com.google.android.material.button.MaterialButton
@@ -16,18 +16,18 @@
         android:textColor="@color/buttonColor"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/_16sdp"
+        android:layout_marginHorizontal="@dimen/_24sdp"
         android:layout_marginVertical="@dimen/_12sdp"
         android:text="@string/button_add_new_patient"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefreshLayout"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="@dimen/_8sdp"
-        app:layout_constraintStart_toStartOf="@id/addPatientButton"
-        app:layout_constraintEnd_toEndOf="@id/addPatientButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/addPatientButton">
 

@@ -36,6 +36,7 @@ class SidepaneAdapter(
         }
         fun bind(obj: SidepaneItem) = with(obj) {
             binding.iconImageView.setImageResource(iconId!!)
+            binding.descriptionTextView.text = description
         }
     }
 }

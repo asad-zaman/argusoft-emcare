@@ -64,21 +64,22 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/sidepaneConstraintLayout"
             android:layout_width="wrap_content"
-            android:paddingHorizontal="@dimen/_16sdp"
-            android:layout_marginTop="@dimen/_80sdp"
-            android:layout_marginBottom="@dimen/_36sdp"
-            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_43sdp"
+            android:layout_height="0dp"
             app:layout_constraintStart_toStartOf="parent"
-            android:background="@color/white"
+            android:background="@drawable/bg_right_curved_white"
             android:translationZ="@dimen/_12sdp"
             android:visibility="gone"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
             <androidx.recyclerview.widget.RecyclerView
                 android:layout_marginTop="@dimen/_24sdp"
                 android:layout_marginBottom="@dimen/_12sdp"
+                android:layout_marginHorizontal="@dimen/_12sdp"
                 android:id="@+id/sidepaneRecyclerView"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:nestedScrollingEnabled="false"
@@ -90,11 +91,11 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/nav_view"
-        android:layout_width="@dimen/_175sdp"
+        android:layout_width="@dimen/_150sdp"
         android:layout_height="@dimen/_120sdp"
         android:layout_gravity="end"
-        app:drawerLayoutCornerSize="@dimen/_16sdp"
-        android:layout_marginTop="@dimen/_42sdp"
+        app:drawerLayoutCornerSize="@dimen/_5sdp"
+        android:layout_marginTop="@dimen/_45sdp"
         app:itemTextColor="@color/textColorBlack"
         android:fitsSystemWindows="true"
         app:itemIconTint="@color/textColorBlack"

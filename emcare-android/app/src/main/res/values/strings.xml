@@ -58,6 +58,7 @@
     <string name="none">none</string>
     <string name="description_status">Status</string>
     <string name="description_arrow">Arrow</string>
+    <string name="consultation_icon">Consultation Icon</string>
     <string name="open">Open</string>
     <string name="close">Close</string>
     <string name="sync_menu">Sync</string>
@@ -72,6 +73,7 @@
     <string name="label_open_camera">Open Camera</string>
     <string name="emergency_button">EMERGENCY</string>
     <string name="dob_label">DOB :</string>
+    <string name="last_consultation_date_label">Last Consultation Date:</string>
     <string name="consultation_date_label">Consultation Date :</string>
 
 
@@ -128,8 +130,8 @@
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
-    <string name="patient_profile">PATIENT\nPROFILE</string>
-    <string name="new_consultation">NEW\nCONSULTATION</string>
+    <string name="patient_profile">PATIENT PROFILE</string>
+    <string name="new_consultation">NEW CONSULTATION</string>
     <string name="active_consultations">ACTIVE CONSULTATIONS</string>
     <string name="previous_consultations">PREVIOUS CONSULTATIONS</string>
     <string name="patient_list">Patients</string>

@@ -32,7 +32,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var navHostFragment: NavHostFragment
-    private val signUpViewModel: SignUpViewModel by viewModels()
+//    private val signUpViewModel: SignUpViewModel by viewModels()
     private val settingsViewModel: SettingsViewModel by viewModels()
     private lateinit var sidepaneAdapter: SidepaneAdapter
 
@@ -76,14 +76,14 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
         binding.sidepaneRecyclerView.adapter = sidepaneAdapter
         sidepaneAdapter.clearAllItems()
         sidepaneAdapter.addAll(listOf(
-            SidepaneItem(R.drawable.registration_icon),
-            SidepaneItem(R.drawable.danger_sign_icon),
-            SidepaneItem(R.drawable.measurements_icon),
-            SidepaneItem(R.drawable.symptoms_icon),
-            SidepaneItem(R.drawable.sign_icon),
-            SidepaneItem(R.drawable.health_prevention_icon),
-            SidepaneItem(R.drawable.tests_icon),
-            SidepaneItem(R.drawable.treatment_icon),
+            SidepaneItem(R.drawable.registration_icon, "Registration"),
+            SidepaneItem(R.drawable.danger_sign_icon, "Consultation"),
+            SidepaneItem(R.drawable.measurements_icon, "Measurements"),
+            SidepaneItem(R.drawable.symptoms_icon,"Symptoms"),
+            SidepaneItem(R.drawable.health_prevention_icon,"Health\nPreventions"),
+            SidepaneItem(R.drawable.sign_icon,"Signs"),
+            SidepaneItem(R.drawable.tests_icon,"Tests"),
+            SidepaneItem(R.drawable.treatment_icon,"Treatments"),
             ))
     }
 

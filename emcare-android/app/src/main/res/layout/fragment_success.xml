@@ -31,7 +31,7 @@
         android:id="@+id/nestedScrollView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="@drawable/bg_top_curved_white"
+        android:background="@drawable/bg_right_curved_white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/headerLayout">
 

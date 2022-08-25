@@ -4,15 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/_8sdp"
-    android:layout_marginHorizontal="@dimen/_12sdp"
-    app:cardCornerRadius="@dimen/_12sdp"
-    app:cardBackgroundColor="@color/colorAccent1"
+    app:cardBackgroundColor="@color/white"
+    style="@style/Widget.Material3.CardView.Elevated"
     android:padding="@dimen/_2sdp">
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingStart="@dimen/_4sdp">
+        android:paddingHorizontal="@dimen/_8sdp"
+        android:paddingVertical="@dimen/_8sdp">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/stethoscopeImageView"

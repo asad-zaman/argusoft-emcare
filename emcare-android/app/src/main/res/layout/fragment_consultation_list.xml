@@ -4,7 +4,7 @@
     android:id="@+id/progressLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_top_curved_white">
+    android:background="@color/fragmentBackground">
 
     <androidx.appcompat.widget.AppCompatSpinner
         android:spinnerMode="dropdown"
