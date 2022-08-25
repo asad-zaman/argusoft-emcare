@@ -48,6 +48,7 @@
     <color name="textColorBlack">#4E4E4E</color>
     <color name="textColorBlack80">#4E4E4E</color>
     <color name="textColorGrey">#6D6E72</color>
+    <color name="textColorDarkGrey">#57686F</color>
     <color name="buttonColor">#E4203B</color>
     <color name="textColorLightBlue">#1385D7</color>
     <color name="colorLightGrey">#FFCCCCCC</color>

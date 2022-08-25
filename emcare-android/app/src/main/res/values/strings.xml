@@ -136,6 +136,7 @@
     <string name="previous_consultations">PREVIOUS CONSULTATIONS</string>
     <string name="patient_list">Patients</string>
     <string name="consultation_list">Consultations</string>
+    <string name="reason_for_consultation"><u>REASON FOR CONSULTATION</u></string>
     <string name="healthcare_worker">Health Care Worker</string>
     <string name="facility_name">Facility Name</string>
 

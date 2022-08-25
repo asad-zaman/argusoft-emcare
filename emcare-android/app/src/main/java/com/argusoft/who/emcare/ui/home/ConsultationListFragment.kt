@@ -30,7 +30,7 @@ class ConsultationListFragment: BaseFragment<FragmentConsultationListBinding>(),
         //Reasons for consultations Adapter
         val reasonsAdapter: ArrayAdapter<String> = ArrayAdapter(context!!, R.layout.spinner_list_item,
             listOf("Reason for Consultation", "Sick Child", "Well Child", "Immunizations"))
-        binding.consultationSpinner.adapter = reasonsAdapter
+//        binding.consultationSpinner.adapter = reasonsAdapter
     }
 
     override fun initListener() {

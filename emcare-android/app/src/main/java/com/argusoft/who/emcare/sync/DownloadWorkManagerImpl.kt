@@ -29,10 +29,17 @@ import org.hl7.fhir.r4.model.ResourceType
 
 class DownloadWorkManagerImpl : DownloadWorkManager {
 //  private val urls = LinkedList(listOf("ActivityDefinition", "CodeSystem", "Library", "OperationDefinition", "PlanDefinition", "Patient", "Questionnaire", "StructureDefinition", "StructureMap", "ValueSet"))
+  private val resourceTypeList = ResourceType.values().map { it.name }
   private val urls = LinkedList(listOf("Patient", "Questionnaire", "StructureDefinition", "StructureMap", "ValueSet"))
 
   override suspend fun getNextRequestUrl(context: SyncDownloadContext): String? {
     var url = urls.poll() ?: return null
+
+    val resourceTypeToDownload =
+      ResourceType.fromCode(url.findAnyOf(resourceTypeList, ignoreCase = true)!!.second)
+    context.getLatestTimestampFor(resourceTypeToDownload)?.let {
+      url = affixLastUpdatedTimestamp(url!!, it)
+    }
     return url
   }
 
@@ -72,5 +79,35 @@ class DownloadWorkManagerImpl : DownloadWorkManager {
       bundleCollection = response.entry.map { it.resource }
     }
     return bundleCollection
+  }
+
+  /**
+   * Affixes the last updated timestamp to the request URL.
+   *
+   * If the request URL includes the `$everything` parameter, the last updated timestamp will be
+   * attached using the `_since` parameter. Otherwise, the last updated timestamp will be attached
+   * using the `_lastUpdated` parameter.
+   */
+  private fun affixLastUpdatedTimestamp(url: String, lastUpdated: String): String {
+    var downloadUrl = url
+
+    // Affix lastUpdate to a $everything query using _since as per:
+    // https://hl7.org/fhir/operation-patient-everything.html
+//    if (downloadUrl.contains("\$everything")) {
+//      downloadUrl = "$downloadUrl?_since=$lastUpdated"
+//    }
+
+    // Affix lastUpdate to non-$everything queries as per:
+    // https://hl7.org/fhir/operation-patient-everything.html
+    if (!downloadUrl.contains("\$everything")) {
+      downloadUrl = "$downloadUrl?_lastUpdated=gt$lastUpdated"
+    }
+
+    // Do not modify any URL set by a server that specifies the token of the page to return.
+//    if (downloadUrl.contains("&page_token")) {
+//      downloadUrl = url
+//    }
+
+    return downloadUrl
   }
 }
