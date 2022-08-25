@@ -169,7 +169,7 @@ export class ManageUserComponent implements OnInit {
           "lastName": this.userForm.get('lastName').value,
           "email": this.userForm.get('email').value,
           "password": this.userForm.get('password').value,
-          "roleName": this.userForm.get('role').value,
+          "roleName": this.userForm.get('role').value ? this.userForm.get('role').value.name : '',
           "regRequestFrom": "web",
           "userName": this.userForm.get('username').value,
           "facilityIds": this.getFacilityIdFromArr(this.userForm.get('facility').value)

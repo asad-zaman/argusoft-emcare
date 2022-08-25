@@ -37,10 +37,10 @@ export class SignupComponent implements OnInit {
       firstname: ['', [Validators.required, Validators.pattern('^[a-zA-z]*')]],
       lastname: ['', [Validators.required, Validators.pattern('^[a-zA-z]*')]],
       username: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-]+$')]],
-      password: ['', Validators.required],
-      confirmPassword: ['', Validators.required],
-      location: ['', Validators.required],
-      role: ['', Validators.required]
+      password: ['', [Validators.required]],
+      confirmPassword: ['', [Validators.required]],
+      location: ['', [Validators.required]],
+      role: ['', [Validators.required]]
     }, {
       validator: MustMatch('password', 'confirmPassword')
     });
@@ -69,29 +69,24 @@ export class SignupComponent implements OnInit {
   }
 
   userSignup() {
-    const facilityIdArr = this.signupForm.value.location.map(l => l.id);
     this.submitted = true;
     // stop here if form is invalid
-    if (this.signupForm.invalid || !!this.error) {
-      return;
+    if (this.signupForm.valid) {
+      const facilityIdArr = this.signupForm.value.location.map(l => l.id);
+      this.authService.signup(this.signupForm.value.firstname, this.signupForm.value.lastname,
+        this.signupForm.value.username, this.signupForm.value.password,
+        facilityIdArr, this.signupForm.value.role.name
+      ).pipe(first()).subscribe(_data => {
+        this.router.navigate(["/login"]);
+        this.toasterService.showToast('success', 'User added successfully!', 'EMCARE');
+      }, error => {
+        if (error.status == 400) {
+          this.error = error['error']['errorMessage'];
+        }
+        this.loading = false;
+        this.toasterService.showToast('error', 'Email already registered!', 'EMCARE');
+      });
     }
-    this.authService.signup(this.signupForm.value.firstname, this.signupForm.value.lastname,
-      this.signupForm.value.username, this.signupForm.value.password,
-      facilityIdArr, this.signupForm.value.role
-    )
-      .pipe(first())
-      .subscribe(
-        _data => {
-          this.router.navigate(["/login"]);
-          this.toasterService.showToast('success', 'User added successfully!', 'EMCARE');
-        },
-        error => {
-          if (error.status == 400) {
-            this.error = error['error']['errorMessage'];
-          }
-          this.loading = false;
-          this.toasterService.showToast('error', 'Email already registered!', 'EMCARE');
-        });
   }
 
   navigateToLogin() {
