@@ -64,16 +64,21 @@ class EmCareApplication : Application(), Configuration.Provider, DataCaptureConf
             )
         }
 
-        if(valueSets.isEmpty()) {
+        if (valueSets.isEmpty()) {
             return listOf()
         } else {
             val valueSet = valueSets.get(0)
             val codingList = mutableListOf<Coding>()
-            valueSet.compose.include.forEach {
-                    includeObj ->
+            valueSet.compose.include.forEach { includeObj ->
                 run {
                     includeObj.concept.forEach { conceptObj ->
-                        codingList.add(Coding(includeObj.system, conceptObj.code, conceptObj.display))
+                        codingList.add(
+                            Coding(
+                                includeObj.system,
+                                conceptObj.code,
+                                conceptObj.display
+                            )
+                        )
                     }
 
                 }

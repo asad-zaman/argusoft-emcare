@@ -8,7 +8,7 @@
     android:background="@color/fragmentBackground">
     <include
         android:id="@+id/headerLayout"
-        layout="@layout/layout_header_with_menu"
+        layout="@layout/layout_header"
         app:layout_constraintTop_toTopOf="parent" />
     <androidx.core.widget.NestedScrollView
         app:layout_constraintStart_toStartOf="parent"

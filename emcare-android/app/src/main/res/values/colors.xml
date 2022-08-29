@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
     <color name="horizontalBackground">#6CFAFAFA</color>
-    <color name="colorPrimary">#292929</color>
+    <color name="colorPrimary">#008DC9</color>
     <color name="colorPrimaryDark">#4D4D4D</color>
-    <color name="colorAccent">#E2203B</color>
+    <color name="colorAccent">#008DC9</color>
     <color name="colorAccent1">#E3E8EE</color>
     <color name="colorAccent2">#707071</color>
     <color name="emergencyBackgroundTint">#4A494A</color>
@@ -17,6 +17,7 @@
     <color name="questionnaireErrorTextColor">#E4203B</color>
     <color name="questionnaireRadioButtonStroke">#A6A6A6</color>
     <color name="questionnaireCheckboxSelectedColor">@color/colorPrimary</color>
+    <color name="buttonColor">#34A2DD</color>
 
     <!--SDC Beta 04-->
     <color name="white">#FFFFFF</color>
@@ -49,7 +50,6 @@
     <color name="textColorBlack80">#4E4E4E</color>
     <color name="textColorGrey">#6D6E72</color>
     <color name="textColorDarkGrey">#57686F</color>
-    <color name="buttonColor">#E4203B</color>
     <color name="textColorLightBlue">#1385D7</color>
     <color name="colorLightGrey">#FFCCCCCC</color>
 </resources>
