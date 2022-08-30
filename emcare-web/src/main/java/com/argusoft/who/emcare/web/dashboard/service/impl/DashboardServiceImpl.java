@@ -54,6 +54,7 @@ public class DashboardServiceImpl implements DashboardService {
         }
         listMap.put("barChart", map);
         listMap.put("pieChart", pieD);
+        listMap.put("mapView", locationResourceService.getAllFacilityMapDto());
         return ResponseEntity.ok().body(listMap);
     }
 }

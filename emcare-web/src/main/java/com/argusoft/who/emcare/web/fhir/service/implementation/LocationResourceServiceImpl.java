@@ -9,6 +9,7 @@ import com.argusoft.who.emcare.web.common.dto.PageDto;
 import com.argusoft.who.emcare.web.fhir.dao.LocationResourceRepository;
 import com.argusoft.who.emcare.web.fhir.dao.OrganizationResourceRepository;
 import com.argusoft.who.emcare.web.fhir.dto.FacilityDto;
+import com.argusoft.who.emcare.web.fhir.dto.FacilityMapDto;
 import com.argusoft.who.emcare.web.fhir.mapper.EmcareResourceMapper;
 import com.argusoft.who.emcare.web.fhir.model.LocationResource;
 import com.argusoft.who.emcare.web.fhir.service.LocationResourceService;
@@ -191,7 +192,7 @@ public class LocationResourceServiceImpl implements LocationResourceService {
     @Override
     public FacilityDto getFacilityDto(String id) {
         LocationResource locationResource = locationResourceRepository.findByResourceId(id);
-        if(locationResource == null){
+        if (locationResource == null) {
             return null;
         }
         Location location = getByResourceId(id);
@@ -208,5 +209,16 @@ public class LocationResourceServiceImpl implements LocationResourceService {
         }
 
         return facilityDtos.stream().filter(f -> "Active".equals(f.getStatus())).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<FacilityMapDto> getAllFacilityMapDto() {
+        List<FacilityMapDto> facilityDtos = new ArrayList<>();
+        List<LocationResource> locationResources = locationResourceRepository.findAll();
+        for (LocationResource locationResource : locationResources) {
+            Location location = parser.parseResource(Location.class, locationResource.getText());
+            facilityDtos.add(EmcareResourceMapper.getFacilityMapDto(location, locationResource));
+        }
+        return facilityDtos;
     }
 }
