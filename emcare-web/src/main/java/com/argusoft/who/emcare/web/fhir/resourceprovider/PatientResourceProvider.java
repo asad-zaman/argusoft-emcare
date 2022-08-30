@@ -45,7 +45,6 @@ public class PatientResourceProvider implements IResourceProvider {
      * exists.
      */
     @Read()
-
     public Patient getResourceById(@IdParam IdType theId) {
 
         EmcareResource emcareResource = emcareResourceService.findByResourceId(theId.getIdPart());

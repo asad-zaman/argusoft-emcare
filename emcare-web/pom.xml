@@ -84,6 +84,15 @@
             <artifactId>hapi-fhir-server</artifactId>
             <version>5.7.0</version>
         </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.opencds.cqf.ruler/cqf-ruler-cql -->
+        <dependency>
+            <groupId>org.opencds.cqf.ruler</groupId>
+            <artifactId>cqf-ruler-cql</artifactId>
+            <version>0.5.0</version>
+        </dependency>
+
+
         <!--**********************-->
 
         <!-- KEY CLOAK DEPENDANCIES  -->

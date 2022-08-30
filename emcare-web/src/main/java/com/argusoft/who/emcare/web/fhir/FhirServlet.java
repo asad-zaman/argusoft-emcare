@@ -50,13 +50,13 @@ public class FhirServlet extends RestfulServer {
     private LibraryResourceProvider libraryResourceProvider;
 
     @Autowired
-    OperationDefinitionResourceProvider operationDefinitionResourceProvider;
+    private OperationDefinitionResourceProvider operationDefinitionResourceProvider;
 
     @Autowired
-    MedicationResourceProvider medicationResourceProvider;
+    private MedicationResourceProvider medicationResourceProvider;
 
     @Autowired
-    ActivityDefinitionResourceProvider activityDefinitionResourceProvider;
+    private ActivityDefinitionResourceProvider activityDefinitionResourceProvider;
 
     @Override
     protected void initialize() throws ServletException {
