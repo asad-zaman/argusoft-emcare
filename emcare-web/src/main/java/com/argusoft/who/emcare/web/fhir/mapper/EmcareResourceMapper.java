@@ -207,4 +207,20 @@ public class EmcareResourceMapper {
         dto.setStatus(operationDefinition.getStatus().getDisplay());
         return dto;
     }
+
+    public static FacilityMapDto getFacilityMapDto(Location location, LocationResource locationResource) {
+        FacilityMapDto dto = new FacilityMapDto();
+        dto.setFacilityName(location.getName());
+        dto.setFacilityId(location.getIdElement().getIdPart());
+        dto.setAddress(location.getAddress().getLine().get(0).getValue());
+        dto.setOrganizationId(location.getManagingOrganization().getId());
+        dto.setOrganizationName(location.getManagingOrganization().getDisplay());
+        dto.setLocationName(locationResource.getLocationName());
+        dto.setLocationId(locationResource.getLocationId());
+        dto.setStatus(location.getStatus().getDisplay());
+        dto.setLatitude(location.getPosition().getLatitude().toString());
+        dto.setLongitude(location.getPosition().getLongitude().toString());
+        dto.setStatus(location.getStatus().getDisplay());
+        return dto;
+    }
 }
