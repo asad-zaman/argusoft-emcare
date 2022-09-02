@@ -27,7 +27,7 @@
         android:layout_marginEnd="@dimen/_10sdp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toStartOf="@id/reasonForConsultationButton"
-        android:textColor="@color/textColorDarkGrey"
+        android:textColor="@color/colorPurple"
         android:text="@string/reason_for_consultation"/>
 
     <androidx.appcompat.widget.AppCompatButton
