@@ -33,7 +33,19 @@
             </div>
           </div>
         </div>
-        <div class="col-12 col-sm-12">
+        <div class="col-12 col-sm-6">
+          <div class="mb-3">
+            <label class="form-label">{{'Email' | translate}}</label>
+            <input class="form-control custom-input" formControlName="email" type="text" id="email"
+              placeholder="{{'Email Placeholder' | translate}}"
+              [ngClass]="{ 'is-invalid': submitted && f.email.errors }" disabled="true">
+            <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
+              <div class="cst-error-style" *ngIf="f.email.errors.required">
+                {{'Email Required Message' | translate}}</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-sm-6">
           <div class="mb-3">
             <label class="form-label">{{'Language' | translate}}</label>
             <p-dropdown [filter]="true" filterBy="name" [options]="lanArr" formControlName="language"

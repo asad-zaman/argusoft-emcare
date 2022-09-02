@@ -23,7 +23,8 @@ export class OrganizationListComponent implements OnInit {
   currentPage = 0;
   totalCount = 0;
   tableSize = 10;
-  
+  returnRoute: string;
+
   constructor(
     private readonly router: Router,
     private readonly fhirService: FhirService,
@@ -36,6 +37,7 @@ export class OrganizationListComponent implements OnInit {
   }
 
   prerequisite() {
+    this.returnRoute = window.history.state.returnRoute
     this.checkFeatures();
     this.getOrganizationByPageIndexAndSearch(this.currentPage);
   }
@@ -106,5 +108,10 @@ export class OrganizationListComponent implements OnInit {
       tr = res;
     });
     return tr;
+  }
+
+  redirectToFacility() {
+    this.returnRoute = this.returnRoute ? this.returnRoute : '/addFacility';
+    this.router.navigate([this.returnRoute]);
   }
 }

@@ -2,6 +2,7 @@ import { Component, OnInit, Output, EventEmitter, Input, SimpleChanges } from '@
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Observable, Subscription } from 'rxjs';
 import { LocationService } from 'src/app/root/services/location.service';
+import { FhirService } from 'src/app/shared';
 
 @Component({
   selector: 'app-location-dropdown',
@@ -18,6 +19,7 @@ export class LocationDropdownComponent implements OnInit {
   otherArr = [];
   dropdownActiveArr = [true, false, false, false, false];
   locationArr = [];
+  facilityArr = [];
 
   @Input() isMultiplePage?;
   @Input() idArr?: Array<any>;
@@ -28,7 +30,8 @@ export class LocationDropdownComponent implements OnInit {
 
   constructor(
     private readonly formBuilder: FormBuilder,
-    private readonly locationService: LocationService
+    private readonly locationService: LocationService,
+    private readonly fhirService: FhirService
   ) { }
 
   ngOnInit(): void {
@@ -48,6 +51,21 @@ export class LocationDropdownComponent implements OnInit {
   prerequisite() {
     this.initLocationFilterForm();
     this.getAllLocations();
+    this.getFacilities();
+  }
+
+  getFacilities() {
+    this.fhirService.getFacility().subscribe((res: Array<any>) => {
+      if (res) {
+        res.forEach(element => {
+          this.facilityArr.push({
+            id: element.facilityId,
+            name: element.facilityName,
+            organizationName: element.organizationName
+          });
+        });
+      }
+    });
   }
 
   insertDataFromIdArr(arr) {
@@ -88,6 +106,7 @@ export class LocationDropdownComponent implements OnInit {
 
   initLocationFilterForm() {
     this.locationFilterForm = this.formBuilder.group({
+      facility: [''],
       country: [''],
       state: [''],
       city: [''],
@@ -183,6 +202,7 @@ export class LocationDropdownComponent implements OnInit {
 
   getIdFromFormValue(formValue) {
     return {
+      facility: formValue.facility ? formValue.facility : '',  
       country: formValue.country ? formValue.country.id : '',
       state: formValue.state ? formValue.state.id : '',
       city: formValue.city ? formValue.city.id : '',

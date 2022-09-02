@@ -381,3 +381,20 @@ input[type="number"]::-webkit-outer-spin-button {
   appearance: none;
   margin: 0;
 }
+
+.sideBarBtn {
+  margin-left: 55px;
+  color: white;
+  font-size: 30px;
+  opacity: 0;
+}
+
+@media screen and (max-width: 992px) {
+  .main-wrapper {
+    padding-left: 25px;
+  }
+
+  .sideBarBtn {
+    opacity: 1 !important;
+  }
+}

@@ -1,5 +1,13 @@
 <form [formGroup]="locationFilterForm" name="locationFilterForm" novalidate>
   <div class="row">
+    <div *ngIf="facilityArr.length > 0" class="col-12 col-sm-12">
+      <div class="mb-3">
+        <label class="form-label">{{'Facility' | translate}}</label>
+        <p-dropdown placeholder="Select" [options]="facilityArr" formControlName="facility" optionLabel="name"
+          dataKey="id" [showClear]="true">
+        </p-dropdown>
+      </div>
+    </div>
     <div *ngIf="dropdownActiveArr[0] == true && countryArr.length > 0" class="col-12 col-sm-12">
       <div class="mb-3">
         <label class="form-label">{{'Country' | translate}}</label>
@@ -11,16 +19,16 @@
     <div *ngIf="dropdownActiveArr[1] == true && stateArr.length > 0" class="col-12 col-sm-12">
       <div class="mb-3">
         <label class="form-label">{{'State' | translate}}</label>
-        <p-dropdown placeholder="Select" (onChange)="onClicked($event, 2)" [options]="stateArr"
-          formControlName="state" optionLabel="name" dataKey="id">
+        <p-dropdown placeholder="Select" (onChange)="onClicked($event, 2)" [options]="stateArr" formControlName="state"
+          optionLabel="name" dataKey="id">
         </p-dropdown>
       </div>
     </div>
     <div *ngIf="dropdownActiveArr[2] == true && cityArr.length > 0" class="col-12 col-sm-12">
       <div class="mb-3">
         <label class="form-label">{{'City' | translate}}</label>
-        <p-dropdown placeholder="Select" (onChange)="onClicked($event, 3)" [options]="cityArr"
-          formControlName="city" optionLabel="name" dataKey="id">
+        <p-dropdown placeholder="Select" (onChange)="onClicked($event, 3)" [options]="cityArr" formControlName="city"
+          optionLabel="name" dataKey="id">
         </p-dropdown>
       </div>
     </div>
@@ -35,8 +43,8 @@
     <div *ngIf="dropdownActiveArr[4] == true && otherArr.length > 0" class="col-12 col-sm-12">
       <div class="mb-3">
         <label class="form-label">{{'Other' | translate}}</label>
-        <p-dropdown placeholder="Select" (onChange)="onClicked($event, 5)" [options]="otherArr"
-          formControlName="other" optionLabel="name" dataKey="id">
+        <p-dropdown placeholder="Select" (onChange)="onClicked($event, 5)" [options]="otherArr" formControlName="other"
+          optionLabel="name" dataKey="id">
         </p-dropdown>
       </div>
     </div>

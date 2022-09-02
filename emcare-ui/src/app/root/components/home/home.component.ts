@@ -15,6 +15,7 @@ export class HomeComponent implements OnInit {
   isView = true;
   uniqueLocArr = [];
   userFacObj = {};
+  facilityArr = [];
 
   @ViewChild('mapRef', { static: true }) mapElement: ElementRef;
 
@@ -34,7 +35,6 @@ export class HomeComponent implements OnInit {
       this.dashboardData = res;
     });
     this.getChartData();
-    this.loadMap();
   }
 
   checkFeatures() {
@@ -93,9 +93,20 @@ export class HomeComponent implements OnInit {
           count: res['barChart']['counts'],
           names: res['barChart']['names']
         }
+        this.manipulateMapView(res['mapView']);
         this.barChartPopulation();
         this.pieChartBrowser();
+        this.loadMap();
       }
+    });
+  }
+
+  manipulateMapView(data) {
+    data.map(d => {
+      this.facilityArr.push({
+        name: d.facilityName,
+        positions: { lat: Number(d.latitude), lng: Number(d.longitude) }
+      });
     });
   }
 
@@ -133,35 +144,39 @@ export class HomeComponent implements OnInit {
   }
 
   loadMap = () => {
-    const positions = { lat: 33.2232, lng: 43.6793 };
+    let markers = [];
+    const locationArr = this.facilityArr.map(d => d.positions);
+    const centerPosition = this.facilityArr[0]['positions'];
     const map = new window['google'].maps.Map(this.mapElement.nativeElement, {
-      center: positions, zoom: 7
+      center: centerPosition, zoom: 5
     });
 
-    const marker = new window['google'].maps.Marker({
-      position: positions,
-      map: map,
-      title: 'Map!',
-      draggable: true,
-      animation: window['google'].maps.Animation.DROP,
+    this.facilityArr.forEach(data => {
+      const marker = new window['google'].maps.Marker({
+        position: new window['google'].maps.LatLng(data['positions'].lat, data['positions'].lng),
+        map: map,
+        title: 'Map!',
+        draggable: true,
+        animation: window['google'].maps.Animation.DROP
+      });
+      const contentString = '<div id="content">' +
+        '<div id="siteNotice">' +
+        '</div>' +
+        `<h3 id="thirdHeading" class="thirdHeading">${data['name']}</h3>` +
+        '<div id="bodyContent">' +
+        '</div>' +
+        '</div>';
+      const infowindow = new window['google'].maps.InfoWindow({
+        content: contentString
+      });
+      markers.push({ marker: marker, infowindow: infowindow });
     });
 
-    const contentString = '<div id="content">' +
-      '<div id="siteNotice">' +
-      '</div>' +
-      '<h3 id="thirdHeading" class="thirdHeading">Iraq</h3>' +
-      '<div id="bodyContent">' +
-      '<p>Welcome to Iraq</p>' +
-      '</div>' +
-      '</div>';
-
-    const infowindow = new window['google'].maps.InfoWindow({
-      content: contentString
-    });
-
-    marker.addListener('click', function () {
-      infowindow.open(map, marker);
-    });
+    markers.forEach(data => {
+      data.marker.addListener('click', function () {
+        data.infowindow.open(map, data.marker);
+      });
+    })
   }
 
   redirectToRoute(route: string) {

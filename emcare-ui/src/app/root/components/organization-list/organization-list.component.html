@@ -1,6 +1,6 @@
 <div *ngIf="isView" class="main-wrapper">
   <div class="d-flex">
-    <button data-toggle="tooltip" data-placement="bottom" title="Back to Facility List" routerLink="/showFacility"
+    <button data-toggle="tooltip" data-placement="bottom" title="Back to Facility List" (click)="redirectToFacility()"
       class="btn-black btn cst-back-btn ms-3">
       <i class="bi bi-chevron-left" aria-hidden="true"></i>
     </button>

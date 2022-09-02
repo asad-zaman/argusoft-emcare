@@ -6,7 +6,7 @@
           {{'Manage Facility' | translate}}
         </span>
         <div class="d-inline float-right">
-          <button type="button" class="btn btn-blue" routerLink="/showOrganizations">
+          <button type="button" class="btn btn-blue" (click)="redirectToOrganizations()">
             {{'Manage Organization' | translate}}</button>
         </div>
         <hr>
@@ -18,7 +18,7 @@
               <label class="form-label mr-2">{{'Name' | translate}}</label>
               <div class="cst-end">
                 <p-checkbox styleClass="form-label" formControlName="isOrganizationAsFacility"
-                  (onChange)="setFacility($event)" label="Organization as facility" value="true">
+                  (onChange)="setFacility($event)" label="Same as Organization" value="true">
                 </p-checkbox>
               </div>
             </div>
@@ -54,7 +54,7 @@
         </div>
         <div class="col-12 col-sm-4">
           <div class="mb-3 d-grid">
-            <label class="form-label">{{'Location' | translate}}</label>
+            <label class="form-label">{{'Administrative Location' | translate}}</label>
             <div class="d-flex">
               <ng-container *ngIf="f.location.value; else noLocation">
                 <span class="f-16 cursor-pointer" data-bs-toggle="modal"
@@ -93,7 +93,7 @@
             </div>
           </div>
         </div>
-        <div class="col-12 col-sm-3 align-self-center">
+        <div class="col-12 col-sm-4 align-self-center">
           <div class="">
             <div class="">
               <button type="button" class="btn btn-blue" (click)="getLocationCoordinates()">
@@ -101,7 +101,7 @@
             </div>
           </div>
         </div>
-        <div class="col-12 col-sm-3">
+        <div class="col-12 col-sm-4">
           <div class="mb-3">
             <label class="form-label">{{'Latitude' | translate}}</label>
             <input formControlName="latitude" type="number" class="form-control custom-input" id="latitude"
@@ -112,7 +112,7 @@
             </div>
           </div>
         </div>
-        <div class="col-12 col-sm-3">
+        <div class="col-12 col-sm-4">
           <div class="mb-3">
             <label class="form-label">{{'Longitude' | translate}}</label>
             <input formControlName="longitude" type="number" class="form-control custom-input" id="longitude"
@@ -120,17 +120,6 @@
             <div *ngIf="submitted && f.longitude.errors" class="invalid-feedback">
               <div class="cst-error-style" *ngIf="f.longitude.errors.required">
                 *{{'Longitude is required' | translate}}</div>
-            </div>
-          </div>
-        </div>
-        <div class="col-12 col-sm-3">
-          <div class="mb-3">
-            <label class="form-label">{{'Altitude' | translate}}</label>
-            <input formControlName="altitude" type="number" class="form-control custom-input" id="altitude"
-              placeholder="Enter altitude" [ngClass]="{ 'is-invalid': submitted && f.altitude.errors }">
-            <div *ngIf="submitted && f.altitude.errors" class="invalid-feedback">
-              <div class="cst-error-style" *ngIf="f.altitude.errors.required">
-                *{{'Altitude is required' | translate}}</div>
             </div>
           </div>
         </div>

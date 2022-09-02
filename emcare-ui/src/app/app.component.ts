@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit, Renderer2 } from '@angular/core';
+import { ChangeDetectorRef, Component, HostListener, OnInit, Renderer2 } from '@angular/core';
 import { Router, NavigationStart, Event as NavigationEvent } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { HTTPStatus, LaunguageSubjects } from './auth/token-interceptor';
@@ -27,6 +27,8 @@ export class AppComponent implements OnInit {
   currTranslations: any;
   rtlLaunguages = ['ar', 'he', 'ku', 'fa', 'ur'];
   featureArr = [];
+  isSidebarOpen = true;
+  currScreenWidth;
   featureIconObj = {
     'Users': 'bi bi-people nav-link_icon',
     'Locations': 'bi bi-cursor nav-link_icon',
@@ -51,7 +53,15 @@ export class AppComponent implements OnInit {
     private readonly lanSubjects: LaunguageSubjects,
     private readonly renderer: Renderer2,
     private readonly authGuard: AuthGuard
-  ) { }
+  ) {
+    this.getScreenSize();
+  }
+
+  @HostListener('window:resize', ['$event'])
+  getScreenSize(event?) {
+    this.currScreenWidth = window.screen.width;
+    this.applySidebarChange();
+  }
 
   ngOnInit() {
     this.prerequisite();
@@ -235,6 +245,7 @@ export class AppComponent implements OnInit {
     if (isSubmenu) {
       const route = this.authGuard.getFeatureAndRedirectUser(feature)[0];
       this.router.navigate([`${route}`]);
+      this.applySidebarChange();
     } else {
       if (feature.hasOwnProperty('dropdownValue')) {
         this.setFeatureDropdownFalse(feature);
@@ -243,6 +254,7 @@ export class AppComponent implements OnInit {
         this.setFeatureDropdownFalse(feature);
         const route = this.authGuard.getFeatureAndRedirectUser(feature.menuName)[0];
         this.router.navigate([`${route}`]);
+        this.applySidebarChange();
       }
     }
     this.setFeatureSubMenuFalse();
@@ -258,5 +270,17 @@ export class AppComponent implements OnInit {
     }
     const routeArr = this.authGuard.getFeatureAndRedirectUser(featureName);
     return routeArr.includes(this.currentUrl);
+  }
+
+  changeSidebarVar() {
+    this.isSidebarOpen = !this.isSidebarOpen;
+  }
+
+  applySidebarChange() {
+    if (window.screen.width < 992) {
+      this.isSidebarOpen = false;
+    } else {
+      this.isSidebarOpen = true;
+    }
   }
 }
