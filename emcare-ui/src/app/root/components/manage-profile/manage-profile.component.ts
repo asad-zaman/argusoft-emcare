@@ -53,6 +53,7 @@ export class ManageProfileComponent implements OnInit {
     this.currentUserForm = this.formBuilder.group({
       firstName: ['', [Validators.required]],
       lastName: ['', [Validators.required]],
+      email: ['', [Validators.required]],
       language: ['', [Validators.required]]
     });
   }
@@ -64,25 +65,17 @@ export class ManageProfileComponent implements OnInit {
   getLoggedInUserId() {
     this.authenticationService.getLoggedInUser().subscribe(res => {
       if (res) {
+        console.log(res);
         this.userId = res['userId'];
         this.currentUserForm.patchValue({
+          firstName: res['firstName'],
+          lastName: res['lastName'],
+          email: res['email'],
           language: this.getLaunguageObjFromCode(res['language'])
         });
         this.facilityIds = res['facilities'] && res['facilities'].map(f => f.facilityId);
-        this.getLoggedInUserData();
       }
     });
-  }
-
-  getLoggedInUserData() {
-    this.userService.getUserById(this.userId).subscribe(data => {
-      if (data) {
-        this.currentUserForm.patchValue({
-          firstName: data['firstName'],
-          lastName: data['lastName']
-        });
-      }
-    })
   }
 
   get f() {

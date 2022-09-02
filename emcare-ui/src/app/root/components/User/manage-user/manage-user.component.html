@@ -69,6 +69,17 @@
             </div>
             <div class="col-12 col-sm-12">
               <div class="mb-3">
+                <label class="form-label">{{'PhoneNumber' | translate}}</label>
+                <input formControlName="phone" id="phone" placeholder="{{'Phone Placeholder' | translate}}" type="text"
+                  class="form-control custom-input" [ngClass]="{ 'is-invalid': submitted && f.phone.errors }">
+                <div *ngIf="submitted && f.phone.errors" class="invalid-feedback">
+                  <div class="cst-error-style" *ngIf="f.phone.errors.required">
+                    {{'Phone Required Message' | translate}}</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-sm-12">
+              <div class="mb-3">
                 <label class="form-label">{{'Role' | translate}}</label>
                 <p-dropdown
                   [ngStyle]="{'border': submitted && this.userForm.controls.role.value == '' ? '1px solid red' : ''}"
@@ -125,7 +136,7 @@
             </div>
             <div class="col-12">
               <div class="mb-3 customd-div">
-                <label class="form-label f-16">Selected Areas</label>
+                <label class="form-label f-16">Selected Facilities</label>
                 <ul>
                   <ng-container *ngFor="let fac of userForm.get('facility').value">
                     <li>

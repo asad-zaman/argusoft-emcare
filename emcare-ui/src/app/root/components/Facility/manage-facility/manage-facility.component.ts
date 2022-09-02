@@ -125,8 +125,7 @@ export class ManageFacilityComponent implements OnInit {
       telecom: obj.telecom ? obj.telecom[0].value : '',
       location: this.getLocationObjFromName((obj['extension'][0].valueInteger)),
       latitude: obj.position.latitude,
-      longitude: obj.position.longitude,
-      altitude: obj.position.altitude
+      longitude: obj.position.longitude
     });
   }
 
@@ -140,7 +139,6 @@ export class ManageFacilityComponent implements OnInit {
     this.locationService.getAllLocations().subscribe((res: Array<Object>) => {
       if (res) {
         this.locationArr = res;
-        const data = res.find(el => el['parent'] === 0);
         this.checkEditParam();
       }
     })
@@ -156,7 +154,6 @@ export class ManageFacilityComponent implements OnInit {
       location: ['', [Validators.required]],
       latitude: ['', [Validators.required]],
       longitude: ['', [Validators.required]],
-      altitude: ['', [Validators.required]],
       isOrganizationAsFacility: [false]
     });
   }
@@ -209,8 +206,7 @@ export class ManageFacilityComponent implements OnInit {
       },
       "position": {
         "longitude": facilityObj.longitude,
-        "latitude": facilityObj.latitude,
-        "altitude": facilityObj.altitude
+        "latitude": facilityObj.latitude
       },
       "extension": [{
         "url": null,
@@ -256,8 +252,7 @@ export class ManageFacilityComponent implements OnInit {
       navigator.geolocation.getCurrentPosition(position => {
         this.facilityForm.patchValue({
           longitude: position['coords']['longitude'],
-          latitude: position['coords']['latitude'],
-          altitude: position['coords']['altitude'] ? position['coords']['altitude'] : 0
+          latitude: position['coords']['latitude']
         });
       });
     }
@@ -284,5 +279,13 @@ export class ManageFacilityComponent implements OnInit {
     if (org && org.name) {
       this.facilityForm.get('name').setValue(org.name);
     }
+  }
+
+  redirectToOrganizations() {
+    this.router.navigateByUrl('/showOrganizations', {
+      state: {
+        returnRoute: this.editId ? `editFacility/${this.editId}` : '/addFacility'
+      }
+    });
   }
 }

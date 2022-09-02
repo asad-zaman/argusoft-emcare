@@ -110,6 +110,7 @@ export class ManageUserComponent implements OnInit {
       this.userForm = this.formBuilder.group({
         firstName: ['', [Validators.required]],
         lastName: ['', [Validators.required]],
+        phone: ['', [Validators.required]],
         selectedFacility: [''],
         facility: ['', Validators.required]
       });
@@ -119,6 +120,7 @@ export class ManageUserComponent implements OnInit {
         firstName: ['', [Validators.required]],
         lastName: ['', [Validators.required]],
         email: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-]+$')]],
+        phone: ['', [Validators.required]],
         password: ['', Validators.required],
         confirmPassword: ['', Validators.required],
         role: ['', [Validators.required]],
