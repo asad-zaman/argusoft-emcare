@@ -70,22 +70,13 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/_8sdp"
             android:layout_marginTop="@dimen/_12sdp"
-            app:layout_constraintEnd_toStartOf="@id/qrScannerImageView"
+            android:layout_marginEnd="@dimen/_24sdp"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tabCardView"
             app:iconifiedByDefault="false"
             app:queryHint="@string/query_hint_patient_search" />
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/qrScannerImageView"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/_32sdp"
-            android:layout_marginTop="@dimen/_12sdp"
-            android:layout_marginEnd="@dimen/_24sdp"
-            android:gravity="center_vertical"
-            android:src="@drawable/qr_code_icon"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tabCardView" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.viewpager2.widget.ViewPager2

@@ -156,15 +156,11 @@ dependencies {
     //Fhir
     implementation "com.google.android.fhir:engine:0.1.0-beta01"
     implementation "com.google.android.fhir:data-capture:0.1.0-beta04"
+//    implementation "com.google.android.fhir:workflow:0.1.0-alpha01"
 
     //EventBus
     implementation("org.greenrobot:eventbus:3.3.1")
 
-    //QR Scanner- Google MLKIT Barcode scanning
-    implementation 'com.google.mlkit:barcode-scanning:17.0.2'
-    implementation "androidx.camera:camera-camera2:1.0.1"
-    implementation "androidx.camera:camera-lifecycle:1.0.1"
-    implementation "androidx.camera:camera-view:1.0.0-alpha28"
     //Gson Converter
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
 
