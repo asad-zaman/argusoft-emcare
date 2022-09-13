@@ -12,6 +12,7 @@ public class MultiLocationUserListDto {
     private String lastName;
     private String userName;
     private String email;
+    private String phone;
     private Boolean enabled;
     private List<String> realmRoles;
     private List<LocationMasterWithHierarchy> locations;
@@ -87,5 +88,13 @@ public class MultiLocationUserListDto {
 
     public void setFacilities(List<FacilityDto> facilities) {
         this.facilities = facilities;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 }

@@ -13,6 +13,7 @@ public class CommonConstant {
     public static final String ASC = "ASC";
     public static final Integer PAGE_SIZE = 10;
     public static final String LANGUAGE_KEY = "language";
+    public static final String PHONE_KEY = "phone";
     public static final String FRENCH = "fr";
     public static final String HINDI = "hin";
     public static final String ENGLISH = "en";

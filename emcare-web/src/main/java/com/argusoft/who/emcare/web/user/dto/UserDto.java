@@ -15,6 +15,7 @@ public class UserDto {
     private String regRequestFrom;
     private String roleName;
     private String language;
+    private String phone;
     private List<String> facilityIds;
 
 
@@ -88,5 +89,13 @@ public class UserDto {
 
     public void setFacilityIds(List<String> facilityIds) {
         this.facilityIds = facilityIds;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 }

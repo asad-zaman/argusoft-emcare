@@ -303,9 +303,10 @@ public class UserServiceImpl implements UserService {
         kcUser.setEmail(user.getEmail());
         kcUser.setEnabled(Boolean.FALSE);
         kcUser.setEmailVerified(false);
-        Map<String, List<String>> languageAttribute = new HashMap<>();
-        languageAttribute.put(CommonConstant.LANGUAGE_KEY, Arrays.asList(CommonConstant.ENGLISH));
-        kcUser.setAttributes(languageAttribute);
+        Map<String, List<String>> attribute = new HashMap<>();
+        attribute.put(CommonConstant.LANGUAGE_KEY, Arrays.asList(CommonConstant.ENGLISH));
+        attribute.put(CommonConstant.PHONE_KEY, Arrays.asList(user.getPhone()));
+        kcUser.setAttributes(attribute);
 
         try {
             javax.ws.rs.core.Response response = usersResource.create(kcUser);
@@ -358,9 +359,10 @@ public class UserServiceImpl implements UserService {
         kcUser.setEmail(user.getEmail());
         kcUser.setEnabled(true);
         kcUser.setEmailVerified(false);
-        Map<String, List<String>> languageAttribute = new HashMap<>();
-        languageAttribute.put(CommonConstant.LANGUAGE_KEY, Arrays.asList(CommonConstant.ENGLISH));
-        kcUser.setAttributes(languageAttribute);
+        Map<String, List<String>> attribute = new HashMap<>();
+        attribute.put(CommonConstant.LANGUAGE_KEY, Arrays.asList(CommonConstant.ENGLISH));
+        attribute.put(CommonConstant.PHONE_KEY, Arrays.asList(user.getPhone()));
+        kcUser.setAttributes(attribute);
 
         try {
             javax.ws.rs.core.Response response = usersResource.create(kcUser);
@@ -654,9 +656,10 @@ public class UserServiceImpl implements UserService {
             }
         }
 
-        Map<String, List<String>> languageAttribute = new HashMap<>();
-        languageAttribute.put(CommonConstant.LANGUAGE_KEY, Arrays.asList(userDto.getLanguage()));
-        newUser.setAttributes(languageAttribute);
+        Map<String, List<String>> attribute = new HashMap<>();
+        attribute.put(CommonConstant.LANGUAGE_KEY, Arrays.asList(userDto.getLanguage()));
+        attribute.put(CommonConstant.PHONE_KEY, Arrays.asList(userDto.getPhone()));
+        newUser.setAttributes(attribute);
         newUser.setEnabled(newUser.isEnabled());
         userResource.update(newUser);
         return ResponseEntity.status(HttpStatus.OK).body(new Response(CommonConstant.UPDATE_SUCCESS, HttpStatus.OK.value()));
