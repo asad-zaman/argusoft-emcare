@@ -10,6 +10,7 @@ public class UserListDto {
     private String lastName;
     private String userName;
     private String email;
+    private String phone;
     private Boolean enabled;
     private List<String> realmRoles;
     private FacilityDto facilityDto;
@@ -76,5 +77,13 @@ public class UserListDto {
 
     public void setFacilityDto(FacilityDto facilityDto) {
         this.facilityDto = facilityDto;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 }
