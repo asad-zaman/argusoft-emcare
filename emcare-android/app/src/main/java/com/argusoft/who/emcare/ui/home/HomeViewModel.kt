@@ -4,17 +4,25 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import ca.uhn.fhir.context.FhirContext
+import ca.uhn.fhir.rest.gclient.ReferenceClientParam
 import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.data.remote.ApiResponse
 import com.argusoft.who.emcare.ui.common.model.ConsultationItemData
 import com.argusoft.who.emcare.ui.common.model.PatientItem
 import com.argusoft.who.emcare.ui.home.patient.PatientRepository
 import com.argusoft.who.emcare.utils.listener.SingleLiveEvent
+import com.google.android.fhir.FhirEngine
+import com.google.android.fhir.datacapture.common.datatype.asStringValue
+import com.google.android.fhir.datacapture.createQuestionnaireResponseItem
+import com.google.android.fhir.datacapture.mapping.ResourceMapper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import org.hl7.fhir.r4.model.*
+import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
@@ -28,6 +36,9 @@ class HomeViewModel @Inject constructor(
 
     private val _questionnaire = SingleLiveEvent<ApiResponse<Questionnaire>>()
     val questionnaire: LiveData<ApiResponse<Questionnaire>> = _questionnaire
+
+    private val _questionnaireWithQR = SingleLiveEvent<ApiResponse<Pair<String, String>>>()
+    val questionnaireWithQR: LiveData<ApiResponse<Pair<String, String>>> = _questionnaireWithQR
 
     private val _addPatients = MutableLiveData<ApiResponse<Int>>()
     val addPatients: LiveData<ApiResponse<Int>> = _addPatients
@@ -44,10 +55,10 @@ class HomeViewModel @Inject constructor(
 
     fun getConsultations() : ArrayList<ConsultationItemData?>{
         return arrayListOf(
-            ConsultationItemData(patientId="",name="Emma Wright", dateOfBirth="10/10/20", dateOfConsultation = "01/01/22","Consultation", consultationIcon = R.drawable.danger_sign_icon, header = "Consultation", questionnaireName = "EmCare.B10-16.Signs.2m.p" ),
-            ConsultationItemData(patientId="",name="Emily Smith", dateOfBirth="04/05/21 ", dateOfConsultation = "10/09/21","Registration", consultationIcon = R.drawable.registration_icon, header = "Registration", questionnaireName = "emcarea.registration.p.august"),
-            ConsultationItemData(patientId="",name="John Brown", dateOfBirth="02/02/20", dateOfConsultation = "07/06/21","Test", consultationIcon = R.drawable.measurements_icon, header="Test", questionnaireName = "default.layout"),
-            ConsultationItemData(patientId="",name="Mary Clarke", dateOfBirth="10/10/20", dateOfConsultation = "10/10/21","Closed", consultationIcon = R.drawable.closed_consultation_icon_dark, header = "Symptoms", questionnaireName = "emcare.b10-14.symptoms.2m.p"),
+            ConsultationItemData(patientId="",name="Mohammad Faruqi", dateOfBirth="10/10/20", dateOfConsultation = "01/01/22","Consultation", consultationIcon = R.drawable.danger_sign_icon, header = "Consultation", questionnaireName = "EmCare.B10-16.Signs.2m.p" ),
+            ConsultationItemData(patientId="",name="Pinar Toprak", dateOfBirth="04/05/21 ", dateOfConsultation = "10/09/21","Registration", consultationIcon = R.drawable.registration_icon, header = "Registration", questionnaireName = "emcarea.registration.p.august"),
+            ConsultationItemData(patientId="",name="Abdul Rahim", dateOfBirth="02/02/20", dateOfConsultation = "07/06/21","Signs", consultationIcon = R.drawable.measurements_icon, header="Test", questionnaireName = "default.layout"),
+            ConsultationItemData(patientId="",name="Alok Adhesara", dateOfBirth="10/10/20", dateOfConsultation = "10/10/21","Symptoms", consultationIcon = R.drawable.closed_consultation_icon_dark, header = "Symptoms", questionnaireName = "emcare.b10-14.symptoms.2m.p"),
         )
     }
 
@@ -55,7 +66,46 @@ class HomeViewModel @Inject constructor(
         _questionnaire.value = ApiResponse.Loading()
         viewModelScope.launch {
             patientRepository.getQuestionnaire(questionnaireId).collect {
-                _questionnaire.value = it
+                _questionnaire.value = ApiResponse.Success(data=injectUuid(it.data!!))
+            }
+        }
+    }
+
+    fun getQuestionnaireWithQR(questionnaireId: String) {
+        _questionnaireWithQR.value = ApiResponse.Loading()
+        viewModelScope.launch {
+            patientRepository.getQuestionnaire(questionnaireId).collect {
+                val questionnaireJsonWithQR: Questionnaire = injectUuid(it.data!!)
+                val patientId = UUID.randomUUID().toString()
+                val encounterId = UUID.randomUUID().toString()
+                val questionnaireResponse:QuestionnaireResponse = QuestionnaireResponse().apply {
+                    questionnaire = questionnaireJsonWithQR.url
+                }
+                questionnaireJsonWithQR.item.forEach { it2 ->
+                    questionnaireResponse.addItem(it2.createQuestionnaireResponseItem())
+                }
+                questionnaireResponse.subject = Reference().apply {
+                    id = IdType(patientId).id
+                    type = ResourceType.Patient.name
+                    identifier = Identifier().apply {
+                        value = patientId
+                    }
+                }
+                questionnaireResponse.encounter = Reference().apply {
+                    id = encounterId
+                    type = ResourceType.Encounter.name
+                    identifier = Identifier().apply {
+                        value = encounterId
+                    }
+                }
+//                val questionnaireResponse = ResourceMapper.populate(questionnaireJson2, Encounter().apply {
+//                    id = UUID.randomUUID().toString()
+//                }, Patient().apply {
+//                    id = UUID.randomUUID().toString()
+//                })
+                val questionnaireString = FhirContext.forR4().newJsonParser().encodeResourceToString(questionnaireJsonWithQR)
+                val questionnaireResponseString = FhirContext.forR4().newJsonParser().encodeResourceToString(questionnaireResponse)
+                _questionnaireWithQR.value = ApiResponse.Success(data=questionnaireString to questionnaireResponseString)
             }
         }
     }
@@ -66,5 +116,18 @@ class HomeViewModel @Inject constructor(
                 _addPatients.value = it
             }
         }
+    }
+
+    private fun injectUuid(questionnaire: Questionnaire) : Questionnaire {
+        questionnaire.item.forEach { item ->
+            if(!item.initial.isNullOrEmpty()) {
+                if(item.initial[0].value.asStringValue() == "uuid()") {
+                    item.initial =
+                        mutableListOf(Questionnaire.QuestionnaireItemInitialComponent(StringType(
+                            UUID.randomUUID().toString())))
+                }
+            }
+        }
+        return questionnaire
     }
 }

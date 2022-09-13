@@ -36,7 +36,7 @@ class SyncViewModel @Inject constructor(
                 fhirEngine,
                 DownloadWorkManagerImpl()
             )
-            val emCareResult = EmCareSync.oneTimeSync(api, database, preference, listOf(SyncType.FACILITY, SyncType.LANGUAGE))
+            val emCareResult = EmCareSync.oneTimeSync(api, database, preference, listOf(SyncType.FACILITY)) // TODO: IF translation support is required add SyncType.Language
             if (fhirResult is Result.Success || emCareResult is SyncResult.Success) {
                 _syncState.value = (fhirResult as? Result.Success)?.let { State.Finished(it) }
             } else {

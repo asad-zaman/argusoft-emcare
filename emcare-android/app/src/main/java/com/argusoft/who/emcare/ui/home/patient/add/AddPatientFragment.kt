@@ -1,5 +1,7 @@
 package com.argusoft.who.emcare.ui.home.patient.add
 
+import android.view.MenuItem
+import android.widget.Button
 import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commit
@@ -19,6 +21,8 @@ import com.argusoft.who.emcare.utils.extention.whenSuccess
 import com.google.android.fhir.datacapture.QuestionnaireFragment
 import dagger.hilt.android.AndroidEntryPoint
 import org.hl7.fhir.r4.model.Questionnaire
+import com.google.android.fhir.datacapture.QuestionnaireFragment.Companion.SUBMIT_REQUEST_KEY
+
 
 @AndroidEntryPoint
 class AddPatientFragment : BaseFragment<FragmentAddPatientBinding>() {
@@ -28,22 +32,19 @@ class AddPatientFragment : BaseFragment<FragmentAddPatientBinding>() {
     private val questionnaireFragment = QuestionnaireFragment()
 
     override fun initView() {
-        setupToolbar()
-        homeViewModel.getQuestionnaire("emcarea.registration.p.august") //TODO: replace hardcoded questionnaire id.
-    }
-
-    private fun setupToolbar() {
-        binding.headerLayout.toolbar.inflateMenu(R.menu.menu_save)
-        binding.headerLayout.toolbar.setOnMenuItemClickListener {
+//        homeViewModel.getQuestionnaire("emcarea.registration.p") //TODO: replace hardcoded questionnaire id.
+        homeViewModel.getQuestionnaireWithQR("emcarea.registration.p")
+        childFragmentManager.setFragmentResultListener(SUBMIT_REQUEST_KEY, viewLifecycleOwner) { _, _ ->
             homeViewModel.questionnaireJson?.let {
                 homeViewModel.savePatient(
                     questionnaireFragment.getQuestionnaireResponse(), it,
                     requireArguments().getInt(INTENT_EXTRA_LOCATION_ID)
                 )
             }
-            return@setOnMenuItemClickListener true
+
         }
     }
+
 
     private fun addQuestionnaireFragment(questionnaire: Questionnaire) {
         val fhirCtx: FhirContext = FhirContext.forR4()
@@ -57,8 +58,21 @@ class AddPatientFragment : BaseFragment<FragmentAddPatientBinding>() {
         }
     }
 
-    override fun initListener() {
+    private fun addQuestionnaireFragmentWithQR(pair: Pair<String, String>) {
+        homeViewModel.questionnaireJson = pair.first
+        homeViewModel.questionnaireJson?.let {
+            questionnaireFragment.arguments =
+                bundleOf(
+                    QuestionnaireFragment.EXTRA_QUESTIONNAIRE_JSON_STRING to pair.first,
+                    QuestionnaireFragment.EXTRA_QUESTIONNAIRE_RESPONSE_JSON_STRING to pair.second
+                )
+            childFragmentManager.commit {
+                add(R.id.fragmentContainerView, questionnaireFragment, QuestionnaireFragment::class.java.simpleName)
+            }
+        }
+    }
 
+    override fun initListener() {
     }
 
     override fun initObserver() {
@@ -72,6 +86,12 @@ class AddPatientFragment : BaseFragment<FragmentAddPatientBinding>() {
         observeNotNull(homeViewModel.questionnaire) { questionnaire ->
             questionnaire.handleApiView(binding.progressLayout, skipIds = listOf(R.id.headerLayout)) {
                 it?.let { addQuestionnaireFragment(it) }
+            }
+        }
+
+        observeNotNull(homeViewModel.questionnaireWithQR) { questionnaire ->
+            questionnaire.handleApiView(binding.progressLayout, skipIds = listOf(R.id.headerLayout)) {
+                it?.let { addQuestionnaireFragmentWithQR(it) }
             }
         }
         observeNotNull(settingsViewModel.languageApiState) {

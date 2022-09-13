@@ -28,28 +28,9 @@ class PatientQuestionnaireFragment : BaseFragment<FragmentPatientQuestionnaireBi
     private var patientId:String? = ""
 
     override fun initView() {
-        setupToolbar()
         requireArguments().getString(
             INTENT_EXTRA_QUESTIONNAIRE_NAME)?.let { patientActionsViewModel.getQuestionnaire(it) }
         patientId = requireArguments().getString(INTENT_EXTRA_PATIENT_ID)
-    }
-
-    private fun setupToolbar() {
-        binding.headerLayout.toolbar.inflateMenu(R.menu.menu_save)
-        //TODO: add save functionality
-        binding.headerLayout.toolbar.setOnMenuItemClickListener {
-            patientActionsViewModel.questionnaireJson?.let {
-                if(patientId != null){
-                    patientActionsViewModel.saveQuestionnaire(
-                        questionnaireFragment.getQuestionnaireResponse(), it,
-                        patientId!!,
-                        requireArguments().getString(INTENT_EXTRA_STRUCTUREMAP_NAME),
-                        requireArguments().getInt(INTENT_EXTRA_LOCATION_ID)
-                    )
-                }
-            }
-            return@setOnMenuItemClickListener true
-        }
     }
 
     private fun addQuestionnaireFragment(questionnaire: Questionnaire) {

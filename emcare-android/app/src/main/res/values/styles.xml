@@ -188,13 +188,12 @@
         <item name="android:paddingTop">10dp</item>
     </style>
 
-    <style name="Questionnaire.DropDownTextInputEditText" parent="TextAppearance.MaterialComponents.Subtitle1">
-        <item name="android:paddingStart">0dp</item>
-        <item name="android:paddingEnd">0dp</item>
+    <style name="Questionnaire.questionnaireDropDownTextStyle" parent="TextAppearance.MaterialComponents.Subtitle1">
+        <item name="android:textSize">@dimen/_12sdp</item>
     </style>
 
-    <style name="Questionnaire.DropDownTextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu">
-        <item name="boxBackgroundColor">@color/colorWhite</item>
+    <style name="Questionnaire.questionnaireDropdownLayoutStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+        <item name="boxStrokeColor">@drawable/questionnaire_dropdown_layout_border_selector</item>
     </style>
 
     <style name="Questionnaire.SubmitButtonStyle">
@@ -213,9 +212,9 @@
         <item name="questionnaireQuestionTextStyle">@style/TextAppearance.MaterialComponents.Body2</item>
         <item name="questionnaireCheckBoxStyle">@style/Questionnaire.CheckBoxStyle</item>
         <item name="questionnaireRadioButtonStyle">@style/Questionnaire.RadioButton</item>
-        <item name="questionnaireDropDownTextStyle">@style/Questionnaire.DropDownTextInputEditText</item>
-        <item name="questionnaireDropDownSelectedTextStyle">@style/Questionnaire.DropDownTextInputEditText</item>
-        <item name="questionnaireDropdownLayoutStyle">@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu</item>
+        <item name="questionnaireDropDownTextStyle">@style/Questionnaire.questionnaireDropDownTextStyle</item>
+<!--        <item name="questionnaireDropDownSelectedTextStyle">@style/Questionnaire.DropDownTextInputEditText</item>-->
+        <item name="questionnaireDropdownLayoutStyle">@style/Questionnaire.questionnaireDropdownLayoutStyle</item>
         <item name="questionnaireTextInputEditTextStyle">@style/Questionnaire.TextInputEditText</item>
         <item name="questionnaireChipStyle">@style/Widget.MaterialComponents.Chip.Entry</item>
         <item name="questionnaireButtonStyle">@style/Questionnaire.Button</item>
