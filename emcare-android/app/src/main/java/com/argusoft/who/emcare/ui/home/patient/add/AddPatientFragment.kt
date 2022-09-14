@@ -32,6 +32,7 @@ class AddPatientFragment : BaseFragment<FragmentAddPatientBinding>() {
     private val questionnaireFragment = QuestionnaireFragment()
 
     override fun initView() {
+        binding.headerLayout.toolbar.setTitleSidepane(getString(R.string.title_emcare_registration))
 //        homeViewModel.getQuestionnaire("emcarea.registration.p") //TODO: replace hardcoded questionnaire id.
         homeViewModel.getQuestionnaireWithQR("emcarea.registration.p")
         childFragmentManager.setFragmentResultListener(SUBMIT_REQUEST_KEY, viewLifecycleOwner) { _, _ ->
@@ -94,12 +95,12 @@ class AddPatientFragment : BaseFragment<FragmentAddPatientBinding>() {
                 it?.let { addQuestionnaireFragmentWithQR(it) }
             }
         }
-        observeNotNull(settingsViewModel.languageApiState) {
-            it.whenSuccess {
-                it.languageData?.convertToMap()?.apply {
-                    binding.headerLayout.toolbar.setTitleSidepane(getOrElse("Add_Patient") { getString(R.string.title_add_patient) } )
-                }
-            }
-        }
+//        observeNotNull(settingsViewModel.languageApiState) {
+//            it.whenSuccess {
+//                it.languageData?.convertToMap()?.apply {
+//                    binding.headerLayout.toolbar.setTitleSidepane(getOrElse("Add_Patient") { getString(R.string.title_add_patient) } )
+//                }
+//            }
+//        }
     }
 }

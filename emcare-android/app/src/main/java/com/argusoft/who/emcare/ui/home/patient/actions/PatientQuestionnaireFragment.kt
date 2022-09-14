@@ -28,6 +28,8 @@ class PatientQuestionnaireFragment : BaseFragment<FragmentPatientQuestionnaireBi
     private var patientId:String? = ""
 
     override fun initView() {
+        binding.headerLayout.toolbar.setTitleSidepane(getString(R.string.patient)
+                    + " " + requireArguments().getString(INTENT_EXTRA_QUESTIONNAIRE_HEADER)  )
         requireArguments().getString(
             INTENT_EXTRA_QUESTIONNAIRE_NAME)?.let { patientActionsViewModel.getQuestionnaire(it) }
         patientId = requireArguments().getString(INTENT_EXTRA_PATIENT_ID)
@@ -63,14 +65,14 @@ class PatientQuestionnaireFragment : BaseFragment<FragmentPatientQuestionnaireBi
                 it?.let { addQuestionnaireFragment(it) }
             }
         }
-        observeNotNull(settingsViewModel.languageApiState) {
-            it.whenSuccess {
-                it.languageData?.convertToMap()?.apply {
-                    binding.headerLayout.toolbar.setTitleSidepane(
-                        getOrElse("Patient") { getString(R.string.patient) } + " "
-                            + requireArguments().getString(INTENT_EXTRA_QUESTIONNAIRE_HEADER)  )
-                }
-            }
-        }
+//        observeNotNull(settingsViewModel.languageApiState) {
+//            it.whenSuccess {
+//                it.languageData?.convertToMap()?.apply {
+//                    binding.headerLayout.toolbar.setTitleSidepane(
+//                        getOrElse("Patient") { getString(R.string.patient) } + " "
+//                            + requireArguments().getString(INTENT_EXTRA_QUESTIONNAIRE_HEADER)  )
+//                }
+//            }
+//        }
     }
 }
