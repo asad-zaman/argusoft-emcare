@@ -19,6 +19,9 @@ package com.argusoft.who.emcare.widget
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import com.argusoft.who.emcare.R
+import com.google.android.fhir.datacapture.validation.Invalid
+import com.google.android.fhir.datacapture.validation.NotValidated
+import com.google.android.fhir.datacapture.validation.Valid
 import com.google.android.fhir.datacapture.validation.ValidationResult
 import com.google.android.fhir.datacapture.views.QuestionnaireItemViewHolderDelegate
 import com.google.android.fhir.datacapture.views.QuestionnaireItemViewHolderFactory
@@ -60,8 +63,9 @@ object CustomEditTextFactory :
 
             override fun displayValidationResult(validationResult: ValidationResult) {
                 // Custom validation message
-                if (validationResult.isValid && !validationResult.validationMessages.isNullOrEmpty())
-                    textInputLayout.error = validationResult.validationMessages[0]
+                if(validationResult !is NotValidated && validationResult is Invalid){
+                    textInputLayout.error = validationResult.getSingleStringValidationMessage()
+                }
             }
         }
 }
