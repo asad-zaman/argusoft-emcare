@@ -100,7 +100,9 @@ class EmCareApplication : Application(), Configuration.Provider, DataCaptureConf
             FhirEngineConfiguration(
                 enableEncryptionIfSupported = false,
                 DatabaseErrorStrategy.RECREATE_AT_OPEN,
-                ServerConfiguration(BuildConfig.FHIR_BASE_URL, EmcareAuthenticator(preference))
+                ServerConfiguration(BuildConfig.FHIR_BASE_URL,
+                    NetworkConfiguration(connectionTimeOut = 120, readTimeOut = 120, writeTimeOut = 120),
+                    EmcareAuthenticator(preference))
             )
         )
     }

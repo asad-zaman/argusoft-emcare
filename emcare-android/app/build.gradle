@@ -154,7 +154,7 @@ dependencies {
     implementation "androidx.work:work-runtime-ktx:2.7.1"
 
     //Fhir
-    implementation "com.google.android.fhir:engine:0.1.0-beta01"
+    implementation "com.google.android.fhir:engine:0.1.0-beta02"
     implementation "com.google.android.fhir:data-capture:0.1.0-beta04"
 //    implementation "com.google.android.fhir:workflow:0.1.0-alpha01"
 
