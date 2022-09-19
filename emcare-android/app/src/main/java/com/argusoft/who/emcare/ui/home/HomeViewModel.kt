@@ -55,10 +55,10 @@ class HomeViewModel @Inject constructor(
 
     fun getConsultations() : ArrayList<ConsultationItemData?>{
         return arrayListOf(
-            ConsultationItemData(patientId="",name="Mohammad Faruqi", dateOfBirth="10/10/20", dateOfConsultation = "01/01/22","Consultation", consultationIcon = R.drawable.danger_sign_icon, header = "Consultation", questionnaireName = "EmCare.B10-16.Signs.2m.p" ),
+            ConsultationItemData(patientId="",name="Mohammad Faruqi", dateOfBirth="10/10/20", dateOfConsultation = "01/01/22","Consultation", consultationIcon = R.drawable.danger_sign_icon, header = "Signs", questionnaireName = "EmCare.B10-16.Signs.2m.p" ),
             ConsultationItemData(patientId="",name="Pinar Toprak", dateOfBirth="04/05/21 ", dateOfConsultation = "10/09/21","Registration", consultationIcon = R.drawable.registration_icon, header = "Registration", questionnaireName = "emcarea.registration.p.august"),
-            ConsultationItemData(patientId="",name="Abdul Rahim", dateOfBirth="02/02/20", dateOfConsultation = "07/06/21","Signs", consultationIcon = R.drawable.measurements_icon, header="Test", questionnaireName = "default.layout"),
-            ConsultationItemData(patientId="",name="Alok Adhesara", dateOfBirth="10/10/20", dateOfConsultation = "10/10/21","Symptoms", consultationIcon = R.drawable.closed_consultation_icon_dark, header = "Symptoms", questionnaireName = "emcare.b10-14.symptoms.2m.p"),
+            ConsultationItemData(patientId="",name="Abdul Rahim", dateOfBirth="02/02/20", dateOfConsultation = "07/06/21","Test", consultationIcon = R.drawable.measurements_icon, header="Test", questionnaireName = "default.layout"),
+            ConsultationItemData(patientId="",name="Alok Adhesara", dateOfBirth="10/10/20", dateOfConsultation = "10/10/21","Measurements", consultationIcon = R.drawable.closed_consultation_icon_dark, header = "Measurements", questionnaireName = "emcare.b6.measurements"),
         )
     }
 
@@ -98,10 +98,11 @@ class HomeViewModel @Inject constructor(
                         value = encounterId
                     }
                 }
-//                val questionnaireResponse = ResourceMapper.populate(questionnaireJson2, Encounter().apply {
-//                    id = UUID.randomUUID().toString()
-//                }, Patient().apply {
-//                    id = UUID.randomUUID().toString()
+//                val questionnaireResponse = ResourceMapper.populate(questionnaireJsonWithQR,
+//                    Patient().apply {
+//                    id = patientId
+//                }, Encounter().apply {
+//                    id = encounterId
 //                })
                 val questionnaireString = FhirContext.forR4().newJsonParser().encodeResourceToString(questionnaireJsonWithQR)
                 val questionnaireResponseString = FhirContext.forR4().newJsonParser().encodeResourceToString(questionnaireResponse)

@@ -1,6 +1,7 @@
 package com.argusoft.who.emcare.ui.home.patient
 
 import android.app.Application
+import com.argusoft.who.emcare.R
 import androidx.lifecycle.viewModelScope
 import ca.uhn.fhir.context.FhirContext
 import com.argusoft.who.emcare.data.remote.ApiResponse
@@ -91,7 +92,7 @@ class PatientRepository @Inject constructor(
             }
         )
 
-        val resourceSavedSuccessfully = saveResourcesFromBundle(extractedBundle)
+        val resourceSavedSuccessfully = saveResourcesFromBundle(extractedBundle, "", "")
         if(!resourceSavedSuccessfully) {
             emit(ApiResponse.ApiError("Error saving resources"))
         }
@@ -121,11 +122,9 @@ class PatientRepository @Inject constructor(
 uses 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaireresponse' alias 'questionnaireResponse' as source
 uses 'http://hl7.org/fhir/StructureDefinition/Bundle' alias 'Bundle' as target
 uses 'https://fhir.dk.swisstph-mis.ch/matchbox/fhir/StructureDefinition/patient' alias 'Patient' as target
-uses 'https://fhir.dk.swisstph-mis.ch/matchbox/fhir/StructureDefinition/encounter' alias 'Encounter' as target
 uses 'https://fhir.dk.swisstph-mis.ch/matchbox/fhir/StructureDefinition/relatedperson' alias 'RelatedPerson' as target
 uses 'https://fhir.dk.swisstph-mis.ch/matchbox/fhir/StructureDefinition/communicationrequest' alias 'CommunicationRequest' as target
 uses 'https://fhir.dk.swisstph-mis.ch/matchbox/fhir/StructureDefinition/emcarepatient' alias 'EmCare Patient' as produced
-uses 'https://fhir.dk.swisstph-mis.ch/matchbox/fhir/StructureDefinition/emcareencounter' alias 'EmCare Encounter' as produced
 uses 'https://fhir.dk.swisstph-mis.ch/matchbox/fhir/StructureDefinition/emcarerelatedpersoncaregiver' alias 'EmCare RelatedPerson Caregiver' as produced
 uses 'https://fhir.dk.swisstph-mis.ch/matchbox/fhir/StructureDefinition/emcarecommunicationrequest' alias 'EmCare CommunicationRequest' as produced
 group bundletrans(source src : questionnaireResponse,target bundle : Bundle){
@@ -133,37 +132,21 @@ group bundletrans(source src : questionnaireResponse,target bundle : Bundle){
     src -> bundle.type = 'batch' 'type';
     src -> bundle.entry as entry then {
         src.subject as subject then {
-            subject.id as idval -> entry.request as request, request.method = 'PUT', request.url = append('/Patient/',idval) 'lbmkr';
-        } 'owzfk';
+            subject.id as idval -> entry.request as request, request.method = 'PUT', request.url = append('/Patient/',idval) 'albqz';
+        } 'dtipq';
         src -> entry.resource = create("Patient") as tgt then {
-            src -> tgt then emcarepatient(src, tgt) 'pygvq';
-            src.subject as subject then {
-                subject.id as idval  -> tgt.id = idval 'uyhep';
-            } 'uuxca';
-        } 'shzvz';
+            src -> tgt then emcarepatient(src, tgt) 'ywnqp';
+        } 'vbwdq';
     } 'put-emcarepatient';
-    src -> bundle.entry as entry then {
-        src.encounter as encounter then {
-            encounter.id as idval  -> entry.request as request, request.method = 'PUT', request.url = append('/Encounter/',idval) 'azich';
-        } 'iqxck';
-        src -> entry.resource = create("Encounter") as tgt then {
-            src -> tgt then emcareencounter(src, tgt) 'ltpli';
-            src.encounter as encounter then {
-                encounter.identifier as idval-> tgt.id = idval 'flckx';
-            } 'oegwb';
-            src.subject as sub -> tgt.subject = sub 'dnxfm';
-        } 'ohyoj';
-    } 'put-emcareencounter';
     src where src.item.where(linkId='emcarerelatedpersoncaregiverid').answer.exists()-> bundle.entry as entry then {
         src.item first as item where linkId  =  'emcarerelatedpersoncaregiverid' -> entry.request as request, request.method = 'PUT' then {
             item.answer first as a ->  request then {
-                a.value as val ->  request.url = append('/RelatedPerson/', val) 'gvupk';
-            } 'farat';
-        } 'uuegw';
+                a.value as val ->  request.url = append('/RelatedPerson/', val) 'mpzxa';
+            } 'fgkou';
+        } 'wharz';
         src -> entry.resource = create("RelatedPerson") as tgt then {
-            src -> tgt then emcarerelatedpersoncaregiver(src, tgt) 'lufdn';
-            src -> entry then getIdemcarerelatedpersoncaregiver(src, tgt) 'eppzc';
-        } 'lqanj';
+            src -> tgt then emcarerelatedpersoncaregiver(src, tgt) 'ehcoi';
+        } 'dglmj';
     } 'put-emcarerelatedpersoncaregiver';
     src where src.item.where(linkId='EmCare.A.DE38').exists() and src.item.where(linkId='emcarecommunicationrequestid').first().answer.exists() then {
         src -> bundle.entry as entry, entry.request as request, request.method = 'POST', entry.resource = create('CommunicationRequest') as tgt then emcarecommunicationrequestemcareade38(src,tgt) 'act-EmCare.A.DE38';
@@ -189,11 +172,11 @@ group emcarepatient(source src : questionnaireResponse,target tgt : Patient){
             a.value as val -> tgt.extension  = create('Extension') as ext ,  ext.url ='https://fhir.dk.swisstph-mis.ch/matchbox/fhir/StructureDefinition/birthDateEstimator',  ext.value = val 'aemcareade12';
         } 'aemcareade12';
     } 'emcareade12';
-    src.item as item where linkId  = 'dob' then {
+    src.item as item where linkId  = 'EmCare.A.DE08' then {
         item.answer first as a then {
-            a.value as val -> tgt.birthDate = val 'adob';
-        } 'adob';
-    } 'dob';
+            a.value as val -> tgt.birthDate = val 'aemcareade08';
+        } 'aemcareade08';
+    } 'emcareade08';
     src.item as item where linkId =  'EmCare.A.DE16' then { item.answer first as a then MapValueSetExtCodeemcareade16(a, tgt) 'emcareade16d'; } 'emcareade16';
     src.item as item where linkId  = 'EmCare.A.DE20' then {
         item.answer first as a then {
@@ -219,76 +202,56 @@ group emcarepatient(source src : questionnaireResponse,target tgt : Patient){
 
 group SetOfficalGivenNameemcarepatient(source src,target tgt){
     src -> tgt.use = 'official' then {
-        src.item as item where linkId  =  'EmCare.A.DE04'  -> tgt then {item.answer as a -> tgt.given = a 'f';} 'weafv';
-        src.item as item where linkId  =  'EmCare.A.DE05' -> tgt then {item.answer as a -> tgt.given = a 'f';} 'vrmuc';
-        src.item as item where linkId  =  'EmCare.A.DE06' -> tgt then {item.answer as a -> tgt.family = a 'f';} 'onshu';
-    } 'pxrbd';
+        src.item as item where linkId  =  'EmCare.A.DE04'  then {
+            item.answer first as a then {
+                a.value as val -> tgt.given = val  'qpozv';
+            } 'ygzdy';
+        } 'vuztk';
+        src.item as item where linkId  =  'EmCare.A.DE05'  then {
+            item.answer first as a then {
+                a.value as val -> tgt.given = val  'pzeec';
+            } 'jsbku';
+        } 'fozhh';
+        src.item as item where linkId  =  'EmCare.A.DE06' then {
+            item.answer first as a then {
+                a.value as val -> tgt.family = val  'qwnzu';
+            } 'mtikd';
+        } 'tgtij';
+    } 'hvykt';
 }
 
 group MapValueSetExtCodeemcareade16(source src,target tgt){
     src -> tgt then {
         src -> tgt then {
-            src where value.code = 'EmCare.A.DE17' -> tgt.gender = 'female' 'ignfc';
-            src where value.code = 'EmCare.A.DE18' -> tgt.gender = 'male' 'gqbeq';
-            src where value.code = 'EmCare.A.DE19' -> tgt.gender = 'unknown' 'pivse';
+            src where value.code = 'EmCare.A.DE17' -> tgt.gender = 'female' 'pqytk';
+            src where value.code = 'EmCare.A.DE18' -> tgt.gender = 'male' 'secwe';
+            src where value.code = 'EmCare.A.DE19' -> tgt.gender = 'unknown' 'mrghb';
         } 'mapbase';
-    } 'qioaj';
+    } 'advnm';
 }
 
 group getIdemcarepatient(source src,target tgt){
     src.item first as item where linkId  =  'emcarepatientid' -> tgt then {
         item.answer first as a ->  tgt  then {
-            a.value as val ->  tgt.id = val 'snqet';
-        } 'zzexo';
-    } 'fyoti';
+            a.value as val ->  tgt.id = val 'avqku';
+        } 'lwiet';
+    } 'lkkwa';
 }
 
 group getFullUrlemcarepatient(source src,target tgt){
     src.item first as item where linkId  =  'emcarepatientid' -> tgt then {
         item.answer first as a -> tgt then {
-            a.value as val ->  tgt.fullUrl = append('urn:uuid:', val) 'fiyif';
-        } 'rxioy';
-    } 'uqsir';
+            a.value as val ->  tgt.fullUrl = append('urn:uuid:', val) 'dfsze';
+        } 'jbhmq';
+    } 'zbmkl';
 }
 
 group getUrlemcarepatient(source src,target tgt){
     src.item first as item where linkId  =  'emcarepatientid' -> tgt then {
         item.answer first as a ->  tgt then {
-            a.value as val ->  ref.reference = append('/Patient/', val) 'gnmae';
-        } 'svggh';
-    } 'gjewf';
-}
-
-group emcareencounter(source src : questionnaireResponse,target tgt : Encounter){
-    src.item as item where linkId  = 'EmCare.A.DE07' then {
-        item.answer first as a then {
-            a.value as val -> tgt.period as period , period.start = val 'aemcareade07';
-        } 'aemcareade07';
-    } 'emcareade07';
-}
-
-group getIdemcareencounter(source src,target tgt){
-    src.item first as item where linkId  =  'emcareencounterid' -> tgt then {
-        item.answer first as a ->  tgt  then {
-            a.value as val ->  tgt.id = val 'ojgon';
-        } 'ivadz';
-    } 'lxdey';
-}
-
-group getFullUrlemcareencounter(source src,target tgt){
-    src.item first as item where linkId  =  'emcareencounterid' -> tgt then {
-        item.answer first as a -> tgt then {
-            a.value as val ->  tgt.fullUrl = append('urn:uuid:', val) 'yxipo';
-        } 'nkeqi';
-    } 'ciqty';
-}
-
-group getUrlemcareencounter(source src,target tgt){
-    src.item first as item where linkId  =  'emcareencounterid' -> tgt then {
-        item.answer first as a ->  tgt then {
-            a.value as val ->  ref.reference = append('/Encounter/', val) 'tamec';
-        } 'pvzox';
-    } 'spkkq';
+            a.value as val ->  ref.reference = append('/Patient/', val) 'xvzal';
+        } 'qzqln';
+    } 'uwrvy';
 }
 
 group emcarerelatedpersoncaregiver(source src : questionnaireResponse,target tgt : RelatedPerson){
@@ -312,62 +275,81 @@ group emcarerelatedpersoncaregiver(source src : questionnaireResponse,target tgt
 
 group SetOfficalGivenNameemcarerelatedpersoncaregiver(source src,target tgt){
     src -> tgt.use = 'official' then {
-        src.item as item where linkId  =  'EmCare.A.DE21'  -> tgt then {item.answer as a -> tgt.given = a 'f';} 'poqcl';
-        src.item as item where linkId  =  'EmCare.A.DE22' -> tgt then {item.answer as a -> tgt.given = a 'f';} 'lfblv';
-        src.item as item where linkId  =  'EmCare.A.DE23' -> tgt then {item.answer as a -> tgt.family = a 'f';} 'hanke';
-    } 'vsqeb';
+        src.item as item where linkId  =  'EmCare.A.DE21'  then {
+            item.answer first as a then {
+                a.value as val -> tgt.given = val  'ecrvp';
+            } 'vhcqa';
+        } 'iqtsz';
+        src.item as item where linkId  =  'EmCare.A.DE22'  then {
+            item.answer first as a then {
+                a.value as val -> tgt.given = val  'qnfqz';
+            } 'vqkqj';
+        } 'oaoxk';
+        src.item as item where linkId  =  'EmCare.A.DE23' then {
+            item.answer first as a then {
+                a.value as val -> tgt.family = val  'bjbdv';
+            } 'pshhh';
+        } 'mcegn';
+    } 'cajlw';
 }
 
 group getIdemcarerelatedpersoncaregiver(source src,target tgt){
     src.item first as item where linkId  =  'emcarerelatedpersoncaregiverid' -> tgt then {
         item.answer first as a ->  tgt  then {
-            a.value as val ->  tgt.id = val 'jzzwg';
-        } 'cibgz';
-    } 'ictag';
+            a.value as val ->  tgt.id = val 'fjhql';
+        } 'gtfen';
+    } 'xfymb';
 }
 
 group getFullUrlemcarerelatedpersoncaregiver(source src,target tgt){
     src.item first as item where linkId  =  'emcarerelatedpersoncaregiverid' -> tgt then {
         item.answer first as a -> tgt then {
-            a.value as val ->  tgt.fullUrl = append('urn:uuid:', val) 'nnhqb';
-        } 'jazjg';
-    } 'frkca';
+            a.value as val ->  tgt.fullUrl = append('urn:uuid:', val) 'ghkxp';
+        } 'yalmj';
+    } 'pkxfy';
 }
 
 group getUrlemcarerelatedpersoncaregiver(source src,target tgt){
     src.item first as item where linkId  =  'emcarerelatedpersoncaregiverid' -> tgt then {
         item.answer first as a ->  tgt then {
-            a.value as val ->  ref.reference = append('/RelatedPerson/', val) 'tbkgw';
-        } 'ylnnj';
-    } 'prrlm';
+            a.value as val ->  ref.reference = append('/RelatedPerson/', val) 'uzoqd';
+        } 'qwvpo';
+    } 'ynnfv';
 }
 
 group emcarecommunicationrequestemcareade38(source src,target tgt){
-    src ->  tgt.category = create('CodeableConcept') as cc, cc.coding = create('Coding') as c, c.system ='http://hl7.org/fhir/ValueSet/communication-category', c.code = 'notification' 'rebwn';
+    src ->  tgt.category = create('CodeableConcept') as cc, cc.coding = create('Coding') as c, c.system ='http://hl7.org/fhir/ValueSet/communication-category', c.code = 'notification' 'jxgas';
     src.questionnaire as q ->   tgt.about = create('Reference') as ref, ref.type ='Questionnaire', ref.reference = q 'quest';
-    src.subject as subject ->   tgt.subject = subject  'dhkrz';
+    src.subject as subject ->   tgt.subject = subject  'xoado';
     src ->   tgt.recipient =create('Reference') as ref  then {
-        src -> ref.type = 'RelatedPerson' 'endif';
+        src -> ref.type = 'RelatedPerson' 'ftwxi';
         src.item first as item where linkId  =  'emcarerelatedpersoncaregiverid' -> tgt then {
             item.answer first as a ->  tgt then {
-                a.value as val ->  ref.reference = append('/RelatedPerson/', val) 'urqkk';
-            } 'cpgzw';
-        } 'ghxhf';
-    } 'hcrfi';
+                a.value as val ->  ref.reference = append('/RelatedPerson/', val) 'abwpi';
+            } 'fzhie';
+        } 'gymmr';
+    } 'nooyy';
 }
 """
 //        val structureMap = FhirContext.forR4().newJsonParser().parseResource(structureMapString) as StructureMap
-        val extractedBundle = ResourceMapper.extract(
-            questionnaireResource,
-            questionnaireResponse,
-            StructureMapExtractionContext(context = application.applicationContext) { _, worker -> //structureMap
-                StructureMapUtilities(worker).parse(structureMapString, "")
-            }
-        )
-        saveResourcesFromBundle(extractedBundle)
-        print("RESULT")
-        print(FhirContext.forR4().newJsonParser().encodeResourceToString(extractedBundle))
-        emit(ApiResponse.Success(1))
+        try {
+            val extractedBundle = ResourceMapper.extract(
+                questionnaireResource,
+                questionnaireResponse,
+                StructureMapExtractionContext(context = application.applicationContext) { _, worker -> //structureMap
+                    StructureMapUtilities(worker).parse(structureMapString, "")
+                }
+            )
+            val patientId = questionnaireResponse.subject.identifier.value
+            val encounterId = questionnaireResponse.encounter.id
+            saveResourcesFromBundle(extractedBundle, patientId, encounterId)
+            print("RESULT")
+            print(FhirContext.forR4().newJsonParser().encodeResourceToString(extractedBundle))
+            emit(ApiResponse.Success(1))
+        } catch (e: Exception) {
+            emit(ApiResponse.ApiError(apiErrorMessageResId = R.string.error_saving_resource))
+        }
+
 
     }
 
@@ -378,12 +360,27 @@ group emcarecommunicationrequestemcareade38(source src,target tgt){
         emit(ApiResponse.Success(1))
     }
 
-    private suspend fun saveResourcesFromBundle(bundle: Bundle): Boolean {
+    private suspend fun saveResourcesFromBundle(bundle: Bundle, patientId: String, encounterId: String): Boolean {
         bundle.entry.forEach { entry ->
             if(entry.hasResource()){
-                fhirEngine.create(entry.resource)
+                when(entry.resource.resourceType) {
+                    ResourceType.Patient -> {
+                        entry.resource.id = patientId
+                        print(entry.resource)
+                    }
+                    ResourceType.Encounter -> {
+                        entry.resource.id = encounterId
+                    }
+                    else -> {
+                        entry.resource.id = UUID.randomUUID().toString()
+                    }
+                }
+                print(FhirContext.forR4().newJsonParser().encodeResourceToString(entry.resource))
+//                fhirEngine.create(entry.resource)
             }
         }
+        print("FINAL BUNDLE:")
+        print(FhirContext.forR4().newJsonParser().encodeResourceToString(bundle))
         return true
     }
 

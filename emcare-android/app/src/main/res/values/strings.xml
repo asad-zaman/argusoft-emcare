@@ -155,7 +155,8 @@
     <string name="label_get_started">Get Started.</string>
     <string name="label_what_would_you_like_to_do_today">What would you like to do today!</string>
   <string name="blocked_device_message">This device is blocked from using the EmCare application.</string>
-  <string name="ok">Ok</string>
+  <string name="error_saving_resource">Submit unsuccessful, please try again later!</string>
+    <string name="ok">Ok</string>
     <string name="error_msg_username">Please enter username</string>
     <string name="error_msg_password">Please enter password</string>
     <string name="button_add_patient">Add Patient</string>
