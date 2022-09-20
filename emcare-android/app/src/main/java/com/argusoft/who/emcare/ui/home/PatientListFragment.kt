@@ -6,6 +6,7 @@ import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.viewModels
 import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.databinding.FragmentPatientListBinding
+import com.argusoft.who.emcare.ui.common.INTENT_EXTRA_FACILITY_ID
 import com.argusoft.who.emcare.ui.common.base.BaseFragment
 import com.argusoft.who.emcare.utils.extention.handleListApiView
 import com.argusoft.who.emcare.utils.extention.navigate
@@ -73,7 +74,9 @@ class PatientListFragment: BaseFragment<FragmentPatientListBinding>(), SearchVie
         super.onClick(view)
         when (view?.id) {
             R.id.addPatientButton -> {
-                navigate(R.id.action_homeFragment_to_addPatientFragment)
+                navigate(R.id.action_homeFragment_to_addPatientFragment) {
+                    putString(INTENT_EXTRA_FACILITY_ID, preference.getLoggedInUser()?.facility?.get(0)?.facilityId)
+                }
             }
         }
     }

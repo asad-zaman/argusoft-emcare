@@ -10,6 +10,7 @@ import ca.uhn.fhir.context.FhirContext
 import ca.uhn.fhir.parser.IParser
 import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.databinding.FragmentAddPatientBinding
+import com.argusoft.who.emcare.ui.common.INTENT_EXTRA_FACILITY_ID
 import com.argusoft.who.emcare.ui.common.INTENT_EXTRA_LOCATION_ID
 import com.argusoft.who.emcare.ui.common.base.BaseFragment
 import com.argusoft.who.emcare.ui.home.HomeViewModel
@@ -39,7 +40,7 @@ class AddPatientFragment : BaseFragment<FragmentAddPatientBinding>() {
             homeViewModel.questionnaireJson?.let {
                 homeViewModel.savePatient(
                     questionnaireFragment.getQuestionnaireResponse(), it,
-                    requireArguments().getInt(INTENT_EXTRA_LOCATION_ID)
+                    requireArguments().getString(INTENT_EXTRA_FACILITY_ID)!!
                 )
             }
 
