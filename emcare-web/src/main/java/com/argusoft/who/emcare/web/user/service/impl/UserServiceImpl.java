@@ -306,6 +306,7 @@ public class UserServiceImpl implements UserService {
         Map<String, List<String>> attribute = new HashMap<>();
         attribute.put(CommonConstant.LANGUAGE_KEY, Arrays.asList(CommonConstant.ENGLISH));
         attribute.put(CommonConstant.PHONE_KEY, Arrays.asList(user.getPhone()));
+        attribute.put(CommonConstant.COUNTRY_CODE, Arrays.asList(user.getCountryCode()));
         kcUser.setAttributes(attribute);
 
         try {
@@ -362,6 +363,7 @@ public class UserServiceImpl implements UserService {
         Map<String, List<String>> attribute = new HashMap<>();
         attribute.put(CommonConstant.LANGUAGE_KEY, Arrays.asList(CommonConstant.ENGLISH));
         attribute.put(CommonConstant.PHONE_KEY, Arrays.asList(user.getPhone()));
+        attribute.put(CommonConstant.COUNTRY_CODE, Arrays.asList(user.getCountryCode()));
         kcUser.setAttributes(attribute);
 
         try {
@@ -659,6 +661,8 @@ public class UserServiceImpl implements UserService {
         Map<String, List<String>> attribute = new HashMap<>();
         attribute.put(CommonConstant.LANGUAGE_KEY, Arrays.asList(userDto.getLanguage()));
         attribute.put(CommonConstant.PHONE_KEY, Arrays.asList(userDto.getPhone()));
+        attribute.put(CommonConstant.COUNTRY_CODE, Arrays.asList(userDto.getCountryCode()));
+
         newUser.setAttributes(attribute);
         newUser.setEnabled(newUser.isEnabled());
         userResource.update(newUser);

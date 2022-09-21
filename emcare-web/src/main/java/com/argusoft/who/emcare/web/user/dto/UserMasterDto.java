@@ -16,6 +16,7 @@ public class UserMasterDto {
     private String firstName;
     private String lastName;
     private String phone;
+    private String countryCode;
     private List<FacilityDto> facilities;
 
     public String getUserId() {
@@ -96,5 +97,13 @@ public class UserMasterDto {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public String getCountryCode() {
+        return countryCode;
+    }
+
+    public void setCountryCode(String countryCode) {
+        this.countryCode = countryCode;
     }
 }
