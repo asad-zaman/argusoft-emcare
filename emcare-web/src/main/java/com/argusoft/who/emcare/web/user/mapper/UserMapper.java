@@ -67,6 +67,10 @@ public class UserMapper {
                     userInfo.getAttributes() != null && userInfo.getAttributes().get(CommonConstant.PHONE_KEY) != null
                             ? userInfo.getAttributes().get(CommonConstant.PHONE_KEY).get(0)
                             : null);
+            userMaster.setCountryCode(
+                    userInfo.getAttributes() != null && userInfo.getAttributes().get(CommonConstant.COUNTRY_CODE) != null
+                            ? userInfo.getAttributes().get(CommonConstant.COUNTRY_CODE).get(0)
+                            : null);
         }
 
         return userMaster;
@@ -85,6 +89,10 @@ public class UserMapper {
                 userRepresentation.getAttributes() != null && userRepresentation.getAttributes().get(CommonConstant.PHONE_KEY) != null
                         ? userRepresentation.getAttributes().get(CommonConstant.PHONE_KEY).get(0)
                         : null);
+        user.setCountryCode(
+                userRepresentation.getAttributes() != null && userRepresentation.getAttributes().get(CommonConstant.COUNTRY_CODE) != null
+                        ? userRepresentation.getAttributes().get(CommonConstant.COUNTRY_CODE).get(0)
+                        : null);
         user.setFacilityDto(facilityDto);
         return user;
     }
@@ -102,6 +110,10 @@ public class UserMapper {
         user.setPhone(
                 userRepresentation.getAttributes() != null && userRepresentation.getAttributes().get(CommonConstant.PHONE_KEY) != null
                         ? userRepresentation.getAttributes().get(CommonConstant.PHONE_KEY).get(0)
+                        : null);
+        user.setCountryCode(
+                userRepresentation.getAttributes() != null && userRepresentation.getAttributes().get(CommonConstant.COUNTRY_CODE) != null
+                        ? userRepresentation.getAttributes().get(CommonConstant.COUNTRY_CODE).get(0)
                         : null);
         user.setFacilities(dtos);
         return user;

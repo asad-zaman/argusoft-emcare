@@ -16,6 +16,7 @@ public class UserDto {
     private String roleName;
     private String language;
     private String phone;
+    private String countryCode;
     private List<String> facilityIds;
 
 
@@ -97,5 +98,13 @@ public class UserDto {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public String getCountryCode() {
+        return countryCode;
+    }
+
+    public void setCountryCode(String countryCode) {
+        this.countryCode = countryCode;
     }
 }
