@@ -25,11 +25,11 @@ class PatientListFragment: BaseFragment<FragmentPatientListBinding>(), SearchVie
         super.onCreate(savedInstanceState)
         glideRequests = GlideApp.with(this)
         homeAdapter = HomeAdapter(onClickListener = this)
-        homeViewModel.getPatients("", preference.getLoggedInUser()?.facility?.get(0)?.facilityId, homeAdapter.isNotEmpty())
     }
 
     override fun onResume() {
         super.onStart()
+        homeViewModel.getPatients((this.parentFragment)?.view?.findViewById<SearchView>(R.id.searchView)?.query.toString(), preference.getLoggedInUser()?.facility?.get(0)?.facilityId, homeAdapter.isNotEmpty())
         (this.parentFragment)?.view?.findViewById<SearchView>(R.id.searchView)?.setOnQueryTextListener(this)
     }
     override fun initView() {
