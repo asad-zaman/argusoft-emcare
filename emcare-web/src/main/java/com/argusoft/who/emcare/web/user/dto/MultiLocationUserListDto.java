@@ -14,6 +14,7 @@ public class MultiLocationUserListDto {
     private String email;
     private String phone;
     private String countryCode;
+    private String language;
     private Boolean enabled;
     private List<String> realmRoles;
     private List<LocationMasterWithHierarchy> locations;
@@ -105,5 +106,13 @@ public class MultiLocationUserListDto {
 
     public void setCountryCode(String countryCode) {
         this.countryCode = countryCode;
+    }
+
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
     }
 }
