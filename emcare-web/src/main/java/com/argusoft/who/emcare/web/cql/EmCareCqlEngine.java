@@ -12,6 +12,8 @@ import org.opencds.cqf.cql.engine.data.DataProvider;
 import org.opencds.cqf.cql.engine.data.SystemDataProvider;
 import org.opencds.cqf.cql.engine.execution.*;
 import org.opencds.cqf.cql.engine.model.BaseModelResolver;
+import org.opencds.cqf.cql.engine.runtime.Code;
+import org.opencds.cqf.cql.engine.runtime.Interval;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -55,15 +57,83 @@ public class EmCareCqlEngine {
         List<Patient> patientList = emcareResourceService.getAllPatientResources();
 //        BaseModelResolver baseModelResolver = new SystemDataProvider();
 //        baseModelResolver.resolveType(Patient.class);
-//        Map<String, DataProvider> dataProvider = new HashMap<>();
-//        dataProvider.put("Patient",baseModelResolver);
-        CqlEngine engine = new CqlEngine(libraryLoader);
+        DataProvider dataProvider =  new DataProvider() {
+            @Override
+            public String getPackageName() {
+                return null;
+            }
+
+            @Override
+            public void setPackageName(String packageName) {
+
+            }
+
+            @Override
+            public Object resolvePath(Object target, String path) {
+                return null;
+            }
+
+            @Override
+            public Object getContextPath(String contextType, String targetType) {
+                return null;
+            }
+
+            @Override
+            public Class<?> resolveType(String typeName) {
+                return null;
+            }
+
+            @Override
+            public Class<?> resolveType(Object value) {
+                return null;
+            }
+
+            @Override
+            public Boolean is(Object value, Class<?> type) {
+                return null;
+            }
+
+            @Override
+            public Object as(Object value, Class<?> type, boolean isStrict) {
+                return null;
+            }
+
+            @Override
+            public Object createInstance(String typeName) {
+                return null;
+            }
+
+            @Override
+            public void setValue(Object target, String path, Object value) {
+
+            }
+
+            @Override
+            public Boolean objectEqual(Object left, Object right) {
+                return null;
+            }
+
+            @Override
+            public Boolean objectEquivalent(Object left, Object right) {
+                return null;
+            }
+
+            @Override
+            public Iterable<Object> retrieve(String context, String contextPath, Object contextValue, String dataType, String templateId, String codePath, Iterable<Code> codes, String valueSet, String datePath, String dateLowPath, String dateHighPath, Interval dateRange) {
+                return null;
+            }
+        };
+        dataProvider.setValue("Patient","",patientList.get(0));
+        Map<String, DataProvider> data = new HashMap<>();
+        data.put("Patient",dataProvider);
+        CqlEngine engine = new CqlEngine(libraryLoader,data,null);
+
 
         System.out.println(patientList.get(0).toString());
-        Map<String,Object> parameters = new HashMap<>();
-        parameters.put("Patient",patientList.get(0).getIdElement().getValue());
+//        Map<String,Object> parameters = new HashMap<>();
+//        parameters.put("Patient",patientList.get(0).getIdElement().getValue());
 
-        EvaluationResult result = engine.evaluate("emcareb7ltidangersigns" ,parameters);
+        EvaluationResult result = engine.evaluate("emcareb7ltidangersigns");
 
         return result.forExpression("AgeInMonths");
     }
