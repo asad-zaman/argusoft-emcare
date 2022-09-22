@@ -8,16 +8,21 @@ import org.cqframework.cql.cql2elm.LibraryManager;
 import org.cqframework.cql.cql2elm.ModelManager;
 import org.cqframework.cql.elm.execution.Library;
 import org.hl7.fhir.r4.model.Patient;
+import org.opencds.cqf.cql.engine.data.DataProvider;
+import org.opencds.cqf.cql.engine.data.SystemDataProvider;
 import org.opencds.cqf.cql.engine.execution.*;
+import org.opencds.cqf.cql.engine.model.BaseModelResolver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.*;
 
 @Service
 public class EmCareCqlEngine {
@@ -47,17 +52,20 @@ public class EmCareCqlEngine {
         Library library = toLibrary(text);
 
         LibraryLoader libraryLoader = new InMemoryLibraryLoader(Collections.singleton(library));
-
-        CqlEngine engine = new CqlEngine(libraryLoader);
         List<Patient> patientList = emcareResourceService.getAllPatientResources();
-//        Map<String, Object> parameters = new HashMap<>();
-//        parameters.put("patient",patientList.get(0));
+//        BaseModelResolver baseModelResolver = new SystemDataProvider();
+//        baseModelResolver.resolveType(Patient.class);
+//        Map<String, DataProvider> dataProvider = new HashMap<>();
+//        dataProvider.put("Patient",baseModelResolver);
+        CqlEngine engine = new CqlEngine(libraryLoader);
+
         System.out.println(patientList.get(0).toString());
-        Pair<String,Object> parameters = new MutablePair<>("Patient",patientList.get(0));
+        Map<String,Object> parameters = new HashMap<>();
+        parameters.put("Patient",patientList.get(0).getIdElement().getValue());
 
-        EvaluationResult result = engine.evaluate("emcaredt01" ,parameters);
+        EvaluationResult result = engine.evaluate("emcareb7ltidangersigns" ,parameters);
 
-        return result.forExpression("EmCareDT02");
+        return result.forExpression("AgeInMonths");
     }
 
     private static Library toLibrary(String text) throws IOException {

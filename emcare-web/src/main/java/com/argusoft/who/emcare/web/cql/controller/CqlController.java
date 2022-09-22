@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
+import java.text.ParseException;
 
 @CrossOrigin(origins = "**")
 @RestController
@@ -24,10 +25,11 @@ public class CqlController {
     }
 
     @GetMapping("/execute/patient")
-    public Object executeCqlForPatient() throws IOException {
-        String str = "\n" +
-                "library emcaredt01\n" +
-                "using FHIR version 4.0.1\n" +
+    public Object executeCqlForPatient() throws IOException, ParseException {
+        String str = "library emcareb7ltidangersigns\n" +
+                "using FHIR version '4.0.1'\n" +
+                "using FHIR version '4.0.1'\n" +
+                "\n" +
                 "define function ToInterval(period FHIR.Period):\n" +
                 "    if period is null then\n" +
                 "        null\n" +
@@ -423,23 +425,15 @@ public class CqlController {
                 "define function ToTime(value time): value.value\n" +
                 "define function ToString(value uri): value.value\n" +
                 "define function ToString(value xhtml): value.value" +
-                "//i nclude EmCareBase called Base\n" +
-                "//i nclude EmCareConcepts called Cx\n" +
-                "//i nclude EmCareDataElements called Dx\n" +
+                "\n" +
+                "\n" +
                 "context Patient\n" +
                 "\n" +
                 "\n" +
-                "/* EmCareDT01 : Register a child < 5 years*/\n" +
-                "define \"EmCareDT01\":\n" +
-                "    difference in years between today() and  Patient.BirthDate < 5\n" +
+                "/* AgeInMonths : Age auto-calculated (presented as number of years, months, days) of the client based on date of birth OR estimated age OR based on auto-calculation from estimaged date of birth*/\n" +
+                "define \"AgeInMonths\":\n" +
                 "\n" +
-                "/* Register a child < 5 years : */\n" +
-                "define \"Register a child < 5 years\":\n" +
-                "    \"EmCareDT01\"\n" +
-                "\n" +
-                "/* EmCareDT02 : Register the child in the encounter*/\n" +
-                "define \"EmCareDT02\":\n" +
-                "    difference in years between today() and  Patient.BirthDate < 5\n"
+                "    AgeInMonths()"
                 ;
         return emCareCqlEngine.executePatient(str);
     }
