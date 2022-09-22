@@ -115,6 +115,11 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
         binding.sidepaneRecyclerView.visibility = if(binding.sidepaneRecyclerView.visibility == View.GONE) View.VISIBLE else View.GONE
     }
 
+    fun closeSidepane() {
+        binding.sidepaneConstraintLayout.visibility = View.GONE
+        binding.sidepaneRecyclerView.visibility = View.GONE
+    }
+
     override fun initObserver() {
         observeNotNull(settingsViewModel.languageApiState) {
             it.whenSuccess {

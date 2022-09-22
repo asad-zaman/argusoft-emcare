@@ -68,6 +68,11 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(){
 
     }
 
+    override fun onResume() {
+        super.onResume()
+        (activity as? HomeActivity)?.closeSidepane()
+    }
+
     override fun initObserver() {
         observeNotNull(syncViewModel.syncState) {
             when (it) {

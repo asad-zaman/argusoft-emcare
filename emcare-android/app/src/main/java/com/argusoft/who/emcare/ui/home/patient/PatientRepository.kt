@@ -4,6 +4,8 @@ import android.app.Application
 import com.argusoft.who.emcare.R
 import androidx.lifecycle.viewModelScope
 import ca.uhn.fhir.context.FhirContext
+import ca.uhn.fhir.rest.param.ParamPrefixEnum
+import ca.uhn.fhir.rest.param.TokenParamModifier
 import com.argusoft.who.emcare.data.remote.ApiResponse
 import com.argusoft.who.emcare.ui.common.LOCATION_EXTENSION_URL
 import com.argusoft.who.emcare.ui.common.model.PatientItem
@@ -15,8 +17,10 @@ import com.google.android.fhir.datacapture.validation.Invalid
 import com.google.android.fhir.datacapture.validation.QuestionnaireResponseValidator
 import com.google.android.fhir.delete
 import com.google.android.fhir.get
+import com.google.android.fhir.search.Operation
 import com.google.android.fhir.search.Order
 import com.google.android.fhir.search.StringFilterModifier
+import com.google.android.fhir.search.filter.TokenFilterValue
 import com.google.android.fhir.search.search
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
@@ -37,7 +41,7 @@ class PatientRepository @Inject constructor(
     fun getPatients(search: String? = null, facilityId: String?) = flow {
         val riskAssessment = getRiskAssessments()
         val list = fhirEngine.search<Patient> {
-            if (!search.isNullOrEmpty())
+            if (!search.isNullOrEmpty()) {
                 filter(
                     Patient.NAME,
                     {
@@ -45,6 +49,14 @@ class PatientRepository @Inject constructor(
                         value = search
                     }
                 )
+                filter(
+                    Patient.IDENTIFIER,
+                    {
+                        value = of(Identifier().apply { value = search })
+                    }
+                )
+                operation = Operation.OR
+            }
             sort(Patient.GIVEN, Order.ASCENDING)
             count = 100
             from = 0
@@ -2842,8 +2854,6 @@ class PatientRepository @Inject constructor(
             emit(ApiResponse.ApiError(apiErrorMessageResId = R.string.error_valid_data))
         }
         catch (e: Exception) {
-            print(e.stackTrace)
-            print(e.message)
             emit(ApiResponse.ApiError(apiErrorMessageResId = R.string.error_saving_resource))
         }
 

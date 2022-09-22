@@ -78,13 +78,21 @@ class HomeViewModel @Inject constructor(
                 header = "Signs",
                 questionnaireName = "EmCare.B10-16.Signs.2m.p" ),
             ConsultationItemData(patientId="",
-                name="Alok Adhesara",
+                name="Prateek Vaghela",
                 dateOfBirth="10/10/20",
                 dateOfConsultation = "10/10/21",
                 badgeText = "Measurements",
                 consultationIcon = R.drawable.closed_consultation_icon_dark,
                 header = "Measurements",
                 questionnaireName = "emcare.b6.measurements"),
+            ConsultationItemData(patientId="",
+                name="Alok Adhesara",
+                dateOfBirth="10/10/20",
+                dateOfConsultation = "10/10/21",
+                badgeText = "New Registration",
+                consultationIcon = R.drawable.closed_consultation_icon_dark,
+                header = "New Registration",
+                questionnaireName = "registration.ideal.q"),
         )
     }
 
