@@ -5,24 +5,21 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.uhn.fhir.context.FhirContext
-import ca.uhn.fhir.rest.gclient.ReferenceClientParam
 import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.data.remote.ApiResponse
 import com.argusoft.who.emcare.ui.common.model.ConsultationItemData
 import com.argusoft.who.emcare.ui.common.model.PatientItem
 import com.argusoft.who.emcare.ui.home.patient.PatientRepository
+import com.argusoft.who.emcare.utils.extention.orEmpty
 import com.argusoft.who.emcare.utils.listener.SingleLiveEvent
-import com.google.android.fhir.FhirEngine
 import com.google.android.fhir.datacapture.common.datatype.asStringValue
 import com.google.android.fhir.datacapture.createQuestionnaireResponseItem
-import com.google.android.fhir.datacapture.mapping.ResourceMapper
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import org.hl7.fhir.r4.model.*
+import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
@@ -33,6 +30,9 @@ class HomeViewModel @Inject constructor(
     var currentTab: Int = 0
     private val _patients = SingleLiveEvent<ApiResponse<List<PatientItem>>>()
     val patients: LiveData<ApiResponse<List<PatientItem>>> = _patients
+
+    private val _consultations = SingleLiveEvent<ApiResponse<List<ConsultationItemData>>>()
+    val consultations: LiveData<ApiResponse<List<ConsultationItemData>>> = _consultations
 
     private val _questionnaire = SingleLiveEvent<ApiResponse<Questionnaire>>()
     val questionnaire: LiveData<ApiResponse<Questionnaire>> = _questionnaire
@@ -53,24 +53,26 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun getConsultations() : ArrayList<ConsultationItemData?>{
-        return arrayListOf(
+    fun getConsultations(search: String? = null, facilityId: String?, isRefresh: Boolean = false){
+        _consultations.value = ApiResponse.Loading(isRefresh)
+        val consultationsArrayList = mutableListOf(
             ConsultationItemData(patientId="",
-                name="Abdul Rahim",
+                name="Test",
                 dateOfBirth="02/02/20",
                 dateOfConsultation = "07/06/21",
                 badgeText = "Test",
                 consultationIcon = R.drawable.measurements_icon,
                 header="Test", questionnaireName = "default.layout"),
             ConsultationItemData(patientId="",
-                name="Pinar Toprak",
-                dateOfBirth="04/05/21 ",
-                dateOfConsultation = "10/09/21",
-                badgeText = "Registration",
-                consultationIcon = R.drawable.registration_icon,
-                header = "Registration", questionnaireName = "emcarea.registration.p.august"),
+                name="New Registration",
+                dateOfBirth="10/10/20",
+                dateOfConsultation = "10/10/21",
+                badgeText = "New Registration",
+                consultationIcon = R.drawable.closed_consultation_icon_dark,
+                header = "New Registration",
+                questionnaireName = "registration.ideal.q"),
             ConsultationItemData(patientId="",
-                name="Mohammad Faruqi",
+                name="Signs",
                 dateOfBirth="10/10/20",
                 dateOfConsultation = "01/01/22",
                 badgeText = "Signs",
@@ -78,22 +80,34 @@ class HomeViewModel @Inject constructor(
                 header = "Signs",
                 questionnaireName = "EmCare.B10-16.Signs.2m.p" ),
             ConsultationItemData(patientId="",
-                name="Prateek Vaghela",
+                name="Measurements",
                 dateOfBirth="10/10/20",
                 dateOfConsultation = "10/10/21",
                 badgeText = "Measurements",
                 consultationIcon = R.drawable.closed_consultation_icon_dark,
                 header = "Measurements",
                 questionnaireName = "emcare.b6.measurements"),
-            ConsultationItemData(patientId="",
-                name="Alok Adhesara",
-                dateOfBirth="10/10/20",
-                dateOfConsultation = "10/10/21",
-                badgeText = "New Registration",
-                consultationIcon = R.drawable.closed_consultation_icon_dark,
-                header = "New Registration",
-                questionnaireName = "registration.ideal.q"),
         )
+        viewModelScope.launch {
+            patientRepository.getPatients(search, facilityId).collect {
+                it.data?.forEach {  patientItem ->
+                    consultationsArrayList.add(
+                        ConsultationItemData(
+                            patientId = patientItem.id,
+                            name = patientItem.name.orEmpty { patientItem.identifier ?:"NA #${patientItem.resourceId?.takeLast(9)}"},
+                            dateOfBirth = patientItem.dob ?: "21/06/99",
+                            dateOfConsultation = SimpleDateFormat("dd/MM/YY").format(Date()),
+                            badgeText = "Signs",
+                            consultationIcon = R.drawable.sign_icon,
+                            header = "Signs",
+                            questionnaireName = "EmCare.B10-16.Signs.2m.p"
+                        )
+                    )
+                }
+                _consultations.value = ApiResponse.Success(consultationsArrayList)
+            }
+        }
+
     }
 
     fun getQuestionnaire(questionnaireId: String) {

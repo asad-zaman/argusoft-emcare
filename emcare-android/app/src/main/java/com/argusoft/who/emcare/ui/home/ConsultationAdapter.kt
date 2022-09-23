@@ -1,5 +1,6 @@
 package com.argusoft.who.emcare.ui.home
 
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.argusoft.who.emcare.R
@@ -14,7 +15,8 @@ import com.argusoft.who.emcare.utils.extention.navigate
 import com.argusoft.who.emcare.utils.extention.toBinding
 
 class ConsultationAdapter(
-    val list: ArrayList<ConsultationItemData?> = arrayListOf()
+    val list: ArrayList<ConsultationItemData?> = arrayListOf() ,
+    private val onClickListener: View.OnClickListener
 ) : BaseAdapter<ConsultationItemData>(list) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {

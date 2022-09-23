@@ -22,15 +22,19 @@ class ConsultationListFragment: BaseFragment<FragmentConsultationListBinding>(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         glideRequests = GlideApp.with(this)
-        consultationAdapter = ConsultationAdapter(homeViewModel.getConsultations())
+        consultationAdapter = ConsultationAdapter(onClickListener = this)
     }
 
+    override fun onResume() {
+        super.onStart()
+        homeViewModel.getConsultations((this.parentFragment)?.view?.findViewById<SearchView>(R.id.searchView)?.query.toString(), preference.getLoggedInUser()?.facility?.get(0)?.facilityId, consultationAdapter.isNotEmpty())
+        (this.parentFragment)?.view?.findViewById<SearchView>(R.id.searchView)?.setOnQueryTextListener(this)
+    }
     override fun initView() {
         setupRecyclerView()
     }
 
     override fun initListener() {
-        (this.parentFragment)?.view?.findViewById<SearchView>(R.id.searchView)?.setOnQueryTextListener(this)
     }
 
     override fun onQueryTextSubmit(query: String?): Boolean {
@@ -38,13 +42,20 @@ class ConsultationListFragment: BaseFragment<FragmentConsultationListBinding>(),
     }
 
     override fun onQueryTextChange(newText: String?): Boolean {
-        consultationAdapter.clearAllItems()
-        consultationAdapter.addAll(homeViewModel.getConsultations())
+        homeViewModel.getConsultations((this.parentFragment)?.view?.findViewById<SearchView>(R.id.searchView)?.query.toString(), preference.getLoggedInUser()?.facility?.get(0)?.facilityId, consultationAdapter.isNotEmpty())
         return true
     }
 
 
     override fun initObserver() {
+        observeNotNull(homeViewModel.consultations) { apiResponse ->
+            apiResponse.handleListApiView(binding.progressLayout, skipIds = listOf(R.id.searchView, R.id.swipeRefreshLayout)) {
+                it?.let { list ->
+                    consultationAdapter.clearAllItems()
+                    consultationAdapter.addAll(list)
+                }
+            }
+        }
     }
 
     private fun setupRecyclerView() {
@@ -52,8 +63,7 @@ class ConsultationListFragment: BaseFragment<FragmentConsultationListBinding>(),
         binding.progressLayout.swipeRefreshLayout = binding.swipeRefreshLayout
         binding.recyclerView.adapter = consultationAdapter
         binding.progressLayout.setOnSwipeRefreshLayout {
-            consultationAdapter.clearAllItems()
-            consultationAdapter.addAll(homeViewModel.getConsultations())
+            homeViewModel.getConsultations((this.parentFragment)?.view?.findViewById<SearchView>(R.id.searchView)?.query.toString(), preference.getLoggedInUser()?.facility?.get(0)?.facilityId, consultationAdapter.isNotEmpty())
         }
     }
 
