@@ -84,8 +84,9 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.FilledBox">
+    <style name="TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
         <item name="boxBackgroundColor">@color/colorWhite</item>
+        <item name="boxStrokeColor">@color/colorAccent</item>
     </style>
 
     <style name="TextInputEditText" parent="Widget.AppCompat.EditText">
@@ -215,7 +216,7 @@
         <item name="questionnaireDropDownTextStyle">@style/Questionnaire.questionnaireDropDownTextStyle</item>
 <!--        <item name="questionnaireDropDownSelectedTextStyle">@style/Questionnaire.DropDownTextInputEditText</item>-->
         <item name="questionnaireDropdownLayoutStyle">@style/Questionnaire.questionnaireDropdownLayoutStyle</item>
-        <item name="questionnaireTextInputEditTextStyle">@style/Questionnaire.TextInputEditText</item>
+<!--        <item name="questionnaireTextInputEditTextStyle">@style/Questionnaire.TextInputEditText</item>-->
         <item name="questionnaireChipStyle">@style/Widget.MaterialComponents.Chip.Entry</item>
         <item name="questionnaireButtonStyle">@style/Questionnaire.Button</item>
         <item name="questionnaireTextInputLayoutStyle">@style/TextInputLayout</item>
