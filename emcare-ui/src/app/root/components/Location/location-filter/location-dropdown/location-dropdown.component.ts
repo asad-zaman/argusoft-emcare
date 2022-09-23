@@ -23,6 +23,7 @@ export class LocationDropdownComponent implements OnInit {
 
   @Input() isMultiplePage?;
   @Input() idArr?: Array<any>;
+  @Input() isOtherPage?: boolean;
   @Output() locationFormValueAndDropdownArr = new EventEmitter<any>();
 
   eventsSubscription: Subscription;

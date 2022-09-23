@@ -52,6 +52,20 @@
               optionLabel="name"></p-dropdown>
           </div>
         </div>
+        <div class="col-12 col-sm-12">
+          <div class="mb-3">
+            <label class="form-label">{{'PhoneNumber' | translate}}</label>
+            <ngx-intl-tel-input [cssClass]="'custom'" [preferredCountries]="[CountryISO.India, CountryISO.UnitedStates]"
+              [enableAutoCountrySelect]="false" [enablePlaceholder]="true" [searchCountryFlag]="true"
+              [searchCountryField]="[SearchCountryField.Iso2, SearchCountryField.Name]" [selectFirstCountry]="false"
+              [selectedCountryISO]="this.currentUserForm.get('countryCode').value" [maxLength]="15" [separateDialCode]="separateDialCode"
+              [phoneValidation]="true" [numberFormat]="PhoneNumberFormat.National" name="phone" formControlName="phone">
+            </ngx-intl-tel-input>
+            <div *ngIf="submitted && this.currentUserForm.controls.phone.value == null" class="error">
+              {{'Phone Required Message' | translate}}
+            </div>
+          </div>
+        </div>
       </div>
       <div class="text-end mt-5">
         <hr>

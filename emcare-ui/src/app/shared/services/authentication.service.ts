@@ -29,8 +29,19 @@ export class AuthenticationService {
         }
     }
 
-    signup(firstName: string, lastName: string, email: string, password: string, facilityIds: Number, roleName: string) {
-        const user = { firstName, lastName, email, password, regRequestFrom: 'web', facilityIds, roleName };
+    signup(
+        firstName: string, lastName: string,
+        email: string, userName: string, password: string,
+        facilityIds: Number, roleName: string,
+        countryCode: string, phone: string
+    ) {
+        const user = {
+            firstName, lastName,
+            email, userName, password,
+            regRequestFrom: 'web',
+            facilityIds, roleName,
+            countryCode, phone
+        };
         return this.http.post<any>(`${this.backendURL}/api/signup`, user)
             .pipe(map(user => {
                 this.userInfo.next(user);

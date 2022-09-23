@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { AuthenticationService, ToasterService } from 'src/app/shared';
+import { AuthenticationService, FhirService, ToasterService } from 'src/app/shared';
 import { Router } from '@angular/router';
 import { first } from 'rxjs/operators';
 import { MustMatch } from 'src/app/shared/validators/must-match.validator';
+import { SearchCountryField, CountryISO, PhoneNumberFormat } from 'ngx-intl-tel-input';
+
 @Component({
   selector: 'app-signup',
   templateUrl: './signup.component.html',
@@ -19,6 +21,12 @@ export class SignupComponent implements OnInit {
   facilityArr: any = [];
   roleArr: any = [];
 
+  separateDialCode = true;
+  SearchCountryField = SearchCountryField;
+  CountryISO = CountryISO;
+  PhoneNumberFormat = PhoneNumberFormat;
+  preferredCountries: CountryISO[] = [CountryISO.UnitedStates, CountryISO.UnitedKingdom];
+
   constructor(
     private readonly formBuilder: FormBuilder,
     private readonly authService: AuthenticationService,
@@ -27,6 +35,10 @@ export class SignupComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.prerequisite();
+  }
+
+  prerequisite() {
     this.initSignUpForm();
     this.getAllLocations();
     this.getAllRoles();
@@ -40,7 +52,9 @@ export class SignupComponent implements OnInit {
       password: ['', [Validators.required]],
       confirmPassword: ['', [Validators.required]],
       location: ['', [Validators.required]],
-      role: ['', [Validators.required]]
+      role: ['', [Validators.required]],
+      countryCode: [CountryISO.India],
+      phone: ['', [Validators.required]]  // 10 digit number
     }, {
       validator: MustMatch('password', 'confirmPassword')
     });
@@ -70,12 +84,14 @@ export class SignupComponent implements OnInit {
 
   userSignup() {
     this.submitted = true;
-    // stop here if form is invalid
+    //  stop here if form is invalid
     if (this.signupForm.valid) {
       const facilityIdArr = this.signupForm.value.location.map(l => l.id);
-      this.authService.signup(this.signupForm.value.firstname, this.signupForm.value.lastname,
-        this.signupForm.value.username, this.signupForm.value.password,
-        facilityIdArr, this.signupForm.value.role.name
+      this.authService.signup(
+        this.signupForm.value.firstname, this.signupForm.value.lastname,
+        this.signupForm.value.username, this.signupForm.value.username, this.signupForm.value.password,
+        facilityIdArr, this.signupForm.value.role.name,
+        this.signupForm.value.phone.countryCode, this.signupForm.value.phone.number
       ).pipe(first()).subscribe(_data => {
         this.router.navigate(["/login"]);
         this.toasterService.showToast('success', 'User added successfully!', 'EMCARE');

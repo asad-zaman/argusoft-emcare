@@ -1,6 +1,6 @@
 <form [formGroup]="locationFilterForm" name="locationFilterForm" novalidate>
   <div class="row">
-    <div *ngIf="facilityArr.length > 0" class="col-12 col-sm-12">
+    <div *ngIf="facilityArr.length > 0 && !isOtherPage" class="col-12 col-sm-12">
       <div class="mb-3">
         <label class="form-label">{{'Facility' | translate}}</label>
         <p-dropdown placeholder="Select" [options]="facilityArr" formControlName="facility" optionLabel="name"

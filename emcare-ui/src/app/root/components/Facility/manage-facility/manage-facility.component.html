@@ -152,7 +152,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body cst-body">
-        <app-location-dropdown [idArr]="locationIdArr" (locationFormValueAndDropdownArr)="getFormValue($event)">
+        <app-location-dropdown [isOtherPage]="true" [idArr]="locationIdArr" (locationFormValueAndDropdownArr)="getFormValue($event)">
         </app-location-dropdown>
       </div>
       <div class="modal-footer">

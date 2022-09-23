@@ -19,8 +19,9 @@
           <th class="text-center w-5">{{'ID' | translate}}</th>
           <th class="text-center w-10">{{'Name' | translate}}</th>
           <th class="text-center w-15">{{'Email' | translate}}</th>
+          <th class="text-center w-10">{{'Phone' | translate}}</th>
           <th class="text-center w-10">{{'Role' | translate}}</th>
-          <th class="text-center w-30">{{'Facility' | translate}}</th>
+          <th class="text-center w-25">{{'Facility' | translate}}</th>
           <th class="text-center w-10">{{'Location' | translate}}</th>
           <th class="text-center w-10">{{'Status' | translate}}</th>
           <th class="text-center w-5" *ngIf="isEdit"></th>
@@ -35,6 +36,7 @@
               </td>
               <td class="text-center cst-break">{{user.firstName}} {{user.lastName}}</td>
               <td class="text-center">{{user.userName}}</td>
+              <td class="text-center">{{user.phone ? user.phone : 'NA'}}</td>
               <td class="text-center">{{user.realmRoles[0] ? (user.realmRoles[0] | uppercase) : 'NA'}}</td>
               <ng-container></ng-container>
               <td class="cst-text-overflow"
