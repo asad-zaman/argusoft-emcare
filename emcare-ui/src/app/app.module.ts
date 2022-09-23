@@ -60,6 +60,7 @@ import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { ManageOrganizationComponent } from './root/components/manage-organization/manage-organization.component';
 import { OrganizationListComponent } from './root/components/organization-list/organization-list.component';
+import { NgxIntlTelInputModule } from 'ngx-intl-tel-input';
 
 @NgModule({
   declarations: [
@@ -118,7 +119,8 @@ import { OrganizationListComponent } from './root/components/organization-list/o
     ButtonModule,
     CardModule,
     ChartModule,
-    ToastModule
+    ToastModule,
+    NgxIntlTelInputModule
   ],
   providers: [
     AuthenticationService,

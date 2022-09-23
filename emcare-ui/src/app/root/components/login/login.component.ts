@@ -24,9 +24,11 @@ export class LoginComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    //  only for developement purpose
+    const url = 'http://localhost:4200/login';
     this.loginForm = this.formBuilder.group({
-      username: ['emcare@gmail.com', [Validators.required, Validators.pattern('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-]+$')]],
-      password: ['argusadmin', Validators.required]
+      username: [window.location.href == url ? 'emcare@gmail.com' : '', [Validators.required, Validators.pattern('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-]+$')]],
+      password: [window.location.href == url ? 'argusadmin' : '', Validators.required]
     });
   }
 
@@ -53,7 +55,7 @@ export class LoginComponent implements OnInit {
             refreshTokenexpiration.setSeconds(new Date().getSeconds() + data.refresh_expires_in);
             localStorage.setItem('refresh_token', JSON.stringify(data.refresh_token));
             localStorage.setItem('refresh_token_expiry_time', JSON.stringify(refreshTokenexpiration));
-            
+
             this.getLoggedInUserData();
           }
         },

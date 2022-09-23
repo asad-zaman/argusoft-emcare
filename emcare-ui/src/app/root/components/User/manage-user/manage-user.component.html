@@ -53,8 +53,8 @@
               </div>
             </div>
           </div>
-          <div *ngIf="!isEdit" class="row">
-            <div class="col-12 col-sm-12">
+          <div class="row">
+            <div *ngIf="!isEdit" class="col-12 col-sm-12">
               <div class="mb-3">
                 <label class="form-label">{{'Email' | translate}}</label>
                 <input formControlName="email" id="email" placeholder="{{'Email Placeholder' | translate}}" type="email"
@@ -70,16 +70,21 @@
             <div class="col-12 col-sm-12">
               <div class="mb-3">
                 <label class="form-label">{{'PhoneNumber' | translate}}</label>
-                <input formControlName="phone" id="phone" placeholder="{{'Phone Placeholder' | translate}}" type="text"
-                  class="form-control custom-input" [ngClass]="{ 'is-invalid': submitted && f.phone.errors }">
-                <div *ngIf="submitted && f.phone.errors" class="invalid-feedback">
-                  <div class="cst-error-style" *ngIf="f.phone.errors.required">
-                    {{'Phone Required Message' | translate}}</div>
+                <ngx-intl-tel-input [cssClass]="'custom'"
+                  [preferredCountries]="[CountryISO.India, CountryISO.UnitedStates]" [enableAutoCountrySelect]="false"
+                  [enablePlaceholder]="true" [searchCountryFlag]="true"
+                  [searchCountryField]="[SearchCountryField.Iso2, SearchCountryField.Name]" [selectFirstCountry]="false"
+                  [selectedCountryISO]="this.userForm.get('countryCode').value" [maxLength]="15" [separateDialCode]="separateDialCode"
+                  [phoneValidation]="true" [numberFormat]="PhoneNumberFormat.National" name="phone"
+                  formControlName="phone">
+                </ngx-intl-tel-input>
+                <div *ngIf="submitted && this.userForm.controls.phone.value == null" class="error">
+                  {{'Phone Required Message' | translate}}
                 </div>
               </div>
             </div>
-            <div class="col-12 col-sm-12">
-              <div class="mb-3">
+            <div *ngIf="!isEdit" class="col-12 col-sm-12">
+              <div *ngIf="roles.length>0" class="mb-3">
                 <label class="form-label">{{'Role' | translate}}</label>
                 <p-dropdown
                   [ngStyle]="{'border': submitted && this.userForm.controls.role.value == '' ? '1px solid red' : ''}"

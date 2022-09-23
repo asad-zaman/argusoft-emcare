@@ -27,7 +27,8 @@
           <ng-container *ngFor="let questionnaire of filteredQuestionnaireList | 
           paginate : { itemsPerPage: tableSize, currentPage: currentPage, totalItems: totalCount }; let i=index">
             <tr>
-              <td>{{i+1}}</td>
+              <td>{{currentPage == 0 ? ((currentPage)*10 + i + 1) : ((currentPage-1)*10 + i + 1)}}
+              </td>
               <td>{{questionnaire.id}}</td>
               <td>{{questionnaire.title ? questionnaire.title : 'NA'}}</td>
               <td>{{questionnaire.description ? questionnaire.description : 'NA'}}

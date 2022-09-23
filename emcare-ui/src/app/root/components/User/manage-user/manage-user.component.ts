@@ -6,6 +6,7 @@ import { RoleManagementService } from 'src/app/root/services/role-management.ser
 import { UserManagementService } from 'src/app/root/services/user-management.service';
 import { FhirService, ToasterService } from 'src/app/shared';
 import { MustMatch } from 'src/app/shared/validators/must-match.validator';
+import { SearchCountryField, CountryISO, PhoneNumberFormat } from 'ngx-intl-tel-input';
 
 @Component({
   selector: 'app-manage-user',
@@ -17,13 +18,20 @@ export class ManageUserComponent implements OnInit {
   userForm: FormGroup;
   isEdit: boolean = false;
   editId: string;
-  roles: any;
+  roles: any = [];
   submitted = false;
   isAddFeature: boolean = true;
   isEditFeature: boolean = true;
   isAllowed: boolean = true;
   facilityArr = [];
   selectedFacility;
+
+  separateDialCode = true;
+  SearchCountryField = SearchCountryField;
+  CountryISO = CountryISO;
+  PhoneNumberFormat = PhoneNumberFormat;
+  preferredCountries: CountryISO[] = [CountryISO.UnitedStates, CountryISO.UnitedKingdom];
+  language: string;
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -34,7 +42,6 @@ export class ManageUserComponent implements OnInit {
     private readonly toasterService: ToasterService,
     private readonly authGuard: AuthGuard,
     private readonly fhirService: FhirService
-
   ) { }
 
   ngOnInit(): void {
@@ -98,8 +105,12 @@ export class ManageUserComponent implements OnInit {
           firstName: res['firstName'],
           lastName: res['lastName'],
           username: res['userName'],
-          facility: this.mapFacilityRes(res['facilities'])
+          facility: this.mapFacilityRes(res['facilities']),
+          countryCode: res['countryCode'],
+          phone: res['phone'],
         };
+        console.log(res['countryCode'], res['phone']);
+        this.language = res['language'];
         this.userForm.patchValue(data);
       }
     });
@@ -110,6 +121,7 @@ export class ManageUserComponent implements OnInit {
       this.userForm = this.formBuilder.group({
         firstName: ['', [Validators.required]],
         lastName: ['', [Validators.required]],
+        countryCode: [CountryISO.India],
         phone: ['', [Validators.required]],
         selectedFacility: [''],
         facility: ['', Validators.required]
@@ -120,7 +132,8 @@ export class ManageUserComponent implements OnInit {
         firstName: ['', [Validators.required]],
         lastName: ['', [Validators.required]],
         email: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-]+$')]],
-        phone: ['', [Validators.required]],
+        countryCode: [CountryISO.India],
+        phone: ['', [Validators.required]],  // 10 digit number
         password: ['', Validators.required],
         confirmPassword: ['', Validators.required],
         role: ['', [Validators.required]],
@@ -159,7 +172,11 @@ export class ManageUserComponent implements OnInit {
           "firstName": this.userForm.get('firstName').value,
           "lastName": this.userForm.get('lastName').value,
           "regRequestFrom": "web",
-          "facilityIds": this.getFacilityIdFromArr(this.userForm.get('facility').value)
+          "facilityIds": this.getFacilityIdFromArr(this.userForm.get('facility').value),
+          "countryCode": this.userForm.get('phone').value.countryCode,
+          //  saving countries national number as code is already shown in input & dropdown tag
+          "phone": this.userForm.get('phone').value.number,
+          "language": this.language
         }
         this.userService.updateUser(data, this.editId).subscribe(res => {
           this.toasterService.showToast('success', 'User updated successfully!', 'EMCARE');
@@ -174,7 +191,10 @@ export class ManageUserComponent implements OnInit {
           "roleName": this.userForm.get('role').value ? this.userForm.get('role').value.name : '',
           "regRequestFrom": "web",
           "userName": this.userForm.get('username').value,
-          "facilityIds": this.getFacilityIdFromArr(this.userForm.get('facility').value)
+          "facilityIds": this.getFacilityIdFromArr(this.userForm.get('facility').value),
+          "countryCode": this.userForm.get('phone').value.countryCode,
+          "phone": this.userForm.get('phone').value.number,
+          "language": this.language
         }
         this.userService.createUser(data).subscribe(res => {
           this.toasterService.showToast('success', 'User added successfully!', 'EMCARE');

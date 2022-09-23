@@ -5,6 +5,7 @@ import { AuthenticationService, FhirService, ToasterService } from 'src/app/shar
 import { UserManagementService } from '../../services/user-management.service';
 import * as _ from 'lodash';
 import { LaunguageSubjects } from 'src/app/auth/token-interceptor';
+import { SearchCountryField, CountryISO, PhoneNumberFormat } from 'ngx-intl-tel-input';
 
 @Component({
   selector: 'app-manage-profile',
@@ -18,6 +19,12 @@ export class ManageProfileComponent implements OnInit {
   submitted: boolean;
   facilityIds;
   lanArr = [];
+
+  separateDialCode = true;
+  SearchCountryField = SearchCountryField;
+  CountryISO = CountryISO;
+  PhoneNumberFormat = PhoneNumberFormat;
+  preferredCountries: CountryISO[] = [CountryISO.UnitedStates, CountryISO.UnitedKingdom];
 
   constructor(
     private readonly authenticationService: AuthenticationService,
@@ -54,7 +61,9 @@ export class ManageProfileComponent implements OnInit {
       firstName: ['', [Validators.required]],
       lastName: ['', [Validators.required]],
       email: ['', [Validators.required]],
-      language: ['', [Validators.required]]
+      language: ['', [Validators.required]],
+      countryCode: [CountryISO.India],
+      phone: ['', [Validators.required]],  // 10 digit number
     });
   }
 
@@ -65,12 +74,13 @@ export class ManageProfileComponent implements OnInit {
   getLoggedInUserId() {
     this.authenticationService.getLoggedInUser().subscribe(res => {
       if (res) {
-        console.log(res);
         this.userId = res['userId'];
         this.currentUserForm.patchValue({
           firstName: res['firstName'],
           lastName: res['lastName'],
           email: res['email'],
+          countryCode: res['countryCode'],
+          phone: res['phone'],
           language: this.getLaunguageObjFromCode(res['language'])
         });
         this.facilityIds = res['facilities'] && res['facilities'].map(f => f.facilityId);
@@ -89,7 +99,9 @@ export class ManageProfileComponent implements OnInit {
         firstName: this.f.firstName.value,
         lastName: this.f.lastName.value,
         language: this.f.language.value.id,
-        facilityIds: this.facilityIds
+        facilityIds: this.facilityIds,
+        countryCode: this.f.phone.value.countryCode,
+        phone: this.f.phone.value.number
       }
       const translations = this.lanArr.find(el => el.id === this.f.language.value.id).translations;
       this.userService.updateUser(data, this.userId).subscribe(() => {
