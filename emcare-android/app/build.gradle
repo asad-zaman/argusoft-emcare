@@ -80,6 +80,9 @@ android {
     packagingOptions {
         pickFirst("META-INF/ASL-2.0.txt")
         pickFirst("META-INF/LGPL-3.0.txt")
+        exclude "license.html"
+        exclude "readme.html"
+        exclude "META-INF/sun-jaxb.episode"
     }
 }
 
@@ -156,7 +159,7 @@ dependencies {
     //Fhir
     implementation "com.google.android.fhir:engine:0.1.0-beta02"
     implementation "com.google.android.fhir:data-capture:0.1.0-beta05"
-//    implementation "com.google.android.fhir:workflow:0.1.0-alpha01"
+    implementation "com.google.android.fhir:workflow:0.1.0-alpha01"
 
     //EventBus
     implementation("org.greenrobot:eventbus:3.3.1")
