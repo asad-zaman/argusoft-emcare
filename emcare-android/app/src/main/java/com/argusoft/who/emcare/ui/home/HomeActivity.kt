@@ -1,6 +1,7 @@
 package com.argusoft.who.emcare.ui.home
 
 import android.opengl.Visibility
+import android.view.MotionEvent
 import android.view.View
 import android.widget.TextView
 import androidx.activity.viewModels
@@ -11,6 +12,7 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupWithNavController
+import androidx.recyclerview.widget.RecyclerView
 import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.databinding.ActivityHomeBinding
 import com.argusoft.who.emcare.ui.auth.signup.SignUpViewModel
@@ -77,11 +79,11 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
         sidepaneAdapter.clearAllItems()
         sidepaneAdapter.addAll(listOf(
             SidepaneItem(R.drawable.registration_icon, "Registration"),
-            SidepaneItem(R.drawable.danger_sign_icon, "Consultation"),
-            SidepaneItem(R.drawable.measurements_icon, "Measurements"),
-            SidepaneItem(R.drawable.symptoms_icon,"Symptoms"),
-            SidepaneItem(R.drawable.health_prevention_icon,"Health\nPreventions"),
             SidepaneItem(R.drawable.sign_icon,"Signs"),
+            SidepaneItem(R.drawable.symptoms_icon,"Symptoms"),
+            SidepaneItem(R.drawable.danger_sign_icon, "Danger Signs"),
+            SidepaneItem(R.drawable.measurements_icon, "Measurements"),
+            SidepaneItem(R.drawable.health_prevention_icon,"Health\nPreventions"),
             SidepaneItem(R.drawable.tests_icon,"Tests"),
             SidepaneItem(R.drawable.treatment_icon,"Treatments"),
             ))

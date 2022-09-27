@@ -33,6 +33,7 @@ class SyncViewModel @Inject constructor(
                 applicationContext,
                 fhirEngine,
                 DownloadWorkManagerImpl(),
+                UploadConfiguration(uploadBundleSize = 1000),
                 AcceptRemoteConflictResolver
             )
             val emCareResult = EmCareSync.oneTimeSync(api, database, preference, listOf(SyncType.FACILITY)) // TODO: IF translation support is required add SyncType.Language
