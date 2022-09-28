@@ -99,7 +99,7 @@ public class PatientResourceProvider implements IResourceProvider {
 
         String patientString = parser.encodeResourceToString(thePatient);
 
-        Extension facilityExtension = thePatient.getExtension().get(0);
+        Extension facilityExtension = thePatient.getExtensionByUrl(CommonConstant.LOCATION_EXTENSION_URL);
         String facilityId = ((Identifier) facilityExtension.getValue()).getValue();
         EmcareResource emcareResource = new EmcareResource();
         emcareResource.setText(patientString);
@@ -144,7 +144,7 @@ public class PatientResourceProvider implements IResourceProvider {
         if (emcareResource == null) {
             emcareResource = new EmcareResource();
         }
-        Extension facilityExtension = thePatient.getExtension().get(0);
+        Extension facilityExtension = thePatient.getExtensionByUrl(CommonConstant.LOCATION_EXTENSION_URL);
         String facilityId = ((Identifier) facilityExtension.getValue()).getValue();
         emcareResource.setText(patientString);
         emcareResource.setResourceId(patientId);

@@ -37,6 +37,7 @@ public class CommonConstant {
     //    FHIR
     public static final String FHIR_PATIENT = "PATIENT";
     public static final String FHIR_QUESTIONNAIRE = "Questionnaire";
+    public static final String LOCATION_EXTENSION_URL = "http://hl7.org/fhir/StructureDefinition/patient-locationId";
 
     //    Exception Strings
     public static final String EM_CARE_NO_DATA_FOUND = "Data Not Found";

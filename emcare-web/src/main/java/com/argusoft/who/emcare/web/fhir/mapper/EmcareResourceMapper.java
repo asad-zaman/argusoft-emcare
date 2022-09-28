@@ -1,5 +1,6 @@
 package com.argusoft.who.emcare.web.fhir.mapper;
 
+import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.fhir.dto.*;
 import com.argusoft.who.emcare.web.fhir.model.LocationResource;
 import org.hl7.fhir.r4.model.*;
@@ -40,7 +41,7 @@ public class EmcareResourceMapper {
 
         // Location
         if (p.hasExtension()) {
-            Extension locationExtension = p.getExtension().get(0);
+            Extension locationExtension = p.getExtensionByUrl(CommonConstant.LOCATION_EXTENSION_URL);
             String locationId = ((Identifier) locationExtension.getValue()).getValue();
             pDto.setFacility(locationId);
         }

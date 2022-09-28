@@ -133,7 +133,7 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
                 String facilityId = null;
                 if (requestType.toUpperCase().equals(CommonConstant.FHIR_PATIENT)) {
                     Patient patient = parser.parseResource(Patient.class, resourceString);
-                    Extension facilityExtension = patient.getExtension().get(0);
+                    Extension facilityExtension = patient.getExtensionByUrl(CommonConstant.LOCATION_EXTENSION_URL);
                     facilityId = ((Identifier) facilityExtension.getValue()).getValue();
                 }
 
