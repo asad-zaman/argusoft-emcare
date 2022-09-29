@@ -34,28 +34,14 @@ class AddPatientFragment : BaseFragment<FragmentAddPatientBinding>() {
 
     override fun initView() {
         binding.headerLayout.toolbar.setTitleSidepane(getString(R.string.title_emcare_registration))
-//        homeViewModel.getQuestionnaire("emcarea.registration.p") //TODO: replace hardcoded questionnaire id.
         homeViewModel.getQuestionnaireWithQR("emcarea.registration.p")
         childFragmentManager.setFragmentResultListener(SUBMIT_REQUEST_KEY, viewLifecycleOwner) { _, _ ->
             homeViewModel.questionnaireJson?.let {
-                homeViewModel.savePatient(
-                    questionnaireFragment.getQuestionnaireResponse(), it,
-                    requireArguments().getString(INTENT_EXTRA_FACILITY_ID)!!
+                homeViewModel.saveQuestionnaire(
+                    questionnaireResponse = questionnaireFragment.getQuestionnaireResponse(),
+                    questionnaire = it,
+                    facilityId = requireArguments().getString(INTENT_EXTRA_FACILITY_ID)!!
                 )
-            }
-
-        }
-    }
-
-
-    private fun addQuestionnaireFragment(questionnaire: Questionnaire) {
-        val fhirCtx: FhirContext = FhirContext.forR4()
-        val parser: IParser = fhirCtx.newJsonParser().setPrettyPrint(false)
-        homeViewModel.questionnaireJson = parser.encodeResourceToString(questionnaire)
-        homeViewModel.questionnaireJson?.let {
-            questionnaireFragment.arguments = bundleOf(QuestionnaireFragment.EXTRA_QUESTIONNAIRE_JSON_STRING to it)
-            childFragmentManager.commit {
-                add(R.id.fragmentContainerView, questionnaireFragment, QuestionnaireFragment::class.java.simpleName)
             }
         }
     }
@@ -78,16 +64,11 @@ class AddPatientFragment : BaseFragment<FragmentAddPatientBinding>() {
     }
 
     override fun initObserver() {
-        observeNotNull(homeViewModel.addPatients) { apiResponse ->
+        observeNotNull(homeViewModel.saveQuestionnaire) { apiResponse ->
             apiResponse.handleApiView(binding.progressLayout, skipIds = listOf(R.id.headerLayout)) {
                 if (it == 1) {
                     requireActivity().onBackPressed()
                 }
-            }
-        }
-        observeNotNull(homeViewModel.questionnaire) { questionnaire ->
-            questionnaire.handleApiView(binding.progressLayout, skipIds = listOf(R.id.headerLayout)) {
-                it?.let { addQuestionnaireFragment(it) }
             }
         }
 

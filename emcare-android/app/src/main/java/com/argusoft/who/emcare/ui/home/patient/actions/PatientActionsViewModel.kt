@@ -33,13 +33,6 @@ class PatientActionsViewModel @Inject constructor(
     private val _deletePatientLoadingState = MutableLiveData<ApiResponse<Patient>>()
     val deletePatientLoadingState: LiveData<ApiResponse<Patient>> = _deletePatientLoadingState
 
-    private val _questionnaire = SingleLiveEvent<ApiResponse<Questionnaire>>()
-    val questionnaire: LiveData<ApiResponse<Questionnaire>> = _questionnaire
-
-    private val _saveQuestionnaire = MutableLiveData<ApiResponse<Int>>()
-    val saveQuestionnaire: LiveData<ApiResponse<Int>> = _saveQuestionnaire
-
-
     fun getPatientDetails(patientId: String?) {
         _patientItem.value = ApiResponse.Loading()
         viewModelScope.launch {
@@ -49,22 +42,6 @@ class PatientActionsViewModel @Inject constructor(
         }
     }
 
-    fun getQuestionnaire(questionnaireId: String) {
-        _questionnaire.value = ApiResponse.Loading()
-        viewModelScope.launch {
-            patientRepository.getQuestionnaire(questionnaireId).collect {
-                _questionnaire.value = it
-            }
-        }
-    }
-
-    fun saveQuestionnaire(questionnaireResponse: QuestionnaireResponse, questionnaire: String, patientId: String, structureMap: String?, locationId: Int) {
-        viewModelScope.launch {
-            patientRepository.saveQuestionnaire(questionnaireResponse, questionnaire, patientId, structureMap,locationId).collect {
-                _saveQuestionnaire.value = it
-            }
-        }
-    }
 
     fun deletePatient(patientId: String?) {
         _deletePatientLoadingState.value = ApiResponse.Loading()

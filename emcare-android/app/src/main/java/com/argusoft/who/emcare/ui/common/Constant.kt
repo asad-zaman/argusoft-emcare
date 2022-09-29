@@ -6,6 +6,7 @@ import com.argusoft.who.emcare.ui.common.model.Dashboard
 const val REQUEST_CODE_READ_PHONE_STATE = 1
 const val INTENT_EXTRA_ALBUM = "INTENT_EXTRA_ALBUM"
 const val INTENT_EXTRA_PATIENT_ID = "INTENT_EXTRA_PATIENT_ID"
+const val INTENT_EXTRA_ENCOUNTER_ID = "INTENT_EXTRA_ENCOUNTER_ID"
 const val INTENT_EXTRA_LOCATION_ID = "INTENT_EXTRA_LOCATION_ID"
 const val INTENT_EXTRA_FACILITY_ID = "INTENT_EXTRA_FACILITY_ID"
 const val INTENT_EXTRA_PATIENT_NAME = "INTENT_EXTRA_PATIENT_NAME"
@@ -15,7 +16,9 @@ const val INTENT_EXTRA_STRUCTUREMAP_NAME = "INTENT_EXTRA_STRUCTUREMAP_NAME"
 const val INTENT_EXTRA_QUESTIONNAIRE_HEADER = "INTENT_EXTRA_QUESTIONNAIRE_HEADER"
 const val MY_UPDATE_REQUEST_CODE = 50
 
-
+//URLS
+const val URL_CQF_LIBRARY = "http://hl7.org/fhir/StructureDefinition/cqf-library"
+const val URL_INITIAL_EXPRESSION = "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression"
 
 
 const val LOCATION_EXTENSION_URL = "http://hl7.org/fhir/StructureDefinition/patient-locationId"
@@ -33,3 +36,14 @@ val dashboardList = arrayListOf<Dashboard?>(
     Dashboard("Reports", "#FCE1C4", "#82603e", R.drawable.ic_reports),
     Dashboard("Announcements", "#C1DBD2", "#48816f", R.drawable.ic_announcements),
 )
+
+val consultationFlowQuestionnaireList = arrayListOf<String?>(
+    "Registration",
+    "Signs",
+    "Symptoms",
+    "Danger Signs",
+    "Measurements",
+    "Health Prevention",
+    "Classification"
+)
+

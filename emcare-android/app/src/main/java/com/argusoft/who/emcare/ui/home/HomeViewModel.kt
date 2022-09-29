@@ -7,23 +7,29 @@ import androidx.lifecycle.viewModelScope
 import ca.uhn.fhir.context.FhirContext
 import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.data.remote.ApiResponse
+import com.argusoft.who.emcare.ui.common.URL_CQF_LIBRARY
+import com.argusoft.who.emcare.ui.common.URL_INITIAL_EXPRESSION
 import com.argusoft.who.emcare.ui.common.model.ConsultationItemData
 import com.argusoft.who.emcare.ui.common.model.PatientItem
 import com.argusoft.who.emcare.ui.home.patient.PatientRepository
 import com.argusoft.who.emcare.utils.extention.orEmpty
 import com.argusoft.who.emcare.utils.listener.SingleLiveEvent
+import com.google.android.fhir.FhirEngine
 import com.google.android.fhir.datacapture.common.datatype.asStringValue
 import com.google.android.fhir.datacapture.createQuestionnaireResponseItem
+import com.google.android.fhir.workflow.FhirOperator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import org.hl7.fhir.r4.model.*
+import org.hl7.fhir.r4.model.Questionnaire.QuestionnaireItemComponent
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val patientRepository: PatientRepository
+    private val patientRepository: PatientRepository,
+    private val fhirEngine: FhirEngine
 ) : ViewModel() {
 
     var questionnaireJson: String? = null
@@ -34,14 +40,11 @@ class HomeViewModel @Inject constructor(
     private val _consultations = SingleLiveEvent<ApiResponse<List<ConsultationItemData>>>()
     val consultations: LiveData<ApiResponse<List<ConsultationItemData>>> = _consultations
 
-    private val _questionnaire = SingleLiveEvent<ApiResponse<Questionnaire>>()
-    val questionnaire: LiveData<ApiResponse<Questionnaire>> = _questionnaire
-
     private val _questionnaireWithQR = SingleLiveEvent<ApiResponse<Pair<String, String>>>()
     val questionnaireWithQR: LiveData<ApiResponse<Pair<String, String>>> = _questionnaireWithQR
 
-    private val _addPatients = MutableLiveData<ApiResponse<Int>>()
-    val addPatients: LiveData<ApiResponse<Int>> = _addPatients
+    private val _saveQuestionnaire = MutableLiveData<ApiResponse<Int>>()
+    val saveQuestionnaire: LiveData<ApiResponse<Int>> = _saveQuestionnaire
 
 
     fun getPatients(search: String? = null, facilityId: String?, isRefresh: Boolean = false) {
@@ -135,48 +138,22 @@ class HomeViewModel @Inject constructor(
 
     }
 
-    fun getQuestionnaire(questionnaireId: String) {
-        _questionnaire.value = ApiResponse.Loading()
-        viewModelScope.launch {
-            patientRepository.getQuestionnaire(questionnaireId).collect {
-                _questionnaire.value = ApiResponse.Success(data=injectUuid(it.data!!))
-            }
-        }
-    }
 
-    fun getQuestionnaireWithQR(questionnaireId: String) {
+    fun getQuestionnaireWithQR(questionnaireId: String, questionnairePatientId: String? = null, questionnaireEncounterId: String? = null) {
         _questionnaireWithQR.value = ApiResponse.Loading()
         viewModelScope.launch {
+            var patientId = questionnairePatientId
+            var encounterId = questionnaireEncounterId
             patientRepository.getQuestionnaire(questionnaireId).collect {
-                val questionnaireJsonWithQR: Questionnaire = injectUuid(it.data!!)
-                val patientId = UUID.randomUUID().toString()
-                val encounterId = UUID.randomUUID().toString()
-                val questionnaireResponse:QuestionnaireResponse = QuestionnaireResponse().apply {
-                    questionnaire = questionnaireJsonWithQR.url
+                val questionnaireJsonWithQR: Questionnaire = preProcessQuestionnaire(it.data!!, patientId)
+
+                if(patientId == null && encounterId == null){ //TODO: on save persist this information
+                    patientId = UUID.randomUUID().toString()
+                    encounterId = UUID.randomUUID().toString()
                 }
-                questionnaireJsonWithQR.item.forEach { it2 ->
-                    questionnaireResponse.addItem(it2.createQuestionnaireResponseItem())
-                }
-                questionnaireResponse.subject = Reference().apply {
-                    id = IdType(patientId).id
-                    type = ResourceType.Patient.name
-                    identifier = Identifier().apply {
-                        value = patientId
-                    }
-                }
-                questionnaireResponse.encounter = Reference().apply {
-                    id = encounterId
-                    type = ResourceType.Encounter.name
-                    identifier = Identifier().apply {
-                        value = encounterId
-                    }
-                }
-//                val questionnaireResponse = ResourceMapper.populate(questionnaireJsonWithQR,
-//                    Patient().apply {
-//                    id = patientId
-//                }, Encounter().apply {
-//                    id = encounterId
-//                })
+
+                val questionnaireResponse: QuestionnaireResponse = generateQuestionnaireResponseWithPatientIdAndEncounterId(questionnaireJsonWithQR, patientId!!, encounterId!!)
+
                 val questionnaireString = FhirContext.forR4().newJsonParser().encodeResourceToString(questionnaireJsonWithQR)
                 val questionnaireResponseString = FhirContext.forR4().newJsonParser().encodeResourceToString(questionnaireResponse)
                 _questionnaireWithQR.value = ApiResponse.Success(data=questionnaireString to questionnaireResponseString)
@@ -184,12 +161,48 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun savePatient(questionnaireResponse: QuestionnaireResponse, questionnaire: String, facilityId: String) {
+    fun saveQuestionnaire(questionnaireResponse: QuestionnaireResponse, questionnaire: String, facilityId: String, patientId: String? = null, encounterId: String? = null) {
         viewModelScope.launch {
-            patientRepository.savePatient(questionnaireResponse, questionnaire, facilityId).collect {
-                _addPatients.value = it
+            patientRepository.saveQuestionnaire(questionnaireResponse, questionnaire,facilityId, patientId, encounterId).collect {
+                _saveQuestionnaire.value = it
             }
         }
+    }
+
+    private fun generateQuestionnaireResponseWithPatientIdAndEncounterId(questionnaireJson: Questionnaire, patientId: String, encounterId: String) : QuestionnaireResponse {
+       //Create empty QR as done in the SDC
+        val questionnaireResponse:QuestionnaireResponse = QuestionnaireResponse().apply {
+            questionnaire = questionnaireJson.url
+        }
+        questionnaireJson.item.forEach { it2 ->
+            questionnaireResponse.addItem(it2.createQuestionnaireResponseItem())
+        }
+
+        //Inject patientId as subject & encounterId as Encounter.
+        questionnaireResponse.subject = Reference().apply {
+            id = IdType(patientId).id
+            type = ResourceType.Patient.name
+            identifier = Identifier().apply {
+                value = patientId
+            }
+        }
+        questionnaireResponse.encounter = Reference().apply {
+            id = encounterId
+            type = ResourceType.Encounter.name
+            identifier = Identifier().apply {
+                value = encounterId
+            }
+        }
+
+        return questionnaireResponse
+    }
+
+    private fun preProcessQuestionnaire(questionnaire: Questionnaire, patientId: String? = null) : Questionnaire {
+        var ansQuestionnaire = injectUuid(questionnaire)
+        if(!patientId.isNullOrEmpty()){
+            ansQuestionnaire = injectInitialExpressionCqlValues(questionnaire, patientId)
+        }
+        return ansQuestionnaire
     }
 
     private fun injectUuid(questionnaire: Questionnaire) : Questionnaire {
@@ -203,5 +216,38 @@ class HomeViewModel @Inject constructor(
             }
         }
         return questionnaire
+    }
+
+    private fun injectInitialExpressionCqlValues(questionnaire: Questionnaire, patientId: String): Questionnaire {
+        var cqlLibraryURL = ""
+        val expressionSet = mutableSetOf<String>()
+        //Check if questionnaire has CQF-library
+        if(questionnaire.hasExtension(URL_CQF_LIBRARY))
+            cqlLibraryURL = questionnaire.getExtensionByUrl(URL_CQF_LIBRARY).value.asStringValue()
+        //If questionnaire has Cql library then evaluate library and inject the parameters
+        if(cqlLibraryURL.isNotEmpty()){
+            //Creating ExpressionSet
+            questionnaire.item.forEach { item ->
+                if(item.hasExtension(URL_INITIAL_EXPRESSION)) {
+                    expressionSet.add((item.getExtensionByUrl(URL_INITIAL_EXPRESSION).value as Expression).expression)
+                }
+            }
+            //Evaluating Library
+            val parameters = FhirOperator(FhirContext.forR4(), fhirEngine)
+                .evaluateLibrary(cqlLibraryURL, patientId, expressionSet)
+                as Parameters
+            //Inject parameters to appropriate places
+            questionnaire.item.forEach { item ->
+                if(item.hasExtension(URL_INITIAL_EXPRESSION)) {
+                    val value = parameters.getParameter((item.getExtensionByUrl(URL_INITIAL_EXPRESSION).value as Expression).expression) //parameter has same name as linkId
+                    //inject value in the QuestionnaireItem as InitialComponent
+                    if(value != null)
+                        item.initial = mutableListOf(Questionnaire.QuestionnaireItemInitialComponent(value))
+                }
+            }
+            return questionnaire
+        } else {
+            return questionnaire
+        }
     }
 }

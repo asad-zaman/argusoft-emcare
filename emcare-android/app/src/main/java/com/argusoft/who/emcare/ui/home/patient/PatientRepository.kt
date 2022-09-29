@@ -39,7 +39,6 @@ class PatientRepository @Inject constructor(
     }
 
     fun getPatients(search: String? = null, facilityId: String?) = flow {
-        val riskAssessment = getRiskAssessments()
         val list = fhirEngine.search<Patient> {
             if (!search.isNullOrEmpty()) {
                 filter(
@@ -63,17 +62,9 @@ class PatientRepository @Inject constructor(
         }.filter {
             (it.getExtensionByUrl(LOCATION_EXTENSION_URL)?.value as? Identifier)?.value == facilityId
         }.mapIndexed { index, fhirPatient ->
-            fhirPatient.toPatientItem(index + 1, riskAssessment)
+            fhirPatient.toPatientItem(index + 1)
         }
         emit(ApiResponse.Success(data = list))
-    }
-
-    private suspend fun getRiskAssessments(): Map<String, RiskAssessment?> {
-        return fhirEngine.search<RiskAssessment> {}.groupBy { it.subject.reference }.mapValues { entry ->
-            entry
-                .value
-                .filter { it.hasOccurrence() }.maxByOrNull { it.occurrenceDateTimeType.value }
-        }
     }
 
     fun getPatientDetails(patientId: String?) = flow {
@@ -117,20 +108,7 @@ class PatientRepository @Inject constructor(
         emit(ApiResponse.Success(1))
     }
 
-    fun saveQuestionnaire(questionnaireResponse: QuestionnaireResponse, questionnaire: String, patientId: String, structureMap: String?, locationId: Int) = flow {
-        val questionnaireResource: Questionnaire = FhirContext.forR4().newJsonParser().parseResource(questionnaire) as Questionnaire
-        val entry = ResourceMapper.extract(
-            questionnaireResource,
-            questionnaireResponse,
-            StructureMapExtractionContext(context = application) { _, worker ->
-                StructureMapUtilities(worker).parse(structureMap, "")
-            },
-        )
-        //TODO: save resource using structuremap.
-        emit(ApiResponse.Success(1))
-    }
-
-    fun savePatient(questionnaireResponse: QuestionnaireResponse, questionnaire: String, facilityId: String) = flow {
+    fun saveQuestionnaire(questionnaireResponse: QuestionnaireResponse, questionnaire: String, facilityId: String, patientId: String? = null, encounterId: String? = null) = flow {
         val questionnaireResource: Questionnaire = FhirContext.forR4().newJsonParser().parseResource(questionnaire) as Questionnaire
         val structureMapString = """map 'https://fhir.dk.swisstph-mis.ch/matchbox/fhir/StructureMap/emcarea.registration.p' = 'emcarea.registration.p'
 uses 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaireresponse' alias 'questionnaireResponse' as source
@@ -280,9 +258,12 @@ group emcarecommunicationrequestemcareade38(source src,target tgt){
                     StructureMapUtilities(worker).parse(structureMapString, "")
                 }
             )
-            val patientId = questionnaireResponse.subject.identifier.value
-            val encounterId = questionnaireResponse.encounter.id
-            saveResourcesFromBundle(extractedBundle, patientId, encounterId, facilityId)
+
+            if(patientId == null || encounterId == null){
+                saveResourcesFromBundle(extractedBundle, questionnaireResponse.subject.identifier.value, questionnaireResponse.encounter.id, facilityId)
+            } else {
+                saveResourcesFromBundle(extractedBundle, patientId, encounterId, facilityId)
+            }
             print("RESULT")
             print(FhirContext.forR4().newJsonParser().encodeResourceToString(extractedBundle))
             emit(ApiResponse.Success(1))

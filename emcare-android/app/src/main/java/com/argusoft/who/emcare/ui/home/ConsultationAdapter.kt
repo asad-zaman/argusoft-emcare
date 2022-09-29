@@ -5,10 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.databinding.ListItemConsultationBinding
-import com.argusoft.who.emcare.ui.common.INTENT_EXTRA_PATIENT_ID
-import com.argusoft.who.emcare.ui.common.INTENT_EXTRA_QUESTIONNAIRE_HEADER
-import com.argusoft.who.emcare.ui.common.INTENT_EXTRA_QUESTIONNAIRE_NAME
-import com.argusoft.who.emcare.ui.common.INTENT_EXTRA_STRUCTUREMAP_NAME
+import com.argusoft.who.emcare.ui.common.*
 import com.argusoft.who.emcare.ui.common.base.BaseAdapter
 import com.argusoft.who.emcare.ui.common.model.ConsultationItemData
 import com.argusoft.who.emcare.utils.extention.navigate
@@ -41,7 +38,7 @@ class ConsultationAdapter(
                     putString(INTENT_EXTRA_STRUCTUREMAP_NAME, list[bindingAdapterPosition]?.questionnaireName)
                     putString(INTENT_EXTRA_QUESTIONNAIRE_HEADER, list[bindingAdapterPosition]?.header)
                     putString(INTENT_EXTRA_PATIENT_ID,list[bindingAdapterPosition]?.patientId)
-                }
+                    putString(INTENT_EXTRA_ENCOUNTER_ID,list[bindingAdapterPosition]?.encounterId) }
             }
         }
 
