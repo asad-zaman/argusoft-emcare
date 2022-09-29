@@ -20,7 +20,9 @@ public class EmcareResourceMapper {
         PatientDto pDto = new PatientDto();
 
         pDto.setId(p.getIdElement().getIdPart());
-        pDto.setIdentifier(p.getIdentifier().get(0).getValue());
+        if (p.getIdentifierFirstRep() != null) {
+            pDto.setIdentifier(p.getIdentifierFirstRep().getValue());
+        }
         if (p.hasName()) {
             if (p.getNameFirstRep().hasGiven()) {
                 pDto.setGivenName(p.getNameFirstRep().getGivenAsSingleString());
@@ -32,7 +34,9 @@ public class EmcareResourceMapper {
         if (p.hasGender()) {
             pDto.setGender(p.getGender().getDisplay());
         }
-        pDto.setDob(p.getBirthDate());
+        if (p.getBirthDate() != null) {
+            pDto.setDob(p.getBirthDate());
+        }
 
         // Caregiver
         if (p.hasLink()) {
