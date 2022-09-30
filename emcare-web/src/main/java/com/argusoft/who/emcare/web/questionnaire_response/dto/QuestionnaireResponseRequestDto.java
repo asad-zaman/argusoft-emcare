@@ -6,7 +6,7 @@ public class QuestionnaireResponseRequestDto {
     private String questionnaireResponseText;
     private String patientId;
     private String consultationStage;
-    private Boolean isActive;
+    private boolean isActive;
     private String encounterId;
     private String structureMapId;
     private String questionnaireId;
@@ -43,11 +43,11 @@ public class QuestionnaireResponseRequestDto {
         this.consultationStage = consultationStage;
     }
 
-    public Boolean getActive() {
+    public Boolean getIsActive() {
         return isActive;
     }
 
-    public void setActive(Boolean active) {
+    public void setIsActive(Boolean active) {
         isActive = active;
     }
 
