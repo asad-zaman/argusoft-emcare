@@ -15,7 +15,7 @@ export class LocationManagementComponent implements OnInit {
   isEdit: boolean = false;
   editId: string;
   locationArr: any;
-  locationTypeArr: any;
+  locationTypeArr: any = [];
   submitted: boolean;
   isAddFeature: boolean = true;
   isEditFeature: boolean = true;
