@@ -12,13 +12,12 @@ public class QuestionnaireResponse extends EntityAuditInfo implements Serializab
 
     @Id
     @Column(name = "id", nullable = false)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private String id;
 
     @Column(name = "questionnaire_response", columnDefinition = "TEXT")
     private String questionnaireResponseText;
 
-    @Column(name = "patient_id", nullable = false)
+    @Column(name = "patient_id")
     private String patientId;
 
 
@@ -26,8 +25,8 @@ public class QuestionnaireResponse extends EntityAuditInfo implements Serializab
     private String consultationStage;
 
 
-    @Column(name = "status", nullable = false)
-    private Boolean isActive;
+    @Column(name = "is_active")
+    private boolean isActive;
 
     @Column(name = "encounter_id")
     private String encounterId;
@@ -71,11 +70,11 @@ public class QuestionnaireResponse extends EntityAuditInfo implements Serializab
         this.consultationStage = consultationStage;
     }
 
-    public Boolean getActive() {
+    public Boolean getIsActive() {
         return isActive;
     }
 
-    public void setActive(Boolean active) {
+    public void setIsActive(Boolean active) {
         isActive = active;
     }
 

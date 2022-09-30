@@ -1,12 +1,12 @@
 package com.argusoft.who.emcare.web.questionnaire_response.service.impl;
 
-import com.argusoft.who.emcare.web.converter.Converter;
 import com.argusoft.who.emcare.web.fhir.dao.EmcareResourceRepository;
 import com.argusoft.who.emcare.web.fhir.dao.LocationResourceRepository;
 import com.argusoft.who.emcare.web.fhir.dto.FacilityDto;
 import com.argusoft.who.emcare.web.fhir.model.EmcareResource;
 import com.argusoft.who.emcare.web.location.dao.LocationMasterDao;
 import com.argusoft.who.emcare.web.questionnaire_response.dto.QuestionnaireResponseRequestDto;
+import com.argusoft.who.emcare.web.questionnaire_response.mapper.QuestionnaireResponseMapper;
 import com.argusoft.who.emcare.web.questionnaire_response.model.QuestionnaireResponse;
 import com.argusoft.who.emcare.web.questionnaire_response.respository.QuestionnaireResponseRepository;
 import com.argusoft.who.emcare.web.questionnaire_response.service.QuestionnaireResponseService;
@@ -40,7 +40,7 @@ public class QuestionnaireResponseServiceImpl implements QuestionnaireResponseSe
     @Override
     public QuestionnaireResponse saveOrUpdateQuestionnaireResponse(QuestionnaireResponseRequestDto questionnaireResponseRequestDto) {
 
-        QuestionnaireResponse questionnaireResponse = Converter.toModel(questionnaireResponseRequestDto, QuestionnaireResponse.class);
+        QuestionnaireResponse questionnaireResponse = QuestionnaireResponseMapper.getQuestionnaireResponse(questionnaireResponseRequestDto);
         if (questionnaireResponse.getId() == null) {
             String id = UUID.randomUUID().toString();
             questionnaireResponse.setId(id);
