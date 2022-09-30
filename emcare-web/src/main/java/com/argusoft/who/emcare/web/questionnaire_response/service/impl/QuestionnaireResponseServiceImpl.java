@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -40,6 +41,10 @@ public class QuestionnaireResponseServiceImpl implements QuestionnaireResponseSe
     public QuestionnaireResponse saveOrUpdateQuestionnaireResponse(QuestionnaireResponseRequestDto questionnaireResponseRequestDto) {
 
         QuestionnaireResponse questionnaireResponse = Converter.toModel(questionnaireResponseRequestDto, QuestionnaireResponse.class);
+        if (questionnaireResponse.getId() == null) {
+            String id = UUID.randomUUID().toString();
+            questionnaireResponse.setId(id);
+        }
         questionnaireResponse = questionnaireResponseRepository.save(questionnaireResponse);
         return questionnaireResponse;
     }

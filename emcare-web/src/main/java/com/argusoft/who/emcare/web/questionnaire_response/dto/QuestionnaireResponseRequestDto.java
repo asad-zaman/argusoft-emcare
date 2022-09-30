@@ -2,17 +2,20 @@ package com.argusoft.who.emcare.web.questionnaire_response.dto;
 
 public class QuestionnaireResponseRequestDto {
 
-    private Long id;
+    private String id;
     private String questionnaireResponseText;
     private String patientId;
-    private String cnsltStage;
-    private String status;
+    private String consultationStage;
+    private Boolean isActive;
+    private String encounterId;
+    private String structureMapId;
+    private String questionnaireId;
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -32,19 +35,43 @@ public class QuestionnaireResponseRequestDto {
         this.patientId = patientId;
     }
 
-    public String getCnsltStage() {
-        return cnsltStage;
+    public String getConsultationStage() {
+        return consultationStage;
     }
 
-    public void setCnsltStage(String cnsltStage) {
-        this.cnsltStage = cnsltStage;
+    public void setConsultationStage(String consultationStage) {
+        this.consultationStage = consultationStage;
     }
 
-    public String getStatus() {
-        return status;
+    public Boolean getActive() {
+        return isActive;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setActive(Boolean active) {
+        isActive = active;
+    }
+
+    public String getEncounterId() {
+        return encounterId;
+    }
+
+    public void setEncounterId(String encounterId) {
+        this.encounterId = encounterId;
+    }
+
+    public String getStructureMapId() {
+        return structureMapId;
+    }
+
+    public void setStructureMapId(String structureMapId) {
+        this.structureMapId = structureMapId;
+    }
+
+    public String getQuestionnaireId() {
+        return questionnaireId;
+    }
+
+    public void setQuestionnaireId(String questionnaireId) {
+        this.questionnaireId = questionnaireId;
     }
 }

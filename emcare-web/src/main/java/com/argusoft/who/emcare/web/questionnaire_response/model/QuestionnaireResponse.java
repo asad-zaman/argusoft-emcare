@@ -13,7 +13,7 @@ public class QuestionnaireResponse extends EntityAuditInfo implements Serializab
     @Id
     @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Long id;
+    private String id;
 
     @Column(name = "questionnaire_response", columnDefinition = "TEXT")
     private String questionnaireResponseText;
@@ -22,18 +22,28 @@ public class QuestionnaireResponse extends EntityAuditInfo implements Serializab
     private String patientId;
 
 
-    @Column(name = "cnslt_stage", nullable = false)
-    private String cnsltStage;
+    @Column(name = "consultation_stage")
+    private String consultationStage;
 
 
     @Column(name = "status", nullable = false)
-    private String status;
+    private Boolean isActive;
 
-    public Long getId() {
+    @Column(name = "encounter_id")
+    private String encounterId;
+
+    @Column(name = "structure_map_id")
+    private String structureMapId;
+
+    @Column(name = "questionnaire_id")
+    private String questionnaireId;
+
+
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -53,19 +63,43 @@ public class QuestionnaireResponse extends EntityAuditInfo implements Serializab
         this.patientId = patientId;
     }
 
-    public String getCnsltStage() {
-        return cnsltStage;
+    public String getConsultationStage() {
+        return consultationStage;
     }
 
-    public void setCnsltStage(String cnsltStage) {
-        this.cnsltStage = cnsltStage;
+    public void setConsultationStage(String consultationStage) {
+        this.consultationStage = consultationStage;
     }
 
-    public String getStatus() {
-        return status;
+    public Boolean getActive() {
+        return isActive;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setActive(Boolean active) {
+        isActive = active;
+    }
+
+    public String getEncounterId() {
+        return encounterId;
+    }
+
+    public void setEncounterId(String encounterId) {
+        this.encounterId = encounterId;
+    }
+
+    public String getStructureMapId() {
+        return structureMapId;
+    }
+
+    public void setStructureMapId(String structureMapId) {
+        this.structureMapId = structureMapId;
+    }
+
+    public String getQuestionnaireId() {
+        return questionnaireId;
+    }
+
+    public void setQuestionnaireId(String questionnaireId) {
+        this.questionnaireId = questionnaireId;
     }
 }
