@@ -13,13 +13,13 @@
         <hr>
       </div>
       <div class="row">
-        <div class="col-12 col-sm-6">
+        <div *ngIf="locationTypeArr.length>0" class="col-12 col-sm-6">
           <div class="mb-3">
             <label class="form-label">{{'Location Type' | translate}}</label>
             <p-dropdown
               [ngStyle]="{'border': submitted && this.locationForm.controls.locationType.value == '' ? '1px solid red' : ''}"
               [options]="locationTypeArr" placeholder="Select a locationType" formControlName="locationType"
-              optionLabel="name">
+              optionLabel="name" [filter]=true>
             </p-dropdown>
             <div *ngIf="submitted && this.locationForm.controls.locationType.value == ''" style="color: #dc3545">
               <div *ngIf="f.locationType.errors.required">{{'Location Type Required Message' | translate}}</div>
@@ -41,16 +41,9 @@
         <div class="col-12 col-sm-6">
           <div class="mb-3">
             <label class="form-label">{{'Parent' | translate}}</label>
-            <ng-container *ngIf="locationArr.length>0; else noLocation">
-              <p-dropdown
-                [ngStyle]="{'border': submitted && this.locationForm.controls.parent.value == '' ? '1px solid red' : ''}"
-                [options]="locationArr" placeholder="Select a parent" formControlName="parent" optionLabel="name">
-              </p-dropdown>
-            </ng-container>
-            <ng-template #noLocation>
-              <input formControlName="parent" type="text" class="form-control custom-input" id="parent"
-                placeholder="{{'Parent Placeholder' | translate}}">
-            </ng-template>
+            <p-dropdown [filter]=true [options]="locationArr" placeholder="Select a parent" formControlName="parent"
+              optionLabel="name">
+            </p-dropdown>
           </div>
         </div>
       </div>

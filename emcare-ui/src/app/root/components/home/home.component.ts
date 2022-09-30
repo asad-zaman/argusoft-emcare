@@ -148,7 +148,7 @@ export class HomeComponent implements OnInit {
     const locationArr = this.facilityArr.map(d => d.positions);
     const centerPosition = this.facilityArr[0]['positions'];
     const map = new window['google'].maps.Map(this.mapElement.nativeElement, {
-      center: centerPosition, zoom: 5
+      center: centerPosition, zoom: 4
     });
 
     this.facilityArr.forEach(data => {
@@ -185,5 +185,13 @@ export class HomeComponent implements OnInit {
 
   isEmpty(obj) {
     return Object.keys(obj).length === 0;
+  }
+
+  getDateData() {
+    const monthArr = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    const d = new Date();
+    let month = monthArr[d.getMonth()];
+    let year = d.getFullYear();
+    return `${month} ${year}`;
   }
 }
