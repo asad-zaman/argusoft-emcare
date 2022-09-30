@@ -15,6 +15,7 @@ public class QuestionnaireResponseMapper {
         response.setConsultationStage(responseRequestDto.getConsultationStage());
         response.setQuestionnaireId(responseRequestDto.getQuestionnaireId());
         response.setStructureMapId(responseRequestDto.getStructureMapId());
+        response.setPatientId(responseRequestDto.getPatientId());
         return response;
     }
 }
