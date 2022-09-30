@@ -626,7 +626,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserRepresentation getUserById(String userId) {
-        Keycloak keycloak = keyCloakConfig.getInstanceByAuth();
+        Keycloak keycloak = keyCloakConfig.getInstance();
         return keycloak.realm(KeyCloakConfig.REALM).users().get(userId).toRepresentation();
     }
 
