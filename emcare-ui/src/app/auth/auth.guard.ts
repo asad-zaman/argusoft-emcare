@@ -19,38 +19,38 @@ export class AuthGuard implements CanActivate {
         this.handleFeature = new BehaviorSubject({});
         this.featureRouteArr = {
             'Users': ['/showUsers', '/addUser', '/updateUser', '/showRoles', '/addRole', '/editRole', '/confirmUsers'],
-            'Locations': ['/showLocation', '/addLocation', '/editLocation', '/showLocationType', '/addLocationType', '/editLocationType'],
+            'Locations': ['/showFacility', '/addFacility', '/editFacility', '/showLocation', '/addLocation', '/editLocation', '/showLocationType', '/addLocationType', '/editLocationType'],
             'Patients': ['/showPatients', '/comparePatients', '/duplicatePatients'],
-            'Settings': ['/user-admin-settings'],
             'All Users': ['/showUsers', '/addUser', '/updateUser'],
             'Roles': ['/showRoles', '/addRole', '/editRole'],
             'Registration Request': ['/confirmUsers'],
             'Location Types': ['/showLocationType', '/addLocationType', '/editLocationType'],
-            'All Locations': ['/showLocation', '/addLocation', '/editLocation'],
+            'Administrative Levels': ['/showLocation', '/addLocation', '/editLocation'],
             'All Patient': ['/showPatients'],
             'Compare Patients': ['/comparePatients'],
-            'Feature': ['/showFeatures', '/editFeature'],
+            'Features': ['/showFeatures', '/editFeature'],
             'Devices': ['/showDevices'],
             'Questionnaires': ['/showQuestionnaires', '/addQuestionnaire', '/updateQuestionnaire'],
             'Languages': ['/language-list', '/manage-language'],
-            'Facility': ['/showFacility', '/addFacility', '/editFacility'],
+            'Health facilities': ['/showFacility', '/addFacility', '/editFacility'],
             'User Settings': ['/user-admin-settings'],
             'Dashboard': ['/dashboard'],
             'Organizations': ['/showOrganizations', '/manage-organization'],
             'Duplicate Patients': ['/duplicatePatients'],
+            'Advanced settings': ['/language-list', '/manage-language', '/user-admin-settings', '/showFeatures', '/editFeature', '/showDevices'],
         }
         this.routeFeatureMapper = {
             'addLocationType': { f: 'Location Types', reqFeature: ['canAdd'] },
             'showLocationType': { f: 'Location Types', reqFeature: ['canView', 'canAdd', 'canEdit'] },
-            'addLocation': { f: 'All Locations', reqFeature: ['canAdd'] },
-            'showLocation': { f: 'All Locations', reqFeature: ['canView', 'canAdd', 'canEdit'] },
+            'addLocation': { f: 'Administrative Levels', reqFeature: ['canAdd'] },
+            'showLocation': { f: 'Administrative Levels', reqFeature: ['canView', 'canAdd', 'canEdit'] },
             'editLocationType': { f: 'Location Types', reqFeature: ['canEdit'] },
-            'editLocation': { f: 'All Locations', reqFeature: ['canEdit'] },
+            'editLocation': { f: 'Administrative Levels', reqFeature: ['canEdit'] },
             'updateUser': { f: 'All Users', reqFeature: ['canEdit'] },
             'updateQuestionnaire': { f: 'Questionnaires', reqFeature: ['canEdit'] },
             'editRole': { f: 'Roles', reqFeature: ['canEdit'] },
-            'addFacility': { f: 'Facility', reqFeature: ['canAdd'] },
-            'editFacility': { f: 'Facility', reqFeature: ['canEdit'] },
+            'addFacility': { f: 'Health facilities', reqFeature: ['canAdd'] },
+            'editFacility': { f: 'Health facilities', reqFeature: ['canEdit'] },
             'showDevices': { f: 'Devices', reqFeature: ['canView'] },
             'showUsers': { f: 'All Users', reqFeature: ['canView', 'canAdd', 'canEdit'] },
             'addUser': { f: 'All Users', reqFeature: ['canAdd'] },
@@ -60,10 +60,10 @@ export class AuthGuard implements CanActivate {
             'addQuestionnaire': { f: 'Questionnaires', reqFeature: ['canAdd'] },
             'showRoles': { f: 'Roles', reqFeature: ['canView', 'canAdd', 'canEdit'] },
             'addRole': { f: 'Roles', reqFeature: ['canAdd'] },
-            'showFeatures': { f: 'Feature', reqFeature: ['canView', 'canEdit'] },
+            'showFeatures': { f: 'Features', reqFeature: ['canView', 'canEdit'] },
             'manage-language': { f: 'Languages', reqFeature: ['canEdit', 'canAdd'] },
-            'editFeature': { f: 'Feature', reqFeature: ['canAdd', 'canDelete'] },
-            'showFacility': { f: 'Facility', reqFeature: ['canAdd', 'canEdit', 'canView', 'canDelete'] },
+            'editFeature': { f: 'Features', reqFeature: ['canAdd', 'canDelete'] },
+            'showFacility': { f: 'Health facilities', reqFeature: ['canAdd', 'canEdit', 'canView', 'canDelete'] },
             'comparePatients': { f: 'Compare Patients', reqFeature: ['canAdd'] },
             'language-list': { f: 'Languages', reqFeature: ['canAdd', 'canEdit', 'canView'] },
             'user-admin-settings': { f: 'User Settings', reqFeature: ['canEdit', 'canView'] },
@@ -171,12 +171,11 @@ export class AuthGuard implements CanActivate {
             || route.routeConfig.path === 'showLocationType'
             || route.routeConfig.path === 'addLocation'
             || route.routeConfig.path.includes('editLocation')
-            || route.routeConfig.path === 'showLocation') {
+            || route.routeConfig.path === 'showLocation'
+            || route.routeConfig.path === 'showFacility'
+            || route.routeConfig.path === 'addFacility'
+            || route.routeConfig.path.includes('editFacility')) {
             return this.user.feature.find(f => f.menuName === 'Locations');
-        } else if (
-            route.routeConfig.path === 'showDevices'
-        ) {
-            return this.user.feature.find(f => f.menuName === 'Devices');
         } else if (
             route.routeConfig.path === 'showUsers'
             || route.routeConfig.path === 'addUser'
@@ -202,23 +201,12 @@ export class AuthGuard implements CanActivate {
         } else if (
             route.routeConfig.path === 'showFeatures'
             || route.routeConfig.path.includes('editFeature')
-        ) {
-            return this.user.feature.find(f => f.menuName === 'Feature');
-        } else if (
-            route.routeConfig.path.includes('manage-language')
+            || route.routeConfig.path === 'showDevices'
+            || route.routeConfig.path.includes('manage-language')
             || route.routeConfig.path === 'language-list'
+            || route.routeConfig.path === 'user-admin-settings' 
         ) {
-            return this.user.feature.find(f => f.menuName === 'Languages');
-        } else if (
-            route.routeConfig.path === 'showFacility'
-            || route.routeConfig.path === 'addFacility'
-            || route.routeConfig.path.includes('editFacility')
-        ) {
-            return this.user.feature.find(f => f.menuName === 'Facility');
-        } else if (
-            route.routeConfig.path === 'user-admin-settings'
-        ) {
-            return this.user.feature.find(f => f.menuName === 'Settings');
+            return this.user.feature.find(f => f.menuName === 'Advanced settings');
         } else if (
             route.routeConfig.path === 'showOrganizations'
             || route.routeConfig.path.includes('manage-organization')
