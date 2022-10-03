@@ -19,4 +19,8 @@ interface Api {
     suspend fun getLoggedInUser(): ApiResponse<LoggedInUser>
 
     suspend fun getLanguages(): ApiResponse<List<Language>>
+
+    suspend fun getConsultationFlow(): ApiResponse<List<ConsultationFlowItem>>
+
+    suspend fun saveConsultations(consultations: List<ConsultationFlowItem>): ApiResponse<Any>
 }

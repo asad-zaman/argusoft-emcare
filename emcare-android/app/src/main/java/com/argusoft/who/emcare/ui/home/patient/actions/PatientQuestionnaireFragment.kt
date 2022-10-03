@@ -1,33 +1,33 @@
 package com.argusoft.who.emcare.ui.home.patient.actions
 
+import androidx.activity.addCallback
 import androidx.core.os.bundleOf
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
-import ca.uhn.fhir.context.FhirContext
-import ca.uhn.fhir.parser.IParser
 import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.databinding.FragmentPatientQuestionnaireBinding
 import com.argusoft.who.emcare.ui.common.*
 import com.argusoft.who.emcare.ui.common.base.BaseFragment
+import com.argusoft.who.emcare.ui.common.model.ConsultationFlowItem
 import com.argusoft.who.emcare.ui.home.HomeViewModel
-import com.argusoft.who.emcare.ui.home.settings.SettingsViewModel
-import com.argusoft.who.emcare.utils.extention.*
+import com.argusoft.who.emcare.utils.extention.handleApiView
+import com.argusoft.who.emcare.utils.extention.navigate
+import com.argusoft.who.emcare.utils.extention.observeNotNull
 import com.google.android.fhir.datacapture.QuestionnaireFragment
 import dagger.hilt.android.AndroidEntryPoint
-import org.hl7.fhir.r4.model.Questionnaire
 
 @AndroidEntryPoint
-class PatientQuestionnaireFragment : BaseFragment<FragmentPatientQuestionnaireBinding>() {
+class PatientQuestionnaireFragment : BaseFragment<FragmentPatientQuestionnaireBinding>(){
 
     private val homeViewModel: HomeViewModel by viewModels()
     private val questionnaireFragment = QuestionnaireFragment()
 
     override fun initView() {
-        binding.headerLayout.toolbar.setTitleSidepane(getString(R.string.patient) + " " + requireArguments().getString(INTENT_EXTRA_QUESTIONNAIRE_HEADER))
+//        binding.headerLayout.toolbar.setTitleSidepane(getString(R.string.patient) + " " + requireArguments().getString(INTENT_EXTRA_QUESTIONNAIRE_HEADER))
+        binding.headerLayout.toolbar.setTitleSidepane(requireArguments().getString(INTENT_EXTRA_QUESTIONNAIRE_HEADER))
 
-        requireArguments().getString(INTENT_EXTRA_QUESTIONNAIRE_NAME)?.let {
-            homeViewModel.getQuestionnaireWithQR(it, requireArguments().getString(INTENT_EXTRA_PATIENT_ID),requireArguments().getString(INTENT_EXTRA_ENCOUNTER_ID)) }
+        requireArguments().getString(INTENT_EXTRA_QUESTIONNAIRE_ID)?.let {
+            homeViewModel.getQuestionnaireWithQR(it, requireArguments().getString(INTENT_EXTRA_PATIENT_ID)!!,requireArguments().getString(INTENT_EXTRA_ENCOUNTER_ID)) }
 
         childFragmentManager.setFragmentResultListener(
             QuestionnaireFragment.SUBMIT_REQUEST_KEY,
@@ -37,13 +37,21 @@ class PatientQuestionnaireFragment : BaseFragment<FragmentPatientQuestionnaireBi
                 homeViewModel.saveQuestionnaire(
                     questionnaireResponse = questionnaireFragment.getQuestionnaireResponse(),
                     questionnaire = it,
-                    facilityId = requireArguments().getString(INTENT_EXTRA_FACILITY_ID)!!,
-                    patientId = requireArguments().getString(INTENT_EXTRA_PATIENT_ID),
-                    encounterId = requireArguments().getString(INTENT_EXTRA_ENCOUNTER_ID),
+                    structureMapId = requireArguments().getString(INTENT_EXTRA_STRUCTUREMAP_ID)!!,
+                    facilityId = preference.getLoggedInUser()?.facility?.get(0)?.facilityId!!,
+                    consultationFlowItemId = requireArguments().getString(INTENT_EXTRA_CONSULTATION_FLOW_ITEM_ID)!!,
+                    consultationStage = requireArguments().getString(INTENT_EXTRA_CONSULTATION_STAGE)
                 )
             }
         }
+
+        requireActivity().onBackPressedDispatcher.addCallback(this) {
+            navigate(R.id.action_patientQuestionnaireFragment_to_homeFragment)
+            homeViewModel.currentTab = 1
+        }
     }
+
+
 
     private fun addQuestionnaireFragment(pair: Pair<String, String>) {
         homeViewModel.questionnaireJson = pair.first
@@ -64,11 +72,22 @@ class PatientQuestionnaireFragment : BaseFragment<FragmentPatientQuestionnaireBi
     }
 
     override fun initObserver() {
-        //TODO: Add option on saving
         observeNotNull(homeViewModel.saveQuestionnaire) { apiResponse ->
             apiResponse.handleApiView(binding.progressLayout, skipIds = listOf(R.id.headerLayout)) {
-                if (it == 1) {
-                    requireActivity().onBackPressed()
+                if (it is ConsultationFlowItem) { //TODO: Change logic
+                    navigate(R.id.action_patientQuestionnaireFragment_to_patientQuestionnaireFragment){
+                        putString(INTENT_EXTRA_QUESTIONNAIRE_ID, it.questionnaireId)
+                        putString(INTENT_EXTRA_STRUCTUREMAP_ID, it.structureMapId)
+                        putString(INTENT_EXTRA_QUESTIONNAIRE_HEADER, it.questionnaireId)
+                        putString(INTENT_EXTRA_CONSULTATION_FLOW_ITEM_ID, it.id)
+                        putString(INTENT_EXTRA_PATIENT_ID,it.patientId)
+                        putString(INTENT_EXTRA_ENCOUNTER_ID,it.encounterId)
+                        putString(INTENT_EXTRA_CONSULTATION_STAGE,it.consultationStage)
+                        putString(INTENT_EXTRA_QUESTIONNAIRE_RESPONSE,it.questionnaireResponseText)
+                        putBoolean(INTENT_EXTRA_IS_ACTIVE,it.isActive)
+                    }
+                } else {
+                    navigate(R.id.action_patientQuestionnaireFragment_to_homeFragment)
                 }
             }
         }

@@ -35,4 +35,12 @@ interface ApiService {
 
     @GET("user")
     suspend fun getLoggedInUser(): Response<LoggedInUser>
+
+    @GET("questionnaire_response/fetch/all")
+    suspend fun getConsultationFlow(): Response<List<ConsultationFlowItem>>
+
+    @POST("questionnaire_response/createOrUpdate")
+    suspend fun saveConsultations(
+        @Body consultations: List<ConsultationFlowItem>
+    ): Response<Any>
 }

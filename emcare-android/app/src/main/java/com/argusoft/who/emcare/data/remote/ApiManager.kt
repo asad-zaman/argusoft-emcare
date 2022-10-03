@@ -1,11 +1,11 @@
 package com.argusoft.who.emcare.data.remote
 
-import ca.uhn.fhir.context.FhirContext
 import com.argusoft.who.emcare.BuildConfig
 import com.argusoft.who.emcare.data.local.pref.Preference
 import com.argusoft.who.emcare.ui.common.model.*
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import java.util.concurrent.TimeUnit
@@ -84,8 +84,16 @@ class ApiManager(private val preference: Preference) : Api {
         return executeApiHelper { apiService.getLanguages() }
     }
 
+    override suspend fun getConsultationFlow(): ApiResponse<List<ConsultationFlowItem>> {
+        return executeApiHelper { apiService.getConsultationFlow() }
+    }
+
     override suspend fun getLoggedInUser(): ApiResponse<LoggedInUser> {
         return executeApiHelper { apiService.getLoggedInUser() }
+    }
+
+    override suspend fun saveConsultations(consultations: List<ConsultationFlowItem>): ApiResponse<Any> {
+        return executeApiHelper { apiService.saveConsultations(consultations) }
     }
 }
 

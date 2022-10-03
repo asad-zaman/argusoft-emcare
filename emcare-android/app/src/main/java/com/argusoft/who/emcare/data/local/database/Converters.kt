@@ -1,6 +1,7 @@
 package com.argusoft.who.emcare.data.local.database
 
 import androidx.room.TypeConverter
+import com.argusoft.who.emcare.ui.common.model.ConsultationFlowItem
 import com.argusoft.who.emcare.ui.common.model.Facility
 import com.argusoft.who.emcare.ui.common.model.LoggedInUser
 import com.argusoft.who.emcare.utils.extention.fromJsonArray
@@ -30,4 +31,10 @@ class Converters {
 
     @TypeConverter
     fun jsonToList1(value: String) = Gson().fromJson(value, Array<LoggedInUser.Feature>::class.java).toList()
+
+    @TypeConverter
+    fun listToJson2(value: List<ConsultationFlowItem>?) = Gson().toJson(value)
+
+    @TypeConverter
+    fun jsonToList2(value: String) = Gson().fromJson(value, Array<ConsultationFlowItem>::class.java).toList()
 }

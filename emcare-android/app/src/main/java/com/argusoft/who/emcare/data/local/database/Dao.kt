@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.argusoft.who.emcare.ui.common.model.ConsultationFlowItem
 import com.argusoft.who.emcare.ui.common.model.Facility
 import com.argusoft.who.emcare.ui.common.model.Language
 import com.argusoft.who.emcare.ui.common.model.LoggedInUser
@@ -32,5 +33,35 @@ interface Dao {
 
     @Query("SELECT * from language where languageCode=:languageCode")
     suspend fun getLanguageByCode(languageCode: String): Language?
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun saveConsultationFlowItems(consultations: List<ConsultationFlowItem>)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun saveConsultationFlowItem(consultation: ConsultationFlowItem)
+
+    @Query("UPDATE ConsultationFlowItem SET questionnaireResponseText=:questionnaireResponseText, consultationDate = datetime('now','utc') WHERE id=:consultationId")
+    suspend fun updateConsultationQuestionnaireResponseText(consultationId: String, questionnaireResponseText: String)
+
+    @Query("UPDATE ConsultationFlowItem SET isActive=0 WHERE encounterId=:encounterId")
+    suspend fun updateConsultationFlowInactiveByEncounterId(encounterId: String)
+
+    @Query("SELECT * from consultationflowitem")
+    suspend fun getAllConsultations(): List<ConsultationFlowItem>?
+
+    @Query("SELECT * from consultationflowitem where isActive=1")
+    suspend fun getAllActiveConsultations(): List<ConsultationFlowItem>?
+
+    @Query("SELECT * from consultationflowitem where isActive=1 AND consultationDate in (SELECT MAX(consultationDate) from consultationflowitem group by encounterId)")
+    suspend fun getAllLatestActiveConsultations(): List<ConsultationFlowItem>?
+
+    @Query("SELECT * from consultationflowitem where isActive=1 AND patientId=:patientId")
+    suspend fun getAllActiveConsultationsByPatientId(patientId: String): List<ConsultationFlowItem>?
+
+    @Query("SELECT * from consultationflowitem where isActive=1 AND patientId=:patientId ORDER BY consultationDate DESC LIMIT 1")
+    suspend fun getLatestActiveConsultationByPatientId(patientId: String): ConsultationFlowItem?
+
+    @Query("SELECT * from consultationflowitem where patientId=:patientId")
+    suspend fun getAllConsultationsByPatientId(patientId: String): List<ConsultationFlowItem>?
 
 }

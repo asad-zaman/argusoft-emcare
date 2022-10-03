@@ -1,8 +1,6 @@
 package com.argusoft.who.emcare.data.local.database
 
-import com.argusoft.who.emcare.ui.common.model.Facility
-import com.argusoft.who.emcare.ui.common.model.Language
-import com.argusoft.who.emcare.ui.common.model.LoggedInUser
+import com.argusoft.who.emcare.ui.common.model.*
 
 class DatabaseManager(roomDatabase: RoomDatabase) : Database {
 
@@ -34,5 +32,49 @@ class DatabaseManager(roomDatabase: RoomDatabase) : Database {
 
     override suspend fun getLanguageByCode(languageCode: String): Language? {
         return dao.getLanguageByCode(languageCode)
+    }
+
+    override suspend fun saveConsultationFlowItem(consultation: ConsultationFlowItem) {
+        dao.saveConsultationFlowItem(consultation)
+    }
+
+
+    override suspend fun saveConsultationFlowItems(consultations: List<ConsultationFlowItem>) {
+        dao.saveConsultationFlowItems(consultations)
+    }
+
+    override suspend fun updateConsultationQuestionnaireResponseText(
+        consultationId: String,
+        questionnaireResponseText: String
+    ) {
+        dao.updateConsultationQuestionnaireResponseText(consultationId,questionnaireResponseText)
+    }
+
+    override suspend fun updateConsultationFlowInactiveByEncounterId(encounterId: String) {
+        dao.updateConsultationFlowInactiveByEncounterId(encounterId)
+    }
+
+    override suspend fun getAllConsultations() : List<ConsultationFlowItem>? {
+        return dao.getAllConsultations()
+    }
+
+    override suspend fun getAllActiveConsultations(): List<ConsultationFlowItem>? {
+        return dao.getAllActiveConsultations()
+    }
+
+    override suspend fun getAllLatestActiveConsultations(): List<ConsultationFlowItem>? {
+        return dao.getAllLatestActiveConsultations()
+    }
+
+    override suspend fun getAllActiveConsultationsByPatientId(patientId: String): List<ConsultationFlowItem>? {
+        return dao.getAllActiveConsultationsByPatientId(patientId)
+    }
+
+    override suspend fun getAllConsultationsByPatientId(patientId: String): List<ConsultationFlowItem>? {
+        return dao.getAllConsultationsByPatientId(patientId)
+    }
+
+    override suspend fun getLatestActiveConsultationByPatientId(patientId: String): ConsultationFlowItem? {
+        return dao.getLatestActiveConsultationByPatientId(patientId)
     }
 }

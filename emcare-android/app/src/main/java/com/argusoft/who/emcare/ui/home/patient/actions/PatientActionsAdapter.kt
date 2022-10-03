@@ -32,8 +32,8 @@ class PatientActionsAdapter(
         init {
             itemView.setOnClickListener {
                 it.navigate(R.id.action_patientActionsFragment_to_patientQuestionnaireFragment){
-                    putString(INTENT_EXTRA_QUESTIONNAIRE_NAME, list[bindingAdapterPosition]?.questionnaireName)
-                    putString(INTENT_EXTRA_STRUCTUREMAP_NAME, list[bindingAdapterPosition]?.questionnaireName)
+                    putString(INTENT_EXTRA_QUESTIONNAIRE_ID, list[bindingAdapterPosition]?.questionnaireName)
+                    putString(INTENT_EXTRA_STRUCTUREMAP_ID, list[bindingAdapterPosition]?.questionnaireName)
                     putString(INTENT_EXTRA_QUESTIONNAIRE_HEADER, list[bindingAdapterPosition]?.header)
                     putString(INTENT_EXTRA_PATIENT_ID,patientId)
                 }

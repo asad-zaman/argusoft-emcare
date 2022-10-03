@@ -19,6 +19,7 @@ package com.argusoft.who.emcare.sync
 import com.argusoft.who.emcare.data.local.database.Database
 import com.argusoft.who.emcare.data.local.pref.Preference
 import com.argusoft.who.emcare.data.remote.Api
+import com.argusoft.who.emcare.ui.common.model.ConsultationFlowItem
 import com.argusoft.who.emcare.utils.extention.whenFailed
 import com.argusoft.who.emcare.utils.extention.whenSuccess
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -46,7 +47,8 @@ sealed class SyncState {
 
 enum class SyncType {
     FACILITY,
-    LANGUAGE
+    LANGUAGE,
+    CONSULTATION_FLOW_ITEM,
 }
 
 /** Class that helps synchronize the data source and save it in the local database */
@@ -123,6 +125,15 @@ internal class EmCareSynchronizer(
                         exceptions.add(SyncException(syncType))
                     }
                 }
+                SyncType.CONSULTATION_FLOW_ITEM -> {
+                    val consultations = api.getConsultationFlow()
+                    consultations.whenSuccess {
+                        database.saveConsultationFlowItems(it)
+                    }
+                    consultations.whenFailed {
+                        exceptions.add(SyncException(syncType))
+                    }
+                }
             }
         }
         return if (exceptions.isEmpty()) {
@@ -136,6 +147,20 @@ internal class EmCareSynchronizer(
 
     private suspend fun upload(): SyncResult {
         val exceptions = mutableListOf<SyncException>()
+
+        syncTypeParams.forEach { syncType ->
+            emit(SyncState.InProgress(syncType))
+            if (syncType == SyncType.CONSULTATION_FLOW_ITEM) {
+                val consultationsList = database.getAllConsultations()
+                if(!consultationsList.isNullOrEmpty()) {
+                    val consultations = api.saveConsultations(consultationsList)
+                    consultations.whenFailed {
+                        exceptions.add(SyncException(syncType))
+                    }
+                }
+
+            }
+        }
 
         return if (exceptions.isEmpty()) {
             SyncResult.Success

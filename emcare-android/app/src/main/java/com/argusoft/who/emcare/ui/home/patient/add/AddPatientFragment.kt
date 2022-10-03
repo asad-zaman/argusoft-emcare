@@ -1,46 +1,45 @@
 package com.argusoft.who.emcare.ui.home.patient.add
 
-import android.view.MenuItem
-import android.widget.Button
 import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
-import ca.uhn.fhir.context.FhirContext
-import ca.uhn.fhir.parser.IParser
 import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.databinding.FragmentAddPatientBinding
+import com.argusoft.who.emcare.ui.common.CONSULTATION_STAGE_REGISTRATION_PATIENT
 import com.argusoft.who.emcare.ui.common.INTENT_EXTRA_FACILITY_ID
-import com.argusoft.who.emcare.ui.common.INTENT_EXTRA_LOCATION_ID
 import com.argusoft.who.emcare.ui.common.base.BaseFragment
+import com.argusoft.who.emcare.ui.common.model.ConsultationFlowItem
+import com.argusoft.who.emcare.ui.common.stageToQuestionnaireId
 import com.argusoft.who.emcare.ui.home.HomeViewModel
 import com.argusoft.who.emcare.ui.home.settings.SettingsViewModel
-import com.argusoft.who.emcare.utils.extention.convertToMap
 import com.argusoft.who.emcare.utils.extention.handleApiView
 import com.argusoft.who.emcare.utils.extention.observeNotNull
-import com.argusoft.who.emcare.utils.extention.whenSuccess
 import com.google.android.fhir.datacapture.QuestionnaireFragment
 import dagger.hilt.android.AndroidEntryPoint
-import org.hl7.fhir.r4.model.Questionnaire
 import com.google.android.fhir.datacapture.QuestionnaireFragment.Companion.SUBMIT_REQUEST_KEY
+import java.util.*
 
 
 @AndroidEntryPoint
 class AddPatientFragment : BaseFragment<FragmentAddPatientBinding>() {
 
     private val homeViewModel: HomeViewModel by viewModels()
-    private val settingsViewModel: SettingsViewModel by activityViewModels()
+//    private val settingsViewModel: SettingsViewModel by activityViewModels()
     private val questionnaireFragment = QuestionnaireFragment()
 
     override fun initView() {
         binding.headerLayout.toolbar.setTitleSidepane(getString(R.string.title_emcare_registration))
-        homeViewModel.getQuestionnaireWithQR("emcarea.registration.p")
+        homeViewModel.getQuestionnaireWithQR(stageToQuestionnaireId[CONSULTATION_STAGE_REGISTRATION_PATIENT]!!, UUID.randomUUID().toString(), UUID.randomUUID().toString())
         childFragmentManager.setFragmentResultListener(SUBMIT_REQUEST_KEY, viewLifecycleOwner) { _, _ ->
             homeViewModel.questionnaireJson?.let {
                 homeViewModel.saveQuestionnaire(
                     questionnaireResponse = questionnaireFragment.getQuestionnaireResponse(),
                     questionnaire = it,
-                    facilityId = requireArguments().getString(INTENT_EXTRA_FACILITY_ID)!!
+                    facilityId = preference.getLoggedInUser()?.facility?.get(0)?.facilityId!!,
+                    structureMapId = stageToQuestionnaireId[CONSULTATION_STAGE_REGISTRATION_PATIENT]!!,
+                    consultationFlowItemId = null,
+                    consultationStage = CONSULTATION_STAGE_REGISTRATION_PATIENT
                 )
             }
         }
@@ -66,7 +65,7 @@ class AddPatientFragment : BaseFragment<FragmentAddPatientBinding>() {
     override fun initObserver() {
         observeNotNull(homeViewModel.saveQuestionnaire) { apiResponse ->
             apiResponse.handleApiView(binding.progressLayout, skipIds = listOf(R.id.headerLayout)) {
-                if (it == 1) {
+                if (it is ConsultationFlowItem) {
                     requireActivity().onBackPressed()
                 }
             }
