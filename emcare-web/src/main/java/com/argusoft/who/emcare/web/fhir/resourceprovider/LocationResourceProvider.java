@@ -4,6 +4,7 @@ import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.rest.annotation.*;
 import ca.uhn.fhir.rest.api.MethodOutcome;
+import ca.uhn.fhir.rest.param.DateParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.fhir.service.LocationResourceService;
@@ -12,7 +13,6 @@ import org.hl7.fhir.r4.model.Location;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Nullable;
 import java.util.List;
 
 @Component
@@ -48,8 +48,8 @@ public class LocationResourceProvider implements IResourceProvider {
     }
 
     @Search()
-    public List<Location> getAllLocations() {
-        return locationResourceService.getAllLocations();
+    public List<Location> getAllLocations(@OptionalParam(name = CommonConstant.RESOURCE_LAST_UPDATED_AT) DateParam theDate) {
+        return locationResourceService.getAllLocations(theDate);
     }
 
     @Delete()

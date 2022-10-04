@@ -3,6 +3,7 @@ package com.argusoft.who.emcare.web.fhir.service.implementation;
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.rest.api.MethodOutcome;
+import ca.uhn.fhir.rest.param.DateParam;
 import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
 import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.fhir.dao.ValueSetResourceRepository;
@@ -71,11 +72,16 @@ public class ValueSetResourceServiceImpl implements ValueSetResourceService {
     }
 
     @Override
-    public List<ValueSet> getAllValueSets() {
+    public List<ValueSet> getAllValueSets(DateParam theDate) {
         List<ValueSet> valueSets = new ArrayList<>();
 
-        List<ValueSetResource> valueSetResources = valueSetResourceRepository.findAll();
+        List<ValueSetResource> valueSetResources = new ArrayList<>();
 
+        if (theDate == null) {
+            valueSetResources =  valueSetResourceRepository.findAll();
+        } else {
+            valueSetResources = valueSetResourceRepository.findByModifiedOnGreaterThanOrCreatedOnGreaterThan(theDate.getValue(), theDate.getValue());
+        }
         for (ValueSetResource valueSetResource : valueSetResources) {
             ValueSet valueSet = parser.parseResource(ValueSet.class, valueSetResource.getText());
             valueSets.add(valueSet);

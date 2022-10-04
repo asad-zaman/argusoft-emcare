@@ -15,6 +15,7 @@ import com.argusoft.who.emcare.web.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -38,15 +39,19 @@ public class QuestionnaireResponseServiceImpl implements QuestionnaireResponseSe
     LocationResourceRepository locationResourceRepository;
 
     @Override
-    public QuestionnaireResponse saveOrUpdateQuestionnaireResponse(QuestionnaireResponseRequestDto questionnaireResponseRequestDto) {
-
-        QuestionnaireResponse questionnaireResponse = QuestionnaireResponseMapper.getQuestionnaireResponse(questionnaireResponseRequestDto);
-        if (questionnaireResponse.getId() == null) {
-            String id = UUID.randomUUID().toString();
-            questionnaireResponse.setId(id);
+    public List<QuestionnaireResponse> saveOrUpdateQuestionnaireResponse(List<QuestionnaireResponseRequestDto> questionnaireResponseRequestDto) {
+        List<QuestionnaireResponse> questionnaireResponses = new ArrayList<>();
+        for (QuestionnaireResponseRequestDto responseRequestDto : questionnaireResponseRequestDto) {
+            QuestionnaireResponse questionnaireResponse = QuestionnaireResponseMapper.getQuestionnaireResponse(responseRequestDto);
+            if (questionnaireResponse.getId() == null) {
+                String id = UUID.randomUUID().toString();
+                questionnaireResponse.setId(id);
+            }
+            questionnaireResponse = questionnaireResponseRepository.save(questionnaireResponse);
+            questionnaireResponses.add(questionnaireResponse);
         }
-        questionnaireResponse = questionnaireResponseRepository.save(questionnaireResponse);
-        return questionnaireResponse;
+
+        return questionnaireResponses;
     }
 
     @Override

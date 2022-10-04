@@ -1,6 +1,7 @@
 package com.argusoft.who.emcare.web.fhir.service;
 
 import ca.uhn.fhir.rest.api.MethodOutcome;
+import ca.uhn.fhir.rest.param.DateParam;
 import com.argusoft.who.emcare.web.common.dto.PageDto;
 import org.hl7.fhir.r4.model.CodeSystem;
 import org.hl7.fhir.r4.model.IdType;
@@ -16,7 +17,7 @@ public interface CodeSystemResourceService {
 
     public MethodOutcome updateCodeSystem(IdType theId, CodeSystem codeSystem);
 
-    public List<CodeSystem> getAllCodeSystem();
+    public List<CodeSystem> getAllCodeSystem(DateParam theDate);
 
     public PageDto getCodeSystemPage(Integer pageNo, String searchString);
 }

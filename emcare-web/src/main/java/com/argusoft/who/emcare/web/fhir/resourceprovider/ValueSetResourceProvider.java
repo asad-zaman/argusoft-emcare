@@ -2,6 +2,7 @@ package com.argusoft.who.emcare.web.fhir.resourceprovider;
 
 import ca.uhn.fhir.rest.annotation.*;
 import ca.uhn.fhir.rest.api.MethodOutcome;
+import ca.uhn.fhir.rest.param.DateParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.fhir.service.ValueSetResourceService;
@@ -39,8 +40,8 @@ public class ValueSetResourceProvider implements IResourceProvider {
     }
 
     @Search()
-    public List<ValueSet> getAllValueSets() {
-        return valueSetResourceService.getAllValueSets();
+    public List<ValueSet> getAllValueSets(@OptionalParam(name = CommonConstant.RESOURCE_LAST_UPDATED_AT) DateParam theDate) {
+        return valueSetResourceService.getAllValueSets(theDate);
     }
 
     @Delete()

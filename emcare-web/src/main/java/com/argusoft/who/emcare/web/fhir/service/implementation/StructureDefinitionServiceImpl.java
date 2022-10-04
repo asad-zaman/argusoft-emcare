@@ -3,6 +3,7 @@ package com.argusoft.who.emcare.web.fhir.service.implementation;
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.rest.api.MethodOutcome;
+import ca.uhn.fhir.rest.param.DateParam;
 import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.common.dto.PageDto;
 import com.argusoft.who.emcare.web.fhir.dao.StructureDefinitionRepository;
@@ -91,10 +92,16 @@ public class StructureDefinitionServiceImpl implements StructureDefinitionServic
     }
 
     @Override
-    public List<StructureDefinition> getAllStructureMap() {
+    public List<StructureDefinition> getAllStructureMap(DateParam theDate) {
         List<StructureDefinition> structureDefinitions = new ArrayList<>();
 
-        List<StructureDefinitionResource> structureMapResources = structureDefinitionRepository.findAll();
+        List<StructureDefinitionResource> structureMapResources = new ArrayList<>();
+
+        if (theDate == null) {
+            structureMapResources =  structureDefinitionRepository.findAll();
+        } else {
+            structureMapResources = structureDefinitionRepository.findByModifiedOnGreaterThanOrCreatedOnGreaterThan(theDate.getValue(), theDate.getValue());
+        }
 
         for (StructureDefinitionResource structureDefinitionResource : structureMapResources) {
             StructureDefinition structureDefinition = parser.parseResource(StructureDefinition.class, structureDefinitionResource.getText());

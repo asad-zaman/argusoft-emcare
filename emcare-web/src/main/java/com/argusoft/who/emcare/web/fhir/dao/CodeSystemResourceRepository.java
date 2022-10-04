@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -16,4 +17,6 @@ public interface CodeSystemResourceRepository extends JpaRepository<CodeSystemRe
     public Page<CodeSystemResource> findByTextContainingIgnoreCase(String searchString, Pageable page);
 
     public List<CodeSystemResource> findByTextContainingIgnoreCase(String searchString);
+
+    List<CodeSystemResource> findByModifiedOnGreaterThanOrCreatedOnGreaterThan(Date startDate, Date endDate);
 }

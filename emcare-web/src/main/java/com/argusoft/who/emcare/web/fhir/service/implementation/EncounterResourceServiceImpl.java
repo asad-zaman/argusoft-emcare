@@ -3,8 +3,10 @@ package com.argusoft.who.emcare.web.fhir.service.implementation;
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.rest.api.MethodOutcome;
+import ca.uhn.fhir.rest.param.DateParam;
 import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.fhir.dao.EncounterResourceRepository;
+import com.argusoft.who.emcare.web.fhir.model.CodeSystemResource;
 import com.argusoft.who.emcare.web.fhir.model.EncounterResource;
 import com.argusoft.who.emcare.web.fhir.service.EncounterResourceService;
 import org.hl7.fhir.r4.model.Encounter;
@@ -91,10 +93,15 @@ public class EncounterResourceServiceImpl implements EncounterResourceService {
     }
 
     @Override
-    public List<Encounter> getAllEncounter() {
+    public List<Encounter> getAllEncounter(DateParam theDate) {
         List<Encounter> encounters = new ArrayList<>();
+        List<EncounterResource> encounterResources = new ArrayList<>();
 
-        List<EncounterResource> encounterResources = encounterResourceRepository.findAll();
+        if (theDate == null) {
+            encounterResources =  encounterResourceRepository.findAll();
+        } else {
+            encounterResources = encounterResourceRepository.findByModifiedOnGreaterThanOrCreatedOnGreaterThan(theDate.getValue(), theDate.getValue());
+        }
 
         for (EncounterResource encounterResource : encounterResources) {
             Encounter encounter = parser.parseResource(Encounter.class, encounterResource.getText());

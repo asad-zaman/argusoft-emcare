@@ -3,12 +3,14 @@ package com.argusoft.who.emcare.web.fhir.service.implementation;
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.rest.api.MethodOutcome;
+import ca.uhn.fhir.rest.param.DateParam;
 import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.common.dto.PageDto;
 import com.argusoft.who.emcare.web.fhir.dao.CodeSystemResourceRepository;
 import com.argusoft.who.emcare.web.fhir.dto.CodeSystemDto;
 import com.argusoft.who.emcare.web.fhir.dto.StructureMapDto;
 import com.argusoft.who.emcare.web.fhir.mapper.EmcareResourceMapper;
+import com.argusoft.who.emcare.web.fhir.model.ActivityDefinitionResource;
 import com.argusoft.who.emcare.web.fhir.model.CodeSystemResource;
 import com.argusoft.who.emcare.web.fhir.model.StructureMapResource;
 import com.argusoft.who.emcare.web.fhir.service.CodeSystemResourceService;
@@ -92,10 +94,17 @@ public class CodeSystemResourceServiceImpl implements CodeSystemResourceService 
     }
 
     @Override
-    public List<CodeSystem> getAllCodeSystem() {
+    public List<CodeSystem> getAllCodeSystem(DateParam theDate) {
         List<CodeSystem> codeSystems = new ArrayList<>();
 
-        List<CodeSystemResource> codeSystemResources = codeSystemResourceRepository.findAll();
+        List<CodeSystemResource> codeSystemResources = new ArrayList<>();
+
+        if (theDate == null) {
+            codeSystemResources =  codeSystemResourceRepository.findAll();
+        } else {
+            codeSystemResources = codeSystemResourceRepository.findByModifiedOnGreaterThanOrCreatedOnGreaterThan(theDate.getValue(), theDate.getValue());
+        }
+
 
         for (CodeSystemResource codeSystemResource : codeSystemResources) {
             CodeSystem codeSystem = parser.parseResource(CodeSystem.class, codeSystemResource.getText());

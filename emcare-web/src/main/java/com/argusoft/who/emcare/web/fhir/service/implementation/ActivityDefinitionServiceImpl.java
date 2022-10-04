@@ -3,6 +3,7 @@ package com.argusoft.who.emcare.web.fhir.service.implementation;
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.rest.api.MethodOutcome;
+import ca.uhn.fhir.rest.param.DateParam;
 import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.common.dto.PageDto;
 import com.argusoft.who.emcare.web.fhir.dao.ActivityDefinitionResourceRepository;
@@ -90,10 +91,15 @@ public class ActivityDefinitionServiceImpl implements ActivityDefinitionResource
     }
 
     @Override
-    public List<ActivityDefinition> getAllActivityDefinition() {
+    public List<ActivityDefinition> getAllActivityDefinition(DateParam theDate) {
         List<ActivityDefinition> activityDefinitions = new ArrayList<>();
+        List<ActivityDefinitionResource> activityDefinitionResources = new ArrayList<>();
 
-        List<ActivityDefinitionResource> activityDefinitionResources = activityDefinitionResourceRepository.findAll();
+        if (theDate == null) {
+            activityDefinitionResources = activityDefinitionResourceRepository.findAll();
+        } else {
+            activityDefinitionResources = activityDefinitionResourceRepository.findByModifiedOnGreaterThanOrCreatedOnGreaterThan(theDate.getValue(), theDate.getValue());
+        }
 
         for (ActivityDefinitionResource definitionResource : activityDefinitionResources) {
             ActivityDefinition activityDefinition = parser.parseResource(ActivityDefinition.class, definitionResource.getText());

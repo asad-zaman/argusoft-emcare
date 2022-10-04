@@ -3,6 +3,7 @@ package com.argusoft.who.emcare.web.fhir.service.implementation;
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.rest.api.MethodOutcome;
+import ca.uhn.fhir.rest.param.DateParam;
 import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.common.dto.PageDto;
 import com.argusoft.who.emcare.web.fhir.dao.StructureMapResourceRepository;
@@ -94,11 +95,16 @@ public class StructureMapResourceServiceImpl implements StructureMapResourceServ
     }
 
     @Override
-    public List<StructureMap> getAllStructureMap() {
+    public List<StructureMap> getAllStructureMap(DateParam theDate) {
         List<StructureMap> structureMaps = new ArrayList<>();
 
-        List<StructureMapResource> structureMapResources = structureMapResourceRepository.findAll();
+        List<StructureMapResource> structureMapResources = new ArrayList<>();
 
+        if (theDate == null) {
+            structureMapResources =  structureMapResourceRepository.findAll();
+        } else {
+            structureMapResources = structureMapResourceRepository.findByModifiedOnGreaterThanOrCreatedOnGreaterThan(theDate.getValue(), theDate.getValue());
+        }
         for (StructureMapResource structureMapResource : structureMapResources) {
             StructureMap structureMap = parser.parseResource(StructureMap.class, structureMapResource.getText());
             structureMaps.add(structureMap);
