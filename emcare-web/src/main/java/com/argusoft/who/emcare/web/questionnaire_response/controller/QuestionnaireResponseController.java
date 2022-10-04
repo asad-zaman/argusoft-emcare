@@ -20,8 +20,8 @@ public class QuestionnaireResponseController {
 
 
     @PostMapping("/createOrUpdate")
-    public ResponseEntity<Object> addOrUpdateQuestionnaireResponse(@RequestBody QuestionnaireResponseRequestDto questionnaireResponseRequestDto) {
-        QuestionnaireResponse questionnaireResponse = questionnaireResponseService.saveOrUpdateQuestionnaireResponse(questionnaireResponseRequestDto);
+    public ResponseEntity<Object> addOrUpdateQuestionnaireResponse(@RequestBody List<QuestionnaireResponseRequestDto> questionnaireResponseRequestDto) {
+        List<QuestionnaireResponse> questionnaireResponse = questionnaireResponseService.saveOrUpdateQuestionnaireResponse(questionnaireResponseRequestDto);
         return ResponseEntity.ok().body(questionnaireResponse);
     }
 

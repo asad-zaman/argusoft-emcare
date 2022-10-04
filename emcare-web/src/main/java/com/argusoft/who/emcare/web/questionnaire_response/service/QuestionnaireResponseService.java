@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface QuestionnaireResponseService {
 
-    public QuestionnaireResponse saveOrUpdateQuestionnaireResponse(QuestionnaireResponseRequestDto questionnaireResponseRequestDto);
+    public List<QuestionnaireResponse> saveOrUpdateQuestionnaireResponse(List<QuestionnaireResponseRequestDto> questionnaireResponseRequestDto);
 
     public List<QuestionnaireResponse> getQuestionnaireResponseByUserLocation();
 }

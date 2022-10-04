@@ -3,6 +3,7 @@ package com.argusoft.who.emcare.web.fhir.service.implementation;
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.rest.api.MethodOutcome;
+import ca.uhn.fhir.rest.param.DateParam;
 import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
 import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.fhir.dao.PlanDefinitionResourceRepository;
@@ -71,10 +72,16 @@ public class PlanDefinitionResourceServiceImpl implements PlanDefinitionResource
     }
 
     @Override
-    public List<PlanDefinition> getAllPlanDefinition() {
+    public List<PlanDefinition> getAllPlanDefinition(DateParam theDate) {
         List<PlanDefinition> planDefinitions = new ArrayList<>();
 
-        List<PlanDefinitionResource> planDefinitionResources = planDefinitionResourceRepository.findAll();
+        List<PlanDefinitionResource> planDefinitionResources = new ArrayList<>();
+
+        if (theDate == null) {
+            planDefinitionResources =  planDefinitionResourceRepository.findAll();
+        } else {
+            planDefinitionResources = planDefinitionResourceRepository.findByModifiedOnGreaterThanOrCreatedOnGreaterThan(theDate.getValue(), theDate.getValue());
+        }
 
         for (PlanDefinitionResource planDefinitionResource : planDefinitionResources) {
             PlanDefinition planDefinition = parser.parseResource(PlanDefinition.class, planDefinitionResource.getText());

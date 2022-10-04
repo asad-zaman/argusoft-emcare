@@ -1,6 +1,7 @@
 package com.argusoft.who.emcare.web.fhir.service;
 
 import ca.uhn.fhir.rest.api.MethodOutcome;
+import ca.uhn.fhir.rest.param.DateParam;
 import com.argusoft.who.emcare.web.common.dto.PageDto;
 import org.hl7.fhir.r4.model.ActivityDefinition;
 import org.hl7.fhir.r4.model.IdType;
@@ -15,7 +16,7 @@ public interface ActivityDefinitionResourceService {
 
     public MethodOutcome updateActivityDefinitionResource(IdType idType, ActivityDefinition definition);
 
-    public List<ActivityDefinition> getAllActivityDefinition();
+    public List<ActivityDefinition> getAllActivityDefinition(DateParam theDate);
 
     public PageDto getActivityDefinitionPage(Integer pageNo, String searchString);
 }

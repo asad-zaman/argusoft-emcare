@@ -4,6 +4,7 @@ import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.rest.annotation.*;
 import ca.uhn.fhir.rest.api.MethodOutcome;
+import ca.uhn.fhir.rest.param.DateParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.fhir.service.ActivityDefinitionResourceService;
@@ -50,7 +51,7 @@ public class ActivityDefinitionResourceProvider implements IResourceProvider {
     }
 
     @Search()
-    public List<ActivityDefinition> getAllStructureMap() {
-        return activityDefinitionResourceService.getAllActivityDefinition();
+    public List<ActivityDefinition> getAllActivityDefinition(@OptionalParam(name = CommonConstant.RESOURCE_LAST_UPDATED_AT) DateParam theDate) {
+        return activityDefinitionResourceService.getAllActivityDefinition(theDate);
     }
 }

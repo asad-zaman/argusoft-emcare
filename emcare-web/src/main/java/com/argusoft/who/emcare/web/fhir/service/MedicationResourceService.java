@@ -1,6 +1,7 @@
 package com.argusoft.who.emcare.web.fhir.service;
 
 import ca.uhn.fhir.rest.api.MethodOutcome;
+import ca.uhn.fhir.rest.param.DateParam;
 import com.argusoft.who.emcare.web.common.dto.PageDto;
 import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.Medication;
@@ -16,7 +17,7 @@ public interface MedicationResourceService {
 
     public MethodOutcome updateMedicationResource(IdType idType, Medication medication);
 
-    public List<Medication> getAllMedication();
+    public List<Medication> getAllMedication(DateParam theDate);
 
     public PageDto getMedicationPage(Integer pageNo, String searchString);
 }

@@ -3,6 +3,7 @@ package com.argusoft.who.emcare.web.fhir.service.implementation;
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.rest.api.MethodOutcome;
+import ca.uhn.fhir.rest.param.DateParam;
 import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
 import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.common.dto.PageDto;
@@ -101,10 +102,17 @@ public class LocationResourceServiceImpl implements LocationResourceService {
     }
 
     @Override
-    public List<Location> getAllLocations() {
+    public List<Location> getAllLocations(DateParam theDate) {
         List<Location> locationList = new ArrayList<>();
 
-        List<LocationResource> locationResources = locationResourceRepository.findAll();
+        List<LocationResource> locationResources = new ArrayList<>();
+
+        if (theDate == null) {
+            locationResources =  locationResourceRepository.findAll();
+        } else {
+            locationResources = locationResourceRepository.findByModifiedOnGreaterThanOrCreatedOnGreaterThan(theDate.getValue(), theDate.getValue());
+        }
+
         for (LocationResource locationResource : locationResources) {
             Location location = parser.parseResource(Location.class, locationResource.getText());
             Organization organization = organizationResourceService.getByResourceId(location.getManagingOrganization().getId());

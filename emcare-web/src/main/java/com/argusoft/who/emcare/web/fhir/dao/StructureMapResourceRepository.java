@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -16,4 +17,6 @@ public interface StructureMapResourceRepository extends JpaRepository<StructureM
     public Page<StructureMapResource> findByTextContainingIgnoreCase(String searchString, Pageable page);
 
     public List<StructureMapResource> findByTextContainingIgnoreCase(String searchString);
+
+    List<StructureMapResource> findByModifiedOnGreaterThanOrCreatedOnGreaterThan(Date startDate, Date endDate);
 }

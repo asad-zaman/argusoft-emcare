@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 
 
@@ -17,4 +18,6 @@ public interface OperationDefinitionResourceRepository extends JpaRepository<Ope
     public Page<OperationDefinitionResource> findByTextContainingIgnoreCase(String searchString, Pageable page);
 
     public List<OperationDefinitionResource> findByTextContainingIgnoreCase(String searchString);
+
+    List<OperationDefinitionResource> findByModifiedOnGreaterThanOrCreatedOnGreaterThan(Date startDate, Date endDate);
 }

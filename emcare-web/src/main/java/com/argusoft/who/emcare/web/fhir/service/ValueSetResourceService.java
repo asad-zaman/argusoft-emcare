@@ -1,6 +1,7 @@
 package com.argusoft.who.emcare.web.fhir.service;
 
 import ca.uhn.fhir.rest.api.MethodOutcome;
+import ca.uhn.fhir.rest.param.DateParam;
 import com.argusoft.who.emcare.web.fhir.model.ValueSetResource;
 import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.ValueSet;
@@ -13,7 +14,7 @@ public interface ValueSetResourceService {
 
     public ValueSet getByResourceId(String resourceId);
 
-    public List<ValueSet> getAllValueSets();
+    public List<ValueSet> getAllValueSets(DateParam theDate);
 
     public void deleteValueSet(String resourceId);
 

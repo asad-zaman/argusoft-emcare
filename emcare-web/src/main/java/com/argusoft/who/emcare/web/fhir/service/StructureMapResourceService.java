@@ -1,6 +1,7 @@
 package com.argusoft.who.emcare.web.fhir.service;
 
 import ca.uhn.fhir.rest.api.MethodOutcome;
+import ca.uhn.fhir.rest.param.DateParam;
 import com.argusoft.who.emcare.web.common.dto.PageDto;
 import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.StructureMap;
@@ -16,7 +17,7 @@ public interface StructureMapResourceService {
 
     public MethodOutcome updateStructureMapResource(IdType idType, StructureMap structureMap);
 
-    public List<StructureMap> getAllStructureMap();
+    public List<StructureMap> getAllStructureMap(DateParam theDate);
 
     public PageDto getStructureMapPage(Integer pageNo, String searchString);
 

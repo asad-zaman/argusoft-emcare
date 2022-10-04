@@ -3,6 +3,7 @@ package com.argusoft.who.emcare.web.fhir.service.implementation;
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.rest.api.MethodOutcome;
+import ca.uhn.fhir.rest.param.DateParam;
 import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.common.dto.PageDto;
 import com.argusoft.who.emcare.web.fhir.dao.LibraryResourceRepository;
@@ -91,10 +92,16 @@ public class LibraryResourceServiceImpl implements LibraryResourceService {
     }
 
     @Override
-    public List<Library> getAllLibrary() {
+    public List<Library> getAllLibrary(DateParam theDate) {
         List<Library> libraries = new ArrayList<>();
 
-        List<LibraryResource> libraryResources = libraryResourceRepository.findAll();
+        List<LibraryResource> libraryResources = new ArrayList<>();
+
+        if (theDate == null) {
+            libraryResources =  libraryResourceRepository.findAll();
+        } else {
+            libraryResources = libraryResourceRepository.findByModifiedOnGreaterThanOrCreatedOnGreaterThan(theDate.getValue(), theDate.getValue());
+        }
 
         for (LibraryResource libraryResource : libraryResources) {
             Library library = parser.parseResource(Library.class, libraryResource.getText());

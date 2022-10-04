@@ -4,6 +4,7 @@ import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.rest.annotation.*;
 import ca.uhn.fhir.rest.api.MethodOutcome;
+import ca.uhn.fhir.rest.param.DateParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.fhir.service.OperationDefinitionResourceService;
@@ -51,7 +52,7 @@ public class OperationDefinitionResourceProvider implements IResourceProvider {
     }
 
     @Search()
-    public List<OperationDefinition> getAllOperationDefinition() {
-        return operationDefinitionResourceService.getAllOperationDefinition();
+    public List<OperationDefinition> getAllOperationDefinition(@OptionalParam(name = CommonConstant.RESOURCE_LAST_UPDATED_AT) DateParam theDate) {
+        return operationDefinitionResourceService.getAllOperationDefinition(theDate);
     }
 }

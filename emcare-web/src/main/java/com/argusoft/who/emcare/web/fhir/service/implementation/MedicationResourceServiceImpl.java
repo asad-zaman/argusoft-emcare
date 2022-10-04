@@ -3,6 +3,7 @@ package com.argusoft.who.emcare.web.fhir.service.implementation;
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.rest.api.MethodOutcome;
+import ca.uhn.fhir.rest.param.DateParam;
 import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.common.dto.PageDto;
 import com.argusoft.who.emcare.web.fhir.dao.MedicationResourceRepository;
@@ -91,10 +92,16 @@ public class MedicationResourceServiceImpl implements MedicationResourceService 
     }
 
     @Override
-    public List<Medication> getAllMedication() {
+    public List<Medication> getAllMedication(DateParam theDate) {
         List<Medication> medications = new ArrayList<>();
 
-        List<MedicationResource> medicationResources = medicationResourceRepository.findAll();
+        List<MedicationResource> medicationResources = new ArrayList<>();
+
+        if (theDate == null) {
+            medicationResources =  medicationResourceRepository.findAll();
+        } else {
+            medicationResources = medicationResourceRepository.findByModifiedOnGreaterThanOrCreatedOnGreaterThan(theDate.getValue(), theDate.getValue());
+        }
 
         for (MedicationResource medicationResource : medicationResources) {
             Medication structureMap = parser.parseResource(Medication.class, medicationResource.getText());
