@@ -63,7 +63,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun getConsultations(search: String? = null, facilityId: String?, isRefresh: Boolean = false){
+    fun getConsultations(search: String? = null, isRefresh: Boolean = false){
         _consultations.value = ApiResponse.Loading(isRefresh)
         val consultationsArrayList = mutableListOf(
             ConsultationItemData(patientId="",
@@ -104,6 +104,7 @@ class HomeViewModel @Inject constructor(
                             consultationsArrayList.add(
                                 ConsultationItemData(
                                     name = patientItem.nameFirstRep.nameAsSingleString.orEmpty { patientItem.identifierFirstRep.value ?:"NA #${patientItem.id?.takeLast(9)}"},
+                                    identifier = patientItem.identifierFirstRep.value ,
                                     dateOfBirth = patientItem.birthDateElement.valueAsString ?: "Not Provided",
                                     dateOfConsultation = ZonedDateTime.parse(consultationFlowItem.consultationDate.plus("Z[UTC]")).format(DateTimeFormatter.ofPattern("dd/MM/YY")),
                                     badgeText = stageToBadgeMap[consultationFlowItem.consultationStage],
@@ -122,7 +123,13 @@ class HomeViewModel @Inject constructor(
                         }
                     }
                 }
-                _consultations.value = ApiResponse.Success(consultationsArrayList)
+                _consultations.value = ApiResponse.Success(consultationsArrayList.filter { consultationItemData ->
+                    if(consultationItemData.identifier != null) {
+                        search?.let { it1 -> consultationItemData.name?.contains(it1, ignoreCase = true)!! || consultationItemData.identifier.equals(it1, ignoreCase = true) }!!
+                    } else {
+                        search?.let { it1 -> consultationItemData.name?.contains(it1, ignoreCase = true) }!!
+                    }
+                })
             }
         }
     }

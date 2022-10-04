@@ -27,7 +27,7 @@ class ConsultationListFragment: BaseFragment<FragmentConsultationListBinding>(),
 
     override fun onResume() {
         super.onStart()
-        homeViewModel.getConsultations((this.parentFragment)?.view?.findViewById<SearchView>(R.id.searchView)?.query.toString(), preference.getLoggedInUser()?.facility?.get(0)?.facilityId, consultationAdapter.isNotEmpty())
+        homeViewModel.getConsultations((this.parentFragment)?.view?.findViewById<SearchView>(R.id.searchView)?.query.toString(), consultationAdapter.isNotEmpty())
         (this.parentFragment)?.view?.findViewById<SearchView>(R.id.searchView)?.setOnQueryTextListener(this)
     }
     override fun initView() {
@@ -42,7 +42,7 @@ class ConsultationListFragment: BaseFragment<FragmentConsultationListBinding>(),
     }
 
     override fun onQueryTextChange(newText: String?): Boolean {
-        homeViewModel.getConsultations((this.parentFragment)?.view?.findViewById<SearchView>(R.id.searchView)?.query.toString(), preference.getLoggedInUser()?.facility?.get(0)?.facilityId, consultationAdapter.isNotEmpty())
+        homeViewModel.getConsultations((this.parentFragment)?.view?.findViewById<SearchView>(R.id.searchView)?.query.toString(), consultationAdapter.isNotEmpty())
         return true
     }
 
@@ -63,7 +63,7 @@ class ConsultationListFragment: BaseFragment<FragmentConsultationListBinding>(),
         binding.progressLayout.swipeRefreshLayout = binding.swipeRefreshLayout
         binding.recyclerView.adapter = consultationAdapter
         binding.progressLayout.setOnSwipeRefreshLayout {
-            homeViewModel.getConsultations((this.parentFragment)?.view?.findViewById<SearchView>(R.id.searchView)?.query.toString(), preference.getLoggedInUser()?.facility?.get(0)?.facilityId, consultationAdapter.isNotEmpty())
+            homeViewModel.getConsultations((this.parentFragment)?.view?.findViewById<SearchView>(R.id.searchView)?.query.toString(), consultationAdapter.isNotEmpty())
         }
     }
 
