@@ -2,8 +2,12 @@ package com.argusoft.who.emcare.web.questionnaire_response.model;
 
 import com.argusoft.who.emcare.web.common.model.EntityAuditInfo;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.io.Serializable;
+import java.util.Date;
 
 @Entity
 @Table(name = "questionnaire_response")
@@ -36,6 +40,9 @@ public class QuestionnaireResponse extends EntityAuditInfo implements Serializab
 
     @Column(name = "questionnaire_id")
     private String questionnaireId;
+
+    @Column(name = "consultation_date")
+    private Date consultationDate;
 
 
     public String getId() {
@@ -100,5 +107,13 @@ public class QuestionnaireResponse extends EntityAuditInfo implements Serializab
 
     public void setQuestionnaireId(String questionnaireId) {
         this.questionnaireId = questionnaireId;
+    }
+
+    public Date getConsultationDate() {
+        return consultationDate;
+    }
+
+    public void setConsultationDate(Date consultationDate) {
+        this.consultationDate = consultationDate;
     }
 }

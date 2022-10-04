@@ -1,5 +1,7 @@
 package com.argusoft.who.emcare.web.questionnaire_response.dto;
 
+import java.util.Date;
+
 public class QuestionnaireResponseRequestDto {
 
     private String id;
@@ -10,6 +12,7 @@ public class QuestionnaireResponseRequestDto {
     private String encounterId;
     private String structureMapId;
     private String questionnaireId;
+    private Date consultationDate;
 
     public String getId() {
         return id;
@@ -73,5 +76,13 @@ public class QuestionnaireResponseRequestDto {
 
     public void setQuestionnaireId(String questionnaireId) {
         this.questionnaireId = questionnaireId;
+    }
+
+    public Date getConsultationDate() {
+        return consultationDate;
+    }
+
+    public void setConsultationDate(Date consultationDate) {
+        this.consultationDate = consultationDate;
     }
 }
