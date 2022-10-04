@@ -16,6 +16,7 @@ export class HomeComponent implements OnInit {
   uniqueLocArr = [];
   userFacObj = {};
   facilityArr = [];
+  lastScDate = `${new Date().toDateString()} ${new Date().toLocaleTimeString()}`;
 
   @ViewChild('mapRef', { static: true }) mapElement: ElementRef;
 
@@ -31,10 +32,25 @@ export class HomeComponent implements OnInit {
 
   prerequisite() {
     this.checkFeatures();
+    this.getDashboardData();
+    this.getChartData();
+  }
+
+  getDashboardData() {
     this.fhirService.getDashboardData().subscribe((res) => {
       this.dashboardData = res;
     });
+  }
+
+  syncApis() {
+    this.getDashboardData();
     this.getChartData();
+  }
+
+  getLastSyncDate() {
+    this.lastScDate = `${new Date().toDateString()} ${new Date().toLocaleTimeString()}`;
+    this.syncApis();
+    return this.lastScDate;
   }
 
   checkFeatures() {
@@ -47,40 +63,82 @@ export class HomeComponent implements OnInit {
 
   barChartPopulation() {
     let locArr = this.userFacObj['names'];
-    let locDataArr = this.userFacObj['count'];
-    Highcharts.chart('barChart', {
+    //  toDo  temparory creating arrays for scatter plot
+    let locDataArr = [];
+    this.userFacObj['count'].forEach(d => { locDataArr.push([d, d]); });
+    let options = {
       chart: {
-        type: 'bar'
-      },
-      title: {
-        text: 'Users per Facility'
-      },
-      xAxis: {
-        categories: locArr,
-      },
-      yAxis: {
-        min: 0,
-        title: {
-          text: 'Users ',
-          align: 'high'
-        },
-      },
-      tooltip: {
-        valueSuffix: ''
-      },
-      plotOptions: {
-        bar: {
-          dataLabels: {
-            enabled: true
+        type: 'scatter',
+        margin: [70, 50, 60, 80],
+        events: {
+          click: function (e) {
+            // find the clicked values and the series
+            let x = Math.round(e.xAxis[0].value);
+            let y = Math.round(e.yAxis[0].value);
+            // Add it
+            // let series = this.series[0];
+            // series.addPoint([x, y]);
           }
         }
       },
-      series: [{
-        type: undefined,
-        name: 'Current Users',
-        data: locDataArr
-      }]
-    });
+      title: {
+        text: 'User supplied data'
+      },
+      subtitle: {
+        text: 'Click the plot area to add a point. Click a point to remove it.'
+      },
+      accessibility: {
+        announceNewData: {
+          enabled: true
+        }
+      },
+      xAxis: {
+        gridLineWidth: 1,
+        minPadding: 0.2,
+        maxPadding: 0.2,
+        maxZoom: 6
+      },
+      yAxis: {
+        title: {
+          text: 'Value'
+        },
+        minPadding: 0.2,
+        maxPadding: 0.2,
+        maxZoom: 6,
+        plotLines: [{
+          value: 0,
+          width: 1,
+          color: '#808080'
+        }]
+      },
+      legend: {
+        enabled: false
+      },
+      exporting: {
+        enabled: false
+      },
+      plotOptions: {
+        series: {
+          lineWidth: 1,
+          point: {
+            events: {
+              click: function () {
+                if (this.series.data.length > 1) {
+                  this.remove();
+                }
+              }
+            }
+          }
+        }
+      },
+      series: [
+        {
+          type: undefined,
+          data: locDataArr
+        }
+      ]
+    }
+    Highcharts.chart('container', options);
   }
 
   getChartData() {
@@ -95,7 +153,8 @@ export class HomeComponent implements OnInit {
         }
         this.manipulateMapView(res['mapView']);
         this.barChartPopulation();
-        this.pieChartBrowser();
+        this.firstPieChart();
+        this.secondPieChart();
         this.loadMap();
       }
     });
@@ -110,8 +169,8 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  pieChartBrowser() {
-    Highcharts.chart('pieChart', {
+  firstPieChart() {
+    Highcharts.chart('firstPieChart', {
       chart: {
         plotBackgroundColor: null,
         plotBorderWidth: null,
@@ -119,7 +178,7 @@ export class HomeComponent implements OnInit {
         type: 'pie'
       },
       title: {
-        text: 'Patients in different locations'
+        text: 'Number of consultations per district'
       },
       tooltip: {
         pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
@@ -129,7 +188,40 @@ export class HomeComponent implements OnInit {
           allowPointSelect: true,
           cursor: 'pointer',
           dataLabels: {
-            enabled: true,
+            enabled: false,
+            format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+          }
+        }
+      },
+      series: [{
+        name: 'Location',
+        colorByPoint: true,
+        type: undefined,
+        data: this.uniqueLocArr
+      }]
+    });
+  }
+
+  secondPieChart() {
+    Highcharts.chart('secondPieChart', {
+      chart: {
+        plotBackgroundColor: null,
+        plotBorderWidth: null,
+        plotShadow: false,
+        type: 'pie'
+      },
+      title: {
+        text: 'Number of consultations by age group'
+      },
+      tooltip: {
+        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+      },
+      plotOptions: {
+        pie: {
+          allowPointSelect: true,
+          cursor: 'pointer',
+          dataLabels: {
+            enabled: false,
             format: '<b>{point.name}</b>: {point.percentage:.1f} %'
           }
         }
@@ -148,7 +240,7 @@ export class HomeComponent implements OnInit {
     const locationArr = this.facilityArr.map(d => d.positions);
     const centerPosition = this.facilityArr[0]['positions'];
     const map = new window['google'].maps.Map(this.mapElement.nativeElement, {
-      center: centerPosition, zoom: 4
+      center: centerPosition, zoom: 5
     });
 
     this.facilityArr.forEach(data => {
