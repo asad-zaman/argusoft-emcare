@@ -5,7 +5,7 @@ import com.argusoft.who.emcare.R
 import ca.uhn.fhir.context.FhirContext
 import com.argusoft.who.emcare.data.remote.ApiResponse
 import com.argusoft.who.emcare.ui.common.LOCATION_EXTENSION_URL
-import com.argusoft.who.emcare.ui.common.consultationFlowQuestionnaireList
+import com.argusoft.who.emcare.ui.common.consultationFlowStageList
 import com.argusoft.who.emcare.ui.common.model.ConsultationFlowItem
 import com.argusoft.who.emcare.ui.common.model.PatientItem
 import com.argusoft.who.emcare.ui.common.stageToQuestionnaireId
@@ -162,13 +162,13 @@ class PatientRepository @Inject constructor(
             }
 
             //DUMMY LOGIC FOR NEXT CONSULTATION FOR NOW, TODO: Replace by Plan Definition
-            val consultationStageIndex = consultationFlowQuestionnaireList.indexOf(consultationStage)
-            if(consultationFlowQuestionnaireList.last().equals(consultationStage, true)){
+            val consultationStageIndex = consultationFlowStageList.indexOf(consultationStage)
+            if(consultationFlowStageList.last().equals(consultationStage, true)){
                 //End of consultation
                 consultationFlowRepository.updateConsultationFlowInactiveByEncounterId(encounterId)
                 emit(ApiResponse.Success(null))
             } else {
-                val nextConsultationStage = consultationFlowQuestionnaireList.get(consultationStageIndex + 1)
+                val nextConsultationStage = consultationFlowStageList.get(consultationStageIndex + 1)
 
                 //create nextConsultationItem
                 val nextConsultationFlowItem = ConsultationFlowItem(

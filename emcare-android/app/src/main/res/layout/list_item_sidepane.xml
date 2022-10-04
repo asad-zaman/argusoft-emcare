@@ -11,7 +11,7 @@
         android:layout_width="@dimen/_35sdp"
         android:layout_height="@dimen/_35sdp"
         android:backgroundTint="@color/white"
-        app:tint="@color/colorPrimary"
+        app:tint="@color/colorSecondary2"
         android:src="@drawable/measurements_icon"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

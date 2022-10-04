@@ -7,13 +7,11 @@ import androidx.lifecycle.viewModelScope
 import ca.uhn.fhir.context.FhirContext
 import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.data.remote.ApiResponse
-import com.argusoft.who.emcare.ui.common.URL_CQF_LIBRARY
-import com.argusoft.who.emcare.ui.common.URL_INITIAL_EXPRESSION
+import com.argusoft.who.emcare.ui.common.*
 import com.argusoft.who.emcare.ui.common.model.ConsultationFlowItem
 import com.argusoft.who.emcare.ui.common.model.ConsultationItemData
 import com.argusoft.who.emcare.ui.common.model.PatientItem
-import com.argusoft.who.emcare.ui.common.stageToBadgeMap
-import com.argusoft.who.emcare.ui.common.stageToIconMap
+import com.argusoft.who.emcare.ui.common.model.SidepaneItem
 import com.argusoft.who.emcare.ui.home.patient.PatientRepository
 import com.argusoft.who.emcare.utils.extention.orEmpty
 import com.argusoft.who.emcare.utils.listener.SingleLiveEvent
@@ -41,6 +39,7 @@ class HomeViewModel @Inject constructor(
 
     var questionnaireJson: String? = null
     var currentTab: Int = 0
+
     private val _patients = SingleLiveEvent<ApiResponse<List<PatientItem>>>()
     val patients: LiveData<ApiResponse<List<PatientItem>>> = _patients
 
@@ -53,6 +52,8 @@ class HomeViewModel @Inject constructor(
     private val _saveQuestionnaire = MutableLiveData<ApiResponse<ConsultationFlowItem>>()
     val saveQuestionnaire: LiveData<ApiResponse<ConsultationFlowItem>> = _saveQuestionnaire
 
+    private val _sidepaneItems = SingleLiveEvent<ApiResponse<List<SidepaneItem>>>()
+    val sidepaneItems: LiveData<ApiResponse<List<SidepaneItem>>> = _sidepaneItems
 
     fun getPatients(search: String? = null, facilityId: String?, isRefresh: Boolean = false) {
         _patients.value = ApiResponse.Loading(isRefresh)
@@ -63,38 +64,51 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    fun getSidePaneItems(encounterId: String, patientId: String) {
+        viewModelScope.launch {
+            val sidepaneList = mutableListOf<SidepaneItem>()
+            consultationFlowRepository.getAllConsultationsByEncounterId(encounterId).collect{
+                patientRepository.getPatientById(patientId).collect { patientResponse ->
+                    val patientItem = patientResponse.data!!
+                    consultationFlowStageList.forEach { stage ->
+                        val consultationFlowItems = it.data?.filter { consultationFlowItem -> consultationFlowItem.consultationStage.equals(stage) }
+                        val consultationFlowItem = if(consultationFlowItems.isNullOrEmpty()) null else consultationFlowItems[0]
+                        if(!stage.equals(CONSULTATION_STAGE_REGISTRATION_PATIENT)){
+                            if(consultationFlowItem != null) {
+                                sidepaneList.add(SidepaneItem(stageToIconMap[stage],
+                                    stageToBadgeMap[stage],
+                                    ConsultationItemData(
+                                        name = patientItem.nameFirstRep.nameAsSingleString.orEmpty { patientItem.identifierFirstRep.value ?:"NA #${patientItem.id?.takeLast(9)}"},
+                                        gender = if(patientItem.hasGender()) patientItem.genderElement.valueAsString else null,
+                                        identifier = patientItem.identifierFirstRep.value ,
+                                        dateOfBirth = patientItem.birthDateElement.valueAsString ?: "Not Provided",
+                                        dateOfConsultation = ZonedDateTime.parse(consultationFlowItem.consultationDate?.substringBefore("+").plus("Z[UTC]")).format(DateTimeFormatter.ofPattern("dd/MM/YY")),
+                                        badgeText = stageToBadgeMap[consultationFlowItem.consultationStage],
+                                        header = consultationFlowItem.questionnaireId, //TODO: For test only, replace it with appropriate header
+                                        consultationIcon = stageToIconMap[consultationFlowItem.consultationStage],
+                                        consultationFlowItemId = consultationFlowItem.id,
+                                        patientId = consultationFlowItem.patientId,
+                                        encounterId = consultationFlowItem.encounterId,
+                                        questionnaireId = consultationFlowItem.questionnaireId,
+                                        structureMapId = consultationFlowItem.structureMapId,
+                                        consultationStage = consultationFlowItem.consultationStage,
+                                        questionnaireResponseText = consultationFlowItem.questionnaireResponseText,
+                                        isActive = consultationFlowItem.isActive
+                                    )))
+                            } else {
+                                sidepaneList.add(SidepaneItem(stageToIconMap[stage], stageToBadgeMap[stage]))
+                            }
+                        }
+                    }
+                    _sidepaneItems.value = ApiResponse.Success(sidepaneList)
+                }
+            }
+        }
+    }
+
     fun getConsultations(search: String? = null, isRefresh: Boolean = false){
         _consultations.value = ApiResponse.Loading(isRefresh)
-        val consultationsArrayList = mutableListOf(
-            ConsultationItemData(patientId="",
-                encounterId="",
-                name="Helsenorge Reg.",
-                dateOfBirth="10/10/20",
-                dateOfConsultation = "10/10/21",
-                badgeText = "Registration",
-                consultationIcon = R.drawable.closed_consultation_icon_dark,
-                questionnaireId = "registration.ideal.q",
-                consultationFlowItemId = UUID.randomUUID().toString()),
-            ConsultationItemData(patientId="",
-                encounterId="",
-                name="Signs",
-                dateOfBirth="10/10/20",
-                dateOfConsultation = "01/01/22",
-                badgeText = "Signs",
-                consultationIcon = R.drawable.sign_icon,
-                questionnaireId = "emcare.b10-16.signs.2m.p",
-                consultationFlowItemId = UUID.randomUUID().toString()),
-
-            ConsultationItemData(patientId="",
-                name="Measurements",
-                encounterId="",
-                dateOfBirth="10/10/20",
-                dateOfConsultation = "10/10/21",
-                badgeText = "Measurements",
-                consultationIcon = R.drawable.closed_consultation_icon_dark,
-                questionnaireId = "emcare.b6.measurements",
-                consultationFlowItemId = UUID.randomUUID().toString()),
-        )
+        val consultationsArrayList = mutableListOf<ConsultationItemData>()
         viewModelScope.launch {
             consultationFlowRepository.getAllLatestActiveConsultations().collect {
                 it.data?.forEach{ consultationFlowItem ->
@@ -104,9 +118,10 @@ class HomeViewModel @Inject constructor(
                             consultationsArrayList.add(
                                 ConsultationItemData(
                                     name = patientItem.nameFirstRep.nameAsSingleString.orEmpty { patientItem.identifierFirstRep.value ?:"NA #${patientItem.id?.takeLast(9)}"},
+                                    gender = if(patientItem.hasGender()) patientItem.genderElement.valueAsString else null,
                                     identifier = patientItem.identifierFirstRep.value ,
                                     dateOfBirth = patientItem.birthDateElement.valueAsString ?: "Not Provided",
-                                    dateOfConsultation = ZonedDateTime.parse(consultationFlowItem.consultationDate.plus("Z[UTC]")).format(DateTimeFormatter.ofPattern("dd/MM/YY")),
+                                    dateOfConsultation = ZonedDateTime.parse(consultationFlowItem.consultationDate?.substringBefore("+").plus("Z[UTC]")).format(DateTimeFormatter.ofPattern("dd/MM/YY")),
                                     badgeText = stageToBadgeMap[consultationFlowItem.consultationStage],
                                     header = consultationFlowItem.questionnaireId, //TODO: For test only, replace it with appropriate header
                                     consultationIcon = stageToIconMap[consultationFlowItem.consultationStage],
@@ -129,7 +144,7 @@ class HomeViewModel @Inject constructor(
                     } else {
                         search?.let { it1 -> consultationItemData.name?.contains(it1, ignoreCase = true) }!!
                     }
-                })
+                },"No Active Consultations Found")
             }
         }
     }

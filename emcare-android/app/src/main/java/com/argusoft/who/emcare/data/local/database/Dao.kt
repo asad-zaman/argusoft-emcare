@@ -49,6 +49,9 @@ interface Dao {
     @Query("SELECT * from consultationflowitem")
     suspend fun getAllConsultations(): List<ConsultationFlowItem>?
 
+    @Query("SELECT * from consultationflowitem WHERE encounterId=:encounterId")
+    suspend fun getAllConsultationsByEncounterId(encounterId: String): List<ConsultationFlowItem>?
+
     @Query("SELECT * from consultationflowitem where isActive=1")
     suspend fun getAllActiveConsultations(): List<ConsultationFlowItem>?
 

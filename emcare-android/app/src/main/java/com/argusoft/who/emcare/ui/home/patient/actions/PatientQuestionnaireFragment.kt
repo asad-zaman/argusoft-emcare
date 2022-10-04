@@ -5,14 +5,14 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
 import com.argusoft.who.emcare.R
+import com.argusoft.who.emcare.data.remote.executeApiHelper
 import com.argusoft.who.emcare.databinding.FragmentPatientQuestionnaireBinding
 import com.argusoft.who.emcare.ui.common.*
 import com.argusoft.who.emcare.ui.common.base.BaseFragment
 import com.argusoft.who.emcare.ui.common.model.ConsultationFlowItem
+import com.argusoft.who.emcare.ui.home.HomeActivity
 import com.argusoft.who.emcare.ui.home.HomeViewModel
-import com.argusoft.who.emcare.utils.extention.handleApiView
-import com.argusoft.who.emcare.utils.extention.navigate
-import com.argusoft.who.emcare.utils.extention.observeNotNull
+import com.argusoft.who.emcare.utils.extention.*
 import com.google.android.fhir.datacapture.QuestionnaireFragment
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -23,6 +23,7 @@ class PatientQuestionnaireFragment : BaseFragment<FragmentPatientQuestionnaireBi
     private val questionnaireFragment = QuestionnaireFragment()
 
     override fun initView() {
+        (activity as? HomeActivity)?.closeSidepane()
 //        binding.headerLayout.toolbar.setTitleSidepane(getString(R.string.patient) + " " + requireArguments().getString(INTENT_EXTRA_QUESTIONNAIRE_HEADER))
         binding.headerLayout.toolbar.setTitleSidepane(requireArguments().getString(INTENT_EXTRA_QUESTIONNAIRE_HEADER))
 
@@ -47,8 +48,9 @@ class PatientQuestionnaireFragment : BaseFragment<FragmentPatientQuestionnaireBi
 
         requireActivity().onBackPressedDispatcher.addCallback(this) {
             navigate(R.id.action_patientQuestionnaireFragment_to_homeFragment)
-            homeViewModel.currentTab = 1
         }
+
+        homeViewModel.getSidePaneItems(requireArguments().getString(INTENT_EXTRA_ENCOUNTER_ID)!!,requireArguments().getString(INTENT_EXTRA_PATIENT_ID)!!)
     }
 
 
@@ -72,6 +74,13 @@ class PatientQuestionnaireFragment : BaseFragment<FragmentPatientQuestionnaireBi
     }
 
     override fun initObserver() {
+        observeNotNull(homeViewModel.sidepaneItems) { apiResponse ->
+            apiResponse.whenSuccess {
+                (activity as? HomeActivity)?.setupSidepane()
+                (activity as? HomeActivity)?.sidepaneAdapter?.clearAllItems()
+                (activity as? HomeActivity)?.sidepaneAdapter?.addAll(it)
+            }
+        }
         observeNotNull(homeViewModel.saveQuestionnaire) { apiResponse ->
             apiResponse.handleApiView(binding.progressLayout, skipIds = listOf(R.id.headerLayout)) {
                 if (it is ConsultationFlowItem) { //TODO: Change logic
@@ -84,7 +93,6 @@ class PatientQuestionnaireFragment : BaseFragment<FragmentPatientQuestionnaireBi
                         putString(INTENT_EXTRA_ENCOUNTER_ID,it.encounterId)
                         putString(INTENT_EXTRA_CONSULTATION_STAGE,it.consultationStage)
                         putString(INTENT_EXTRA_QUESTIONNAIRE_RESPONSE,it.questionnaireResponseText)
-                        putBoolean(INTENT_EXTRA_IS_ACTIVE,it.isActive)
                     }
                 } else {
                     navigate(R.id.action_patientQuestionnaireFragment_to_homeFragment)

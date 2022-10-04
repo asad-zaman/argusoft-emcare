@@ -36,7 +36,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
     private lateinit var navHostFragment: NavHostFragment
 //    private val signUpViewModel: SignUpViewModel by viewModels()
     private val settingsViewModel: SettingsViewModel by viewModels()
-    private lateinit var sidepaneAdapter: SidepaneAdapter
+    lateinit var sidepaneAdapter: SidepaneAdapter
 
     override fun initView() {
 //        signUpViewModel.getLocationsAndRoles()
@@ -60,8 +60,9 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
             binding.navView.menu.getItem(0).title = preference.getLoggedInUser()?.firstName
             binding.navView.menu.getItem(1).title = preference.getLoggedInUser()?.facility?.get(0)?.facilityName
         }
+        binding.navView.menu.getItem(2).title = "Logout"
 
-        sidepaneAdapter = SidepaneAdapter(onClickListener = this)
+        sidepaneAdapter = SidepaneAdapter(onClickListener = this, navHostFragment = navHostFragment)
         setupSidepane()
 
     }
@@ -74,19 +75,8 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
         binding.drawerLayout.closeDrawer(GravityCompat.END)
     }
 
-    private fun setupSidepane() {
+    fun setupSidepane() {
         binding.sidepaneRecyclerView.adapter = sidepaneAdapter
-        sidepaneAdapter.clearAllItems()
-        sidepaneAdapter.addAll(listOf(
-            SidepaneItem(R.drawable.registration_icon, "Registration"),
-            SidepaneItem(R.drawable.sign_icon,"Signs"),
-            SidepaneItem(R.drawable.symptoms_icon,"Symptoms"),
-            SidepaneItem(R.drawable.danger_sign_icon, "Danger Signs"),
-            SidepaneItem(R.drawable.measurements_icon, "Measurements"),
-            SidepaneItem(R.drawable.health_prevention_icon,"Health\nPreventions"),
-            SidepaneItem(R.drawable.tests_icon,"Tests"),
-            SidepaneItem(R.drawable.treatment_icon,"Treatments"),
-            ))
     }
 
     override fun initListener() {
@@ -123,15 +113,15 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
     }
 
     override fun initObserver() {
-        observeNotNull(settingsViewModel.languageApiState) {
-            it.whenSuccess {
-                it.languageData?.convertToMap()?.apply {
+//        observeNotNull(settingsViewModel.languageApiState) {
+//            it.whenSuccess {
+//                it.languageData?.convertToMap()?.apply {
 //                    binding.navView.menu.getItem(0).setTitle(getOrElse("Edit_Profile") { getString(R.string.menu_edit_profile) } )
 //                    binding.navView.menu.getItem(1).setTitle(getOrElse("Settings") { getString(R.string.menu_settings) } )
-                    binding.navView.menu.getItem(2).setTitle(getOrElse("Logout") { getString(R.string.menu_logout) } )
-                }
-            }
-        }
+//                    binding.navView.menu.getItem(2).setTitle(getOrElse("Logout") { getString(R.string.menu_logout) } )
+//                }
+//            }
+//        }
     }
 
     override fun onSupportNavigateUp(): Boolean {

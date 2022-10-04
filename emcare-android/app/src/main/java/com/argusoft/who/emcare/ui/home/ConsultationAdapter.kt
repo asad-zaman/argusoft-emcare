@@ -57,6 +57,12 @@ class ConsultationAdapter(
             binding.consultationDateValueTextView.text = dateOfConsultation
             binding.badgeTextView.text = badgeText
             binding.rightConsultationImageView.setImageResource(consultationIcon!!)
+            if(!gender.isNullOrEmpty()){
+                if(gender.equals("male" ,false))
+                    binding.childImageView.setImageResource(R.drawable.baby_boy)
+                else
+                    binding.childImageView.setImageResource(R.drawable.baby_girl)
+            }
         }
     }
 }

@@ -17,5 +17,5 @@ data class ConsultationFlowItem(
     val structureMapId: String? = null,
     val questionnaireResponseText: String? = null,
     val isActive: Boolean = false,
-    val consultationDate: String? = null,
+    var consultationDate: String? = null,
 )

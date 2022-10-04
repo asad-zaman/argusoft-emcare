@@ -128,6 +128,10 @@ internal class EmCareSynchronizer(
                 SyncType.CONSULTATION_FLOW_ITEM -> {
                     val consultations = api.getConsultationFlow()
                     consultations.whenSuccess {
+                        it.forEach {
+                            consultationFlowItem ->
+                            consultationFlowItem.consultationDate = consultationFlowItem.consultationDate?.removeSuffix("Z[UTC]")
+                        }
                         database.saveConsultationFlowItems(it)
                     }
                     consultations.whenFailed {

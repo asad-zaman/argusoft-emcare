@@ -2,9 +2,10 @@ package com.argusoft.who.emcare.ui.common.model
 
 data class ConsultationItemData(
     val name: String? = null,
+    val gender: String? = null,
     val identifier: String? = null,
     val dateOfBirth: String? = "Not Given",
-    val dateOfConsultation: String? = "Not Given",
+    var dateOfConsultation: String,
     val badgeText: String? = "",
     val header: String? = "", // TODO: For testing only, replace with badgeText
     val consultationIcon: Int?,
