@@ -16,6 +16,7 @@ public class QuestionnaireResponseMapper {
         response.setQuestionnaireId(responseRequestDto.getQuestionnaireId());
         response.setStructureMapId(responseRequestDto.getStructureMapId());
         response.setPatientId(responseRequestDto.getPatientId());
+        response.setConsultationDate(responseRequestDto.getConsultationDate());
         return response;
     }
 }

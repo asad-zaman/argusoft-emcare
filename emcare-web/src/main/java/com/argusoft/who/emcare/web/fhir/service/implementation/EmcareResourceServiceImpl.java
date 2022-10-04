@@ -93,6 +93,9 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
     ValueSetResourceService valueSetResourceService;
 
     @Autowired
+    EncounterResourceService encounterResourceService;
+
+    @Autowired
     StructureMapResourceService structureMapResourceService;
 
 
@@ -211,6 +214,14 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
                     valueSetResourceService.updateValueSetResource(resource.getIdElement(), parser.parseResource(ValueSet.class, resourceString));
                 } else {
                     valueSetResourceService.saveResource(parser.parseResource(ValueSet.class, resourceString));
+                }
+                break;
+            case CommonConstant.ENCOUNTER:
+                Encounter encounter = encounterResourceService.getResourceById(resourceId);
+                if (encounter != null) {
+                    encounterResourceService.updateEncounterResource(resource.getIdElement(), parser.parseResource(Encounter.class, resourceString));
+                } else {
+                    encounterResourceService.saveResource(parser.parseResource(Encounter.class, resourceString));
                 }
                 break;
             case CommonConstant.STRUCTURE_MAP:

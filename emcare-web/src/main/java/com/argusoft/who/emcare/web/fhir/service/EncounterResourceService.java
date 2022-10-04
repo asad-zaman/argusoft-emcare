@@ -1,0 +1,20 @@
+package com.argusoft.who.emcare.web.fhir.service;
+
+import ca.uhn.fhir.rest.api.MethodOutcome;
+import com.argusoft.who.emcare.web.common.dto.PageDto;
+import org.hl7.fhir.r4.model.Encounter;
+import org.hl7.fhir.r4.model.IdType;
+
+import java.util.List;
+
+public interface EncounterResourceService {
+
+    public Encounter saveResource(Encounter encounter);
+
+    public Encounter getResourceById(String id);
+
+    public MethodOutcome updateEncounterResource(IdType idType, Encounter encounter);
+
+    public List<Encounter> getAllEncounter();
+
+}
