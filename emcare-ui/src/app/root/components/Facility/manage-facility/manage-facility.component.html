@@ -40,8 +40,8 @@
         <div class="col-12 col-sm-4">
           <div class="mb-3">
             <label class="form-label">{{'Organization' | translate}}</label>
-            <p-dropdown (click)="checkOrgAsFacility(f.isOrganizationAsFacility.value)" formControlName="organization"
-              placeholder="Select an organization"
+            <p-dropdown [filter]="true" (click)="checkOrgAsFacility(f.isOrganizationAsFacility.value)"
+              formControlName="organization" placeholder="Select an organization"
               [ngStyle]="{'border': submitted && this.facilityForm.controls.organization.value == '' ? '1px solid red' : ''}"
               [options]="this.orgArr" optionLabel="name"
               [ngClass]="{ 'is-invalid': submitted && f.organization.errors }">
@@ -152,7 +152,8 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body cst-body">
-        <app-location-dropdown [isOtherPage]="true" [idArr]="locationIdArr" (locationFormValueAndDropdownArr)="getFormValue($event)">
+        <app-location-dropdown [isOtherPage]="true" [idArr]="locationIdArr"
+          (locationFormValueAndDropdownArr)="getFormValue($event)">
         </app-location-dropdown>
       </div>
       <div class="modal-footer">

@@ -14,11 +14,12 @@
               <span><b>{{getPatientName(i)}}</b></span>
             </button>
             <div class="dropdown pos">
-              <button class="btn cst-card-btn mr-3" type="button" (click)="openModal(i)" data-bs-toggle="modal"
+              <!-- toDO currently disabled -->
+              <button disabled="true" class="btn cst-card-btn mr-3" type="button" (click)="openModal(i)" data-bs-toggle="modal"
                 data-bs-target="#patientModal">
                 Merge
               </button>
-              <button class="btn cst-card-btn" type="button" (click)="deletePatient(i)">
+              <button disabled="true" class="btn cst-card-btn" type="button" (click)="deletePatient(i)">
                 Delete
               </button>
             </div>

@@ -95,7 +95,7 @@
               <div class="mb-3">
                 <label class="form-label">{{'PhoneNumber' | translate}}</label>
                 <ngx-intl-tel-input [cssClass]="'custom'"
-                  [preferredCountries]="[CountryISO.India, CountryISO.UnitedStates]" [enableAutoCountrySelect]="false"
+                  [preferredCountries]="preferredCountries" [enableAutoCountrySelect]="false"
                   [enablePlaceholder]="true" [searchCountryFlag]="true"
                   [searchCountryField]="[SearchCountryField.Iso2, SearchCountryField.Name]" [selectFirstCountry]="false"
                   [selectedCountryISO]="this.signupForm.get('countryCode').value" [maxLength]="15" [separateDialCode]="separateDialCode"

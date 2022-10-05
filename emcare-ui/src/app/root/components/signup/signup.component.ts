@@ -25,7 +25,7 @@ export class SignupComponent implements OnInit {
   SearchCountryField = SearchCountryField;
   CountryISO = CountryISO;
   PhoneNumberFormat = PhoneNumberFormat;
-  preferredCountries: CountryISO[] = [CountryISO.UnitedStates, CountryISO.UnitedKingdom];
+  preferredCountries: CountryISO[] = [CountryISO.Iraq, CountryISO.UnitedStates];
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -53,7 +53,7 @@ export class SignupComponent implements OnInit {
       confirmPassword: ['', [Validators.required]],
       location: ['', [Validators.required]],
       role: ['', [Validators.required]],
-      countryCode: [CountryISO.India],
+      countryCode: [CountryISO.Iraq],
       phone: ['', [Validators.required]]  // 10 digit number
     }, {
       validator: MustMatch('password', 'confirmPassword')

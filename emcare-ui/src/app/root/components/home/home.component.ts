@@ -13,10 +13,12 @@ export class HomeComponent implements OnInit {
 
   dashboardData: any = {};
   isView = true;
-  uniqueLocArr = [];
-  userFacObj = {};
   facilityArr = [];
   lastScDate = `${new Date().toDateString()} ${new Date().toLocaleTimeString()}`;
+
+  scatterData = [];
+  consultationPerFacility = [];
+  consultationByAgeGroup = [];
 
   @ViewChild('mapRef', { static: true }) mapElement: ElementRef;
 
@@ -61,23 +63,15 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  barChartPopulation() {
-    let locArr = this.userFacObj['names'];
-    //  toDo  temparory creating arrays for scatter plot
-    let locDataArr = [];
-    this.userFacObj['count'].forEach(d => { locDataArr.push([d, d]); });
+  scatterChart() {
     let options = {
       chart: {
         type: 'scatter',
         margin: [70, 50, 60, 80],
         events: {
           click: function (e) {
-            // find the clicked values and the series
             let x = Math.round(e.xAxis[0].value);
             let y = Math.round(e.yAxis[0].value);
-            // Add it
-            // let series = this.series[0];
-            // series.addPoint([x, y]);
           }
         }
       },
@@ -134,7 +128,7 @@ export class HomeComponent implements OnInit {
       series: [
         {
           type: undefined,
-          data: locDataArr
+          data: this.scatterData
         }
       ]
     }
@@ -144,18 +138,26 @@ export class HomeComponent implements OnInit {
   getChartData() {
     this.fhirService.getChartData().subscribe((res: Array<any>) => {
       if (res) {
-        res['pieChart'].map(el => {
-          this.uniqueLocArr.push({ name: el['name'], y: el['count'] });
+        //  for scatter plot
+        this.scatterData = res['scatterChart'];
+        //  for first pie chart
+        this.consultationPerFacility = res['consultationPerFacility'];
+        this.consultationPerFacility.forEach(el => {
+          el['y'] = el['count'];
         });
-        this.userFacObj = {
-          count: res['barChart']['counts'],
-          names: res['barChart']['names']
+        let key;
+        for (key in res['consultationByAgeGroup']) {
+          if (res['consultationByAgeGroup'].hasOwnProperty(key)) {
+            //  for second pie chart
+            this.consultationByAgeGroup.push({
+              name: key, y: res['consultationByAgeGroup'][key]
+            });
+          }
         }
         this.manipulateMapView(res['mapView']);
-        this.barChartPopulation();
-        this.firstPieChart();
-        this.secondPieChart();
-        this.loadMap();
+        this.scatterChart();
+        this.consultationPerFacilityChart();
+        this.consultationByAgeGroupChart();
       }
     });
   }
@@ -167,10 +169,11 @@ export class HomeComponent implements OnInit {
         positions: { lat: Number(d.latitude), lng: Number(d.longitude) }
       });
     });
+    this.loadMap();
   }
 
-  firstPieChart() {
-    Highcharts.chart('firstPieChart', {
+  consultationPerFacilityChart() {
+    Highcharts.chart('consultationPerFacility', {
       chart: {
         plotBackgroundColor: null,
         plotBorderWidth: null,
@@ -178,7 +181,7 @@ export class HomeComponent implements OnInit {
         type: 'pie'
       },
       title: {
-        text: 'Number of consultations per district'
+        text: 'Number of consultations per facility'
       },
       tooltip: {
         pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
@@ -197,13 +200,13 @@ export class HomeComponent implements OnInit {
         name: 'Location',
         colorByPoint: true,
         type: undefined,
-        data: this.uniqueLocArr
+        data: this.consultationPerFacility
       }]
     });
   }
 
-  secondPieChart() {
-    Highcharts.chart('secondPieChart', {
+  consultationByAgeGroupChart() {
+    Highcharts.chart('consultationByAgeGroup', {
       chart: {
         plotBackgroundColor: null,
         plotBorderWidth: null,
@@ -230,7 +233,7 @@ export class HomeComponent implements OnInit {
         name: 'Location',
         colorByPoint: true,
         type: undefined,
-        data: this.uniqueLocArr
+        data: this.consultationByAgeGroup
       }]
     });
   }
