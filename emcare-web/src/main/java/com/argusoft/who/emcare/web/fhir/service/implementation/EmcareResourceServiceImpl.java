@@ -25,6 +25,7 @@ import org.hl7.fhir.r4.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -250,7 +251,8 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
         List<PatientDto> patientDtosList;
         Integer totalCount = 0;
         List<EmcareResource> resourcesList;
-        Pageable page = PageRequest.of(pageNo, CommonConstant.PAGE_SIZE);
+        Sort sort = Sort.by("createdOn").descending();
+        Pageable page = PageRequest.of(pageNo, CommonConstant.PAGE_SIZE,sort);
         if (searchString != null && !searchString.isEmpty()) {
             totalCount = repository.findByTypeContainingAndTextContainingIgnoreCase(CommonConstant.FHIR_PATIENT, searchString).size();
             resourcesList = repository.findByTypeContainingAndTextContainingIgnoreCase(CommonConstant.FHIR_PATIENT, searchString, page);
