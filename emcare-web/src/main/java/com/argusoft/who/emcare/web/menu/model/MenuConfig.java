@@ -31,6 +31,9 @@ public class MenuConfig extends EntityAuditInfo implements Serializable {
     @Column(name = "parent")
     private String parent;
 
+    @Column(name = "order_number")
+    private Long orderNumber;
+
     public Integer getId() {
         return id;
     }
@@ -69,5 +72,13 @@ public class MenuConfig extends EntityAuditInfo implements Serializable {
 
     public void setParent(String parent) {
         this.parent = parent;
+    }
+
+    public Long getOrderNumber() {
+        return orderNumber;
+    }
+
+    public void setOrderNumber(Long orderNumber) {
+        this.orderNumber = orderNumber;
     }
 }
