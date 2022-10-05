@@ -708,12 +708,13 @@ public class UserServiceImpl implements UserService {
             CurrentUserFeatureJson menu = new CurrentUserFeatureJson();
             menu.setSubMenu(subMenu);
             menu.setFeatureJson(mainMenu.getFeatureJson());
+            menu.setOrderNumber(mainMenu.getOrderNumber());
             menu.setMenuName(mainMenu.getMenuName());
             menu.setId(mainMenu.getId());
             menu.setParent(mainMenu.getParent());
             finalMenuList.add(menu);
         }
-        Collections.sort(finalMenuList, (o1, o2) -> o1.getMenuName().compareTo(o2.getMenuName()));
+        Collections.sort(finalMenuList, (o1, o2) -> o1.getOrderNumber().compareTo(o2.getOrderNumber()));
         return finalMenuList;
     }
 
