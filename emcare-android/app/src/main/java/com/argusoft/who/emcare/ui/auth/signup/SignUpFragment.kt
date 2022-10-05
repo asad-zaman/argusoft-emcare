@@ -86,7 +86,7 @@ class SignUpFragment : BaseFragment<FragmentSignupBinding>() {
                     binding.firstNameEditText.getEnterText(),
                     binding.lastNameEditText.getEnterText(),
                     binding.emailEditText.getEnterText(),
-                    binding.facilityEditText.tag as String,
+                    if (binding.facilityEditText.tag!= null) binding.facilityEditText.tag as String else "",
                     binding.roleEditText.tag as? String,
                 )
             }

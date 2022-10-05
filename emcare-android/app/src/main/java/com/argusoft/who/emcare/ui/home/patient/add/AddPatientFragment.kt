@@ -29,7 +29,7 @@ class AddPatientFragment : BaseFragment<FragmentAddPatientBinding>() {
     private val questionnaireFragment = QuestionnaireFragment()
 
     override fun initView() {
-        binding.headerLayout.toolbar.setTitleSidepane(getString(R.string.title_emcare_registration))
+        binding.headerLayout.toolbar.title = getString(R.string.title_emcare_registration)
         homeViewModel.getQuestionnaireWithQR(stageToQuestionnaireId[CONSULTATION_STAGE_REGISTRATION_PATIENT]!!, UUID.randomUUID().toString(), UUID.randomUUID().toString())
         childFragmentManager.setFragmentResultListener(SUBMIT_REQUEST_KEY, viewLifecycleOwner) { _, _ ->
             homeViewModel.questionnaireJson?.let {

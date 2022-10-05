@@ -23,6 +23,9 @@ import com.argusoft.who.emcare.ui.common.model.ConsultationFlowItem
 import com.argusoft.who.emcare.utils.extention.whenFailed
 import com.argusoft.who.emcare.utils.extention.whenSuccess
 import kotlinx.coroutines.flow.MutableSharedFlow
+import java.time.Instant
+import java.time.ZoneId
+import java.time.ZonedDateTime
 
 sealed class SyncResult {
 //    val timestamp: OffsetDateTime = OffsetDateTime.now()
@@ -130,7 +133,9 @@ internal class EmCareSynchronizer(
                     consultations.whenSuccess {
                         it.forEach {
                             consultationFlowItem ->
-                            consultationFlowItem.consultationDate = consultationFlowItem.consultationDate?.removeSuffix("Z[UTC]")
+                            if(consultationFlowItem.consultationDate != null) {
+                                consultationFlowItem.consultationDate = ZonedDateTime.ofInstant(Instant.ofEpochMilli(consultationFlowItem.consultationDate!!.toLong()), ZoneId.of("UTC")).toOffsetDateTime().toString().removeSuffix("Z")
+                            }
                         }
                         database.saveConsultationFlowItems(it)
                     }

@@ -11,12 +11,15 @@ import com.argusoft.who.emcare.databinding.FragmentPatientProfileBinding
 import com.argusoft.who.emcare.sync.SyncViewModel
 import com.argusoft.who.emcare.ui.common.INTENT_EXTRA_PATIENT_DOB
 import com.argusoft.who.emcare.ui.common.INTENT_EXTRA_PATIENT_NAME
+import com.argusoft.who.emcare.ui.common.INTENT_EXTRA_QUESTIONNAIRE_HEADER
 import com.argusoft.who.emcare.ui.common.base.BaseFragment
 import com.argusoft.who.emcare.ui.home.HomeActivity
 import com.argusoft.who.emcare.ui.home.settings.SettingsViewModel
 import com.argusoft.who.emcare.utils.extention.convertToMap
 import com.argusoft.who.emcare.utils.extention.observeNotNull
+import com.argusoft.who.emcare.utils.extention.showToast
 import com.argusoft.who.emcare.utils.extention.whenSuccess
+import com.google.android.fhir.sync.State
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -36,6 +39,7 @@ class PatientProfileFragment : BaseFragment<FragmentPatientProfileBinding>() {
     }
 
     override fun initView() {
+        binding.headerLayout.toolbar.setTitleDashboard(getString(R.string.title_patient_profile))
         setupActiveConsultationsRecyclerView()
         setupPreviousConsultationsRecyclerView()
         binding.nameTextView.text = requireArguments().getString(INTENT_EXTRA_PATIENT_NAME)
@@ -74,10 +78,34 @@ class PatientProfileFragment : BaseFragment<FragmentPatientProfileBinding>() {
     }
 
     override fun initObserver() {
-        observeNotNull(settingsViewModel.languageApiState) {
-            it.whenSuccess {
-                it.languageData?.convertToMap()?.apply {
-                    binding.headerLayout.toolbar.setTitleDashboard(id = getOrElse("Patient_Profile") { getString(R.string.title_patient_profile) })
+        observeNotNull(syncViewModel.syncState) {
+            when (it) {
+                is State.Started -> {
+                    var message = getString(R.string.msg_sync_started)
+                    settingsViewModel.languageApiState.value?.whenSuccess {
+                        it.languageData?.convertToMap()?.apply {
+                            message = getOrElse("Sync_started") { getString(R.string.msg_sync_started) }
+                        }
+                    }
+                    requireContext().showToast(message = message)
+                }
+                is State.Finished -> {
+                    var message = getString(R.string.msg_sync_successfully)
+                    settingsViewModel.languageApiState.value?.whenSuccess {
+                        it.languageData?.convertToMap()?.apply {
+                            message = getOrElse("Sync_Successful") { getString(R.string.msg_sync_successfully) }
+                        }
+                    }
+                    requireContext().showToast(message = message)
+                }
+                is State.Failed -> {
+                    var message = getString(R.string.msg_sync_failed)
+                    settingsViewModel.languageApiState.value?.whenSuccess {
+                        it.languageData?.convertToMap()?.apply {
+                            message = getOrElse("Sync_failed") { getString(R.string.msg_sync_failed) }
+                        }
+                    }
+                    requireContext().showToast(message = message)
                 }
             }
         }

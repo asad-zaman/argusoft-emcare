@@ -99,21 +99,21 @@
                 app:layout_constraintStart_toStartOf="@id/leftGuideLine"
                 app:layout_constraintEnd_toEndOf="@id/rightGuideLine"/>
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/patientProfileButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:backgroundTint="@color/white"
-                style="@style/Button.Outlined"
-                android:textSize="@dimen/_10sdp"
-                app:strokeColor="@color/buttonColor"
-                android:textColor="@color/buttonColor"
-                android:text="@string/patient_profile"
-                app:cornerRadius="@dimen/_5sdp"
-                android:layout_marginVertical="@dimen/_4sdp"
-                android:layout_marginStart="@dimen/_4sdp"
-                app:layout_constraintTop_toBottomOf="@id/firstLineBreak"
-                app:layout_constraintStart_toStartOf="@id/leftGuideLine"/>
+<!--            <com.google.android.material.button.MaterialButton-->
+<!--                android:id="@+id/patientProfileButton"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                app:backgroundTint="@color/white"-->
+<!--                style="@style/Button.Outlined"-->
+<!--                android:textSize="@dimen/_10sdp"-->
+<!--                app:strokeColor="@color/buttonColor"-->
+<!--                android:textColor="@color/buttonColor"-->
+<!--                android:text="@string/patient_profile"-->
+<!--                app:cornerRadius="@dimen/_5sdp"-->
+<!--                android:layout_marginVertical="@dimen/_4sdp"-->
+<!--                android:layout_marginStart="@dimen/_4sdp"-->
+<!--                app:layout_constraintTop_toBottomOf="@id/firstLineBreak"-->
+<!--                app:layout_constraintStart_toStartOf="@id/leftGuideLine"/>-->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/newConsultationButton"
                 android:layout_width="0dp"
@@ -130,7 +130,7 @@
                 android:layout_marginEnd="@dimen/_4sdp"
                 app:layout_constraintTop_toBottomOf="@id/firstLineBreak"
                 app:layout_constraintEnd_toEndOf="@id/rightGuideLine"
-                app:layout_constraintStart_toEndOf="@id/patientProfileButton"/>
+                app:layout_constraintStart_toEndOf="@id/leftGuideLine"/>
 
             <View
                 android:id="@+id/secondLineBreak"
@@ -138,7 +138,7 @@
                 android:layout_height="1dp"
                 android:background="@color/colorLineBreak"
                 android:layout_marginTop="@dimen/_4sdp"
-                app:layout_constraintTop_toBottomOf="@id/patientProfileButton"
+                app:layout_constraintTop_toBottomOf="@id/newConsultationButton"
                 app:layout_constraintStart_toStartOf="@id/leftGuideLine"
                 app:layout_constraintEnd_toEndOf="@id/rightGuideLine"/>
 
