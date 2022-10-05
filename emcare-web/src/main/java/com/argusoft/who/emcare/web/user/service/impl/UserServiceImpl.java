@@ -700,7 +700,7 @@ public class UserServiceImpl implements UserService {
                 }
             }
         }
-
+        Collections.sort(featureJsons, (o1, o2) -> o1.getOrderNumber().compareTo(o2.getOrderNumber()));
         List<CurrentUserFeatureJson> mainMenuList = featureJsons.stream().filter(feature -> feature.getParent() == null || feature.getParent() == 0).collect(Collectors.toList());
         List<CurrentUserFeatureJson> finalMenuList = new ArrayList<>();
         for (CurrentUserFeatureJson mainMenu : mainMenuList) {

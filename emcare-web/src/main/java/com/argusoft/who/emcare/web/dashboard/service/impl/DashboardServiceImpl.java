@@ -1,8 +1,10 @@
 package com.argusoft.who.emcare.web.dashboard.service.impl;
 
 import com.argusoft.who.emcare.web.dashboard.dto.ChartDto;
+import com.argusoft.who.emcare.web.dashboard.dto.ScatterCharDto;
 import com.argusoft.who.emcare.web.dashboard.service.DashboardService;
 import com.argusoft.who.emcare.web.fhir.dto.FacilityDto;
+import com.argusoft.who.emcare.web.fhir.service.EmcareResourceService;
 import com.argusoft.who.emcare.web.fhir.service.LocationResourceService;
 import com.argusoft.who.emcare.web.userLocationMapping.dao.UserLocationMappingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,9 @@ public class DashboardServiceImpl implements DashboardService {
     @Autowired
     LocationResourceService locationResourceService;
 
+    @Autowired
+    EmcareResourceService emcareResourceService;
+
     @Override
     public ResponseEntity<Object> getDashboardData() {
         return ResponseEntity.ok().body(userLocationMappingRepository.getDashboardData());
@@ -32,17 +37,19 @@ public class DashboardServiceImpl implements DashboardService {
     public ResponseEntity<Object> getDashboardBarChartData() {
         List<ChartDto> barData = userLocationMappingRepository.getDashboardBarChartData();
         List<ChartDto> pieData = userLocationMappingRepository.getDashboardPieChartData();
+        Map<String, Integer> ageData = emcareResourceService.getPatientAgeGroupCount();
+        List<ScatterCharDto> scatterCharDtos = userLocationMappingRepository.getDashboardScatterChartData();
         Map<String, Object> listMap = new HashMap<>();
         List<String> names = new ArrayList<>();
         List<Long> counts = new ArrayList<>();
-        for (ChartDto chartDto : barData) {
-            FacilityDto facilityDto = locationResourceService.getFacilityDto(chartDto.getFacilityId());
-            names.add(facilityDto.getFacilityName());
-            counts.add(chartDto.getCount());
-        }
-        Map<String, Object> map = new HashMap<>();
-        map.put("names", names);
-        map.put("counts", counts);
+//        for (ChartDto chartDto : barData) {
+//            FacilityDto facilityDto = locationResourceService.getFacilityDto(chartDto.getFacilityId());
+//            names.add(facilityDto.getFacilityName());
+//            counts.add(chartDto.getCount());
+//        }
+//        Map<String, Object> map = new HashMap<>();
+//        map.put("names", names);
+//        map.put("counts", counts);
 
         List<Map<String, Object>> pieD = new ArrayList<>();
         for (ChartDto chartDto : pieData) {
@@ -52,8 +59,17 @@ public class DashboardServiceImpl implements DashboardService {
             pie.put("count", chartDto.getCount());
             pieD.add(pie);
         }
-        listMap.put("barChart", map);
-        listMap.put("pieChart", pieD);
+        List<List<Long>> scatterPoints = new ArrayList<>();
+        for (ScatterCharDto scatterCharDto : scatterCharDtos) {
+            List<Long> tuple = new ArrayList<>();
+            tuple.add(scatterCharDto.getWeekly());
+            tuple.add(scatterCharDto.getCount());
+            scatterPoints.add(tuple);
+        }
+//        listMap.put("barChart", map);
+        listMap.put("consultationPerFacility", pieD);
+        listMap.put("consultationByAgeGroup", ageData);
+        listMap.put("scatterChart", scatterPoints);
         listMap.put("mapView", locationResourceService.getAllFacilityMapDto());
         return ResponseEntity.ok().body(listMap);
     }

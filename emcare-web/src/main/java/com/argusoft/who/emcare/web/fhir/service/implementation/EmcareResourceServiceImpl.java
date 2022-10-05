@@ -28,10 +28,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.ZoneId;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Transactional
@@ -444,6 +444,66 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
         }
 
         return patientDtosList;
+    }
+
+    @Override
+    public Map<String, Integer> getPatientAgeGroupCount() {
+        Map<String, Integer> map = new HashMap<>();
+
+        List<PatientDto> patientDtos = getAllPatientsForChart();
+        for (PatientDto patientDto : patientDtos) {
+            if (patientDto.getDob() != null) {
+                Integer age = calculateAge(patientDto.getDob());
+                String key = age.toString() + " to " + (age + 1) + " Years";
+                if (map.get(key) != null) {
+                    map.put(key, map.get(key) + 1);
+                } else {
+                    map.put(key, 1);
+                }
+            }
+        }
+        return map;
+    }
+
+    private List<PatientDto> getAllPatientsForChart() {
+        List<Patient> patientsList = new ArrayList<>();
+        List<PatientDto> patientDtosList;
+
+        List<EmcareResource> resourcesList = retrieveResourcesByType("PATIENT", null, null);
+
+        for (EmcareResource emcareResource : resourcesList) {
+            Patient patient = parser.parseResource(Patient.class, emcareResource.getText());
+            patientsList.add(patient);
+        }
+
+        String loggedInUserId = emCareSecurityUser.getLoggedInUserId();
+        userLocationMappingRepository.findByUserId(loggedInUserId);
+        patientDtosList = EmcareResourceMapper.patientEntitiesToDtoMapper(patientsList);
+
+        //Converting caregiverId and locationid to name
+        for (PatientDto patientDto : patientDtosList) {
+
+            if (patientDto.getCaregiver() != null) {
+                EmcareResource caregiverResource = findByResourceId(patientDto.getCaregiver());
+                RelatedPerson caregiver = parser.parseResource(RelatedPerson.class, caregiverResource.getText());
+                patientDto.setCaregiver(caregiver.getNameFirstRep().getGiven().get(0) + " " + caregiver.getNameFirstRep().getFamily());
+            }
+
+            if (patientDto.getFacility() != null) {
+                FacilityDto facilityDto = locationResourceService.getFacilityDto(patientDto.getFacility());
+                patientDto.setFacility(facilityDto.getFacilityName());
+                patientDto.setOrganizationName(facilityDto.getOrganizationName());
+                patientDto.setLocationName(facilityDto.getLocationName());
+            }
+        }
+
+        return patientDtosList;
+    }
+
+    private Integer calculateAge(Date dob) {
+        LocalDate curDate = LocalDate.now();
+        LocalDate date = dob.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        return Period.between(date, curDate).getYears();
     }
 
 }
