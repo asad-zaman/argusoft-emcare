@@ -30,7 +30,7 @@ export class ManageUserComponent implements OnInit {
   SearchCountryField = SearchCountryField;
   CountryISO = CountryISO;
   PhoneNumberFormat = PhoneNumberFormat;
-  preferredCountries: CountryISO[] = [CountryISO.UnitedStates, CountryISO.UnitedKingdom];
+  preferredCountries: CountryISO[] = [CountryISO.Iraq, CountryISO.UnitedStates];
   language: string;
 
   constructor(
@@ -109,7 +109,6 @@ export class ManageUserComponent implements OnInit {
           countryCode: res['countryCode'],
           phone: res['phone'],
         };
-        console.log(res['countryCode'], res['phone']);
         this.language = res['language'];
         this.userForm.patchValue(data);
       }
@@ -121,7 +120,7 @@ export class ManageUserComponent implements OnInit {
       this.userForm = this.formBuilder.group({
         firstName: ['', [Validators.required]],
         lastName: ['', [Validators.required]],
-        countryCode: [CountryISO.India],
+        countryCode: [CountryISO.Iraq],
         phone: ['', [Validators.required]],
         selectedFacility: [''],
         facility: ['', Validators.required]
@@ -132,7 +131,7 @@ export class ManageUserComponent implements OnInit {
         firstName: ['', [Validators.required]],
         lastName: ['', [Validators.required]],
         email: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-]+$')]],
-        countryCode: [CountryISO.India],
+        countryCode: [CountryISO.Iraq],
         phone: ['', [Validators.required]],  // 10 digit number
         password: ['', Validators.required],
         confirmPassword: ['', Validators.required],

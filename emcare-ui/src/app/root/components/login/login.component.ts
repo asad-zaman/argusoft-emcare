@@ -19,8 +19,7 @@ export class LoginComponent implements OnInit {
     private readonly formBuilder: FormBuilder,
     private readonly authService: AuthenticationService,
     private readonly router: Router,
-    private readonly toasterService: ToasterService,
-    private readonly authenticationService: AuthenticationService
+    private readonly toasterService: ToasterService
   ) { }
 
   ngOnInit() {
@@ -76,13 +75,13 @@ export class LoginComponent implements OnInit {
   }
 
   getLoggedInUserData() {
-    this.authenticationService.getLoggedInUser().subscribe(res => {
+    this.authService.getLoggedInUser().subscribe(res => {
       if (res) {
         const featureObj = { feature: res['feature'] };
         localStorage.setItem('userFeatures', JSON.stringify(featureObj));
         localStorage.setItem('language', res['language']);
         localStorage.setItem('Username', res.userName);
-        this.authenticationService.setFeatures(res['feature']);
+        this.authService.setFeatures(res['feature']);
         this.router.navigate(["/dashboard"]);
         this.toasterService.showToast('success', 'Welcome to EmCare!', 'EMCARE');
         this.authService.setIsLoggedIn(true);

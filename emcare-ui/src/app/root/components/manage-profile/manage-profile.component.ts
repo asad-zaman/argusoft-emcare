@@ -24,7 +24,7 @@ export class ManageProfileComponent implements OnInit {
   SearchCountryField = SearchCountryField;
   CountryISO = CountryISO;
   PhoneNumberFormat = PhoneNumberFormat;
-  preferredCountries: CountryISO[] = [CountryISO.UnitedStates, CountryISO.UnitedKingdom];
+  preferredCountries: CountryISO[] = [CountryISO.Iraq, CountryISO.UnitedStates];
 
   constructor(
     private readonly authenticationService: AuthenticationService,
@@ -62,7 +62,7 @@ export class ManageProfileComponent implements OnInit {
       lastName: ['', [Validators.required]],
       email: ['', [Validators.required]],
       language: ['', [Validators.required]],
-      countryCode: [CountryISO.India],
+      countryCode: [CountryISO.Iraq],
       phone: ['', [Validators.required]],  // 10 digit number
     });
   }

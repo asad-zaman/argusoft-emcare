@@ -70,13 +70,12 @@
             <div class="col-12 col-sm-12">
               <div class="mb-3">
                 <label class="form-label">{{'PhoneNumber' | translate}}</label>
-                <ngx-intl-tel-input [cssClass]="'custom'"
-                  [preferredCountries]="[CountryISO.India, CountryISO.UnitedStates]" [enableAutoCountrySelect]="false"
-                  [enablePlaceholder]="true" [searchCountryFlag]="true"
+                <ngx-intl-tel-input [cssClass]="'custom'" [preferredCountries]="preferredCountries"
+                  [enableAutoCountrySelect]="false" [enablePlaceholder]="true" [searchCountryFlag]="true"
                   [searchCountryField]="[SearchCountryField.Iso2, SearchCountryField.Name]" [selectFirstCountry]="false"
-                  [selectedCountryISO]="this.userForm.get('countryCode').value" [maxLength]="15" [separateDialCode]="separateDialCode"
-                  [phoneValidation]="true" [numberFormat]="PhoneNumberFormat.National" name="phone"
-                  formControlName="phone">
+                  [selectedCountryISO]="this.userForm.get('countryCode').value" [maxLength]="15"
+                  [separateDialCode]="separateDialCode" [phoneValidation]="true"
+                  [numberFormat]="PhoneNumberFormat.National" name="phone" formControlName="phone">
                 </ngx-intl-tel-input>
                 <div *ngIf="submitted && this.userForm.controls.phone.value == null" class="error">
                   {{'Phone Required Message' | translate}}
