@@ -22,6 +22,7 @@ import com.google.android.fhir.search.Operation
 import com.google.android.fhir.search.Order
 import com.google.android.fhir.search.StringFilterModifier
 import com.google.android.fhir.search.search
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import org.hl7.fhir.r4.model.*
 import java.sql.Timestamp
@@ -146,7 +147,7 @@ class PatientRepository @Inject constructor(
 
             //update QuestionnarieResponse in currentConsultation and createNext Consultation
             if(consultationFlowItemId != null) {
-                consultationFlowRepository.updateConsultationQuestionnaireResponseText(consultationFlowItemId, parser.encodeResourceToString(questionnaireResponse))
+                consultationFlowRepository.updateConsultationQuestionnaireResponseText(consultationFlowItemId, parser.encodeResourceToString(questionnaireResponse), ZonedDateTime.now(ZoneId.of("UTC")).toString().removeSuffix("Z[UTC]"))
             } else {
                 //Save first consultationFlowItem after creation
                 consultationFlowRepository.saveConsultation(ConsultationFlowItem(
@@ -159,30 +160,31 @@ class PatientRepository @Inject constructor(
                     isActive = true,
                     consultationDate = ZonedDateTime.now(ZoneId.of("UTC")).toString().removeSuffix("Z[UTC]"),
                 ))
-            }
+            }.collect {
+                //DUMMY LOGIC FOR NEXT CONSULTATION FOR NOW, TODO: Replace by Plan Definition
+                val consultationStageIndex = consultationFlowStageList.indexOf(consultationStage)
+                if(consultationFlowStageList.last().equals(consultationStage, true)){
+                    //End of consultation
+                    consultationFlowRepository.updateConsultationFlowInactiveByEncounterId(encounterId).collect {
+                        emit(ApiResponse.Success(null))
+                    }
+                } else {
+                    val nextConsultationStage = consultationFlowStageList[consultationStageIndex + 1]
 
-            //DUMMY LOGIC FOR NEXT CONSULTATION FOR NOW, TODO: Replace by Plan Definition
-            val consultationStageIndex = consultationFlowStageList.indexOf(consultationStage)
-            if(consultationFlowStageList.last().equals(consultationStage, true)){
-                //End of consultation
-                consultationFlowRepository.updateConsultationFlowInactiveByEncounterId(encounterId)
-                emit(ApiResponse.Success(null))
-            } else {
-                val nextConsultationStage = consultationFlowStageList.get(consultationStageIndex + 1)
-
-                //create nextConsultationItem
-                val nextConsultationFlowItem = ConsultationFlowItem(
-                    consultationStage = nextConsultationStage,
-                    patientId = patientId,
-                    encounterId = encounterId,
-                    questionnaireId = stageToQuestionnaireId[nextConsultationStage],
-                    structureMapId = stageToQuestionnaireId[nextConsultationStage],
-                    questionnaireResponseText = "",
-                    isActive = true,
-                    consultationDate = ZonedDateTime.now(ZoneId.of("UTC")).toString().removeSuffix("Z[UTC]"),
-                )
-                consultationFlowRepository.saveConsultation(nextConsultationFlowItem).collect{
-                    emit(it)
+                    //create nextConsultationItem
+                    val nextConsultationFlowItem = ConsultationFlowItem(
+                        consultationStage = nextConsultationStage,
+                        patientId = patientId,
+                        encounterId = encounterId,
+                        questionnaireId = stageToQuestionnaireId[nextConsultationStage],
+                        structureMapId = stageToQuestionnaireId[nextConsultationStage],
+                        questionnaireResponseText = "",
+                        isActive = true,
+                        consultationDate = ZonedDateTime.now(ZoneId.of("UTC")).toString().removeSuffix("Z[UTC]"),
+                    )
+                    consultationFlowRepository.saveConsultation(nextConsultationFlowItem).collect{
+                        emit(it)
+                    }
                 }
             }
 

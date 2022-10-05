@@ -40,8 +40,8 @@ interface Dao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun saveConsultationFlowItem(consultation: ConsultationFlowItem)
 
-    @Query("UPDATE ConsultationFlowItem SET questionnaireResponseText=:questionnaireResponseText, consultationDate = datetime('now','utc') WHERE id=:consultationId")
-    suspend fun updateConsultationQuestionnaireResponseText(consultationId: String, questionnaireResponseText: String)
+    @Query("UPDATE ConsultationFlowItem SET questionnaireResponseText=:questionnaireResponseText, consultationDate=:consultationDate WHERE id=:consultationId")
+    suspend fun updateConsultationQuestionnaireResponseText(consultationId: String, questionnaireResponseText: String, consultationDate: String)
 
     @Query("UPDATE ConsultationFlowItem SET isActive=0 WHERE encounterId=:encounterId")
     suspend fun updateConsultationFlowInactiveByEncounterId(encounterId: String)

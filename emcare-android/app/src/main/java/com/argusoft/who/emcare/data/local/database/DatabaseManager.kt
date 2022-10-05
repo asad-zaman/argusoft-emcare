@@ -45,9 +45,10 @@ class DatabaseManager(roomDatabase: RoomDatabase) : Database {
 
     override suspend fun updateConsultationQuestionnaireResponseText(
         consultationId: String,
-        questionnaireResponseText: String
+        questionnaireResponseText: String,
+        consultationDate: String
     ) {
-        dao.updateConsultationQuestionnaireResponseText(consultationId,questionnaireResponseText)
+        dao.updateConsultationQuestionnaireResponseText(consultationId,questionnaireResponseText, consultationDate)
     }
 
     override suspend fun updateConsultationFlowInactiveByEncounterId(encounterId: String) {

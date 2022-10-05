@@ -21,7 +21,7 @@ interface Database {
 
     suspend fun saveConsultationFlowItems(consultations: List<ConsultationFlowItem>)
 
-    suspend fun updateConsultationQuestionnaireResponseText(consultationId: String, questionnaireResponseText: String)
+    suspend fun updateConsultationQuestionnaireResponseText(consultationId: String, questionnaireResponseText: String, consultationDate: String)
 
     suspend fun updateConsultationFlowInactiveByEncounterId(encounterId: String)
 

@@ -20,8 +20,8 @@ class ConsultationFlowRepository @Inject constructor(
         emit(ApiResponse.Success(data = consultation))
     }
 
-    fun updateConsultationQuestionnaireResponseText(consultationId: String, questionnaireResponseText: String) = flow {
-        database.updateConsultationQuestionnaireResponseText(consultationId, questionnaireResponseText)
+    fun updateConsultationQuestionnaireResponseText(consultationId: String, questionnaireResponseText: String, consultationDate: String) = flow {
+        database.updateConsultationQuestionnaireResponseText(consultationId, questionnaireResponseText, consultationDate)
         emit(ApiResponse.Success(data=consultationId))
     }
 

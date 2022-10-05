@@ -83,7 +83,7 @@ class PatientQuestionnaireFragment : BaseFragment<FragmentPatientQuestionnaireBi
         }
         observeNotNull(homeViewModel.saveQuestionnaire) { apiResponse ->
             apiResponse.handleApiView(binding.progressLayout, skipIds = listOf(R.id.headerLayout)) {
-                if (it is ConsultationFlowItem) { //TODO: Change logic
+                if (it is ConsultationFlowItem) {
                     navigate(R.id.action_patientQuestionnaireFragment_to_patientQuestionnaireFragment){
                         putString(INTENT_EXTRA_QUESTIONNAIRE_ID, it.questionnaireId)
                         putString(INTENT_EXTRA_STRUCTUREMAP_ID, it.structureMapId)
@@ -102,7 +102,15 @@ class PatientQuestionnaireFragment : BaseFragment<FragmentPatientQuestionnaireBi
 
         observeNotNull(homeViewModel.questionnaireWithQR) { questionnaire ->
             questionnaire.handleApiView(binding.progressLayout, skipIds = listOf(R.id.headerLayout)) {
-                it?.let { addQuestionnaireFragment(it) }
+                if(requireArguments().getString(INTENT_EXTRA_QUESTIONNAIRE_RESPONSE).isNullOrEmpty())
+                    it?.let { addQuestionnaireFragment(it) }
+                else
+                    it?.let{
+                        addQuestionnaireFragment(
+                            it.first to
+                                requireArguments().getString(INTENT_EXTRA_QUESTIONNAIRE_RESPONSE, it.second)
+                        )
+                    }
             }
         }
 //        observeNotNull(settingsViewModel.languageApiState) {
