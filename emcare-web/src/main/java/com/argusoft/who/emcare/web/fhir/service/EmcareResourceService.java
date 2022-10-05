@@ -9,6 +9,7 @@ import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Resource;
 
 import java.util.List;
+import java.util.Map;
 
 public interface EmcareResourceService {
 
@@ -33,5 +34,7 @@ public interface EmcareResourceService {
     public List<Patient> getAllPatientResources();
 
     public List<PatientDto> getPatientDtoByPatient(List<Patient> patient);
+
+    public Map<String, Integer> getPatientAgeGroupCount();
 
 }
