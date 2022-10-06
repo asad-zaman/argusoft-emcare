@@ -29,7 +29,7 @@ export class AppComponent implements OnInit {
   featureArr = [];
   isSidebarOpen = true;
   currScreenWidth;
-  sidebarShow = false;
+  sidebarShow = true;
   featureIconObj = {
     'Users': 'bi bi-people nav-link_icon',
     'Locations': 'bi bi-cursor nav-link_icon',
@@ -69,6 +69,7 @@ export class AppComponent implements OnInit {
   }
 
   ngAfterViewChecked() {
+    this.checkCurrentUrlAndShowHeaderBar();
     this.cdr.detectChanges();
   }
 
@@ -133,11 +134,9 @@ export class AppComponent implements OnInit {
     // Check if token is expired or not
     if (tokenExpiry && tokenExpiry <= new Date()) {
       // token has expired user should be logged out
-      this.sidebarShow = false;
       this.router.navigate(['/login']);
       localStorage.clear();
     } else if (!!tokenExpiryDate) {
-      this.sidebarShow = true;   
       this.authenticationService.setIsLoggedIn(true);
     }
   }
@@ -237,7 +236,7 @@ export class AppComponent implements OnInit {
 
   checkCurrentUrlAndShowHeaderBar() {
     const arr = ['/', '/login', '/signup', '/forgotPassword'];
-    this.sidebarShow = !arr.includes(this.currentUrl); 
+    this.sidebarShow = !arr.includes(this.currentUrl);
     return this.sidebarShow;
   }
 
