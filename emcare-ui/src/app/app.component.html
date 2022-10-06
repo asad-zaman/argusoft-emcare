@@ -2,7 +2,7 @@
 <div class="spinner-border" *ngIf="HTTPActivity">
   <span class="sr-only" id="loadbar"></span>
 </div>
-<ng-container *ngIf="!checkCurrentUrlAndShowHeaderBar()">
+<ng-container *ngIf="sidebarShow">
   <!--header-->
   <header>
     <div class="logo cursor-pointer" (click)="navigateToDashboard()">
