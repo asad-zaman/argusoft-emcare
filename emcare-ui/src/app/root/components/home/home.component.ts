@@ -75,12 +75,21 @@ export class HomeComponent implements OnInit {
           }
         }
       },
+      title: {
+        text: undefined
+      },
       accessibility: {
         announceNewData: {
           enabled: true
         }
       },
+      tooltip: {
+        enabled: false
+      },
       xAxis: {
+        title: {
+          text: undefined,
+        },
         gridLineWidth: 1,
         minPadding: 0.2,
         maxPadding: 0.2,
@@ -88,7 +97,7 @@ export class HomeComponent implements OnInit {
       },
       yAxis: {
         title: {
-          text: 'Value'
+          text: undefined,
         },
         minPadding: 0.2,
         maxPadding: 0.2,
