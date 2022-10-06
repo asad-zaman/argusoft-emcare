@@ -32,8 +32,6 @@ class EmCareApplication : Application(), Configuration.Provider, DataCaptureConf
     @Inject
     lateinit var api: Api
 
-    private val localeAppDelegate = LocaleHelperApplicationDelegate()
-
     @Inject
     lateinit var workerFactory: HiltWorkerFactory
 
@@ -107,12 +105,4 @@ class EmCareApplication : Application(), Configuration.Provider, DataCaptureConf
         )
     }
 
-    override fun attachBaseContext(base: Context) {
-        super.attachBaseContext(localeAppDelegate.attachBaseContext(base))
-    }
-
-    override fun onConfigurationChanged(newConfig: android.content.res.Configuration) {
-        super.onConfigurationChanged(newConfig)
-        localeAppDelegate.onConfigurationChanged(this)
-    }
 }

@@ -45,29 +45,30 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
     }
 
     override fun onClick(view: View?) {
-        val languageNames = languageList?.map { it.languageName }
-        val languageCodes = languageList?.map { it.languageCode }
-        super.onClick(view)
-        when (view?.id) {
-            R.id.languageTextView -> {
-                requireContext().alertDialog {
-                    setTitle(view.tag as? String)
-                    if (languageNames != null) {
-                        val selectedLanguage = languageList?.indexOf(languageList?.find { it.languageCode == LocaleHelper.load(requireContext()).language }) ?: -1
-                        setSingleChoiceItems(languageNames?.toTypedArray(), selectedLanguage, DialogInterface.OnClickListener { dialog, which ->
-                            if (languageCodes != null) {
-                                LocaleHelper.persist(
-                                    requireContext(), Locale(
-                                        languageCodes?.getOrNull(which)
-                                    )
-                                )
-                            }
-                            dialog.dismiss()
-                            (activity as? BaseActivity<*>)?.restartApp()
-                        })
-                    }
-                }.show()
-            }
-        }
+        //Note: Check "Integrate localization" commits to add localization support again.
+//        val languageNames = languageList?.map { it.languageName }
+//        val languageCodes = languageList?.map { it.languageCode }
+//        super.onClick(view)
+//        when (view?.id) {
+//            R.id.languageTextView -> {
+//                requireContext().alertDialog {
+//                    setTitle(view.tag as? String)
+//                    if (languageNames != null) {
+//                        val selectedLanguage = languageList?.indexOf(languageList?.find { it.languageCode == LocaleHelper.load(requireContext()).language }) ?: -1
+//                        setSingleChoiceItems(languageNames?.toTypedArray(), selectedLanguage, DialogInterface.OnClickListener { dialog, which ->
+//                            if (languageCodes != null) {
+//                                LocaleHelper.persist(
+//                                    requireContext(), Locale(
+//                                        languageCodes?.getOrNull(which)
+//                                    )
+//                                )
+//                            }
+//                            dialog.dismiss()
+//                            (activity as? BaseActivity<*>)?.restartApp()
+//                        })
+//                    }
+//                }.show()
+//            }
+//        }
     }
 }
