@@ -3,7 +3,7 @@
     <h1 class="heading mr-3">{{'Duplicate Patients' | translate}}</h1>
   </div>
   <hr>
-  <div class="custom-accordion">
+  <div *ngIf="duplicatePatientArr.length > 0; else noData" class="custom-accordion">
     <div class="accordion" id="accordionExample">
       <ng-container *ngFor="let dPatient of duplicatePatientArr; let i=index">
         <div class="accordion-item">
@@ -66,6 +66,9 @@
       </ng-container>
     </div>
   </div>
+  <ng-template #noData>
+    Oops, No Duplicates are there!!
+  </ng-template>
 </div>
 <div class="modal fade" id="patientModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-xl cst-top">

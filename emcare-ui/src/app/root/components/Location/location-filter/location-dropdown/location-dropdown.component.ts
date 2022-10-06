@@ -190,6 +190,10 @@ export class LocationDropdownComponent implements OnInit {
         this.dropdownActiveArr[index] = false;
       }
     }
+    this.emitData();
+  }
+
+  emitData() {
     this.locationFormValueAndDropdownArr.emit({
       formData: this.getIdFromFormValue(this.locationFilterForm.value),
       dropdownArr: this.dropdownActiveArr
