@@ -54,7 +54,10 @@ class SignUpFragment : BaseFragment<FragmentSignupBinding>() {
     override fun initObserver() {
         observeNotNull(signUpViewModel.errorMessageState) {
             if (it == 0) {
-                binding.viewSwitcher.showNext()
+                signUpViewModel.signup(
+                    binding.passwordEditText.getEnterText(),
+                    binding.confirmPasswordEditText.getEnterText(),
+                )
             } else
                 context?.showSnackBar(
                     view = binding.progressLayout,
@@ -92,10 +95,6 @@ class SignUpFragment : BaseFragment<FragmentSignupBinding>() {
                     binding.lastNameEditText.getEnterText(),
                     binding.emailEditText.getEnterText(),
                     if (binding.facilityEditText.tag!= null) binding.facilityEditText.tag as String else "")
-                signUpViewModel.signup(
-                    binding.passwordEditText.getEnterText(),
-                    binding.confirmPasswordEditText.getEnterText(),
-                )
             }
             else -> {
                 requireActivity().onBackPressed()
