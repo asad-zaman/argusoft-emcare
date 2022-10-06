@@ -234,8 +234,7 @@ export class HomeComponent implements OnInit {
 
   loadMap = () => {
     let markers = [];
-    const locationArr = this.facilityArr.map(d => d.positions);
-    const centerPosition = this.facilityArr[0]['positions'];
+    const centerPosition = { lat: 33.2232, lng: 43.6793 };
     const map = new window['google'].maps.Map(this.mapElement.nativeElement, {
       center: centerPosition, zoom: 5
     });
