@@ -75,12 +75,6 @@ export class HomeComponent implements OnInit {
           }
         }
       },
-      title: {
-        text: 'User supplied data'
-      },
-      subtitle: {
-        text: 'Click the plot area to add a point. Click a point to remove it.'
-      },
       accessibility: {
         announceNewData: {
           enabled: true
@@ -118,7 +112,7 @@ export class HomeComponent implements OnInit {
             events: {
               click: function () {
                 if (this.series.data.length > 1) {
-                  this.remove();
+                  // this.remove();
                 }
               }
             }
@@ -240,8 +234,7 @@ export class HomeComponent implements OnInit {
 
   loadMap = () => {
     let markers = [];
-    const locationArr = this.facilityArr.map(d => d.positions);
-    const centerPosition = this.facilityArr[0]['positions'];
+    const centerPosition = { lat: 33.2232, lng: 43.6793 };
     const map = new window['google'].maps.Map(this.mapElement.nativeElement, {
       center: centerPosition, zoom: 5
     });
