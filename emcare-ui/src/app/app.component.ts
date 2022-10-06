@@ -237,6 +237,22 @@ export class AppComponent implements OnInit {
   checkCurrentUrlAndShowHeaderBar() {
     const arr = ['/', '/login', '/signup', '/forgotPassword'];
     this.sidebarShow = !arr.includes(this.currentUrl);
+
+    //  if we hit the url and user is logged in then we should show the sidebar
+    //  otherwise we should not as person is not logged in
+    if (this.currentUrl === '/') {
+      const token = JSON.parse(localStorage.getItem('access_token'));
+      const tokenExpiryDate = JSON.parse(localStorage.getItem('refresh_token_expiry_time'));
+      const tokenExpiry = tokenExpiryDate
+        ? new Date(tokenExpiryDate)
+        : null;
+      // Check if token is expired or not
+      if (token) {
+        if (tokenExpiry && tokenExpiry <= new Date()) { } else {
+          this.sidebarShow = true;
+        }
+      }
+    }
     return this.sidebarShow;
   }
 
