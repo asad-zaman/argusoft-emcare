@@ -30,26 +30,25 @@ class SignUpFragment : BaseFragment<FragmentSignupBinding>() {
         )
     }
 
-    private fun setupRoleAutoComplete(roleList: List<Role>) {
-        binding.roleTextInputLayout.tag = roleList
-        binding.roleEditText.setAdapter(
-            ArrayAdapter(
-                requireContext(), android.R.layout.select_dialog_item,
-                roleList.map { it.name }
-            )
-        )
-    }
+//    private fun setupRoleAutoComplete(roleList: List<Role>) {
+//        binding.roleTextInputLayout.tag = roleList
+//        binding.roleEditText.setAdapter(
+//            ArrayAdapter(
+//                requireContext(), android.R.layout.select_dialog_item,
+//                roleList.map { it.name }
+//            )
+//        )
+//    }
 
     override fun initListener() {
-        binding.nextButton.setOnClickListener(this)
         binding.submitButton.setOnClickListener(this)
         binding.headerLayout.toolbar.setNavigationOnClickListener(this)
         binding.facilityEditText.setOnItemClickListener { parent, view, position, id ->
             binding.facilityEditText.tag = (binding.facilityTextInputLayout.tag as? List<Facility>)?.getOrNull(position)?.facilityId
         }
-        binding.roleEditText.setOnItemClickListener { parent, view, position, id ->
-            binding.roleEditText.tag = (binding.roleTextInputLayout.tag as? List<Role>)?.getOrNull(position)?.name
-        }
+//        binding.roleEditText.setOnItemClickListener { parent, view, position, id ->
+//            binding.roleEditText.tag = (binding.roleTextInputLayout.tag as? List<Role>)?.getOrNull(position)?.name
+//        }
     }
 
     override fun initObserver() {
@@ -68,39 +67,38 @@ class SignUpFragment : BaseFragment<FragmentSignupBinding>() {
                 navigate(R.id.action_signUpFragment_to_successFragment)
             }
         }
-        observeNotNull(signUpViewModel.facilityAndRolesApiState) { pair ->
-            pair.first.handleApiView(binding.progressLayout) {
+
+        observeNotNull(signUpViewModel.facilityApiState) { it ->
+            it.handleApiView(binding.progressLayout) {
                 it?.let { list -> setupFacilityAutoComplete(list) }
             }
-            pair.second.whenSuccess {
-                setupRoleAutoComplete(it)
-            }
         }
+//        observeNotNull(signUpViewModel.facilityAndRolesApiState) { pair ->
+//            pair.first.handleApiView(binding.progressLayout) {
+//                it?.let { list -> setupFacilityAutoComplete(list) }
+//            }
+//            pair.second.whenSuccess {
+//                setupRoleAutoComplete(it)
+//            }
+//        }
     }
 
     override fun onClick(view: View?) {
         super.onClick(view)
         when (view?.id) {
-            R.id.nextButton -> {
+            R.id.submitButton -> {
                 signUpViewModel.validateSignup(
                     binding.firstNameEditText.getEnterText(),
                     binding.lastNameEditText.getEnterText(),
                     binding.emailEditText.getEnterText(),
-                    if (binding.facilityEditText.tag!= null) binding.facilityEditText.tag as String else "",
-                    binding.roleEditText.tag as? String,
-                )
-            }
-            R.id.submitButton -> {
+                    if (binding.facilityEditText.tag!= null) binding.facilityEditText.tag as String else "")
                 signUpViewModel.signup(
                     binding.passwordEditText.getEnterText(),
                     binding.confirmPasswordEditText.getEnterText(),
                 )
             }
             else -> {
-                if (binding.viewSwitcher.currentView.id != R.id.firstView)
-                    binding.viewSwitcher.showPrevious()
-                else
-                    requireActivity().onBackPressed()
+                requireActivity().onBackPressed()
             }
         }
     }

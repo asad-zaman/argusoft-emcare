@@ -12,10 +12,16 @@ class SignUpRepository @Inject constructor(
     private val database: Database
 ) {
 
-    fun getFacilitiesAndRoles() = flow {
-        emit(Pair(api.getFacilities().whenSuccess {
+//    fun getFacilitiesAndRoles() = flow {
+//        emit(Pair(api.getFacilities().whenSuccess {
+//            database.saveFacilities(it)
+//        }, api.getRoles()))
+//    }
+
+    fun getFacilities() = flow{
+        emit(api.getFacilities().whenSuccess {
             database.saveFacilities(it)
-        }, api.getRoles()))
+        })
     }
 
     fun signUp(signupRequest: SignupRequest) = flow {

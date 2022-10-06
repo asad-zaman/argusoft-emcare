@@ -3,6 +3,7 @@ package com.argusoft.who.emcare.ui.auth.signup
 import androidx.lifecycle.*
 import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.data.remote.ApiResponse
+import com.argusoft.who.emcare.ui.common.DEFAULT_USER_ROLE
 import com.argusoft.who.emcare.ui.common.model.Facility
 import com.argusoft.who.emcare.ui.common.model.Role
 import com.argusoft.who.emcare.ui.common.model.SignupRequest
@@ -29,15 +30,28 @@ class SignUpViewModel @Inject constructor(
     private val _facilityAndRolesApiState = MutableLiveData<Pair<ApiResponse<List<Facility>>, ApiResponse<List<Role>>>>()
     val facilityAndRolesApiState: LiveData<Pair<ApiResponse<List<Facility>>, ApiResponse<List<Role>>>> = _facilityAndRolesApiState
 
+    private val _facilityApiState = MutableLiveData<ApiResponse<List<Facility>>>()
+    val facilityApiState: LiveData<ApiResponse<List<Facility>>> = _facilityApiState
+
     init {
-        getFacilitiesAndRoles()
+//        getFacilitiesAndRoles()
+        getFacilities()
     }
 
-    private fun getFacilitiesAndRoles() {
+//    private fun getFacilitiesAndRoles() {
+//        _facilityAndRolesApiState.value = Pair(ApiResponse.Loading(), ApiResponse.Loading())
+//        viewModelScope.launch {
+//            signUpRepository.getFacilitiesAndRoles().collect {
+//                _facilityAndRolesApiState.value = it
+//            }
+//        }
+//    }
+
+    private fun getFacilities() {
         _facilityAndRolesApiState.value = Pair(ApiResponse.Loading(), ApiResponse.Loading())
         viewModelScope.launch {
-            signUpRepository.getFacilitiesAndRoles().collect {
-                _facilityAndRolesApiState.value = it
+            signUpRepository.getFacilities().collect {
+                _facilityApiState.value = it
             }
         }
     }
@@ -47,7 +61,7 @@ class SignUpViewModel @Inject constructor(
         lastname: String,
         email: String,
         facilityId: String,
-        roleName: String?,
+//        roleName: String?,
     ) {
         when {
             firstname.isEmpty() -> _errorMessageState.value = R.string.error_msg_firstname
@@ -55,13 +69,13 @@ class SignUpViewModel @Inject constructor(
             email.isEmpty() -> _errorMessageState.value = R.string.error_msg_email
             email.isNotEmpty() && !email.isValidEmail() -> _errorMessageState.value = R.string.error_msg_valid_email
             facilityId.isEmpty() -> _errorMessageState.value = R.string.error_msg_location
-            roleName.isNullOrEmpty() -> _errorMessageState.value = R.string.error_msg_role
+//            roleName.isNullOrEmpty() -> _errorMessageState.value = R.string.error_msg_role
             else -> {
                 signupRequest.firstName = firstname
                 signupRequest.lastName = lastname
                 signupRequest.email = email
                 signupRequest.facilityIds = listOf(facilityId)
-                signupRequest.roleName = roleName
+                signupRequest.roleName = DEFAULT_USER_ROLE
                 _errorMessageState.value = 0
             }
         }
