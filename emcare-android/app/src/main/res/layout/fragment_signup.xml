@@ -6,12 +6,6 @@
     android:background="@color/colorPrimary"
     android:layout_height="match_parent">
 
-<!--    <androidx.constraintlayout.motion.widget.MotionLayout-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent"-->
-<!--        android:background="@color/colorPrimary"-->
-<!--        app:layoutDescription="@xml/fragment_signup_scene">-->
-
         <androidx.appcompat.widget.AppCompatImageView
 
             android:id="@+id/bgImageView"
@@ -114,12 +108,29 @@
 
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/emailTextInputLayout"
+                    android:id="@+id/phoneTextInputLayout"
                     style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_16sdp"
                     app:layout_constraintTop_toBottomOf="@id/facilityTextInputLayout">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/phoneEditText"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:maxLength="15"
+                        android:hint="@string/hint_phone"
+                        android:background="@color/white"
+                        android:inputType="phone" />
+                </com.google.android.material.textfield.TextInputLayout>
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/emailTextInputLayout"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@id/phoneTextInputLayout">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/emailEditText"

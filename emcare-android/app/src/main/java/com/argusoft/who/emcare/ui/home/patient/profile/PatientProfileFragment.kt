@@ -27,7 +27,6 @@ import dagger.hilt.android.AndroidEntryPoint
 class PatientProfileFragment : BaseFragment<FragmentPatientProfileBinding>() {
 
     private val patientProfileViewModel: PatientProfileViewModel by viewModels()
-    private val settingsViewModel: SettingsViewModel by activityViewModels()
     private val syncViewModel: SyncViewModel by viewModels()
     private lateinit var activeConsultationsAdapter: PatientProfileActiveConsultationsAdapter
     private lateinit var previousConsultationsAdapter: PatientProfilePreviousConsultationsAdapter
@@ -81,30 +80,15 @@ class PatientProfileFragment : BaseFragment<FragmentPatientProfileBinding>() {
         observeNotNull(syncViewModel.syncState) {
             when (it) {
                 is State.Started -> {
-                    var message = getString(R.string.msg_sync_started)
-                    settingsViewModel.languageApiState.value?.whenSuccess {
-                        it.languageData?.convertToMap()?.apply {
-                            message = getOrElse("Sync_started") { getString(R.string.msg_sync_started) }
-                        }
-                    }
+                    val message = getString(R.string.msg_sync_started)
                     requireContext().showToast(message = message)
                 }
                 is State.Finished -> {
-                    var message = getString(R.string.msg_sync_successfully)
-                    settingsViewModel.languageApiState.value?.whenSuccess {
-                        it.languageData?.convertToMap()?.apply {
-                            message = getOrElse("Sync_Successful") { getString(R.string.msg_sync_successfully) }
-                        }
-                    }
+                    val message = getString(R.string.msg_sync_successfully)
                     requireContext().showToast(message = message)
                 }
                 is State.Failed -> {
-                    var message = getString(R.string.msg_sync_failed)
-                    settingsViewModel.languageApiState.value?.whenSuccess {
-                        it.languageData?.convertToMap()?.apply {
-                            message = getOrElse("Sync_failed") { getString(R.string.msg_sync_failed) }
-                        }
-                    }
+                    val message = getString(R.string.msg_sync_failed)
                     requireContext().showToast(message = message)
                 }
             }

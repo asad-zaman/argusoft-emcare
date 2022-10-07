@@ -3,6 +3,7 @@ package com.argusoft.who.emcare.ui.auth.signup
 import androidx.lifecycle.*
 import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.data.remote.ApiResponse
+import com.argusoft.who.emcare.ui.common.DEFAULT_COUNTRY_CODE
 import com.argusoft.who.emcare.ui.common.DEFAULT_USER_ROLE
 import com.argusoft.who.emcare.ui.common.model.Facility
 import com.argusoft.who.emcare.ui.common.model.Role
@@ -61,6 +62,7 @@ class SignUpViewModel @Inject constructor(
         lastname: String,
         email: String,
         facilityId: String,
+        phone: String,
 //        roleName: String?,
     ) {
         when {
@@ -69,6 +71,7 @@ class SignUpViewModel @Inject constructor(
             email.isEmpty() -> _errorMessageState.value = R.string.error_msg_email
             email.isNotEmpty() && !email.isValidEmail() -> _errorMessageState.value = R.string.error_msg_valid_email
             facilityId.isEmpty() -> _errorMessageState.value = R.string.error_msg_location
+            phone.isEmpty() -> _errorMessageState.value = R.string.error_msg_phone_number
 //            roleName.isNullOrEmpty() -> _errorMessageState.value = R.string.error_msg_role
             else -> {
                 signupRequest.firstName = firstname
@@ -76,6 +79,8 @@ class SignUpViewModel @Inject constructor(
                 signupRequest.email = email
                 signupRequest.facilityIds = listOf(facilityId)
                 signupRequest.roleName = DEFAULT_USER_ROLE
+                signupRequest.phone = phone
+                signupRequest.countryCode = DEFAULT_COUNTRY_CODE
                 _errorMessageState.value = 0
             }
         }

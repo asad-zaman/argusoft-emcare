@@ -89,6 +89,7 @@
     <string name="button_turn_on_internet_connectivity">Turn on internet connectivity</string>
 
     <!--Messages Text-->
+    <string name="questionnaire_render_error">Some error occured with the questionnaire, please sync &amp; try again!</string>
     <string name="no_internet_title">No Internet Available</string>
     <string name="no_record_found">No Record Found</string>
     <string name="server_error_title">Something want wrong</string>
@@ -114,6 +115,7 @@
     <string name="hint_first_name">First Name</string>
     <string name="hint_last_name">Last Name</string>
     <string name="hint_email">Email</string>
+    <string name="hint_phone">Phone Number</string>
     <string name="hint_location">Location</string>
     <string name="hint_facility">Facility</string>
     <string name="hint_role">Role</string>
@@ -173,6 +175,7 @@
     <string name="error_msg_email">Please enter email</string>
     <string name="error_msg_valid_email">Please enter valid email</string>
     <string name="error_msg_location">Please select location</string>
+    <string name="error_msg_phone_number">Please enter phone number</string>
     <string name="error_msg_facility">Please select facility</string>
     <string name="error_msg_role">Please select role</string>
     <string name="error_msg_confirm_password">Please enter confirm password</string>

@@ -94,7 +94,8 @@ class SignUpFragment : BaseFragment<FragmentSignupBinding>() {
                     binding.firstNameEditText.getEnterText(),
                     binding.lastNameEditText.getEnterText(),
                     binding.emailEditText.getEnterText(),
-                    if (binding.facilityEditText.tag!= null) binding.facilityEditText.tag as String else "")
+                    if (binding.facilityEditText.tag!= null) binding.facilityEditText.tag as String else "",
+                    binding.phoneEditText.getEnterText())
             }
             else -> {
                 requireActivity().onBackPressed()
