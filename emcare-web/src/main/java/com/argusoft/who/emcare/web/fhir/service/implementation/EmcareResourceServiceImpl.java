@@ -99,6 +99,9 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
     @Autowired
     StructureMapResourceService structureMapResourceService;
 
+    @Autowired
+    ObservationResourceService observationResourceService;
+
 
     @Override
     public EmcareResource saveResource(EmcareResource emcareResource) {
@@ -225,6 +228,14 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
                     encounterResourceService.saveResource(parser.parseResource(Encounter.class, resourceString));
                 }
                 break;
+            case CommonConstant.OBSERVATION:
+                Observation observation = observationResourceService.getResourceById(resourceId);
+                if (observation != null) {
+                    observationResourceService.updateObservationResource(resource.getIdElement(), parser.parseResource(Observation.class, resourceString));
+                } else {
+                    observationResourceService.saveResource(parser.parseResource(Observation.class, resourceString));
+                }
+                break;
             case CommonConstant.STRUCTURE_MAP:
                 StructureMap structureMap = structureMapResourceService.getResourceById(resourceId);
                 if (structureMap != null) {
@@ -252,7 +263,7 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
         Integer totalCount = 0;
         List<EmcareResource> resourcesList;
         Sort sort = Sort.by("createdOn").descending();
-        Pageable page = PageRequest.of(pageNo, CommonConstant.PAGE_SIZE,sort);
+        Pageable page = PageRequest.of(pageNo, CommonConstant.PAGE_SIZE, sort);
         if (searchString != null && !searchString.isEmpty()) {
             totalCount = repository.findByTypeContainingAndTextContainingIgnoreCase(CommonConstant.FHIR_PATIENT, searchString).size();
             resourcesList = repository.findByTypeContainingAndTextContainingIgnoreCase(CommonConstant.FHIR_PATIENT, searchString, page);
