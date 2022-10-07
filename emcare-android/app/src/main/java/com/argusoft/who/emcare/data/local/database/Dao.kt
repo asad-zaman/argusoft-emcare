@@ -31,8 +31,14 @@ interface Dao {
     @Query("SELECT * from loggedinuser")
     suspend fun getAllUser(): List<LoggedInUser>?
 
+    @Query("SELECT * from loggedinuser ORDER BY loginTime DESC LIMIT 1 ")
+    suspend fun getLastLoggedInUser(): LoggedInUser?
+
     @Query("SELECT * from language where languageCode=:languageCode")
     suspend fun getLanguageByCode(languageCode: String): Language?
+
+    @Query("DELETE from consultationflowitem")
+    suspend fun deleteAllConsultations()
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun saveConsultationFlowItems(consultations: List<ConsultationFlowItem>)

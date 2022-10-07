@@ -30,8 +30,16 @@ class DatabaseManager(roomDatabase: RoomDatabase) : Database {
         return dao.getAllUser()
     }
 
+    override suspend fun getLastLoggedInUser(): LoggedInUser? {
+        return dao.getLastLoggedInUser()
+    }
+
     override suspend fun getLanguageByCode(languageCode: String): Language? {
         return dao.getLanguageByCode(languageCode)
+    }
+
+    override suspend fun deleteAllConsultations() {
+        dao.deleteAllConsultations()
     }
 
     override suspend fun saveConsultationFlowItem(consultation: ConsultationFlowItem) {

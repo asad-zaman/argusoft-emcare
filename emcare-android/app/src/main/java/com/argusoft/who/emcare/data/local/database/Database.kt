@@ -15,7 +15,11 @@ interface Database {
 
     suspend fun getAllUser(): List<LoggedInUser>?
 
+    suspend fun getLastLoggedInUser(): LoggedInUser?
+
     suspend fun getLanguageByCode(languageCode: String): Language?
+
+    suspend fun deleteAllConsultations()
 
     suspend fun saveConsultationFlowItem(consultation: ConsultationFlowItem)
 

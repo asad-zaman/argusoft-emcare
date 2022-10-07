@@ -7,9 +7,12 @@ import com.argusoft.who.emcare.data.local.pref.Preference
 import com.argusoft.who.emcare.data.remote.Api
 import com.argusoft.who.emcare.data.remote.ApiResponse
 import com.argusoft.who.emcare.ui.common.model.DeviceDetails
+import com.argusoft.who.emcare.ui.common.model.LoggedInUser
+import com.argusoft.who.emcare.ui.common.model.User
 import com.argusoft.who.emcare.utils.common.NetworkHelper
 import com.argusoft.who.emcare.utils.extention.whenResult
 import com.argusoft.who.emcare.utils.extention.whenSuccess
+import com.google.android.fhir.FhirEngine
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
@@ -17,7 +20,8 @@ class LoginRepository @Inject constructor(
     private val api: Api,
     private val database: Database,
     private val preference: Preference,
-    private val networkHelper: NetworkHelper
+    private val networkHelper: NetworkHelper,
+    private val fhirEngine: FhirEngine,
 ) {
 
     fun login(requestMap: Map<String, String>, deviceDetails: DeviceDetails) = flow {
@@ -32,6 +36,7 @@ class LoginRepository @Inject constructor(
 
                 //Get User Data
                 api.getLoggedInUser().whenSuccess { loggedInUser ->
+                    checkDifferentUserLoggedIn(loggedInUser)
                     preference.setLoggedInUser(loggedInUser)
                     database.saveLoginUser(loggedInUser.apply {
                         this.password = requestMap["password"]?.let { EncPref.encrypt(it) }
@@ -67,6 +72,16 @@ class LoginRepository @Inject constructor(
                 emit(ApiResponse.Success(data = null))
 
             } ?: emit(ApiResponse.ApiError(apiErrorMessageResId = R.string.error_msg_not_find_user))
+        }
+    }
+
+    private suspend fun checkDifferentUserLoggedIn(loggedInUser: LoggedInUser) {
+        val lastLoggedInUser = database.getLastLoggedInUser()
+        if(lastLoggedInUser != null){
+            if (!lastLoggedInUser.facility.isNullOrEmpty() && !lastLoggedInUser.facility!![0].facilityId.equals(loggedInUser.facility!![0].facilityId)){
+                database.deleteAllConsultations()
+                fhirEngine.clearDatabase()
+            }
         }
     }
 }
