@@ -29,7 +29,7 @@
           paginate : { itemsPerPage: tableSize, currentPage: currentPage, totalItems: totalCount }; let i=index">
             <tr>
               <td>{{currentPage == 0 ? ((currentPage)*10 + i + 1) : ((currentPage-1)*10 + i + 1)}}</td>
-              <td>{{patient.identifier}}</td>
+              <td>{{patient.identifier ? patient.identifier : 'NA'}}</td>
               <td>
                 <ng-container *ngIf="patient.givenName || patient.familyName; else blankName">
                   <a style="cursor: pointer;" (click)="showPatientDetails(patient.id)"
