@@ -22,7 +22,7 @@
             android:layout_height="match_parent"
             android:contentDescription="@string/description_status"
             android:gravity="center_vertical"
-            android:src="@drawable/ic_child_icon"
+            android:src="@drawable/baby_boy"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

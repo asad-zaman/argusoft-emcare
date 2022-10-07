@@ -40,7 +40,7 @@ class HomeAdapter(
             itemView.setOnClickListener {
                 it.navigate(R.id.action_homeFragment_to_patientProfileFragment) {
                     putString(INTENT_EXTRA_PATIENT_ID,list[bindingAdapterPosition]?.resourceId)
-                    putString(INTENT_EXTRA_PATIENT_NAME,list[bindingAdapterPosition]?.name)
+                    putString(INTENT_EXTRA_PATIENT_NAME,if(list[bindingAdapterPosition]?.name.isNullOrEmpty()) list[bindingAdapterPosition]?.identifier else list[bindingAdapterPosition]?.name)
                     putString(INTENT_EXTRA_PATIENT_DOB,list[bindingAdapterPosition]?.dob)
                 }
             }

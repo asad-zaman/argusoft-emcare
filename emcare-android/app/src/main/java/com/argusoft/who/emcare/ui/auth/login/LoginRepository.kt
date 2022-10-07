@@ -75,7 +75,7 @@ class LoginRepository @Inject constructor(
         }
     }
 
-    private suspend fun checkDifferentUserLoggedIn(loggedInUser: LoggedInUser) {
+    private fun checkDifferentUserLoggedIn(loggedInUser: LoggedInUser) = flow {
         val lastLoggedInUser = database.getLastLoggedInUser()
         if(lastLoggedInUser != null){
             if (!lastLoggedInUser.facility.isNullOrEmpty() && !lastLoggedInUser.facility!![0].facilityId.equals(loggedInUser.facility!![0].facilityId)){
@@ -83,5 +83,6 @@ class LoginRepository @Inject constructor(
                 fhirEngine.clearDatabase()
             }
         }
+        emit(null)
     }
 }

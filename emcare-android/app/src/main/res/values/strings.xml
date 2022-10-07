@@ -166,7 +166,7 @@
     <string name="button_add_new_patient">Add New Patient</string>
     <string name="label_id_with_colon">Id: #---%1$s</string>
     <string name="title_add_patient">Register a new child</string>
-    <string name="title_emcare_registration">Em Care Add New Patient</string>
+    <string name="title_emcare_registration">Add New Patient</string>
     <string name="menu_save">Save</string>
     <string name="msg_logout">Are you sure you want to logout?</string>
     <string name="msg_delete_patient">Are you sure you want to delete Patient?</string>
