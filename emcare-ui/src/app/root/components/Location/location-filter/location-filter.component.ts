@@ -31,6 +31,7 @@ export class LocationFilterComponent implements OnInit {
 
   saveData() {
     const valueArr = [
+      this.formData.facility.id,
       this.formData.country, this.formData.state,
       this.formData.city, this.formData.region,
       this.formData.other

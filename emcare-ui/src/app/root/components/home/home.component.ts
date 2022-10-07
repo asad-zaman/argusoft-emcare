@@ -84,7 +84,7 @@ export class HomeComponent implements OnInit {
         }
       },
       tooltip: {
-        enabled: false
+        enabled: true
       },
       xAxis: {
         title: {
