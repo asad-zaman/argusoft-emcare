@@ -1,7 +1,7 @@
 <div class="main-wrapper">
   <div *ngIf="isView">
     <span class="dashboard-title">Key Performance Indicators</span>
-    <span class="date-title">  | {{getDateData()}}</span>
+    <span class="date-title"> | {{getDateData()}}</span>
     <span class="sync-title" (click)="getLastSyncDate()">Last sync: {{lastScDate}}</span>
     <div class="mt-3 d-flex">
       <ng-container *ngIf="!isEmpty(dashboardData)">
@@ -52,15 +52,14 @@
       <div class="row">
         <div class="col-12 mb-3">
           <div id="container" style="min-width: 310px; max-width: 800px; height: 400px; margin: 0 auto"></div>
-          <h5 class="card-title text-center">Bar Chart - Facilities</h5>
+          <h5 class="card-title text-center">Number of consultations per week (Weeks X to Y)
+          </h5>
         </div>
         <div class="col-6">
           <div id="consultationPerFacility" style="width:100%; height:400px;"></div>
-          <h6 class="card-title text-center">Pie chart - 1</h6>
         </div>
         <div class="col-6">
           <div id="consultationByAgeGroup" style="width:100%; height:400px;"></div>
-          <h6 class="card-title text-center">Pie chart - 2</h6>
         </div>
       </div>
     </div>

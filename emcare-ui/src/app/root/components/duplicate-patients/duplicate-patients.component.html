@@ -11,12 +11,12 @@
             <button class="accordion-button" type="button" data-bs-toggle="collapse" attr.data-bs-target="#col_{{i+1}}"
               aria-expanded="true" attr.aria-controls="col_{{i+1}}">
               <span class="badge-duplicate">Duplicate</span>
-              <span><b>{{getPatientName(i)}}</b></span>
+              <span><strong>{{getPatientName(i)}}</strong></span>
             </button>
             <div class="dropdown pos">
               <!-- toDO currently disabled -->
-              <button disabled="true" class="btn cst-card-btn mr-3" type="button" (click)="openModal(i)" data-bs-toggle="modal"
-                data-bs-target="#patientModal">
+              <button disabled="true" class="btn cst-card-btn mr-3" type="button" (click)="openModal(i)"
+                data-bs-toggle="modal" data-bs-target="#patientModal">
                 Merge
               </button>
               <button disabled="true" class="btn cst-card-btn" type="button" (click)="deletePatient(i)">
