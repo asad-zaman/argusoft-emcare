@@ -25,6 +25,7 @@ public class CommonConstant {
     public static final String STRUCTURE_DEFINITION = "STRUCTUREDEFINITION";
     public static final String STRUCTURE_MAP = "STRUCTUREMAP";
     public static final String LIBRARY = "LIBRARY";
+    public static final String OBSERVATION = "OBSERVATION";
     public static final String MEDICATION = "MEDICATION";
     public static final String ACTIVITY_DEFINITION = "ACTIVITYDEFINITION";
     public static final String ENCOUNTER = "ENCOUNTER";

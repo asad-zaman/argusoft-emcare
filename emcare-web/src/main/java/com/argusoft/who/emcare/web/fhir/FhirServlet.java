@@ -58,6 +58,12 @@ public class FhirServlet extends RestfulServer {
     @Autowired
     ActivityDefinitionResourceProvider activityDefinitionResourceProvider;
 
+    @Autowired
+    EncounterResourceProvider encounterResourceProvider;
+
+    @Autowired
+    ObservationResourceProvider observationResourceProvider;
+
     @Override
     protected void initialize() throws ServletException {
         super.initialize();
@@ -84,6 +90,8 @@ public class FhirServlet extends RestfulServer {
         resourceProviders.add(activityDefinitionResourceProvider);
         resourceProviders.add(libraryResourceProvider);
         resourceProviders.add(operationDefinitionResourceProvider);
+        resourceProviders.add(encounterResourceProvider);
+        resourceProviders.add(observationResourceProvider);
         setResourceProviders(resourceProviders);
     }
 
