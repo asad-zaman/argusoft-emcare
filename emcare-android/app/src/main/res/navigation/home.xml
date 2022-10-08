@@ -41,6 +41,8 @@
             app:destination="@id/patientQuestionnaireFragment" />
         <action
             android:id="@+id/action_patientQuestionnaireFragment_to_homeFragment"
+            app:popUpToInclusive="true"
+            app:popUpTo="@id/homeFragment"
             app:destination="@id/homeFragment" />
     </fragment>
 

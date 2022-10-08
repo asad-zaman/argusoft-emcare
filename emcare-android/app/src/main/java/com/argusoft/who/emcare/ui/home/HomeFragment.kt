@@ -70,6 +70,8 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(){
 
     override fun onResume() {
         super.onResume()
+        homeViewModel.currentTab = 0
+        binding.tabLayout.selectTab(binding.tabLayout.getTabAt(homeViewModel.currentTab))
         (activity as? HomeActivity)?.closeSidepane()
     }
 
@@ -87,13 +89,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(){
                 is State.Failed -> {
                     val message = getString(R.string.msg_sync_failed)
                     requireContext().showToast(message = message)
-                }
-            }
-        }
-        observeNotNull(settingsViewModel.languageApiState) {
-            it.whenSuccess {
-                it.languageData?.convertToMap()?.apply {
-//                    binding.welcomeTextView.text = getOrElse("Welcome") { getString(R.string.label_welcome) }
                 }
             }
         }
