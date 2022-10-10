@@ -54,11 +54,10 @@ export class ManageUserComponent implements OnInit {
     this.editId = routeParams.get('id');
     this.checkEditParams();
     this.initUserForm();
+    this.getRoles();
     if (this.isEdit) {
       this.mapUpdateForm();
-    } else {
-      this.getRoles();
-    }
+    } else { }
     this.getFacilities();
   }
 
@@ -108,6 +107,7 @@ export class ManageUserComponent implements OnInit {
           facility: this.mapFacilityRes(res['facilities']),
           countryCode: res['countryCode'],
           phone: res['phone'],
+          role: this.roles.find(el => el['name'] === res['realmRoles'][0])
         };
         this.language = res['language'];
         this.userForm.patchValue(data);
@@ -123,7 +123,8 @@ export class ManageUserComponent implements OnInit {
         countryCode: [CountryISO.Iraq],
         phone: ['', [Validators.required]],
         selectedFacility: [''],
-        facility: ['', Validators.required]
+        facility: ['', Validators.required],
+        role: ['', [Validators.required]]
       });
       this.userForm.addControl('username', new FormControl({ value: '', disabled: true }, Validators.required));
     } else {
@@ -175,7 +176,8 @@ export class ManageUserComponent implements OnInit {
           "countryCode": this.userForm.get('phone').value.countryCode,
           //  saving countries national number as code is already shown in input & dropdown tag
           "phone": this.userForm.get('phone').value.number,
-          "language": this.language
+          "language": this.language,
+          "roleName": this.userForm.get('role').value ? this.userForm.get('role').value.name : '',
         }
         this.userService.updateUser(data, this.editId).subscribe(res => {
           this.toasterService.showToast('success', 'User updated successfully!', 'EMCARE');
