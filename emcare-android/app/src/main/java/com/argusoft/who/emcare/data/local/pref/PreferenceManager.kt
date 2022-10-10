@@ -12,6 +12,7 @@ class PreferenceManager(private val sharedPreferences: EncPref) : Preference {
         private const val IS_LOGIN = "pref_is_login"
         private const val USER = "USER"
         private const val TOKEN = "TOKEN"
+        private const val FACILITY_ID = "FACILITY_ID"
         private const val LOGGED_IN_USER = "LOGGED_IN_USER"
         private const val EMCARE_LAST_SYNC_TIME_STAMP = "EMCARE_LAST_SYNC_TIME_STAMP"
     }
@@ -40,6 +41,14 @@ class PreferenceManager(private val sharedPreferences: EncPref) : Preference {
         return sharedPreferences.getString(USER).orEmpty { "{}" }.fromJson<User>()
     }
 
+    override fun setFacilityId(facilityId: String) {
+        sharedPreferences.putString(FACILITY_ID, facilityId)
+    }
+
+    override fun getFacilityId(): String {
+        return sharedPreferences.getString(FACILITY_ID, "")
+    }
+
     override fun setLoggedInUser(loggedInUser: LoggedInUser) {
         sharedPreferences.putString(LOGGED_IN_USER, loggedInUser.toJson())
     }
@@ -53,6 +62,9 @@ class PreferenceManager(private val sharedPreferences: EncPref) : Preference {
     }
 
     override fun clear() {
+        //Tweaked to persist facilityId
+        val facilityId = sharedPreferences.getString(FACILITY_ID, "")
         sharedPreferences.clear()
+        setFacilityId(facilityId)
     }
 }

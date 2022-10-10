@@ -13,6 +13,10 @@ interface Preference {
 
     fun getToken(): String
 
+    fun setFacilityId(facilityId: String)
+
+    fun getFacilityId(): String
+
     fun setUser(user: User)
 
     fun getUser(): User?

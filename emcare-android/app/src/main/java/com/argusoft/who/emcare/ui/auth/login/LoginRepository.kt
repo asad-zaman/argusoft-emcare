@@ -13,7 +13,11 @@ import com.argusoft.who.emcare.utils.common.NetworkHelper
 import com.argusoft.who.emcare.utils.extention.whenResult
 import com.argusoft.who.emcare.utils.extention.whenSuccess
 import com.google.android.fhir.FhirEngine
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class LoginRepository @Inject constructor(
@@ -36,7 +40,13 @@ class LoginRepository @Inject constructor(
 
                 //Get User Data
                 api.getLoggedInUser().whenSuccess { loggedInUser ->
-                    checkDifferentUserLoggedIn(loggedInUser)
+                    if (!preference.getFacilityId().equals(loggedInUser.facility!![0].facilityId)){
+                        database.deleteAllConsultations()
+                        CoroutineScope(Dispatchers.IO).launch {
+                            fhirEngine.clearDatabase()
+                        }
+                    }
+                    preference.setFacilityId(loggedInUser.facility!![0].facilityId)
                     preference.setLoggedInUser(loggedInUser)
                     database.saveLoginUser(loggedInUser.apply {
                         this.password = requestMap["password"]?.let { EncPref.encrypt(it) }
@@ -75,14 +85,4 @@ class LoginRepository @Inject constructor(
         }
     }
 
-    private fun checkDifferentUserLoggedIn(loggedInUser: LoggedInUser) = flow {
-        val lastLoggedInUser = database.getLastLoggedInUser()
-        if(lastLoggedInUser != null){
-            if (!lastLoggedInUser.facility.isNullOrEmpty() && !lastLoggedInUser.facility!![0].facilityId.equals(loggedInUser.facility!![0].facilityId)){
-                database.deleteAllConsultations()
-                fhirEngine.clearDatabase()
-            }
-        }
-        emit(null)
-    }
 }
