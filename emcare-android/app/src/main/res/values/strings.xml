@@ -102,7 +102,7 @@
     <string name="alert_message_error">Something went wrong please try after sometime.</string>
     <string name="action_ok">OK</string>
     <string name="login_description">Creating a digital client record system for child and new born health conditions in emergencies</string>
-    <string name="hint_username">Username</string>
+    <string name="hint_username">E-mail</string>
     <string name="hint_login_id">Log In ID</string>
     <string name="hint_password">Password</string>
     <string name="button_login">Login</string>
