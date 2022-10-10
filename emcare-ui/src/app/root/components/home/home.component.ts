@@ -84,7 +84,9 @@ export class HomeComponent implements OnInit {
         }
       },
       tooltip: {
-        enabled: true
+        enabled: true,
+        headerFormat: '<b>{series.name}</b><br>',
+        pointFormat: '<b>week no = {point.x}</b>, <b>consultation = {point.y}</b>',
       },
       xAxis: {
         title: {
