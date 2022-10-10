@@ -378,7 +378,7 @@ public class UserServiceImpl implements UserService {
             userResource.roles().realmLevel().add(Arrays.asList(testerRealmRole));
             userResource.roles().realmLevel().remove(Arrays.asList(defaultRole));
         } catch (Exception ex) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response(CommonConstant.EMAIL_ALREADY_EXISTS, HttpStatus.BAD_REQUEST.value()));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response(ex.getMessage(), HttpStatus.BAD_REQUEST.value()));
         }
 
         CompletableFuture.runAsync(() -> {
@@ -633,6 +633,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseEntity<Object> updateUser(UserDto userDto, String userId) {
         Keycloak keycloak = keyCloakConfig.getInstance();
+        RealmResource realmResource = keycloak.realm(KeyCloakConfig.REALM);
         UserResource userResource = keycloak.realm(KeyCloakConfig.REALM).users().get(userId);
         UserRepresentation newUser = userResource.toRepresentation();
 
@@ -665,6 +666,14 @@ public class UserServiceImpl implements UserService {
 
         newUser.setAttributes(attribute);
         newUser.setEnabled(newUser.isEnabled());
+
+        if (userDto.getRoleName() != null) {
+            RoleRepresentation newRole = realmResource.roles().get(userDto.getRoleName()).toRepresentation();
+            List<RoleRepresentation> removableRoles = userResource.roles().realmLevel().listAll();
+            userResource.roles().realmLevel().remove(removableRoles);
+            userResource.roles().realmLevel().add(new ArrayList<>(Arrays.asList(newRole)));
+        }
+
         userResource.update(newUser);
         return ResponseEntity.status(HttpStatus.OK).body(new Response(CommonConstant.UPDATE_SUCCESS, HttpStatus.OK.value()));
     }
