@@ -57,10 +57,11 @@ public class QuestionnaireResponseServiceImpl implements QuestionnaireResponseSe
     @Override
     public List<QuestionnaireResponse> getQuestionnaireResponseByUserLocation() {
         UserMasterDto userMasterDto = userService.getCurrentUser();
-        List<Integer> locationIds = userMasterDto.getFacilities().stream().map(FacilityDto::getLocationId).collect(Collectors.toList()).stream().map(Long::intValue).collect(Collectors.toList());
 
-        locationIds = locationMasterDao.getAllChildLocationIdWithMultipalLocationId(locationIds);
-        List<String> facilityIds = locationResourceRepository.findResourceIdIn(locationIds);
+//        NEED TO CHANGE AFTER PILOT
+//        List<Integer> locationIds = userMasterDto.getFacilities().stream().map(FacilityDto::getLocationId).collect(Collectors.toList()).stream().map(Long::intValue).collect(Collectors.toList());
+//        locationIds = locationMasterDao.getAllChildLocationIdWithMultipalLocationId(locationIds);
+        List<String> facilityIds = userMasterDto.getFacilities().stream().map(FacilityDto::getFacilityId).collect(Collectors.toList());
         List<EmcareResource> patientList = emcareResourceRepository.findByFacilityIdIn(facilityIds);
         List<String> patientIds = patientList.stream().map(EmcareResource::getResourceId).collect(Collectors.toList());
 
