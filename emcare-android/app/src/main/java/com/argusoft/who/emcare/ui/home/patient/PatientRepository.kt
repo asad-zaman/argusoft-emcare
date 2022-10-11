@@ -9,6 +9,7 @@ import com.argusoft.who.emcare.ui.common.consultationFlowStageList
 import com.argusoft.who.emcare.ui.common.model.ConsultationFlowItem
 import com.argusoft.who.emcare.ui.common.model.PatientItem
 import com.argusoft.who.emcare.ui.common.stageToQuestionnaireId
+import com.argusoft.who.emcare.ui.common.stageToStructureMapId
 import com.argusoft.who.emcare.ui.home.ConsultationFlowRepository
 import com.argusoft.who.emcare.utils.extention.toPatientItem
 import com.google.android.fhir.FhirEngine
@@ -77,6 +78,12 @@ class PatientRepository @Inject constructor(
     fun getPatientDetails(patientId: String?) = flow {
         if (patientId != null) {
             emit(ApiResponse.Success(fhirEngine.get<Patient>(patientId).convertPatientToPatientItem()))
+        }
+    }
+
+    fun getPatient(patientId: String?) = flow {
+        if (patientId != null) {
+            emit(ApiResponse.Success(fhirEngine.get<Patient>(patientId)))
         }
     }
 
@@ -155,7 +162,7 @@ class PatientRepository @Inject constructor(
                     patientId = patientId,
                     encounterId = encounterId,
                     questionnaireId = stageToQuestionnaireId[consultationStage],
-                    structureMapId = stageToQuestionnaireId[consultationStage],
+                    structureMapId = stageToStructureMapId[consultationStage],
                     questionnaireResponseText = parser.encodeResourceToString(questionnaireResponse),
                     isActive = true,
                     consultationDate = ZonedDateTime.now(ZoneId.of("UTC")).toString().removeSuffix("Z[UTC]"),
@@ -177,7 +184,7 @@ class PatientRepository @Inject constructor(
                         patientId = patientId,
                         encounterId = encounterId,
                         questionnaireId = stageToQuestionnaireId[nextConsultationStage],
-                        structureMapId = stageToQuestionnaireId[nextConsultationStage],
+                        structureMapId = stageToStructureMapId[nextConsultationStage],
                         questionnaireResponseText = "",
                         isActive = true,
                         consultationDate = ZonedDateTime.now(ZoneId.of("UTC")).toString().removeSuffix("Z[UTC]"),

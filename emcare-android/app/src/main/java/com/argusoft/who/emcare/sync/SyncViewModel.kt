@@ -32,7 +32,7 @@ class SyncViewModel @Inject constructor(
             val fhirResult = Sync.oneTimeSync(
                 applicationContext,
                 fhirEngine,
-                DownloadWorkManagerImpl(),
+                DownloadWorkManagerImpl(preference),
                 UploadConfiguration(uploadBundleSize = 1000),
                 AcceptRemoteConflictResolver
             )

@@ -98,3 +98,13 @@ val stageToQuestionnaireId = mapOf(
     CONSULTATION_STAGE_CLASSIFICATIONS to "emcare.b23.classification",
 )
 
+val stageToStructureMapId = mapOf(
+    CONSULTATION_STAGE_REGISTRATION_PATIENT to "emcarea.registration.p",
+    CONSULTATION_STAGE_REGISTRATION_ENCOUNTER to "emcareb.registration.e",
+    CONSULTATION_STAGE_DANGER_SIGNS to "emcare.b7.lti-dangersigns",
+    CONSULTATION_STAGE_MEASUREMENTS to "emcare.b6.measurements",
+    CONSULTATION_STAGE_SYMPTOMS to "emcare.b10-14.symptoms.2m.p",
+    CONSULTATION_STAGE_SIGNS to "emcare.b10-16.signs.2m.p",
+    CONSULTATION_STAGE_ASSESSMENTS to "emcare.b22.assessmentstests",
+    CONSULTATION_STAGE_CLASSIFICATIONS to "emcare.b23.classification",
+)

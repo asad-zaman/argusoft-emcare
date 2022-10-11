@@ -169,6 +169,8 @@
     <string name="title_emcare_registration">Add New Patient</string>
     <string name="menu_save">Save</string>
     <string name="msg_logout">Are you sure you want to logout?</string>
+    <string name="msg_exit_consultation">Are You Sure You Want To Exit The Consultation?</string>
+    <string name="msg_exit_registration">Are You Sure You Want To Exit Registration?</string>
     <string name="msg_delete_patient">Are you sure you want to delete Patient?</string>
     <string name="error_msg_firstname">Please enter first name</string>
     <string name="error_msg_lastname">Please enter last name</string>

@@ -1,5 +1,6 @@
 package com.argusoft.who.emcare.ui.home.patient.add
 
+import androidx.activity.addCallback
 import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commit
@@ -11,9 +12,12 @@ import com.argusoft.who.emcare.ui.common.INTENT_EXTRA_FACILITY_ID
 import com.argusoft.who.emcare.ui.common.base.BaseFragment
 import com.argusoft.who.emcare.ui.common.model.ConsultationFlowItem
 import com.argusoft.who.emcare.ui.common.stageToQuestionnaireId
+import com.argusoft.who.emcare.ui.common.stageToStructureMapId
 import com.argusoft.who.emcare.ui.home.HomeViewModel
 import com.argusoft.who.emcare.ui.home.settings.SettingsViewModel
+import com.argusoft.who.emcare.utils.extention.alertDialog
 import com.argusoft.who.emcare.utils.extention.handleApiView
+import com.argusoft.who.emcare.utils.extention.navigate
 import com.argusoft.who.emcare.utils.extention.observeNotNull
 import com.google.android.fhir.datacapture.QuestionnaireFragment
 import dagger.hilt.android.AndroidEntryPoint
@@ -37,13 +41,24 @@ class AddPatientFragment : BaseFragment<FragmentAddPatientBinding>() {
                     questionnaireResponse = questionnaireFragment.getQuestionnaireResponse(),
                     questionnaire = it,
                     facilityId = preference.getLoggedInUser()?.facility?.get(0)?.facilityId!!,
-                    structureMapId = stageToQuestionnaireId[CONSULTATION_STAGE_REGISTRATION_PATIENT]!!,
+                    structureMapId = stageToStructureMapId[CONSULTATION_STAGE_REGISTRATION_PATIENT]!!,
                     consultationFlowItemId = null,
                     consultationStage = CONSULTATION_STAGE_REGISTRATION_PATIENT
                 )
             }
         }
+
+        requireActivity().onBackPressedDispatcher.addCallback(this) {
+            activity?.alertDialog {
+                setMessage(R.string.msg_exit_registration)
+                setPositiveButton(R.string.button_yes) { _, _ ->
+                    navigate(R.id.action_addPatientFragment_to_homeFragment)
+                }
+                setNegativeButton(R.string.button_no) { _, _ -> }
+            }?.show()
+        }
     }
+
 
     private fun addQuestionnaireFragmentWithQR(pair: Pair<String, String>) {
         homeViewModel.questionnaireJson = pair.first

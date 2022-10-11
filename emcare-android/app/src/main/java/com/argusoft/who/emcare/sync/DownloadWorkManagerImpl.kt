@@ -16,9 +16,7 @@
 
 package com.argusoft.who.emcare.sync
 
-import android.annotation.SuppressLint
-import android.os.Build
-import androidx.annotation.RequiresApi
+import com.argusoft.who.emcare.data.local.pref.Preference
 import com.google.android.fhir.SyncDownloadContext
 import com.google.android.fhir.sync.DownloadWorkManager
 import org.hl7.fhir.exceptions.FHIRException
@@ -28,12 +26,13 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.util.*
 
-class DownloadWorkManagerImpl : DownloadWorkManager {
+class DownloadWorkManagerImpl constructor(
+  private val preference: Preference
+): DownloadWorkManager {
 //  private val urls = LinkedList(listOf("ActivityDefinition", "CodeSystem", "Library", "OperationDefinition", "PlanDefinition", "Patient", "Questionnaire", "StructureDefinition", "StructureMap", "ValueSet"))
   private val resourceTypeList = ResourceType.values().map { it.name }
   private val urls = LinkedList(listOf("Patient", "Questionnaire", "StructureDefinition", "StructureMap", "ValueSet", "Library"))
 
-  @RequiresApi(Build.VERSION_CODES.O)
   override suspend fun getNextRequestUrl(context: SyncDownloadContext): String? {
     var url = urls.poll() ?: return null
 
@@ -41,6 +40,9 @@ class DownloadWorkManagerImpl : DownloadWorkManager {
       ResourceType.fromCode(url.findAnyOf(resourceTypeList, ignoreCase = true)!!.second)
     context.getLatestTimestampFor(resourceTypeToDownload)?.let {
       url = affixLastUpdatedTimestamp(url!!, it)
+      if(url.contains("Patient",true)){
+        url = url.plus("&_id=${preference.getFacilityId()}")
+      }
     }
     return url
   }
@@ -90,8 +92,6 @@ class DownloadWorkManagerImpl : DownloadWorkManager {
    * attached using the `_since` parameter. Otherwise, the last updated timestamp will be attached
    * using the `_lastUpdated` parameter.
    */
-  @SuppressLint("SimpleDateFormat")
-  @RequiresApi(Build.VERSION_CODES.O)
   private fun affixLastUpdatedTimestamp(url: String, lastUpdated: String): String {
     val zonedDateTime: ZonedDateTime = ZonedDateTime.parse(lastUpdated)
     val lastUpdatedTimeWithoutTimeZone: OffsetDateTime = ZonedDateTime.ofInstant(zonedDateTime.toInstant(), ZoneId.of("UTC")).toOffsetDateTime()

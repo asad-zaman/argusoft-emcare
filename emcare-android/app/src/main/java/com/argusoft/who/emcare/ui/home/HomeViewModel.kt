@@ -40,6 +40,9 @@ class HomeViewModel @Inject constructor(
     var questionnaireJson: String? = null
     var currentTab: Int = 0
 
+    private val _patient = SingleLiveEvent<ApiResponse<Patient>>()
+    val patient: LiveData<ApiResponse<Patient>> = _patient
+
     private val _patients = SingleLiveEvent<ApiResponse<List<PatientItem>>>()
     val patients: LiveData<ApiResponse<List<PatientItem>>> = _patients
 
@@ -60,6 +63,14 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             patientRepository.getPatients(search, facilityId).collect {
                 _patients.value = it
+            }
+        }
+    }
+
+    fun getPatient(patientId: String) {
+        viewModelScope.launch {
+            patientRepository.getPatient(patientId).collect {
+                _patient.value = it
             }
         }
     }

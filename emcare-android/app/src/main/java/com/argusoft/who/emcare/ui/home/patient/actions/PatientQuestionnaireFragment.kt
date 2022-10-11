@@ -1,5 +1,7 @@
 package com.argusoft.who.emcare.ui.home.patient.actions
 
+import android.opengl.Visibility
+import android.view.View
 import androidx.activity.addCallback
 import androidx.core.os.bundleOf
 import androidx.fragment.app.commit
@@ -40,16 +42,23 @@ class PatientQuestionnaireFragment : BaseFragment<FragmentPatientQuestionnaireBi
                     questionnaire = it,
                     structureMapId = requireArguments().getString(INTENT_EXTRA_STRUCTUREMAP_ID)!!,
                     facilityId = preference.getLoggedInUser()?.facility?.get(0)?.facilityId!!,
-                    consultationFlowItemId = requireArguments().getString(INTENT_EXTRA_CONSULTATION_FLOW_ITEM_ID)!!,
+                    consultationFlowItemId = requireArguments().getString(INTENT_EXTRA_CONSULTATION_FLOW_ITEM_ID),
                     consultationStage = requireArguments().getString(INTENT_EXTRA_CONSULTATION_STAGE)
                 )
             }
         }
 
         requireActivity().onBackPressedDispatcher.addCallback(this) {
-            navigate(R.id.action_patientQuestionnaireFragment_to_homeFragment)
+            activity?.alertDialog {
+                setMessage(R.string.msg_exit_consultation)
+                setPositiveButton(R.string.button_yes) { _, _ ->
+                    navigate(R.id.action_patientQuestionnaireFragment_to_homeFragment)
+                }
+                setNegativeButton(R.string.button_no) { _, _ -> }
+            }?.show()
         }
 
+        homeViewModel.getPatient(requireArguments().getString(INTENT_EXTRA_PATIENT_ID)!!)
         homeViewModel.getSidePaneItems(requireArguments().getString(INTENT_EXTRA_ENCOUNTER_ID)!!,requireArguments().getString(INTENT_EXTRA_PATIENT_ID)!!)
     }
 
@@ -74,6 +83,21 @@ class PatientQuestionnaireFragment : BaseFragment<FragmentPatientQuestionnaireBi
     }
 
     override fun initObserver() {
+        observeNotNull(homeViewModel.patient) { apiResponse ->
+            apiResponse.whenSuccess { patientItem ->
+                binding.nameTextView.text = patientItem.nameFirstRep.nameAsSingleString.orEmpty { patientItem.identifierFirstRep.value ?:"NA #${patientItem.id?.takeLast(9)}"}
+                binding.dobTextView.text = patientItem.birthDateElement.valueAsString ?: "Not Provided"
+                if(!patientItem.hasGender()){
+                    if(patientItem.genderElement.valueAsString.equals("male" ,false))
+                        binding.childImageView.setImageResource(R.drawable.baby_boy)
+                    else
+                        binding.childImageView.setImageResource(R.drawable.baby_girl)
+                }
+                binding.childImageView.visibility = View.VISIBLE
+                binding.dobTextViewLabel.visibility = View.VISIBLE
+            }
+        }
+
         observeNotNull(homeViewModel.sidepaneItems) { apiResponse ->
             apiResponse.whenSuccess {
                 (activity as? HomeActivity)?.setupSidepane()
