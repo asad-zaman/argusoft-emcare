@@ -208,7 +208,7 @@ public class UserServiceImpl implements UserService {
         }
         for (UserRepresentation representation : userRepresentations) {
             List<UserLocationMapping> userLocation = userLocationMappingRepository.findByUserId(representation.getId());
-            List<FacilityDto> facilityDtos ;
+            List<FacilityDto> facilityDtos;
             if (!userLocation.isEmpty()) {
                 facilityDtos = new ArrayList<>();
                 for (UserLocationMapping mapping : userLocation) {
@@ -308,7 +308,10 @@ public class UserServiceImpl implements UserService {
             Settings settings = adminSettingService.getAdminSettingByName(CommonConstant.SETTING_TYPE_WELCOME_EMAIL);
             if (settings.getValue().equals(CommonConstant.ACTIVE)) {
                 MailDto mailDto = mailDataSetterService.mailSubjectSetter(CommonConstant.MAIL_FOR_ADD_USER);
-                String mailBody = mailDto.getBody() + " " + user.getEmail();
+                Map<String, Object> mailData = new HashMap<>();
+                mailData.put("firstName", user.getFirstName());
+                mailData.put("lastName", user.getLastName());
+                String mailBody = mailDataSetterService.emailBodyCreator(mailData, mailDto.getBody(), mailDto);
                 mailService.sendBasicMail(user.getEmail(), mailDto.getSubject(), mailBody);
             }
         });
@@ -429,7 +432,10 @@ public class UserServiceImpl implements UserService {
                 Settings settings = adminSettingService.getAdminSettingByName(CommonConstant.SETTING_TYPE_SEND_CONFIRMATION_EMAIL);
                 if (settings.getValue().equals(CommonConstant.ACTIVE)) {
                     MailDto mailDto = mailDataSetterService.mailSubjectSetter(CommonConstant.MAIL_FOR_CONFIRMATION_EMAIL_APPROVED);
-                    String mailBody = mailDto.getBody();
+                    Map<String, Object> mailData = new HashMap<>();
+                    mailData.put("firstName", user.getFirstName());
+                    mailData.put("lastName", user.getLastName());
+                    String mailBody = mailDataSetterService.emailBodyCreator(mailData, mailDto.getBody(), mailDto);
                     mailService.sendBasicMail(user.getEmail(), mailDto.getSubject(), mailBody);
                 }
             });
@@ -438,7 +444,10 @@ public class UserServiceImpl implements UserService {
                 Settings settings = adminSettingService.getAdminSettingByName(CommonConstant.SETTING_TYPE_SEND_CONFIRMATION_EMAIL);
                 if (settings.getValue().equals(CommonConstant.ACTIVE)) {
                     MailDto mailDto = mailDataSetterService.mailSubjectSetter(CommonConstant.MAIL_FOR_CONFIRMATION_EMAIL_REJECTED);
-                    String mailBody = mailDto.getBody();
+                    Map<String, Object> mailData = new HashMap<>();
+                    mailData.put("firstName", user.getFirstName());
+                    mailData.put("lastName", user.getLastName());
+                    String mailBody = mailDataSetterService.emailBodyCreator(mailData, mailDto.getBody(), mailDto);
                     mailService.sendBasicMail(user.getEmail(), mailDto.getSubject(), mailBody);
                 }
             });
