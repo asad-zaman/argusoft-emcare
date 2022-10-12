@@ -6,6 +6,9 @@ import com.argusoft.who.emcare.web.mail.entity.EmailContent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Map;
+
 @Service
 public class MailDataSetterServiceImpl implements MailDataSetterService {
 
@@ -19,6 +22,27 @@ public class MailDataSetterServiceImpl implements MailDataSetterService {
 
         mailDto.setSubject(emailContent.getSubject());
         mailDto.setBody(emailContent.getContent());
+        mailDto.setVarList(emailContent.getVarList());
         return mailDto;
+    }
+
+    @Override
+    public String emailBodyCreator(Map<String, Object> mailData, String bodyContent, MailDto mailDto) {
+
+        List<String> varList;
+        if (mailDto.getVarList() != null) {
+            varList = List.of(mailDto.getVarList().split(","));
+        } else {
+            return bodyContent;
+        }
+        for (String variable : varList) {
+            bodyContent = bodyContent.replace("{{" + variable + "}}", getValueOfKeyByClass(variable, mailData));
+        }
+
+        return bodyContent;
+    }
+
+    private String getValueOfKeyByClass(String key, Map<String, Object> mailData) {
+        return (String) mailData.get(key);
     }
 }
