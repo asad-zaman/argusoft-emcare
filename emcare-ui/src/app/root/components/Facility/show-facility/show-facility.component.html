@@ -14,7 +14,7 @@
     <table class="data-table" aria-labelledby="facility-list">
       <thead>
         <tr>
-          <th>{{'ID' | translate}}</th>
+          <th>{{'Sr. No' | translate}}</th>
           <th scope="col">{{'Facility' | translate}}</th>
           <th scope="col">{{'Organization' | translate}}</th>
           <th scope="col">{{'Address' | translate}}</th>
@@ -63,5 +63,5 @@
   <!--Table-END-->
 </div>
 <div *ngIf="!isView" class="main-wrapper-nodata">
-  Sorry you don't have access to this page!!
+  {{'NoAccess' | translate}}
 </div>

@@ -15,5 +15,5 @@
     title="Questionnaire Builder" (load)="sendAuthToken()"></iframe>
 </div>
 <div *ngIf="!isAllowed" class="main-wrapper-nodata">
-  Sorry you don't have access to this page!!
+  {{'NoAccess' | translate}}
 </div>

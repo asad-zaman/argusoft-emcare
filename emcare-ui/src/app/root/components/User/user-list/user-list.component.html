@@ -16,7 +16,7 @@
     <table class="data-table" aria-labelledby="user-list">
       <thead>
         <tr class="w-100">
-          <th class="text-center w-5">{{'ID' | translate}}</th>
+          <th class="text-center w-5">{{'Sr. No' | translate}}</th>
           <th class="text-center w-10">{{'Name' | translate}}</th>
           <th class="text-center w-15">{{'Email' | translate}}</th>
           <th class="text-center w-10">{{'Phone' | translate}}</th>
@@ -167,5 +167,5 @@
   </div>
 </div>
 <div *ngIf="!isView" class="main-wrapper-nodata">
-  Sorry you don't have access to this page!!
+  {{'NoAccess' | translate}}
 </div>
