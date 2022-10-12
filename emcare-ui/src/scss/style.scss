@@ -383,7 +383,8 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 .sideBarBtn {
-  margin-left: 55px;
+  position: absolute;
+  left: 70px;
   color: white;
   font-size: 30px;
   opacity: 0;

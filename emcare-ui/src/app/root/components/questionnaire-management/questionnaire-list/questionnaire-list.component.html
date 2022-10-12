@@ -15,8 +15,8 @@
     <table class="data-table" aria-labelledby="questionnaire-list">
       <thead>
         <tr>
-          <th>{{'ID' | translate}}</th>
-          <th>{{'Questionnaire ID' | translate}}</th>
+          <th>{{'Sr. No' | translate}}</th>
+          <th>{{'Questionnaire Sr. No' | translate}}</th>
           <th>{{'Title' | translate}}</th>
           <th>{{'Description' | translate}}</th>
           <th *ngIf="isEdit"></th>
@@ -68,5 +68,5 @@
   <!--Table-END-->
 </div>
 <div *ngIf="!isView" class="main-wrapper-nodata">
-  Sorry you don't have access to this page!!
+  {{'NoAccess' | translate}}
 </div>

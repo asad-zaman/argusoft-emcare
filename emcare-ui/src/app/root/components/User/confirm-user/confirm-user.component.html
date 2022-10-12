@@ -12,7 +12,7 @@
     <table class="data-table" aria-labelledby="confirm-user-list">
       <thead>
         <tr>
-          <th>{{'ID' | translate}}</th>
+          <th>{{'Sr. No' | translate}}</th>
           <th>{{'First Name' | translate}}</th>
           <th>{{'Last Name' | translate}}</th>
           <th>{{'Email' | translate}}</th>
@@ -85,5 +85,5 @@
   </div>
 </div>
 <div *ngIf="!isView" class="main-wrapper-nodata">
-  Sorry you don't have access to this page!!
+  {{'NoAccess' | translate}}
 </div>

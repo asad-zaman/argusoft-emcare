@@ -223,5 +223,10 @@
   "PhoneNumber": "Phone Number",
   "Phone Placeholder": "Enter phone number",
   "Phone Required Message": "Phone number is required",
-  "Phone Invalid Message": "Please enter valid phone number"
+  "Phone Invalid Message": "Please enter valid phone number",
+  "Sr. No": "Sr. No",
+  "Advanced settings": "Advanced settings",
+  "NoAccess": "Sorry you don't have access to this page!!",
+  "Key Performance Indicators": "Key Performance Indicators",
+  "Last sync": "Last sync"
 }

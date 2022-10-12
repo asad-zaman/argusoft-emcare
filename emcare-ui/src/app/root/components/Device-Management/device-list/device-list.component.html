@@ -12,7 +12,7 @@
     <table class="data-table" aria-labelledby="device-list">
       <thead>
         <tr>
-          <th>{{'ID' | translate}}</th>
+          <th>{{'Sr. No' | translate}}</th>
           <th>{{'Device UUID' | translate}}</th>
           <th>{{'Android Version' | translate}}</th>
           <th>{{'Logged in User' | translate}}</th>
@@ -54,5 +54,5 @@
   <!--Table-END-->
 </div>
 <div *ngIf="!isView" class="main-wrapper-nodata">
-  Sorry you don't have access to this page!!
+  {{'NoAccess' | translate}}
 </div>

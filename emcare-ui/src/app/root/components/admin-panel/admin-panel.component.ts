@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthGuard } from 'src/app/auth/auth.guard';
 import { FhirService, ToasterService } from 'src/app/shared';
-
+import * as _ from 'lodash';
 @Component({
   selector: 'app-admin-panel',
   templateUrl: './admin-panel.component.html',
@@ -44,6 +44,7 @@ export class AdminPanelComponent implements OnInit {
 
   getAllEmailTemplates() {
     this.fhirService.getAllEmailTemplates().subscribe(res => {
+      res = _.sortBy(res, ['createdAt']);
       this.templateArr.push(res[1]);
       this.templateArr.push(res[2]);
       this.templateArr.push(res[3]);
