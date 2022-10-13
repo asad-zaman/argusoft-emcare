@@ -272,8 +272,11 @@ export class HomeComponent implements OnInit {
     });
 
     markers.forEach(data => {
-      data.marker.addListener('click', function () {
+      data.marker.addListener('mouseover', function () {
         data.infowindow.open(map, data.marker);
+      });
+      data.marker.addListener('mouseout', function () {
+        data.infowindow.close();
       });
     })
   }
