@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -174,7 +175,8 @@ public class LocationResourceServiceImpl implements LocationResourceService {
     public PageDto getEmCareLocationResourcePage(Integer pageNo, String searchString) {
         List<FacilityDto> facilityDtos = new ArrayList<>();
         Page<LocationResource> locationResources = null;
-        Pageable page = PageRequest.of(pageNo, CommonConstant.PAGE_SIZE);
+        Sort sort = Sort.by("createdOn").descending();
+        Pageable page = PageRequest.of(pageNo, CommonConstant.PAGE_SIZE,sort);
         Long count = 0L;
 
         if (searchString != null && !searchString.isEmpty()) {
