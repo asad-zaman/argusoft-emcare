@@ -83,6 +83,8 @@ android {
         exclude "license.html"
         exclude "readme.html"
         exclude "META-INF/sun-jaxb.episode"
+        exclude "META-INF/LICENSE.md"
+        exclude "META-INF/NOTICE.md"
     }
 }
 
@@ -159,7 +161,7 @@ dependencies {
     //Fhir
     implementation "com.google.android.fhir:engine:0.1.0-beta02"
     implementation "com.google.android.fhir:data-capture:0.1.0-beta05"
-    implementation "com.google.android.fhir:workflow:0.1.0-alpha01"
+    implementation "com.google.android.fhir:workflow:0.1.0-alpha02"
 
     //EventBus
     implementation("org.greenrobot:eventbus:3.3.1")

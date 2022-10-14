@@ -84,6 +84,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(){
                 }
                 is State.Finished -> {
                     val message = getString(R.string.msg_sync_successfully)
+                    homeViewModel.loadLibraries()
                     requireContext().showToast(message = message)
                 }
                 is State.Failed -> {

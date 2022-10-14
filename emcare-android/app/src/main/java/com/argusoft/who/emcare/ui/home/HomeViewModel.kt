@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.uhn.fhir.context.FhirContext
+import ca.uhn.fhir.context.FhirVersionEnum
 import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.data.remote.ApiResponse
 import com.argusoft.who.emcare.ui.common.*
@@ -18,11 +19,11 @@ import com.argusoft.who.emcare.utils.listener.SingleLiveEvent
 import com.google.android.fhir.FhirEngine
 import com.google.android.fhir.datacapture.common.datatype.asStringValue
 import com.google.android.fhir.datacapture.createQuestionnaireResponseItem
+import com.google.android.fhir.get
 import com.google.android.fhir.workflow.FhirOperator
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
 import org.hl7.fhir.r4.model.*
 import java.text.SimpleDateFormat
 import java.time.ZonedDateTime
@@ -34,11 +35,16 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val patientRepository: PatientRepository,
     private val consultationFlowRepository: ConsultationFlowRepository,
-    private val fhirEngine: FhirEngine
+    private val fhirEngine: FhirEngine,
+    private val fhirOperator: FhirOperator,
+    private val libraryRepository: LibraryRepository
 ) : ViewModel() {
 
     var questionnaireJson: String? = null
     var currentTab: Int = 0
+
+    private val _librariesLoaded = SingleLiveEvent<ApiResponse<Int>>()
+    val librariesLoaded: LiveData<ApiResponse<Int>> = _librariesLoaded
 
     private val _patient = SingleLiveEvent<ApiResponse<Patient>>()
     val patient: LiveData<ApiResponse<Patient>> = _patient
@@ -63,6 +69,18 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             patientRepository.getPatients(search, facilityId).collect {
                 _patients.value = it
+            }
+        }
+    }
+
+    fun loadLibraries() {
+        viewModelScope.launch {
+            libraryRepository.getLibraries().collect {
+                val librariesList = it.data
+                librariesList?.forEach { library ->
+                    fhirOperator.loadLib(library)
+                }
+                _librariesLoaded.value = ApiResponse.Success(1)
             }
         }
     }
@@ -234,7 +252,7 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun injectInitialExpressionCqlValues(questionnaire: Questionnaire, patientId: String): Questionnaire {
-        val cqlLibraryURL = questionnaire.getExtensionByUrl(URL_CQF_LIBRARY).value.asStringValue()
+        var cqlLibraryURL = questionnaire.getExtensionByUrl(URL_CQF_LIBRARY).value.asStringValue()
         val expressionSet = mutableSetOf<String>()
         //If questionnaire has Cql library then evaluate library and inject the parameters
         if(cqlLibraryURL.isNotEmpty()){
@@ -245,9 +263,7 @@ class HomeViewModel @Inject constructor(
                 }
             }
             //Evaluating Library
-            val parameters = FhirOperator(FhirContext.forR4(), fhirEngine)
-                .evaluateLibrary(cqlLibraryURL, patientId, expressionSet)
-                as Parameters
+            val parameters = fhirOperator.evaluateLibrary(cqlLibraryURL, patientId, expressionSet) as Parameters
             //Inject parameters to appropriate places
             questionnaire.item.forEach { item ->
                 if(item.hasExtension(URL_INITIAL_EXPRESSION)) {

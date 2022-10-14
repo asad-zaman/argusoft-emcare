@@ -81,7 +81,7 @@ class AddPatientFragment : BaseFragment<FragmentAddPatientBinding>() {
         observeNotNull(homeViewModel.saveQuestionnaire) { apiResponse ->
             apiResponse.handleApiView(binding.progressLayout, skipIds = listOf(R.id.headerLayout)) {
                 if (it is ConsultationFlowItem) {
-                    requireActivity().onBackPressed()
+                    navigate(R.id.action_addPatientFragment_to_homeFragment)
                 }
             }
         }

@@ -14,7 +14,6 @@
         android:id="@+id/patientDetailsConstraintLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/_4sdp"
         app:layout_constraintTop_toBottomOf="@id/headerLayout"
         app:layout_constraintStart_toStartOf="parent"
         >
@@ -60,12 +59,15 @@
             app:layout_constraintBottom_toBottomOf="@id/childImageView"
             tools:text="21/06/1999" />
 
+
         <View
             android:layout_width="0dp"
-            android:layout_height="2dp"
-            android:layout_marginTop="@dimen/_4sdp"
-            android:background="@color/textColorDarkGrey"
-            app:layout_constraintTop_toBottomOf="parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="@dimen/_8sdp"
+            android:layout_marginBottom="@dimen/_4sdp"
+            android:layout_marginHorizontal="@dimen/_12sdp"
+            android:background="@color/colorLineBreak"
+            app:layout_constraintTop_toBottomOf="@id/dobTextViewLabel"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -74,7 +76,7 @@
         android:id="@+id/fragmentContainerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:paddingTop="@dimen/_16sdp"
+        android:paddingTop="@dimen/_8sdp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/patientDetailsConstraintLayout" />
 

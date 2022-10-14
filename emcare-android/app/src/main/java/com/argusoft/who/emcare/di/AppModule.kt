@@ -2,6 +2,8 @@ package com.argusoft.who.emcare.di
 
 import android.content.Context
 import androidx.room.Room
+import ca.uhn.fhir.context.FhirContext
+import ca.uhn.fhir.context.FhirVersionEnum
 import com.argusoft.who.emcare.BuildConfig
 import com.argusoft.who.emcare.data.local.database.Database
 import com.argusoft.who.emcare.data.local.database.DatabaseManager
@@ -14,6 +16,7 @@ import com.argusoft.who.emcare.data.remote.ApiManager
 import com.argusoft.who.emcare.utils.common.NetworkHelper
 import com.google.android.fhir.FhirEngine
 import com.google.android.fhir.FhirEngineProvider
+import com.google.android.fhir.workflow.FhirOperator
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -67,6 +70,12 @@ class AppModule {
     @Provides
     fun provideAppFhirEngine(@ApplicationContext context: Context): FhirEngine {
         return FhirEngineProvider.getInstance(context)
+    }
+
+    @Singleton
+    @Provides
+    fun provideAppFhirOperator(fhirEngine: FhirEngine): FhirOperator {
+        return FhirOperator(FhirContext.forCached(FhirVersionEnum.R4), fhirEngine)
     }
 
     @Singleton
