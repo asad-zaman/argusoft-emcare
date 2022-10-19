@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 
@@ -30,4 +31,17 @@ public class QuestionnaireResponseController {
         List<QuestionnaireResponse> questionnaireResponses = questionnaireResponseService.getQuestionnaireResponseByUserLocation();
         return ResponseEntity.ok().body(questionnaireResponses);
     }
+
+    @GetMapping("/page")
+    public ResponseEntity<Object> getQuestionnaireResponsePage(@RequestParam(value = "pageNo") Integer pageNo,
+                                                               @Nullable @RequestParam(value = "search", required = false) String searchString) {
+        return ResponseEntity.ok().body(questionnaireResponseService.getQuestionnaireResponsePage(pageNo, searchString));
+    }
+
+    @GetMapping("/byPatient")
+    public ResponseEntity<Object> getQuestionnaireResponseByPatientId(@RequestParam(value = "patientId") String patientId) {
+        return ResponseEntity.ok().body(questionnaireResponseService.getQuestionnaireResponseByPatientId(patientId));
+    }
+
+
 }

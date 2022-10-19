@@ -1,10 +1,15 @@
 package com.argusoft.who.emcare.web.questionnaire_response.service.impl;
 
+import com.argusoft.who.emcare.web.common.constant.CommonConstant;
+import com.argusoft.who.emcare.web.common.dto.PageDto;
 import com.argusoft.who.emcare.web.fhir.dao.EmcareResourceRepository;
 import com.argusoft.who.emcare.web.fhir.dao.LocationResourceRepository;
 import com.argusoft.who.emcare.web.fhir.dto.FacilityDto;
+import com.argusoft.who.emcare.web.fhir.dto.PatientDto;
 import com.argusoft.who.emcare.web.fhir.model.EmcareResource;
+import com.argusoft.who.emcare.web.fhir.service.EmcareResourceService;
 import com.argusoft.who.emcare.web.location.dao.LocationMasterDao;
+import com.argusoft.who.emcare.web.questionnaire_response.dto.MiniPatient;
 import com.argusoft.who.emcare.web.questionnaire_response.dto.QuestionnaireResponseRequestDto;
 import com.argusoft.who.emcare.web.questionnaire_response.mapper.QuestionnaireResponseMapper;
 import com.argusoft.who.emcare.web.questionnaire_response.model.QuestionnaireResponse;
@@ -13,10 +18,14 @@ import com.argusoft.who.emcare.web.questionnaire_response.service.QuestionnaireR
 import com.argusoft.who.emcare.web.user.dto.UserMasterDto;
 import com.argusoft.who.emcare.web.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -33,10 +42,14 @@ public class QuestionnaireResponseServiceImpl implements QuestionnaireResponseSe
     EmcareResourceRepository emcareResourceRepository;
 
     @Autowired
+    EmcareResourceService emcareResourceService;
+
+    @Autowired
     LocationMasterDao locationMasterDao;
 
     @Autowired
     LocationResourceRepository locationResourceRepository;
+
 
     @Override
     public List<QuestionnaireResponse> saveOrUpdateQuestionnaireResponse(List<QuestionnaireResponseRequestDto> questionnaireResponseRequestDto) {
@@ -66,5 +79,41 @@ public class QuestionnaireResponseServiceImpl implements QuestionnaireResponseSe
         List<String> patientIds = patientList.stream().map(EmcareResource::getResourceId).collect(Collectors.toList());
 
         return questionnaireResponseRepository.findByPatientIdIn(patientIds);
+    }
+
+    @Override
+    public PageDto getQuestionnaireResponsePage(Integer pageNo, String searchString) {
+        List<QuestionnaireResponse> questionnaireResponses;
+        Sort sort = Sort.by("createdOn").descending();
+        Pageable page = PageRequest.of(pageNo, CommonConstant.PAGE_SIZE);
+        List<EmcareResource> resourcesList;
+        Integer totalCount = 0;
+        if (searchString != null && !searchString.isEmpty()) {
+            resourcesList = emcareResourceRepository.findByTypeContainingAndTextContainingIgnoreCaseOrderByCreatedOnDesc(CommonConstant.FHIR_PATIENT, searchString);
+        } else {
+            resourcesList = emcareResourceRepository.findAllByType(CommonConstant.FHIR_PATIENT);
+        }
+        List<String> resourceIds = resourcesList.stream().map(EmcareResource::getResourceId).collect(Collectors.toList());
+        List<MiniPatient> responseList = questionnaireResponseRepository.findDistinctByPatientIdIn(
+                resourceIds,
+                page);
+        List<String> patientIds = responseList.stream().map(MiniPatient::getPatientId).collect(Collectors.toList());
+        totalCount = questionnaireResponseRepository.findDistinctByPatientIdIn(resourceIds).size();
+        List<PatientDto> patientList = emcareResourceService.getPatientDtoByIds(patientIds);
+        PageDto pageDto = new PageDto();
+        pageDto.setList(patientList);
+        pageDto.setTotalCount(totalCount.longValue());
+        return pageDto;
+    }
+
+    @Override
+    public Map<String, List<QuestionnaireResponse>> getQuestionnaireResponseByPatientId(String patientId) {
+        List<QuestionnaireResponse> questionnaireResponses = questionnaireResponseRepository.findByPatientId(patientId);
+        List<List<QuestionnaireResponse>> encounterList;
+
+        Map<String, List<QuestionnaireResponse>> byEncounter =
+                questionnaireResponses.stream().collect(Collectors.groupingBy(QuestionnaireResponse::getEncounterId));
+
+        return byEncounter;
     }
 }

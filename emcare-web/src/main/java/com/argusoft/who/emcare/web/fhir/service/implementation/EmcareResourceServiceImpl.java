@@ -478,6 +478,41 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
         return map;
     }
 
+    @Override
+    public List<PatientDto> getPatientDtoByIds(List<String> ids) {
+        List<Patient> patientsList = new ArrayList<>();
+        List<PatientDto> patientDtosList;
+        List<EmcareResource> resourcesList;
+        resourcesList = repository.findByResourceIdIn(ids);
+
+        for (EmcareResource emcareResource : resourcesList) {
+            Patient patient = parser.parseResource(Patient.class, emcareResource.getText());
+            patientsList.add(patient);
+        }
+
+        patientDtosList = EmcareResourceMapper.patientEntitiesToDtoMapper(patientsList);
+
+        //Converting caregiverId and locationid to name
+        for (PatientDto patientDto : patientDtosList) {
+
+            if (patientDto.getCaregiver() != null) {
+                EmcareResource caregiverResource = findByResourceId(patientDto.getCaregiver());
+                RelatedPerson caregiver = parser.parseResource(RelatedPerson.class, caregiverResource.getText());
+                patientDto.setCaregiver(caregiver.getNameFirstRep().getGiven().get(0) + " " + caregiver.getNameFirstRep().getFamily());
+            }
+
+            if (patientDto.getFacility() != null) {
+                FacilityDto facilityDto = locationResourceService.getFacilityDto(patientDto.getFacility());
+                if (facilityDto != null) {
+                    patientDto.setFacility(facilityDto.getFacilityName());
+                    patientDto.setOrganizationName(facilityDto.getOrganizationName());
+                    patientDto.setLocationName(facilityDto.getLocationName());
+                }
+            }
+        }
+        return patientDtosList;
+    }
+
     private List<PatientDto> getAllPatientsForChart() {
         List<Patient> patientsList = new ArrayList<>();
         List<PatientDto> patientDtosList;

@@ -21,6 +21,8 @@ public interface EmcareResourceRepository extends JpaRepository<EmcareResource, 
 
     List<EmcareResource> findByTypeContainingAndTextContainingIgnoreCase(String type, String searchString);
 
+    List<EmcareResource> findByTypeContainingAndTextContainingIgnoreCaseOrderByCreatedOnDesc(String type, String searchString);
+
     @Query(value = "SELECT * FROM EMCARE_RESOURCES WHERE TYPE = :type AND (CREATED_ON > :date OR MODIFIED_ON > :date)", nativeQuery = true)
     List<EmcareResource> getByDateAndType(@Param("date") Date date, @Param("type") String type);
 
@@ -31,5 +33,7 @@ public interface EmcareResourceRepository extends JpaRepository<EmcareResource, 
     List<EmcareResource> findByFacilityIdIn(List<String> ids, Pageable pageable);
 
     List<EmcareResource> findByFacilityIdIn(List<String> ids);
+
+    List<EmcareResource> findByResourceIdIn(List<String> ids);
 
 }

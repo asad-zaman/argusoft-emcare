@@ -37,4 +37,6 @@ public interface EmcareResourceService {
 
     public Map<String, Integer> getPatientAgeGroupCount();
 
+    public List<PatientDto> getPatientDtoByIds(List<String> ids);
+
 }
