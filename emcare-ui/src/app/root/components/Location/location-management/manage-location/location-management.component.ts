@@ -15,7 +15,7 @@ export class LocationManagementComponent implements OnInit {
   isEdit: boolean = false;
   editId: string;
   locationArr: any;
-  locationTypeArr: any;
+  locationTypeArr: any = [];
   submitted: boolean;
   isAddFeature: boolean = true;
   isEditFeature: boolean = true;
@@ -38,7 +38,6 @@ export class LocationManagementComponent implements OnInit {
     this.getLocationTypes();
     this.initLocationInputForm();
     this.getAllLocations();
-    this.checkEditParam();
   }
 
   checkFeatures() {
@@ -76,8 +75,17 @@ export class LocationManagementComponent implements OnInit {
     this.locationService.getAllLocations().subscribe(res => {
       if (res) {
         this.locationArr = res;
+        this.checkEditParam();
       }
     });
+  }
+
+  findLocationType(type) {
+    return this.locationTypeArr.find(t => t.code === type);
+  }
+
+  findLocation(locationId) {
+    return this.locationArr.find(l => l.id === locationId);
   }
 
   checkEditParam() {
@@ -88,9 +96,9 @@ export class LocationManagementComponent implements OnInit {
       this.locationService.getLocationById(this.editId).subscribe(res => {
         if (res) {
           const data = {
-            locationType: res['type'],
+            locationType: this.findLocationType(res['type']),
             locationName: res['name'],
-            parent: res['parent']
+            parent: this.findLocation(res['parent'])
           };
           this.locationForm.patchValue(data);
         }
@@ -118,8 +126,8 @@ export class LocationManagementComponent implements OnInit {
         const data = {
           "id": this.editId,
           "name": this.locationForm.get('locationName').value,
-          "type": this.locationForm.get('locationType').value,
-          "parent": this.locationForm.get('parent').value
+          "type": this.locationForm.get('locationType').value ? this.locationForm.get('locationType').value.code : '',
+          "parent": this.locationForm.get('parent').value ? this.locationForm.get('parent').value.id : ''
         }
         this.locationService.updateLocationById(data).subscribe(res => {
           if (res) {
@@ -130,8 +138,8 @@ export class LocationManagementComponent implements OnInit {
       } else {
         const data = {
           "name": this.locationForm.get('locationName').value,
-          "type": this.locationForm.get('locationType').value,
-          "parent": this.locationForm.get('parent').value
+          "type": this.locationForm.get('locationType').value ? this.locationForm.get('locationType').value.code : '',
+          "parent": this.locationForm.get('parent').value ? this.locationForm.get('parent').value.id : ''
         }
         this.locationService.createLocation(data).subscribe(res => {
           if (res) {

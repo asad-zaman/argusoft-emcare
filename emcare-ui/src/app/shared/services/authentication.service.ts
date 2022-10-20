@@ -29,16 +29,19 @@ export class AuthenticationService {
         }
     }
 
-    signup(firstName: string, lastName: string, email: string, password: string, locationIds: Number, roleName: string) {
+    signup(
+        firstName: string, lastName: string,
+        email: string, userName: string, password: string,
+        facilityIds: Number, roleName: string,
+        countryCode: string, phone: string
+    ) {
         const user = {
-            firstName,
-            lastName,
-            email,
-            password,
+            firstName, lastName,
+            email, userName, password,
             regRequestFrom: 'web',
-            locationIds,
-            roleName
-        }
+            facilityIds, roleName,
+            countryCode, phone
+        };
         return this.http.post<any>(`${this.backendURL}/api/signup`, user)
             .pipe(map(user => {
                 this.userInfo.next(user);
@@ -97,7 +100,7 @@ export class AuthenticationService {
 
     setFeatures(featuresRes: any): void {
         let features = [];
-        featuresRes.feature.forEach(f => {
+        featuresRes.forEach(f => {
             features.push(f.menuName);
             //  if there is submenu then it should also be pushed
             if (f.subMenu.length > 0) {
@@ -125,8 +128,8 @@ export class AuthenticationService {
         return this.http.get<any>(url, headerObj);
     }
 
-    getAllLocationsForSignUp() {
-        const url = `${this.backendURL}/api/signup/location`;
+    getAllFacilitiesForSignUp() {
+        const url = `${this.backendURL}/api/open/active/facility`;
         const headerObj = this.getHeaders();
         return this.http.get<any>(url, headerObj);
     }

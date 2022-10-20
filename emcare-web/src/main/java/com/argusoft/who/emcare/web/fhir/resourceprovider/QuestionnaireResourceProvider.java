@@ -4,6 +4,7 @@ import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.rest.annotation.*;
 import ca.uhn.fhir.rest.api.MethodOutcome;
+import ca.uhn.fhir.rest.param.DateParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
 import com.argusoft.who.emcare.web.common.constant.CommonConstant;
@@ -37,7 +38,12 @@ public class QuestionnaireResourceProvider implements IResourceProvider {
     @Create
     public MethodOutcome createQuestionnaire(@ResourceParam Questionnaire questionnaire) {
 
-        String questionnaireId = UUID.randomUUID().toString();
+        String questionnaireId = null;
+        if (questionnaire.getId() != null) {
+            questionnaireId = questionnaire.getId();
+        } else {
+            questionnaireId = UUID.randomUUID().toString();
+        }
         questionnaire.setId(questionnaireId);
 
         Meta m = new Meta();
@@ -87,10 +93,9 @@ public class QuestionnaireResourceProvider implements IResourceProvider {
     }
 
     @Search()
-    public List<Questionnaire> getAllQuestionnaires() {
+    public List<Questionnaire> getAllQuestionnaires(@OptionalParam(name = CommonConstant.RESOURCE_LAST_UPDATED_AT) DateParam theDate) {
         List<Questionnaire> questionnaireList = new ArrayList<>();
-
-        List<QuestionnaireMaster> resourcesList = questionnaireMasterService.retrieveAllQuestionnaires();
+        List<QuestionnaireMaster> resourcesList = questionnaireMasterService.retrieveAllQuestionnaires(theDate);
         for (QuestionnaireMaster questionnaireMaster : resourcesList) {
             Questionnaire questionnaire = parser.parseResource(Questionnaire.class, questionnaireMaster.getText());
             questionnaireList.add(questionnaire);

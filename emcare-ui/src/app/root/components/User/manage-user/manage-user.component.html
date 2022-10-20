@@ -53,8 +53,8 @@
               </div>
             </div>
           </div>
-          <div *ngIf="!isEdit" class="row">
-            <div class="col-12 col-sm-12">
+          <div class="row">
+            <div *ngIf="!isEdit" class="col-12 col-sm-12">
               <div class="mb-3">
                 <label class="form-label">{{'Email' | translate}}</label>
                 <input formControlName="email" id="email" placeholder="{{'Email Placeholder' | translate}}" type="email"
@@ -69,16 +69,28 @@
             </div>
             <div class="col-12 col-sm-12">
               <div class="mb-3">
+                <label class="form-label">{{'PhoneNumber' | translate}}</label>
+                <ngx-intl-tel-input [cssClass]="'custom'" [preferredCountries]="preferredCountries"
+                  [enableAutoCountrySelect]="false" [enablePlaceholder]="true" [searchCountryFlag]="true"
+                  [searchCountryField]="[SearchCountryField.Iso2, SearchCountryField.Name]" [selectFirstCountry]="false"
+                  [selectedCountryISO]="this.userForm.get('countryCode').value" [maxLength]="15"
+                  [separateDialCode]="separateDialCode" [phoneValidation]="true"
+                  [numberFormat]="PhoneNumberFormat.National" name="phone" formControlName="phone">
+                </ngx-intl-tel-input>
+                <div *ngIf="submitted && this.userForm.controls.phone.value == null" class="error">
+                  {{'Phone Required Message' | translate}}
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-sm-12">
+              <div *ngIf="roles.length>0" class="mb-3">
                 <label class="form-label">{{'Role' | translate}}</label>
-                <select formControlName="role" [ngClass]="{ 'is-invalid': submitted && f.role.errors }"
-                  class="form-control custom-input" id="role">
-                  <ng-container *ngFor="let role of roles">
-                    <option value="{{role.name}}">{{role.name}}</option>
-                  </ng-container>
-                </select>
-                <div *ngIf="submitted && f.role.errors" class="invalid-feedback">
-                  <div class="cst-error-style" *ngIf="f.role.errors.required">
-                    {{'Role Required Message' | translate}}</div>
+                <p-dropdown
+                  [ngStyle]="{'border': submitted && this.userForm.controls.role.value == '' ? '1px solid red' : ''}"
+                  [options]="roles" placeholder="Select a role" formControlName="role" optionLabel="name">
+                </p-dropdown>
+                <div *ngIf="submitted && this.userForm.controls.role.value == ''" style="color: #dc3545">
+                  <div *ngIf="f.role.errors.required">Role is required</div>
                 </div>
               </div>
             </div>
@@ -115,28 +127,32 @@
         <div class="col-6">
           <div class="row">
             <div class="col-12">
-              <div class="mb-3 d-grid">
-                <app-location-dropdown [isMultiplePage]="true" [events]="eventsSubject.asObservable()" [idArr]="[]"
-                  (locationFormValueAndDropdownArr)="getFormValue($event)">
-                </app-location-dropdown>
+              <div class="mb-3">
+                <label class="form-label">{{'Facility' | translate}}</label>
+                <p-dropdown placeholder="Select" [options]="facilityArr" formControlName="selectedFacility"
+                  optionLabel="name" dataKey="name">
+                </p-dropdown>
               </div>
             </div>
             <div class="col-4 offset-8">
-              <button [disabled]="!formData" type="button" class=" btn btn-blue" (click)="saveLocationData()"
-                data-bs-dismiss="modal">{{'Save' | translate}}</button>
+              <button [disabled]="!userForm.get('selectedFacility').value" type="button" class=" btn btn-blue"
+                (click)="saveFacility()" data-bs-dismiss="modal">{{'Save' | translate}}</button>
             </div>
             <div class="col-12">
               <div class="mb-3 customd-div">
-                <label class="form-label f-16">Selected Areas</label>
+                <label class="form-label f-16">Selected Facilities</label>
                 <ul>
-                  <ng-container *ngFor="let location of selectedAreasArr">
+                  <ng-container *ngFor="let fac of userForm.get('facility').value">
                     <li>
                       <div class="chip">
-                        {{location.string}}
-                        <i class="bi bi-x f-18 cursor-pointer" (click)="removeLocation(location)" aria-hidden="true"></i>
+                        <ng-container *ngIf="fac.name">
+                          {{fac.name}}
+                        </ng-container>
+                        <ng-container *ngIf="fac.organizationName">
+                          - {{fac.organizationName}}
+                        </ng-container>
+                        <i class="bi bi-x f-18 cursor-pointer" (click)="removeFacility(fac)" aria-hidden="true"></i>
                       </div>
-                      <!-- <span class="f-16">{{location.string}}</span> -->
-                     
                     </li>
                   </ng-container>
                 </ul>
@@ -147,7 +163,7 @@
       </div>
       <div class="text-end mt-5">
         <hr>
-        <button routerLink="/showUsers" class="btn-black btn ms-3">
+        <button (click)="back()" class="btn-black btn ms-3">
           <i class="bi bi-chevron-left" aria-hidden="true"></i> {{'Back' | translate}}
         </button>
         <button (click)="saveData()" class="btn-blue btn">
@@ -163,5 +179,5 @@
   </div>
 </div>
 <div *ngIf="!isAllowed" class="main-wrapper-nodata">
-  Sorry you don't have access to this page!!
+  {{'NoAccess' | translate}}
 </div>

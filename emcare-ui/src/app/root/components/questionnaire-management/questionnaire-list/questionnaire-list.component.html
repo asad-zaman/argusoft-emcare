@@ -15,8 +15,8 @@
     <table class="data-table" aria-labelledby="questionnaire-list">
       <thead>
         <tr>
-          <th>{{'ID' | translate}}</th>
-          <th>{{'Questionnaire ID' | translate}}</th>
+          <th>{{'Sr. No' | translate}}</th>
+          <th>{{'Questionnaire Sr. No' | translate}}</th>
           <th>{{'Title' | translate}}</th>
           <th>{{'Description' | translate}}</th>
           <th *ngIf="isEdit"></th>
@@ -27,7 +27,8 @@
           <ng-container *ngFor="let questionnaire of filteredQuestionnaireList | 
           paginate : { itemsPerPage: tableSize, currentPage: currentPage, totalItems: totalCount }; let i=index">
             <tr>
-              <td>{{i+1}}</td>
+              <td>{{currentPage == 0 ? ((currentPage)*10 + i + 1) : ((currentPage-1)*10 + i + 1)}}
+              </td>
               <td>{{questionnaire.id}}</td>
               <td>{{questionnaire.title ? questionnaire.title : 'NA'}}</td>
               <td>{{questionnaire.description ? questionnaire.description : 'NA'}}
@@ -67,5 +68,5 @@
   <!--Table-END-->
 </div>
 <div *ngIf="!isView" class="main-wrapper-nodata">
-  Sorry you don't have access to this page!!
+  {{'NoAccess' | translate}}
 </div>

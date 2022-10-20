@@ -21,4 +21,9 @@ public class DashboardController {
     public ResponseEntity<?> getDashboardData() {
         return dashboardService.getDashboardData();
     }
+
+    @GetMapping("/chart")
+    public ResponseEntity<?> getDashboardBarChartData() {
+        return dashboardService.getDashboardBarChartData();
+    }
 }

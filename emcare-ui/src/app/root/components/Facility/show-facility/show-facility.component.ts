@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { AuthGuard } from 'src/app/auth/auth.guard';
@@ -22,13 +23,17 @@ export class ShowFacilityComponent implements OnInit {
   isEdit: boolean = true;
   isView: boolean = true;
   isDelete: boolean = true;
+  currentPage = 0;
+  totalCount = 0;
+  tableSize = 10;
 
   constructor(
     private readonly router: Router,
     private readonly fhirService: FhirService,
     private readonly toasterService: ToasterService,
     private readonly locationService: LocationService,
-    private readonly authGuard: AuthGuard
+    private readonly authGuard: AuthGuard,
+    private readonly translate: TranslateService
   ) { }
 
   ngOnInit(): void {
@@ -37,7 +42,7 @@ export class ShowFacilityComponent implements OnInit {
 
   prerequisite() {
     this.checkFeatures();
-    this.getFacilities();
+    this.getFacilityByPageAndSearch(this.currentPage);
     this.getAllLocations();
   }
 
@@ -70,38 +75,23 @@ export class ShowFacilityComponent implements OnInit {
     })
   }
 
-  getFacilities() {
-    this.fhirService.getFacility().subscribe(res => {
+  getFacilityByPageAndSearch(currentPage) {
+    this.fhirService.getFacilityByPageAndSearch(currentPage).subscribe(res => {
+      this.isAPIBusy = false;
       this.manipulateRes(res);
     });
   }
 
   editFacility(index) {
-    this.router.navigate([`editFacility/${this.facilityArr[index]['id']}`]);
+    this.router.navigate([`editFacility/${this.facilityArr[index]['facilityId']}`]);
   }
 
-  deleteFacility(index) {
-    this.deleteOrganization(this.facilityArr[index]['managingOrganization']['id']);
-    this.deleteLocation(this.facilityArr[index]['id']);
-  }
-
-  deleteLocation(id) {
-    this.fhirService.deleteFacility(id).subscribe(_res => {
-      this.facilityArr = [];
-      this.getFacilities();
-      this.toasterService.showToast('success', 'Facility deleted successfully!', 'EMCARE');
-    }, (_error) => {
-      this.toasterService.showToast('error', 'Facility could not deleted successfully!', 'EMCARE');
-    });
-  }
-
-  deleteOrganization(id) {
-    this.fhirService.deleteOrganization(id).subscribe(_res => { }, (_error) => {
-      this.toasterService.showToast('error', 'Facility could not deleted successfully!', 'EMCARE');
-    });
+  resetCurrentPage() {
+    this.currentPage = 0;
   }
 
   searchFilter() {
+    this.resetCurrentPage();
     if (this.searchTermChanged.observers.length === 0) {
       this.searchTermChanged.pipe(
         debounceTime(1000),
@@ -109,12 +99,12 @@ export class ShowFacilityComponent implements OnInit {
       ).subscribe(_term => {
         if (this.searchString && this.searchString.length >= 1) {
           this.facilityArr = [];
-          this.fhirService.getOrganizationByPageIndexAndSearch(0, this.searchString).subscribe(res => {
+          this.fhirService.getFacilityByPageAndSearch(0, this.searchString).subscribe(res => {
             this.manipulateRes(res);
           });
         } else {
           this.facilityArr = [];
-          this.getFacilities();
+          this.getFacilityByPageAndSearch(this.currentPage);
         }
       });
     }
@@ -122,10 +112,23 @@ export class ShowFacilityComponent implements OnInit {
   }
 
   manipulateRes(res) {
-    if (res && res['entry']) {
-      res['entry'].map(el => {
-        this.facilityArr.push(el.resource);
-      });
+    if (res) {
+      this.facilityArr = res['list'];
+      this.totalCount = res['totalCount']; 
     }
+  }
+
+  getLabel(index) {
+    const key = index === 0 ? 'Previous' : 'Next';
+    let tr;
+    this.translate.get(key).subscribe(res => {
+      tr = res;
+    });
+    return tr;
+  }
+
+  onIndexChange(event) {
+    this.currentPage = event;
+    this.getFacilityByPageAndSearch(event - 1);
   }
 }

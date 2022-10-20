@@ -55,7 +55,16 @@ public class EmcareResourceController {
     private MedicationResourceService medicationResourceService;
 
     @Autowired
+    private ActivityDefinitionResourceService activityDefinitionResourceService;
+
+    @Autowired
     private OrganizationResourceService organizationResourceService;
+
+    @Autowired
+    private OperationDefinitionResourceService operationDefinitionResourceService;
+
+    @Autowired
+    private LibraryResourceService libraryResourceService;
 
     @GetMapping("/patient")
     public List<PatientDto> getAllPatients() {
@@ -82,7 +91,8 @@ public class EmcareResourceController {
         if (patientDto.getCaregiver() != null) {
             EmcareResource caregiverResource = emcareResourceService.findByResourceId(patientDto.getCaregiver());
             RelatedPerson caregiver = parser.parseResource(RelatedPerson.class, caregiverResource.getText());
-            patientDto.setCaregiver(caregiver.getNameFirstRep().getGiven().get(0) + " " + caregiver.getNameFirstRep().getFamily());
+            patientDto.setCaregiver(
+                    caregiver.getNameFirstRep().getGiven().get(0) + " " + caregiver.getNameFirstRep().getFamily());
         }
 
         if (patientDto.getFacility() != null) {
@@ -97,7 +107,7 @@ public class EmcareResourceController {
 
     @GetMapping("/questionnaire")
     public List<QuestionnaireDto> getAllQuestionnaires() {
-        List<QuestionnaireMaster> questionnaireMasters = questionnaireMasterService.retrieveAllQuestionnaires();
+        List<QuestionnaireMaster> questionnaireMasters = questionnaireMasterService.retrieveAllQuestionnaires(null);
         List<Questionnaire> questionnaires = new ArrayList<>();
 
         for (QuestionnaireMaster qm : questionnaireMasters) {
@@ -147,6 +157,12 @@ public class EmcareResourceController {
         return medicationResourceService.getMedicationPage(pageNo, search);
     }
 
+    @GetMapping("/activity-definition")
+    public PageDto getActivityDefinitionPage(@RequiredParam(name = "pageNo") Integer pageNo,
+                                             @Nullable @RequiredParam(name = "search") String search) {
+        return activityDefinitionResourceService.getActivityDefinitionPage(pageNo, search);
+    }
+
     @GetMapping("/organization")
     public PageDto getOrganizationPage(@RequiredParam(name = "pageNo") Integer pageNo,
                                        @Nullable @RequiredParam(name = "search") String search) {
@@ -157,6 +173,18 @@ public class EmcareResourceController {
     public PageDto getFacilityPage(@RequiredParam(name = "pageNo") Integer pageNo,
                                    @Nullable @RequiredParam(name = "search") String search) {
         return locationResourceService.getEmCareLocationResourcePage(pageNo, search);
+    }
+
+    @GetMapping("/library")
+    public PageDto getLibraryPage(@RequiredParam(name = "pageNo") Integer pageNo,
+                                  @Nullable @RequiredParam(name = "search") String search) {
+        return libraryResourceService.getLibraryPage(pageNo, search);
+    }
+
+    @GetMapping("/operation-definition")
+    public PageDto getOperationDefinitionPage(@RequiredParam(name = "pageNo") Integer pageNo,
+                                              @Nullable @RequiredParam(name = "search") String search) {
+        return operationDefinitionResourceService.getOperationDefinitionPage(pageNo, search);
     }
 
     @GetMapping("active/facility")

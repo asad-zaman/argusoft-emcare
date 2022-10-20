@@ -112,7 +112,11 @@ export class PatientListComponent implements OnInit {
                         this.manipulateResponse(res);
                     });
                 } else {
-                    this.getPatientsByPageIndex(this.currentPage);
+                    if (this.isLocationFilterOn) {
+                        this.getPatientsBasedOnLocationAndPageIndex(this.currentPage);
+                    } else {
+                        this.getPatientsByPageIndex(this.currentPage);
+                    }
                 }
             });
         }

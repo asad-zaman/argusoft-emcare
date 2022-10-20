@@ -123,7 +123,11 @@ export class ShowLocationComponent implements OnInit {
             this.manipulateResponse(res);
           });
         } else {
-          this.getLocationsByPageIndex(this.currentPage);
+          if (this.isLocationFilterOn) {
+            this.getLocationsBasedOnFilteredLocationAndPageIndex(this.currentPage);
+          } else {
+            this.getLocationsByPageIndex(this.currentPage);
+          }
         }
       });
     }

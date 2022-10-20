@@ -1,6 +1,8 @@
 package com.argusoft.who.emcare.web.userLocationMapping.dao;
 
+import com.argusoft.who.emcare.web.dashboard.dto.ChartDto;
 import com.argusoft.who.emcare.web.dashboard.dto.DashboardDto;
+import com.argusoft.who.emcare.web.dashboard.dto.ScatterCharDto;
 import com.argusoft.who.emcare.web.userLocationMapping.model.UserLocationMapping;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -68,5 +70,27 @@ public interface UserLocationMappingRepository extends JpaRepository<UserLocatio
             " PENDING_REQUEST,\n" +
             " LAST_SEVEN_DAY_REQUEST;", nativeQuery = true)
     DashboardDto getDashboardData();
+
+    @Query(value = "SELECT FACILITY_ID AS \"facilityId\", \n" +
+            " COUNT(*) AS \"count\"\n" +
+            "FROM USER_LOCATION_MAPPING\n" +
+            "WHERE FACILITY_ID IS NOT NULL\n" +
+            "GROUP BY FACILITY_ID;", nativeQuery = true)
+    List<ChartDto> getDashboardBarChartData();
+
+    @Query(value = "SELECT FACILITY_ID AS \"facilityId\", \n" +
+            " COUNT(*) AS \"count\"\n" +
+            "FROM EMCARE_RESOURCES\n" +
+            "WHERE FACILITY_ID IS NOT NULL AND TYPE = 'PATIENT'\n" +
+            "GROUP BY FACILITY_ID;", nativeQuery = true)
+    List<ChartDto> getDashboardPieChartData();
+
+    @Query(value = "SELECT date_part('week', created_on) AS \"weekly\",\n" +
+            "       COUNT(resource_id) as \"count\"           \n" +
+            "FROM emcare_resources\n" +
+            "where type = 'PATIENT' and date_part('year', created_on) = '2022'\n" +
+            "GROUP BY  weekly\n" +
+            "ORDER BY weekly DESC limit 10;", nativeQuery = true)
+    List<ScatterCharDto> getDashboardScatterChartData();
 
 }

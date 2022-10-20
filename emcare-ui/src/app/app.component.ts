@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit, Renderer2 } from '@angular/core';
+import { ChangeDetectorRef, Component, HostListener, OnInit, Renderer2 } from '@angular/core';
 import { Router, NavigationStart, Event as NavigationEvent } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { HTTPStatus, LaunguageSubjects } from './auth/token-interceptor';
@@ -27,6 +27,9 @@ export class AppComponent implements OnInit {
   currTranslations: any;
   rtlLaunguages = ['ar', 'he', 'ku', 'fa', 'ur'];
   featureArr = [];
+  isSidebarOpen = true;
+  currScreenWidth;
+  sidebarShow = true;
   featureIconObj = {
     'Users': 'bi bi-people nav-link_icon',
     'Locations': 'bi bi-cursor nav-link_icon',
@@ -36,8 +39,9 @@ export class AppComponent implements OnInit {
     'Questionnaires': 'bi bi-window-dock nav-link_icon',
     'Languages': 'bi bi-calendar2-range nav-link_icon',
     'Facility': 'bi bi-columns-gap nav-link_icon',
-    'Settings': 'bi bi-gear nav-link_icon',
-    'Dashboard': 'bi bi-house-door nav-link_icon'
+    'Advanced settings': 'bi bi-gear nav-link_icon',
+    'Dashboard': 'bi bi-house-door nav-link_icon',
+    'Organizations': 'bi bi-border-outer nav-link_icon'
   }
 
   constructor(
@@ -50,13 +54,22 @@ export class AppComponent implements OnInit {
     private readonly lanSubjects: LaunguageSubjects,
     private readonly renderer: Renderer2,
     private readonly authGuard: AuthGuard
-  ) { }
+  ) {
+    this.getScreenSize();
+  }
+
+  @HostListener('window:resize', ['$event'])
+  getScreenSize(event?) {
+    this.currScreenWidth = window.screen.width;
+    this.applySidebarChange();
+  }
 
   ngOnInit() {
     this.prerequisite();
   }
 
   ngAfterViewChecked() {
+    this.checkCurrentUrlAndShowHeaderBar();
     this.cdr.detectChanges();
   }
 
@@ -66,12 +79,19 @@ export class AppComponent implements OnInit {
     this.checkAPIStatus();
     this.authenticationService.getIsLoggedIn().subscribe(result => {
       if (result) {
-        this.getLoggedInUserData();
+        this.setLoggedInUserData();
       }
     });
     this.authenticationService.getFeatures().subscribe(result => {
-      if (result) {
+      if (result && result.length > 0) {
         this.featureList = result;
+      } else {
+        /*  on refreshing the page behaviour subject will be lost
+          so resetting the feature array to behaviour subject to render the sidebar again */
+        let userFeatures = localStorage.getItem('userFeatures');
+        if (userFeatures) {
+          this.authenticationService.setFeatures(this.featureArr);
+        }
       }
     });
     this.detectLanChange();
@@ -139,23 +159,22 @@ export class AppComponent implements OnInit {
     return username.substring(0, 1).toUpperCase();
   }
 
-  getLoggedInUserData() {
-    this.authenticationService.getLoggedInUser().subscribe(res => {
-      if (res) {
-        this.featureArr = res['feature'];
+  setLoggedInUserData() {
+    let userFeatures = localStorage.getItem('userFeatures');
+    if (userFeatures) {
+      this.featureArr = JSON.parse(userFeatures)['feature'];
+      if (this.featureArr) {
         this.featureArr.map(f => {
           f['subMenuActive'] = false;
           if (f.subMenu.length > 0) {
             f['dropdownValue'] = false;
           }
         });
-        localStorage.setItem('language', res['language']);
-        this.checkRTLLaunguage();
-        this.authenticationService.setFeatures(res);
-        this.setUserDetails(res);
-        this.getAllLaunguages();
       }
-    });
+      this.checkRTLLaunguage();
+      this.setUserDetails();
+      this.getAllLaunguages();
+    }
   }
 
   setFeatureSubMenuFalse() {
@@ -172,20 +191,9 @@ export class AppComponent implements OnInit {
     });
   }
 
-  // api should be called only once in page if not then it needs optimization
-  setUserDetails(res) {
+  setUserDetails() {
     this.userName = localStorage.getItem('Username');
     this.userCharLogo = this.userName && this.getUserCharLogo(this.userName);
-    const token = JSON.parse(localStorage.getItem('access_token'));
-    if (token) {
-      if (!this.userName) {
-        if (res) {
-          this.userName = res.userName;
-          this.userCharLogo = this.getUserCharLogo(this.userName);
-          localStorage.setItem('Username', this.userName);
-        }
-      }
-    }
   }
 
   hideCurrentDropdown(id) {
@@ -213,7 +221,7 @@ export class AppComponent implements OnInit {
   }
 
   hasAccess(feature: string) {
-    return !!this.featureList.find(f => f === feature);
+    return this.featureList.find(f => f === feature);
   }
 
   checkRTLLaunguage() {
@@ -228,7 +236,24 @@ export class AppComponent implements OnInit {
 
   checkCurrentUrlAndShowHeaderBar() {
     const arr = ['/', '/login', '/signup', '/forgotPassword'];
-    return arr.includes(this.currentUrl);
+    this.sidebarShow = !arr.includes(this.currentUrl);
+
+    //  if we hit the url and user is logged in then we should show the sidebar
+    //  otherwise we should not as person is not logged in
+    if (this.currentUrl === '/') {
+      const token = JSON.parse(localStorage.getItem('access_token'));
+      const tokenExpiryDate = JSON.parse(localStorage.getItem('refresh_token_expiry_time'));
+      const tokenExpiry = tokenExpiryDate
+        ? new Date(tokenExpiryDate)
+        : null;
+      // Check if token is expired or not
+      if (token) {
+        if (tokenExpiry && tokenExpiry <= new Date()) { } else {
+          this.sidebarShow = true;
+        }
+      }
+    }
+    return this.sidebarShow;
   }
 
   navigateToDashboard() {
@@ -239,6 +264,7 @@ export class AppComponent implements OnInit {
     if (isSubmenu) {
       const route = this.authGuard.getFeatureAndRedirectUser(feature)[0];
       this.router.navigate([`${route}`]);
+      this.applySidebarChange();
     } else {
       if (feature.hasOwnProperty('dropdownValue')) {
         this.setFeatureDropdownFalse(feature);
@@ -247,6 +273,7 @@ export class AppComponent implements OnInit {
         this.setFeatureDropdownFalse(feature);
         const route = this.authGuard.getFeatureAndRedirectUser(feature.menuName)[0];
         this.router.navigate([`${route}`]);
+        this.applySidebarChange();
       }
     }
     this.setFeatureSubMenuFalse();
@@ -262,5 +289,17 @@ export class AppComponent implements OnInit {
     }
     const routeArr = this.authGuard.getFeatureAndRedirectUser(featureName);
     return routeArr.includes(this.currentUrl);
+  }
+
+  changeSidebarVar() {
+    this.isSidebarOpen = !this.isSidebarOpen;
+  }
+
+  applySidebarChange() {
+    if (window.screen.width < 992) {
+      this.isSidebarOpen = false;
+    } else {
+      this.isSidebarOpen = true;
+    }
   }
 }

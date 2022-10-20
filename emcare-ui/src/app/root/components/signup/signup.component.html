@@ -51,9 +51,9 @@
           <div class="row">
             <div class="col-12">
               <div class="mb-3">
-                <label class="form-label">Username</label>
+                <label class="form-label">Email</label>
                 <input type="email" class="form-control custom-input" formControlName="username"
-                  (input)="!!error ? error = null : ''"
+                  (input)="error ? error = null : ''"
                   [ngClass]="{ 'is-invalid': submitted && (f.username.errors || !!this.error) }" />
                 <div *ngIf="submitted && f.username.errors" class="invalid-feedback">
                   <div *ngIf="f.username.errors.required">Username is required</div>
@@ -90,38 +90,45 @@
               </div>
             </div>
           </div>
+          <div class="row">
+            <div class="col-12 mt-3">
+              <div class="mb-3">
+                <label class="form-label">{{'PhoneNumber' | translate}}</label>
+                <ngx-intl-tel-input [cssClass]="'custom'"
+                  [preferredCountries]="preferredCountries" [enableAutoCountrySelect]="false"
+                  [enablePlaceholder]="true" [searchCountryFlag]="true"
+                  [searchCountryField]="[SearchCountryField.Iso2, SearchCountryField.Name]" [selectFirstCountry]="false"
+                  [selectedCountryISO]="this.signupForm.get('countryCode').value" [maxLength]="15" [separateDialCode]="separateDialCode"
+                  [phoneValidation]="true" [numberFormat]="PhoneNumberFormat.National" name="phone"
+                  formControlName="phone">
+                </ngx-intl-tel-input>
+                <div *ngIf="submitted && this.signupForm.controls.phone.value == null" class="error">
+                  {{'Phone Required Message' | translate}}
+                </div>
+              </div>
+            </div>
+          </div>
           <div class="row mt-3">
             <div class="col-12 col-sm-6">
               <div class="mb-3">
-                <label class="form-label">Location</label>
-                <ng-container *ngIf="locationArr.length>0; else noLocation">
-                  <p-multiSelect [options]="locationArr" formControlName="location" optionLabel="name"></p-multiSelect>
-                </ng-container>
-                <ng-template #noLocation>
-                  <input formControlName="location" type="text" class="form-control custom-input" id="location"
-                    placeholder="Enter Location" [ngClass]="{ 'is-invalid': submitted && f.location.errors }">
-                </ng-template>
-                <div *ngIf="submitted && f.location.errors" class="invalid-feedback">
+                <label class="form-label">Facility</label>
+                <p-multiSelect
+                  [ngStyle]="{'border': submitted && this.signupForm.controls.location.value == '' ? '1px solid red' : ''}"
+                  [options]="facilityArr" placeholder="Select a facility" formControlName="location" optionLabel="name">
+                </p-multiSelect>
+                <div *ngIf="submitted && this.signupForm.controls.location.value == ''" style="color: #dc3545">
                   <div *ngIf="f.location.errors.required">Location is required</div>
                 </div>
               </div>
             </div>
             <div class="col-12 col-sm-6">
-              <div class="mb-3">
+              <div *ngIf="roleArr.length>0" class="mb-3">
                 <label class="form-label">Role</label>
-                <ng-container *ngIf="roleArr.length>0; else noRole">
-                  <select class="form-control custom-input" formControlName="role" id="role"
-                    [ngClass]="{ 'is-invalid': submitted && f.role.errors }">
-                    <ng-container *ngFor="let role of roleArr">
-                      <option value="{{role.name}}">{{role.name}}</option>
-                    </ng-container>
-                  </select>
-                </ng-container>
-                <ng-template #noRole>
-                  <input formControlName="role" type="text" class="form-control custom-input" id="role"
-                    [ngClass]="{ 'is-invalid': submitted && f.role.errors }" placeholder="Enter Role">
-                </ng-template>
-                <div *ngIf="submitted && f.role.errors" class="invalid-feedback">
+                <p-dropdown
+                  [ngStyle]="{'border': submitted && this.signupForm.controls.role.value == '' ? '1px solid red' : ''}"
+                  [options]="roleArr" placeholder="Select a role" formControlName="role" optionLabel="name">
+                </p-dropdown>
+                <div *ngIf="submitted && this.signupForm.controls.role.value == ''" style="color: #dc3545">
                   <div *ngIf="f.role.errors.required">Role is required</div>
                 </div>
               </div>

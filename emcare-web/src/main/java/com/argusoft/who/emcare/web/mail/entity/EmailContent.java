@@ -21,12 +21,16 @@ public class EmailContent implements Serializable {
     @Column(name = "subject", nullable = false)
     private String subject;
 
-    @Column(name = "content", nullable = false)
+    @Column(name = "content", nullable = false, columnDefinition = "TEXT")
     private String content;
+
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at", nullable = false)
     private Date createdAt;
+
+    @Column(name = "var_list", columnDefinition = "TEXT")
+    private String varList;
 
     public Long getId() {
         return id;
@@ -66,5 +70,13 @@ public class EmailContent implements Serializable {
 
     public void setSubject(String subject) {
         this.subject = subject;
+    }
+
+    public String getVarList() {
+        return varList;
+    }
+
+    public void setVarList(String varList) {
+        this.varList = varList;
     }
 }

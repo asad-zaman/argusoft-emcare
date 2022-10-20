@@ -47,7 +47,22 @@ public class FhirServlet extends RestfulServer {
     private CodeSystemResourceProvider codeSystemResourceProvider;
 
     @Autowired
+    private LibraryResourceProvider libraryResourceProvider;
+
+    @Autowired
+    OperationDefinitionResourceProvider operationDefinitionResourceProvider;
+
+    @Autowired
     MedicationResourceProvider medicationResourceProvider;
+
+    @Autowired
+    ActivityDefinitionResourceProvider activityDefinitionResourceProvider;
+
+    @Autowired
+    EncounterResourceProvider encounterResourceProvider;
+
+    @Autowired
+    ObservationResourceProvider observationResourceProvider;
 
     @Override
     protected void initialize() throws ServletException {
@@ -72,6 +87,11 @@ public class FhirServlet extends RestfulServer {
         resourceProviders.add(structureDefinitionResourceProvider);
         resourceProviders.add(codeSystemResourceProvider);
         resourceProviders.add(medicationResourceProvider);
+        resourceProviders.add(activityDefinitionResourceProvider);
+        resourceProviders.add(libraryResourceProvider);
+        resourceProviders.add(operationDefinitionResourceProvider);
+        resourceProviders.add(encounterResourceProvider);
+        resourceProviders.add(observationResourceProvider);
         setResourceProviders(resourceProviders);
     }
 

@@ -1,7 +1,6 @@
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { environment } from "src/environments/environment";
-
 @Injectable({
     providedIn: 'root'
 })
@@ -113,7 +112,7 @@ export class FhirService {
     }
 
     getFacility() {
-        const url = `${environment.apiUrl}/fhir/Location`;
+        const url = `${environment.apiUrl}/api/emcare/active/facility`;
         return this.http.get(url, this.getHeaders());
     }
 
@@ -150,7 +149,9 @@ export class FhirService {
     getOrganizationByPageIndexAndSearch(pageIndex, search?) {
         let url;
         if (search) {
-            url = `${environment.apiUrl}/fhir/Location?pageNo=${pageIndex}&search=${search}`;
+            url = `${environment.apiUrl}/api/emcare/organization?pageNo=${pageIndex}&search=${search}`;
+        } else {
+            url = `${environment.apiUrl}/api/emcare/organization?pageNo=${pageIndex}`;
         }
         return this.http.get(url, this.getHeaders());
     }
@@ -172,6 +173,31 @@ export class FhirService {
 
     getDashboardData() {
         const url = `${environment.apiUrl}/api/dashboard`;
+        return this.http.get(url, this.getHeaders());
+    }
+
+    getAllOrganizations() {
+        const url = `${environment.apiUrl}/fhir/Organization`;
+        return this.http.get(url, this.getHeaders());
+    }
+
+    getFacilityByPageAndSearch(pageIndex, search?) {
+        let url;
+        if (search) {
+            url = `${environment.apiUrl}/api/emcare/facility?pageNo=${pageIndex}&search=${search}`;
+        } else {
+            url = `${environment.apiUrl}/api/emcare/facility?pageNo=${pageIndex}`;
+        }
+        return this.http.get(url, this.getHeaders());
+    }
+
+    getChartData() {
+        const url = `${environment.apiUrl}/api/dashboard/chart`;
+        return this.http.get(url, this.getHeaders());
+    }
+
+    getAllDuplicatePatientEntries() {
+        const url = `${environment.apiUrl}/api/deduplication/all`;
         return this.http.get(url, this.getHeaders());
     }
 }

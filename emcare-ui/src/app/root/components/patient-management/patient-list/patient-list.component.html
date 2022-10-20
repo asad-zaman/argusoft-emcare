@@ -13,12 +13,13 @@
     <table class="data-table" aria-labelledby="patient-list">
       <thead>
         <tr>
-          <th>{{'ID' | translate}}.</th>
+          <th>{{'Sr. No' | translate}}.</th>
           <th>{{'Identifier' | translate}}</th>
           <th>{{'Name' | translate}}</th>
           <th>{{'Gender' | translate}}</th>
           <th>{{'Date of Birth' | translate}}</th>
           <th>{{'Caregiver Name' | translate}}</th>
+          <th>{{'Facility' | translate}}</th>
           <th>{{'Location' | translate}}</th>
         </tr>
       </thead>
@@ -28,7 +29,7 @@
           paginate : { itemsPerPage: tableSize, currentPage: currentPage, totalItems: totalCount }; let i=index">
             <tr>
               <td>{{currentPage == 0 ? ((currentPage)*10 + i + 1) : ((currentPage-1)*10 + i + 1)}}</td>
-              <td>{{patient.identifier}}</td>
+              <td>{{patient.identifier ? patient.identifier : 'NA'}}</td>
               <td>
                 <ng-container *ngIf="patient.givenName || patient.familyName; else blankName">
                   <a style="cursor: pointer;" (click)="showPatientDetails(patient.id)"
@@ -42,7 +43,15 @@
               <td>{{patient.gender}}</td>
               <td>{{patient.dob ? (patient.dob | date:'mediumDate') : 'NA'}}</td>
               <td>{{patient.caregiver || "NOT PROVIDED"}}</td>
-              <td>{{patient.location}}</td>
+              <td>
+                <ng-container *ngIf="patient.facility">
+                  {{patient.facility}}
+                </ng-container>
+                <ng-container *ngIf="patient.organizationName">
+                  - {{patient.organizationName}}
+                </ng-container>
+              </td>
+              <td>{{patient.locationName}}</td>
             </tr>
           </ng-container>
         </ng-container>
@@ -76,7 +85,7 @@
                 <td>{{patientDetails.identifier}}</td>
               </tr>
               <tr *ngIf="!!patientDetails.id">
-                <td class="font-weight-bold">{{'ID' | translate}}:</td>
+                <td class="font-weight-bold">{{'Sr. No' | translate}}:</td>
                 <td>{{patientDetails.id}}</td>
               </tr>
               <tr *ngIf="!!patientDetails.givenName">
@@ -131,5 +140,5 @@
   </div>
 </div>
 <div *ngIf="!isView" class="main-wrapper-nodata">
-  Sorry you don't have access to this page!!
+  {{'NoAccess' | translate}}
 </div>

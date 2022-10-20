@@ -13,10 +13,22 @@ public class CommonConstant {
     public static final String ASC = "ASC";
     public static final Integer PAGE_SIZE = 10;
     public static final String LANGUAGE_KEY = "language";
+    public static final String PHONE_KEY = "phone";
+    public static final String COUNTRY_CODE = "countryCode";
     public static final String FRENCH = "fr";
     public static final String HINDI = "hin";
     public static final String ENGLISH = "en";
     public static final String LOCATION_TYPE_STRING = "LOCATION";
+    public static final String OPERATION_DEFINITION = "OPERATIONDEFINITION";
+    public static final String CODE_SYSTEM = "CODESYSTEM";
+    public static final String QUESTIONNAIRE = "QUESTIONNAIRE";
+    public static final String STRUCTURE_DEFINITION = "STRUCTUREDEFINITION";
+    public static final String STRUCTURE_MAP = "STRUCTUREMAP";
+    public static final String LIBRARY = "LIBRARY";
+    public static final String OBSERVATION = "OBSERVATION";
+    public static final String MEDICATION = "MEDICATION";
+    public static final String ACTIVITY_DEFINITION = "ACTIVITYDEFINITION";
+    public static final String ENCOUNTER = "ENCOUNTER";
     public static final String ORGANIZATION_TYPE_STRING = "ORGANIZATION";
     public static final String PLANDEFINITION_TYPE_STRING = "PLANDEFINITION";
     public static final String VALUESET_TYPE_STRING = "VALUESET";
@@ -27,6 +39,7 @@ public class CommonConstant {
     //    FHIR
     public static final String FHIR_PATIENT = "PATIENT";
     public static final String FHIR_QUESTIONNAIRE = "Questionnaire";
+    public static final String LOCATION_EXTENSION_URL = "http://hl7.org/fhir/StructureDefinition/patient-locationId";
 
     //    Exception Strings
     public static final String EM_CARE_NO_DATA_FOUND = "Data Not Found";
@@ -41,6 +54,7 @@ public class CommonConstant {
     public static final String SETTING_TYPE_REGISTRATION_EMAIL_AS_USERNAME = "REGISTRATION_EMAIL_AS_USERNAME";
     public static final String SETTING_TYPE_WELCOME_EMAIL = "WELCOME_EMAIL";
     public static final String SETTING_TYPE_SEND_CONFIRMATION_EMAIL = "SEND_CONFIRMATION_EMAIL";
+    public static final String RESOURCE_LAST_UPDATED_AT = "_lastUpdated";
 
 
 }

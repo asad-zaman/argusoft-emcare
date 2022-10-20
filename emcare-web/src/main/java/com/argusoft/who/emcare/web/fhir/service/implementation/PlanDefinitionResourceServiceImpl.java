@@ -3,6 +3,7 @@ package com.argusoft.who.emcare.web.fhir.service.implementation;
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.rest.api.MethodOutcome;
+import ca.uhn.fhir.rest.param.DateParam;
 import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
 import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.fhir.dao.PlanDefinitionResourceRepository;
@@ -38,7 +39,13 @@ public class PlanDefinitionResourceServiceImpl implements PlanDefinitionResource
         m.setLastUpdated(new Date());
         planDefinition.setMeta(m);
 
-        String planId = UUID.randomUUID().toString();
+        String planId = null;
+        if (planDefinition.getId() != null) {
+            planId = planDefinition.getIdElement().getIdPart();
+        } else {
+            planId = UUID.randomUUID().toString();
+        }
+
         planDefinition.setId(planId);
 
 
@@ -65,10 +72,16 @@ public class PlanDefinitionResourceServiceImpl implements PlanDefinitionResource
     }
 
     @Override
-    public List<PlanDefinition> getAllPlanDefinition() {
+    public List<PlanDefinition> getAllPlanDefinition(DateParam theDate) {
         List<PlanDefinition> planDefinitions = new ArrayList<>();
 
-        List<PlanDefinitionResource> planDefinitionResources = planDefinitionResourceRepository.findAll();
+        List<PlanDefinitionResource> planDefinitionResources = new ArrayList<>();
+
+        if (theDate == null) {
+            planDefinitionResources =  planDefinitionResourceRepository.findAll();
+        } else {
+            planDefinitionResources = planDefinitionResourceRepository.findByModifiedOnGreaterThanOrCreatedOnGreaterThan(theDate.getValue(), theDate.getValue());
+        }
 
         for (PlanDefinitionResource planDefinitionResource : planDefinitionResources) {
             PlanDefinition planDefinition = parser.parseResource(PlanDefinition.class, planDefinitionResource.getText());
@@ -107,7 +120,7 @@ public class PlanDefinitionResourceServiceImpl implements PlanDefinitionResource
         planDefinitionResourceRepository.save(definitionResource);
 
         MethodOutcome retVal = new MethodOutcome();
-        retVal.setId(new IdType(CommonConstant.LOCATION_TYPE_STRING, planDefinition.getId(), "1"));
+        retVal.setId(new IdType(CommonConstant.PLANDEFINITION_TYPE_STRING, planDefinition.getId(), "1"));
         retVal.setResource(planDefinition);
         return retVal;
     }

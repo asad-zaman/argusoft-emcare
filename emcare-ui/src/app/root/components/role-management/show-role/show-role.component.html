@@ -14,7 +14,7 @@
     <table class="data-table" aria-labelledby="role-list">
       <thead>
         <tr>
-          <th>{{'ID' | translate}}</th>
+          <th>{{'Sr. No' | translate}}</th>
           <th scope="col">{{'Name' | translate}}</th>
           <th scope="col">{{'Description' | translate}}</th>
           <th *ngIf="isEdit"></th>
@@ -44,5 +44,5 @@
   <!--Table-END-->
 </div>
 <div *ngIf="!isView" class="main-wrapper-nodata">
-  Sorry you don't have access to this page!!
+  {{'NoAccess' | translate}}
 </div>

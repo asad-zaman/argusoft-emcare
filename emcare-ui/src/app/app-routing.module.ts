@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { AuthGuard } from './auth/auth.guard';
 import { AdminPanelComponent } from './root/components/admin-panel/admin-panel.component';
+import { DuplicatePatientsComponent } from './root/components/duplicate-patients/duplicate-patients.component';
 import { HomeComponent } from './root/components/home/home.component';
 import {
   LoginComponent,
@@ -27,7 +28,9 @@ import {
   ShowRoleComponent,
   ShowFacilityComponent,
   LanguageListComponent,
-  ForgotPasswordComponent
+  ForgotPasswordComponent,
+  ManageOrganizationComponent,
+  OrganizationListComponent
 } from './root/index';
 
 const routes: Routes = [
@@ -64,6 +67,10 @@ const routes: Routes = [
   { path: 'showFacility', component: ShowFacilityComponent, canActivate: [AuthGuard] },
   { path: 'language-list', component: LanguageListComponent, canActivate: [AuthGuard] },
   { path: 'user-admin-settings', component: AdminPanelComponent, canActivate: [AuthGuard] },
+  { path: 'manage-organization', component: ManageOrganizationComponent, canActivate: [AuthGuard] },
+  { path: 'manage-organization/:id', component: ManageOrganizationComponent, canActivate: [AuthGuard] },
+  { path: 'showOrganizations', component: OrganizationListComponent, canActivate: [AuthGuard] },
+  { path: 'duplicatePatients', component: DuplicatePatientsComponent, canActivate: [AuthGuard] },
   { path: '**', redirectTo: 'dashboard' }
 ];
 @NgModule({

@@ -8,6 +8,7 @@ public class CurrentUserFeatureJson {
     private String menuName;
     private String featureJson;
     private Long parent;
+    private Long orderNumber;
     private List<CurrentUserFeatureJson> subMenu;
 
     public Integer getId() {
@@ -48,6 +49,14 @@ public class CurrentUserFeatureJson {
 
     public void setParent(Long parent) {
         this.parent = parent;
+    }
+
+    public Long getOrderNumber() {
+        return orderNumber;
+    }
+
+    public void setOrderNumber(Long orderNumber) {
+        this.orderNumber = orderNumber;
     }
 }
 

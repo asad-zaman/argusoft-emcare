@@ -13,18 +13,16 @@
         <hr>
       </div>
       <div class="row">
-        <div class="col-12 col-sm-6">
+        <div *ngIf="locationTypeArr.length>0" class="col-12 col-sm-6">
           <div class="mb-3">
             <label class="form-label">{{'Location Type' | translate}}</label>
-            <select class="form-control custom-input" [ngClass]="{ 'is-invalid': submitted && f.locationType.errors }"
-              formControlName="locationType" id="locationType">
-              <ng-container *ngFor="let data of locationTypeArr">
-                <option value="{{data.code}}">{{data.name}}</option>
-              </ng-container>
-            </select>
-            <div *ngIf="submitted && f.locationType.errors" class="invalid-feedback">
-              <div class="cst-error-style" *ngIf="f.locationType.errors.required">
-                {{'Location Type Required Message' | translate}}</div>
+            <p-dropdown
+              [ngStyle]="{'border': submitted && this.locationForm.controls.locationType.value == '' ? '1px solid red' : ''}"
+              [options]="locationTypeArr" placeholder="Select a locationType" formControlName="locationType"
+              optionLabel="name" [filter]=true>
+            </p-dropdown>
+            <div *ngIf="submitted && this.locationForm.controls.locationType.value == ''" style="color: #dc3545">
+              <div *ngIf="f.locationType.errors.required">{{'Location Type Required Message' | translate}}</div>
             </div>
           </div>
         </div>
@@ -43,17 +41,9 @@
         <div class="col-12 col-sm-6">
           <div class="mb-3">
             <label class="form-label">{{'Parent' | translate}}</label>
-            <ng-container *ngIf="locationArr.length>0; else noLocation">
-              <select class="form-control custom-input" formControlName="parent" id="parent">
-                <ng-container *ngFor="let data of locationArr">
-                  <option value="{{data.id}}">{{data.name}}</option>
-                </ng-container>
-              </select>
-            </ng-container>
-            <ng-template #noLocation>
-              <input formControlName="parent" type="text" class="form-control custom-input" id="parent"
-                placeholder="{{'Parent Placeholder' | translate}}">
-            </ng-template>
+            <p-dropdown [filter]=true [options]="locationArr" placeholder="Select a parent" formControlName="parent"
+              optionLabel="name">
+            </p-dropdown>
           </div>
         </div>
       </div>
@@ -75,5 +65,5 @@
   </div>
 </div>
 <div *ngIf="!isAllowed" class="main-wrapper-nodata">
-  Sorry you don't have access to this page!!
+  {{'NoAccess' | translate}}
 </div>

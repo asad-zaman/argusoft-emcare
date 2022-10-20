@@ -8,12 +8,15 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 
 @Repository
 public interface LocationResourceRepository extends JpaRepository<LocationResource, Long> {
 
     LocationResource findByResourceId(String resourceId);
+
+    List<LocationResource> findByModifiedOnGreaterThanOrCreatedOnGreaterThan(Date startDate, Date endDate);
 
     List<LocationResource> findByTextContainingIgnoreCase(String searchString);
 

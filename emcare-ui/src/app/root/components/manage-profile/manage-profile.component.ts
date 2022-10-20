@@ -5,6 +5,8 @@ import { AuthenticationService, FhirService, ToasterService } from 'src/app/shar
 import { UserManagementService } from '../../services/user-management.service';
 import * as _ from 'lodash';
 import { LaunguageSubjects } from 'src/app/auth/token-interceptor';
+import { SearchCountryField, CountryISO, PhoneNumberFormat } from 'ngx-intl-tel-input';
+
 @Component({
   selector: 'app-manage-profile',
   templateUrl: './manage-profile.component.html',
@@ -15,9 +17,14 @@ export class ManageProfileComponent implements OnInit {
   userId;
   currentUserForm: FormGroup;
   submitted: boolean;
-  locationId;
-  locationIds;
+  facilityIds;
   lanArr = [];
+
+  separateDialCode = true;
+  SearchCountryField = SearchCountryField;
+  CountryISO = CountryISO;
+  PhoneNumberFormat = PhoneNumberFormat;
+  preferredCountries: CountryISO[] = [CountryISO.Iraq, CountryISO.UnitedStates];
 
   constructor(
     private readonly authenticationService: AuthenticationService,
@@ -53,7 +60,10 @@ export class ManageProfileComponent implements OnInit {
     this.currentUserForm = this.formBuilder.group({
       firstName: ['', [Validators.required]],
       lastName: ['', [Validators.required]],
-      language: ['', [Validators.required]]
+      email: ['', [Validators.required]],
+      language: ['', [Validators.required]],
+      countryCode: [CountryISO.Iraq],
+      phone: ['', [Validators.required]],  // 10 digit number
     });
   }
 
@@ -66,25 +76,16 @@ export class ManageProfileComponent implements OnInit {
       if (res) {
         this.userId = res['userId'];
         this.currentUserForm.patchValue({
+          firstName: res['firstName'],
+          lastName: res['lastName'],
+          email: res['email'],
+          countryCode: res['countryCode'],
+          phone: res['phone'],
           language: this.getLaunguageObjFromCode(res['language'])
         });
-        this.locationId = res['location']['id'];
-        const zeroSymbol = 0;
-        this.locationIds = res['location'].filter(l => l.id != zeroSymbol).map(({id}) => id);
-        this.getLoggedInUserData();
+        this.facilityIds = res['facilities'] && res['facilities'].map(f => f.facilityId);
       }
     });
-  }
-
-  getLoggedInUserData() {
-    this.userService.getUserById(this.userId).subscribe(data => {
-      if (data) {
-        this.currentUserForm.patchValue({
-          firstName: data['firstName'],
-          lastName: data['lastName']
-        });
-      }
-    })
   }
 
   get f() {
@@ -98,8 +99,9 @@ export class ManageProfileComponent implements OnInit {
         firstName: this.f.firstName.value,
         lastName: this.f.lastName.value,
         language: this.f.language.value.id,
-        locationId: this.locationId,
-        locationIds: this.locationIds
+        facilityIds: this.facilityIds,
+        countryCode: this.f.phone.value.countryCode,
+        phone: this.f.phone.value.number
       }
       const translations = this.lanArr.find(el => el.id === this.f.language.value.id).translations;
       this.userService.updateUser(data, this.userId).subscribe(() => {

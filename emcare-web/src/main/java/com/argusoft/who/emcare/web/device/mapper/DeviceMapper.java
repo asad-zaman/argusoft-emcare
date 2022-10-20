@@ -3,6 +3,7 @@ package com.argusoft.who.emcare.web.device.mapper;
 import com.argusoft.who.emcare.web.device.dto.DeviceDto;
 import com.argusoft.who.emcare.web.device.dto.DeviceWithUserDetails;
 import com.argusoft.who.emcare.web.device.model.DeviceMaster;
+import com.argusoft.who.emcare.web.user.dto.MultiLocationUserListDto;
 import com.argusoft.who.emcare.web.user.dto.UserListDto;
 
 import java.util.List;
@@ -46,7 +47,7 @@ public class DeviceMapper {
         return master;
     }
 
-    public static DeviceWithUserDetails getDeviceWithUser(DeviceMaster deviceMaster, List<UserListDto> allUsers) {
+    public static DeviceWithUserDetails getDeviceWithUser(DeviceMaster deviceMaster, MultiLocationUserListDto user) {
         DeviceWithUserDetails deviceWithUserDetails = new DeviceWithUserDetails();
 
         deviceWithUserDetails.setDeviceId(deviceMaster.getDeviceId());
@@ -59,8 +60,7 @@ public class DeviceMapper {
         deviceWithUserDetails.setDeviceUUID(deviceMaster.getDeviceUUID());
         deviceWithUserDetails.setDeviceModel(deviceMaster.getDeviceModel());
         deviceWithUserDetails.setDeviceName(deviceMaster.getDeviceName());
-        deviceWithUserDetails.setUsersResource(allUsers.stream().filter(a -> a.getId().equals(deviceMaster.getLastLoggedInUser()))
-                .collect(Collectors.toList()).get(0));
+        deviceWithUserDetails.setUsersResource(user);
         return deviceWithUserDetails;
     }
 

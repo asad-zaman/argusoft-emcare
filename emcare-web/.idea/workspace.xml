@@ -5,30 +5,43 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="252247ce-0696-452b-9c23-89ebefa7a554" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/../emcare-ui/src/app/root/components/manage-organization/manage-organization.component.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../emcare-ui/src/app/root/components/manage-organization/manage-organization.component.scss" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../emcare-ui/src/app/root/components/manage-organization/manage-organization.component.spec.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../emcare-ui/src/app/root/components/manage-organization/manage-organization.component.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../emcare-ui/src/app/root/components/organization-list/organization-list.component.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../emcare-ui/src/app/root/components/organization-list/organization-list.component.scss" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../emcare-ui/src/app/root/components/organization-list/organization-list.component.spec.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../emcare-ui/src/app/root/components/organization-list/organization-list.component.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../emcare-ui/src/app/app-routing.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../emcare-ui/src/app/app-routing.module.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../emcare-ui/src/app/app.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/../emcare-ui/src/app/app.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../emcare-ui/src/app/app.component.scss" beforeDir="false" afterPath="$PROJECT_DIR$/../emcare-ui/src/app/app.component.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../emcare-ui/src/app/app.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../emcare-ui/src/app/app.component.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../emcare-ui/src/app/app.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../emcare-ui/src/app/app.module.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../emcare-ui/src/app/auth/auth.guard.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../emcare-ui/src/app/auth/auth.guard.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../emcare-ui/src/app/root/components/Facility/manage-facility/manage-facility.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/../emcare-ui/src/app/root/components/Facility/manage-facility/manage-facility.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../emcare-ui/src/app/root/components/Facility/manage-facility/manage-facility.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../emcare-ui/src/app/root/components/Facility/manage-facility/manage-facility.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../emcare-ui/src/app/root/components/Facility/show-facility/show-facility.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/../emcare-ui/src/app/root/components/Facility/show-facility/show-facility.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../emcare-ui/src/app/root/components/Facility/show-facility/show-facility.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../emcare-ui/src/app/root/components/Facility/show-facility/show-facility.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../emcare-ui/src/app/root/components/Location/location-type/manage-location-type/location-type.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../emcare-ui/src/app/root/components/Location/location-type/manage-location-type/location-type.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../emcare-ui/src/app/root/components/User/confirm-user/confirm-user.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/../emcare-ui/src/app/root/components/User/confirm-user/confirm-user.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../emcare-ui/src/app/root/components/User/confirm-user/confirm-user.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../emcare-ui/src/app/root/components/User/confirm-user/confirm-user.component.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../emcare-ui/src/app/root/components/User/manage-user/manage-user.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/../emcare-ui/src/app/root/components/User/manage-user/manage-user.component.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../emcare-ui/src/app/root/components/User/manage-user/manage-user.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../emcare-ui/src/app/root/components/User/manage-user/manage-user.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../emcare-ui/src/app/root/components/User/user-list/user-list.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/../emcare-ui/src/app/root/components/User/user-list/user-list.component.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../emcare-ui/src/app/root/components/User/user-list/user-list.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../emcare-ui/src/app/root/components/User/user-list/user-list.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../emcare-ui/src/app/root/components/forgot-password/forgot-password.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../emcare-ui/src/app/root/components/forgot-password/forgot-password.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../emcare-ui/src/app/root/components/home/home.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/../emcare-ui/src/app/root/components/home/home.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../emcare-ui/src/app/root/components/home/home.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../emcare-ui/src/app/root/components/home/home.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../emcare-ui/src/app/root/components/manage-profile/manage-profile.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../emcare-ui/src/app/root/components/manage-profile/manage-profile.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../emcare-ui/src/app/root/components/patient-management/patient-list/patient-list.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/../emcare-ui/src/app/root/components/patient-management/patient-list/patient-list.component.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../emcare-ui/src/app/root/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../emcare-ui/src/app/root/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../emcare-ui/src/app/root/services/role-management.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../emcare-ui/src/app/root/services/role-management.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../emcare-ui/src/app/shared/services/authentication.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../emcare-ui/src/app/shared/services/authentication.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../emcare-ui/src/app/shared/services/fhir.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../emcare-ui/src/app/shared/services/fhir.service.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../emcare-ui/src/assets/i18n/en.json" beforeDir="false" afterPath="$PROJECT_DIR$/../emcare-ui/src/assets/i18n/en.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../emcare-ui/src/environments/environment.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../emcare-ui/src/environments/environment.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__ca_uhn_hapi_fhir_hapi_fhir_base_5_6_0.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__ca_uhn_hapi_fhir_hapi_fhir_server_5_6_0.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__ca_uhn_hapi_fhir_hapi_fhir_structures_r4_5_6_0.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__ca_uhn_hapi_fhir_hapi_fhir_validation_resources_r4_5_6_0.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__ca_uhn_hapi_fhir_org_hl7_fhir_r4_5_5_7.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__ca_uhn_hapi_fhir_org_hl7_fhir_utilities_5_5_7.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_google_errorprone_error_prone_annotations_2_5_1.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_google_guava_guava_30_1_1_jre.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__commons_io_commons_io_2_8_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../emcare-ui/src/scss/style.scss" beforeDir="false" afterPath="$PROJECT_DIR$/../emcare-ui/src/scss/style.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/argusoft/who/emcare/web/config/KeyCloakConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/argusoft/who/emcare/web/config/KeyCloakConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/argusoft/who/emcare/web/config/WebConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/argusoft/who/emcare/web/config/WebConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/argusoft/who/emcare/web/fhir/FhirServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/argusoft/who/emcare/web/fhir/FhirServlet.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web.iml" beforeDir="false" afterPath="$PROJECT_DIR$/web.iml" afterDir="false" />
     </list>
@@ -228,23 +241,24 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/com/argusoft/who/emcare/web/user/service/impl/UserServiceImpl.java</url>
-          <line>275</line>
+          <line>296</line>
           <option name="timeStamp" value="24" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/com/argusoft/who/emcare/web/user/service/impl/UserServiceImpl.java</url>
-          <line>235</line>
+          <line>256</line>
           <option name="timeStamp" value="27" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/com/argusoft/who/emcare/web/user/service/impl/UserServiceImpl.java</url>
-          <line>92</line>
+          <line>94</line>
           <option name="timeStamp" value="28" />
         </line-breakpoint>
       </breakpoints>

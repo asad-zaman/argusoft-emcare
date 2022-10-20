@@ -1,5 +1,6 @@
 package com.argusoft.who.emcare.web.fhir.mapper;
 
+import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.fhir.dto.*;
 import com.argusoft.who.emcare.web.fhir.model.LocationResource;
 import org.hl7.fhir.r4.model.*;
@@ -19,7 +20,9 @@ public class EmcareResourceMapper {
         PatientDto pDto = new PatientDto();
 
         pDto.setId(p.getIdElement().getIdPart());
-        pDto.setIdentifier(p.getIdentifier().get(0).getValue());
+        if (p.getIdentifierFirstRep() != null) {
+            pDto.setIdentifier(p.getIdentifierFirstRep().getValue());
+        }
         if (p.hasName()) {
             if (p.getNameFirstRep().hasGiven()) {
                 pDto.setGivenName(p.getNameFirstRep().getGivenAsSingleString());
@@ -31,21 +34,23 @@ public class EmcareResourceMapper {
         if (p.hasGender()) {
             pDto.setGender(p.getGender().getDisplay());
         }
-        pDto.setDob(p.getBirthDate());
+        if (p.getBirthDate() != null) {
+            pDto.setDob(p.getBirthDate());
+        }
 
-        //Caregiver
+        // Caregiver
         if (p.hasLink()) {
             pDto.setCaregiver(p.getLinkFirstRep().getOther().getIdentifier().getValue());
         }
 
-        //Location
+        // Location
         if (p.hasExtension()) {
-            Extension locationExtension = p.getExtension().get(0);
+            Extension locationExtension = p.getExtensionByUrl(CommonConstant.LOCATION_EXTENSION_URL);
             String locationId = ((Identifier) locationExtension.getValue()).getValue();
             pDto.setFacility(locationId);
         }
 
-        //Address
+        // Address
         if (p.hasAddress()) {
             if (p.getAddressFirstRep().hasLine()) {
                 pDto.setAddressLine(p.getAddressFirstRep().getLine().get(0).toString());
@@ -144,6 +149,17 @@ public class EmcareResourceMapper {
         return code;
     }
 
+    public static ActivityDefinitionDto getStructureMapDto(ActivityDefinition definition) {
+        ActivityDefinitionDto dto = new ActivityDefinitionDto();
+
+        dto.setId(definition.getIdElement().getIdPart());
+        dto.setName(definition.getName());
+        dto.setTitle(definition.getTitle());
+        dto.setStatus(definition.getStatus().getDisplay());
+        dto.setSubTitle(definition.getSubtitle());
+        return dto;
+    }
+
     public static FacilityDto getFacilityDto(Location location, String id) {
         FacilityDto dto = new FacilityDto();
         dto.setFacilityName(location.getName());
@@ -171,6 +187,44 @@ public class EmcareResourceMapper {
         dto.setOrganizationName(location.getManagingOrganization().getDisplay());
         dto.setLocationName(locationResource.getLocationName());
         dto.setLocationId(locationResource.getLocationId());
+        dto.setStatus(location.getStatus().getDisplay());
+        return dto;
+    }
+
+    public static LibraryDto getLibraryDto(Library library) {
+        LibraryDto dto = new LibraryDto();
+        dto.setId(library.getIdElement().getIdPart());
+        dto.setName(library.getName());
+        dto.setDescription(library.getDescription());
+        dto.setTitle(library.getTitle());
+        dto.setPublisher(library.getPublisher());
+        dto.setStatus(library.getStatus().getDisplay());
+        return dto;
+    }
+
+    public static OperationDefinitionDto getOperationDefinitionDto(OperationDefinition operationDefinition) {
+        OperationDefinitionDto dto = new OperationDefinitionDto();
+        dto.setId(operationDefinition.getIdElement().getIdPart());
+        dto.setName(operationDefinition.getName());
+        dto.setDescription(operationDefinition.getDescription());
+        dto.setTitle(operationDefinition.getTitle());
+        dto.setPublisher(operationDefinition.getPublisher());
+        dto.setStatus(operationDefinition.getStatus().getDisplay());
+        return dto;
+    }
+
+    public static FacilityMapDto getFacilityMapDto(Location location, LocationResource locationResource) {
+        FacilityMapDto dto = new FacilityMapDto();
+        dto.setFacilityName(location.getName());
+        dto.setFacilityId(location.getIdElement().getIdPart());
+        dto.setAddress(location.getAddress().getLine().get(0).getValue());
+        dto.setOrganizationId(location.getManagingOrganization().getId());
+        dto.setOrganizationName(location.getManagingOrganization().getDisplay());
+        dto.setLocationName(locationResource.getLocationName());
+        dto.setLocationId(locationResource.getLocationId());
+        dto.setStatus(location.getStatus().getDisplay());
+        dto.setLatitude(location.getPosition().getLatitude().toString());
+        dto.setLongitude(location.getPosition().getLongitude().toString());
         dto.setStatus(location.getStatus().getDisplay());
         return dto;
     }

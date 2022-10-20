@@ -13,12 +13,18 @@ export class HomeComponent implements OnInit {
 
   dashboardData: any = {};
   isView = true;
+  facilityArr = [];
+  lastScDate = `${new Date().toDateString()} ${new Date().toLocaleTimeString()}`;
+
+  scatterData = [];
+  consultationPerFacility = [];
+  consultationByAgeGroup = [];
 
   @ViewChild('mapRef', { static: true }) mapElement: ElementRef;
 
   constructor(
     private readonly fhirService: FhirService,
-    private routeService: Router,
+    private readonly routeService: Router,
     private readonly authGuard: AuthGuard
   ) { }
 
@@ -28,12 +34,25 @@ export class HomeComponent implements OnInit {
 
   prerequisite() {
     this.checkFeatures();
+    this.getDashboardData();
+    this.getChartData();
+  }
+
+  getDashboardData() {
     this.fhirService.getDashboardData().subscribe((res) => {
       this.dashboardData = res;
     });
-    this.barChartPopulation();
-    this.pieChartBrowser();
-    this.loadMap();
+  }
+
+  syncApis() {
+    this.getDashboardData();
+    this.getChartData();
+  }
+
+  getLastSyncDate() {
+    this.lastScDate = `${new Date().toDateString()} ${new Date().toLocaleTimeString()}`;
+    this.syncApis();
+    return this.lastScDate;
   }
 
   checkFeatures() {
@@ -44,56 +63,122 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  barChartPopulation() {
-    Highcharts.chart('barChart', {
+  scatterChart() {
+    let options = {
       chart: {
-        type: 'bar'
-      },
-      title: {
-        text: 'Patients per country'
-      },
-      xAxis: {
-        categories: ['Africa', 'America', 'Asia', 'Europe', 'Oceania'],
-      },
-      yAxis: {
-        min: 0,
-        title: {
-          text: 'Patients (millions)',
-          align: 'high'
-        },
-      },
-      tooltip: {
-        valueSuffix: ' millions'
-      },
-      plotOptions: {
-        bar: {
-          dataLabels: {
-            enabled: true
+        type: 'scatter',
+        margin: [70, 50, 60, 80],
+        events: {
+          click: function (e) {
+            let x = Math.round(e.xAxis[0].value);
+            let y = Math.round(e.yAxis[0].value);
           }
         }
       },
-      series: [{
-        type: undefined,
-        name: 'Year 1800',
-        data: [107, 31, 635, 203, 2]
-      }, {
-        type: undefined,
-        name: 'Year 1900',
-        data: [133, 156, 947, 408, 6]
-      }, {
-        type: undefined,
-        name: 'Year 2000',
-        data: [814, 841, 3714, 727, 31]
-      }, {
-        type: undefined,
-        name: 'Year 2016',
-        data: [1216, 1001, 4436, 738, 40]
-      }]
+      title: {
+        text: undefined
+      },
+      accessibility: {
+        announceNewData: {
+          enabled: true
+        }
+      },
+      tooltip: {
+        enabled: true,
+        headerFormat: undefined,
+        pointFormat: '<b>Week No. = {point.x}</b>, <b>Consultations = {point.y}</b>',
+      },
+      xAxis: {
+        title: {
+          text: undefined,
+        },
+        gridLineWidth: 1,
+        minPadding: 0.2,
+        maxPadding: 0.2,
+        maxZoom: 6
+      },
+      yAxis: {
+        title: {
+          text: undefined,
+        },
+        minPadding: 0.2,
+        maxPadding: 0.2,
+        maxZoom: 6,
+        plotLines: [{
+          value: 0,
+          width: 1,
+          color: '#808080'
+        }]
+      },
+      legend: {
+        enabled: false
+      },
+      exporting: {
+        enabled: false
+      },
+      plotOptions: {
+        series: {
+          lineWidth: 1,
+          point: {
+            events: {
+              click: function () {
+                if (this.series.data.length > 1) {
+                  // this.remove();
+                }
+              }
+            }
+          }
+        }
+      },
+      series: [
+        {
+          type: undefined,
+          data: this.scatterData
+        }
+      ]
+    }
+    Highcharts.chart('container', options);
+  }
+
+  getChartData() {
+    this.fhirService.getChartData().subscribe((res: Array<any>) => {
+      if (res) {
+        //  for scatter plot
+        this.scatterData = res['scatterChart'];
+        //  for first pie chart
+        this.consultationPerFacility = res['consultationPerFacility'];
+        this.consultationPerFacility.forEach(el => {
+          el['y'] = el['count'];
+        });
+        let key;
+        for (key in res['consultationByAgeGroup']) {
+          if (res['consultationByAgeGroup'].hasOwnProperty(key)) {
+            //  for second pie chart
+            this.consultationByAgeGroup.push({
+              name: key, y: res['consultationByAgeGroup'][key]
+            });
+          }
+        }
+        this.manipulateMapView(res['mapView']);
+        this.scatterChart();
+        this.consultationPerFacilityChart();
+        this.consultationByAgeGroupChart();
+      }
     });
   }
 
-  pieChartBrowser() {
-    Highcharts.chart('pieChart', {
+  manipulateMapView(data) {
+    data.map(d => {
+      this.facilityArr.push({
+        name: d.facilityName,
+        positions: { lat: Number(d.latitude), lng: Number(d.longitude) }
+      });
+    });
+    this.loadMap();
+  }
+
+  consultationPerFacilityChart() {
+    Highcharts.chart('consultationPerFacility', {
       chart: {
         plotBackgroundColor: null,
         plotBorderWidth: null,
@@ -101,7 +186,7 @@ export class HomeComponent implements OnInit {
         type: 'pie'
       },
       title: {
-        text: 'Patients in October, 2021'
+        text: 'Number of consultations per facility'
       },
       tooltip: {
         pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
@@ -111,82 +196,104 @@ export class HomeComponent implements OnInit {
           allowPointSelect: true,
           cursor: 'pointer',
           dataLabels: {
-            enabled: true,
+            enabled: false,
             format: '<b>{point.name}</b>: {point.percentage:.1f} %'
           }
         }
       },
       series: [{
-        name: 'Countries',
+        name: 'Location',
         colorByPoint: true,
         type: undefined,
-        data: [{
-          name: 'Africa',
-          y: 61.41,
-          sliced: true,
-          selected: true
-        }, {
-          name: 'America',
-          y: 11.84
-        }, {
-          name: 'UAE',
-          y: 10.85
-        }, {
-          name: 'Europe',
-          y: 4.67
-        }, {
-          name: 'India',
-          y: 4.18
-        }, {
-          name: 'China',
-          y: 1.64
-        }, {
-          name: 'Australia',
-          y: 1.6
-        }, {
-          name: 'Russia',
-          y: 1.2
-        }, {
-          name: 'Iraq',
-          y: 2.61
-        }]
+        data: this.consultationPerFacility
+      }]
+    });
+  }
+
+  consultationByAgeGroupChart() {
+    Highcharts.chart('consultationByAgeGroup', {
+      chart: {
+        plotBackgroundColor: null,
+        plotBorderWidth: null,
+        plotShadow: false,
+        type: 'pie'
+      },
+      title: {
+        text: 'Number of consultations by age group'
+      },
+      tooltip: {
+        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+      },
+      plotOptions: {
+        pie: {
+          allowPointSelect: true,
+          cursor: 'pointer',
+          dataLabels: {
+            enabled: false,
+            format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+          }
+        }
+      },
+      series: [{
+        name: 'Location',
+        colorByPoint: true,
+        type: undefined,
+        data: this.consultationByAgeGroup
       }]
     });
   }
 
   loadMap = () => {
-    const positions = { lat: 33.2232, lng: 43.6793 };
+    let markers = [];
+    const centerPosition = { lat: 33.2232, lng: 43.6793 };
     const map = new window['google'].maps.Map(this.mapElement.nativeElement, {
-      center: positions, zoom: 7
+      center: centerPosition, zoom: 5
     });
 
-    const marker = new window['google'].maps.Marker({
-      position: positions,
-      map: map,
-      title: 'Map!',
-      draggable: true,
-      animation: window['google'].maps.Animation.DROP,
+    this.facilityArr.forEach(data => {
+      const marker = new window['google'].maps.Marker({
+        position: new window['google'].maps.LatLng(data['positions'].lat, data['positions'].lng),
+        map: map,
+        title: 'Map!',
+        draggable: true,
+        animation: window['google'].maps.Animation.DROP
+      });
+      const contentString = '<div id="content">' +
+        '<div id="siteNotice">' +
+        '</div>' +
+        `<h3 id="thirdHeading" class="thirdHeading">${data['name']}</h3>` +
+        '<div id="bodyContent">' +
+        '</div>' +
+        '</div>';
+      const infowindow = new window['google'].maps.InfoWindow({
+        content: contentString
+      });
+      markers.push({ marker: marker, infowindow: infowindow });
     });
 
-    const contentString = '<div id="content">' +
-      '<div id="siteNotice">' +
-      '</div>' +
-      '<h3 id="thirdHeading" class="thirdHeading">Iraq</h3>' +
-      '<div id="bodyContent">' +
-      '<p>Welcome to Iraq</p>' +
-      '</div>' +
-      '</div>';
-
-    const infowindow = new window['google'].maps.InfoWindow({
-      content: contentString
-    });
-
-    marker.addListener('click', function () {
-      infowindow.open(map, marker);
-    });
+    markers.forEach(data => {
+      data.marker.addListener('mouseover', function () {
+        data.infowindow.open(map, data.marker);
+      });
+      data.marker.addListener('mouseout', function () {
+        data.infowindow.close();
+      });
+    })
   }
 
   redirectToRoute(route: string) {
     this.routeService.navigate([route]);
+  }
+
+  isEmpty(obj) {
+    return Object.keys(obj).length === 0;
+  }
+
+  getDateData() {
+    const monthArr = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    const d = new Date();
+    let month = monthArr[d.getMonth()];
+    let year = d.getFullYear();
+    return `${month} ${year}`;
   }
 }

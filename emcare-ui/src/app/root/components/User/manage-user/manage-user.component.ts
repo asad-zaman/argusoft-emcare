@@ -1,13 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subject } from 'rxjs';
 import { AuthGuard } from 'src/app/auth/auth.guard';
-import { LocationService } from 'src/app/root/services/location.service';
 import { RoleManagementService } from 'src/app/root/services/role-management.service';
 import { UserManagementService } from 'src/app/root/services/user-management.service';
 import { FhirService, ToasterService } from 'src/app/shared';
 import { MustMatch } from 'src/app/shared/validators/must-match.validator';
+import { SearchCountryField, CountryISO, PhoneNumberFormat } from 'ngx-intl-tel-input';
 
 @Component({
   selector: 'app-manage-user',
@@ -19,17 +18,20 @@ export class ManageUserComponent implements OnInit {
   userForm: FormGroup;
   isEdit: boolean = false;
   editId: string;
-  roles: any;
-  locationArr: any = [];
+  roles: any = [];
   submitted = false;
-  formData;
-  dropdownActiveArr = [];
   isAddFeature: boolean = true;
   isEditFeature: boolean = true;
   isAllowed: boolean = true;
-  selectedAreasArr = [];
-  eventsSubject: Subject<boolean> = new Subject<boolean>();
-  isUsernameAllowed: boolean;
+  facilityArr = [];
+  selectedFacility;
+
+  separateDialCode = true;
+  SearchCountryField = SearchCountryField;
+  CountryISO = CountryISO;
+  PhoneNumberFormat = PhoneNumberFormat;
+  preferredCountries: CountryISO[] = [CountryISO.Iraq, CountryISO.UnitedStates];
+  language: string;
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -37,11 +39,9 @@ export class ManageUserComponent implements OnInit {
     private readonly route: ActivatedRoute,
     private readonly userService: UserManagementService,
     private readonly roleService: RoleManagementService,
-    private readonly locationService: LocationService,
     private readonly toasterService: ToasterService,
     private readonly authGuard: AuthGuard,
     private readonly fhirService: FhirService
-
   ) { }
 
   ngOnInit(): void {
@@ -54,7 +54,11 @@ export class ManageUserComponent implements OnInit {
     this.editId = routeParams.get('id');
     this.checkEditParams();
     this.initUserForm();
-    this.getAllLocations();
+    this.getRoles();
+    if (this.isEdit) {
+      this.mapUpdateForm();
+    } else { }
+    this.getFacilities();
   }
 
   checkFeatures() {
@@ -87,12 +91,9 @@ export class ManageUserComponent implements OnInit {
     }
   }
 
-  manipulateLocationResponse(locations) {
-    locations.forEach(el => {
-      this.selectedAreasArr.push({
-        id: el.id,
-        string: el.hierarch
-      });
+  mapFacilityRes(facilityArr) {
+    return facilityArr.map(el => {
+      return { id: el.facilityId, name: el.facilityName, organizationName: el.organizationName }
     });
   }
 
@@ -103,19 +104,14 @@ export class ManageUserComponent implements OnInit {
           firstName: res['firstName'],
           lastName: res['lastName'],
           username: res['userName'],
+          facility: this.mapFacilityRes(res['facilities']),
+          countryCode: res['countryCode'],
+          phone: res['phone'],
+          role: this.roles.find(el => el['name'] === res['realmRoles'][0])
         };
-        this.manipulateLocationResponse(res['locations']);
+        this.language = res['language'];
         this.userForm.patchValue(data);
-        this.userForm.patchValue({
-          location: this.getSelectedLocations(this.selectedAreasArr)
-        });
       }
-    });
-  }
-
-  getLocationObjFromName(id) {
-    return this.locationArr.find(loc => {
-      return loc.id == Number(id)
     });
   }
 
@@ -124,7 +120,11 @@ export class ManageUserComponent implements OnInit {
       this.userForm = this.formBuilder.group({
         firstName: ['', [Validators.required]],
         lastName: ['', [Validators.required]],
-        location: ['']
+        countryCode: [CountryISO.Iraq],
+        phone: ['', [Validators.required]],
+        selectedFacility: [''],
+        facility: ['', Validators.required],
+        role: ['', [Validators.required]]
       });
       this.userForm.addControl('username', new FormControl({ value: '', disabled: true }, Validators.required));
     } else {
@@ -132,10 +132,13 @@ export class ManageUserComponent implements OnInit {
         firstName: ['', [Validators.required]],
         lastName: ['', [Validators.required]],
         email: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-]+$')]],
+        countryCode: [CountryISO.Iraq],
+        phone: ['', [Validators.required]],  // 10 digit number
         password: ['', Validators.required],
         confirmPassword: ['', Validators.required],
         role: ['', [Validators.required]],
-        location: ['', Validators.required]
+        selectedFacility: [''],
+        facility: ['', Validators.required]
       }, {
         validator: MustMatch('password', 'confirmPassword')
       });
@@ -153,23 +156,12 @@ export class ManageUserComponent implements OnInit {
     });
   }
 
-  getAllLocations() {
-    this.locationService.getAllLocations().subscribe(res => {
-      if (res) {
-        this.locationArr = res;
-        if (this.isEdit) {
-          this.mapUpdateForm();
-        } else {
-          this.getRoles();
-        }
-      }
-    }, () => {
-      this.toasterService.showToast('error', 'Server issue!', 'EMCARE');
-    });
-  }
-
   get f() {
     return this.userForm.controls;
+  }
+
+  getFacilityIdFromArr(facilityArr) {
+    return facilityArr.map(el => el.id);
   }
 
   saveData() {
@@ -179,8 +171,13 @@ export class ManageUserComponent implements OnInit {
         const data = {
           "firstName": this.userForm.get('firstName').value,
           "lastName": this.userForm.get('lastName').value,
-          "locationIds": this.userForm.get('location').value,
-          "regRequestFrom": "web"
+          "regRequestFrom": "web",
+          "facilityIds": this.getFacilityIdFromArr(this.userForm.get('facility').value),
+          "countryCode": this.userForm.get('phone').value.countryCode,
+          //  saving countries national number as code is already shown in input & dropdown tag
+          "phone": this.userForm.get('phone').value.number,
+          "language": this.language,
+          "roleName": this.userForm.get('role').value ? this.userForm.get('role').value.name : '',
         }
         this.userService.updateUser(data, this.editId).subscribe(res => {
           this.toasterService.showToast('success', 'User updated successfully!', 'EMCARE');
@@ -192,10 +189,13 @@ export class ManageUserComponent implements OnInit {
           "lastName": this.userForm.get('lastName').value,
           "email": this.userForm.get('email').value,
           "password": this.userForm.get('password').value,
-          "roleName": this.userForm.get('role').value,
-          "locationIds": this.userForm.get('location').value,
+          "roleName": this.userForm.get('role').value ? this.userForm.get('role').value.name : '',
           "regRequestFrom": "web",
-          "userName": this.userForm.get('username').value
+          "userName": this.userForm.get('username').value,
+          "facilityIds": this.getFacilityIdFromArr(this.userForm.get('facility').value),
+          "countryCode": this.userForm.get('phone').value.countryCode,
+          "phone": this.userForm.get('phone').value.number,
+          "language": this.language
         }
         this.userService.createUser(data).subscribe(res => {
           this.toasterService.showToast('success', 'User added successfully!', 'EMCARE');
@@ -209,55 +209,45 @@ export class ManageUserComponent implements OnInit {
     this.router.navigate([`showUsers`]);
   }
 
-  saveLocationData() {
-    const valueArr = [
-      this.formData.country, this.formData.state,
-      this.formData.city, this.formData.region,
-      this.formData.other
-    ];
-    let selectedId;
-    for (let index = this.dropdownActiveArr.length - 1; index >= 0; index--) {
-      const data = this.dropdownActiveArr[index];
-      //  if value is not selected and showing --select-- in dropdown then the parent valus should be emitted as selectedId
-      if (data && (valueArr[index] !== "") && !selectedId) {
-        selectedId = valueArr[index];
-      }
-    }
-    const isAlreadyStored = this.selectedAreasArr.find(obj => obj.id === selectedId);
-    if (!isAlreadyStored) {
-      this.selectedAreasArr.push({
-        id: selectedId,
-        string: this.getLocationStringFromArr(valueArr)
-      });
-    }
-    this.userForm.patchValue({
-      location: this.getSelectedLocations(this.selectedAreasArr)
-    });
-    this.eventsSubject.next(true);
-  }
-
-  getSelectedLocations(data) {
-    let idArr = [];
-    idArr = data.map(el => el.id);
-    return idArr;
-  }
-
-  getLocationStringFromArr(arr) {
-    let locationStr = "";
-    arr.forEach(id => {
-      if (id) {
-        locationStr = locationStr + this.getLocationObjFromName(id).name + '->';
+  getFacilities() {
+    this.fhirService.getFacility().subscribe((res: Array<any>) => {
+      if (res) {
+        res.forEach(element => {
+          this.facilityArr.push({
+            id: element.facilityId,
+            name: element.facilityName,
+            organizationName: element.organizationName
+          });
+        });
       }
     });
-    return locationStr.substring(0, locationStr.length - 2);
   }
 
-  getFormValue(event) {
-    this.formData = event.formData;
-    this.dropdownActiveArr = event.dropdownArr;
+  saveFacility() {
+    const selFacility = this.userForm.get('selectedFacility').value;
+    const currFacility = this.userForm.get('facility').value;
+    let facArr = [];
+    if (currFacility) {
+      facArr = currFacility;
+      //  If facility is selected already then no need to push it again
+      if (!facArr.includes(selFacility)) {
+        facArr.push(selFacility);
+        this.userForm.get('facility').setValue(facArr);
+      }
+    } else {
+      facArr.push(selFacility);
+      this.userForm.get('facility').setValue(facArr);
+    }
+    this.userForm.get('selectedFacility').setValue(null);
   }
 
-  removeLocation(selectedLoc) {
-    this.selectedAreasArr = this.selectedAreasArr.filter(loc => loc !== selectedLoc);
+  removeFacility(facility) {
+    let facArr = this.userForm.get('facility').value;
+    facArr = facArr.filter(f => f !== facility);
+    this.userForm.get('facility').setValue(facArr);
+  }
+
+  back() {
+    this.router.navigate(['/showUsers']);
   }
 }

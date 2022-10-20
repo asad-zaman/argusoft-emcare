@@ -3,12 +3,14 @@ package com.argusoft.who.emcare.web.fhir.service.implementation;
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.rest.api.MethodOutcome;
+import ca.uhn.fhir.rest.param.DateParam;
 import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
 import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.common.dto.PageDto;
 import com.argusoft.who.emcare.web.fhir.dao.LocationResourceRepository;
 import com.argusoft.who.emcare.web.fhir.dao.OrganizationResourceRepository;
 import com.argusoft.who.emcare.web.fhir.dto.FacilityDto;
+import com.argusoft.who.emcare.web.fhir.dto.FacilityMapDto;
 import com.argusoft.who.emcare.web.fhir.mapper.EmcareResourceMapper;
 import com.argusoft.who.emcare.web.fhir.model.LocationResource;
 import com.argusoft.who.emcare.web.fhir.service.LocationResourceService;
@@ -20,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -55,7 +58,12 @@ public class LocationResourceServiceImpl implements LocationResourceService {
         m.setLastUpdated(new Date());
         theLocation.setMeta(m);
 
-        String locationId = UUID.randomUUID().toString();
+        String locationId = null;
+        if (theLocation.getId() != null) {
+            locationId = theLocation.getIdElement().getIdPart();
+        } else {
+            locationId = UUID.randomUUID().toString();
+        }
         theLocation.setId(locationId);
 
         Organization organization = organizationResourceService.getByResourceId(theLocation.getManagingOrganization().getId());
@@ -95,10 +103,17 @@ public class LocationResourceServiceImpl implements LocationResourceService {
     }
 
     @Override
-    public List<Location> getAllLocations() {
+    public List<Location> getAllLocations(DateParam theDate) {
         List<Location> locationList = new ArrayList<>();
 
-        List<LocationResource> locationResources = locationResourceRepository.findAll();
+        List<LocationResource> locationResources = new ArrayList<>();
+
+        if (theDate == null) {
+            locationResources =  locationResourceRepository.findAll();
+        } else {
+            locationResources = locationResourceRepository.findByModifiedOnGreaterThanOrCreatedOnGreaterThan(theDate.getValue(), theDate.getValue());
+        }
+
         for (LocationResource locationResource : locationResources) {
             Location location = parser.parseResource(Location.class, locationResource.getText());
             Organization organization = organizationResourceService.getByResourceId(location.getManagingOrganization().getId());
@@ -160,7 +175,8 @@ public class LocationResourceServiceImpl implements LocationResourceService {
     public PageDto getEmCareLocationResourcePage(Integer pageNo, String searchString) {
         List<FacilityDto> facilityDtos = new ArrayList<>();
         Page<LocationResource> locationResources = null;
-        Pageable page = PageRequest.of(pageNo, CommonConstant.PAGE_SIZE);
+        Sort sort = Sort.by("createdOn").descending();
+        Pageable page = PageRequest.of(pageNo, CommonConstant.PAGE_SIZE,sort);
         Long count = 0L;
 
         if (searchString != null && !searchString.isEmpty()) {
@@ -186,7 +202,7 @@ public class LocationResourceServiceImpl implements LocationResourceService {
     @Override
     public FacilityDto getFacilityDto(String id) {
         LocationResource locationResource = locationResourceRepository.findByResourceId(id);
-        if(locationResource == null){
+        if (locationResource == null) {
             return null;
         }
         Location location = getByResourceId(id);
@@ -203,5 +219,16 @@ public class LocationResourceServiceImpl implements LocationResourceService {
         }
 
         return facilityDtos.stream().filter(f -> "Active".equals(f.getStatus())).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<FacilityMapDto> getAllFacilityMapDto() {
+        List<FacilityMapDto> facilityDtos = new ArrayList<>();
+        List<LocationResource> locationResources = locationResourceRepository.findAll();
+        for (LocationResource locationResource : locationResources) {
+            Location location = parser.parseResource(Location.class, locationResource.getText());
+            facilityDtos.add(EmcareResourceMapper.getFacilityMapDto(location, locationResource));
+        }
+        return facilityDtos;
     }
 }

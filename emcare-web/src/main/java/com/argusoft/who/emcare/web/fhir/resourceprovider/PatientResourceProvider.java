@@ -4,6 +4,7 @@ import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.rest.annotation.*;
 import ca.uhn.fhir.rest.api.MethodOutcome;
+import ca.uhn.fhir.rest.param.DateParam;
 import ca.uhn.fhir.rest.param.StringParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
@@ -98,7 +99,7 @@ public class PatientResourceProvider implements IResourceProvider {
 
         String patientString = parser.encodeResourceToString(thePatient);
 
-        Extension facilityExtension = thePatient.getExtension().get(0);
+        Extension facilityExtension = thePatient.getExtensionByUrl(CommonConstant.LOCATION_EXTENSION_URL);
         String facilityId = ((Identifier) facilityExtension.getValue()).getValue();
         EmcareResource emcareResource = new EmcareResource();
         emcareResource.setText(patientString);
@@ -143,7 +144,7 @@ public class PatientResourceProvider implements IResourceProvider {
         if (emcareResource == null) {
             emcareResource = new EmcareResource();
         }
-        Extension facilityExtension = thePatient.getExtension().get(0);
+        Extension facilityExtension = thePatient.getExtensionByUrl(CommonConstant.LOCATION_EXTENSION_URL);
         String facilityId = ((Identifier) facilityExtension.getValue()).getValue();
         emcareResource.setText(patientString);
         emcareResource.setResourceId(patientId);
@@ -166,10 +167,11 @@ public class PatientResourceProvider implements IResourceProvider {
      * Reference for param: https://hapifhir.io/hapi-fhir/docs/server_plain/rest_operations_search.html#combining-multiple-parameters
      */
     @Search()
-    public List<Patient> getAllPatients() {
+    public List<Patient> getAllPatients(
+            @OptionalParam(name = CommonConstant.RESOURCE_LAST_UPDATED_AT) DateParam theDate,
+            @OptionalParam(name = Claim.SP_RES_ID) IdType theId) {
         List<Patient> patientsList = new ArrayList<>();
-
-        List<EmcareResource> resourcesList = emcareResourceService.retrieveResourcesByType("PATIENT");
+        List<EmcareResource> resourcesList = emcareResourceService.retrieveResourcesByType("PATIENT", theDate,theId);
         for (EmcareResource emcareResource : resourcesList) {
             Patient patient = parser.parseResource(Patient.class, emcareResource.getText());
             patientsList.add(patient);

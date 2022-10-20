@@ -69,6 +69,7 @@ public class WebConfig extends KeycloakWebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         super.configure(http);
         http.authorizeRequests()
+                .antMatchers("/doc/**").permitAll()
                 .antMatchers("/api/signup/**").permitAll()
                 .antMatchers("/api/open/**").permitAll()
                 .antMatchers("/questionnaireBuilder/**").permitAll()

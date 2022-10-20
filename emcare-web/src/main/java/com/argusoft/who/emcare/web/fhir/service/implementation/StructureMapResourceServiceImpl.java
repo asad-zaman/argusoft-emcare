@@ -3,6 +3,7 @@ package com.argusoft.who.emcare.web.fhir.service.implementation;
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.rest.api.MethodOutcome;
+import ca.uhn.fhir.rest.param.DateParam;
 import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.common.dto.PageDto;
 import com.argusoft.who.emcare.web.fhir.dao.StructureMapResourceRepository;
@@ -40,7 +41,13 @@ public class StructureMapResourceServiceImpl implements StructureMapResourceServ
         m.setLastUpdated(new Date());
         structureMap.setMeta(m);
 
-        String structureMapId = UUID.randomUUID().toString();
+        String structureMapId = null;
+        if (structureMap.getId() != null) {
+            structureMapId = structureMap.getIdElement().getIdPart();
+        } else {
+            structureMapId = UUID.randomUUID().toString();
+        }
+
         structureMap.setId(structureMapId);
 
         String locationString = parser.encodeResourceToString(structureMap);
@@ -82,17 +89,22 @@ public class StructureMapResourceServiceImpl implements StructureMapResourceServ
         structureMapResourceRepository.save(definitionResource);
 
         MethodOutcome retVal = new MethodOutcome();
-        retVal.setId(new IdType(CommonConstant.LOCATION_TYPE_STRING, structureMap.getId(), "1"));
+        retVal.setId(new IdType(CommonConstant.STRUCTURE_MAP, structureMap.getId(), "1"));
         retVal.setResource(structureMap);
         return retVal;
     }
 
     @Override
-    public List<StructureMap> getAllStructureMap() {
+    public List<StructureMap> getAllStructureMap(DateParam theDate) {
         List<StructureMap> structureMaps = new ArrayList<>();
 
-        List<StructureMapResource> structureMapResources = structureMapResourceRepository.findAll();
+        List<StructureMapResource> structureMapResources = new ArrayList<>();
 
+        if (theDate == null) {
+            structureMapResources =  structureMapResourceRepository.findAll();
+        } else {
+            structureMapResources = structureMapResourceRepository.findByModifiedOnGreaterThanOrCreatedOnGreaterThan(theDate.getValue(), theDate.getValue());
+        }
         for (StructureMapResource structureMapResource : structureMapResources) {
             StructureMap structureMap = parser.parseResource(StructureMap.class, structureMapResource.getText());
             structureMaps.add(structureMap);

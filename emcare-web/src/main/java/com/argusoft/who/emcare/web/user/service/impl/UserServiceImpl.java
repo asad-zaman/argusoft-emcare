@@ -130,15 +130,8 @@ public class UserServiceImpl implements UserService {
             representation.setRealmRoles(roles);
         }
         for (UserRepresentation representation : userRepresentations) {
-            List<UserLocationMapping> userLocation = userLocationMappingRepository.findByUserId(representation.getId());
-            if (!userLocation.isEmpty()) {
-//                CHNAGE IF REQUIRED
-//                Optional<LocationMaster> locationMaster = locationMasterDao.findById(userLocation.get(0).getLocationId());
-//                FacilityDto facilityDto = locationResourceService.getFacilityDto(facilityId);
-//                userList.add(UserMapper.getUserListDto(representation, locationMaster.isPresent() ? locationMaster.get() : null));
-            } else {
-//                userList.add(UserMapper.getUserListDto(representation, null));
-            }
+            userLocationMappingRepository.findByUserId(representation.getId());
+
         }
         return userList;
     }
@@ -158,16 +151,8 @@ public class UserServiceImpl implements UserService {
         }
         for (UserRepresentation representation : userRepresentations) {
             List<UserLocationMapping> userLocation = userLocationMappingRepository.findByUserId(representation.getId());
-//            List<Integer> locationIds = userLocation.stream().map(UserLocationMapping::getLocationId).collect(Collectors.toList());
-            List<FacilityDto> facilityDtos = new ArrayList<>();
+            List<FacilityDto> facilityDtos;
             if (!userLocation.isEmpty()) {
-//                Iterable<Integer> iterableLocationIds = locationIds;
-//                List<LocationMaster> locationMaster = locationMasterDao.findAllById(iterableLocationIds);
-//                List<LocationMasterWithHierarchy> locationMasterWithHierarchies = new ArrayList<>();
-//                for (LocationMaster master : locationMaster) {
-//                    locationMasterWithHierarchies.add(LocationMasterMapper.getLocationMasterWithHierarchy(master, locationMasterDao.getNameHierarchy(master.getId())));
-//                }
-
                 facilityDtos = new ArrayList<>();
                 for (UserLocationMapping mapping : userLocation) {
                     if (mapping.getFacilityId() != null) {
@@ -196,6 +181,7 @@ public class UserServiceImpl implements UserService {
         List<UserRepresentation> userRepresentations;
         if (searchString != null && !searchString.isEmpty()) {
             userRepresentations = keycloak.realm(KeyCloakConfig.REALM).users().search(searchString, 0, 1000);
+            Collections.sort(userRepresentations, (rp1, rp2) -> rp2.getCreatedTimestamp().compareTo(rp1.getCreatedTimestamp()));
             if (userRepresentations.size() <= endIndex) {
                 endIndex = userRepresentations.size();
 
@@ -207,7 +193,9 @@ public class UserServiceImpl implements UserService {
                 userRepresentations = userRepresentations.subList(startIndex, endIndex);
             }
         } else {
-            userRepresentations = keycloak.realm(KeyCloakConfig.REALM).users().list().subList(startIndex, endIndex);
+            List<UserRepresentation> representations = keycloak.realm(KeyCloakConfig.REALM).users().list();
+            Collections.sort(representations, (rp1, rp2) -> rp2.getCreatedTimestamp().compareTo(rp1.getCreatedTimestamp()));
+            userRepresentations = representations.subList(startIndex, endIndex);
         }
 
         for (UserRepresentation representation : userRepresentations) {
@@ -220,14 +208,8 @@ public class UserServiceImpl implements UserService {
         }
         for (UserRepresentation representation : userRepresentations) {
             List<UserLocationMapping> userLocation = userLocationMappingRepository.findByUserId(representation.getId());
-//            Iterable<Integer> locationIds = userLocation.stream().map(UserLocationMapping::getLocationId).collect(Collectors.toList());
-            List<FacilityDto> facilityDtos = new ArrayList<>();
+            List<FacilityDto> facilityDtos;
             if (!userLocation.isEmpty()) {
-//                List<LocationMaster> locationMaster = locationMasterDao.findAllById(locationIds);
-//                List<LocationMasterWithHierarchy> locationMasterWithHierarchies = new ArrayList<>();
-//                for (LocationMaster master : locationMaster) {
-//                    locationMasterWithHierarchies.add(LocationMasterMapper.getLocationMasterWithHierarchy(master, locationMasterDao.getNameHierarchy(master.getId())));
-//                }
                 facilityDtos = new ArrayList<>();
                 for (UserLocationMapping mapping : userLocation) {
                     if (mapping.getFacilityId() != null) {
@@ -257,8 +239,6 @@ public class UserServiceImpl implements UserService {
             users.add(user);
         }
         return users;
-//        List<String> userIds = mobileUsers.stream().map(UserLocationMapping::getUserId).collect(Collectors.toList());
-//        return users.stream().filter(user -> userIds.contains(user.getId())).collect(Collectors.toList());
     }
 
     @Override
@@ -303,9 +283,11 @@ public class UserServiceImpl implements UserService {
         kcUser.setEmail(user.getEmail());
         kcUser.setEnabled(Boolean.FALSE);
         kcUser.setEmailVerified(false);
-        Map<String, List<String>> languageAttribute = new HashMap<>();
-        languageAttribute.put(CommonConstant.LANGUAGE_KEY, Arrays.asList(CommonConstant.ENGLISH));
-        kcUser.setAttributes(languageAttribute);
+        Map<String, List<String>> attribute = new HashMap<>();
+        attribute.put(CommonConstant.LANGUAGE_KEY, Arrays.asList(CommonConstant.ENGLISH));
+        attribute.put(CommonConstant.PHONE_KEY, Arrays.asList(user.getPhone()));
+        attribute.put(CommonConstant.COUNTRY_CODE, Arrays.asList(user.getCountryCode()));
+        kcUser.setAttributes(attribute);
 
         try {
             javax.ws.rs.core.Response response = usersResource.create(kcUser);
@@ -326,7 +308,10 @@ public class UserServiceImpl implements UserService {
             Settings settings = adminSettingService.getAdminSettingByName(CommonConstant.SETTING_TYPE_WELCOME_EMAIL);
             if (settings.getValue().equals(CommonConstant.ACTIVE)) {
                 MailDto mailDto = mailDataSetterService.mailSubjectSetter(CommonConstant.MAIL_FOR_ADD_USER);
-                String mailBody = mailDto.getBody() + " " + user.getEmail();
+                Map<String, Object> mailData = new HashMap<>();
+                mailData.put("firstName", user.getFirstName());
+                mailData.put("lastName", user.getLastName());
+                String mailBody = mailDataSetterService.emailBodyCreator(mailData, mailDto.getBody(), mailDto);
                 mailService.sendBasicMail(user.getEmail(), mailDto.getSubject(), mailBody);
             }
         });
@@ -358,9 +343,11 @@ public class UserServiceImpl implements UserService {
         kcUser.setEmail(user.getEmail());
         kcUser.setEnabled(true);
         kcUser.setEmailVerified(false);
-        Map<String, List<String>> languageAttribute = new HashMap<>();
-        languageAttribute.put(CommonConstant.LANGUAGE_KEY, Arrays.asList(CommonConstant.ENGLISH));
-        kcUser.setAttributes(languageAttribute);
+        Map<String, List<String>> attribute = new HashMap<>();
+        attribute.put(CommonConstant.LANGUAGE_KEY, Arrays.asList(CommonConstant.ENGLISH));
+        attribute.put(CommonConstant.PHONE_KEY, Arrays.asList(user.getPhone()));
+        attribute.put(CommonConstant.COUNTRY_CODE, Arrays.asList(user.getCountryCode()));
+        kcUser.setAttributes(attribute);
 
         try {
             javax.ws.rs.core.Response response = usersResource.create(kcUser);
@@ -374,7 +361,7 @@ public class UserServiceImpl implements UserService {
             userResource.roles().realmLevel().add(Arrays.asList(testerRealmRole));
             userResource.roles().realmLevel().remove(Arrays.asList(defaultRole));
         } catch (Exception ex) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response(CommonConstant.EMAIL_ALREADY_EXISTS, HttpStatus.BAD_REQUEST.value()));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response(ex.getMessage(), HttpStatus.BAD_REQUEST.value()));
         }
 
         CompletableFuture.runAsync(() -> {
@@ -445,7 +432,10 @@ public class UserServiceImpl implements UserService {
                 Settings settings = adminSettingService.getAdminSettingByName(CommonConstant.SETTING_TYPE_SEND_CONFIRMATION_EMAIL);
                 if (settings.getValue().equals(CommonConstant.ACTIVE)) {
                     MailDto mailDto = mailDataSetterService.mailSubjectSetter(CommonConstant.MAIL_FOR_CONFIRMATION_EMAIL_APPROVED);
-                    String mailBody = mailDto.getBody();
+                    Map<String, Object> mailData = new HashMap<>();
+                    mailData.put("firstName", user.getFirstName());
+                    mailData.put("lastName", user.getLastName());
+                    String mailBody = mailDataSetterService.emailBodyCreator(mailData, mailDto.getBody(), mailDto);
                     mailService.sendBasicMail(user.getEmail(), mailDto.getSubject(), mailBody);
                 }
             });
@@ -454,7 +444,10 @@ public class UserServiceImpl implements UserService {
                 Settings settings = adminSettingService.getAdminSettingByName(CommonConstant.SETTING_TYPE_SEND_CONFIRMATION_EMAIL);
                 if (settings.getValue().equals(CommonConstant.ACTIVE)) {
                     MailDto mailDto = mailDataSetterService.mailSubjectSetter(CommonConstant.MAIL_FOR_CONFIRMATION_EMAIL_REJECTED);
-                    String mailBody = mailDto.getBody();
+                    Map<String, Object> mailData = new HashMap<>();
+                    mailData.put("firstName", user.getFirstName());
+                    mailData.put("lastName", user.getLastName());
+                    String mailBody = mailDataSetterService.emailBodyCreator(mailData, mailDto.getBody(), mailDto);
                     mailService.sendBasicMail(user.getEmail(), mailDto.getSubject(), mailBody);
                 }
             });
@@ -521,14 +514,8 @@ public class UserServiceImpl implements UserService {
         }
         for (UserRepresentation representation : userRepresentations) {
             List<UserLocationMapping> userLocation = userLocationMappingRepository.findByUserId(representation.getId());
-//            Iterable<Integer> locationIds = userLocation.stream().map(UserLocationMapping::getLocationId).collect(Collectors.toList());
-            List<FacilityDto> facilityDtos = new ArrayList<>();
+            List<FacilityDto> facilityDtos;
             if (!userLocation.isEmpty()) {
-//                List<LocationMaster> locationMaster = locationMasterDao.findAllById(locationIds);
-//                List<LocationMasterWithHierarchy> locationMasterWithHierarchies = new ArrayList<>();
-//                for (LocationMaster master : locationMaster) {
-//                    locationMasterWithHierarchies.add(LocationMasterMapper.getLocationMasterWithHierarchy(master, locationMasterDao.getNameHierarchy(master.getId())));
-//                }
 
                 facilityDtos = new ArrayList<>();
                 for (UserLocationMapping mapping : userLocation) {
@@ -552,7 +539,7 @@ public class UserServiceImpl implements UserService {
     public UserRepresentation getUserByEmailId(String emailId) {
         Keycloak keycloak = keyCloakConfig.getInsideInstance();
         UsersResource usersResource = keycloak.realm(KeyCloakConfig.REALM).users();
-        List<UserRepresentation> userRepresentation = keycloak.realm(KeyCloakConfig.REALM).users().search(emailId);
+        List<UserRepresentation> userRepresentation = usersResource.search(emailId);
         if (!userRepresentation.isEmpty()) {
             return userRepresentation.get(0);
         } else {
@@ -598,14 +585,8 @@ public class UserServiceImpl implements UserService {
         userRepresentation.setRealmRoles(roles);
 
         List<UserLocationMapping> userLocation = userLocationMappingRepository.findByUserId(userRepresentation.getId());
-//        Iterable<Integer> locationIds = userLocation.stream().map(UserLocationMapping::getLocationId).collect(Collectors.toList());
         if (!userLocation.isEmpty()) {
-//            List<LocationMaster> locationMaster = locationMasterDao.findAllById(locationIds);
-//            List<LocationMasterWithHierarchy> locationMasterWithHierarchies = new ArrayList<>();
-//            for (LocationMaster master : locationMaster) {
-//                locationMasterWithHierarchies.add(LocationMasterMapper.getLocationMasterWithHierarchy(master, locationMasterDao.getNameHierarchy(master.getId())));
-//            }
-            List<FacilityDto> facilityDtos = new ArrayList<>();
+            List<FacilityDto> facilityDtos;
             facilityDtos = new ArrayList<>();
             for (UserLocationMapping mapping : userLocation) {
                 if (mapping.getFacilityId() != null) {
@@ -622,13 +603,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserRepresentation getUserById(String userId) {
-        Keycloak keycloak = keyCloakConfig.getInstanceByAuth();
+        Keycloak keycloak = keyCloakConfig.getInstance();
         return keycloak.realm(KeyCloakConfig.REALM).users().get(userId).toRepresentation();
     }
 
     @Override
     public ResponseEntity<Object> updateUser(UserDto userDto, String userId) {
         Keycloak keycloak = keyCloakConfig.getInstance();
+        RealmResource realmResource = keycloak.realm(KeyCloakConfig.REALM);
         UserResource userResource = keycloak.realm(KeyCloakConfig.REALM).users().get(userId);
         UserRepresentation newUser = userResource.toRepresentation();
 
@@ -654,10 +636,21 @@ public class UserServiceImpl implements UserService {
             }
         }
 
-        Map<String, List<String>> languageAttribute = new HashMap<>();
-        languageAttribute.put(CommonConstant.LANGUAGE_KEY, Arrays.asList(userDto.getLanguage()));
-        newUser.setAttributes(languageAttribute);
+        Map<String, List<String>> attribute = new HashMap<>();
+        attribute.put(CommonConstant.LANGUAGE_KEY, Arrays.asList(userDto.getLanguage()));
+        attribute.put(CommonConstant.PHONE_KEY, Arrays.asList(userDto.getPhone()));
+        attribute.put(CommonConstant.COUNTRY_CODE, Arrays.asList(userDto.getCountryCode()));
+
+        newUser.setAttributes(attribute);
         newUser.setEnabled(newUser.isEnabled());
+
+        if (userDto.getRoleName() != null) {
+            RoleRepresentation newRole = realmResource.roles().get(userDto.getRoleName()).toRepresentation();
+            List<RoleRepresentation> removableRoles = userResource.roles().realmLevel().listAll();
+            userResource.roles().realmLevel().remove(removableRoles);
+            userResource.roles().realmLevel().add(new ArrayList<>(Arrays.asList(newRole)));
+        }
+
         userResource.update(newUser);
         return ResponseEntity.status(HttpStatus.OK).body(new Response(CommonConstant.UPDATE_SUCCESS, HttpStatus.OK.value()));
     }
@@ -693,7 +686,7 @@ public class UserServiceImpl implements UserService {
                 }
             }
         }
-
+        Collections.sort(featureJsons, (o1, o2) -> o1.getOrderNumber().compareTo(o2.getOrderNumber()));
         List<CurrentUserFeatureJson> mainMenuList = featureJsons.stream().filter(feature -> feature.getParent() == null || feature.getParent() == 0).collect(Collectors.toList());
         List<CurrentUserFeatureJson> finalMenuList = new ArrayList<>();
         for (CurrentUserFeatureJson mainMenu : mainMenuList) {
@@ -701,12 +694,13 @@ public class UserServiceImpl implements UserService {
             CurrentUserFeatureJson menu = new CurrentUserFeatureJson();
             menu.setSubMenu(subMenu);
             menu.setFeatureJson(mainMenu.getFeatureJson());
+            menu.setOrderNumber(mainMenu.getOrderNumber());
             menu.setMenuName(mainMenu.getMenuName());
             menu.setId(mainMenu.getId());
             menu.setParent(mainMenu.getParent());
             finalMenuList.add(menu);
         }
-        Collections.sort(finalMenuList, (o1, o2) -> o1.getMenuName().compareTo(o2.getMenuName()));
+        Collections.sort(finalMenuList, (o1, o2) -> o1.getOrderNumber().compareTo(o2.getOrderNumber()));
         return finalMenuList;
     }
 

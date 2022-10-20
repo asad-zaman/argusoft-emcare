@@ -19,9 +19,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.sql.Timestamp;
-import java.util.Date;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 @Transactional
@@ -61,11 +59,17 @@ public class OpenApiServiceImpl implements OpenApiService {
 
         OTP savedOTP = otpRepository.save(otp);
 
-        MailDto mailDto = new MailDto();
-        mailDto = mailDataSetterService.mailSubjectSetter(CommonConstant.MAIL_FOR_GENERATE_OTP);
-        String body = mailDto.getBody() + " " + otp.getOtp();
-        mailService.sendBasicMail(emailId, mailDto.getSubject(), body);
-        twilioService.sendSms("+919979943100",body);
+//        MailDto mailDto = new MailDto();
+//        mailDto = mailDataSetterService.mailSubjectSetter(CommonConstant.MAIL_FOR_GENERATE_OTP);
+//        String body = mailDto.getBody() + " " + otp.getOtp();
+//        mailService.sendBasicMail(emailId, mailDto.getSubject(), body);
+//        twilioService.sendSms("+919979943100",body);
+
+        MailDto mailDto = mailDataSetterService.mailSubjectSetter(CommonConstant.MAIL_FOR_GENERATE_OTP);
+        Map<String, Object> mailData = new HashMap<>();
+        mailData.put("otp", newOTP);
+        String mailBody = mailDataSetterService.emailBodyCreator(mailData, mailDto.getBody(), mailDto);
+        mailService.sendBasicMail(emailId, mailDto.getSubject(), mailBody);
         return ResponseEntity.ok(savedOTP);
     }
 

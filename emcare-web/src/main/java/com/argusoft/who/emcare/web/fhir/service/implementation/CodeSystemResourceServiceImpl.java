@@ -3,12 +3,14 @@ package com.argusoft.who.emcare.web.fhir.service.implementation;
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.rest.api.MethodOutcome;
+import ca.uhn.fhir.rest.param.DateParam;
 import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.common.dto.PageDto;
 import com.argusoft.who.emcare.web.fhir.dao.CodeSystemResourceRepository;
 import com.argusoft.who.emcare.web.fhir.dto.CodeSystemDto;
 import com.argusoft.who.emcare.web.fhir.dto.StructureMapDto;
 import com.argusoft.who.emcare.web.fhir.mapper.EmcareResourceMapper;
+import com.argusoft.who.emcare.web.fhir.model.ActivityDefinitionResource;
 import com.argusoft.who.emcare.web.fhir.model.CodeSystemResource;
 import com.argusoft.who.emcare.web.fhir.model.StructureMapResource;
 import com.argusoft.who.emcare.web.fhir.service.CodeSystemResourceService;
@@ -43,7 +45,12 @@ public class CodeSystemResourceServiceImpl implements CodeSystemResourceService 
         m.setLastUpdated(new Date());
         codeSystem.setMeta(m);
 
-        String codeSystemId = UUID.randomUUID().toString();
+        String codeSystemId = null;
+        if (codeSystem.getId() != null) {
+            codeSystemId = codeSystem.getIdElement().getIdPart();
+        } else {
+            codeSystemId = UUID.randomUUID().toString();
+        }
         codeSystem.setId(codeSystemId);
 
         String codeSystemString = parser.encodeResourceToString(codeSystem);
@@ -81,16 +88,23 @@ public class CodeSystemResourceServiceImpl implements CodeSystemResourceService 
         codeSystemResourceRepository.save(codeSystemResource);
 
         MethodOutcome retVal = new MethodOutcome();
-        retVal.setId(new IdType(CommonConstant.LOCATION_TYPE_STRING, codeSystem.getId(), "1"));
+        retVal.setId(new IdType(CommonConstant.CODE_SYSTEM, codeSystem.getId(), "1"));
         retVal.setResource(codeSystem);
         return retVal;
     }
 
     @Override
-    public List<CodeSystem> getAllCodeSystem() {
+    public List<CodeSystem> getAllCodeSystem(DateParam theDate) {
         List<CodeSystem> codeSystems = new ArrayList<>();
 
-        List<CodeSystemResource> codeSystemResources = codeSystemResourceRepository.findAll();
+        List<CodeSystemResource> codeSystemResources = new ArrayList<>();
+
+        if (theDate == null) {
+            codeSystemResources =  codeSystemResourceRepository.findAll();
+        } else {
+            codeSystemResources = codeSystemResourceRepository.findByModifiedOnGreaterThanOrCreatedOnGreaterThan(theDate.getValue(), theDate.getValue());
+        }
+
 
         for (CodeSystemResource codeSystemResource : codeSystemResources) {
             CodeSystem codeSystem = parser.parseResource(CodeSystem.class, codeSystemResource.getText());

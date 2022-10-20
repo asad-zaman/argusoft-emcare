@@ -62,8 +62,19 @@ public class UserMapper {
         if (userInfo.getAttributes() == null || userInfo.getAttributes().isEmpty()) {
             userMaster.setLanguage(CommonConstant.ENGLISH);
         } else {
-            userMaster.setLanguage(userInfo.getAttributes().get(CommonConstant.LANGUAGE_KEY).get(0));
+            userMaster.setLanguage( userInfo.getAttributes() != null && userInfo.getAttributes().get(CommonConstant.LANGUAGE_KEY) != null
+                    ? userInfo.getAttributes().get(CommonConstant.LANGUAGE_KEY).get(0)
+                    : CommonConstant.ENGLISH);
+            userMaster.setPhone(
+                    userInfo.getAttributes() != null && userInfo.getAttributes().get(CommonConstant.PHONE_KEY) != null
+                            ? userInfo.getAttributes().get(CommonConstant.PHONE_KEY).get(0)
+                            : null);
+            userMaster.setCountryCode(
+                    userInfo.getAttributes() != null && userInfo.getAttributes().get(CommonConstant.COUNTRY_CODE) != null
+                            ? userInfo.getAttributes().get(CommonConstant.COUNTRY_CODE).get(0)
+                            : null);
         }
+
         return userMaster;
     }
 
@@ -76,6 +87,14 @@ public class UserMapper {
         user.setEmail(userRepresentation.getEmail());
         user.setEnabled(userRepresentation.isEnabled());
         user.setRealmRoles(userRepresentation.getRealmRoles());
+        user.setPhone(
+                userRepresentation.getAttributes() != null && userRepresentation.getAttributes().get(CommonConstant.PHONE_KEY) != null
+                        ? userRepresentation.getAttributes().get(CommonConstant.PHONE_KEY).get(0)
+                        : null);
+        user.setCountryCode(
+                userRepresentation.getAttributes() != null && userRepresentation.getAttributes().get(CommonConstant.COUNTRY_CODE) != null
+                        ? userRepresentation.getAttributes().get(CommonConstant.COUNTRY_CODE).get(0)
+                        : null);
         user.setFacilityDto(facilityDto);
         return user;
     }
@@ -90,6 +109,17 @@ public class UserMapper {
         user.setEnabled(userRepresentation.isEnabled());
         user.setRealmRoles(userRepresentation.getRealmRoles());
 //        user.setLocations(locationMaster);
+        user.setLanguage( userRepresentation.getAttributes() != null && userRepresentation.getAttributes().get(CommonConstant.LANGUAGE_KEY) != null
+                ? userRepresentation.getAttributes().get(CommonConstant.LANGUAGE_KEY).get(0)
+                : CommonConstant.ENGLISH);
+        user.setPhone(
+                userRepresentation.getAttributes() != null && userRepresentation.getAttributes().get(CommonConstant.PHONE_KEY) != null
+                        ? userRepresentation.getAttributes().get(CommonConstant.PHONE_KEY).get(0)
+                        : null);
+        user.setCountryCode(
+                userRepresentation.getAttributes() != null && userRepresentation.getAttributes().get(CommonConstant.COUNTRY_CODE) != null
+                        ? userRepresentation.getAttributes().get(CommonConstant.COUNTRY_CODE).get(0)
+                        : null);
         user.setFacilities(dtos);
         return user;
     }

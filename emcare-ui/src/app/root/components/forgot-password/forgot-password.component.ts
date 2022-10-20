@@ -63,8 +63,10 @@ export class ForgotPasswordComponent implements OnInit {
       }
       return;
     }
-    if (this.isEmailInputsVisible) {
+    if (this.isEmailInputsVisible && this.forgotPasswordForm.get('username').value) {
       this.generateOtpToVerifyUser();
+    } else {
+      this.toasterService.showToast('info', 'Please enter username', 'EMCARE!');
     }
     if (this.isOTPInputsVisible) {
       this.verifyOTP();

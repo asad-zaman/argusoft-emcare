@@ -29,7 +29,7 @@
     <table class="data-table" aria-labelledby="manage-feature">
       <thead>
         <tr>
-          <th class="cst-theader-1">{{'ID' | translate}}</th>
+          <th class="cst-theader-1">{{'Sr. No' | translate}}</th>
           <th class="cst-theader-2">{{'Type' | translate}}</th>
           <th class="cst-theader-2">{{'Name' | translate}}</th>
           <th class="cst-theader-4">Action</th>
@@ -58,7 +58,7 @@
                   value="canEdit" [(ngModel)]="featureConfig.selectedFeatures">
                 </p-checkbox>
                 <p-checkbox (click)="onCheckboxClicked(i)" styleClass="ml-3" name="group1" label="Can View"
-                  value="canView" [(ngModel)]=" featureConfig.selectedFeatures">
+                  value="canView" [(ngModel)]="featureConfig.selectedFeatures">
                 </p-checkbox>
                 <p-checkbox (click)="onCheckboxClicked(i)" styleClass="ml-3" name="group1" label="Can Delete"
                   value="canDelete" [(ngModel)]="featureConfig.selectedFeatures">

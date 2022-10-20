@@ -10,4 +10,6 @@ public interface UserFeatureJson {
 
     public Long getParent();
 
+    public Long getOrderNumber();
+
 }

@@ -26,6 +26,8 @@ export class ManageFacilityComponent implements OnInit {
   isAddFeature: boolean = true;
   isEditFeature: boolean = true;
   isAllowed: boolean = true;
+  orgArr = [];
+  isOrganizationAsFacility = false;
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -49,6 +51,7 @@ export class ManageFacilityComponent implements OnInit {
 
   prerequisite() {
     this.initFacilityForm();
+    this.getAllOrganizations();
     this.getAllLocations();
   }
 
@@ -81,36 +84,48 @@ export class ManageFacilityComponent implements OnInit {
       this.isEdit = true;
       this.fhirService.getFacilityById(this.editId).subscribe(res => {
         if (res) {
-          const locationId = res['extension'][0].valueIdentifier.value;
+          const locationId = res['extension'][0].valueInteger;
           if (locationId) {
-            this.locationService.getParentLocationsById(res['extension'][0].valueIdentifier.value).subscribe((res: Array<any>) => {
+            this.locationService.getParentLocationsById(res['extension'][0].valueInteger).subscribe((res: Array<any>) => {
               this.locationIdArr = res.map(el => el.id).reverse();
             });
           }
           this.organizationId = res['managingOrganization']['id'];
-          this.fhirService.getOrganizationById(this.organizationId).subscribe(orgRes => {
-            if (orgRes) {
-              this.mapValuesToFacilityForm(res, orgRes);
-            }
-          });
+          this.mapValuesToFacilityForm(res);
         }
       });
     }
     this.checkFeatures();
   }
 
+  getAllOrganizations() {
+    this.fhirService.getAllOrganizations().subscribe(res => {
+      if (res && res['entry']) {
+        this.orgArr = res['entry'].map(el => {
+          return { id: el.resource.id, name: el.resource.name }
+        })
+      }
+    })
+  }
+
   getStatusObjById(status) {
     return this.statusArr.find(el => el.id === status);
   }
 
-  mapValuesToFacilityForm(obj, orgObj) {
-    // to remove
+  getOrgObjfromId(id) {
+    return this.orgArr.find(el => el.id === id);
+  }
+
+  mapValuesToFacilityForm(obj) {
     this.facilityForm.patchValue({
-      organizationName: orgObj.name,
+      name: obj.name,
+      organization: this.getOrgObjfromId(obj.managingOrganization.id),
       status: this.getStatusObjById(obj.status),
       addressStreet: obj.address.line[0],
-      telecom: orgObj.telecom[0].value,
-      location: this.getLocationObjFromName((obj.extension[0].valueIdentifier.value))
+      telecom: obj.telecom ? obj.telecom[0].value : '',
+      location: this.getLocationObjFromName((obj['extension'][0].valueInteger)),
+      latitude: obj.position.latitude,
+      longitude: obj.position.longitude
     });
   }
 
@@ -124,7 +139,6 @@ export class ManageFacilityComponent implements OnInit {
     this.locationService.getAllLocations().subscribe((res: Array<Object>) => {
       if (res) {
         this.locationArr = res;
-        const data = res.find(el => el['parent'] === 0);
         this.checkEditParam();
       }
     })
@@ -132,11 +146,15 @@ export class ManageFacilityComponent implements OnInit {
 
   initFacilityForm() {
     this.facilityForm = this.formBuilder.group({
-      organizationName: ['', [Validators.required]],
+      name: ['', []],
+      organization: ['', [Validators.required]],
       addressStreet: ['', [Validators.required]],
-      status: [this.statusArr[0], [Validators.required]],
+      status: ['', [Validators.required]],
       telecom: ['', [Validators.required]],
-      location: ['', [Validators.required]]
+      location: ['', [Validators.required]],
+      latitude: ['', [Validators.required]],
+      longitude: ['', [Validators.required]],
+      isOrganizationAsFacility: [false]
     });
   }
 
@@ -147,37 +165,22 @@ export class ManageFacilityComponent implements OnInit {
   saveData() {
     this.submitted = true;
     if (this.facilityForm.valid) {
-      const organizationObj = this.getOrganizationJSON(this.facilityForm.value);
       if (this.isEdit) {
-        organizationObj['id'] = this.organizationId;
-        this.fhirService.updateOrganization(organizationObj, this.organizationId).subscribe(res => {
-          if (res) {
-            const jsonObj = this.getData(this.facilityForm.value);
-            jsonObj['id'] = this.editId;
-            this.fhirService.editFacility(jsonObj, this.editId).subscribe(_res => {
-              this.toasterService.showToast('success', 'Facility updated successfully!', 'EMCARE');
-              this.showFacilities();
-            }, (_error) => {
-              this.toasterService.showToast('error', 'Facility could not be updated successfully!', 'EMCARE');
-            });
-          }
+        const jsonObj = this.getData(this.facilityForm.value);
+        jsonObj['id'] = this.editId;
+        this.fhirService.editFacility(jsonObj, this.editId).subscribe(_res => {
+          this.toasterService.showToast('success', 'Facility updated successfully!', 'EMCARE');
+          this.showFacilities();
         }, (_error) => {
-          this.toasterService.showToast('error', 'Organization could not be updated successfully!', 'EMCARE');
+          this.toasterService.showToast('error', 'Facility could not be updated successfully!', 'EMCARE');
         });
       } else {
-        this.fhirService.addOrganization(organizationObj).subscribe(res => {
-          if (res) {
-            this.organizationId = res['id'];
-            const jsonObj = this.getData(this.facilityForm.value);
-            this.fhirService.addFacility(jsonObj).subscribe(_res => {
-              this.toasterService.showToast('success', 'Facility added successfully!', 'EMCARE');
-              this.showFacilities();
-            }, (_error) => {
-              this.toasterService.showToast('error', 'Facility could not be added successfully!', 'EMCARE');
-            });
-          }
+        const jsonObj = this.getData(this.facilityForm.value);
+        this.fhirService.addFacility(jsonObj).subscribe(_res => {
+          this.toasterService.showToast('success', 'Facility added successfully!', 'EMCARE');
+          this.showFacilities();
         }, (_error) => {
-          this.toasterService.showToast('error', 'Organization could not be added successfully!', 'EMCARE');
+          this.toasterService.showToast('error', 'Facility could not be added successfully!', 'EMCARE');
         });
       }
     }
@@ -190,6 +193,7 @@ export class ManageFacilityComponent implements OnInit {
   getData(facilityObj) {
     return {
       "resourceType": "Location",
+      "name": facilityObj.name ? facilityObj.name : this.getOrgObjfromId(facilityObj.organization.id).name,
       "address": {
         "use": "work",
         "line": [
@@ -198,23 +202,16 @@ export class ManageFacilityComponent implements OnInit {
       },
       "status": facilityObj.status && facilityObj.status.id,
       "managingOrganization": {
-        "id": this.organizationId
+        "id": facilityObj.organization.id
       },
-      "extension": [
-        {
-          "valueIdentifier": {
-            "use": "official",
-            "value": facilityObj.location.id
-          }
-        }
-      ]
-    }
-  }
-
-  getOrganizationJSON(facilityObj) {
-    return {
-      "resourceType": "Organization",
-      "name": facilityObj.organizationName,
+      "position": {
+        "longitude": facilityObj.longitude,
+        "latitude": facilityObj.latitude
+      },
+      "extension": [{
+        "url": null,
+        "valueInteger": facilityObj.location.id
+      }],
       "telecom": [
         {
           "system": "phone",
@@ -248,5 +245,47 @@ export class ManageFacilityComponent implements OnInit {
   getFormValue(event) {
     this.formData = event.formData;
     this.dropdownActiveArr = event.dropdownArr
+  }
+
+  getLocationCoordinates() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(position => {
+        this.facilityForm.patchValue({
+          longitude: position['coords']['longitude'],
+          latitude: position['coords']['latitude']
+        });
+      });
+    }
+    else {
+      this.toasterService.showToast('info', 'Geolocation is not supported by this browser!!', 'EMCARE');
+    }
+  }
+
+  setFacility(e) {
+    if (e.checked[0] === 'true') {
+      this.setOrgAsFacility();
+    }
+  }
+
+  checkOrgAsFacility() {
+    const isOrganizationAsFacility = this.facilityForm.get('isOrganizationAsFacility').value[0];
+    if (isOrganizationAsFacility) {
+      this.setOrgAsFacility();
+    }
+  }
+
+  setOrgAsFacility() {
+    const org = this.facilityForm.get('organization').value;
+    if (org && org.name) {
+      this.facilityForm.get('name').setValue(org.name);
+    }
+  }
+
+  redirectToOrganizations() {
+    this.router.navigateByUrl('/showOrganizations', {
+      state: {
+        returnRoute: this.editId ? `editFacility/${this.editId}` : '/addFacility'
+      }
+    });
   }
 }

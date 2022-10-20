@@ -32,7 +32,8 @@ import {
   QuestionnaireListComponent,
   QuestionnaireBuilderComponent,
   LocationDropdownComponent,
-  LanguageListComponent
+  LanguageListComponent,
+  DuplicatePatientsComponent
 } from './root/index';
 import { AuthenticationService, ToasterService } from './shared';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -57,6 +58,9 @@ import { CardModule } from 'primeng/card';
 import { ChartModule } from 'angular-highcharts';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
+import { ManageOrganizationComponent } from './root/components/manage-organization/manage-organization.component';
+import { OrganizationListComponent } from './root/components/organization-list/organization-list.component';
+import { NgxIntlTelInputModule } from 'ngx-intl-tel-input';
 
 @NgModule({
   declarations: [
@@ -90,7 +94,10 @@ import { MessageService } from 'primeng/api';
     LocationDropdownComponent,
     LanguageListComponent,
     ForgotPasswordComponent,
-    AdminPanelComponent
+    AdminPanelComponent,
+    ManageOrganizationComponent,
+    OrganizationListComponent,
+    DuplicatePatientsComponent
   ],
   imports: [
     BrowserModule,
@@ -112,7 +119,8 @@ import { MessageService } from 'primeng/api';
     ButtonModule,
     CardModule,
     ChartModule,
-    ToastModule
+    ToastModule,
+    NgxIntlTelInputModule
   ],
   providers: [
     AuthenticationService,

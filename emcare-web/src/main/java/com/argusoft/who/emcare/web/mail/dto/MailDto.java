@@ -4,6 +4,7 @@ public class MailDto {
 
     private String subject;
     private String body;
+    private String varList;
 
     public String getSubject() {
         return subject;
@@ -19,5 +20,13 @@ public class MailDto {
 
     public void setBody(String body) {
         this.body = body;
+    }
+
+    public String getVarList() {
+        return varList;
+    }
+
+    public void setVarList(String varList) {
+        this.varList = varList;
     }
 }

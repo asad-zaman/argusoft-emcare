@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { AuthenticationService, ToasterService } from 'src/app/shared';
+import { AuthenticationService, FhirService, ToasterService } from 'src/app/shared';
 import { Router } from '@angular/router';
 import { first } from 'rxjs/operators';
 import { MustMatch } from 'src/app/shared/validators/must-match.validator';
+import { SearchCountryField, CountryISO, PhoneNumberFormat } from 'ngx-intl-tel-input';
+
 @Component({
   selector: 'app-signup',
   templateUrl: './signup.component.html',
@@ -16,8 +18,14 @@ export class SignupComponent implements OnInit {
   submitted = false;
   returnUrl: string | undefined;
   error = null;
-  locationArr: any = [];
+  facilityArr: any = [];
   roleArr: any = [];
+
+  separateDialCode = true;
+  SearchCountryField = SearchCountryField;
+  CountryISO = CountryISO;
+  PhoneNumberFormat = PhoneNumberFormat;
+  preferredCountries: CountryISO[] = [CountryISO.Iraq, CountryISO.UnitedStates];
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -27,6 +35,10 @@ export class SignupComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.prerequisite();
+  }
+
+  prerequisite() {
     this.initSignUpForm();
     this.getAllLocations();
     this.getAllRoles();
@@ -37,19 +49,23 @@ export class SignupComponent implements OnInit {
       firstname: ['', [Validators.required, Validators.pattern('^[a-zA-z]*')]],
       lastname: ['', [Validators.required, Validators.pattern('^[a-zA-z]*')]],
       username: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-]+$')]],
-      password: ['', Validators.required],
-      confirmPassword: ['', Validators.required],
-      location: ['', Validators.required],
-      role: ['', Validators.required]
+      password: ['', [Validators.required]],
+      confirmPassword: ['', [Validators.required]],
+      location: ['', [Validators.required]],
+      role: ['', [Validators.required]],
+      countryCode: [CountryISO.Iraq],
+      phone: ['', [Validators.required]]  // 10 digit number
     }, {
       validator: MustMatch('password', 'confirmPassword')
     });
   }
 
   getAllLocations() {
-    this.authService.getAllLocationsForSignUp().subscribe(res => {
+    this.authService.getAllFacilitiesForSignUp().subscribe(res => {
       if (res) {
-        this.locationArr = res;
+        res.map(el => {
+          this.facilityArr.push({ name: `${el.facilityName} - ${el.organizationName}`, id: el.facilityId });
+        });
       }
     });
   }
@@ -67,29 +83,26 @@ export class SignupComponent implements OnInit {
   }
 
   userSignup() {
-    const locationIdArr = this.signupForm.value.location.map(l => l.id);
     this.submitted = true;
-    // stop here if form is invalid
-    if (this.signupForm.invalid || !!this.error) {
-      return;
+    //  stop here if form is invalid
+    if (this.signupForm.valid) {
+      const facilityIdArr = this.signupForm.value.location.map(l => l.id);
+      this.authService.signup(
+        this.signupForm.value.firstname, this.signupForm.value.lastname,
+        this.signupForm.value.username, this.signupForm.value.username, this.signupForm.value.password,
+        facilityIdArr, this.signupForm.value.role.name,
+        this.signupForm.value.phone.countryCode, this.signupForm.value.phone.number
+      ).pipe(first()).subscribe(_data => {
+        this.router.navigate(["/login"]);
+        this.toasterService.showToast('success', 'User added successfully!', 'EMCARE');
+      }, error => {
+        if (error.status == 400) {
+          this.error = error['error']['errorMessage'];
+        }
+        this.loading = false;
+        this.toasterService.showToast('error', 'Email already registered!', 'EMCARE');
+      });
     }
-    this.authService.signup(this.signupForm.value.firstname, this.signupForm.value.lastname,
-      this.signupForm.value.username, this.signupForm.value.password,
-      locationIdArr, this.signupForm.value.role
-    )
-      .pipe(first())
-      .subscribe(
-        _data => {
-          this.router.navigate(["/login"]);
-          this.toasterService.showToast('success', 'User added successfully!', 'EMCARE');
-        },
-        error => {
-          if (error.status == 400) {
-            this.error = error['error']['errorMessage'];
-          }
-          this.loading = false;
-          this.toasterService.showToast('error', 'Email already registered!', 'EMCARE');
-        });
   }
 
   navigateToLogin() {
