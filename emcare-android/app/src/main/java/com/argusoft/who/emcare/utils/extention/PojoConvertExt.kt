@@ -4,7 +4,7 @@ import com.argusoft.who.emcare.ui.common.model.PatientItem
 import org.hl7.fhir.r4.model.Patient
 import org.hl7.fhir.r4.model.RiskAssessment
 
-fun Patient.toPatientItem(position: Int, riskAssessment: Map<String, RiskAssessment?>): PatientItem {
+fun Patient.toPatientItem(position: Int): PatientItem {
     val patientId = if (hasIdElement()) idElement.idPart else ""
     val name = if (hasName()) name[0].nameAsSingleString else ""
     val gender = if (hasGenderElement()) genderElement.valueAsString else ""
@@ -15,9 +15,7 @@ fun Patient.toPatientItem(position: Int, riskAssessment: Map<String, RiskAssessm
     val country = if (hasAddress()) address[0].country else ""
     val isActive = active
     val html: String = if (hasText()) text.div.valueAsString else ""
-    val risk = riskAssessment["Patient/${patientId}"]?.let {
-        it.prediction?.first()?.qualitativeRisk?.coding?.first()?.code
-    }
+
     return PatientItem(
         id = position.toString(),
         resourceId = patientId,
@@ -30,6 +28,5 @@ fun Patient.toPatientItem(position: Int, riskAssessment: Map<String, RiskAssessm
         country = country ?: "",
         isActive = isActive,
         html = html,
-        risk = risk
     )
 }

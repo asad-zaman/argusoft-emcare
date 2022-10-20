@@ -15,40 +15,42 @@
         android:name="com.argusoft.who.emcare.ui.home.HomeFragment"
         tools:layout="@layout/fragment_home">
         <action
-            android:id="@+id/action_homeFragment_to_locationFragment"
-            app:destination="@id/locationFragment" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/locationFragment"
-        android:name="com.argusoft.who.emcare.ui.home.location.LocationFragment"
-        tools:layout="@layout/fragment_location" >
-        <action
-            android:id="@+id/action_locationFragment_to_patientFragment"
-            app:destination="@id/patientFragment" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/patientFragment"
-        android:name="com.argusoft.who.emcare.ui.home.patient.PatientFragment"
-        tools:layout="@layout/fragment_patient">
-        <action
-            android:id="@+id/action_patientFragment_to_addPatientFragment"
+            android:id="@+id/action_homeFragment_to_addPatientFragment"
             app:destination="@id/addPatientFragment" />
         <action
-            android:id="@+id/action_patientFragment_to_patientActionsFragment"
-            app:destination="@id/patientActionsFragment" />
+            android:id="@+id/action_homeFragment_to_patientProfileFragment"
+            app:destination="@id/patientProfileFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_patientQuestionnaireFragment"
+            app:destination="@id/patientQuestionnaireFragment" />
+
     </fragment>
+
 
     <fragment
         android:id="@+id/addPatientFragment"
         android:name="com.argusoft.who.emcare.ui.home.patient.add.AddPatientFragment"
-        tools:layout="@layout/fragment_add_patient" />
+        tools:layout="@layout/fragment_add_patient">
+        <action
+            android:id="@+id/action_addPatientFragment_to_homeFragment"
+            app:popUpToInclusive="true"
+            app:popUpTo="@id/homeFragment"
+            app:destination="@id/homeFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/patientQuestionnaireFragment"
         android:name="com.argusoft.who.emcare.ui.home.patient.actions.PatientQuestionnaireFragment"
-        tools:layout="@layout/fragment_patient_questionnaire" />
+        tools:layout="@layout/fragment_patient_questionnaire" >
+        <action
+            android:id="@+id/action_patientQuestionnaireFragment_to_patientQuestionnaireFragment"
+            app:destination="@id/patientQuestionnaireFragment" />
+        <action
+            android:id="@+id/action_patientQuestionnaireFragment_to_homeFragment"
+            app:popUpToInclusive="true"
+            app:popUpTo="@id/homeFragment"
+            app:destination="@id/homeFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/patientActionsFragment"
@@ -56,6 +58,15 @@
         tools:layout="@layout/fragment_patient_actions">
         <action
             android:id="@+id/action_patientActionsFragment_to_patientQuestionnaireFragment"
+            app:destination="@id/patientQuestionnaireFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/patientProfileFragment"
+        android:name="com.argusoft.who.emcare.ui.home.patient.profile.PatientProfileFragment"
+        tools:layout="@layout/fragment_patient_profile">
+        <action
+            android:id="@+id/action_patientProfileFragment_to_patientQuestionnaireFragment"
             app:destination="@id/patientQuestionnaireFragment" />
     </fragment>
 

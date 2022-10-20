@@ -50,6 +50,7 @@ class PatientActionsFragment : BaseFragment<FragmentPatientActionsBinding>() {
 
                 patientActionsList.add(PatientQuestionnaireData("Signs", "EmCare.B10-16.Signs.2m.p",R.drawable.ic_risk_assessment))
                 patientActionsList.add(PatientQuestionnaireData("Symptoms", "emcare.b10-14.symptoms.2m.p",R.drawable.ic_dashboard_notification))
+                patientActionsList.add(PatientQuestionnaireData("Symptoms 2", "EmCare.B10-16.Symptoms.2m.p",R.drawable.ic_dashboard_notification))
                 patientActionsList.add(PatientQuestionnaireData("Measurements", "EmCare.B6.Measurements",R.drawable.ic_reports))
                 patientActionsList.add(PatientQuestionnaireData("Danger Signs", "EmCare.B7.LTI-DangerSigns",R.drawable.ic_announcements))
 
@@ -70,7 +71,7 @@ class PatientActionsFragment : BaseFragment<FragmentPatientActionsBinding>() {
         observeNotNull(settingsViewModel.languageApiState) {
             it.whenSuccess {
                 it.languageData?.convertToMap()?.apply {
-                    binding.headerLayout.toolbar.setTitleAndBack(getOrElse("Patient_Actions") { getString(R.string.title_patient_actions) })
+                    binding.headerLayout.toolbar.setTitleDashboard(id = getOrElse("Patient_Actions") { getString(R.string.title_patient_actions) })
                 }
             }
         }

@@ -1,9 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
     <color name="horizontalBackground">#6CFAFAFA</color>
-    <color name="colorPrimary">#4D4D4D</color>
     <color name="colorPrimaryDark">#4D4D4D</color>
-    <color name="colorAccent">#E2203B</color>
+    <color name="colorAccent1">#E3E8EE</color>
+    <color name="emergencyBackgroundTint">#4A494A</color>
+    <color name="emergencyBorder">#252525</color>
+    <color name="colorLineBreak">#D9D9D9</color>
+
+
+    <!--Final Colors -->
+    <!--General Colors -->
+    <color name="colorAccent">#008DC9</color>
+    <color name="fragmentBackground">#F8FAFD</color>
+    <color name="colorPrimary">#292929</color>
+    <color name="colorAccent0">#4D4D4D</color>
+    <color name="colorAccent2">#707071</color>
+    <color name="colorPurple">#0000CD</color>
+    <color name="colorSecondary2">#57686F</color>
+    <!--Questionnaire Colors-->
+    <color name="questionnaireErrorTextColor">#E4203B</color>
+    <color name="questionnaireRadioButtonStroke">#A6A6A6</color>
+    <color name="questionnaireRadioButtonSelected">@color/colorAccent</color>
+    <color name="questionnaireCheckboxSelectedColor">@color/colorAccent</color>
+    <color name="buttonColor">@color/colorAccent</color>
+    <!--Sidepane colors-->
+    <color name="sidePaneEnabled">@color/colorSecondary2</color>
+    <color name="sidePaneDisabled">@color/colorAccent0</color>
+
+    <!--SDC Beta 04-->
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+
     <color name="colorStatusBar">#175adf</color>
     <color name="low_risk">#388e3c</color>
     <color name="low_risk_background">#e8f5e9</color>
@@ -29,7 +56,8 @@
     <color name="textColorWhite80">#CCFFFFFF</color>
     <color name="textColorBlack">#4E4E4E</color>
     <color name="textColorBlack80">#4E4E4E</color>
-    <color name="buttonColor">#E2203B</color>
+    <color name="textColorGrey">#6D6E72</color>
+    <color name="textColorDarkGrey">#57686F</color>
     <color name="textColorLightBlue">#1385D7</color>
     <color name="colorLightGrey">#FFCCCCCC</color>
 </resources>

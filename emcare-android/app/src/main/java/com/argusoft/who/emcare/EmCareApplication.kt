@@ -32,8 +32,6 @@ class EmCareApplication : Application(), Configuration.Provider, DataCaptureConf
     @Inject
     lateinit var api: Api
 
-    private val localeAppDelegate = LocaleHelperApplicationDelegate()
-
     @Inject
     lateinit var workerFactory: HiltWorkerFactory
 
@@ -64,16 +62,21 @@ class EmCareApplication : Application(), Configuration.Provider, DataCaptureConf
             )
         }
 
-        if(valueSets.isEmpty()) {
+        if (valueSets.isEmpty()) {
             return listOf()
         } else {
             val valueSet = valueSets.get(0)
             val codingList = mutableListOf<Coding>()
-            valueSet.compose.include.forEach {
-                    includeObj ->
+            valueSet.compose.include.forEach { includeObj ->
                 run {
                     includeObj.concept.forEach { conceptObj ->
-                        codingList.add(Coding(includeObj.system, conceptObj.code, conceptObj.display))
+                        codingList.add(
+                            Coding(
+                                includeObj.system,
+                                conceptObj.code,
+                                conceptObj.display
+                            )
+                        )
                     }
 
                 }
@@ -95,17 +98,11 @@ class EmCareApplication : Application(), Configuration.Provider, DataCaptureConf
             FhirEngineConfiguration(
                 enableEncryptionIfSupported = false,
                 DatabaseErrorStrategy.RECREATE_AT_OPEN,
-                ServerConfiguration(BuildConfig.FHIR_BASE_URL, EmcareAuthenticator(preference))
+                ServerConfiguration(BuildConfig.FHIR_BASE_URL,
+                    NetworkConfiguration(connectionTimeOut = 120, readTimeOut = 120, writeTimeOut = 120),
+                    EmcareAuthenticator(preference))
             )
         )
     }
 
-    override fun attachBaseContext(base: Context) {
-        super.attachBaseContext(localeAppDelegate.attachBaseContext(base))
-    }
-
-    override fun onConfigurationChanged(newConfig: android.content.res.Configuration) {
-        super.onConfigurationChanged(newConfig)
-        localeAppDelegate.onConfigurationChanged(this)
-    }
 }

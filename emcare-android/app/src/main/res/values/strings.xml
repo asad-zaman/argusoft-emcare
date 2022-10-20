@@ -6,6 +6,8 @@
     <string name="patient">Patient</string>
     <string name="title_patient_details">Patient Details</string>
     <string name="title_patient_actions">Patient Actions</string>
+    <string name="title_patient_profile">Patient Profile</string>
+    <string name="title_home">Em Care</string>
     <string name="title_select_location">Select Location</string>
     <string name="menu_about">About Fhir Engine</string>
     <string name="menu_load_resource">Load CQL Resources &amp; Patients</string>
@@ -14,7 +16,7 @@
 
     <!-- For display observations in brief, for a patient -->
     <string name="observation_brief_text">%1$s: %2$s\nEffective: %3$s</string>
-    <string name="query_hint_patient_search">Find by Patient Name</string>
+    <string name="query_hint_patient_search">Search</string>
     <string
         name="cancel_questionnaire_message"
         >Are you sure you want to discard the answers?</string>
@@ -55,6 +57,8 @@
     <string name="unknown">UNKNOWN</string>
     <string name="none">none</string>
     <string name="description_status">Status</string>
+    <string name="description_arrow">Arrow</string>
+    <string name="consultation_icon">Consultation Icon</string>
     <string name="open">Open</string>
     <string name="close">Close</string>
     <string name="sync_menu">Sync</string>
@@ -67,6 +71,11 @@
     <!--Label Text-->
     <string name="label_open_gallery">Open Gallery</string>
     <string name="label_open_camera">Open Camera</string>
+    <string name="emergency_button">EMERGENCY</string>
+    <string name="dob_label">DOB :</string>
+    <string name="last_consultation_date_label">Last Consultation Date:</string>
+    <string name="consultation_date_label">Consultation Date :</string>
+
 
     <!--Button Text-->
     <string name="button_yes">Yes</string>
@@ -80,6 +89,7 @@
     <string name="button_turn_on_internet_connectivity">Turn on internet connectivity</string>
 
     <!--Messages Text-->
+    <string name="questionnaire_render_error">Some error occured with the questionnaire, please sync &amp; try again!</string>
     <string name="no_internet_title">No Internet Available</string>
     <string name="no_record_found">No Record Found</string>
     <string name="server_error_title">Something want wrong</string>
@@ -92,17 +102,22 @@
     <string name="alert_message_error">Something went wrong please try after sometime.</string>
     <string name="action_ok">OK</string>
     <string name="login_description">Creating a digital client record system for child and new born health conditions in emergencies</string>
-    <string name="hint_username">Username</string>
+    <string name="hint_username">E-mail</string>
+    <string name="hint_login_id">Log In ID</string>
     <string name="hint_password">Password</string>
     <string name="button_login">Login</string>
+    <string name="title_login">LOGIN</string>
     <string name="label_forgot_password">Forgot Password?</string>
     <string name="label_don_t_have_an_account">Don\'t have an account?</string>
-    <string name="label_signup">Signup</string>
+    <string name="label_app_version">APP VERSION:</string>
+    <string name="label_signup">New User? Signup</string>
     <string name="label_sign_up">Sign Up</string>
     <string name="hint_first_name">First Name</string>
     <string name="hint_last_name">Last Name</string>
     <string name="hint_email">Email</string>
+    <string name="hint_phone">Phone Number</string>
     <string name="hint_location">Location</string>
+    <string name="hint_facility">Facility</string>
     <string name="hint_role">Role</string>
     <string name="button_next">Next</string>
     <string name="button_submit">Submit</string>
@@ -117,6 +132,16 @@
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
+    <string name="patient_profile">PATIENT PROFILE</string>
+    <string name="new_consultation">NEW CONSULTATION</string>
+    <string name="active_consultations">ACTIVE CONSULTATIONS</string>
+    <string name="previous_consultations">PREVIOUS CONSULTATIONS</string>
+    <string name="patient_list">Patients</string>
+    <string name="consultation_list">Consultations</string>
+    <string name="reason_for_consultation"><u>REASON FOR CONSULTATION</u></string>
+    <string name="healthcare_worker">Health Care Worker</string>
+    <string name="facility_name">Facility Name</string>
+
 
     <string name="menu_home">Home</string>
     <string name="menu_gallery">Gallery</string>
@@ -132,20 +157,28 @@
     <string name="label_get_started">Get Started.</string>
     <string name="label_what_would_you_like_to_do_today">What would you like to do today!</string>
   <string name="blocked_device_message">This device is blocked from using the EmCare application.</string>
-  <string name="ok">Ok</string>
+  <string name="error_saving_resource">Submit unsuccessful, please try again later!</string>
+    <string name="error_valid_data">Please answer all required fields.</string>
+    <string name="ok">Ok</string>
     <string name="error_msg_username">Please enter username</string>
     <string name="error_msg_password">Please enter password</string>
     <string name="button_add_patient">Add Patient</string>
+    <string name="button_add_new_patient">Add New Patient</string>
     <string name="label_id_with_colon">Id: #---%1$s</string>
-    <string name="title_add_patient">Add Patient</string>
+    <string name="title_add_patient">Register a new child</string>
+    <string name="title_emcare_registration">Add New Patient</string>
     <string name="menu_save">Save</string>
     <string name="msg_logout">Are you sure you want to logout?</string>
+    <string name="msg_exit_consultation">Are You Sure You Want To Exit The Consultation?</string>
+    <string name="msg_exit_registration">Are You Sure You Want To Exit Registration?</string>
     <string name="msg_delete_patient">Are you sure you want to delete Patient?</string>
     <string name="error_msg_firstname">Please enter first name</string>
     <string name="error_msg_lastname">Please enter last name</string>
     <string name="error_msg_email">Please enter email</string>
     <string name="error_msg_valid_email">Please enter valid email</string>
     <string name="error_msg_location">Please select location</string>
+    <string name="error_msg_phone_number">Please enter phone number</string>
+    <string name="error_msg_facility">Please select facility</string>
     <string name="error_msg_role">Please select role</string>
     <string name="error_msg_confirm_password">Please enter confirm password</string>
     <string name="error_msg_password_not_match">Password does\'t match</string>

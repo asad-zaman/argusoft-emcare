@@ -32,11 +32,6 @@ abstract class BaseActivity<B : ViewBinding> : AppCompatActivity(), View.OnClick
     abstract fun initListener()
     abstract fun initObserver()
 
-    private val localeDelegate = LocaleHelperActivityDelegateImpl()
-
-    override fun attachBaseContext(newBase: Context) {
-        super.attachBaseContext(localeDelegate.attachBaseContext(newBase))
-    }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {

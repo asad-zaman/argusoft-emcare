@@ -8,6 +8,8 @@ import androidx.room.TypeConverter
 import com.argusoft.who.emcare.data.local.database.Converters
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import java.time.Instant
+import java.time.ZonedDateTime
 
 @Entity
 @JsonClass(generateAdapter = true)
@@ -22,8 +24,8 @@ data class LoggedInUser(
     var language: String? = null,
     @Json(name = "lastName")
     var lastName: String? = null,
-    @Json(name = "location")
-    var location: List<Location>? = null,
+    @Json(name = "facilities")
+    var facility: List<Facility>? = null,
     @Json(name = "roles")
     var roles: List<String?>? = null,
     @PrimaryKey
@@ -32,7 +34,8 @@ data class LoggedInUser(
     @Json(name = "userName")
     var userName: String? = null,
     @Json(name = "password")
-    var password: String? = null
+    var password: String? = null,
+    var loginTime: Long = Instant.now().toEpochMilli()
 ){
     @JsonClass(generateAdapter = true)
     data class Feature(

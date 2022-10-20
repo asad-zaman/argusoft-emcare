@@ -1,56 +1,73 @@
 package com.argusoft.who.emcare.ui.home.patient.add
 
+import androidx.activity.addCallback
 import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
-import ca.uhn.fhir.context.FhirContext
-import ca.uhn.fhir.parser.IParser
 import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.databinding.FragmentAddPatientBinding
-import com.argusoft.who.emcare.ui.common.INTENT_EXTRA_LOCATION_ID
+import com.argusoft.who.emcare.ui.common.CONSULTATION_STAGE_REGISTRATION_PATIENT
+import com.argusoft.who.emcare.ui.common.INTENT_EXTRA_FACILITY_ID
 import com.argusoft.who.emcare.ui.common.base.BaseFragment
-import com.argusoft.who.emcare.ui.home.patient.PatientViewModel
+import com.argusoft.who.emcare.ui.common.model.ConsultationFlowItem
+import com.argusoft.who.emcare.ui.common.stageToQuestionnaireId
+import com.argusoft.who.emcare.ui.common.stageToStructureMapId
+import com.argusoft.who.emcare.ui.home.HomeViewModel
 import com.argusoft.who.emcare.ui.home.settings.SettingsViewModel
-import com.argusoft.who.emcare.utils.extention.convertToMap
+import com.argusoft.who.emcare.utils.extention.alertDialog
 import com.argusoft.who.emcare.utils.extention.handleApiView
+import com.argusoft.who.emcare.utils.extention.navigate
 import com.argusoft.who.emcare.utils.extention.observeNotNull
-import com.argusoft.who.emcare.utils.extention.whenSuccess
 import com.google.android.fhir.datacapture.QuestionnaireFragment
 import dagger.hilt.android.AndroidEntryPoint
-import org.hl7.fhir.r4.model.Questionnaire
+import com.google.android.fhir.datacapture.QuestionnaireFragment.Companion.SUBMIT_REQUEST_KEY
+import java.util.*
+
 
 @AndroidEntryPoint
 class AddPatientFragment : BaseFragment<FragmentAddPatientBinding>() {
 
-    private val patientViewModel: PatientViewModel by viewModels()
-    private val settingsViewModel: SettingsViewModel by activityViewModels()
+    private val homeViewModel: HomeViewModel by viewModels()
+//    private val settingsViewModel: SettingsViewModel by activityViewModels()
     private val questionnaireFragment = QuestionnaireFragment()
 
     override fun initView() {
-        setupToolbar()
-        patientViewModel.getQuestionnaire("emcarea.registration.p") //TODO: replace hardcoded questionnaire id.
-    }
-
-    private fun setupToolbar() {
-        binding.headerLayout.toolbar.inflateMenu(R.menu.menu_save)
-        binding.headerLayout.toolbar.setOnMenuItemClickListener {
-            patientViewModel.questionnaireJson?.let {
-                patientViewModel.savePatient(
-                    questionnaireFragment.getQuestionnaireResponse(), it,
-                    requireArguments().getInt(INTENT_EXTRA_LOCATION_ID)
+        binding.headerLayout.toolbar.title = getString(R.string.title_emcare_registration)
+        homeViewModel.getQuestionnaireWithQR(stageToQuestionnaireId[CONSULTATION_STAGE_REGISTRATION_PATIENT]!!, UUID.randomUUID().toString(), UUID.randomUUID().toString())
+        childFragmentManager.setFragmentResultListener(SUBMIT_REQUEST_KEY, viewLifecycleOwner) { _, _ ->
+            homeViewModel.questionnaireJson?.let {
+                homeViewModel.saveQuestionnaire(
+                    questionnaireResponse = questionnaireFragment.getQuestionnaireResponse(),
+                    questionnaire = it,
+                    facilityId = preference.getLoggedInUser()?.facility?.get(0)?.facilityId!!,
+                    structureMapId = stageToStructureMapId[CONSULTATION_STAGE_REGISTRATION_PATIENT]!!,
+                    consultationFlowItemId = null,
+                    consultationStage = CONSULTATION_STAGE_REGISTRATION_PATIENT
                 )
             }
-            return@setOnMenuItemClickListener true
+        }
+
+        requireActivity().onBackPressedDispatcher.addCallback(this) {
+            activity?.alertDialog {
+                setMessage(R.string.msg_exit_registration)
+                setPositiveButton(R.string.button_yes) { _, _ ->
+                    navigate(R.id.action_addPatientFragment_to_homeFragment)
+                }
+                setNegativeButton(R.string.button_no) { _, _ -> }
+            }?.show()
         }
     }
 
-    private fun addQuestionnaireFragment(questionnaire: Questionnaire) {
-        val fhirCtx: FhirContext = FhirContext.forR4()
-        val parser: IParser = fhirCtx.newJsonParser().setPrettyPrint(false)
-        patientViewModel.questionnaireJson = parser.encodeResourceToString(questionnaire)
-        patientViewModel.questionnaireJson?.let {
-            questionnaireFragment.arguments = bundleOf(QuestionnaireFragment.EXTRA_QUESTIONNAIRE_JSON_STRING to it)
+
+    private fun addQuestionnaireFragmentWithQR(pair: Pair<String, String>) {
+        homeViewModel.questionnaireJson = pair.first
+        homeViewModel.questionnaireJson?.let {
+            questionnaireFragment.arguments =
+                bundleOf(
+                    QuestionnaireFragment.EXTRA_QUESTIONNAIRE_JSON_STRING to pair.first,
+                    QuestionnaireFragment.EXTRA_QUESTIONNAIRE_RESPONSE_JSON_STRING to pair.second
+                )
             childFragmentManager.commit {
                 add(R.id.fragmentContainerView, questionnaireFragment, QuestionnaireFragment::class.java.simpleName)
             }
@@ -58,28 +75,28 @@ class AddPatientFragment : BaseFragment<FragmentAddPatientBinding>() {
     }
 
     override fun initListener() {
-
     }
 
     override fun initObserver() {
-        observeNotNull(patientViewModel.addPatients) { apiResponse ->
+        observeNotNull(homeViewModel.saveQuestionnaire) { apiResponse ->
             apiResponse.handleApiView(binding.progressLayout, skipIds = listOf(R.id.headerLayout)) {
-                if (it == 1) {
-                    requireActivity().onBackPressed()
+                if (it is ConsultationFlowItem) {
+                    navigate(R.id.action_addPatientFragment_to_homeFragment)
                 }
             }
         }
-        observeNotNull(patientViewModel.questionnaire) { questionnaire ->
+
+        observeNotNull(homeViewModel.questionnaireWithQR) { questionnaire ->
             questionnaire.handleApiView(binding.progressLayout, skipIds = listOf(R.id.headerLayout)) {
-                it?.let { addQuestionnaireFragment(it) }
+                it?.let { addQuestionnaireFragmentWithQR(it) }
             }
         }
-        observeNotNull(settingsViewModel.languageApiState) {
-            it.whenSuccess {
-                it.languageData?.convertToMap()?.apply {
-                    binding.headerLayout.toolbar.setTitleAndBack(getOrElse("Add_Patient") { getString(R.string.title_add_patient) } )
-                }
-            }
-        }
+//        observeNotNull(settingsViewModel.languageApiState) {
+//            it.whenSuccess {
+//                it.languageData?.convertToMap()?.apply {
+//                    binding.headerLayout.toolbar.setTitleSidepane(getOrElse("Add_Patient") { getString(R.string.title_add_patient) } )
+//                }
+//            }
+//        }
     }
 }

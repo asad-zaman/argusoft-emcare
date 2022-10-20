@@ -27,9 +27,9 @@ class CustomQuestionnaireFragment : QuestionnaireFragment() {
                 return@QuestionnaireItemViewHolderFactoryMatcher questionnaireItem.type == Questionnaire.QuestionnaireItemType.STRING || questionnaireItem.type == Questionnaire
                     .QuestionnaireItemType.QUANTITY || questionnaireItem.type == Questionnaire.QuestionnaireItemType.INTEGER
             },
-            QuestionnaireItemViewHolderFactoryMatcher(CustomDateFactory) { questionnaireItem ->
-                return@QuestionnaireItemViewHolderFactoryMatcher questionnaireItem.type == Questionnaire.QuestionnaireItemType.DATE
-            },
+//            QuestionnaireItemViewHolderFactoryMatcher(CustomDateFactory) { questionnaireItem ->
+//                return@QuestionnaireItemViewHolderFactoryMatcher questionnaireItem.type == Questionnaire.QuestionnaireItemType.DATE
+//            },
         )
     }
 }

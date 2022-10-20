@@ -12,7 +12,7 @@ android {
 
     defaultConfig {
         applicationId "com.argusoft.who.emcare"
-        minSdkVersion 21
+        minSdkVersion 26
         targetSdkVersion 31
         versionCode 1
         versionName "1.0"
@@ -80,6 +80,11 @@ android {
     packagingOptions {
         pickFirst("META-INF/ASL-2.0.txt")
         pickFirst("META-INF/LGPL-3.0.txt")
+        exclude "license.html"
+        exclude "readme.html"
+        exclude "META-INF/sun-jaxb.episode"
+        exclude "META-INF/LICENSE.md"
+        exclude "META-INF/NOTICE.md"
     }
 }
 
@@ -154,8 +159,9 @@ dependencies {
     implementation "androidx.work:work-runtime-ktx:2.7.1"
 
     //Fhir
-    implementation "com.google.android.fhir:engine:0.1.0-beta01"
-    implementation "com.google.android.fhir:data-capture:0.1.0-beta03"
+    implementation "com.google.android.fhir:engine:0.1.0-beta02"
+    implementation "com.google.android.fhir:data-capture:0.1.0-beta05"
+    implementation "com.google.android.fhir:workflow:0.1.0-alpha02"
 
     //EventBus
     implementation("org.greenrobot:eventbus:3.3.1")

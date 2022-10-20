@@ -19,9 +19,13 @@ package com.argusoft.who.emcare.sync
 import com.argusoft.who.emcare.data.local.database.Database
 import com.argusoft.who.emcare.data.local.pref.Preference
 import com.argusoft.who.emcare.data.remote.Api
+import com.argusoft.who.emcare.ui.common.model.ConsultationFlowItem
 import com.argusoft.who.emcare.utils.extention.whenFailed
 import com.argusoft.who.emcare.utils.extention.whenSuccess
 import kotlinx.coroutines.flow.MutableSharedFlow
+import java.time.Instant
+import java.time.ZoneId
+import java.time.ZonedDateTime
 
 sealed class SyncResult {
 //    val timestamp: OffsetDateTime = OffsetDateTime.now()
@@ -45,8 +49,9 @@ sealed class SyncState {
 }
 
 enum class SyncType {
-    LOCATION,
-    LANGUAGE
+    FACILITY,
+    LANGUAGE,
+    CONSULTATION_FLOW_ITEM,
 }
 
 /** Class that helps synchronize the data source and save it in the local database */
@@ -105,12 +110,12 @@ internal class EmCareSynchronizer(
         syncTypeParams.forEach { syncType ->
             emit(SyncState.InProgress(syncType))
             when (syncType) {
-                SyncType.LOCATION -> {
-                    val location = api.getLocations()
-                    location.whenSuccess {
-                        database.saveLocations(it)
+                SyncType.FACILITY -> {
+                    val facility = api.getFacilities()
+                    facility.whenSuccess {
+                        database.saveFacilities(it)
                     }
-                    location.whenFailed {
+                    facility.whenFailed {
                         exceptions.add(SyncException(syncType))
                     }
                 }
@@ -120,6 +125,21 @@ internal class EmCareSynchronizer(
                         database.saveLanguages(it)
                     }
                     language.whenFailed {
+                        exceptions.add(SyncException(syncType))
+                    }
+                }
+                SyncType.CONSULTATION_FLOW_ITEM -> {
+                    val consultations = api.getConsultationFlow()
+                    consultations.whenSuccess {
+                        it.forEach {
+                            consultationFlowItem ->
+                            if(consultationFlowItem.consultationDate != null) {
+                                consultationFlowItem.consultationDate = ZonedDateTime.ofInstant(Instant.ofEpochMilli(consultationFlowItem.consultationDate!!.toLong()), ZoneId.of("UTC")).toOffsetDateTime().toString().removeSuffix("Z")
+                            }
+                        }
+                        database.saveConsultationFlowItems(it)
+                    }
+                    consultations.whenFailed {
                         exceptions.add(SyncException(syncType))
                     }
                 }
@@ -136,6 +156,20 @@ internal class EmCareSynchronizer(
 
     private suspend fun upload(): SyncResult {
         val exceptions = mutableListOf<SyncException>()
+
+        syncTypeParams.forEach { syncType ->
+            emit(SyncState.InProgress(syncType))
+            if (syncType == SyncType.CONSULTATION_FLOW_ITEM) {
+                val consultationsList = database.getAllConsultations()
+                if(!consultationsList.isNullOrEmpty()) {
+                    val consultations = api.saveConsultations(consultationsList)
+                    consultations.whenFailed {
+                        exceptions.add(SyncException(syncType))
+                    }
+                }
+
+            }
+        }
 
         return if (exceptions.isEmpty()) {
             SyncResult.Success

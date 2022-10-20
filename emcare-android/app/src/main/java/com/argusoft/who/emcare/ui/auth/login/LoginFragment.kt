@@ -42,9 +42,9 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(), EasyPermissions.Perm
             )
         }
         observeNotNull(loginViewModel.loginApiState) {
-            it.handleApiView(binding.progressLayout) {
-                syncViewModel.syncPatients()
-            }
+                it.handleApiView(binding.progressLayout) {
+                    syncViewModel.syncPatients()
+                }
         }
 
         observeNotNull(syncViewModel.syncState) {
@@ -81,12 +81,11 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(), EasyPermissions.Perm
         }
     }
 
-    @AfterPermissionGranted(REQUEST_CODE_READ_PHONE_STATE)
-    fun deviceInfo() {
+    private fun deviceInfo() {
         if (hasReadPhoneStatePermission()) {
             loginViewModel.login(
-                binding.usernameEditText.getEnterText(),
-                binding.passwordEditText.getEnterText(),
+                binding.loginIdEditText.editText?.getEnterText()!!,
+                binding.passwordEditText.editText?.getEnterText()!!,
                 getDeviceName(),
                 getDeviceOS(),
                 getDeviceModel(),

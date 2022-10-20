@@ -15,7 +15,7 @@
             android:layout_height="0dp"
             android:layout_marginTop="@dimen/_16sdp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/nameTextView">
+            app:layout_constraintTop_toBottomOf="@+id/tabCardView">
         </Constraint>
     </ConstraintSet>
 
@@ -28,7 +28,7 @@
             android:layout_marginTop="@dimen/status_margin_top"  />
 
         <Constraint
-            android:id="@+id/nestedScrollView"
+            android:id="@id/viewPager2"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -43,7 +43,7 @@
         app:motionInterpolator="linear">
         <KeyFrameSet>
         </KeyFrameSet>
-        <OnSwipe app:touchAnchorId="@+id/nestedScrollView" />
+        <OnSwipe app:touchAnchorId="@id/viewPager2" />
     </Transition>
 
 </MotionScene>

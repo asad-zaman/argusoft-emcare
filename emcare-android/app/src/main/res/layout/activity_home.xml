@@ -7,27 +7,75 @@
     android:layout_height="match_parent"
     tools:openDrawer="right">
 
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/navHostFragment"
-        android:name="androidx.navigation.fragment.NavHostFragment"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:defaultNavHost="true"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:navGraph="@navigation/home" />
-
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/navHostFragment"
+            android:name="androidx.navigation.fragment.NavHostFragment"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:defaultNavHost="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:navGraph="@navigation/home" />
+<!--        <com.google.android.material.card.MaterialCardView-->
+<!--            android:id="@+id/emergencyCardView"-->
+<!--            android:translationZ="@dimen/_1sdp"-->
+<!--            android:layout_width="@dimen/_70sdp"-->
+<!--            android:layout_height="@dimen/_70sdp"-->
+<!--            android:layout_marginStart="@dimen/_12sdp"-->
+<!--            android:layout_marginBottom="@dimen/_39sdp"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:cardCornerRadius="@dimen/_35sdp"-->
+<!--            android:padding="@dimen/_2sdp">-->
+<!--            <androidx.appcompat.widget.AppCompatImageView-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="match_parent"-->
+<!--                android:src="@drawable/ic_emergency_icon"-->
+<!--                />-->
+<!--        </com.google.android.material.card.MaterialCardView>-->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/sidepaneConstraintLayout"
+            android:background="@color/transparent"
+            android:layout_width="match_parent"
+            android:layout_marginTop="@dimen/_43sdp"
+            android:layout_height="0dp"
+            app:layout_constraintStart_toStartOf="parent"
+            android:translationZ="@dimen/_12sdp"
+            android:visibility="gone"
+            android:clickable="true"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
+            <androidx.recyclerview.widget.RecyclerView
+                android:paddingVertical="@dimen/_24sdp"
+                android:id="@+id/sidepaneRecyclerView"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:background="@drawable/bg_right_curved_white"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:nestedScrollingEnabled="false"
+                android:orientation="vertical"
+                android:visibility="gone"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/list_item_sidepane"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/nav_view"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_width="@dimen/_150sdp"
+        android:layout_height="@dimen/_120sdp"
         android:layout_gravity="end"
+        app:drawerLayoutCornerSize="@dimen/_5sdp"
+        android:layout_marginTop="@dimen/_45sdp"
         app:itemTextColor="@color/textColorBlack"
         android:fitsSystemWindows="true"
         app:itemIconTint="@color/textColorBlack"
-        app:headerLayout="@layout/nav_header_main"
         app:menu="@menu/activity_main_drawer" />
 </androidx.drawerlayout.widget.DrawerLayout>
 

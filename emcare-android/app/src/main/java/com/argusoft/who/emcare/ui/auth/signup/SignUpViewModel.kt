@@ -2,19 +2,15 @@ package com.argusoft.who.emcare.ui.auth.signup
 
 import androidx.lifecycle.*
 import com.argusoft.who.emcare.R
-import com.argusoft.who.emcare.data.local.database.Database
-import com.argusoft.who.emcare.data.local.pref.Preference
-import com.argusoft.who.emcare.data.remote.Api
 import com.argusoft.who.emcare.data.remote.ApiResponse
-import com.argusoft.who.emcare.ui.common.model.Location
+import com.argusoft.who.emcare.ui.common.DEFAULT_COUNTRY_CODE
+import com.argusoft.who.emcare.ui.common.DEFAULT_USER_ROLE
+import com.argusoft.who.emcare.ui.common.model.Facility
 import com.argusoft.who.emcare.ui.common.model.Role
 import com.argusoft.who.emcare.ui.common.model.SignupRequest
-import com.argusoft.who.emcare.utils.extention.get
 import com.argusoft.who.emcare.utils.extention.isValidEmail
-import com.argusoft.who.emcare.utils.extention.whenSuccess
 import com.argusoft.who.emcare.utils.listener.SingleLiveEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -32,18 +28,31 @@ class SignUpViewModel @Inject constructor(
     private val _signupApiState = SingleLiveEvent<ApiResponse<Any>>()
     val signupApiState: LiveData<ApiResponse<Any>> = _signupApiState
 
-    private val _locationAndRolesApiState = MutableLiveData<Pair<ApiResponse<List<Location>>, ApiResponse<List<Role>>>>()
-    val locationAndRolesApiState: LiveData<Pair<ApiResponse<List<Location>>, ApiResponse<List<Role>>>> = _locationAndRolesApiState
+    private val _facilityAndRolesApiState = MutableLiveData<Pair<ApiResponse<List<Facility>>, ApiResponse<List<Role>>>>()
+    val facilityAndRolesApiState: LiveData<Pair<ApiResponse<List<Facility>>, ApiResponse<List<Role>>>> = _facilityAndRolesApiState
+
+    private val _facilityApiState = MutableLiveData<ApiResponse<List<Facility>>>()
+    val facilityApiState: LiveData<ApiResponse<List<Facility>>> = _facilityApiState
 
     init {
-        getLocationsAndRoles()
+//        getFacilitiesAndRoles()
+        getFacilities()
     }
 
-    private fun getLocationsAndRoles() {
-        _locationAndRolesApiState.value = Pair(ApiResponse.Loading(), ApiResponse.Loading())
+//    private fun getFacilitiesAndRoles() {
+//        _facilityAndRolesApiState.value = Pair(ApiResponse.Loading(), ApiResponse.Loading())
+//        viewModelScope.launch {
+//            signUpRepository.getFacilitiesAndRoles().collect {
+//                _facilityAndRolesApiState.value = it
+//            }
+//        }
+//    }
+
+    private fun getFacilities() {
+        _facilityAndRolesApiState.value = Pair(ApiResponse.Loading(), ApiResponse.Loading())
         viewModelScope.launch {
-            signUpRepository.getLocationsAndRoles().collect {
-                _locationAndRolesApiState.value = it
+            signUpRepository.getFacilities().collect {
+                _facilityApiState.value = it
             }
         }
     }
@@ -52,22 +61,26 @@ class SignUpViewModel @Inject constructor(
         firstname: String,
         lastname: String,
         email: String,
-        locationId: Int?,
-        roleName: String?,
+        facilityId: String,
+        phone: String,
+//        roleName: String?,
     ) {
         when {
             firstname.isEmpty() -> _errorMessageState.value = R.string.error_msg_firstname
             lastname.isEmpty() -> _errorMessageState.value = R.string.error_msg_lastname
             email.isEmpty() -> _errorMessageState.value = R.string.error_msg_email
             email.isNotEmpty() && !email.isValidEmail() -> _errorMessageState.value = R.string.error_msg_valid_email
-            locationId.get() == -1 -> _errorMessageState.value = R.string.error_msg_location
-            roleName.isNullOrEmpty() -> _errorMessageState.value = R.string.error_msg_role
+            facilityId.isEmpty() -> _errorMessageState.value = R.string.error_msg_location
+            phone.isEmpty() -> _errorMessageState.value = R.string.error_msg_phone_number
+//            roleName.isNullOrEmpty() -> _errorMessageState.value = R.string.error_msg_role
             else -> {
                 signupRequest.firstName = firstname
                 signupRequest.lastName = lastname
                 signupRequest.email = email
-                signupRequest.locationId = locationId
-                signupRequest.roleName = roleName
+                signupRequest.facilityIds = listOf(facilityId)
+                signupRequest.roleName = DEFAULT_USER_ROLE
+                signupRequest.phone = phone
+                signupRequest.countryCode = DEFAULT_COUNTRY_CODE
                 _errorMessageState.value = 0
             }
         }

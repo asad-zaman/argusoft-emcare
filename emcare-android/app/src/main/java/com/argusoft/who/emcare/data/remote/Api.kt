@@ -14,9 +14,13 @@ interface Api {
 
     suspend fun getRoles(): ApiResponse<List<Role>>
 
-    suspend fun getLocations(): ApiResponse<List<Location>>
+    suspend fun getFacilities(): ApiResponse<List<Facility>>
 
     suspend fun getLoggedInUser(): ApiResponse<LoggedInUser>
 
     suspend fun getLanguages(): ApiResponse<List<Language>>
+
+    suspend fun getConsultationFlow(): ApiResponse<List<ConsultationFlowItem>>
+
+    suspend fun saveConsultations(consultations: List<ConsultationFlowItem>): ApiResponse<Any>
 }

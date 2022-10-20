@@ -27,12 +27,20 @@ interface ApiService {
     @GET("signup/roles")
     suspend fun getRoles(): Response<List<Role>>
 
-    @GET("signup/location")
-    suspend fun getLocations(): Response<List<Location>>
+    @GET("open/active/facility")
+    suspend fun getFacilities(): Response<List<Facility>>
 
     @GET("language/all")
     suspend fun getLanguages(): Response<List<Language>>
 
     @GET("user")
     suspend fun getLoggedInUser(): Response<LoggedInUser>
+
+    @GET("questionnaire_response/fetch/all")
+    suspend fun getConsultationFlow(): Response<List<ConsultationFlowItem>>
+
+    @POST("questionnaire_response/createOrUpdate")
+    suspend fun saveConsultations(
+        @Body consultations: List<ConsultationFlowItem>
+    ): Response<Any>
 }

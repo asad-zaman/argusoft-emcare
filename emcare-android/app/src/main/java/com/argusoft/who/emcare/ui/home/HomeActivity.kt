@@ -1,5 +1,8 @@
 package com.argusoft.who.emcare.ui.home
 
+import android.opengl.Visibility
+import android.view.MotionEvent
+import android.view.View
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
@@ -9,10 +12,12 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupWithNavController
+import androidx.recyclerview.widget.RecyclerView
 import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.databinding.ActivityHomeBinding
 import com.argusoft.who.emcare.ui.auth.signup.SignUpViewModel
 import com.argusoft.who.emcare.ui.common.base.BaseActivity
+import com.argusoft.who.emcare.ui.common.model.SidepaneItem
 import com.argusoft.who.emcare.ui.home.settings.SettingsViewModel
 import com.argusoft.who.emcare.utils.avatar.AvatarGenerator
 import com.argusoft.who.emcare.utils.extention.alertDialog
@@ -29,8 +34,10 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var navHostFragment: NavHostFragment
-    private val signUpViewModel: SignUpViewModel by viewModels()
+    private val homeViewModel: HomeViewModel by viewModels()
+//    private val signUpViewModel: SignUpViewModel by viewModels()
     private val settingsViewModel: SettingsViewModel by viewModels()
+    lateinit var sidepaneAdapter: SidepaneAdapter
 
     override fun initView() {
 //        signUpViewModel.getLocationsAndRoles()
@@ -49,26 +56,16 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
 //        setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
-        //Setting name & email in drawer view
-        if (preference.getLoggedInUser() != null) {
-            val headerView = binding.navView.getHeaderView(0)
-            headerView.findViewById<TextView>(R.id.nameTextView).text = preference.getLoggedInUser()?.userName
-            headerView.findViewById<TextView>(R.id.emailTextView).text = preference.getLoggedInUser()?.email
-            Glide.with(this)
-                .load("")
-                .placeholder(
-                    AvatarGenerator.AvatarBuilder(this)
-                        .setLabel(preference.getLoggedInUser()?.userName?.first().toString())
-                        .setAvatarSize(120)
-                        .setTextSize(30)
-                        .toCircle()
-                        .setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary))
-                        .build()
-                )
-                .into(headerView.findViewById(R.id.userImageView))
-            headerView.findViewById<TextView>(R.id.nameTextView).text = preference.getLoggedInUser()?.userName
-            headerView.findViewById<TextView>(R.id.emailTextView).text = preference.getLoggedInUser()?.email
+        //Setting name & Facility name in drawer view
+        if(preference.getLoggedInUser() != null){
+            binding.navView.menu.getItem(0).title = preference.getLoggedInUser()?.firstName
+            binding.navView.menu.getItem(1).title = preference.getLoggedInUser()?.facility?.get(0)?.facilityName
         }
+        binding.navView.menu.getItem(2).title = "Logout"
+
+        sidepaneAdapter = SidepaneAdapter(onClickListener = this, navHostFragment = navHostFragment)
+        setupSidepane()
+        homeViewModel.loadLibraries()
     }
 
     fun openDrawer() {
@@ -79,7 +76,15 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
         binding.drawerLayout.closeDrawer(GravityCompat.END)
     }
 
+    fun setupSidepane() {
+        binding.sidepaneRecyclerView.adapter = sidepaneAdapter
+    }
+
     override fun initListener() {
+        binding.sidepaneConstraintLayout.setOnClickListener {
+            closeSidepane()
+        }
+        
         binding.navView.setNavigationItemSelectedListener {
             when (it.itemId) {
                 R.id.action_logout -> {
@@ -92,25 +97,36 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
                         setNegativeButton(R.string.button_no) { _, _ -> }
                     }.show()
                 }
-                R.id.action_settings -> {
-                    closeDrawer()
-                    navHostFragment.navController.navigate(R.id.action_global_settingsFragment)
-                }
+//                R.id.action_settings -> {
+//                    closeDrawer()
+//                    navHostFragment.navController.navigate(R.id.action_global_settingsFragment)
+//                }
             }
             return@setNavigationItemSelectedListener true
         }
+
+    }
+
+    fun toggleSidepane() {
+        binding.sidepaneConstraintLayout.visibility = if(binding.sidepaneConstraintLayout.visibility == View.GONE) View.VISIBLE else View.GONE
+        binding.sidepaneRecyclerView.visibility = if(binding.sidepaneRecyclerView.visibility == View.GONE) View.VISIBLE else View.GONE
+    }
+
+    fun closeSidepane() {
+        binding.sidepaneConstraintLayout.visibility = View.GONE
+        binding.sidepaneRecyclerView.visibility = View.GONE
     }
 
     override fun initObserver() {
-        observeNotNull(settingsViewModel.languageApiState) {
-            it.whenSuccess {
-                it.languageData?.convertToMap()?.apply {
-                    binding.navView.menu.getItem(0).setTitle(getOrElse("Edit_Profile") { getString(R.string.menu_edit_profile) } )
-                    binding.navView.menu.getItem(1).setTitle(getOrElse("Settings") { getString(R.string.menu_settings) } )
-                    binding.navView.menu.getItem(2).setTitle(getOrElse("Logout") { getString(R.string.menu_logout) } )
-                }
-            }
-        }
+//        observeNotNull(settingsViewModel.languageApiState) {
+//            it.whenSuccess {
+//                it.languageData?.convertToMap()?.apply {
+//                    binding.navView.menu.getItem(0).setTitle(getOrElse("Edit_Profile") { getString(R.string.menu_edit_profile) } )
+//                    binding.navView.menu.getItem(1).setTitle(getOrElse("Settings") { getString(R.string.menu_settings) } )
+//                    binding.navView.menu.getItem(2).setTitle(getOrElse("Logout") { getString(R.string.menu_logout) } )
+//                }
+//            }
+//        }
     }
 
     override fun onSupportNavigateUp(): Boolean {

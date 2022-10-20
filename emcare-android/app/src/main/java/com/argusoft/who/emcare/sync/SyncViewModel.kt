@@ -9,12 +9,9 @@ import com.argusoft.who.emcare.data.local.database.Database
 import com.argusoft.who.emcare.data.local.pref.Preference
 import com.argusoft.who.emcare.data.remote.Api
 import com.google.android.fhir.FhirEngine
-import com.google.android.fhir.sync.Result
-import com.google.android.fhir.sync.State
-import com.google.android.fhir.sync.Sync
+import com.google.android.fhir.sync.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import org.hl7.fhir.r4.model.ResourceType
 import javax.inject.Inject
 
 @HiltViewModel
@@ -35,9 +32,11 @@ class SyncViewModel @Inject constructor(
             val fhirResult = Sync.oneTimeSync(
                 applicationContext,
                 fhirEngine,
-                DownloadWorkManagerImpl()
+                DownloadWorkManagerImpl(preference),
+                UploadConfiguration(uploadBundleSize = 1000),
+                AcceptRemoteConflictResolver
             )
-            val emCareResult = EmCareSync.oneTimeSync(api, database, preference, listOf(SyncType.LOCATION, SyncType.LANGUAGE))
+            val emCareResult = EmCareSync.oneTimeSync(api, database, preference, listOf(SyncType.FACILITY, SyncType.CONSULTATION_FLOW_ITEM)) // TODO: IF translation support is required add SyncType.Language
             if (fhirResult is Result.Success || emCareResult is SyncResult.Success) {
                 _syncState.value = (fhirResult as? Result.Success)?.let { State.Finished(it) }
             } else {

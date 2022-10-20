@@ -1,23 +1,13 @@
 package com.argusoft.who.emcare.data.local.database
 
-import com.argusoft.who.emcare.ui.common.model.Language
-import com.argusoft.who.emcare.ui.common.model.Location
-import com.argusoft.who.emcare.ui.common.model.LoggedInUser
+import com.argusoft.who.emcare.ui.common.model.*
 
 class DatabaseManager(roomDatabase: RoomDatabase) : Database {
 
     private val dao = roomDatabase.dao()
 
-    override suspend fun saveLocations(locations: List<Location>) {
-        dao.saveLocations(locations)
-    }
-
-    override suspend fun getLocationById(id: Int): Location? {
-        return dao.getLocationById(id)
-    }
-
-    override suspend fun getChildLocations(id: Int?): List<Location>? {
-        return dao.getChildLocations(id)
+    override suspend fun saveFacilities(facilities: List<Facility>) {
+        dao.saveFacilities(facilities)
     }
 
     override suspend fun saveLanguages(languages: List<Language>) {
@@ -40,7 +30,64 @@ class DatabaseManager(roomDatabase: RoomDatabase) : Database {
         return dao.getAllUser()
     }
 
+    override suspend fun getLastLoggedInUser(): LoggedInUser? {
+        return dao.getLastLoggedInUser()
+    }
+
     override suspend fun getLanguageByCode(languageCode: String): Language? {
         return dao.getLanguageByCode(languageCode)
+    }
+
+    override suspend fun deleteAllConsultations() {
+        dao.deleteAllConsultations()
+    }
+
+    override suspend fun saveConsultationFlowItem(consultation: ConsultationFlowItem) {
+        dao.saveConsultationFlowItem(consultation)
+    }
+
+
+    override suspend fun saveConsultationFlowItems(consultations: List<ConsultationFlowItem>) {
+        dao.saveConsultationFlowItems(consultations)
+    }
+
+    override suspend fun updateConsultationQuestionnaireResponseText(
+        consultationId: String,
+        questionnaireResponseText: String,
+        consultationDate: String
+    ) {
+        dao.updateConsultationQuestionnaireResponseText(consultationId,questionnaireResponseText, consultationDate)
+    }
+
+    override suspend fun updateConsultationFlowInactiveByEncounterId(encounterId: String) {
+        dao.updateConsultationFlowInactiveByEncounterId(encounterId)
+    }
+
+    override suspend fun getAllConsultations() : List<ConsultationFlowItem>? {
+        return dao.getAllConsultations()
+    }
+
+    override suspend fun getAllConsultationsByEncounterId(encounterId: String): List<ConsultationFlowItem>? {
+        return dao.getAllConsultationsByEncounterId(encounterId)
+    }
+
+    override suspend fun getAllActiveConsultations(): List<ConsultationFlowItem>? {
+        return dao.getAllActiveConsultations()
+    }
+
+    override suspend fun getAllLatestActiveConsultations(): List<ConsultationFlowItem>? {
+        return dao.getAllLatestActiveConsultations()
+    }
+
+    override suspend fun getAllActiveConsultationsByPatientId(patientId: String): List<ConsultationFlowItem>? {
+        return dao.getAllActiveConsultationsByPatientId(patientId)
+    }
+
+    override suspend fun getAllConsultationsByPatientId(patientId: String): List<ConsultationFlowItem>? {
+        return dao.getAllConsultationsByPatientId(patientId)
+    }
+
+    override suspend fun getLatestActiveConsultationByPatientId(patientId: String): ConsultationFlowItem? {
+        return dao.getLatestActiveConsultationByPatientId(patientId)
     }
 }

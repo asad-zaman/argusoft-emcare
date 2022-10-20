@@ -5,6 +5,7 @@
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorTransparent</item>
+        <item name="colorSurfaceVariant">@color/white</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="windowActionModeOverlay">true</item>
         <item name="actionModeStyle">@style/AppStyle.ActionMode</item>
@@ -65,7 +66,7 @@
     <style name="Style_BottomSheet_tv">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:fontFamily">@font/poppins_regular</item>
+        <item name="android:fontFamily">@font/montserrat_regular</item>
         <item name="android:padding">@dimen/dimen_10dp</item>
         <item name="android:textColor">@color/colorBlack</item>
         <item name="android:textSize">@dimen/font_13sp</item>
@@ -84,8 +85,9 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.FilledBox">
+    <style name="TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
         <item name="boxBackgroundColor">@color/colorWhite</item>
+        <item name="boxStrokeColor">@color/colorAccent</item>
     </style>
 
     <style name="TextInputEditText" parent="Widget.AppCompat.EditText">
@@ -95,18 +97,18 @@
     </style>
 
     <style name="TextView" parent="Widget.MaterialComponents.TextView">
-        <item name="android:fontFamily">@font/poppins_regular</item>
+        <item name="android:fontFamily">@font/montserrat_regular</item>
         <item name="android:textColor">@color/textColorBlack</item>
         <item name="android:includeFontPadding">false</item>
     </style>
 
     <style name="TextView.Big">
-        <item name="android:fontFamily">@font/poppins_bold</item>
+        <item name="android:fontFamily">@font/montserrat_bold</item>
         <item name="android:textSize">@dimen/_28ssp</item>
     </style>
 
     <style name="TextView.Medium">
-        <item name="android:fontFamily">@font/poppins_medium</item>
+        <item name="android:fontFamily">@font/montserrat_medium</item>
         <item name="android:textSize">@dimen/_13ssp</item>
     </style>
 
@@ -115,19 +117,19 @@
     </style>
 
     <style name="TextView.SemiBold">
-        <item name="android:fontFamily">@font/poppins_semi_bold</item>
+        <item name="android:fontFamily">@font/montserrat_semi_bold</item>
         <item name="android:textSize">@dimen/_16ssp</item>
         <item name="android:textColor">@color/textColorWhite</item>
     </style>
 
     <style name="TextView.SemiBold.Black">
-        <item name="android:fontFamily">@font/poppins_semi_bold</item>
+        <item name="android:fontFamily">@font/montserrat_semi_bold</item>
         <item name="android:textSize">@dimen/_16ssp</item>
         <item name="android:textColor">@color/textColorBlack</item>
     </style>
 
     <style name="TextView.Small">
-        <item name="android:fontFamily">@font/poppins_light</item>
+        <item name="android:fontFamily">@font/montserrat_light</item>
         <item name="android:textSize">@dimen/_11ssp</item>
         <item name="android:textColor">@color/textColorWhite</item>
     </style>
@@ -141,11 +143,11 @@
     </style>
 
     <style name="Button" parent="Widget.MaterialComponents.Button">
-        <item name="cornerRadius">@dimen/_24sdp</item>
+        <item name="cornerRadius">@dimen/_5sdp</item>
         <item name="elevation">@dimen/_8sdp</item>
         <item name="backgroundTint">@color/buttonColor</item>
         <item name="android:textSize">@dimen/_15sdp</item>
-        <item name="android:minHeight">@dimen/_56sdp</item>
+        <item name="android:minHeight">@dimen/_48sdp</item>
         <item name="android:paddingStart">@dimen/_64sdp</item>
         <item name="android:paddingEnd">@dimen/_64sdp</item>
     </style>
@@ -166,36 +168,61 @@
         <item name="android:textColor">@color/questioner_button_text_color</item>
     </style>
 
+    <style name="Questionnaire.RadioButton" parent="Widget.AppCompat.CompoundButton.RadioButton">
+        <item name="android:background">@drawable/questionnaire_radio_selector</item>
+        <item name="android:button">@android:color/transparent</item>
+        <item name="android:padding">@dimen/_16sdp</item>
+        <item name="android:width">@dimen/_50sdp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:textColor">@drawable/questionnaire_radio_button_text_selector</item>
+    </style>
+
+    <style name="Questionnaire.CheckBoxStyle" parent="Widget.AppCompat.CompoundButton.CheckBox">
+<!--        <item name="android:background">@drawable/questionnaire_radio_selector</item>-->
+        <item name="android:textColor">@drawable/questionnaire_checkbox_text_selector</item>
+        <item name="android:buttonTint">@drawable/questionnaire_checkbox_text_selector</item>
+        <item name="android:fontFamily">@font</item>
+    </style>
+
     <style name="Questionnaire.TextInputEditText" parent="TextInputEditText">
         <item name="android:paddingTop">10dp</item>
     </style>
 
-    <style name="Questionnaire.DropDownTextInputEditText" parent="TextAppearance.MaterialComponents.Subtitle1">
-        <item name="android:paddingStart">0dp</item>
-        <item name="android:paddingEnd">0dp</item>
+    <style name="Questionnaire.questionnaireDropDownTextStyle" parent="TextAppearance.MaterialComponents.Subtitle1">
+        <item name="android:textSize">@dimen/_12sdp</item>
     </style>
 
-    <style name="Questionnaire.DropDownTextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu">
-        <item name="boxBackgroundColor">@color/colorWhite</item>
+    <style name="Questionnaire.questionnaireDropdownLayoutStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+        <item name="boxStrokeColor">@drawable/questionnaire_dropdown_layout_border_selector</item>
+    </style>
+
+    <style name="Questionnaire.SubmitButtonStyle">
+        <item name="android:backgroundTint">@color/buttonColor</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:text">Submit</item>
+    </style>
+
+    <style name="Questionnaire.questionnaireErrorTextStyle">
+        <item name="android:textColor">@color/questionnaireErrorTextColor</item>
     </style>
 
     <style name="Questionnaire" parent="Theme.MaterialComponents.Light.DarkActionBar">
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="groupHeaderTextAppearanceQuestionnaire">@style/TextAppearance.MaterialComponents.Headline6</item>
-        <item name="headerTextAppearanceQuestionnaire">@style/TextAppearance.MaterialComponents.Body2</item>
-        <item name="checkBoxStyleQuestionnaire">@style/Widget.AppCompat.CompoundButton.CheckBox</item>
-        <item name="radioButtonStyleQuestionnaire">@style/Widget.AppCompat.CompoundButton.RadioButton</item>
-        <item name="dropDownTextAppearanceQuestionnaire">@style/Questionnaire.DropDownTextInputEditText</item>
-        <item name="dropDownSelectedTextAppearanceQuestionnaire">@style/Questionnaire.DropDownTextInputEditText</item>
-        <item name="dropDownStyleQuestionnaire">@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu</item>
-        <item name="editTextInputTextAppearanceQuestionnaire">@style/Questionnaire.TextInputEditText</item>
-        <item name="editTextLayoutStyleQuestionnaire">@style/Questionnaire.TextInputEditText</item>
-        <item name="chipStyleQuestionnaire">@style/Widget.MaterialComponents.Chip.Entry</item>
-        <item name="buttonStyleQuestionnaire">@style/Questionnaire.Button</item>
-        <item name="inputErrorTextAppearanceQuestionnaire">@style/Questionnaire.TextAppearance.Error</item>
+<!--        <item name="groupHeaderTextAppearanceQuestionnaire">@style/TextView.SemiBold.Black</item>-->
+        <item name="questionnaireQuestionTextStyle">@style/TextAppearance.MaterialComponents.Body2</item>
+        <item name="questionnaireCheckBoxStyle">@style/Questionnaire.CheckBoxStyle</item>
+        <item name="questionnaireRadioButtonStyle">@style/Questionnaire.RadioButton</item>
+        <item name="questionnaireDropDownTextStyle">@style/Questionnaire.questionnaireDropDownTextStyle</item>
+<!--        <item name="questionnaireDropDownSelectedTextStyle">@style/Questionnaire.DropDownTextInputEditText</item>-->
+        <item name="questionnaireDropdownLayoutStyle">@style/Questionnaire.questionnaireDropdownLayoutStyle</item>
+<!--        <item name="questionnaireTextInputEditTextStyle">@style/Questionnaire.TextInputEditText</item>-->
+        <item name="questionnaireChipStyle">@style/Widget.MaterialComponents.Chip.Entry</item>
+        <item name="questionnaireButtonStyle">@style/Questionnaire.Button</item>
         <item name="questionnaireTextInputLayoutStyle">@style/TextInputLayout</item>
-        <item name="questionnaireExposedMenuLayoutStyle">@style/Questionnaire.DropDownTextInputLayout</item>
-        <item name="chipStyle">@style/Questionnaire.Widget.MaterialComponents.Chip.Action</item>
+        <item name="questionnaireErrorTextStyle">@style/Questionnaire.questionnaireErrorTextStyle</item>
+        <item name="questionnaireSubmitButtonStyle">@style/Questionnaire.SubmitButtonStyle</item>
 <!--        <item name="questionnaireTextColor">@color/text_color</item>-->
     </style>
 </resources>
