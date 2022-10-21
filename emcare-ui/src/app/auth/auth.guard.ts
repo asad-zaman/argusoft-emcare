@@ -20,7 +20,7 @@ export class AuthGuard implements CanActivate {
         this.featureRouteArr = {
             'Users': ['/showUsers', '/addUser', '/updateUser', '/showRoles', '/addRole', '/editRole', '/confirmUsers'],
             'Locations': ['/showFacility', '/addFacility', '/editFacility', '/showLocation', '/addLocation', '/editLocation', '/showLocationType', '/addLocationType', '/editLocationType'],
-            'Patients': ['/showPatients', '/comparePatients', '/duplicatePatients'],
+            'Patients': ['/showPatients', '/comparePatients', '/duplicatePatients', '/consultation-list', '/view-consultation'],
             'All Users': ['/showUsers', '/addUser', '/updateUser'],
             'Roles': ['/showRoles', '/addRole', '/editRole'],
             'Registration Request': ['/confirmUsers'],
@@ -38,6 +38,7 @@ export class AuthGuard implements CanActivate {
             'Organizations': ['/showOrganizations', '/manage-organization'],
             'Duplicate Patients': ['/duplicatePatients'],
             'Advanced settings': ['/language-list', '/manage-language', '/user-admin-settings', '/showFeatures', '/editFeature', '/showDevices'],
+            'Consultations': ['/consultation-list', '/view-consultation']
         }
         this.routeFeatureMapper = {
             'addLocationType': { f: 'Location Types', reqFeature: ['canAdd'] },
@@ -70,7 +71,9 @@ export class AuthGuard implements CanActivate {
             'dashboard': { f: 'Dashboard', reqFeature: ['canView'] },
             'showOrganizations': { f: 'Organizations', reqFeature: ['canAdd', 'canEdit', 'canView'] },
             'manage-organization': { f: 'Organizations', reqFeature: ['canAdd', 'canEdit'] },
-            'duplicatePatients': { f: 'Patients', reqFeature: ['canView'] }
+            'duplicatePatients': { f: 'Patients', reqFeature: ['canView'] },
+            'consultation-list': { f: 'Patients', reqFeature: ['canView'] },
+            'view-consultation': { f: 'Patients', reqFeature: ['canView'] }
         }
     }
 
@@ -190,6 +193,8 @@ export class AuthGuard implements CanActivate {
             route.routeConfig.path === 'showPatients'
             || route.routeConfig.path === 'comparePatients'
             || route.routeConfig.path === 'duplicatePatients'
+            || route.routeConfig.path === 'consultation-list'
+            || route.routeConfig.path.includes('view-consultation')
         ) {
             return this.user.feature.find(f => f.menuName === 'Patients');
         } else if (
@@ -204,7 +209,7 @@ export class AuthGuard implements CanActivate {
             || route.routeConfig.path === 'showDevices'
             || route.routeConfig.path.includes('manage-language')
             || route.routeConfig.path === 'language-list'
-            || route.routeConfig.path === 'user-admin-settings' 
+            || route.routeConfig.path === 'user-admin-settings'
         ) {
             return this.user.feature.find(f => f.menuName === 'Advanced settings');
         } else if (

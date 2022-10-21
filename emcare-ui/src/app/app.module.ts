@@ -33,7 +33,9 @@ import {
   QuestionnaireBuilderComponent,
   LocationDropdownComponent,
   LanguageListComponent,
-  DuplicatePatientsComponent
+  DuplicatePatientsComponent,
+  ConsultationListComponent,
+  ViewConsultationComponent
 } from './root/index';
 import { AuthenticationService, ToasterService } from './shared';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -97,7 +99,9 @@ import { NgxIntlTelInputModule } from 'ngx-intl-tel-input';
     AdminPanelComponent,
     ManageOrganizationComponent,
     OrganizationListComponent,
-    DuplicatePatientsComponent
+    DuplicatePatientsComponent,
+    ConsultationListComponent,
+    ViewConsultationComponent
   ],
   imports: [
     BrowserModule,
