@@ -200,4 +200,19 @@ export class FhirService {
         const url = `${environment.apiUrl}/api/deduplication/all`;
         return this.http.get(url, this.getHeaders());
     }
+
+    getConsultationList(pageIndex, search?) {
+        let url;
+        if (search) {
+            url = `${environment.apiUrl}/api/questionnaire_response/page?pageNo=${pageIndex}&search=${search}`;
+        } else {
+            url = `${environment.apiUrl}/api/questionnaire_response/page?pageNo=${pageIndex}`;
+        }
+        return this.http.get(url, this.getHeaders());
+    }
+
+    getPatientEncounter(id) {
+        let url = `${environment.apiUrl}/api/questionnaire_response/byPatient?patientId=${id}`;
+        return this.http.get(url, this.getHeaders());
+    }
 }

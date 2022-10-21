@@ -30,7 +30,9 @@ import {
   LanguageListComponent,
   ForgotPasswordComponent,
   ManageOrganizationComponent,
-  OrganizationListComponent
+  OrganizationListComponent,
+  ConsultationListComponent,
+  ViewConsultationComponent
 } from './root/index';
 
 const routes: Routes = [
@@ -71,6 +73,8 @@ const routes: Routes = [
   { path: 'manage-organization/:id', component: ManageOrganizationComponent, canActivate: [AuthGuard] },
   { path: 'showOrganizations', component: OrganizationListComponent, canActivate: [AuthGuard] },
   { path: 'duplicatePatients', component: DuplicatePatientsComponent, canActivate: [AuthGuard] },
+  { path: 'consultation-list', component: ConsultationListComponent, canActivate: [AuthGuard] },
+  { path: 'view-consultation/:id', component: ViewConsultationComponent, canActivate: [AuthGuard] },
   { path: '**', redirectTo: 'dashboard' }
 ];
 @NgModule({

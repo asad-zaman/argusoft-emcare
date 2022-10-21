@@ -39,7 +39,6 @@
         <ng-template pTemplate="content">
           <h5>{{templateArr[0].code}}</h5>
           <h6>{{'Subject' | translate}}: {{templateArr[0].subject}}</h6>
-          <!-- <h6>{{'Content' | translate}}: {{templateArr[0].content}}</h6> -->
         </ng-template>
       </p-accordionTab>
       <p-accordionTab class="cursor-pointer" [(selected)]="userSettingObj[2].value">
@@ -59,11 +58,9 @@
         <ng-template pTemplate="content">
           <h5>{{templateArr[1].code}}</h5>
           <h6>{{'Subject' | translate}}: {{templateArr[1].subject}}</h6>
-          <!-- <h6>{{'Content' | translate}}: {{templateArr[1].content}} </h6> -->
           <hr>
           <h5>{{templateArr[2].code}}</h5>
           <h6>Subject: {{templateArr[2].subject}}</h6>
-          <!-- <h6>Content: {{templateArr[2].content}} </h6> -->
         </ng-template>
       </p-accordionTab>
     </p-accordion>

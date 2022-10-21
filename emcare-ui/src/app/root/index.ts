@@ -33,3 +33,6 @@ export { AdminPanelComponent } from './components/admin-panel/admin-panel.compon
 export { ManageOrganizationComponent } from './components/manage-organization/manage-organization.component';
 export { OrganizationListComponent } from './components/organization-list/organization-list.component';
 export { DuplicatePatientsComponent } from './components/duplicate-patients/duplicate-patients.component';
+export { ConsultationListComponent } from './components/patient-management/consultation-list/consultation-list.component';
+export { ViewConsultationComponent } from './components/patient-management/view-consultation/view-consultation.component';
+

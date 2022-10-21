@@ -103,9 +103,9 @@ export class ManageFacilityComponent implements OnInit {
       if (res && res['entry']) {
         this.orgArr = res['entry'].map(el => {
           return { id: el.resource.id, name: el.resource.name }
-        })
+        });
       }
-    })
+    });
   }
 
   getStatusObjById(status) {
