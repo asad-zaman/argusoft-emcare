@@ -159,13 +159,9 @@
         <item name="strokeWidth">@dimen/_1sdp</item>
     </style>
 
-    <style name="Questionnaire.Button" parent="Widget.MaterialComponents.Button">
-        <item name="cornerRadius">@dimen/_24sdp</item>
-        <item name="elevation">@dimen/_8sdp</item>
-        <item name="backgroundTint">@color/buttonColor</item>
-        <item name="android:minHeight">@dimen/_42sdp</item>
-        <item name="android:minWidth">@dimen/_84sdp</item>
-        <item name="android:textColor">@color/questioner_button_text_color</item>
+    <style name="Questionnaire.Button">
+        <item name="android:backgroundTint">@color/buttonColor</item>
+        <item name="android:textColor">@color/white</item>
     </style>
 
     <style name="Questionnaire.RadioButton" parent="Widget.AppCompat.CompoundButton.RadioButton">
@@ -204,12 +200,20 @@
         <item name="android:text">Submit</item>
     </style>
 
+    <style name="Questionnaire.EditButtonStyle">
+        <item name="android:text">@string/edit_button_text</item>
+        <item name="backgroundTint">@color/colorAccent</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+
     <style name="Questionnaire.questionnaireErrorTextStyle">
         <item name="android:textColor">@color/questionnaireErrorTextColor</item>
     </style>
 
     <style name="Questionnaire" parent="Theme.MaterialComponents.Light.DarkActionBar">
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="questionnaireEditButtonStyle">@style/Questionnaire.EditButtonStyle</item>
 <!--        <item name="groupHeaderTextAppearanceQuestionnaire">@style/TextView.SemiBold.Black</item>-->
         <item name="questionnaireQuestionTextStyle">@style/TextAppearance.MaterialComponents.Body2</item>
         <item name="questionnaireCheckBoxStyle">@style/Questionnaire.CheckBoxStyle</item>

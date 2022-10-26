@@ -66,7 +66,8 @@ class AddPatientFragment : BaseFragment<FragmentAddPatientBinding>() {
             questionnaireFragment.arguments =
                 bundleOf(
                     QuestionnaireFragment.EXTRA_QUESTIONNAIRE_JSON_STRING to pair.first,
-                    QuestionnaireFragment.EXTRA_QUESTIONNAIRE_RESPONSE_JSON_STRING to pair.second
+                    QuestionnaireFragment.EXTRA_QUESTIONNAIRE_RESPONSE_JSON_STRING to pair.second,
+                    QuestionnaireFragment.EXTRA_ENABLE_REVIEW_PAGE to true
                 )
             childFragmentManager.commit {
                 add(R.id.fragmentContainerView, questionnaireFragment, QuestionnaireFragment::class.java.simpleName)
