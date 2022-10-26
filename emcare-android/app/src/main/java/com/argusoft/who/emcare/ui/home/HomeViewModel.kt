@@ -49,6 +49,9 @@ class HomeViewModel @Inject constructor(
     private val _patient = SingleLiveEvent<ApiResponse<Patient>>()
     val patient: LiveData<ApiResponse<Patient>> = _patient
 
+    private val _draftQuestionnaire = SingleLiveEvent<ApiResponse<String>>()
+    val draftQuestionnaire: LiveData<ApiResponse<String>> = _draftQuestionnaire
+
     private val _patients = SingleLiveEvent<ApiResponse<List<PatientItem>>>()
     val patients: LiveData<ApiResponse<List<PatientItem>>> = _patients
 
@@ -174,6 +177,14 @@ class HomeViewModel @Inject constructor(
                         search?.let { it1 -> consultationItemData.name?.contains(it1, ignoreCase = true) }!!
                     }
                 },"No Active Consultations Found")
+            }
+        }
+    }
+
+    fun saveQuestionnaireAsDraft(consultationFlowItemId: String, questionnaireResponse: QuestionnaireResponse) {
+        viewModelScope.launch {
+            patientRepository.saveQuestionnaireAsDraft(consultationFlowItemId, questionnaireResponse).collect {
+                _draftQuestionnaire.value = it
             }
         }
     }

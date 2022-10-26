@@ -3,6 +3,7 @@ package com.argusoft.who.emcare.ui.home.patient
 import android.app.Application
 import com.argusoft.who.emcare.R
 import ca.uhn.fhir.context.FhirContext
+import ca.uhn.fhir.context.FhirVersionEnum
 import com.argusoft.who.emcare.data.remote.ApiResponse
 import com.argusoft.who.emcare.ui.common.LOCATION_EXTENSION_URL
 import com.argusoft.who.emcare.ui.common.consultationFlowStageList
@@ -201,6 +202,13 @@ class PatientRepository @Inject constructor(
         catch (e: Exception) {
             e.printStackTrace()
             emit(ApiResponse.ApiError(apiErrorMessageResId = R.string.error_saving_resource))
+        }
+    }
+
+    fun saveQuestionnaireAsDraft(consultationFlowItemId: String, questionnaireResponse: QuestionnaireResponse) = flow {
+        val parser = FhirContext.forCached(FhirVersionEnum.R4).newJsonParser()
+        consultationFlowRepository.updateConsultationQuestionnaireResponseText(consultationFlowItemId, parser.encodeResourceToString(questionnaireResponse), ZonedDateTime.now(ZoneId.of("UTC")).toString().removeSuffix("Z[UTC]")).collect {
+            emit(ApiResponse.Success(it.data))
         }
     }
 

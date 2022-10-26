@@ -65,7 +65,8 @@ class PatientQuestionnaireFragment : BaseFragment<FragmentPatientQuestionnaireBi
             activity?.alertDialog {
                 setMessage(R.string.msg_exit_consultation)
                 setPositiveButton(R.string.button_yes) { _, _ ->
-                    navigate(R.id.action_patientQuestionnaireFragment_to_homeFragment)
+                    homeViewModel.saveQuestionnaireAsDraft(requireArguments().getString(INTENT_EXTRA_CONSULTATION_FLOW_ITEM_ID)!!, questionnaireFragment.getQuestionnaireResponse())
+
                 }
                 setNegativeButton(R.string.button_no) { _, _ -> }
             }?.show()
@@ -167,6 +168,12 @@ class PatientQuestionnaireFragment : BaseFragment<FragmentPatientQuestionnaireBi
                                     )
                         )
                     }
+            }
+        }
+
+        observeNotNull(homeViewModel.draftQuestionnaire) {
+            it.whenSuccess {
+                navigate(R.id.action_patientQuestionnaireFragment_to_homeFragment)
             }
         }
 //        observeNotNull(settingsViewModel.languageApiState) {
