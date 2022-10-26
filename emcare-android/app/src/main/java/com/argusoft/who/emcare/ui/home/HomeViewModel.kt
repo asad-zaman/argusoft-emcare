@@ -183,7 +183,7 @@ class HomeViewModel @Inject constructor(
 
     fun saveQuestionnaireAsDraft(consultationFlowItemId: String, questionnaireResponse: QuestionnaireResponse) {
         viewModelScope.launch {
-            patientRepository.saveQuestionnaireAsDraft(consultationFlowItemId, questionnaireResponse).collect {
+            patientRepository.updateConsultationQuestionnaireResponse(consultationFlowItemId, questionnaireResponse).collect {
                 _draftQuestionnaire.value = it
             }
         }

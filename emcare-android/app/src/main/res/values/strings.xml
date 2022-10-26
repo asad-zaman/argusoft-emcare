@@ -196,4 +196,5 @@
     <string name="msg_sync_started">Sync started</string>
     <string name="msg_sync_successfully">Sync Successful</string>
     <string name="msg_sync_failed">Sync failed, please try again</string>
+    <string name="label_reset">Reset</string>
 </resources>

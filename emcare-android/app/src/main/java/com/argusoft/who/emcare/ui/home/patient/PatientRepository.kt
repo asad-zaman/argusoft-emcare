@@ -205,11 +205,18 @@ class PatientRepository @Inject constructor(
         }
     }
 
-    fun saveQuestionnaireAsDraft(consultationFlowItemId: String, questionnaireResponse: QuestionnaireResponse) = flow {
+    fun updateConsultationQuestionnaireResponse(consultationFlowItemId: String, questionnaireResponse: QuestionnaireResponse? = null) = flow {
         val parser = FhirContext.forCached(FhirVersionEnum.R4).newJsonParser()
-        consultationFlowRepository.updateConsultationQuestionnaireResponseText(consultationFlowItemId, parser.encodeResourceToString(questionnaireResponse), ZonedDateTime.now(ZoneId.of("UTC")).toString().removeSuffix("Z[UTC]")).collect {
-            emit(ApiResponse.Success(it.data))
+        if(questionnaireResponse != null){
+            consultationFlowRepository.updateConsultationQuestionnaireResponseText(consultationFlowItemId, parser.encodeResourceToString(questionnaireResponse), ZonedDateTime.now(ZoneId.of("UTC")).toString().removeSuffix("Z[UTC]")).collect {
+                emit(ApiResponse.Success(it.data))
+            }
+        } else {
+            consultationFlowRepository.updateConsultationQuestionnaireResponseText(consultationFlowItemId, "", ZonedDateTime.now(ZoneId.of("UTC")).toString().removeSuffix("Z[UTC]")).collect {
+                emit(ApiResponse.Success(it.data))
+            }
         }
+
     }
 
     fun deletePatient(patientId: String?) = flow {

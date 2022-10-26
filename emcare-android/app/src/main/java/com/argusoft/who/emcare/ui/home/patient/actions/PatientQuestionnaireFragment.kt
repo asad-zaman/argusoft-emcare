@@ -101,7 +101,7 @@ class PatientQuestionnaireFragment : BaseFragment<FragmentPatientQuestionnaireBi
     }
 
     override fun initListener() {
-
+        binding.resetQuestionnaireButton.setOnClickListener(this)
     }
 
     override fun initObserver() {
@@ -176,14 +176,22 @@ class PatientQuestionnaireFragment : BaseFragment<FragmentPatientQuestionnaireBi
                 navigate(R.id.action_patientQuestionnaireFragment_to_homeFragment)
             }
         }
-//        observeNotNull(settingsViewModel.languageApiState) {
-//            it.whenSuccess {
-//                it.languageData?.convertToMap()?.apply {
-//                    binding.headerLayout.toolbar.setTitleSidepane(
-//                        getOrElse("Patient") { getString(R.string.patient) } + " "
-//                            + requireArguments().getString(INTENT_EXTRA_QUESTIONNAIRE_HEADER)  )
-//                }
-//            }
-//        }
+    }
+
+    override fun onClick(view: View?) {
+        super.onClick(view)
+        when (view?.id) {
+            R.id.reset_questionnaire_button -> {
+                navigate(R.id.action_patientQuestionnaireFragment_to_patientQuestionnaireFragment) {
+                    putString(INTENT_EXTRA_QUESTIONNAIRE_ID, requireArguments().getString(INTENT_EXTRA_QUESTIONNAIRE_ID)!!)
+                    putString(INTENT_EXTRA_STRUCTUREMAP_ID, requireArguments().getString(INTENT_EXTRA_STRUCTUREMAP_ID)!!)
+                    putString(INTENT_EXTRA_QUESTIONNAIRE_HEADER, requireArguments().getString(INTENT_EXTRA_QUESTIONNAIRE_HEADER)!!)
+                    putString(INTENT_EXTRA_CONSULTATION_FLOW_ITEM_ID, requireArguments().getString(INTENT_EXTRA_CONSULTATION_FLOW_ITEM_ID)!!)
+                    putString(INTENT_EXTRA_PATIENT_ID, requireArguments().getString(INTENT_EXTRA_PATIENT_ID)!!)
+                    putString(INTENT_EXTRA_ENCOUNTER_ID, requireArguments().getString(INTENT_EXTRA_ENCOUNTER_ID)!!)
+                    putString(INTENT_EXTRA_CONSULTATION_STAGE, requireArguments().getString(INTENT_EXTRA_CONSULTATION_STAGE)!!)
+                }
+            }
+        }
     }
 }
