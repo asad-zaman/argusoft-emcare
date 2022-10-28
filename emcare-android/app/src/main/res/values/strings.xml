@@ -170,6 +170,8 @@
     <string name="menu_save">Save</string>
     <string name="msg_logout">Are you sure you want to logout?</string>
     <string name="msg_exit_consultation">Are You Sure You Want To Exit The Consultation?</string>
+    <string name="msg_save_draft">Are You Sure You Want To Save Questionnaire As Draft?</string>
+    <string name="msg_reset_questionnaire">Are You Sure You Want To Reset The Questionnaire?</string>
     <string name="msg_exit_registration">Are You Sure You Want To Exit Registration?</string>
     <string name="msg_delete_patient">Are you sure you want to delete Patient?</string>
     <string name="error_msg_firstname">Please enter first name</string>
@@ -197,4 +199,7 @@
     <string name="msg_sync_successfully">Sync Successful</string>
     <string name="msg_sync_failed">Sync failed, please try again</string>
     <string name="label_reset">Reset</string>
+    <string name="label_save_as_draft">Save Draft</string>
+    <string name="save_as_draft_successful">Save As Draft Successful!</string>
+
 </resources>

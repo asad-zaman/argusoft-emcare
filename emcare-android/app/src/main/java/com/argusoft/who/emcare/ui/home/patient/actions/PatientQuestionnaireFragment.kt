@@ -65,8 +65,7 @@ class PatientQuestionnaireFragment : BaseFragment<FragmentPatientQuestionnaireBi
             activity?.alertDialog {
                 setMessage(R.string.msg_exit_consultation)
                 setPositiveButton(R.string.button_yes) { _, _ ->
-                    homeViewModel.saveQuestionnaireAsDraft(requireArguments().getString(INTENT_EXTRA_CONSULTATION_FLOW_ITEM_ID)!!, questionnaireFragment.getQuestionnaireResponse())
-
+                    navigate(R.id.action_patientQuestionnaireFragment_to_homeFragment)
                 }
                 setNegativeButton(R.string.button_no) { _, _ -> }
             }?.show()
@@ -102,6 +101,7 @@ class PatientQuestionnaireFragment : BaseFragment<FragmentPatientQuestionnaireBi
 
     override fun initListener() {
         binding.resetQuestionnaireButton.setOnClickListener(this)
+        binding.saveDraftQuestionnaireButton.setOnClickListener(this)
     }
 
     override fun initObserver() {
@@ -173,7 +173,11 @@ class PatientQuestionnaireFragment : BaseFragment<FragmentPatientQuestionnaireBi
 
         observeNotNull(homeViewModel.draftQuestionnaire) {
             it.whenSuccess {
-                navigate(R.id.action_patientQuestionnaireFragment_to_homeFragment)
+                context?.showSnackBar(
+                    view = binding.progressLayout,
+                    message = getString(R.string.save_as_draft_successful),
+                    isError = false
+                )
             }
         }
     }
@@ -182,15 +186,31 @@ class PatientQuestionnaireFragment : BaseFragment<FragmentPatientQuestionnaireBi
         super.onClick(view)
         when (view?.id) {
             R.id.reset_questionnaire_button -> {
-                navigate(R.id.action_patientQuestionnaireFragment_to_patientQuestionnaireFragment) {
-                    putString(INTENT_EXTRA_QUESTIONNAIRE_ID, requireArguments().getString(INTENT_EXTRA_QUESTIONNAIRE_ID)!!)
-                    putString(INTENT_EXTRA_STRUCTUREMAP_ID, requireArguments().getString(INTENT_EXTRA_STRUCTUREMAP_ID)!!)
-                    putString(INTENT_EXTRA_QUESTIONNAIRE_HEADER, requireArguments().getString(INTENT_EXTRA_QUESTIONNAIRE_HEADER)!!)
-                    putString(INTENT_EXTRA_CONSULTATION_FLOW_ITEM_ID, requireArguments().getString(INTENT_EXTRA_CONSULTATION_FLOW_ITEM_ID)!!)
-                    putString(INTENT_EXTRA_PATIENT_ID, requireArguments().getString(INTENT_EXTRA_PATIENT_ID)!!)
-                    putString(INTENT_EXTRA_ENCOUNTER_ID, requireArguments().getString(INTENT_EXTRA_ENCOUNTER_ID)!!)
-                    putString(INTENT_EXTRA_CONSULTATION_STAGE, requireArguments().getString(INTENT_EXTRA_CONSULTATION_STAGE)!!)
-                }
+                activity?.alertDialog {
+                    setMessage(R.string.msg_reset_questionnaire)
+                    setPositiveButton(R.string.button_yes) { _, _ ->
+                        navigate(R.id.action_patientQuestionnaireFragment_to_patientQuestionnaireFragment) {
+                            putString(INTENT_EXTRA_QUESTIONNAIRE_ID, requireArguments().getString(INTENT_EXTRA_QUESTIONNAIRE_ID)!!)
+                            putString(INTENT_EXTRA_STRUCTUREMAP_ID, requireArguments().getString(INTENT_EXTRA_STRUCTUREMAP_ID)!!)
+                            putString(INTENT_EXTRA_QUESTIONNAIRE_HEADER, requireArguments().getString(INTENT_EXTRA_QUESTIONNAIRE_HEADER)!!)
+                            putString(INTENT_EXTRA_CONSULTATION_FLOW_ITEM_ID, requireArguments().getString(INTENT_EXTRA_CONSULTATION_FLOW_ITEM_ID)!!)
+                            putString(INTENT_EXTRA_PATIENT_ID, requireArguments().getString(INTENT_EXTRA_PATIENT_ID)!!)
+                            putString(INTENT_EXTRA_ENCOUNTER_ID, requireArguments().getString(INTENT_EXTRA_ENCOUNTER_ID)!!)
+                            putString(INTENT_EXTRA_CONSULTATION_STAGE, requireArguments().getString(INTENT_EXTRA_CONSULTATION_STAGE)!!)
+                        }
+                    }
+                    setNegativeButton(R.string.button_no) { _, _ -> }
+                }?.show()
+            }
+
+            R.id.save_draft_questionnaire_button -> {
+                activity?.alertDialog {
+                    setMessage(R.string.msg_save_draft)
+                    setPositiveButton(R.string.button_yes) { _, _ ->
+                        homeViewModel.saveQuestionnaireAsDraft(requireArguments().getString(INTENT_EXTRA_CONSULTATION_FLOW_ITEM_ID)!!, questionnaireFragment.getQuestionnaireResponse())
+                    }
+                    setNegativeButton(R.string.button_no) { _, _ -> }
+                }?.show()
             }
         }
     }
