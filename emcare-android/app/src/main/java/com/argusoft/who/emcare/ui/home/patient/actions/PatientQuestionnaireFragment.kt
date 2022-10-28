@@ -25,10 +25,11 @@ class PatientQuestionnaireFragment : BaseFragment<FragmentPatientQuestionnaireBi
 
     private val homeViewModel: HomeViewModel by viewModels()
     private val questionnaireFragment = QuestionnaireFragment()
-    private var consultationFlowId: String? = requireArguments().getString(INTENT_EXTRA_CONSULTATION_FLOW_ITEM_ID)
+    private var consultationFlowId: String? = null
 
     override fun initView() {
         (activity as? HomeActivity)?.closeSidepane()
+        consultationFlowId = requireArguments().getString(INTENT_EXTRA_CONSULTATION_FLOW_ITEM_ID)
 //        binding.headerLayout.toolbar.setTitleSidepane(getString(R.string.patient) + " " + requireArguments().getString(INTENT_EXTRA_QUESTIONNAIRE_HEADER))
         binding.headerLayout.toolbar.setTitleSidepane(
             requireArguments().getString(
