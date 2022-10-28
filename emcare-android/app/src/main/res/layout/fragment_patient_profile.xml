@@ -168,17 +168,22 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         android:text="@string/active_consultations" />
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:layout_marginTop="@dimen/_4sdp"
-                        android:id="@+id/activeConsultationRecyclerView"
+                    <com.argusoft.who.emcare.widget.ApiViewStateConstraintLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:nestedScrollingEnabled="false"
-                        android:orientation="vertical"
-                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                         app:layout_constraintTop_toBottomOf="@id/activeConsultationTextView"
-                        tools:listitem="@layout/list_item_active_consultation" />
+                        android:id="@+id/activePatientProgressLayout"
+                        android:layout_marginTop="@dimen/_4sdp">
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/activeConsultationRecyclerView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:nestedScrollingEnabled="false"
+                            android:orientation="vertical"
+                            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:listitem="@layout/list_item_active_consultation" />
+                    </com.argusoft.who.emcare.widget.ApiViewStateConstraintLayout>
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.card.MaterialCardView>
 

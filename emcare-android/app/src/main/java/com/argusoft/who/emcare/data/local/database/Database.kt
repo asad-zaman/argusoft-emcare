@@ -37,7 +37,7 @@ interface Database {
 
     suspend fun getAllLatestActiveConsultations(): List<ConsultationFlowItem>?
 
-    suspend fun getAllActiveConsultationsByPatientId(patientId: String): List<ConsultationFlowItem>?
+    suspend fun getAllLatestActiveConsultationsByPatientId(patientId: String): List<ConsultationFlowItem>?
 
     suspend fun getAllConsultationsByPatientId(patientId: String): List<ConsultationFlowItem>?
 

@@ -2,6 +2,7 @@ package com.argusoft.who.emcare.ui.home.patient.profile
 
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -42,7 +43,14 @@ class PatientProfileFragment : BaseFragment<FragmentPatientProfileBinding>() {
         binding.dobTextView.text = requireArguments().getString(INTENT_EXTRA_PATIENT_DOB)
     }
 
+    override fun onResume() {
+        super.onStart()
+        setupActiveConsultationsRecyclerView()
+        setupPreviousConsultationsRecyclerView()
+    }
+
     private fun setupActiveConsultationsRecyclerView() {
+        binding.activePatientProgressLayout.recyclerView = binding.activeConsultationRecyclerView
         binding.activeConsultationRecyclerView.addItemDecoration(
             DividerItemDecoration(
                 context,
@@ -51,7 +59,8 @@ class PatientProfileFragment : BaseFragment<FragmentPatientProfileBinding>() {
         )
         binding.activeConsultationRecyclerView.adapter = activeConsultationsAdapter
         activeConsultationsAdapter.clearAllItems()
-        activeConsultationsAdapter.addAll(patientProfileViewModel.getActiveConsultations())
+        patientProfileViewModel.getActiveConsultations(requireArguments().getString(INTENT_EXTRA_PATIENT_ID)!!)
+//        activeConsultationsAdapter.addAll(patientProfileViewModel.getActiveConsultations())
 
     }
 
@@ -99,6 +108,15 @@ class PatientProfileFragment : BaseFragment<FragmentPatientProfileBinding>() {
                 is State.Failed -> {
                     val message = getString(R.string.msg_sync_failed)
                     requireContext().showToast(message = message)
+                }
+            }
+        }
+
+        observeNotNull(patientProfileViewModel.activeConsultations) { apiResponse ->
+            apiResponse.handleListApiView(binding.activePatientProgressLayout, skipIds = listOf()) {
+                it?.let { list ->
+                    activeConsultationsAdapter.clearAllItems()
+                    activeConsultationsAdapter.addAll(list)
                 }
             }
         }

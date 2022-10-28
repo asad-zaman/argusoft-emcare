@@ -42,8 +42,8 @@ class ConsultationFlowRepository @Inject constructor(
     }
 
     //For the consultation flow screen
-    fun getAllActiveConsultationsByPatientId(patientId: String) = flow {
-        val list = database.getAllActiveConsultationsByPatientId(patientId)
+    fun getAllLatestActiveConsultationsByPatientId(patientId: String) = flow {
+        val list = database.getAllLatestActiveConsultationsByPatientId(patientId)
         emit(ApiResponse.Success(data = list))
     }
 

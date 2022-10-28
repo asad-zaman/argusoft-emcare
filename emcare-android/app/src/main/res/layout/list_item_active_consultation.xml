@@ -60,7 +60,7 @@
             app:layout_constraintEnd_toStartOf="@id/rightArrowImageView"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:text="Today" />
+            android:text="Continue" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/rightArrowImageView"
