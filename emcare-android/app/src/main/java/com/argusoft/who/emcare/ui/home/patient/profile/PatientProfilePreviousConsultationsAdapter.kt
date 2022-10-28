@@ -28,7 +28,8 @@ class PatientProfilePreviousConsultationsAdapter(
 
         fun bind(item: PreviousConsultationData) = with(item) {
             binding.consultationNameTextView.text = consultationLabel
-            binding.dateTextView.text = visitDate
+            binding.dateTextView.text = dateOfConsultation
+            binding.consultationImageView.setImageResource(consultationIcon!!)
         }
     }
 

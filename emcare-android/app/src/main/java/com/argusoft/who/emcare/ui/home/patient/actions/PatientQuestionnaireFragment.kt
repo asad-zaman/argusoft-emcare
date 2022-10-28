@@ -25,6 +25,7 @@ class PatientQuestionnaireFragment : BaseFragment<FragmentPatientQuestionnaireBi
 
     private val homeViewModel: HomeViewModel by viewModels()
     private val questionnaireFragment = QuestionnaireFragment()
+    private var consultationFlowId: String? = null
 
     override fun initView() {
         (activity as? HomeActivity)?.closeSidepane()
@@ -53,9 +54,9 @@ class PatientQuestionnaireFragment : BaseFragment<FragmentPatientQuestionnaireBi
                     questionnaire = it,
                     structureMapId = requireArguments().getString(INTENT_EXTRA_STRUCTUREMAP_ID)!!,
                     facilityId = preference.getLoggedInUser()?.facility?.get(0)?.facilityId!!,
-                    consultationFlowItemId = requireArguments().getString(
+                    consultationFlowItemId = if(consultationFlowId == null) requireArguments().getString(
                         INTENT_EXTRA_CONSULTATION_FLOW_ITEM_ID
-                    ),
+                    ) else consultationFlowId,
                     consultationStage = requireArguments().getString(INTENT_EXTRA_CONSULTATION_STAGE)
                 )
             }
@@ -180,6 +181,17 @@ class PatientQuestionnaireFragment : BaseFragment<FragmentPatientQuestionnaireBi
                 )
             }
         }
+
+        observeNotNull(homeViewModel.draftQuestionnaireNew) {
+            it.whenSuccess {
+                consultationFlowId = it
+                context?.showSnackBar(
+                    view = binding.progressLayout,
+                    message = getString(R.string.save_as_draft_successful),
+                    isError = false
+                )
+            }
+        }
     }
 
     override fun onClick(view: View?) {
@@ -207,7 +219,11 @@ class PatientQuestionnaireFragment : BaseFragment<FragmentPatientQuestionnaireBi
                 activity?.alertDialog {
                     setMessage(R.string.msg_save_draft)
                     setPositiveButton(R.string.button_yes) { _, _ ->
-                        homeViewModel.saveQuestionnaireAsDraft(requireArguments().getString(INTENT_EXTRA_CONSULTATION_FLOW_ITEM_ID)!!, questionnaireFragment.getQuestionnaireResponse())
+                        if(requireArguments().getString(INTENT_EXTRA_CONSULTATION_FLOW_ITEM_ID) != null) {
+                            homeViewModel.saveQuestionnaireAsDraft(requireArguments().getString(INTENT_EXTRA_CONSULTATION_FLOW_ITEM_ID)!!, questionnaireFragment.getQuestionnaireResponse())
+                        } else {
+                            homeViewModel.saveQuestionnaireAsDraftNew(questionnaireFragment.getQuestionnaireResponse())
+                        }
                     }
                     setNegativeButton(R.string.button_no) { _, _ -> }
                 }?.show()

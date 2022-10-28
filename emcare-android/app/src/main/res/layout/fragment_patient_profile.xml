@@ -215,16 +215,22 @@
                         app:layout_constraintTop_toTopOf="parent"
                         android:text="@string/previous_consultations" />
 
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:layout_marginTop="@dimen/_4sdp"
-                        android:id="@+id/previousConsultationRecyclerView"
+                    <com.argusoft.who.emcare.widget.ApiViewStateConstraintLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:nestedScrollingEnabled="false"
-                        android:orientation="vertical"
-                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                         app:layout_constraintTop_toBottomOf="@id/previousConsultationTextView"
-                        tools:listitem="@layout/list_item_previous_consultation" />
+                        android:id="@+id/previousPatientProgressLayout"
+                        android:layout_marginTop="@dimen/_4sdp">
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/previousConsultationRecyclerView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:nestedScrollingEnabled="false"
+                            android:orientation="vertical"
+                            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:listitem="@layout/list_item_previous_consultation" />
+                    </com.argusoft.who.emcare.widget.ApiViewStateConstraintLayout>
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.card.MaterialCardView>
         </androidx.constraintlayout.widget.ConstraintLayout>

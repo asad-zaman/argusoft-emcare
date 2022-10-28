@@ -52,6 +52,9 @@ class HomeViewModel @Inject constructor(
     private val _draftQuestionnaire = SingleLiveEvent<ApiResponse<String>>()
     val draftQuestionnaire: LiveData<ApiResponse<String>> = _draftQuestionnaire
 
+    private val _draftQuestionnaireNew = SingleLiveEvent<ApiResponse<String>>()
+    val draftQuestionnaireNew: LiveData<ApiResponse<String>> = _draftQuestionnaireNew
+
     private val _patients = SingleLiveEvent<ApiResponse<List<PatientItem>>>()
     val patients: LiveData<ApiResponse<List<PatientItem>>> = _patients
 
@@ -185,6 +188,14 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             patientRepository.updateConsultationQuestionnaireResponse(consultationFlowItemId, questionnaireResponse).collect {
                 _draftQuestionnaire.value = it
+            }
+        }
+    }
+
+    fun saveQuestionnaireAsDraftNew(questionnaireResponse: QuestionnaireResponse) {
+        viewModelScope.launch {
+            patientRepository.saveNewConsultation(questionnaireResponse).collect {
+                _draftQuestionnaireNew.value = ApiResponse.Success(it)
             }
         }
     }

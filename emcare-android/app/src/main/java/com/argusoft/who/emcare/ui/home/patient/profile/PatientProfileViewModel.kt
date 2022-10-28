@@ -28,6 +28,9 @@ class PatientProfileViewModel @Inject constructor(
     private val _activeConsultations = SingleLiveEvent<ApiResponse<List<ActiveConsultationData>>>()
     val activeConsultations: LiveData<ApiResponse<List<ActiveConsultationData>>> = _activeConsultations
 
+    private val _previousConsultations = SingleLiveEvent<ApiResponse<List<PreviousConsultationData>>>()
+    val previousConsultations: LiveData<ApiResponse<List<PreviousConsultationData>>> = _previousConsultations
+
 
     fun getActiveConsultations(patientId: String){
         val consultationsArrayList = mutableListOf<ActiveConsultationData>()
@@ -57,20 +60,41 @@ class PatientProfileViewModel @Inject constructor(
                         }
                     }
                 }
-                _activeConsultations.value = ApiResponse.Success(consultationsArrayList,"No Active Consultations Found")
+                _activeConsultations.value = ApiResponse.Success(consultationsArrayList,"No Active Consultations")
             }
         }
     }
 
-    fun getPreviousConsultations() : ArrayList<PreviousConsultationData?>{
-        return arrayListOf(
-            PreviousConsultationData("Sick Child, Follow Up", "06/04/22"),
-            PreviousConsultationData("Sick Child, Follow Up", "01/04/22"),
-            PreviousConsultationData("Sick Child, Follow Up", "26/03/22"),
-            PreviousConsultationData("Well Child Clinic", "18/03/22"),
-            PreviousConsultationData("Sick Child, Follow Up", "11/03/22"),
-            PreviousConsultationData("Sick Child, Follow Up", "07/01/22"),
-        )
+    fun getPreviousConsultations(patientId: String){
+        val consultationsArrayList = mutableListOf<PreviousConsultationData>()
+        viewModelScope.launch {
+            consultationFlowRepository.getAllLatestInActiveConsultationsByPatientId(patientId).collect {
+                it.data?.forEach{ consultationFlowItem ->
+                    patientRepository.getPatientById(patientId).collect{ patientResponse ->
+                        val patientItem = patientResponse.data
+                        if (patientItem != null) {
+                            consultationsArrayList.add(
+                                PreviousConsultationData(
+                                    consultationLabel = stageToBadgeMap[consultationFlowItem.consultationStage] + " Stage",
+                                    dateOfConsultation = ZonedDateTime.parse(consultationFlowItem.consultationDate?.substringBefore("+").plus("Z[UTC]")).format(
+                                        DateTimeFormatter.ofPattern("dd/MM/YY")),
+                                    header = consultationFlowItem.questionnaireId, //TODO: For test only, replace it with appropriate header
+                                    consultationIcon = stageToIconMap[consultationFlowItem.consultationStage],
+                                    consultationFlowItemId = consultationFlowItem.id,
+                                    patientId = consultationFlowItem.patientId,
+                                    encounterId = consultationFlowItem.encounterId,
+                                    questionnaireId = consultationFlowItem.questionnaireId,
+                                    structureMapId = consultationFlowItem.structureMapId,
+                                    consultationStage = consultationFlowItem.consultationStage,
+                                    questionnaireResponseText = consultationFlowItem.questionnaireResponseText,
+                                    isActive = consultationFlowItem.isActive
+                                )
+                            )
+                        }
+                    }
+                }
+                _previousConsultations.value = ApiResponse.Success(consultationsArrayList,"No Previous Consultations")
+            }
+        }
     }
-
 }

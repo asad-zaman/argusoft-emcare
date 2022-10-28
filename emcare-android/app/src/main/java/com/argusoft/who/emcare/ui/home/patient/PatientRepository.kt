@@ -5,12 +5,9 @@ import com.argusoft.who.emcare.R
 import ca.uhn.fhir.context.FhirContext
 import ca.uhn.fhir.context.FhirVersionEnum
 import com.argusoft.who.emcare.data.remote.ApiResponse
-import com.argusoft.who.emcare.ui.common.LOCATION_EXTENSION_URL
-import com.argusoft.who.emcare.ui.common.consultationFlowStageList
+import com.argusoft.who.emcare.ui.common.*
 import com.argusoft.who.emcare.ui.common.model.ConsultationFlowItem
 import com.argusoft.who.emcare.ui.common.model.PatientItem
-import com.argusoft.who.emcare.ui.common.stageToQuestionnaireId
-import com.argusoft.who.emcare.ui.common.stageToStructureMapId
 import com.argusoft.who.emcare.ui.home.ConsultationFlowRepository
 import com.argusoft.who.emcare.utils.extention.toPatientItem
 import com.google.android.fhir.FhirEngine
@@ -202,6 +199,25 @@ class PatientRepository @Inject constructor(
         catch (e: Exception) {
             e.printStackTrace()
             emit(ApiResponse.ApiError(apiErrorMessageResId = R.string.error_saving_resource))
+        }
+    }
+
+    fun saveNewConsultation(questionnaireResponse: QuestionnaireResponse, consultationStage: String? = CONSULTATION_STAGE_REGISTRATION_ENCOUNTER) = flow {
+
+        val patientId = questionnaireResponse.subject.identifier.value
+        val encounterId = questionnaireResponse.encounter.id
+        val parser = FhirContext.forCached(FhirVersionEnum.R4).newJsonParser()
+        consultationFlowRepository.saveConsultation(ConsultationFlowItem(
+            consultationStage = consultationStage,
+            patientId = patientId,
+            encounterId = encounterId,
+            questionnaireId = stageToQuestionnaireId[consultationStage],
+            structureMapId = stageToStructureMapId[consultationStage],
+            questionnaireResponseText = parser.encodeResourceToString(questionnaireResponse),
+            isActive = true,
+            consultationDate = ZonedDateTime.now(ZoneId.of("UTC")).toString().removeSuffix("Z[UTC]"),
+        )).collect {
+            emit(it.data?.id)
         }
     }
 

@@ -43,12 +43,6 @@ class PatientProfileFragment : BaseFragment<FragmentPatientProfileBinding>() {
         binding.dobTextView.text = requireArguments().getString(INTENT_EXTRA_PATIENT_DOB)
     }
 
-    override fun onResume() {
-        super.onStart()
-        setupActiveConsultationsRecyclerView()
-        setupPreviousConsultationsRecyclerView()
-    }
-
     private fun setupActiveConsultationsRecyclerView() {
         binding.activePatientProgressLayout.recyclerView = binding.activeConsultationRecyclerView
         binding.activeConsultationRecyclerView.addItemDecoration(
@@ -58,15 +52,11 @@ class PatientProfileFragment : BaseFragment<FragmentPatientProfileBinding>() {
             )
         )
         binding.activeConsultationRecyclerView.adapter = activeConsultationsAdapter
-        activeConsultationsAdapter.clearAllItems()
         patientProfileViewModel.getActiveConsultations(requireArguments().getString(INTENT_EXTRA_PATIENT_ID)!!)
-//        activeConsultationsAdapter.addAll(patientProfileViewModel.getActiveConsultations())
-
     }
 
     private fun setupPreviousConsultationsRecyclerView() {
-//        var divider: DividerItemDecoration = DividerItemDecoration(context, DividerItemDecoration.HORIZONTAL)
-//        divider.setDrawable(ContextCompat.getDrawable(context!!, R.drawable.custom_divider)!!)
+        binding.previousPatientProgressLayout.recyclerView = binding.previousConsultationRecyclerView
         binding.previousConsultationRecyclerView.addItemDecoration(
             DividerItemDecoration(
                 context,
@@ -74,8 +64,7 @@ class PatientProfileFragment : BaseFragment<FragmentPatientProfileBinding>() {
             )
         )
         binding.previousConsultationRecyclerView.adapter = previousConsultationsAdapter
-        previousConsultationsAdapter.clearAllItems()
-        previousConsultationsAdapter.addAll(patientProfileViewModel.getPreviousConsultations())
+        patientProfileViewModel.getPreviousConsultations(requireArguments().getString(INTENT_EXTRA_PATIENT_ID)!!)
     }
 
     override fun initListener() {
@@ -113,10 +102,19 @@ class PatientProfileFragment : BaseFragment<FragmentPatientProfileBinding>() {
         }
 
         observeNotNull(patientProfileViewModel.activeConsultations) { apiResponse ->
-            apiResponse.handleListApiView(binding.activePatientProgressLayout, skipIds = listOf()) {
+            apiResponse.handleListApiView(binding.activePatientProgressLayout) {
                 it?.let { list ->
                     activeConsultationsAdapter.clearAllItems()
                     activeConsultationsAdapter.addAll(list)
+                }
+            }
+        }
+
+        observeNotNull(patientProfileViewModel.previousConsultations) { apiResponse ->
+            apiResponse.handleListApiView(binding.previousPatientProgressLayout) {
+                it?.let { list ->
+                    previousConsultationsAdapter.clearAllItems()
+                    previousConsultationsAdapter.addAll(list)
                 }
             }
         }
