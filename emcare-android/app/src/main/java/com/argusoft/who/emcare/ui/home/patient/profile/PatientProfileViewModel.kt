@@ -35,11 +35,12 @@ class PatientProfileViewModel @Inject constructor(
     fun getActiveConsultations(patientId: String){
         val consultationsArrayList = mutableListOf<ActiveConsultationData>()
         viewModelScope.launch {
-            consultationFlowRepository.getAllLatestActiveConsultationsByPatientId(patientId).collect {
-                it.data?.forEach{ consultationFlowItem ->
-                    patientRepository.getPatientById(patientId).collect{ patientResponse ->
-                        val patientItem = patientResponse.data
-                        if (patientItem != null) {
+
+            patientRepository.getPatientById(patientId).collect{ patientResponse ->
+                val patientItem = patientResponse.data
+                if (patientItem != null) {
+                    consultationFlowRepository.getAllLatestActiveConsultationsByPatientId(patientId).collect {
+                        it.data?.forEach{ consultationFlowItem ->
                             consultationsArrayList.add(
                                 ActiveConsultationData(
                                     consultationLabel = stageToBadgeMap[consultationFlowItem.consultationStage] + " Stage",
@@ -68,11 +69,11 @@ class PatientProfileViewModel @Inject constructor(
     fun getPreviousConsultations(patientId: String){
         val consultationsArrayList = mutableListOf<PreviousConsultationData>()
         viewModelScope.launch {
-            consultationFlowRepository.getAllLatestInActiveConsultationsByPatientId(patientId).collect {
-                it.data?.forEach{ consultationFlowItem ->
-                    patientRepository.getPatientById(patientId).collect{ patientResponse ->
-                        val patientItem = patientResponse.data
-                        if (patientItem != null) {
+            patientRepository.getPatientById(patientId).collect{ patientResponse ->
+                val patientItem = patientResponse.data
+                if (patientItem != null) {
+                    consultationFlowRepository.getAllLatestInActiveConsultationsByPatientId(patientId).collect {
+                        it.data?.forEach{ consultationFlowItem ->
                             consultationsArrayList.add(
                                 PreviousConsultationData(
                                     consultationLabel = stageToBadgeMap[consultationFlowItem.consultationStage] + " Stage",
