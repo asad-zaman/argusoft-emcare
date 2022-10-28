@@ -25,7 +25,7 @@ class PatientQuestionnaireFragment : BaseFragment<FragmentPatientQuestionnaireBi
 
     private val homeViewModel: HomeViewModel by viewModels()
     private val questionnaireFragment = QuestionnaireFragment()
-    private var consultationFlowId: String? = null
+    private var consultationFlowId: String? = requireArguments().getString(INTENT_EXTRA_CONSULTATION_FLOW_ITEM_ID)
 
     override fun initView() {
         (activity as? HomeActivity)?.closeSidepane()
