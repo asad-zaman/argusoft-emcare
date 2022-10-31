@@ -1,5 +1,6 @@
 package com.argusoft.who.emcare.ui.home.patient.add
 
+import android.view.View
 import androidx.activity.addCallback
 import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
@@ -73,6 +74,7 @@ class AddPatientFragment : BaseFragment<FragmentAddPatientBinding>() {
     }
 
     override fun initListener() {
+        binding.resetQuestionnaireButton.setOnClickListener(this)
     }
 
     override fun initObserver() {
@@ -104,6 +106,23 @@ class AddPatientFragment : BaseFragment<FragmentAddPatientBinding>() {
         observeNotNull(homeViewModel.questionnaireWithQR) { questionnaire ->
             questionnaire.handleApiView(binding.progressLayout, skipIds = listOf(R.id.headerLayout)) {
                 it?.let { addQuestionnaireFragmentWithQR(it) }
+            }
+        }
+    }
+
+    override fun onClick(view: View?) {
+        super.onClick(view)
+        when (view?.id) {
+            R.id.reset_questionnaire_button -> {
+                activity?.alertDialog {
+                    setMessage(R.string.msg_reset_questionnaire)
+                    setPositiveButton(R.string.button_yes) { _, _ ->
+                        navigate(R.id.action_addPatientFragment_to_addPatientFragment) {
+                            putString(INTENT_EXTRA_FACILITY_ID, preference.getLoggedInUser()?.facility?.get(0)?.facilityId)
+                        }
+                    }
+                    setNegativeButton(R.string.button_no) { _, _ -> }
+                }?.show()
             }
         }
     }
