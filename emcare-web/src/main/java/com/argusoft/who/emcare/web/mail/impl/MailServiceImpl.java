@@ -19,9 +19,6 @@ import javax.mail.internet.MimeMessage;
 @Service
 public class MailServiceImpl implements MailService {
 
-    @Value("${sendinblue.key}")
-    private String sendInBlueSecureKey;
-
     @Value("${spring.mail.username}")
     private String emailSentFrom;
 
