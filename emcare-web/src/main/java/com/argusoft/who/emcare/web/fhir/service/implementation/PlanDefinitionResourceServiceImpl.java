@@ -75,7 +75,7 @@ public class PlanDefinitionResourceServiceImpl implements PlanDefinitionResource
     public List<PlanDefinition> getAllPlanDefinition(DateParam theDate) {
         List<PlanDefinition> planDefinitions = new ArrayList<>();
 
-        List<PlanDefinitionResource> planDefinitionResources = new ArrayList<>();
+        List<PlanDefinitionResource> planDefinitionResources;
 
         if (theDate == null) {
             planDefinitionResources =  planDefinitionResourceRepository.findAll();

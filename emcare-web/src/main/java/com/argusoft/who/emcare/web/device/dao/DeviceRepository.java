@@ -1,7 +1,6 @@
 package com.argusoft.who.emcare.web.device.dao;
 
 import com.argusoft.who.emcare.web.device.model.DeviceMaster;
-import com.argusoft.who.emcare.web.location.model.LocationMaster;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -32,15 +31,15 @@ public interface DeviceRepository extends JpaRepository<DeviceMaster, Integer> {
 
     @Modifying
     @Transactional
-    @Query(value = "update device_master set android_version = :android_version,"
-            + " last_logged_in_user= :last_logged_in_user, is_blocked = :is_blocked," +
-            "modified_by =:last_logged_in_user, modified_on = now() where device_id = :device_id",
+    @Query(value = "update device_master set android_version = :androidVersion,"
+            + " last_logged_in_user= :lastLoggedInUser, is_blocked = :isBlocked," +
+            "modified_by =:lastLoggedInUser, modified_on = now() where device_id = :deviceId",
             nativeQuery = true)
     public void updateDevice(
-            @Param("android_version") String android_version,
-            @Param("last_logged_in_user") String last_logged_in_user,
-            @Param("is_blocked") Boolean is_blocked,
-            @Param("device_id") Integer device_id
+            @Param("androidVersion") String androidVersion,
+            @Param("lastLoggedInUser") String lastLoggedInUser,
+            @Param("isBlocked") Boolean isBlocked,
+            @Param("deviceId") Integer deviceId
     );
 
     public List<DeviceMaster> findByAndroidVersionContainingIgnoreCaseOrDeviceNameContainingIgnoreCaseOrDeviceOsContainingIgnoreCaseOrDeviceModelContainingIgnoreCaseOrDeviceUUIDContainingIgnoreCaseOrUserNameContainingIgnoreCase(

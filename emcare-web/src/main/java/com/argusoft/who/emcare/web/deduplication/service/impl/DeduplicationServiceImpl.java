@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class DeduplicationServiceImpl implements DeduplicationService {
@@ -21,7 +22,6 @@ public class DeduplicationServiceImpl implements DeduplicationService {
     public Boolean comparePatients(Patient p1, Patient p2) {
 
 
-        Boolean isDuplicateFlag;
         Boolean withoutNameFlag = !p1.hasName() || !p2.hasName();
         Boolean withoutAddressFlag = !p1.hasAddress() || !p2.hasAddress();
         Boolean withoutContactFlag = !p1.hasContact() || !p2.hasContact();
@@ -35,21 +35,14 @@ public class DeduplicationServiceImpl implements DeduplicationService {
         Boolean sameCareGiver = !withoutCareGiver && p1.getLinkFirstRep().getOther().getIdentifier().getValue().equalsIgnoreCase(p2.getLinkFirstRep().getOther().getIdentifier().getValue());
         Boolean sameGenderFlag = !withoutGenderFlag && p1.getGender().getDisplay().equalsIgnoreCase(p2.getGender().getDisplay());
 
-        //Tests
-//        if (withoutBirthDateFlag || (withoutAddressFlag && withoutContactFlag)) {
-//            isDuplicateFlag = null;
-//        } else {
-//            isDuplicateFlag = ((withoutNameFlag || sameNameFlag) && (withoutGenderFlag || sameGenderFlag) && (withoutAddressFlag || sameAddressFlag) && (withoutContactFlag || sameContactFlag) && sameBirthDateFlag);
-//        }
 
-        if (withoutBirthDateFlag && sameNameFlag && sameContactFlag && sameAddressFlag && sameGenderFlag && sameCareGiver) {
+        if (Boolean.TRUE.equals(withoutBirthDateFlag && sameNameFlag && sameContactFlag && sameAddressFlag && sameGenderFlag) && Boolean.TRUE.equals(sameCareGiver)) {
             return true;
         } else if ((withoutAddressFlag && withoutContactFlag) && (sameNameFlag && sameGenderFlag && sameCareGiver)) {
             return true;
         } else {
             return ((withoutNameFlag || sameNameFlag) && (sameGenderFlag) && (withoutAddressFlag || sameAddressFlag) && (withoutContactFlag || sameContactFlag) && (sameBirthDateFlag) && (withoutCareGiver || sameCareGiver));
         }
-//        return isDuplicateFlag;
     }
 
     @Override
@@ -68,7 +61,7 @@ public class DeduplicationServiceImpl implements DeduplicationService {
         for (Patient p1 : patients) {
             List<Patient> duplicate = new ArrayList<>();
             for (Patient p2 : patientDuplicates) {
-                if (p1.getIdElement().getIdPart() != p2.getIdElement().getIdPart() && comparePatients(p1, p2)) {
+                if (!Objects.equals(p1.getIdElement().getIdPart(), p2.getIdElement().getIdPart()) && Boolean.TRUE.equals(comparePatients(p1, p2))) {
                     duplicate.add(p2);
                 }
             }

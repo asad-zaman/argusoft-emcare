@@ -56,7 +56,7 @@ public class StructureDefinitionServiceImpl implements StructureDefinitionServic
         structureDefinitionResource.setText(locationString);
         structureDefinitionResource.setResourceId(structureMapId);
 
-        structureDefinitionResource = structureDefinitionRepository.save(structureDefinitionResource);
+        structureDefinitionRepository.save(structureDefinitionResource);
 
         return structureDefinition;
     }
@@ -95,10 +95,10 @@ public class StructureDefinitionServiceImpl implements StructureDefinitionServic
     public List<StructureDefinition> getAllStructureMap(DateParam theDate) {
         List<StructureDefinition> structureDefinitions = new ArrayList<>();
 
-        List<StructureDefinitionResource> structureMapResources = new ArrayList<>();
+        List<StructureDefinitionResource> structureMapResources;
 
         if (theDate == null) {
-            structureMapResources =  structureDefinitionRepository.findAll();
+            structureMapResources = structureDefinitionRepository.findAll();
         } else {
             structureMapResources = structureDefinitionRepository.findByModifiedOnGreaterThanOrCreatedOnGreaterThan(theDate.getValue(), theDate.getValue());
         }
@@ -115,7 +115,7 @@ public class StructureDefinitionServiceImpl implements StructureDefinitionServic
         List<StructureDefinitionDto> structureDefinitionDtos = new ArrayList<>();
         Page<StructureDefinitionResource> structureDefinitionResources = null;
         Pageable page = PageRequest.of(pageNo, CommonConstant.PAGE_SIZE);
-        Long count = 0L;
+        Long count;
 
         if (searchString != null && !searchString.isEmpty()) {
             structureDefinitionResources = structureDefinitionRepository.findByTextContainingIgnoreCase(searchString, page);

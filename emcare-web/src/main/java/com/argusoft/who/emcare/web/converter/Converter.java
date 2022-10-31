@@ -7,6 +7,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class Converter {
+
+    private Converter() {
+    }
+
     public static <T> T toModel(Object obj, Class<T> zClass) {
         ModelMapper modelMapper = new ModelMapper();
         modelMapper.getConfiguration().setSourceNameTokenizer(NameTokenizers.UNDERSCORE);// chinh xac ten moi dc mapper

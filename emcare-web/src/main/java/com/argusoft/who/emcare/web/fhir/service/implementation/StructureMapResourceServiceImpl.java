@@ -56,7 +56,7 @@ public class StructureMapResourceServiceImpl implements StructureMapResourceServ
         structureMapResource.setText(locationString);
         structureMapResource.setResourceId(structureMapId);
 
-        structureMapResource = structureMapResourceRepository.save(structureMapResource);
+        structureMapResourceRepository.save(structureMapResource);
 
         return structureMap;
     }
@@ -98,7 +98,7 @@ public class StructureMapResourceServiceImpl implements StructureMapResourceServ
     public List<StructureMap> getAllStructureMap(DateParam theDate) {
         List<StructureMap> structureMaps = new ArrayList<>();
 
-        List<StructureMapResource> structureMapResources = new ArrayList<>();
+        List<StructureMapResource> structureMapResources;
 
         if (theDate == null) {
             structureMapResources =  structureMapResourceRepository.findAll();
@@ -117,7 +117,7 @@ public class StructureMapResourceServiceImpl implements StructureMapResourceServ
         List<StructureMapDto> structureMaps = new ArrayList<>();
         Page<StructureMapResource> structureMapResources = null;
         Pageable page = PageRequest.of(pageNo, CommonConstant.PAGE_SIZE);
-        Long count = 0L;
+        Long count;
 
         if (searchString != null && !searchString.isEmpty()) {
             structureMapResources = structureMapResourceRepository.findByTextContainingIgnoreCase(searchString, page);

@@ -75,7 +75,7 @@ public class ValueSetResourceServiceImpl implements ValueSetResourceService {
     public List<ValueSet> getAllValueSets(DateParam theDate) {
         List<ValueSet> valueSets = new ArrayList<>();
 
-        List<ValueSetResource> valueSetResources = new ArrayList<>();
+        List<ValueSetResource> valueSetResources;
 
         if (theDate == null) {
             valueSetResources =  valueSetResourceRepository.findAll();

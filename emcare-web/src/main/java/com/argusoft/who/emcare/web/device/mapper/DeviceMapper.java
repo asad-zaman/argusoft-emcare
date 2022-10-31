@@ -4,10 +4,6 @@ import com.argusoft.who.emcare.web.device.dto.DeviceDto;
 import com.argusoft.who.emcare.web.device.dto.DeviceWithUserDetails;
 import com.argusoft.who.emcare.web.device.model.DeviceMaster;
 import com.argusoft.who.emcare.web.user.dto.MultiLocationUserListDto;
-import com.argusoft.who.emcare.web.user.dto.UserListDto;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author jay

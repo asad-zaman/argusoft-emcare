@@ -34,7 +34,6 @@ public class ObservationResourceServiceImpl implements ObservationResourceServic
         m.setVersionId("1");
         m.setLastUpdated(new Date());
         observation.setMeta(m);
-        System.out.println(observation.getIdElement());
         String observationId = null;
         if (observation.getId() != null) {
             observationId = observation.getIdElement().getIdPart();
@@ -96,7 +95,7 @@ public class ObservationResourceServiceImpl implements ObservationResourceServic
     @Override
     public List<Observation> getAllObservation(DateParam theDate) {
         List<Observation> observations = new ArrayList<>();
-        List<ObservationResource> observationResources = new ArrayList<>();
+        List<ObservationResource> observationResources;
 
         if (theDate == null) {
             observationResources = observationResourceRepository.findAll();

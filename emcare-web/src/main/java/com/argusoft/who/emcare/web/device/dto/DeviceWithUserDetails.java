@@ -1,7 +1,6 @@
 package com.argusoft.who.emcare.web.device.dto;
 
 import com.argusoft.who.emcare.web.user.dto.MultiLocationUserListDto;
-import com.argusoft.who.emcare.web.user.dto.UserListDto;
 
 /**
  * @author jay

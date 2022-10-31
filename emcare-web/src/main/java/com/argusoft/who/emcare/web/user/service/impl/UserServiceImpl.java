@@ -1,8 +1,8 @@
 package com.argusoft.who.emcare.web.user.service.impl;
 
-import com.argusoft.who.emcare.web.adminSetting.Entity.Settings;
-import com.argusoft.who.emcare.web.adminSetting.repository.AdminSettingRepository;
-import com.argusoft.who.emcare.web.adminSetting.service.AdminSettingService;
+import com.argusoft.who.emcare.web.adminsetting.Entity.Settings;
+import com.argusoft.who.emcare.web.adminsetting.repository.AdminSettingRepository;
+import com.argusoft.who.emcare.web.adminsetting.service.AdminSettingService;
 import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.common.dto.PageDto;
 import com.argusoft.who.emcare.web.common.response.Response;
@@ -27,8 +27,8 @@ import com.argusoft.who.emcare.web.user.cons.UserConst;
 import com.argusoft.who.emcare.web.user.dto.*;
 import com.argusoft.who.emcare.web.user.mapper.UserMapper;
 import com.argusoft.who.emcare.web.user.service.UserService;
-import com.argusoft.who.emcare.web.userLocationMapping.dao.UserLocationMappingRepository;
-import com.argusoft.who.emcare.web.userLocationMapping.model.UserLocationMapping;
+import com.argusoft.who.emcare.web.userlocationmapping.dao.UserLocationMappingRepository;
+import com.argusoft.who.emcare.web.userlocationmapping.model.UserLocationMapping;
 import com.google.gson.Gson;
 import org.keycloak.admin.client.CreatedResponseUtil;
 import org.keycloak.admin.client.Keycloak;
@@ -309,8 +309,8 @@ public class UserServiceImpl implements UserService {
             if (settings.getValue().equals(CommonConstant.ACTIVE)) {
                 MailDto mailDto = mailDataSetterService.mailSubjectSetter(CommonConstant.MAIL_FOR_ADD_USER);
                 Map<String, Object> mailData = new HashMap<>();
-                mailData.put("firstName", user.getFirstName());
-                mailData.put("lastName", user.getLastName());
+                mailData.put(CommonConstant.FIRST_NAME, user.getFirstName());
+                mailData.put(CommonConstant.LAST_NAME, user.getLastName());
                 String mailBody = mailDataSetterService.emailBodyCreator(mailData, mailDto.getBody(), mailDto);
                 mailService.sendBasicMail(user.getEmail(), mailDto.getSubject(), mailBody);
             }

@@ -6,7 +6,6 @@ import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.param.DateParam;
 import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.fhir.dao.EncounterResourceRepository;
-import com.argusoft.who.emcare.web.fhir.model.CodeSystemResource;
 import com.argusoft.who.emcare.web.fhir.model.EncounterResource;
 import com.argusoft.who.emcare.web.fhir.service.EncounterResourceService;
 import org.hl7.fhir.r4.model.Encounter;
@@ -95,7 +94,7 @@ public class EncounterResourceServiceImpl implements EncounterResourceService {
     @Override
     public List<Encounter> getAllEncounter(DateParam theDate) {
         List<Encounter> encounters = new ArrayList<>();
-        List<EncounterResource> encounterResources = new ArrayList<>();
+        List<EncounterResource> encounterResources;
 
         if (theDate == null) {
             encounterResources =  encounterResourceRepository.findAll();

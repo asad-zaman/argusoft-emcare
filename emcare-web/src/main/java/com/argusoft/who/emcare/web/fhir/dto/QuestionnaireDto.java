@@ -11,8 +11,6 @@ public class QuestionnaireDto {
     private String title;
     private String description;
 
-    public QuestionnaireDto() {
-    }
 
     public String getId() {
         return id;

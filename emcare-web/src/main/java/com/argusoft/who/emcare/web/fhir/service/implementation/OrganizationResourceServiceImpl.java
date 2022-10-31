@@ -102,7 +102,7 @@ public class OrganizationResourceServiceImpl implements OrganizationResourceServ
         List<OrganizationDto> organizationDtos = new ArrayList<>();
         Page<OrganizationResource> organizationResources = null;
         Pageable page = PageRequest.of(pageNo, CommonConstant.PAGE_SIZE);
-        Long count = 0L;
+        Long count;
 
         if (searchString != null && !searchString.isEmpty()) {
             organizationResources = organizationResourceRepository.findByTextContainingIgnoreCase(searchString, page);
