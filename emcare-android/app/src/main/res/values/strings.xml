@@ -170,6 +170,7 @@
     <string name="menu_save">Save</string>
     <string name="msg_logout">Are you sure you want to logout?</string>
     <string name="msg_exit_consultation">Are You Sure You Want To Exit The Consultation?</string>
+    <string name="msg_continue_consultation">Do You Want To Continue The Consultation?</string>
     <string name="msg_save_draft">Are You Sure You Want To Save Questionnaire As Draft?</string>
     <string name="msg_reset_questionnaire">Are You Sure You Want To Reset The Questionnaire?</string>
     <string name="msg_exit_registration">Are You Sure You Want To Exit Registration?</string>
