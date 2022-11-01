@@ -106,7 +106,7 @@ public class LocationResourceServiceImpl implements LocationResourceService {
     public List<Location> getAllLocations(DateParam theDate) {
         List<Location> locationList = new ArrayList<>();
 
-        List<LocationResource> locationResources = new ArrayList<>();
+        List<LocationResource> locationResources;
 
         if (theDate == null) {
             locationResources =  locationResourceRepository.findAll();
@@ -177,7 +177,7 @@ public class LocationResourceServiceImpl implements LocationResourceService {
         Page<LocationResource> locationResources = null;
         Sort sort = Sort.by("createdOn").descending();
         Pageable page = PageRequest.of(pageNo, CommonConstant.PAGE_SIZE,sort);
-        Long count = 0L;
+        Long count;
 
         if (searchString != null && !searchString.isEmpty()) {
             locationResources = locationResourceRepository.findByTextContainingIgnoreCaseOrOrganizationNameContainingIgnoreCaseOrLocationNameContainingIgnoreCase(searchString, searchString, searchString, page);

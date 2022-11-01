@@ -93,7 +93,7 @@ public class ActivityDefinitionServiceImpl implements ActivityDefinitionResource
     @Override
     public List<ActivityDefinition> getAllActivityDefinition(DateParam theDate) {
         List<ActivityDefinition> activityDefinitions = new ArrayList<>();
-        List<ActivityDefinitionResource> activityDefinitionResources = new ArrayList<>();
+        List<ActivityDefinitionResource> activityDefinitionResources ;
 
         if (theDate == null) {
             activityDefinitionResources = activityDefinitionResourceRepository.findAll();
@@ -113,7 +113,7 @@ public class ActivityDefinitionServiceImpl implements ActivityDefinitionResource
         List<ActivityDefinitionDto> definitionDtos = new ArrayList<>();
         Page<ActivityDefinitionResource> activityDefinitionResources = null;
         Pageable page = PageRequest.of(pageNo, CommonConstant.PAGE_SIZE);
-        Long count = 0L;
+        Long count;
 
         if (searchString != null && !searchString.isEmpty()) {
             activityDefinitionResources = activityDefinitionResourceRepository.findByTextContainingIgnoreCase(searchString, page);

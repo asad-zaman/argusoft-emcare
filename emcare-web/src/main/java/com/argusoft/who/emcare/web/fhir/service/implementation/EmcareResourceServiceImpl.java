@@ -19,8 +19,8 @@ import com.argusoft.who.emcare.web.fhir.service.*;
 import com.argusoft.who.emcare.web.location.dao.LocationMasterDao;
 import com.argusoft.who.emcare.web.location.service.LocationService;
 import com.argusoft.who.emcare.web.secuirty.EmCareSecurityUser;
-import com.argusoft.who.emcare.web.userLocationMapping.dao.UserLocationMappingRepository;
-import com.argusoft.who.emcare.web.userLocationMapping.model.UserLocationMapping;
+import com.argusoft.who.emcare.web.userlocationmapping.dao.UserLocationMappingRepository;
+import com.argusoft.who.emcare.web.userlocationmapping.model.UserLocationMapping;
 import org.hl7.fhir.r4.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -138,7 +138,7 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
             case CommonConstant.FHIR_PATIENT:
                 EmcareResource emcareResource = findByResourceId(resourceId);
                 String facilityId = null;
-                if (resourceType.toUpperCase().equals(CommonConstant.FHIR_PATIENT)) {
+                if (resourceType.equalsIgnoreCase(CommonConstant.FHIR_PATIENT)) {
                     Patient patient = parser.parseResource(Patient.class, resourceString);
                     Extension facilityExtension = patient.getExtensionByUrl(CommonConstant.LOCATION_EXTENSION_URL);
                     facilityId = ((Identifier) facilityExtension.getValue()).getValue();
@@ -316,7 +316,7 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
             return repository.findAllByType(type);
         } else if (theDate != null && theId == null) {
             return repository.getByDateAndType(theDate.getValue(), type);
-        } else if (theDate == null && theId != null) {
+        } else if (theDate == null) {
             return repository.findByFacilityIdIn(childFacilityIds);
         } else {
             return repository.findByTypeAndModifiedOnGreaterThanOrCreatedOnGreaterThanAndFacilityIdIn(type, theDate.getValue(), theDate.getValue(), childFacilityIds);
@@ -377,7 +377,7 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
         List<Patient> patientsList = new ArrayList<>();
         List<PatientDto> patientDtosList;
 
-        List<EmcareResource> resourcesList = retrieveResourcesByType("PATIENT", null, null);
+        List<EmcareResource> resourcesList = retrieveResourcesByType(CommonConstant.FHIR_PATIENT, null, null);
 
         for (EmcareResource emcareResource : resourcesList) {
             Patient patient = parser.parseResource(Patient.class, emcareResource.getText());

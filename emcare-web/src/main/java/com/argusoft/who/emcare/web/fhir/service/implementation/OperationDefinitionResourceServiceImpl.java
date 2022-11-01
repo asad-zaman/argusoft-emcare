@@ -64,10 +64,10 @@ public class OperationDefinitionResourceServiceImpl implements OperationDefiniti
 
     @Override
     public OperationDefinition getResourceById(String id) {
-        OperationDefinitionResource OperationDefinitionResource = operationDefinitionResourceRepository.findByResourceId(id);
+        OperationDefinitionResource operationDefinitionResource = operationDefinitionResourceRepository.findByResourceId(id);
         OperationDefinition operationDefinition = null;
-        if (OperationDefinitionResource != null) {
-            operationDefinition = parser.parseResource(OperationDefinition.class, OperationDefinitionResource.getText());
+        if (operationDefinitionResource != null) {
+            operationDefinition = parser.parseResource(OperationDefinition.class, operationDefinitionResource.getText());
         }
         return operationDefinition;
     }
@@ -97,7 +97,7 @@ public class OperationDefinitionResourceServiceImpl implements OperationDefiniti
         List<OperationDefinition> operationDefinitions = new ArrayList<>();
 
 
-        List<OperationDefinitionResource> operationDefinitionResources = new ArrayList<>();
+        List<OperationDefinitionResource> operationDefinitionResources;
 
         if (theDate == null) {
             operationDefinitionResources =  operationDefinitionResourceRepository.findAll();
@@ -117,7 +117,7 @@ public class OperationDefinitionResourceServiceImpl implements OperationDefiniti
         List<OperationDefinitionDto> definitionDtos = new ArrayList<>();
         Page<OperationDefinitionResource> operationDefinitionResources = null;
         Pageable page = PageRequest.of(pageNo, CommonConstant.PAGE_SIZE);
-        Long count = 0L;
+        Long count;
 
         if (searchString != null && !searchString.isEmpty()) {
             operationDefinitionResources = operationDefinitionResourceRepository.findByTextContainingIgnoreCase(searchString, page);

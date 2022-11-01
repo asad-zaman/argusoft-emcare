@@ -8,16 +8,12 @@ import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.common.dto.PageDto;
 import com.argusoft.who.emcare.web.fhir.dao.CodeSystemResourceRepository;
 import com.argusoft.who.emcare.web.fhir.dto.CodeSystemDto;
-import com.argusoft.who.emcare.web.fhir.dto.StructureMapDto;
 import com.argusoft.who.emcare.web.fhir.mapper.EmcareResourceMapper;
-import com.argusoft.who.emcare.web.fhir.model.ActivityDefinitionResource;
 import com.argusoft.who.emcare.web.fhir.model.CodeSystemResource;
-import com.argusoft.who.emcare.web.fhir.model.StructureMapResource;
 import com.argusoft.who.emcare.web.fhir.service.CodeSystemResourceService;
 import org.hl7.fhir.r4.model.CodeSystem;
 import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.Meta;
-import org.hl7.fhir.r4.model.StructureMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -97,7 +93,7 @@ public class CodeSystemResourceServiceImpl implements CodeSystemResourceService 
     public List<CodeSystem> getAllCodeSystem(DateParam theDate) {
         List<CodeSystem> codeSystems = new ArrayList<>();
 
-        List<CodeSystemResource> codeSystemResources = new ArrayList<>();
+        List<CodeSystemResource> codeSystemResources;
 
         if (theDate == null) {
             codeSystemResources =  codeSystemResourceRepository.findAll();
@@ -118,7 +114,7 @@ public class CodeSystemResourceServiceImpl implements CodeSystemResourceService 
         List<CodeSystemDto> codeSystemDtos = new ArrayList<>();
         Page<CodeSystemResource> codeSystemResources = null;
         Pageable page = PageRequest.of(pageNo, CommonConstant.PAGE_SIZE);
-        Long count = 0L;
+        Long count;
 
         if (searchString != null && !searchString.isEmpty()) {
             codeSystemResources = codeSystemResourceRepository.findByTextContainingIgnoreCase(searchString, page);

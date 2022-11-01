@@ -95,7 +95,7 @@ public class MedicationResourceServiceImpl implements MedicationResourceService 
     public List<Medication> getAllMedication(DateParam theDate) {
         List<Medication> medications = new ArrayList<>();
 
-        List<MedicationResource> medicationResources = new ArrayList<>();
+        List<MedicationResource> medicationResources;
 
         if (theDate == null) {
             medicationResources =  medicationResourceRepository.findAll();
@@ -115,7 +115,7 @@ public class MedicationResourceServiceImpl implements MedicationResourceService 
         List<MedicationDto> medicationDtos = new ArrayList<>();
         Page<MedicationResource> medicationResources = null;
         Pageable page = PageRequest.of(pageNo, CommonConstant.PAGE_SIZE);
-        Long count = 0L;
+        Long count;
 
         if (searchString != null && !searchString.isEmpty()) {
             medicationResources = medicationResourceRepository.findByTextContainingIgnoreCase(searchString, page);

@@ -11,7 +11,6 @@ import com.argusoft.who.emcare.web.device.mapper.DeviceMapper;
 import com.argusoft.who.emcare.web.device.model.DeviceMaster;
 import com.argusoft.who.emcare.web.device.service.DeviceService;
 import com.argusoft.who.emcare.web.secuirty.EmCareSecurityUser;
-import com.argusoft.who.emcare.web.user.dto.UserListDto;
 import com.argusoft.who.emcare.web.user.service.UserService;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.resource.UserResource;
@@ -118,7 +117,7 @@ public class DeviceServiceImpl implements DeviceService {
             device = deviceRepository.getDeviceByMacAddress(macAddress);
         }
         if (deviceUUID != null) {
-            device = deviceRepository.getDeviceByDeviceUUID(deviceUUID).get();
+            device = deviceRepository.getDeviceByDeviceUUID(deviceUUID).orElse(null);
         }
 
 
@@ -127,7 +126,6 @@ public class DeviceServiceImpl implements DeviceService {
 
     @Override
     public ResponseEntity<Object> getAllDevice(HttpServletRequest request) {
-        List<UserListDto> allUsers = userService.getAllUser(request);
         List<DeviceWithUserDetails> list = new ArrayList<>();
         List<DeviceMaster> allDevice = deviceRepository.findAll();
         allDevice.forEach(deviceMaster -> list.add(DeviceMapper.getDeviceWithUser(deviceMaster, userService.getUserDtoById(deviceMaster.getLastLoggedInUser()))));
@@ -136,7 +134,6 @@ public class DeviceServiceImpl implements DeviceService {
 
     @Override
     public ResponseEntity<Object> getDevicePage(HttpServletRequest request, Integer pageNo, String orderBy, String order, String searchString) {
-//        List<UserListDto> allUsers = userService.getAllUser(request);
         List<DeviceWithUserDetails> list = new ArrayList<>();
         if (orderBy.equalsIgnoreCase("null")) {
             orderBy = "deviceName";

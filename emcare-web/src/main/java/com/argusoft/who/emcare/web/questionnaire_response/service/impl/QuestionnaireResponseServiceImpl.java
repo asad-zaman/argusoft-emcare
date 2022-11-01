@@ -20,7 +20,6 @@ import com.argusoft.who.emcare.web.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -70,10 +69,6 @@ public class QuestionnaireResponseServiceImpl implements QuestionnaireResponseSe
     @Override
     public List<QuestionnaireResponse> getQuestionnaireResponseByUserLocation() {
         UserMasterDto userMasterDto = userService.getCurrentUser();
-
-//        NEED TO CHANGE AFTER PILOT
-//        List<Integer> locationIds = userMasterDto.getFacilities().stream().map(FacilityDto::getLocationId).collect(Collectors.toList()).stream().map(Long::intValue).collect(Collectors.toList());
-//        locationIds = locationMasterDao.getAllChildLocationIdWithMultipalLocationId(locationIds);
         List<String> facilityIds = userMasterDto.getFacilities().stream().map(FacilityDto::getFacilityId).collect(Collectors.toList());
         List<EmcareResource> patientList = emcareResourceRepository.findByFacilityIdIn(facilityIds);
         List<String> patientIds = patientList.stream().map(EmcareResource::getResourceId).collect(Collectors.toList());
@@ -83,8 +78,6 @@ public class QuestionnaireResponseServiceImpl implements QuestionnaireResponseSe
 
     @Override
     public PageDto getQuestionnaireResponsePage(Integer pageNo, String searchString) {
-        List<QuestionnaireResponse> questionnaireResponses;
-        Sort sort = Sort.by("createdOn").descending();
         Pageable page = PageRequest.of(pageNo, CommonConstant.PAGE_SIZE);
         List<EmcareResource> resourcesList;
         Integer totalCount = 0;
@@ -109,11 +102,6 @@ public class QuestionnaireResponseServiceImpl implements QuestionnaireResponseSe
     @Override
     public Map<String, List<QuestionnaireResponse>> getQuestionnaireResponseByPatientId(String patientId) {
         List<QuestionnaireResponse> questionnaireResponses = questionnaireResponseRepository.findByPatientId(patientId);
-        List<List<QuestionnaireResponse>> encounterList;
-
-        Map<String, List<QuestionnaireResponse>> byEncounter =
-                questionnaireResponses.stream().collect(Collectors.groupingBy(QuestionnaireResponse::getEncounterId));
-
-        return byEncounter;
+        return questionnaireResponses.stream().collect(Collectors.groupingBy(QuestionnaireResponse::getEncounterId));
     }
 }

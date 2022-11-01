@@ -1,5 +1,6 @@
 package com.argusoft.who.emcare.web.mail.impl;
 
+import com.argusoft.who.emcare.web.exception.EmCareException;
 import com.argusoft.who.emcare.web.mail.MailService;
 import com.argusoft.who.emcare.web.mail.dao.MailRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +19,6 @@ import javax.mail.internet.MimeMessage;
 @Service
 public class MailServiceImpl implements MailService {
 
-    @Value("${sendinblue.key}")
-    private String sendInBlueSecureKey;
-
     @Value("${spring.mail.username}")
     private String emailSentFrom;
 
@@ -34,18 +32,6 @@ public class MailServiceImpl implements MailService {
     @Async
     @Override
     public void sendBasicMail(String to, String subject, String bodyContent) {
-
-//        try {
-//            SimpleMailMessage message = new SimpleMailMessage();
-//            message.setFrom(emailSentFrom);
-//            message.setTo(to);
-//            message.setSubject(subject);
-//            message.setText(bodyContent);
-//            javaMailSender.send(message);
-//        } catch (Exception ex) {
-//            System.out.println(ex.getMessage());
-//        }
-
         MimeMessagePreparator preparator = new MimeMessagePreparator() {
             public void prepare(MimeMessage mimeMessage) throws Exception {
                 mimeMessage.setRecipient(Message.RecipientType.TO, new InternetAddress(to));
@@ -61,7 +47,7 @@ public class MailServiceImpl implements MailService {
         try {
             javaMailSender.send(preparator);
         } catch (MailException ex) {
-            System.err.println(ex.getMessage());
+            throw new EmCareException("Mail not sent", ex);
         }
 
     }

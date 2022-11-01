@@ -16,6 +16,6 @@ public class CqlController {
     @GetMapping("/execute")
     public Object executeCql() throws IOException {
         String str = "library Test version '1.0.0'\ndefine X:\n5+5";
-        return EmCareCqlEngine.execute(str);
+        return EmCareCqlEngine.execute();
     }
 }

@@ -91,7 +91,7 @@ public class LocationServiceImpl implements LocationService {
             if (locationMaster.getParent() == null || locationMaster.getParent() == 0) {
                 locationaListDtos.add(LocationMasterMapper.entityToLocationList(locationMaster, "NA"));
             } else {
-                locationaListDtos.add(LocationMasterMapper.entityToLocationList(locationMaster, locationMasterDao.findById(locationMaster.getParent().intValue()).get().getName()));
+                locationaListDtos.add(LocationMasterMapper.entityToLocationList(locationMaster, locationMasterDao.findById(locationMaster.getParent().intValue()).orElseThrow().getName()));
             }
         }
         return ResponseEntity.ok(locationaListDtos);
@@ -123,7 +123,7 @@ public class LocationServiceImpl implements LocationService {
             if (locationMaster.getParent() == null || locationMaster.getParent() == 0) {
                 locationList.add(LocationMasterMapper.entityToLocationList(locationMaster, "NA"));
             } else {
-                locationList.add(LocationMasterMapper.entityToLocationList(locationMaster, locationMasterDao.findById(locationMaster.getParent().intValue()).get().getName()));
+                locationList.add(LocationMasterMapper.entityToLocationList(locationMaster, locationMasterDao.findById(locationMaster.getParent().intValue()).orElseThrow().getName()));
             }
         }
         PageDto pageDto = new PageDto();
@@ -145,7 +145,7 @@ public class LocationServiceImpl implements LocationService {
             if (locationMaster.getParent() == null || locationMaster.getParent() == 0) {
                 locationList.add(LocationMasterMapper.entityToLocationList(locationMaster, "NA"));
             } else {
-                locationList.add(LocationMasterMapper.entityToLocationList(locationMaster, locationMasterDao.findById(locationMaster.getParent().intValue()).get().getName()));
+                locationList.add(LocationMasterMapper.entityToLocationList(locationMaster, locationMasterDao.findById(locationMaster.getParent().intValue()).orElseThrow().getName()));
             }
         }
 
@@ -199,7 +199,7 @@ public class LocationServiceImpl implements LocationService {
             if (locationMaster.getParent() == 0 || locationMaster.getParent() == null) {
                 locationaListDtos.add(LocationMasterMapper.entityToLocationList(locationMaster, "NA"));
             } else {
-                locationaListDtos.add(LocationMasterMapper.entityToLocationList(locationMaster, locationMasterDao.findById(locationMaster.getParent().intValue()).get().getName()));
+                locationaListDtos.add(LocationMasterMapper.entityToLocationList(locationMaster, locationMasterDao.findById(locationMaster.getParent().intValue()).orElseThrow().getName()));
             }
         }
         return locationaListDtos;
@@ -213,7 +213,7 @@ public class LocationServiceImpl implements LocationService {
             if (locationMaster.getParent() == 0 || locationMaster.getParent() == null) {
                 locationaListDtos.add(LocationMasterMapper.entityToLocationList(locationMaster, "NA"));
             } else {
-                locationaListDtos.add(LocationMasterMapper.entityToLocationList(locationMaster, locationMasterDao.findById(locationMaster.getParent().intValue()).get().getName()));
+                locationaListDtos.add(LocationMasterMapper.entityToLocationList(locationMaster, locationMasterDao.findById(locationMaster.getParent().intValue()).orElseThrow().getName()));
             }
         }
         return locationaListDtos;

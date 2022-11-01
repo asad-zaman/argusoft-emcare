@@ -5,6 +5,9 @@ import com.argusoft.who.emcare.web.questionnaire_response.model.QuestionnaireRes
 
 public class QuestionnaireResponseMapper {
 
+    private QuestionnaireResponseMapper() {
+    }
+
     public static QuestionnaireResponse getQuestionnaireResponse(QuestionnaireResponseRequestDto responseRequestDto) {
         QuestionnaireResponse response = new QuestionnaireResponse();
         response.setId(responseRequestDto.getId());

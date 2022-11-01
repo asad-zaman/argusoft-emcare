@@ -95,7 +95,7 @@ public class LibraryResourceServiceImpl implements LibraryResourceService {
     public List<Library> getAllLibrary(DateParam theDate) {
         List<Library> libraries = new ArrayList<>();
 
-        List<LibraryResource> libraryResources = new ArrayList<>();
+        List<LibraryResource> libraryResources;
 
         if (theDate == null) {
             libraryResources =  libraryResourceRepository.findAll();
@@ -115,7 +115,7 @@ public class LibraryResourceServiceImpl implements LibraryResourceService {
         List<LibraryDto> libraryDtos = new ArrayList<>();
         Page<LibraryResource> libraryResources = null;
         Pageable page = PageRequest.of(pageNo, CommonConstant.PAGE_SIZE);
-        Long count = 0L;
+        Long count;
 
         if (searchString != null && !searchString.isEmpty()) {
             libraryResources = libraryResourceRepository.findByTextContainingIgnoreCase(searchString, page);

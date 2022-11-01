@@ -16,7 +16,7 @@ public class EmCareCqlEngine {
 
     }
 
-    public static Object execute(String text) throws IOException {
+    public static Object execute() throws IOException {
 
         Library library = toLibrary("library Test version '1.0.0'\ndefine X:\n5+5");
 

@@ -7,7 +7,7 @@ import com.argusoft.who.emcare.web.user.dto.MultiLocationUserListDto;
 import com.argusoft.who.emcare.web.user.dto.UserDto;
 import com.argusoft.who.emcare.web.user.dto.UserListDto;
 import com.argusoft.who.emcare.web.user.dto.UserMasterDto;
-import com.argusoft.who.emcare.web.userLocationMapping.model.UserLocationMapping;
+import com.argusoft.who.emcare.web.userlocationmapping.model.UserLocationMapping;
 import org.keycloak.representations.AccessToken;
 import org.keycloak.representations.idm.UserRepresentation;
 
@@ -23,7 +23,6 @@ public class UserMapper {
     public static UserLocationMapping userDtoToUserLocationMappingEntityForSignup(UserDto userDto, String userId) {
         UserLocationMapping user = new UserLocationMapping();
         user.setUserId(userId);
-//        user.setLocationId(userDto.getLocationId());
         user.setIsFirst(true);
         if (userDto.getRegRequestFrom().equalsIgnoreCase(UserConst.MOBILE)) {
             user.setRegRequestFrom(UserConst.MOBILE);
@@ -38,7 +37,6 @@ public class UserMapper {
     public static UserLocationMapping userDtoToUserLocationMappingEntity(UserDto userDto, String userId) {
         UserLocationMapping user = new UserLocationMapping();
         user.setUserId(userId);
-//        user.setLocationId(userDto.getLocationId());
         user.setIsFirst(true);
         if (userDto.getRegRequestFrom().equalsIgnoreCase(UserConst.MOBILE)) {
             user.setRegRequestFrom(UserConst.MOBILE);
@@ -108,7 +106,6 @@ public class UserMapper {
         user.setEmail(userRepresentation.getEmail());
         user.setEnabled(userRepresentation.isEnabled());
         user.setRealmRoles(userRepresentation.getRealmRoles());
-//        user.setLocations(locationMaster);
         user.setLanguage( userRepresentation.getAttributes() != null && userRepresentation.getAttributes().get(CommonConstant.LANGUAGE_KEY) != null
                 ? userRepresentation.getAttributes().get(CommonConstant.LANGUAGE_KEY).get(0)
                 : CommonConstant.ENGLISH);

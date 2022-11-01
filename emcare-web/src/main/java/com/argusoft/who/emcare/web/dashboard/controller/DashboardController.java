@@ -18,12 +18,12 @@ public class DashboardController {
 
 
     @GetMapping("")
-    public ResponseEntity<?> getDashboardData() {
+    public ResponseEntity<Object> getDashboardData() {
         return dashboardService.getDashboardData();
     }
 
     @GetMapping("/chart")
-    public ResponseEntity<?> getDashboardBarChartData() {
+    public ResponseEntity<Object> getDashboardBarChartData() {
         return dashboardService.getDashboardBarChartData();
     }
 }

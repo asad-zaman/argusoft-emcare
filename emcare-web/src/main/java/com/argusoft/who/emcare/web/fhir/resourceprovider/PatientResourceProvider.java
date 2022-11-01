@@ -11,6 +11,7 @@ import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
 import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.fhir.model.EmcareResource;
 import com.argusoft.who.emcare.web.fhir.service.EmcareResourceService;
+import org.hl7.fhir.instance.model.api.IAnyResource;
 import org.hl7.fhir.r4.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -169,7 +170,7 @@ public class PatientResourceProvider implements IResourceProvider {
     @Search()
     public List<Patient> getAllPatients(
             @OptionalParam(name = CommonConstant.RESOURCE_LAST_UPDATED_AT) DateParam theDate,
-            @OptionalParam(name = Claim.SP_RES_ID) IdType theId) {
+            @OptionalParam(name = IAnyResource.SP_RES_ID) IdType theId) {
         List<Patient> patientsList = new ArrayList<>();
         List<EmcareResource> resourcesList = emcareResourceService.retrieveResourcesByType("PATIENT", theDate,theId);
         for (EmcareResource emcareResource : resourcesList) {

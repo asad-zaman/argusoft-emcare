@@ -10,28 +10,25 @@ import org.springframework.stereotype.Service;
 public class TwilioServiceImpl implements TwilioService {
 
     @Value("${twilio.account.ssid}")
-    private String TWILIO_ACCOUNT_SID;
+    private String twilioAccountSid;
 
     @Value("${twilio.account.token}")
-    private String TWILIO_ACCOUNT_TOKEN;
+    private String twilioAccountToken;
 
     @Value("${twilio.phone.number}")
-    private String TWILIO_PHONE_NUMBER;
+    private String twilioPhoneNumber;
 
     @Value("${twilio.messaging.service.id}")
-    private String TWILIO_MESSAGE_SERVICE_ID;
+    private String twilioMessageServiceId;
 
 
     @Override
     public void sendSms(String to, String content) {
-        //thePatient.getTelecom().get(0).getValue()
         sendMessage(to, content);
     }
 
     private void sendMessage(String to, String content) {
-        Twilio.init(TWILIO_ACCOUNT_SID, TWILIO_ACCOUNT_TOKEN);
-        Message message = Message.creator(new com.twilio.type.PhoneNumber("+919979943100"), TWILIO_MESSAGE_SERVICE_ID, content).create();
-
-        System.out.println(message.getSid());
+        Twilio.init(twilioAccountSid, twilioAccountToken);
+        Message.creator(new com.twilio.type.PhoneNumber(to), twilioMessageServiceId, content).create();
     }
 }
