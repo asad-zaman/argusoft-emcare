@@ -52,11 +52,14 @@ class ImagePickerDialog private constructor() : BaseBottomSheetDialogFragment<Di
     }
 
     override fun initView() {
+        //Empty Block
     }
 
     override fun initListener() {
+        //Empty Block
     }
 
     override fun initObserver() {
+        //Empty Block
     }
 }

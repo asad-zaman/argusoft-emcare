@@ -59,8 +59,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(){
             }
 
             override fun onTabReselected(tab: TabLayout.Tab?) {
-                binding.viewPager2.currentItem = tab?.position!!
-                homeViewModel.currentTab = tab.position
+                onTabSelected(tab)
             }
 
         })
