@@ -52,7 +52,7 @@ class ConsultationAdapter(
         }
 
         fun bind(album: ConsultationItemData) = with(album) {
-            binding.nameTextView.text = name
+            binding.nameTextView.setText(name)
             binding.dateOfBirthValueTextView.text = dateOfBirth
             binding.consultationDateValueTextView.text = dateOfConsultation
             binding.badgeTextView.text = badgeText

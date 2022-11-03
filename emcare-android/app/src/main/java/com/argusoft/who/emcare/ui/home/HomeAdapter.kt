@@ -43,7 +43,7 @@ class HomeAdapter(
             }
         }
         fun bind(album: PatientItem) = with(album) {
-            binding.nameTextView.text = name.orEmpty { identifier ?:"NA #${resourceId?.takeLast(9)}"}
+            binding.nameTextView.setText(name.orEmpty { identifier ?:"NA #${resourceId?.takeLast(9)}"})
             binding.idTextView.text = binding.root.context.getString(R.string.label_id_with_colon, resourceId?.takeLast(3))
             if(!gender.isNullOrEmpty()){
                 if(gender.equals("male" ,false))
