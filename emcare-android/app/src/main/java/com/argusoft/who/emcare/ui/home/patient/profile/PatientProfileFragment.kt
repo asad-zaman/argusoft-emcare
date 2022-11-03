@@ -2,9 +2,6 @@ package com.argusoft.who.emcare.ui.home.patient.profile
 
 import android.os.Bundle
 import android.view.View
-import androidx.appcompat.widget.SearchView
-import androidx.core.content.ContextCompat
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager

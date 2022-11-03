@@ -1,30 +1,17 @@
 package com.argusoft.who.emcare.ui.home
 
-import android.opengl.Visibility
-import android.view.MotionEvent
 import android.view.View
-import android.widget.TextView
 import androidx.activity.viewModels
-import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupWithNavController
-import androidx.recyclerview.widget.RecyclerView
 import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.databinding.ActivityHomeBinding
-import com.argusoft.who.emcare.ui.auth.signup.SignUpViewModel
 import com.argusoft.who.emcare.ui.common.base.BaseActivity
-import com.argusoft.who.emcare.ui.common.model.SidepaneItem
-import com.argusoft.who.emcare.utils.avatar.AvatarGenerator
 import com.argusoft.who.emcare.utils.extention.alertDialog
-import com.argusoft.who.emcare.utils.extention.convertToMap
-import com.argusoft.who.emcare.utils.extention.observeNotNull
-import com.argusoft.who.emcare.utils.extention.whenSuccess
-import com.argusoft.who.emcare.utils.localization.LocaleHelper
-import com.bumptech.glide.Glide
 import com.google.android.material.navigation.NavigationView
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -111,6 +98,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
     }
 
     override fun initObserver() {
+        //No Observers
     }
 
     override fun onSupportNavigateUp(): Boolean {

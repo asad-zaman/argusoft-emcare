@@ -21,10 +21,8 @@ import com.google.android.fhir.search.Operation
 import com.google.android.fhir.search.Order
 import com.google.android.fhir.search.StringFilterModifier
 import com.google.android.fhir.search.search
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import org.hl7.fhir.r4.model.*
-import java.sql.Timestamp
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.util.*
@@ -35,6 +33,8 @@ class PatientRepository @Inject constructor(
     private val application: Application,
     private val consultationFlowRepository: ConsultationFlowRepository,
 ) {
+
+    private val Z_UTC = "Z[UTC]"
 
     fun getQuestionnaire(questionnaireId: String) = flow {
         emit(ApiResponse.Success(data = fhirEngine.get<Questionnaire>(questionnaireId)))
@@ -85,41 +85,6 @@ class PatientRepository @Inject constructor(
         }
     }
 
-
-    /*
-        To save the Questionnaire using structureMap
-        1. Convert questionnaireResource from string to Fhir Object
-        2. Fetch structuremap using id.
-        3. extract resources with ResourceMapper.extract using structuremap
-        4. Save the resources in bundle
-        STEPS 5 and 6 to be done in viewmodel
-        5. Generate Careplan using patientId, encounterId
-        6. Do next step according to careplan
-     */
-    fun saveQuestionnaireFinal(questionnaireResponse: QuestionnaireResponse, questionnaire: String, patientId: String, encounterId: String, structureMapId: String, locationId: Int) = flow {
-
-        val questionnaireResource: Questionnaire = FhirContext.forR4().newJsonParser().parseResource(questionnaire) as Questionnaire
-
-        val structureMapResource = fhirEngine.get<StructureMap>(structureMapId)
-
-        val extractedBundle = ResourceMapper.extract(
-            questionnaireResource,
-            questionnaireResponse,
-            StructureMapExtractionContext(context = application.applicationContext) { _, _ -> structureMapResource
-            }
-        )
-
-        val resourceSavedSuccessfully = saveResourcesFromBundle(extractedBundle, "", "","")
-        if(!resourceSavedSuccessfully) {
-            emit(ApiResponse.ApiError("Error saving resources"))
-        }
-
-        //Generate Careplan
-        //Do next step must be done in viewModel
-
-        emit(ApiResponse.Success(1))
-    }
-
     fun saveQuestionnaire(questionnaireResponse: QuestionnaireResponse, questionnaire: String, facilityId: String, structureMapId: String = "", consultationFlowItemId: String? = null,consultationStage: String? = null) = flow {
         val parser = FhirContext.forR4().newJsonParser()
         val questionnaireResource: Questionnaire = parser.parseResource(questionnaire) as Questionnaire
@@ -152,7 +117,7 @@ class PatientRepository @Inject constructor(
 
             //update QuestionnarieResponse in currentConsultation and createNext Consultation
             if(consultationFlowItemId != null) {
-                consultationFlowRepository.updateConsultationQuestionnaireResponseText(consultationFlowItemId, parser.encodeResourceToString(questionnaireResponse), ZonedDateTime.now(ZoneId.of("UTC")).toString().removeSuffix("Z[UTC]"))
+                consultationFlowRepository.updateConsultationQuestionnaireResponseText(consultationFlowItemId, parser.encodeResourceToString(questionnaireResponse), ZonedDateTime.now(ZoneId.of("UTC")).toString().removeSuffix(Z_UTC))
             } else {
                 //Save first consultationFlowItem after creation
                 consultationFlowRepository.saveConsultation(ConsultationFlowItem(
@@ -163,10 +128,10 @@ class PatientRepository @Inject constructor(
                     structureMapId = stageToStructureMapId[consultationStage],
                     questionnaireResponseText = parser.encodeResourceToString(questionnaireResponse),
                     isActive = true,
-                    consultationDate = ZonedDateTime.now(ZoneId.of("UTC")).toString().removeSuffix("Z[UTC]"),
+                    consultationDate = ZonedDateTime.now(ZoneId.of("UTC")).toString().removeSuffix(Z_UTC),
                 ))
             }.collect {
-                //DUMMY LOGIC FOR NEXT CONSULTATION FOR NOW, TODO: Replace by Plan Definition
+                //Current implementation of stage order by questionnaire list
                 val consultationStageIndex = consultationFlowStageList.indexOf(consultationStage)
                 if(consultationFlowStageList.last().equals(consultationStage, true)){
                     //End of consultation
@@ -185,7 +150,7 @@ class PatientRepository @Inject constructor(
                         structureMapId = stageToStructureMapId[nextConsultationStage],
                         questionnaireResponseText = "",
                         isActive = true,
-                        consultationDate = ZonedDateTime.now(ZoneId.of("UTC")).toString().removeSuffix("Z[UTC]"),
+                        consultationDate = ZonedDateTime.now(ZoneId.of("UTC")).toString().removeSuffix(Z_UTC),
                     )
                     consultationFlowRepository.saveConsultation(nextConsultationFlowItem).collect{
                         emit(it)
@@ -215,7 +180,7 @@ class PatientRepository @Inject constructor(
             structureMapId = stageToStructureMapId[consultationStage],
             questionnaireResponseText = parser.encodeResourceToString(questionnaireResponse),
             isActive = true,
-            consultationDate = ZonedDateTime.now(ZoneId.of("UTC")).toString().removeSuffix("Z[UTC]"),
+            consultationDate = ZonedDateTime.now(ZoneId.of("UTC")).toString().removeSuffix(Z_UTC),
         )).collect {
             emit(it.data?.id)
         }
@@ -224,11 +189,11 @@ class PatientRepository @Inject constructor(
     fun updateConsultationQuestionnaireResponse(consultationFlowItemId: String, questionnaireResponse: QuestionnaireResponse? = null) = flow {
         val parser = FhirContext.forCached(FhirVersionEnum.R4).newJsonParser()
         if(questionnaireResponse != null){
-            consultationFlowRepository.updateConsultationQuestionnaireResponseText(consultationFlowItemId, parser.encodeResourceToString(questionnaireResponse), ZonedDateTime.now(ZoneId.of("UTC")).toString().removeSuffix("Z[UTC]")).collect {
+            consultationFlowRepository.updateConsultationQuestionnaireResponseText(consultationFlowItemId, parser.encodeResourceToString(questionnaireResponse), ZonedDateTime.now(ZoneId.of("UTC")).toString().removeSuffix(Z_UTC)).collect {
                 emit(ApiResponse.Success(it.data))
             }
         } else {
-            consultationFlowRepository.updateConsultationQuestionnaireResponseText(consultationFlowItemId, "", ZonedDateTime.now(ZoneId.of("UTC")).toString().removeSuffix("Z[UTC]")).collect {
+            consultationFlowRepository.updateConsultationQuestionnaireResponseText(consultationFlowItemId, "", ZonedDateTime.now(ZoneId.of("UTC")).toString().removeSuffix(Z_UTC)).collect {
                 emit(ApiResponse.Success(it.data))
             }
         }

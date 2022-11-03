@@ -55,6 +55,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(){
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {
+                //Empty Block
             }
 
             override fun onTabReselected(tab: TabLayout.Tab?) {

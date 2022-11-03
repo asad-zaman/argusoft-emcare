@@ -2,10 +2,6 @@ package com.argusoft.who.emcare.ui.auth.login
 
 import androidx.lifecycle.*
 import com.argusoft.who.emcare.R
-import com.argusoft.who.emcare.data.local.database.Database
-import com.argusoft.who.emcare.data.local.pref.EncPref
-import com.argusoft.who.emcare.data.local.pref.Preference
-import com.argusoft.who.emcare.data.remote.Api
 import com.argusoft.who.emcare.data.remote.ApiResponse
 import com.argusoft.who.emcare.ui.common.KEYCLOAK_CLIENT_ID
 import com.argusoft.who.emcare.ui.common.KEYCLOAK_CLIENT_SECRET
@@ -13,12 +9,7 @@ import com.argusoft.who.emcare.ui.common.KEYCLOAK_GRANT_TYPE
 import com.argusoft.who.emcare.ui.common.KEYCLOAK_SCOPE
 import com.argusoft.who.emcare.ui.common.model.DeviceDetails
 import com.argusoft.who.emcare.ui.common.model.User
-import com.argusoft.who.emcare.utils.common.NetworkHelper
-import com.argusoft.who.emcare.utils.extention.whenFailed
-import com.argusoft.who.emcare.utils.extention.whenResult
-import com.argusoft.who.emcare.utils.extention.whenSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.collections.set

@@ -8,11 +8,20 @@ import dagger.hilt.android.AndroidEntryPoint
 class AuthenticationActivity: BaseActivity<ActivityAuthenticationBinding>() {
 
     override fun initView() {
+        /*
+        No View initialization required for this activity.
+         */
     }
 
     override fun initListener() {
+        /*
+        No Listeners for this activity
+         */
     }
 
     override fun initObserver() {
+        /*
+        No observers for this activity
+         */
     }
 }

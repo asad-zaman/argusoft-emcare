@@ -1,6 +1,5 @@
 package com.argusoft.who.emcare.ui.common.base
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -12,7 +11,6 @@ import com.argusoft.who.emcare.ui.common.MY_UPDATE_REQUEST_CODE
 import com.argusoft.who.emcare.ui.home.HomeActivity
 import com.argusoft.who.emcare.utils.extention.hideKeyboard
 import com.argusoft.who.emcare.utils.extention.onViewBinding
-import com.argusoft.who.emcare.utils.localization.LocaleHelperActivityDelegateImpl
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.install.InstallState
@@ -60,15 +58,15 @@ abstract class BaseActivity<B : ViewBinding> : AppCompatActivity(), View.OnClick
                     try {
                         if (state.installStatus() == InstallStatus.DOWNLOADED) {
                             appUpdateManager?.completeUpdate()
-                        } else if (state.installStatus() == InstallStatus.INSTALLED) {
-                            if (appUpdateManager != null) {
-                                try {
-                                    appUpdateManager?.unregisterListener(this)
-                                } catch (ignore: java.lang.Exception) {
-                                }
+                        } else if (state.installStatus() == InstallStatus.INSTALLED && appUpdateManager != null) {
+                            try {
+                                appUpdateManager?.unregisterListener(this)
+                            } catch (ignore: java.lang.Exception) {
+                                //Ignore the exception
                             }
                         }
                     } catch (ignore: Exception) {
+                        //Ignore the excpetion.
                     }
                 }
             })

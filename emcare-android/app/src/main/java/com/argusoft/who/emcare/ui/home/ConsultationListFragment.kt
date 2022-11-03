@@ -1,7 +1,6 @@
 package com.argusoft.who.emcare.ui.home
 
 import android.os.Bundle
-import android.widget.ArrayAdapter
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.viewModels
 import com.argusoft.who.emcare.R
@@ -35,6 +34,7 @@ class ConsultationListFragment: BaseFragment<FragmentConsultationListBinding>(),
     }
 
     override fun initListener() {
+        // No Listener required
     }
 
     override fun onQueryTextSubmit(query: String?): Boolean {

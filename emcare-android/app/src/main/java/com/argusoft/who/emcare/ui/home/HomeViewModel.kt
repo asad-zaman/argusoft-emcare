@@ -5,8 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.uhn.fhir.context.FhirContext
-import ca.uhn.fhir.context.FhirVersionEnum
-import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.data.remote.ApiResponse
 import com.argusoft.who.emcare.ui.common.*
 import com.argusoft.who.emcare.ui.common.model.ConsultationFlowItem
@@ -16,16 +14,12 @@ import com.argusoft.who.emcare.ui.common.model.SidepaneItem
 import com.argusoft.who.emcare.ui.home.patient.PatientRepository
 import com.argusoft.who.emcare.utils.extention.orEmpty
 import com.argusoft.who.emcare.utils.listener.SingleLiveEvent
-import com.google.android.fhir.FhirEngine
 import com.google.android.fhir.datacapture.common.datatype.asStringValue
 import com.google.android.fhir.datacapture.createQuestionnaireResponseItem
-import com.google.android.fhir.get
 import com.google.android.fhir.workflow.FhirOperator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.collect
 import org.hl7.fhir.r4.model.*
-import java.text.SimpleDateFormat
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -35,7 +29,6 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val patientRepository: PatientRepository,
     private val consultationFlowRepository: ConsultationFlowRepository,
-    private val fhirEngine: FhirEngine,
     private val fhirOperator: FhirOperator,
     private val libraryRepository: LibraryRepository
 ) : ViewModel() {
@@ -262,12 +255,10 @@ class HomeViewModel @Inject constructor(
 
     private fun injectUuid(questionnaire: Questionnaire) : Questionnaire {
         questionnaire.item.forEach { item ->
-            if(!item.initial.isNullOrEmpty()) {
-                if(item.initial[0].value.asStringValue() == "uuid()") {
-                    item.initial =
-                        mutableListOf(Questionnaire.QuestionnaireItemInitialComponent(StringType(
-                            UUID.randomUUID().toString())))
-                }
+            if(!item.initial.isNullOrEmpty() && item.initial[0].value.asStringValue() == "uuid()") {
+                item.initial =
+                    mutableListOf(Questionnaire.QuestionnaireItemInitialComponent(StringType(
+                        UUID.randomUUID().toString())))
             }
         }
         return questionnaire

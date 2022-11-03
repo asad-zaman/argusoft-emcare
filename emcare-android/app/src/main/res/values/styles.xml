@@ -73,11 +73,9 @@
     </style>
 
     <style name="BottomSheetDialogTheme" parent="Theme.Design.Light.BottomSheetDialog">
-        <!--<item name="bottomSheetStyle">@style/CustomBottomSheetStyle</item>-->
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:colorBackground">@android:color/transparent</item>
-        <!--        <item name="android:backgroundDimEnabled">false</item>-->
         <item name="android:windowFrame">@null</item>
         <item name="android:windowIsFloating">true</item>
         <item name="colorPrimary">@color/colorPrimary</item>
@@ -176,7 +174,6 @@
     </style>
 
     <style name="Questionnaire.CheckBoxStyle" parent="Widget.AppCompat.CompoundButton.CheckBox">
-<!--        <item name="android:background">@drawable/questionnaire_radio_selector</item>-->
         <item name="android:textColor">@drawable/questionnaire_checkbox_text_selector</item>
         <item name="android:buttonTint">@drawable/questionnaire_checkbox_text_selector</item>
         <item name="android:fontFamily">@font</item>
@@ -228,19 +225,15 @@
     <style name="Questionnaire" parent="Theme.MaterialComponents.Light.DarkActionBar">
         <item name="colorAccent">@color/colorAccent</item>
         <item name="questionnaireEditButtonStyle">@style/Questionnaire.EditButtonStyle</item>
-<!--        <item name="groupHeaderTextAppearanceQuestionnaire">@style/TextView.SemiBold.Black</item>-->
         <item name="questionnaireQuestionTextStyle">@style/TextAppearance.MaterialComponents.Body2</item>
         <item name="questionnaireCheckBoxStyle">@style/Questionnaire.CheckBoxStyle</item>
         <item name="questionnaireRadioButtonStyle">@style/Questionnaire.RadioButton</item>
         <item name="questionnaireDropDownTextStyle">@style/Questionnaire.questionnaireDropDownTextStyle</item>
-<!--        <item name="questionnaireDropDownSelectedTextStyle">@style/Questionnaire.DropDownTextInputEditText</item>-->
         <item name="questionnaireDropdownLayoutStyle">@style/Questionnaire.questionnaireDropdownLayoutStyle</item>
-<!--        <item name="questionnaireTextInputEditTextStyle">@style/Questionnaire.TextInputEditText</item>-->
         <item name="questionnaireChipStyle">@style/Widget.MaterialComponents.Chip.Entry</item>
         <item name="questionnaireButtonStyle">@style/Questionnaire.Button</item>
         <item name="questionnaireTextInputLayoutStyle">@style/TextInputLayout</item>
         <item name="questionnaireErrorTextStyle">@style/Questionnaire.questionnaireErrorTextStyle</item>
         <item name="questionnaireSubmitButtonStyle">@style/Questionnaire.SubmitButtonStyle</item>
-<!--        <item name="questionnaireTextColor">@color/text_color</item>-->
     </style>
 </resources>

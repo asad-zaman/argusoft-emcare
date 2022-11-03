@@ -528,14 +528,7 @@ inline fun convertDateToUTCFormat(
 
     val date: Date?
     try {
-        if (sourceDate.startsWith("-")) {
-            val calTemp = Calendar.getInstance()
-            calTemp.timeInMillis = sourceDate.toLong()
-            if (isUTC) {
-                calTemp.timeZone = TimeZone.getTimeZone("UTC")
-            }
-            date = calTemp.time
-        } else if (TextUtils.isDigitsOnly(sourceDate)) {
+        if (sourceDate.startsWith("-") || TextUtils.isDigitsOnly(sourceDate)) {
             val calTemp = Calendar.getInstance()
             calTemp.timeInMillis = sourceDate.toLong()
             if (isUTC) {

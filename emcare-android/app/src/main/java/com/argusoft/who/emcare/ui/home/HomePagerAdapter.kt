@@ -2,7 +2,6 @@ package com.argusoft.who.emcare.ui.home
 
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 

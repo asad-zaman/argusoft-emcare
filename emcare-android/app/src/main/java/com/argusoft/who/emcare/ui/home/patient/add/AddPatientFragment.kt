@@ -3,7 +3,6 @@ package com.argusoft.who.emcare.ui.home.patient.add
 import android.view.View
 import androidx.activity.addCallback
 import androidx.core.os.bundleOf
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
 import com.argusoft.who.emcare.R

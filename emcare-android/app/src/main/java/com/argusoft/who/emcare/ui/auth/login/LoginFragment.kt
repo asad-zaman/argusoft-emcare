@@ -14,7 +14,6 @@ import com.argusoft.who.emcare.ui.home.HomeActivity
 import com.argusoft.who.emcare.utils.extention.*
 import com.google.android.fhir.sync.State
 import dagger.hilt.android.AndroidEntryPoint
-import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
 
@@ -25,6 +24,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(), EasyPermissions.Perm
     private val loginViewModel: LoginViewModel by viewModels()
 
     override fun initView() {
+        //No initialization required
     }
 
     override fun initListener() {

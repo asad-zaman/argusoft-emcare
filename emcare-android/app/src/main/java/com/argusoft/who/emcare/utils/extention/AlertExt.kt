@@ -4,6 +4,7 @@ package com.argusoft.who.emcare.utils.extention
 
 import android.content.Context
 import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
@@ -41,11 +42,12 @@ private fun Context?.getSnackBarWeekReference(
     })
 }
 
-fun Context?.isInternetAvailable(): Boolean {
-    val connectivityManager =
-        this?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-    val activeNetworkInfo = connectivityManager.activeNetworkInfo
-    return activeNetworkInfo != null && activeNetworkInfo.isConnected
+fun Context?.isInternetAvailable(context: Context) = (context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager).run {
+    getNetworkCapabilities(activeNetwork)?.run {
+        hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)
+                || hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
+                || hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)
+    } ?: false
 }
 
 fun Context?.showToast(

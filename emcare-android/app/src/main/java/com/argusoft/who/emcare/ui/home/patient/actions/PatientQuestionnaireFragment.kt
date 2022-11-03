@@ -1,14 +1,11 @@
 package com.argusoft.who.emcare.ui.home.patient.actions
 
-import android.opengl.Visibility
 import android.view.View
-import android.widget.Button
 import androidx.activity.addCallback
 import androidx.core.os.bundleOf
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
 import com.argusoft.who.emcare.R
-import com.argusoft.who.emcare.data.remote.executeApiHelper
 import com.argusoft.who.emcare.databinding.FragmentPatientQuestionnaireBinding
 import com.argusoft.who.emcare.ui.common.*
 import com.argusoft.who.emcare.ui.common.base.BaseFragment
@@ -17,7 +14,6 @@ import com.argusoft.who.emcare.ui.home.HomeActivity
 import com.argusoft.who.emcare.ui.home.HomeViewModel
 import com.argusoft.who.emcare.utils.extention.*
 import com.google.android.fhir.datacapture.QuestionnaireFragment
-import com.google.android.fhir.datacapture.databinding.QuestionnaireFragmentBinding
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

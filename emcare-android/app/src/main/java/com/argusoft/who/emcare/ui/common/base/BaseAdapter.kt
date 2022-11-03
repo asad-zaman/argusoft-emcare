@@ -17,6 +17,7 @@ open class BaseAdapter<T>(private val dataList: ArrayList<T?>) : RecyclerView.Ad
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        //No implementation required
     }
 
     override fun getItemCount(): Int {

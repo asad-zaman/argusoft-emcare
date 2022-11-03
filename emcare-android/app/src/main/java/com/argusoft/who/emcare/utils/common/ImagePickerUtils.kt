@@ -31,7 +31,6 @@ import java.lang.ref.WeakReference
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
-import kotlin.toString
 
 object ImagePickerUtils : EasyPermissions.PermissionCallbacks {
 

@@ -1,14 +1,12 @@
 package com.argusoft.who.emcare
 
 import android.app.Application
-import android.content.Context
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
 import com.argusoft.who.emcare.data.local.database.Database
 import com.argusoft.who.emcare.data.local.pref.Preference
 import com.argusoft.who.emcare.data.remote.Api
 import com.argusoft.who.emcare.sync.EmcareAuthenticator
-import com.argusoft.who.emcare.utils.localization.LocaleHelperApplicationDelegate
 import com.google.android.fhir.*
 import com.google.android.fhir.datacapture.DataCaptureConfig
 import com.google.android.fhir.datacapture.ExternalAnswerValueSetResolver

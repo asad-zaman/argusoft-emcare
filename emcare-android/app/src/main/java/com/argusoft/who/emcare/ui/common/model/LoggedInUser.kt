@@ -1,15 +1,11 @@
 package com.argusoft.who.emcare.ui.common.model
 
 
-import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import androidx.room.TypeConverter
-import com.argusoft.who.emcare.data.local.database.Converters
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import java.time.Instant
-import java.time.ZonedDateTime
 
 @Entity
 @JsonClass(generateAdapter = true)
