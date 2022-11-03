@@ -252,7 +252,7 @@ class HomeViewModel @Inject constructor(
         return questionnaireResponse
     }
 
-    private fun preProcessQuestionnaire(questionnaire: Questionnaire, patientId: String) : Questionnaire {
+    private suspend fun preProcessQuestionnaire(questionnaire: Questionnaire, patientId: String) : Questionnaire {
         var ansQuestionnaire = injectUuid(questionnaire)
         if(questionnaire.hasExtension(URL_CQF_LIBRARY)){
             ansQuestionnaire = injectInitialExpressionCqlValues(questionnaire, patientId)
@@ -273,8 +273,8 @@ class HomeViewModel @Inject constructor(
         return questionnaire
     }
 
-    private fun injectInitialExpressionCqlValues(questionnaire: Questionnaire, patientId: String): Questionnaire {
-        var cqlLibraryURL = questionnaire.getExtensionByUrl(URL_CQF_LIBRARY).value.asStringValue()
+    private suspend fun injectInitialExpressionCqlValues(questionnaire: Questionnaire, patientId: String): Questionnaire = withContext(Dispatchers.IO) {
+        val cqlLibraryURL = questionnaire.getExtensionByUrl(URL_CQF_LIBRARY).value.asStringValue()
         val expressionSet = mutableSetOf<String>()
         //If questionnaire has Cql library then evaluate library and inject the parameters
         if(cqlLibraryURL.isNotEmpty()){
@@ -295,9 +295,8 @@ class HomeViewModel @Inject constructor(
                         item.initial = mutableListOf(Questionnaire.QuestionnaireItemInitialComponent(value))
                 }
             }
-            return questionnaire
-        } else {
-            return questionnaire
         }
+
+        return@withContext questionnaire
     }
 }
