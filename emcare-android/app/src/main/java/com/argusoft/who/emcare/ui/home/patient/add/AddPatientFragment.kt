@@ -12,7 +12,6 @@ import com.argusoft.who.emcare.ui.common.*
 import com.argusoft.who.emcare.ui.common.base.BaseFragment
 import com.argusoft.who.emcare.ui.common.model.ConsultationFlowItem
 import com.argusoft.who.emcare.ui.home.HomeViewModel
-import com.argusoft.who.emcare.ui.home.settings.SettingsViewModel
 import com.argusoft.who.emcare.utils.extention.alertDialog
 import com.argusoft.who.emcare.utils.extention.handleApiView
 import com.argusoft.who.emcare.utils.extention.navigate

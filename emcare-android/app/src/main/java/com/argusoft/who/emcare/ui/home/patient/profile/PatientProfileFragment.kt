@@ -14,7 +14,6 @@ import com.argusoft.who.emcare.sync.SyncViewModel
 import com.argusoft.who.emcare.ui.common.*
 import com.argusoft.who.emcare.ui.common.base.BaseFragment
 import com.argusoft.who.emcare.ui.home.HomeActivity
-import com.argusoft.who.emcare.ui.home.settings.SettingsViewModel
 import com.argusoft.who.emcare.utils.extention.*
 import com.google.android.fhir.sync.State
 import dagger.hilt.android.AndroidEntryPoint
