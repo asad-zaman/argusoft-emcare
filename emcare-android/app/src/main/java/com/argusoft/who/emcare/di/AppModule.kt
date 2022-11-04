@@ -22,6 +22,9 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import javax.inject.Qualifier
 import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
@@ -83,4 +86,28 @@ class AppModule {
     fun provideNetworkHelper(@ApplicationContext context: Context): NetworkHelper {
         return NetworkHelper(context)
     }
+
+    @DefaultDispatcher
+    @Provides
+    fun providesDefaultDispatcher(): CoroutineDispatcher = Dispatchers.Default
+
+    @IoDispatcher
+    @Provides
+    fun providesIoDispatcher(): CoroutineDispatcher = Dispatchers.IO
+
+    @MainDispatcher
+    @Provides
+    fun providesMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
+
+    @Qualifier
+    @Retention(AnnotationRetention.BINARY)
+    annotation class IoDispatcher
+
+    @Qualifier
+    @Retention(AnnotationRetention.BINARY)
+    annotation class MainDispatcher
+
+    @Qualifier
+    @Retention(AnnotationRetention.BINARY)
+    annotation class DefaultDispatcher
 }

@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.uhn.fhir.context.FhirContext
 import com.argusoft.who.emcare.data.remote.ApiResponse
+import com.argusoft.who.emcare.di.AppModule
 import com.argusoft.who.emcare.ui.common.*
 import com.argusoft.who.emcare.ui.common.model.ConsultationFlowItem
 import com.argusoft.who.emcare.ui.common.model.ConsultationItemData
@@ -30,7 +31,8 @@ class HomeViewModel @Inject constructor(
     private val patientRepository: PatientRepository,
     private val consultationFlowRepository: ConsultationFlowRepository,
     private val fhirOperator: FhirOperator,
-    private val libraryRepository: LibraryRepository
+    private val libraryRepository: LibraryRepository,
+    @AppModule.IoDispatcher private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : ViewModel() {
 
     var questionnaireJson: String? = null
@@ -100,14 +102,14 @@ class HomeViewModel @Inject constructor(
                     val patientItem = patientResponse.data!!
                     consultationFlowStageList.forEach { stage ->
                         val consultationFlowItems = it.data?.filter { consultationFlowItem -> consultationFlowItem.consultationStage.equals(stage) }
-                        val consultationFlowItem = if(consultationFlowItems.isNullOrEmpty()) null else consultationFlowItems[0]
+                        val consultationFlowItem = consultationFlowItems?.firstOrNull()
                         if(!stage.equals(CONSULTATION_STAGE_REGISTRATION_PATIENT)){
                             if(consultationFlowItem != null) {
                                 sidepaneList.add(SidepaneItem(stageToIconMap[stage],
                                     stageToBadgeMap[stage],
                                     ConsultationItemData(
                                         name = patientItem.nameFirstRep.nameAsSingleString.orEmpty { patientItem.identifierFirstRep.value ?:"NA #${patientItem.id?.takeLast(9)}"},
-                                        gender = if(patientItem.hasGender()) patientItem.genderElement.valueAsString else null,
+                                        gender = patientItem.genderElement?.valueAsString ,
                                         identifier = patientItem.identifierFirstRep.value ,
                                         dateOfBirth = patientItem.birthDateElement.valueAsString ?: "Not Provided",
                                         dateOfConsultation = ZonedDateTime.parse(consultationFlowItem.consultationDate?.substringBefore("+").plus("Z[UTC]")).format(DateTimeFormatter.ofPattern("dd/MM/YY")),
@@ -146,7 +148,7 @@ class HomeViewModel @Inject constructor(
                             consultationsArrayList.add(
                                 ConsultationItemData(
                                     name = patientItem.nameFirstRep.nameAsSingleString.orEmpty { patientItem.identifierFirstRep.value ?:"NA #${patientItem.id?.takeLast(9)}"},
-                                    gender = if(patientItem.hasGender()) patientItem.genderElement.valueAsString else null,
+                                    gender = patientItem.genderElement?.valueAsString,
                                     identifier = patientItem.identifierFirstRep.value ,
                                     dateOfBirth = patientItem.birthDateElement.valueAsString ?: "Not Provided",
                                     dateOfConsultation = ZonedDateTime.parse(consultationFlowItem.consultationDate?.substringBefore("+").plus("Z[UTC]")).format(DateTimeFormatter.ofPattern("dd/MM/YY")),
@@ -264,7 +266,7 @@ class HomeViewModel @Inject constructor(
         return questionnaire
     }
 
-    private suspend fun injectInitialExpressionCqlValues(questionnaire: Questionnaire, patientId: String): Questionnaire = withContext(Dispatchers.IO) {
+    private suspend fun injectInitialExpressionCqlValues(questionnaire: Questionnaire, patientId: String): Questionnaire = withContext(dispatcher) {
         val cqlLibraryURL = questionnaire.getExtensionByUrl(URL_CQF_LIBRARY).value.asStringValue()
         val expressionSet = mutableSetOf<String>()
         //If questionnaire has Cql library then evaluate library and inject the parameters
