@@ -15,6 +15,7 @@ import com.argusoft.who.emcare.ui.home.HomeViewModel
 import com.argusoft.who.emcare.utils.extention.*
 import com.google.android.fhir.datacapture.QuestionnaireFragment
 import dagger.hilt.android.AndroidEntryPoint
+import java.text.SimpleDateFormat
 
 @AndroidEntryPoint
 class PatientQuestionnaireFragment : BaseFragment<FragmentPatientQuestionnaireBinding>() {
@@ -108,8 +109,13 @@ class PatientQuestionnaireFragment : BaseFragment<FragmentPatientQuestionnaireBi
                 binding.nameTextView.text = patientItem.nameFirstRep.nameAsSingleString.orEmpty {
                     patientItem.identifierFirstRep.value ?: "NA #${patientItem.id?.takeLast(9)}"
                 }
-                binding.dobTextView.text =
-                    patientItem.birthDateElement.valueAsString ?: "Not Provided"
+                val dateOfBirth = patientItem.birthDateElement.valueAsString
+                if(dateOfBirth != null){
+                    val oldFormatDate = SimpleDateFormat("YYYY-MM-DD").parse(dateOfBirth)
+                    binding.dobTextView.text = SimpleDateFormat(DATE_FORMAT).format(oldFormatDate!!)
+                } else {
+                    binding.dobTextView.text = "Not Provided"
+                }
                 if (!patientItem.hasGender()) {
                     if (patientItem.genderElement.valueAsString.equals("male", false))
                         binding.childImageView.setImageResource(R.drawable.baby_boy)

@@ -112,7 +112,7 @@ class HomeViewModel @Inject constructor(
                                         gender = patientItem.genderElement?.valueAsString ,
                                         identifier = patientItem.identifierFirstRep.value ,
                                         dateOfBirth = patientItem.birthDateElement.valueAsString ?: "Not Provided",
-                                        dateOfConsultation = ZonedDateTime.parse(consultationFlowItem.consultationDate?.substringBefore("+").plus("Z[UTC]")).format(DateTimeFormatter.ofPattern("dd/MM/YY")),
+                                        dateOfConsultation = ZonedDateTime.parse(consultationFlowItem.consultationDate?.substringBefore("+").plus("Z[UTC]")).format(DateTimeFormatter.ofPattern(DATE_FORMAT)),
                                         badgeText = stageToBadgeMap[consultationFlowItem.consultationStage],
                                         header = consultationFlowItem.questionnaireId, //TODO: For test only, replace it with appropriate header
                                         consultationIcon = stageToIconMap[consultationFlowItem.consultationStage],
@@ -151,7 +151,7 @@ class HomeViewModel @Inject constructor(
                                     gender = patientItem.genderElement?.valueAsString,
                                     identifier = patientItem.identifierFirstRep.value ,
                                     dateOfBirth = patientItem.birthDateElement.valueAsString ?: "Not Provided",
-                                    dateOfConsultation = ZonedDateTime.parse(consultationFlowItem.consultationDate?.substringBefore("+").plus("Z[UTC]")).format(DateTimeFormatter.ofPattern("dd/MM/YY")),
+                                    dateOfConsultation = ZonedDateTime.parse(consultationFlowItem.consultationDate?.substringBefore("+").plus("Z[UTC]")).format(DateTimeFormatter.ofPattern(DATE_FORMAT)),
                                     badgeText = stageToBadgeMap[consultationFlowItem.consultationStage],
                                     header = consultationFlowItem.questionnaireId, //TODO: For test only, replace it with appropriate header
                                     consultationIcon = stageToIconMap[consultationFlowItem.consultationStage],

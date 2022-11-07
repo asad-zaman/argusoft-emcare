@@ -14,6 +14,7 @@ import com.argusoft.who.emcare.ui.home.HomeActivity
 import com.argusoft.who.emcare.utils.extention.*
 import com.google.android.fhir.sync.State
 import dagger.hilt.android.AndroidEntryPoint
+import java.text.SimpleDateFormat
 import java.util.*
 
 
@@ -35,8 +36,14 @@ class PatientProfileFragment : BaseFragment<FragmentPatientProfileBinding>() {
         binding.headerLayout.toolbar.setTitleDashboard(getString(R.string.title_patient_profile))
         setupActiveConsultationsRecyclerView()
         setupPreviousConsultationsRecyclerView()
-        binding.nameTextView.text = requireArguments().getString(INTENT_EXTRA_PATIENT_NAME)
-        binding.dobTextView.text = requireArguments().getString(INTENT_EXTRA_PATIENT_DOB)
+        binding.nameTextView.setText(requireArguments().getString(INTENT_EXTRA_PATIENT_NAME))
+        val dateOfBirth = requireArguments().getString(INTENT_EXTRA_PATIENT_DOB)
+        if(dateOfBirth != null && !dateOfBirth.equals("Not Provided", true)){
+            val oldFormatDate = SimpleDateFormat("YYYY-MM-DD").parse(dateOfBirth)
+            binding.dobTextView.text = SimpleDateFormat(DATE_FORMAT).format(oldFormatDate!!)
+        } else {
+            binding.dobTextView.text = "Not Provided"
+        }
     }
 
     private fun setupActiveConsultationsRecyclerView() {
