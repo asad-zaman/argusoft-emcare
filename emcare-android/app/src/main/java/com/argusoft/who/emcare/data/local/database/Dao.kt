@@ -76,4 +76,7 @@ interface Dao {
     @Query("SELECT * from consultationflowitem where patientId=:patientId")
     suspend fun getAllConsultationsByPatientId(patientId: String): List<ConsultationFlowItem>?
 
+    @Query("SELECT MAX(consultationDate) from consultationflowitem WHERE patientId=:patientId")
+    suspend fun getLastConsultationDateByPatientId(patientId: String): String?
+
 }

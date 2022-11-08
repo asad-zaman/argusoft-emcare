@@ -30,6 +30,17 @@ class PatientProfileViewModel @Inject constructor(
     private val _previousConsultations = SingleLiveEvent<ApiResponse<List<PreviousConsultationData>>>()
     val previousConsultations: LiveData<ApiResponse<List<PreviousConsultationData>>> = _previousConsultations
 
+    private val _lastConsultationDate = SingleLiveEvent<ApiResponse<String?>>()
+    val lastConsultationDate: LiveData<ApiResponse<String?>> = _lastConsultationDate
+
+
+    fun getLastConsultationDate(patientId: String) {
+        viewModelScope.launch {
+            consultationFlowRepository.getLastConsultationDateByPatientId(patientId).collect {
+                _lastConsultationDate.value = it
+            }
+        }
+    }
 
     fun getActiveConsultations(patientId: String){
         val consultationsArrayList = mutableListOf<ActiveConsultationData>()

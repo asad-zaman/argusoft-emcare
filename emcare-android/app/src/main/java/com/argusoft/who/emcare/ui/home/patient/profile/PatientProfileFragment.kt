@@ -36,9 +36,10 @@ class PatientProfileFragment : BaseFragment<FragmentPatientProfileBinding>() {
         binding.headerLayout.toolbar.setTitleDashboard(getString(R.string.title_patient_profile))
         setupActiveConsultationsRecyclerView()
         setupPreviousConsultationsRecyclerView()
+        patientProfileViewModel.getLastConsultationDate(requireArguments().getString(INTENT_EXTRA_PATIENT_ID)!!)
         binding.nameTextView.setText(requireArguments().getString(INTENT_EXTRA_PATIENT_NAME))
         val dateOfBirth = requireArguments().getString(INTENT_EXTRA_PATIENT_DOB)
-        if(dateOfBirth != null && !dateOfBirth.equals("Not Provided", true)){
+        if(dateOfBirth != null && !dateOfBirth.equals("Not Provided", true) && dateOfBirth.isNotBlank()){
             val oldFormatDate = SimpleDateFormat("YYYY-MM-DD").parse(dateOfBirth)
             binding.dobTextView.text = SimpleDateFormat(DATE_FORMAT).format(oldFormatDate!!)
         } else {
@@ -69,6 +70,8 @@ class PatientProfileFragment : BaseFragment<FragmentPatientProfileBinding>() {
         binding.previousConsultationRecyclerView.adapter = previousConsultationsAdapter
         patientProfileViewModel.getPreviousConsultations(requireArguments().getString(INTENT_EXTRA_PATIENT_ID)!!)
     }
+
+
 
     override fun initListener() {
         binding.newConsultationButton.setOnClickListener(this)
@@ -118,6 +121,17 @@ class PatientProfileFragment : BaseFragment<FragmentPatientProfileBinding>() {
                 it?.let { list ->
                     previousConsultationsAdapter.clearAllItems()
                     previousConsultationsAdapter.addAll(list)
+                }
+            }
+        }
+
+        observeNotNull(patientProfileViewModel.lastConsultationDate) { apiResponse ->
+            apiResponse.whenSuccess {
+                if(it != null && it.isNotBlank()) {
+                    val oldFormatDate = SimpleDateFormat("yyyy-MM-dd").parse(it.substringBefore("T"))
+                    binding.lastConsultationDateTextView.text = SimpleDateFormat(DATE_FORMAT).format(oldFormatDate!!)
+                } else {
+                    binding.lastConsultationDateTextView.text = "Not Provided"
                 }
             }
         }

@@ -58,5 +58,10 @@ class ConsultationFlowRepository @Inject constructor(
         emit(ApiResponse.Success(data = list))
     }
 
+    fun getLastConsultationDateByPatientId(patientId: String) = flow {
+        val lastConsultationDate = database.getLastConsultationDateByPatientId(patientId)
+        emit(ApiResponse.Success(data = lastConsultationDate))
+    }
+
 
 }

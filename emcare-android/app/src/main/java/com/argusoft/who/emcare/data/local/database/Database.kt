@@ -45,4 +45,6 @@ interface Database {
 
     suspend fun getLatestActiveConsultationByPatientId(patientId: String): ConsultationFlowItem?
 
+    suspend fun getLastConsultationDateByPatientId(patientId: String): String?
+
 }
