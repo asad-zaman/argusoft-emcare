@@ -5,7 +5,9 @@ import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.param.DateParam;
 import com.argusoft.who.emcare.web.common.constant.CommonConstant;
+import com.argusoft.who.emcare.web.fhir.dao.EmcareResourceRepository;
 import com.argusoft.who.emcare.web.fhir.dao.RelatedPersonResourceRepository;
+import com.argusoft.who.emcare.web.fhir.model.EmcareResource;
 import com.argusoft.who.emcare.web.fhir.model.RelatedPersonResource;
 import com.argusoft.who.emcare.web.fhir.service.RelatedPersonResourceService;
 import org.hl7.fhir.r4.model.IdType;
@@ -28,6 +30,9 @@ public class RelatedPersonResourceServiceImpl implements RelatedPersonResourceSe
     @Autowired
     RelatedPersonResourceRepository relatedPersonResourceRepository;
 
+    @Autowired
+    EmcareResourceRepository emcareResourceRepository;
+
     @Override
     public RelatedPerson saveResource(RelatedPerson relatedPerson) {
         Meta m = new Meta();
@@ -47,7 +52,12 @@ public class RelatedPersonResourceServiceImpl implements RelatedPersonResourceSe
 
         RelatedPersonResource relatedPersonResource = new RelatedPersonResource();
         relatedPersonResource.setText(locationString);
-        relatedPersonResource.setPatientId(relatedPerson.getPatient().getId());
+        String patientId = relatedPerson.getPatient().getId();
+        if (patientId == null) {
+            List<EmcareResource> emcareResources = emcareResourceRepository.findByTypeContainingAndTextContainingIgnoreCase(CommonConstant.FHIR_PATIENT, relatedPersonId);
+            patientId = emcareResources.size() > 0 ? emcareResources.get(1).getResourceId() : null;
+        }
+        relatedPersonResource.setPatientId(patientId);
         relatedPersonResource.setResourceId(relatedPersonId);
 
         relatedPersonResourceRepository.save(relatedPersonResource);
