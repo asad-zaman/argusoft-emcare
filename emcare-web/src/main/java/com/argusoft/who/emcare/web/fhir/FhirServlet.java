@@ -64,6 +64,9 @@ public class FhirServlet extends RestfulServer {
     @Autowired
     ObservationResourceProvider observationResourceProvider;
 
+    @Autowired
+    RelatedPersonResourceProvider relatedPersonResourceProvider;
+
     @Override
     protected void initialize() throws ServletException {
         super.initialize();
@@ -92,6 +95,7 @@ public class FhirServlet extends RestfulServer {
         resourceProviders.add(operationDefinitionResourceProvider);
         resourceProviders.add(encounterResourceProvider);
         resourceProviders.add(observationResourceProvider);
+        resourceProviders.add(relatedPersonResourceProvider);
         setResourceProviders(resourceProviders);
     }
 

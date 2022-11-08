@@ -14,6 +14,7 @@ import com.argusoft.who.emcare.web.fhir.mapper.EmcareResourceMapper;
 import com.argusoft.who.emcare.web.fhir.model.ActivityDefinitionResource;
 import com.argusoft.who.emcare.web.fhir.model.EmcareResource;
 import com.argusoft.who.emcare.web.fhir.model.QuestionnaireMaster;
+import com.argusoft.who.emcare.web.fhir.model.RelatedPersonResource;
 import com.argusoft.who.emcare.web.fhir.resourceprovider.QuestionnaireResourceProvider;
 import com.argusoft.who.emcare.web.fhir.service.*;
 import com.argusoft.who.emcare.web.location.dao.LocationMasterDao;
@@ -101,6 +102,9 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
 
     @Autowired
     ObservationResourceService observationResourceService;
+
+    @Autowired
+    RelatedPersonResourceService relatedPersonResourceService;
 
 
     @Override
@@ -236,6 +240,14 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
                     observationResourceService.saveResource(parser.parseResource(Observation.class, resourceString));
                 }
                 break;
+            case CommonConstant.RELATED_PERSON:
+                RelatedPerson relatedPerson = relatedPersonResourceService.getResourceById(resourceId);
+                if (relatedPerson != null) {
+                    relatedPersonResourceService.updateRelatedPersonResource(resource.getIdElement(), parser.parseResource(RelatedPerson.class, resourceString));
+                } else {
+                    relatedPersonResourceService.saveResource(parser.parseResource(RelatedPerson.class, resourceString));
+                }
+                break;
             case CommonConstant.STRUCTURE_MAP:
                 StructureMap structureMap = structureMapResourceService.getResourceById(resourceId);
                 if (structureMap != null) {
@@ -283,8 +295,9 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
         for (PatientDto patientDto : patientDtosList) {
 
             if (patientDto.getCaregiver() != null) {
-                EmcareResource caregiverResource = findByResourceId(patientDto.getCaregiver());
-                RelatedPerson caregiver = parser.parseResource(RelatedPerson.class, caregiverResource.getText());
+                RelatedPerson caregiver = relatedPersonResourceService.getResourceById(patientDto.getCaregiver());
+//                EmcareResource caregiverResource = findByResourceId(patientDto.getCaregiver());
+//                RelatedPerson caregiver = parser.parseResource(RelatedPerson.class, caregiverResource.getText());
                 patientDto.setCaregiver(caregiver.getNameFirstRep().getGiven().get(0) + " " + caregiver.getNameFirstRep().getFamily());
             }
 
@@ -353,8 +366,9 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
         for (PatientDto patientDto : patientDtosList) {
 
             if (patientDto.getCaregiver() != null) {
-                EmcareResource caregiverResource = findByResourceId(patientDto.getCaregiver());
-                RelatedPerson caregiver = parser.parseResource(RelatedPerson.class, caregiverResource.getText());
+                RelatedPerson caregiver = relatedPersonResourceService.getResourceById(patientDto.getCaregiver());
+//                EmcareResource caregiverResource = findByResourceId(patientDto.getCaregiver());
+//                RelatedPerson caregiver = parser.parseResource(RelatedPerson.class, caregiverResource.getText());
                 patientDto.setCaregiver(caregiver.getNameFirstRep().getGiven().get(0) + " " + caregiver.getNameFirstRep().getFamily());
             }
 
@@ -404,8 +418,9 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
         for (PatientDto patientDto : patientDtosList) {
 
             if (patientDto.getCaregiver() != null) {
-                EmcareResource caregiverResource = findByResourceId(patientDto.getCaregiver());
-                RelatedPerson caregiver = parser.parseResource(RelatedPerson.class, caregiverResource.getText());
+                RelatedPerson caregiver = relatedPersonResourceService.getResourceById(patientDto.getCaregiver());
+//                EmcareResource caregiverResource = findByResourceId(patientDto.getCaregiver());
+//                RelatedPerson caregiver = parser.parseResource(RelatedPerson.class, caregiverResource.getText());
                 patientDto.setCaregiver(caregiver.getNameFirstRep().getGiven().get(0) + " " + caregiver.getNameFirstRep().getFamily());
             }
 
@@ -443,8 +458,9 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
         for (PatientDto patientDto : patientDtosList) {
 
             if (patientDto.getCaregiver() != null) {
-                EmcareResource caregiverResource = findByResourceId(patientDto.getCaregiver());
-                RelatedPerson caregiver = parser.parseResource(RelatedPerson.class, caregiverResource.getText());
+                RelatedPerson caregiver = relatedPersonResourceService.getResourceById(patientDto.getCaregiver());
+//                EmcareResource caregiverResource = findByResourceId(patientDto.getCaregiver());
+//                RelatedPerson caregiver = parser.parseResource(RelatedPerson.class, caregiverResource.getText());
                 patientDto.setCaregiver(caregiver.getNameFirstRep().getGiven().get(0) + " " + caregiver.getNameFirstRep().getFamily());
             }
 
@@ -496,8 +512,9 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
         for (PatientDto patientDto : patientDtosList) {
 
             if (patientDto.getCaregiver() != null) {
-                EmcareResource caregiverResource = findByResourceId(patientDto.getCaregiver());
-                RelatedPerson caregiver = parser.parseResource(RelatedPerson.class, caregiverResource.getText());
+                RelatedPerson caregiver = relatedPersonResourceService.getResourceById(patientDto.getCaregiver());
+//                EmcareResource caregiverResource = findByResourceId(patientDto.getCaregiver());
+//                RelatedPerson caregiver = parser.parseResource(RelatedPerson.class, caregiverResource.getText());
                 patientDto.setCaregiver(caregiver.getNameFirstRep().getGiven().get(0) + " " + caregiver.getNameFirstRep().getFamily());
             }
 
@@ -532,8 +549,9 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
         for (PatientDto patientDto : patientDtosList) {
 
             if (patientDto.getCaregiver() != null) {
-                EmcareResource caregiverResource = findByResourceId(patientDto.getCaregiver());
-                RelatedPerson caregiver = parser.parseResource(RelatedPerson.class, caregiverResource.getText());
+                RelatedPerson caregiver = relatedPersonResourceService.getResourceById(patientDto.getCaregiver());
+//                EmcareResource caregiverResource = findByResourceId(patientDto.getCaregiver());
+//                RelatedPerson caregiver = parser.parseResource(RelatedPerson.class, caregiverResource.getText());
                 patientDto.setCaregiver(caregiver.getNameFirstRep().getGiven().get(0) + " " + caregiver.getNameFirstRep().getFamily());
             }
 
