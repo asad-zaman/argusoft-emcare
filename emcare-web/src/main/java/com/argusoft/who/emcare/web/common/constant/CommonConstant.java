@@ -29,6 +29,7 @@ public class CommonConstant {
     public static final String MEDICATION = "MEDICATION";
     public static final String ACTIVITY_DEFINITION = "ACTIVITYDEFINITION";
     public static final String ENCOUNTER = "ENCOUNTER";
+    public static final String RELATED_PERSON = "RELATEDPERSON";
     public static final String ORGANIZATION_TYPE_STRING = "ORGANIZATION";
     public static final String PLANDEFINITION_TYPE_STRING = "PLANDEFINITION";
     public static final String VALUESET_TYPE_STRING = "VALUESET";
@@ -40,6 +41,7 @@ public class CommonConstant {
     public static final String FHIR_PATIENT = "PATIENT";
     public static final String FHIR_QUESTIONNAIRE = "Questionnaire";
     public static final String LOCATION_EXTENSION_URL = "http://hl7.org/fhir/StructureDefinition/patient-locationId";
+    public static final String PRIMARY_CAREGIVER_EXTENSION_URL = "https://fhir.dk.swisstph-mis.ch/matchbox/fhir/StructureDefinition/primary-caregiver";
 
     //    Exception Strings
     public static final String EM_CARE_NO_DATA_FOUND = "Data Not Found";
