@@ -213,13 +213,19 @@ class PatientRepository @Inject constructor(
                 val resource = entry.resource
                 when(resource.resourceType) {
                     ResourceType.Patient -> {
+                        //Setting id
                         resource.id = patientId
+                        //Adding location extension
                         (resource as Patient).addExtension(Extension().setValue(
                             Identifier().apply {
                                 use = Identifier.IdentifierUse.OFFICIAL
                                 value = facilityId
                             }
                         ).setUrl(LOCATION_EXTENSION_URL))
+                    }
+                    ResourceType.RelatedPerson -> {
+                        //setting id
+                        resource.id = entry.request.url.substringAfterLast("/")
                     }
                     ResourceType.Encounter -> {
                         resource.id = encounterId
