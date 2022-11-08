@@ -110,7 +110,7 @@ class PatientQuestionnaireFragment : BaseFragment<FragmentPatientQuestionnaireBi
                     patientItem.identifierFirstRep.value ?: "NA #${patientItem.id?.takeLast(9)}"
                 }
                 val dateOfBirth = patientItem.birthDateElement.valueAsString
-                if(dateOfBirth != null){
+                if(dateOfBirth != null && dateOfBirth.isNotBlank()){
                     val oldFormatDate = SimpleDateFormat("YYYY-MM-DD").parse(dateOfBirth)
                     binding.dobTextView.text = SimpleDateFormat(DATE_FORMAT).format(oldFormatDate!!)
                 } else {

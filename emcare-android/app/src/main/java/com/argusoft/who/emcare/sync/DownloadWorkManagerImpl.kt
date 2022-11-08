@@ -29,7 +29,6 @@ import java.util.*
 class DownloadWorkManagerImpl constructor(
   private val preference: Preference
 ): DownloadWorkManager {
-//  private val urls = LinkedList(listOf("ActivityDefinition", "CodeSystem", "Library", "OperationDefinition", "PlanDefinition", "Patient", "Questionnaire", "StructureDefinition", "StructureMap", "ValueSet"))
   private val resourceTypeList = ResourceType.values().map { it.name }
   private val urls = LinkedList(listOf("Patient", "Questionnaire", "StructureDefinition", "StructureMap", "ValueSet", "Library", "OperationDefinition", "Observation", "RelatedPerson"))
 

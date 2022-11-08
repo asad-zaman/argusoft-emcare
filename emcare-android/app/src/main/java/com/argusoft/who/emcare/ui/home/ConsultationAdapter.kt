@@ -55,7 +55,7 @@ class ConsultationAdapter(
         fun bind(album: ConsultationItemData) = with(album) {
             binding.nameTextView.setText(name)
             //Using correct date format
-            if(dateOfBirth != null){
+            if(dateOfBirth != null && !dateOfBirth.equals("Not Provided", true) && dateOfBirth.isNotBlank()){
                 val oldFormatDate = SimpleDateFormat("YYYY-MM-DD").parse(dateOfBirth)
                 binding.dateOfBirthValueTextView.text = SimpleDateFormat(DATE_FORMAT).format(oldFormatDate!!)
             }
