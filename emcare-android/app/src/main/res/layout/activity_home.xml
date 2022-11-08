@@ -21,23 +21,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:navGraph="@navigation/home" />
-<!--        <com.google.android.material.card.MaterialCardView-->
-<!--            android:id="@+id/emergencyCardView"-->
-<!--            android:translationZ="@dimen/_1sdp"-->
-<!--            android:layout_width="@dimen/_70sdp"-->
-<!--            android:layout_height="@dimen/_70sdp"-->
-<!--            android:layout_marginStart="@dimen/_12sdp"-->
-<!--            android:layout_marginBottom="@dimen/_39sdp"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintBottom_toBottomOf="parent"-->
-<!--            app:cardCornerRadius="@dimen/_35sdp"-->
-<!--            android:padding="@dimen/_2sdp">-->
-<!--            <androidx.appcompat.widget.AppCompatImageView-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="match_parent"-->
-<!--                android:src="@drawable/ic_emergency_icon"-->
-<!--                />-->
-<!--        </com.google.android.material.card.MaterialCardView>-->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/sidepaneConstraintLayout"
             android:background="@color/transparent"

@@ -7,7 +7,6 @@ import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.databinding.FragmentHomeBinding
 import com.argusoft.who.emcare.sync.SyncViewModel
 import com.argusoft.who.emcare.ui.common.base.BaseFragment
-import com.argusoft.who.emcare.ui.home.settings.SettingsViewModel
 import com.argusoft.who.emcare.utils.extention.*
 import com.argusoft.who.emcare.utils.glide.GlideApp
 import com.argusoft.who.emcare.utils.glide.GlideRequests
@@ -20,7 +19,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(){
 
     private lateinit var glideRequests: GlideRequests
     private val syncViewModel: SyncViewModel by viewModels()
-    private val settingsViewModel: SettingsViewModel by activityViewModels()
     private val homeViewModel: HomeViewModel by activityViewModels()
     private lateinit var homePagerAdapter: HomePagerAdapter
 
@@ -57,11 +55,11 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(){
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {
+                //Empty Block
             }
 
             override fun onTabReselected(tab: TabLayout.Tab?) {
-                binding.viewPager2.currentItem = tab?.position!!
-                homeViewModel.currentTab = tab.position
+                onTabSelected(tab)
             }
 
         })

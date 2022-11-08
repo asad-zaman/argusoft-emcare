@@ -25,13 +25,19 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"/>
 
-        <com.google.android.material.textview.MaterialTextView
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/nameTextView"
             style="@style/TextView.Medium.Black"
+            android:background="@color/transparent"
+            android:clickable="false"
+            android:cursorVisible="false"
+            android:focusable="false"
+            android:singleLine="true"
             android:layout_width="0dp"
+            android:inputType="textNoSuggestions"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_4sdp"
-            android:layout_marginStart="@dimen/_8sdp"
+            android:layout_marginHorizontal="@dimen/_8sdp"
             app:layout_constraintEnd_toStartOf="@id/badgeTextView"
             app:layout_constraintStart_toEndOf="@+id/childImageView"
             app:layout_constraintTop_toTopOf="parent"

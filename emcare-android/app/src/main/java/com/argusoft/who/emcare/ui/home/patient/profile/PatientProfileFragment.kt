@@ -2,8 +2,6 @@ package com.argusoft.who.emcare.ui.home.patient.profile
 
 import android.os.Bundle
 import android.view.View
-import androidx.core.content.ContextCompat
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -13,10 +11,10 @@ import com.argusoft.who.emcare.sync.SyncViewModel
 import com.argusoft.who.emcare.ui.common.*
 import com.argusoft.who.emcare.ui.common.base.BaseFragment
 import com.argusoft.who.emcare.ui.home.HomeActivity
-import com.argusoft.who.emcare.ui.home.settings.SettingsViewModel
 import com.argusoft.who.emcare.utils.extention.*
 import com.google.android.fhir.sync.State
 import dagger.hilt.android.AndroidEntryPoint
+import java.text.SimpleDateFormat
 import java.util.*
 
 
@@ -38,11 +36,19 @@ class PatientProfileFragment : BaseFragment<FragmentPatientProfileBinding>() {
         binding.headerLayout.toolbar.setTitleDashboard(getString(R.string.title_patient_profile))
         setupActiveConsultationsRecyclerView()
         setupPreviousConsultationsRecyclerView()
-        binding.nameTextView.text = requireArguments().getString(INTENT_EXTRA_PATIENT_NAME)
-        binding.dobTextView.text = requireArguments().getString(INTENT_EXTRA_PATIENT_DOB)
+        patientProfileViewModel.getLastConsultationDate(requireArguments().getString(INTENT_EXTRA_PATIENT_ID)!!)
+        binding.nameTextView.setText(requireArguments().getString(INTENT_EXTRA_PATIENT_NAME))
+        val dateOfBirth = requireArguments().getString(INTENT_EXTRA_PATIENT_DOB)
+        if(dateOfBirth != null && !dateOfBirth.equals("Not Provided", true) && dateOfBirth.isNotBlank()){
+            val oldFormatDate = SimpleDateFormat("YYYY-MM-DD").parse(dateOfBirth)
+            binding.dobTextView.text = SimpleDateFormat(DATE_FORMAT).format(oldFormatDate!!)
+        } else {
+            binding.dobTextView.text = "Not Provided"
+        }
     }
 
     private fun setupActiveConsultationsRecyclerView() {
+        binding.activePatientProgressLayout.recyclerView = binding.activeConsultationRecyclerView
         binding.activeConsultationRecyclerView.addItemDecoration(
             DividerItemDecoration(
                 context,
@@ -50,14 +56,11 @@ class PatientProfileFragment : BaseFragment<FragmentPatientProfileBinding>() {
             )
         )
         binding.activeConsultationRecyclerView.adapter = activeConsultationsAdapter
-        activeConsultationsAdapter.clearAllItems()
-        activeConsultationsAdapter.addAll(patientProfileViewModel.getActiveConsultations())
-
+        patientProfileViewModel.getActiveConsultations(requireArguments().getString(INTENT_EXTRA_PATIENT_ID)!!)
     }
 
     private fun setupPreviousConsultationsRecyclerView() {
-//        var divider: DividerItemDecoration = DividerItemDecoration(context, DividerItemDecoration.HORIZONTAL)
-//        divider.setDrawable(ContextCompat.getDrawable(context!!, R.drawable.custom_divider)!!)
+        binding.previousPatientProgressLayout.recyclerView = binding.previousConsultationRecyclerView
         binding.previousConsultationRecyclerView.addItemDecoration(
             DividerItemDecoration(
                 context,
@@ -65,9 +68,10 @@ class PatientProfileFragment : BaseFragment<FragmentPatientProfileBinding>() {
             )
         )
         binding.previousConsultationRecyclerView.adapter = previousConsultationsAdapter
-        previousConsultationsAdapter.clearAllItems()
-        previousConsultationsAdapter.addAll(patientProfileViewModel.getPreviousConsultations())
+        patientProfileViewModel.getPreviousConsultations(requireArguments().getString(INTENT_EXTRA_PATIENT_ID)!!)
     }
+
+
 
     override fun initListener() {
         binding.newConsultationButton.setOnClickListener(this)
@@ -99,6 +103,35 @@ class PatientProfileFragment : BaseFragment<FragmentPatientProfileBinding>() {
                 is State.Failed -> {
                     val message = getString(R.string.msg_sync_failed)
                     requireContext().showToast(message = message)
+                }
+            }
+        }
+
+        observeNotNull(patientProfileViewModel.activeConsultations) { apiResponse ->
+            apiResponse.handleListApiView(binding.activePatientProgressLayout) {
+                it?.let { list ->
+                    activeConsultationsAdapter.clearAllItems()
+                    activeConsultationsAdapter.addAll(list)
+                }
+            }
+        }
+
+        observeNotNull(patientProfileViewModel.previousConsultations) { apiResponse ->
+            apiResponse.handleListApiView(binding.previousPatientProgressLayout) {
+                it?.let { list ->
+                    previousConsultationsAdapter.clearAllItems()
+                    previousConsultationsAdapter.addAll(list)
+                }
+            }
+        }
+
+        observeNotNull(patientProfileViewModel.lastConsultationDate) { apiResponse ->
+            apiResponse.whenSuccess {
+                if(it != null && it.isNotBlank()) {
+                    val oldFormatDate = SimpleDateFormat("yyyy-MM-dd").parse(it.substringBefore("T"))
+                    binding.lastConsultationDateTextView.text = SimpleDateFormat(DATE_FORMAT).format(oldFormatDate!!)
+                } else {
+                    binding.lastConsultationDateTextView.text = "Not Provided"
                 }
             }
         }

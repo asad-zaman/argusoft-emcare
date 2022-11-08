@@ -5,7 +5,6 @@ import com.argusoft.who.emcare.data.local.pref.Preference
 import com.argusoft.who.emcare.ui.common.model.*
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import java.util.concurrent.TimeUnit

@@ -36,7 +36,7 @@ class SyncViewModel @Inject constructor(
                 UploadConfiguration(uploadBundleSize = 1000),
                 AcceptRemoteConflictResolver
             )
-            val emCareResult = EmCareSync.oneTimeSync(api, database, preference, listOf(SyncType.FACILITY, SyncType.CONSULTATION_FLOW_ITEM)) // TODO: IF translation support is required add SyncType.Language
+            val emCareResult = EmCareSync.oneTimeSync(api, database, preference, listOf(SyncType.FACILITY, SyncType.CONSULTATION_FLOW_ITEM))
             if (fhirResult is Result.Success || emCareResult is SyncResult.Success) {
                 _syncState.value = (fhirResult as? Result.Success)?.let { State.Finished(it) }
             } else {

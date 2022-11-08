@@ -19,12 +19,11 @@ const val INTENT_EXTRA_STRUCTUREMAP_ID = "INTENT_EXTRA_STRUCTUREMAP_ID"
 const val INTENT_EXTRA_CONSULTATION_FLOW_ITEM_ID = "INTENT_EXTRA_CONSULTATION_FLOW_ITEM_ID"
 const val INTENT_EXTRA_QUESTIONNAIRE_HEADER = "INTENT_EXTRA_QUESTIONNAIRE_HEADER"
 const val MY_UPDATE_REQUEST_CODE = 50
+const val DATE_FORMAT = "dd/MM/YY"
 
 //URLS
 const val URL_CQF_LIBRARY = "http://hl7.org/fhir/StructureDefinition/cqf-library"
 const val URL_INITIAL_EXPRESSION = "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression"
-
-
 const val LOCATION_EXTENSION_URL = "http://hl7.org/fhir/StructureDefinition/patient-locationId"
 //KeyCloak details
 const val KEYCLOAK_CLIENT_SECRET = "b5a37bde-8d54-4837-a8dc-12e1f808e26e"

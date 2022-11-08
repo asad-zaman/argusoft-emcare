@@ -2,7 +2,6 @@ package com.argusoft.who.emcare.utils.extention
 
 import com.argusoft.who.emcare.ui.common.model.PatientItem
 import org.hl7.fhir.r4.model.Patient
-import org.hl7.fhir.r4.model.RiskAssessment
 
 fun Patient.toPatientItem(position: Int): PatientItem {
     val patientId = if (hasIdElement()) idElement.idPart else ""

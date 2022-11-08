@@ -14,7 +14,7 @@
         android:paddingVertical="@dimen/_8sdp">
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/stethoscopeImageView"
+            android:id="@+id/consultationImageView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/description_status"
@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/_12sdp"
             android:layout_marginVertical="@dimen/auto_complete_item_gap"
-            app:layout_constraintStart_toEndOf="@+id/stethoscopeImageView"
+            app:layout_constraintStart_toEndOf="@+id/consultationImageView"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             android:text="Sick Child, Follow Up" />

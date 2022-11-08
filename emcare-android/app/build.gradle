@@ -14,8 +14,8 @@ android {
         applicationId "com.argusoft.who.emcare"
         minSdkVersion 26
         targetSdkVersion 31
-        versionCode 1
-        versionName "1.0"
+        versionCode 3
+        versionName "1.0.6"
         vectorDrawables.useSupportLibrary = true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -160,7 +160,7 @@ dependencies {
 
     //Fhir
     implementation "com.google.android.fhir:engine:0.1.0-beta02"
-    implementation "com.google.android.fhir:data-capture:0.1.0-beta05"
+    implementation "com.google.android.fhir:data-capture:0.1.0-beta06"
     implementation "com.google.android.fhir:workflow:0.1.0-alpha02"
 
     //EventBus

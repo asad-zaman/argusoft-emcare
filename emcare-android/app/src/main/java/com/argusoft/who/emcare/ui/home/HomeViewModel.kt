@@ -5,9 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.uhn.fhir.context.FhirContext
-import ca.uhn.fhir.context.FhirVersionEnum
-import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.data.remote.ApiResponse
+import com.argusoft.who.emcare.di.AppModule
 import com.argusoft.who.emcare.ui.common.*
 import com.argusoft.who.emcare.ui.common.model.ConsultationFlowItem
 import com.argusoft.who.emcare.ui.common.model.ConsultationItemData
@@ -16,16 +15,12 @@ import com.argusoft.who.emcare.ui.common.model.SidepaneItem
 import com.argusoft.who.emcare.ui.home.patient.PatientRepository
 import com.argusoft.who.emcare.utils.extention.orEmpty
 import com.argusoft.who.emcare.utils.listener.SingleLiveEvent
-import com.google.android.fhir.FhirEngine
 import com.google.android.fhir.datacapture.common.datatype.asStringValue
 import com.google.android.fhir.datacapture.createQuestionnaireResponseItem
-import com.google.android.fhir.get
 import com.google.android.fhir.workflow.FhirOperator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.collect
 import org.hl7.fhir.r4.model.*
-import java.text.SimpleDateFormat
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -35,9 +30,9 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val patientRepository: PatientRepository,
     private val consultationFlowRepository: ConsultationFlowRepository,
-    private val fhirEngine: FhirEngine,
     private val fhirOperator: FhirOperator,
-    private val libraryRepository: LibraryRepository
+    private val libraryRepository: LibraryRepository,
+    @AppModule.IoDispatcher private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : ViewModel() {
 
     var questionnaireJson: String? = null
@@ -48,6 +43,12 @@ class HomeViewModel @Inject constructor(
 
     private val _patient = SingleLiveEvent<ApiResponse<Patient>>()
     val patient: LiveData<ApiResponse<Patient>> = _patient
+
+    private val _draftQuestionnaire = SingleLiveEvent<ApiResponse<String>>()
+    val draftQuestionnaire: LiveData<ApiResponse<String>> = _draftQuestionnaire
+
+    private val _draftQuestionnaireNew = SingleLiveEvent<ApiResponse<String>>()
+    val draftQuestionnaireNew: LiveData<ApiResponse<String>> = _draftQuestionnaireNew
 
     private val _patients = SingleLiveEvent<ApiResponse<List<PatientItem>>>()
     val patients: LiveData<ApiResponse<List<PatientItem>>> = _patients
@@ -101,17 +102,17 @@ class HomeViewModel @Inject constructor(
                     val patientItem = patientResponse.data!!
                     consultationFlowStageList.forEach { stage ->
                         val consultationFlowItems = it.data?.filter { consultationFlowItem -> consultationFlowItem.consultationStage.equals(stage) }
-                        val consultationFlowItem = if(consultationFlowItems.isNullOrEmpty()) null else consultationFlowItems[0]
+                        val consultationFlowItem = consultationFlowItems?.firstOrNull()
                         if(!stage.equals(CONSULTATION_STAGE_REGISTRATION_PATIENT)){
                             if(consultationFlowItem != null) {
                                 sidepaneList.add(SidepaneItem(stageToIconMap[stage],
                                     stageToBadgeMap[stage],
                                     ConsultationItemData(
                                         name = patientItem.nameFirstRep.nameAsSingleString.orEmpty { patientItem.identifierFirstRep.value ?:"NA #${patientItem.id?.takeLast(9)}"},
-                                        gender = if(patientItem.hasGender()) patientItem.genderElement.valueAsString else null,
+                                        gender = patientItem.genderElement?.valueAsString ,
                                         identifier = patientItem.identifierFirstRep.value ,
                                         dateOfBirth = patientItem.birthDateElement.valueAsString ?: "Not Provided",
-                                        dateOfConsultation = ZonedDateTime.parse(consultationFlowItem.consultationDate?.substringBefore("+").plus("Z[UTC]")).format(DateTimeFormatter.ofPattern("dd/MM/YY")),
+                                        dateOfConsultation = ZonedDateTime.parse(consultationFlowItem.consultationDate?.substringBefore("+").plus("Z[UTC]")).format(DateTimeFormatter.ofPattern(DATE_FORMAT)),
                                         badgeText = stageToBadgeMap[consultationFlowItem.consultationStage],
                                         header = consultationFlowItem.questionnaireId, //TODO: For test only, replace it with appropriate header
                                         consultationIcon = stageToIconMap[consultationFlowItem.consultationStage],
@@ -147,10 +148,10 @@ class HomeViewModel @Inject constructor(
                             consultationsArrayList.add(
                                 ConsultationItemData(
                                     name = patientItem.nameFirstRep.nameAsSingleString.orEmpty { patientItem.identifierFirstRep.value ?:"NA #${patientItem.id?.takeLast(9)}"},
-                                    gender = if(patientItem.hasGender()) patientItem.genderElement.valueAsString else null,
+                                    gender = patientItem.genderElement?.valueAsString,
                                     identifier = patientItem.identifierFirstRep.value ,
                                     dateOfBirth = patientItem.birthDateElement.valueAsString ?: "Not Provided",
-                                    dateOfConsultation = ZonedDateTime.parse(consultationFlowItem.consultationDate?.substringBefore("+").plus("Z[UTC]")).format(DateTimeFormatter.ofPattern("dd/MM/YY")),
+                                    dateOfConsultation = ZonedDateTime.parse(consultationFlowItem.consultationDate?.substringBefore("+").plus("Z[UTC]")).format(DateTimeFormatter.ofPattern(DATE_FORMAT)),
                                     badgeText = stageToBadgeMap[consultationFlowItem.consultationStage],
                                     header = consultationFlowItem.questionnaireId, //TODO: For test only, replace it with appropriate header
                                     consultationIcon = stageToIconMap[consultationFlowItem.consultationStage],
@@ -174,6 +175,22 @@ class HomeViewModel @Inject constructor(
                         search?.let { it1 -> consultationItemData.name?.contains(it1, ignoreCase = true) }!!
                     }
                 },"No Active Consultations Found")
+            }
+        }
+    }
+
+    fun saveQuestionnaireAsDraft(consultationFlowItemId: String, questionnaireResponse: QuestionnaireResponse) {
+        viewModelScope.launch {
+            patientRepository.updateConsultationQuestionnaireResponse(consultationFlowItemId, questionnaireResponse).collect {
+                _draftQuestionnaire.value = it
+            }
+        }
+    }
+
+    fun saveQuestionnaireAsDraftNew(questionnaireResponse: QuestionnaireResponse) {
+        viewModelScope.launch {
+            patientRepository.saveNewConsultation(questionnaireResponse).collect {
+                _draftQuestionnaireNew.value = ApiResponse.Success(it)
             }
         }
     }
@@ -230,7 +247,7 @@ class HomeViewModel @Inject constructor(
         return questionnaireResponse
     }
 
-    private fun preProcessQuestionnaire(questionnaire: Questionnaire, patientId: String) : Questionnaire {
+    private suspend fun preProcessQuestionnaire(questionnaire: Questionnaire, patientId: String) : Questionnaire {
         var ansQuestionnaire = injectUuid(questionnaire)
         if(questionnaire.hasExtension(URL_CQF_LIBRARY)){
             ansQuestionnaire = injectInitialExpressionCqlValues(questionnaire, patientId)
@@ -240,19 +257,17 @@ class HomeViewModel @Inject constructor(
 
     private fun injectUuid(questionnaire: Questionnaire) : Questionnaire {
         questionnaire.item.forEach { item ->
-            if(!item.initial.isNullOrEmpty()) {
-                if(item.initial[0].value.asStringValue() == "uuid()") {
-                    item.initial =
-                        mutableListOf(Questionnaire.QuestionnaireItemInitialComponent(StringType(
-                            UUID.randomUUID().toString())))
-                }
+            if(!item.initial.isNullOrEmpty() && item.initial[0].value.asStringValue() == "uuid()") {
+                item.initial =
+                    mutableListOf(Questionnaire.QuestionnaireItemInitialComponent(StringType(
+                        UUID.randomUUID().toString())))
             }
         }
         return questionnaire
     }
 
-    private fun injectInitialExpressionCqlValues(questionnaire: Questionnaire, patientId: String): Questionnaire {
-        var cqlLibraryURL = questionnaire.getExtensionByUrl(URL_CQF_LIBRARY).value.asStringValue()
+    private suspend fun injectInitialExpressionCqlValues(questionnaire: Questionnaire, patientId: String): Questionnaire = withContext(dispatcher) {
+        val cqlLibraryURL = questionnaire.getExtensionByUrl(URL_CQF_LIBRARY).value.asStringValue()
         val expressionSet = mutableSetOf<String>()
         //If questionnaire has Cql library then evaluate library and inject the parameters
         if(cqlLibraryURL.isNotEmpty()){
@@ -273,9 +288,8 @@ class HomeViewModel @Inject constructor(
                         item.initial = mutableListOf(Questionnaire.QuestionnaireItemInitialComponent(value))
                 }
             }
-            return questionnaire
-        } else {
-            return questionnaire
         }
+
+        return@withContext questionnaire
     }
 }

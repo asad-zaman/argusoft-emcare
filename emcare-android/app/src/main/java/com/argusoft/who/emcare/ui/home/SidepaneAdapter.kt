@@ -1,19 +1,15 @@
 package com.argusoft.who.emcare.ui.home
 
-import android.content.res.ColorStateList
-import android.graphics.PorterDuff
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.RecyclerView
 import com.argusoft.who.emcare.R
-import com.argusoft.who.emcare.data.local.pref.EncPref.putString
 import com.argusoft.who.emcare.databinding.ListItemSidepaneBinding
 import com.argusoft.who.emcare.ui.common.*
 import com.argusoft.who.emcare.ui.common.base.BaseAdapter
 import com.argusoft.who.emcare.ui.common.model.SidepaneItem
-import com.argusoft.who.emcare.utils.extention.navigate
 import com.argusoft.who.emcare.utils.extention.toBinding
 
 class SidepaneAdapter(

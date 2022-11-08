@@ -7,15 +7,12 @@ import com.argusoft.who.emcare.data.local.pref.Preference
 import com.argusoft.who.emcare.data.remote.Api
 import com.argusoft.who.emcare.data.remote.ApiResponse
 import com.argusoft.who.emcare.ui.common.model.DeviceDetails
-import com.argusoft.who.emcare.ui.common.model.LoggedInUser
-import com.argusoft.who.emcare.ui.common.model.User
 import com.argusoft.who.emcare.utils.common.NetworkHelper
 import com.argusoft.who.emcare.utils.extention.whenResult
 import com.argusoft.who.emcare.utils.extention.whenSuccess
 import com.google.android.fhir.FhirEngine
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import javax.inject.Inject

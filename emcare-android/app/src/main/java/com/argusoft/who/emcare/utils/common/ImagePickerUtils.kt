@@ -31,7 +31,6 @@ import java.lang.ref.WeakReference
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
-import kotlin.toString
 
 object ImagePickerUtils : EasyPermissions.PermissionCallbacks {
 
@@ -198,6 +197,7 @@ object ImagePickerUtils : EasyPermissions.PermissionCallbacks {
     }
 
     override fun onPermissionsGranted(requestCode: Int, perms: MutableList<String>) {
+        //Empty Block
     }
 
 
@@ -285,22 +285,20 @@ object ImagePickerUtils : EasyPermissions.PermissionCallbacks {
                     addToGallery()
                 else
                     saveBitmapOnCatch(getActivity()?.getUri(File(photoPath)))
-            } else if (requestCode == REQ_CHOOSE_GALLERY) {
-                if (data != null) {
-                    if (hasSelectMultiple) {
-                        val clipData = data.clipData
-                        if (clipData != null) {
-                            listOfImages.clear()
-                            for (i in 0 until clipData.itemCount) {
-                                listOfImages.add(clipData.getItemAt(i).uri.toString())
-                            }
-                            setImageSelected()
+            } else if (requestCode == REQ_CHOOSE_GALLERY && data != null) {
+                if (hasSelectMultiple) {
+                    val clipData = data.clipData
+                    if (clipData != null) {
+                        listOfImages.clear()
+                        for (i in 0 until clipData.itemCount) {
+                            listOfImages.add(clipData.getItemAt(i).uri.toString())
                         }
-                    } else {
-                        val selectedImageUri = data.data
-                        if (selectedImageUri != null) {
-                            saveBitmapOnCatch(selectedImageUri)
-                        }
+                        setImageSelected()
+                    }
+                } else {
+                    val selectedImageUri = data.data
+                    if (selectedImageUri != null) {
+                        saveBitmapOnCatch(selectedImageUri)
                     }
                 }
             }

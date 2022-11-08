@@ -10,9 +10,11 @@ interface OnTextChanged : TextWatcher {
     }
 
     override fun beforeTextChanged(charSequence: CharSequence?, p1: Int, p2: Int, p3: Int) {
+        //Empty Block
     }
 
     override fun onTextChanged(charSequence: CharSequence?, p1: Int, p2: Int, p3: Int) {
+        //Empty Block
     }
 
     fun onTextChanged(editable: Editable)

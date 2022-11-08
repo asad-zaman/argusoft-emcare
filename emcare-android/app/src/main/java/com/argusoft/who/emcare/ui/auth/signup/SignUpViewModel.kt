@@ -11,7 +11,6 @@ import com.argusoft.who.emcare.ui.common.model.SignupRequest
 import com.argusoft.who.emcare.utils.extention.isValidEmail
 import com.argusoft.who.emcare.utils.listener.SingleLiveEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 

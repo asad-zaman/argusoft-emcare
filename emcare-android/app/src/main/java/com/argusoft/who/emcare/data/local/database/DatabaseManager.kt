@@ -79,8 +79,12 @@ class DatabaseManager(roomDatabase: RoomDatabase) : Database {
         return dao.getAllLatestActiveConsultations()
     }
 
-    override suspend fun getAllActiveConsultationsByPatientId(patientId: String): List<ConsultationFlowItem>? {
-        return dao.getAllActiveConsultationsByPatientId(patientId)
+    override suspend fun getAllLatestActiveConsultationsByPatientId(patientId: String): List<ConsultationFlowItem>? {
+        return dao.getAllLatestActiveConsultationsByPatientId(patientId)
+    }
+
+    override suspend fun getAllLatestInActiveConsultationsByPatientId(patientId: String): List<ConsultationFlowItem>? {
+        return dao.getAllLatestInActiveConsultationsByPatientId(patientId)
     }
 
     override suspend fun getAllConsultationsByPatientId(patientId: String): List<ConsultationFlowItem>? {
@@ -89,5 +93,9 @@ class DatabaseManager(roomDatabase: RoomDatabase) : Database {
 
     override suspend fun getLatestActiveConsultationByPatientId(patientId: String): ConsultationFlowItem? {
         return dao.getLatestActiveConsultationByPatientId(patientId)
+    }
+
+    override suspend fun getLastConsultationDateByPatientId(patientId: String): String? {
+        return dao.getLastConsultationDateByPatientId(patientId)
     }
 }

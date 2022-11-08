@@ -1,9 +1,7 @@
 package com.argusoft.who.emcare.ui.home
 
-import android.content.res.ColorStateList
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.databinding.ListItemPatientBinding
@@ -15,7 +13,6 @@ import com.argusoft.who.emcare.ui.common.model.PatientItem
 import com.argusoft.who.emcare.utils.extention.navigate
 import com.argusoft.who.emcare.utils.extention.orEmpty
 import com.argusoft.who.emcare.utils.extention.toBinding
-import org.hl7.fhir.r4.model.codesystems.RiskProbability
 
 class HomeAdapter(
     val list: ArrayList<PatientItem?> = arrayListOf(),
@@ -46,7 +43,7 @@ class HomeAdapter(
             }
         }
         fun bind(album: PatientItem) = with(album) {
-            binding.nameTextView.text = name.orEmpty { identifier ?:"NA #${resourceId?.takeLast(9)}"}
+            binding.nameTextView.setText(name.orEmpty { identifier ?:"NA #${resourceId?.takeLast(9)}"})
             binding.idTextView.text = binding.root.context.getString(R.string.label_id_with_colon, resourceId?.takeLast(3))
             if(!gender.isNullOrEmpty()){
                 if(gender.equals("male" ,false))

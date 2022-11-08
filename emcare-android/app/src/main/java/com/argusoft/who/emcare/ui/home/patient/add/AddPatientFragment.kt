@@ -1,20 +1,16 @@
 package com.argusoft.who.emcare.ui.home.patient.add
 
+import android.view.View
 import androidx.activity.addCallback
 import androidx.core.os.bundleOf
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
 import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.databinding.FragmentAddPatientBinding
-import com.argusoft.who.emcare.ui.common.CONSULTATION_STAGE_REGISTRATION_PATIENT
-import com.argusoft.who.emcare.ui.common.INTENT_EXTRA_FACILITY_ID
+import com.argusoft.who.emcare.ui.common.*
 import com.argusoft.who.emcare.ui.common.base.BaseFragment
 import com.argusoft.who.emcare.ui.common.model.ConsultationFlowItem
-import com.argusoft.who.emcare.ui.common.stageToQuestionnaireId
-import com.argusoft.who.emcare.ui.common.stageToStructureMapId
 import com.argusoft.who.emcare.ui.home.HomeViewModel
-import com.argusoft.who.emcare.ui.home.settings.SettingsViewModel
 import com.argusoft.who.emcare.utils.extention.alertDialog
 import com.argusoft.who.emcare.utils.extention.handleApiView
 import com.argusoft.who.emcare.utils.extention.navigate
@@ -66,7 +62,8 @@ class AddPatientFragment : BaseFragment<FragmentAddPatientBinding>() {
             questionnaireFragment.arguments =
                 bundleOf(
                     QuestionnaireFragment.EXTRA_QUESTIONNAIRE_JSON_STRING to pair.first,
-                    QuestionnaireFragment.EXTRA_QUESTIONNAIRE_RESPONSE_JSON_STRING to pair.second
+                    QuestionnaireFragment.EXTRA_QUESTIONNAIRE_RESPONSE_JSON_STRING to pair.second,
+                    QuestionnaireFragment.EXTRA_ENABLE_REVIEW_PAGE to true
                 )
             childFragmentManager.commit {
                 add(R.id.fragmentContainerView, questionnaireFragment, QuestionnaireFragment::class.java.simpleName)
@@ -75,13 +72,31 @@ class AddPatientFragment : BaseFragment<FragmentAddPatientBinding>() {
     }
 
     override fun initListener() {
+        binding.resetQuestionnaireButton.setOnClickListener(this)
     }
 
     override fun initObserver() {
         observeNotNull(homeViewModel.saveQuestionnaire) { apiResponse ->
             apiResponse.handleApiView(binding.progressLayout, skipIds = listOf(R.id.headerLayout)) {
                 if (it is ConsultationFlowItem) {
-                    navigate(R.id.action_addPatientFragment_to_homeFragment)
+                    activity?.alertDialog {
+                        setMessage(R.string.msg_continue_consultation)
+                        setPositiveButton(R.string.button_yes) { _, _ ->
+                            navigate(R.id.action_addPatientFragment_to_patientQuestionnaireFragment) {
+                                putString(INTENT_EXTRA_QUESTIONNAIRE_ID, it.questionnaireId)
+                                putString(INTENT_EXTRA_STRUCTUREMAP_ID, it.structureMapId)
+                                putString(INTENT_EXTRA_QUESTIONNAIRE_HEADER, it.questionnaireId)
+                                putString(INTENT_EXTRA_CONSULTATION_FLOW_ITEM_ID, it.id)
+                                putString(INTENT_EXTRA_PATIENT_ID, it.patientId)
+                                putString(INTENT_EXTRA_ENCOUNTER_ID, it.encounterId)
+                                putString(INTENT_EXTRA_CONSULTATION_STAGE, it.consultationStage)
+                                putString(INTENT_EXTRA_QUESTIONNAIRE_RESPONSE, it.questionnaireResponseText)
+                            }
+                        }
+                        setNegativeButton(R.string.button_no) { _, _ ->
+                            navigate(R.id.action_addPatientFragment_to_homeFragment)
+                        }
+                    }?.show()
                 }
             }
         }
@@ -91,12 +106,22 @@ class AddPatientFragment : BaseFragment<FragmentAddPatientBinding>() {
                 it?.let { addQuestionnaireFragmentWithQR(it) }
             }
         }
-//        observeNotNull(settingsViewModel.languageApiState) {
-//            it.whenSuccess {
-//                it.languageData?.convertToMap()?.apply {
-//                    binding.headerLayout.toolbar.setTitleSidepane(getOrElse("Add_Patient") { getString(R.string.title_add_patient) } )
-//                }
-//            }
-//        }
+    }
+
+    override fun onClick(view: View?) {
+        super.onClick(view)
+        when (view?.id) {
+            R.id.reset_questionnaire_button -> {
+                activity?.alertDialog {
+                    setMessage(R.string.msg_reset_questionnaire)
+                    setPositiveButton(R.string.button_yes) { _, _ ->
+                        navigate(R.id.action_addPatientFragment_to_addPatientFragment) {
+                            putString(INTENT_EXTRA_FACILITY_ID, preference.getLoggedInUser()?.facility?.get(0)?.facilityId)
+                        }
+                    }
+                    setNegativeButton(R.string.button_no) { _, _ -> }
+                }?.show()
+            }
+        }
     }
 }

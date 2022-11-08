@@ -108,9 +108,7 @@ object LocationUtils : EasyPermissions.PermissionCallbacks {
     private fun hasLocationPermission(): Boolean? {
         return getActivity()?.let {
             return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                if (hasForegroundPermissionAllow() == true) true
-                else
-                    hasBackgroundPermissionAllow()
+                hasForegroundPermissionAllow() == true || hasBackgroundPermissionAllow() == true
             } else
                 hasForegroundPermissionAllow()
         }
@@ -226,7 +224,7 @@ object LocationUtils : EasyPermissions.PermissionCallbacks {
     }
 
     override fun onPermissionsGranted(requestCode: Int, perms: MutableList<String>) {
-
+        //Empty code block
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {

@@ -11,7 +11,6 @@ import com.argusoft.who.emcare.widget.ApiViewStateConstraintLayout
 
 fun <T> ApiResponse<T>?.handleApiView(
     progressLayout: ApiViewStateConstraintLayout?,
-    onClickListener: View.OnClickListener? = null,
     skipIds: List<Int> = listOf(R.id.headerLayout),
     isSuccess: (t: T?) -> Unit = {}
 ) {
@@ -177,10 +176,10 @@ inline fun <T> ApiResponse<T>.whenSuccess(function: (T) -> Unit): ApiResponse<T>
 inline fun <T> ApiResponse<T>.whenFailed(function: () -> Unit): ApiResponse<T> {
     when (this) {
         is ApiResponse.Success -> {
-
+            //Empty Block
         }
         is ApiResponse.Loading -> {
-
+            //Empty Block
         }
         else -> {
             function()
@@ -207,6 +206,7 @@ inline fun <T> ApiResponse<T>.whenResult(
            onFailed("Make sure that mobile data or Wi-Fi is turn on, then try again")
         }
         else -> {
+            //Empty Block
         }
     }
     return this

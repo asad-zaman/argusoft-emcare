@@ -42,14 +42,21 @@
                 app:layout_constraintStart_toStartOf="@id/leftGuideLine"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <com.google.android.material.textview.MaterialTextView
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/nameTextView"
                 style="@style/TextView.Medium.Black"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/_12sdp"
                 app:layout_constraintStart_toEndOf="@+id/childImageView"
+                app:layout_constraintEnd_toEndOf="@id/rightGuideLine"
                 app:layout_constraintTop_toTopOf="@+id/childImageView"
+                android:background="@color/transparent"
+                android:clickable="false"
+                android:cursorVisible="false"
+                android:focusable="false"
+                android:singleLine="true"
+                android:inputType="textNoSuggestions"
                 tools:text="Parth Panchal" />
 
             <com.google.android.material.textview.MaterialTextView
@@ -99,21 +106,6 @@
                 app:layout_constraintStart_toStartOf="@id/leftGuideLine"
                 app:layout_constraintEnd_toEndOf="@id/rightGuideLine"/>
 
-<!--            <com.google.android.material.button.MaterialButton-->
-<!--                android:id="@+id/patientProfileButton"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                app:backgroundTint="@color/white"-->
-<!--                style="@style/Button.Outlined"-->
-<!--                android:textSize="@dimen/_10sdp"-->
-<!--                app:strokeColor="@color/buttonColor"-->
-<!--                android:textColor="@color/buttonColor"-->
-<!--                android:text="@string/patient_profile"-->
-<!--                app:cornerRadius="@dimen/_5sdp"-->
-<!--                android:layout_marginVertical="@dimen/_4sdp"-->
-<!--                android:layout_marginStart="@dimen/_4sdp"-->
-<!--                app:layout_constraintTop_toBottomOf="@id/firstLineBreak"-->
-<!--                app:layout_constraintStart_toStartOf="@id/leftGuideLine"/>-->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/newConsultationButton"
                 android:layout_width="0dp"
@@ -168,17 +160,22 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         android:text="@string/active_consultations" />
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:layout_marginTop="@dimen/_4sdp"
-                        android:id="@+id/activeConsultationRecyclerView"
+                    <com.argusoft.who.emcare.widget.ApiViewStateConstraintLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:nestedScrollingEnabled="false"
-                        android:orientation="vertical"
-                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                         app:layout_constraintTop_toBottomOf="@id/activeConsultationTextView"
-                        tools:listitem="@layout/list_item_active_consultation" />
+                        android:id="@+id/activePatientProgressLayout"
+                        android:layout_marginTop="@dimen/_4sdp">
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/activeConsultationRecyclerView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:nestedScrollingEnabled="false"
+                            android:orientation="vertical"
+                            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:listitem="@layout/list_item_active_consultation" />
+                    </com.argusoft.who.emcare.widget.ApiViewStateConstraintLayout>
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -210,16 +207,22 @@
                         app:layout_constraintTop_toTopOf="parent"
                         android:text="@string/previous_consultations" />
 
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:layout_marginTop="@dimen/_4sdp"
-                        android:id="@+id/previousConsultationRecyclerView"
+                    <com.argusoft.who.emcare.widget.ApiViewStateConstraintLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:nestedScrollingEnabled="false"
-                        android:orientation="vertical"
-                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                         app:layout_constraintTop_toBottomOf="@id/previousConsultationTextView"
-                        tools:listitem="@layout/list_item_previous_consultation" />
+                        android:id="@+id/previousPatientProgressLayout"
+                        android:layout_marginTop="@dimen/_4sdp">
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/previousConsultationRecyclerView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:nestedScrollingEnabled="false"
+                            android:orientation="vertical"
+                            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:listitem="@layout/list_item_previous_consultation" />
+                    </com.argusoft.who.emcare.widget.ApiViewStateConstraintLayout>
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.card.MaterialCardView>
         </androidx.constraintlayout.widget.ConstraintLayout>

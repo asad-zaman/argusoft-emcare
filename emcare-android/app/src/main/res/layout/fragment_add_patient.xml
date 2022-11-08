@@ -13,8 +13,18 @@
         android:id="@+id/fragmentContainerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:paddingTop="@dimen/_16sdp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/headerLayout" />
 
+    <Button
+        android:id="@+id/reset_questionnaire_button"
+        style="@style/Questionnaire.ResetButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/label_reset"
+        android:layout_marginVertical="@dimen/item_margin_vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
 </com.argusoft.who.emcare.widget.ApiViewStateConstraintLayout>

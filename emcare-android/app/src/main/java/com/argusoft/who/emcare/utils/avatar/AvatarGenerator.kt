@@ -72,8 +72,6 @@ class AvatarGenerator(private val builder: AvatarBuilder) {
             val areaRect = Rect(0, 0, size, size)
 
             if (shape == 0) {
-                val firstLetter = firstCharacter(name)
-                val r = firstLetter[0]
                 painter.color = backgroundColor ?: RandomColors(colorModel).getColor()
             } else {
                 painter.color = Color.TRANSPARENT
@@ -87,8 +85,6 @@ class AvatarGenerator(private val builder: AvatarBuilder) {
             if (shape == 0) {
                 painter.color = Color.TRANSPARENT
             } else {
-                val firstLetter = firstCharacter(name)
-                val r = firstLetter[0]
                 painter.color = backgroundColor ?: RandomColors(colorModel).getColor()
             }
 
@@ -177,8 +173,6 @@ class AvatarGenerator(private val builder: AvatarBuilder) {
             val areaRect = Rect(0, 0, size, size)
 
             if (shape == 0) {
-                val firstLetter = firstCharacter(name)
-                val r = firstLetter[0]
                 painter.color = RandomColors(colorModel).getColor()
             } else {
                 painter.color = Color.TRANSPARENT
@@ -192,8 +186,6 @@ class AvatarGenerator(private val builder: AvatarBuilder) {
             if (shape == 0) {
                 painter.color = Color.TRANSPARENT
             } else {
-                val firstLetter = firstCharacter(name)
-                val r = firstLetter[0]
                 painter.color = RandomColors(colorModel).getColor()
             }
 
@@ -212,7 +204,7 @@ class AvatarGenerator(private val builder: AvatarBuilder) {
 
 
         private fun firstCharacter(name: String): String {
-            return name.first().toString().toUpperCase(Locale.ROOT)
+            return name.first().toString().uppercase(Locale.ROOT)
         }
 
         private fun textPainter(): TextPaint {

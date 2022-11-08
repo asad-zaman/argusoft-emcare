@@ -42,8 +42,13 @@ class ConsultationFlowRepository @Inject constructor(
     }
 
     //For the consultation flow screen
-    fun getAllActiveConsultationsByPatientId(patientId: String) = flow {
-        val list = database.getAllActiveConsultationsByPatientId(patientId)
+    fun getAllLatestActiveConsultationsByPatientId(patientId: String) = flow {
+        val list = database.getAllLatestActiveConsultationsByPatientId(patientId)
+        emit(ApiResponse.Success(data = list))
+    }
+
+    fun getAllLatestInActiveConsultationsByPatientId(patientId: String) = flow {
+        val list = database.getAllLatestInActiveConsultationsByPatientId(patientId)
         emit(ApiResponse.Success(data = list))
     }
 
@@ -51,6 +56,11 @@ class ConsultationFlowRepository @Inject constructor(
     fun getAllConsultationsByPatientId(patientId: String) = flow {
         val list = database.getAllConsultationsByPatientId(patientId)
         emit(ApiResponse.Success(data = list))
+    }
+
+    fun getLastConsultationDateByPatientId(patientId: String) = flow {
+        val lastConsultationDate = database.getLastConsultationDateByPatientId(patientId)
+        emit(ApiResponse.Success(data = lastConsultationDate))
     }
 
 

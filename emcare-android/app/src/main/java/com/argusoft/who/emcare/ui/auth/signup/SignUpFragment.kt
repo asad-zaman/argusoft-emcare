@@ -7,7 +7,6 @@ import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.databinding.FragmentSignupBinding
 import com.argusoft.who.emcare.ui.common.base.BaseFragment
 import com.argusoft.who.emcare.ui.common.model.Facility
-import com.argusoft.who.emcare.ui.common.model.Role
 import com.argusoft.who.emcare.utils.extention.*
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -17,7 +16,7 @@ class SignUpFragment : BaseFragment<FragmentSignupBinding>() {
     private val signUpViewModel: SignUpViewModel by viewModels()
 
     override fun initView() {
-
+        //No Initialization Required
     }
 
     private fun setupFacilityAutoComplete(facilityList: List<Facility>) {
@@ -43,7 +42,7 @@ class SignUpFragment : BaseFragment<FragmentSignupBinding>() {
     override fun initListener() {
         binding.submitButton.setOnClickListener(this)
         binding.headerLayout.toolbar.setNavigationOnClickListener(this)
-        binding.facilityEditText.setOnItemClickListener { parent, view, position, id ->
+        binding.facilityEditText.setOnItemClickListener { _, _, position, _ ->
             binding.facilityEditText.tag = (binding.facilityTextInputLayout.tag as? List<Facility>)?.getOrNull(position)?.facilityId
         }
 //        binding.roleEditText.setOnItemClickListener { parent, view, position, id ->

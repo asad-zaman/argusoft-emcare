@@ -10,6 +10,7 @@ import com.argusoft.who.emcare.ui.common.base.BaseAdapter
 import com.argusoft.who.emcare.ui.common.model.ConsultationItemData
 import com.argusoft.who.emcare.utils.extention.navigate
 import com.argusoft.who.emcare.utils.extention.toBinding
+import java.text.SimpleDateFormat
 
 class ConsultationAdapter(
     val list: ArrayList<ConsultationItemData?> = arrayListOf() ,
@@ -52,8 +53,12 @@ class ConsultationAdapter(
         }
 
         fun bind(album: ConsultationItemData) = with(album) {
-            binding.nameTextView.text = name
-            binding.dateOfBirthValueTextView.text = dateOfBirth
+            binding.nameTextView.setText(name)
+            //Using correct date format
+            if(dateOfBirth != null && !dateOfBirth.equals("Not Provided", true) && dateOfBirth.isNotBlank()){
+                val oldFormatDate = SimpleDateFormat("YYYY-MM-DD").parse(dateOfBirth)
+                binding.dateOfBirthValueTextView.text = SimpleDateFormat(DATE_FORMAT).format(oldFormatDate!!)
+            }
             binding.consultationDateValueTextView.text = dateOfConsultation
             binding.badgeTextView.text = badgeText
             binding.rightConsultationImageView.setImageResource(consultationIcon!!)

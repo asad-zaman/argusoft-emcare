@@ -21,8 +21,10 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>() {
     }
 
     override fun initListener() {
+        //No Listeners
     }
 
     override fun initObserver() {
+        //No Observers
     }
 }
