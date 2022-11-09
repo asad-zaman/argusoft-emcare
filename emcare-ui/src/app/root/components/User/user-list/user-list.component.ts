@@ -82,7 +82,15 @@ export class UserListComponent implements OnInit {
     if (this.isLocationFilterOn) {
       this.getUsersBasedOnLocationAndPageIndex(event - 1);
     } else {
-      this.getUsersByPageIndex(event - 1);
+      //  when location filter is not enabled but searchString is there
+      if (this.searchString && this.searchString.length >= 1) {
+        this.mainUserList = [];
+        this.userService.getUsersByPage(event - 1, this.searchString).subscribe(res => {
+          this.manipulateResponse(res);
+        });
+      } else {
+        this.getUsersByPageIndex(event - 1);
+      }
     }
   }
 

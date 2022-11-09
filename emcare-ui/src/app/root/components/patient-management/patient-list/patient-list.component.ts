@@ -81,7 +81,14 @@ export class PatientListComponent implements OnInit {
         if (this.isLocationFilterOn) {
             this.getPatientsBasedOnLocationAndPageIndex(event - 1);
         } else {
-            this.getPatientsByPageIndex(event - 1);
+            if (this.searchString && this.searchString.length >= 1) {
+                this.patients = [];
+                this.fhirService.getPatientsByPageIndex(event - 1, this.searchString).subscribe(res => {
+                    this.manipulateResponse(res);
+                });
+            } else {
+                this.getPatientsByPageIndex(event - 1);
+            }
         }
     }
 

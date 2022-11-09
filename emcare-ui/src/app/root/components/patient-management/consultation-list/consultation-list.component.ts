@@ -63,7 +63,14 @@ export class ConsultationListComponent implements OnInit {
 
   onIndexChange(event) {
     this.currentPage = event;
-    this.getConsultationsByPageIndex(event - 1);
+    if (this.searchString && this.searchString.length >= 1) {
+      this.consultations = [];
+      this.fhirService.getPatientsByPageIndex(event - 1, this.searchString).subscribe(res => {
+        this.manipulateResponse(res);
+      });
+    } else {
+      this.getConsultationsByPageIndex(event - 1);
+    }
   }
 
   searchFilter() {

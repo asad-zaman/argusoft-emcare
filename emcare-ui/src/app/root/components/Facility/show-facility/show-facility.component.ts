@@ -129,6 +129,13 @@ export class ShowFacilityComponent implements OnInit {
 
   onIndexChange(event) {
     this.currentPage = event;
-    this.getFacilityByPageAndSearch(event - 1);
+    if (this.searchString && this.searchString.length >= 1) {
+      this.facilityArr = [];
+      this.fhirService.getFacilityByPageAndSearch(event - 1, this.searchString).subscribe(res => {
+        this.manipulateRes(res);
+      });
+    } else {
+      this.getFacilityByPageAndSearch(event - 1);
+    }
   }
 }
