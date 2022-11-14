@@ -49,6 +49,7 @@ const val CONSULTATION_STAGE_SYMPTOMS = "SYMPTOMS"
 const val CONSULTATION_STAGE_SIGNS = "SIGNS"
 const val CONSULTATION_STAGE_ASSESSMENTS = "ASSESSMENTS"
 const val CONSULTATION_STAGE_CLASSIFICATIONS = "CLASSIFICATIONS"
+const val CONSULTATION_STAGE_TREATMENTS = "TREATMENTS"
 
 const val DEFAULT_USER_ROLE = "user"
 const val DEFAULT_COUNTRY_CODE = "IQ"
@@ -61,7 +62,8 @@ val consultationFlowStageList = arrayListOf<String?>(
     CONSULTATION_STAGE_SYMPTOMS,
     CONSULTATION_STAGE_SIGNS,
     CONSULTATION_STAGE_ASSESSMENTS,
-    CONSULTATION_STAGE_CLASSIFICATIONS
+    CONSULTATION_STAGE_CLASSIFICATIONS,
+    CONSULTATION_STAGE_TREATMENTS
 )
 val stageToBadgeMap = mapOf(
     CONSULTATION_STAGE_REGISTRATION_PATIENT to "Registration Patient",
@@ -72,7 +74,7 @@ val stageToBadgeMap = mapOf(
     CONSULTATION_STAGE_SIGNS to "Signs",
     CONSULTATION_STAGE_ASSESSMENTS to "Assessments",
     CONSULTATION_STAGE_CLASSIFICATIONS to "Classifications",
-
+    CONSULTATION_STAGE_TREATMENTS to "Treatments"
 )
 
 val stageToIconMap = mapOf(
@@ -84,6 +86,7 @@ val stageToIconMap = mapOf(
     CONSULTATION_STAGE_SIGNS to R.drawable.sign_icon,
     CONSULTATION_STAGE_ASSESSMENTS to R.drawable.tests_icon,
     CONSULTATION_STAGE_CLASSIFICATIONS to R.drawable.closed_consultation_icon_dark,
+    CONSULTATION_STAGE_TREATMENTS to R.drawable.treatment_icon
 )
 
 val stageToQuestionnaireId = mapOf(
@@ -95,6 +98,7 @@ val stageToQuestionnaireId = mapOf(
     CONSULTATION_STAGE_SIGNS to "emcare.b10-16.signs.2m.p",
     CONSULTATION_STAGE_ASSESSMENTS to "emcare.b22.assessmentstests",
     CONSULTATION_STAGE_CLASSIFICATIONS to "emcare.b23.classification",
+    CONSULTATION_STAGE_TREATMENTS to "emcare.treatment",
 )
 
 val stageToStructureMapId = mapOf(
@@ -106,4 +110,5 @@ val stageToStructureMapId = mapOf(
     CONSULTATION_STAGE_SIGNS to "emcare.b10-16.signs.2m.p",
     CONSULTATION_STAGE_ASSESSMENTS to "emcare.b22.assessmentstests",
     CONSULTATION_STAGE_CLASSIFICATIONS to "emcare.b23.classification",
-)
+    CONSULTATION_STAGE_TREATMENTS to "emcare.treatment",
+    )
