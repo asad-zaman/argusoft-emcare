@@ -44,6 +44,9 @@ class HomeViewModel @Inject constructor(
     private val _patient = SingleLiveEvent<ApiResponse<Patient>>()
     val patient: LiveData<ApiResponse<Patient>> = _patient
 
+    private val _deleteNextConsultations = SingleLiveEvent<ApiResponse<String>>()
+    val deleteNextConsultations: LiveData<ApiResponse<String>> = _deleteNextConsultations
+
     private val _draftQuestionnaire = SingleLiveEvent<ApiResponse<String>>()
     val draftQuestionnaire: LiveData<ApiResponse<String>> = _draftQuestionnaire
 
@@ -175,6 +178,14 @@ class HomeViewModel @Inject constructor(
                         search?.let { it1 -> consultationItemData.name?.contains(it1, ignoreCase = true) }!!
                     }
                 },"No Active Consultations Found")
+            }
+        }
+    }
+
+    fun deleteNextConsultations(consultationFlowItemId: String, encounterId: String) {
+        viewModelScope.launch {
+            patientRepository.deleteNextConsultations(consultationFlowItemId, encounterId).collect {
+                _deleteNextConsultations.value = it
             }
         }
     }

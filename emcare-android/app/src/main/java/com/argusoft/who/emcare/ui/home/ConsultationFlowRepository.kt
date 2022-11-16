@@ -63,5 +63,25 @@ class ConsultationFlowRepository @Inject constructor(
         emit(ApiResponse.Success(data = lastConsultationDate))
     }
 
+    fun deleteNextConsultations(consultationFlowItemId: String, encounterId: String) = flow {
+        database.deleteNextConsultations(consultationFlowItemId, encounterId)
+        emit(ApiResponse.Success(data = "Deleted"))
+    }
+
+    fun getConsultationFLowItemById(consultationFlowItemId: String) = flow {
+        val consultationFlowItem = database.getConsultationFlowItemById(consultationFlowItemId)
+        emit(ApiResponse.Success(data = consultationFlowItem))
+    }
+
+    fun deleteConsultationFlowItemById(consultationFlowItemId: String) = flow {
+        database.deleteConsultationFlowItemById(consultationFlowItemId)
+        emit(ApiResponse.Success(data = "Deleted"))
+    }
+
+    fun getNextConsultationFlowItemIds(consultationFlowItemId: String, encounterId: String) = flow {
+        val consultationFlowItemIds = database.getNextConsultationFlowItemIds(consultationFlowItemId, encounterId)
+        emit(ApiResponse.Success(data = consultationFlowItemIds))
+    }
+
 
 }

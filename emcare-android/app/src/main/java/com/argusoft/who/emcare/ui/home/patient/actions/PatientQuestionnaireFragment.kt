@@ -46,17 +46,18 @@ class PatientQuestionnaireFragment : BaseFragment<FragmentPatientQuestionnaireBi
             QuestionnaireFragment.SUBMIT_REQUEST_KEY,
             viewLifecycleOwner
         ) { _, _ ->
-            homeViewModel.questionnaireJson?.let {
-                homeViewModel.saveQuestionnaire(
-                    questionnaireResponse = questionnaireFragment.getQuestionnaireResponse(),
-                    questionnaire = it,
-                    structureMapId = requireArguments().getString(INTENT_EXTRA_STRUCTUREMAP_ID)!!,
-                    facilityId = preference.getLoggedInUser()?.facility?.get(0)?.facilityId!!,
-                    consultationFlowItemId = if(consultationFlowId == null) requireArguments().getString(
-                        INTENT_EXTRA_CONSULTATION_FLOW_ITEM_ID
-                    ) else consultationFlowId,
-                    consultationStage = requireArguments().getString(INTENT_EXTRA_CONSULTATION_STAGE)
-                )
+            if(requireArguments().getBoolean(INTENT_EXTRA_IS_DELETE_NEXT_CONSULTATIONS)){
+                activity?.alertDialog {
+                    setMessage(R.string.msg_delete_on_save_consultation)
+                    setPositiveButton(R.string.button_yes) { _, _ ->
+                        homeViewModel.deleteNextConsultations(
+                            requireArguments().getString(INTENT_EXTRA_CONSULTATION_FLOW_ITEM_ID)!!,
+                            requireArguments().getString(INTENT_EXTRA_ENCOUNTER_ID)!!)
+                    }
+                    setNegativeButton(R.string.button_no) { _, _ -> }
+                }?.show()
+            } else {
+                saveQuestionnaire()
             }
         }
 
@@ -78,6 +79,20 @@ class PatientQuestionnaireFragment : BaseFragment<FragmentPatientQuestionnaireBi
 
     }
 
+    private fun saveQuestionnaire() {
+        homeViewModel.questionnaireJson?.let {
+            homeViewModel.saveQuestionnaire(
+                questionnaireResponse = questionnaireFragment.getQuestionnaireResponse(),
+                questionnaire = it,
+                structureMapId = requireArguments().getString(INTENT_EXTRA_STRUCTUREMAP_ID)!!,
+                facilityId = preference.getLoggedInUser()?.facility?.get(0)?.facilityId!!,
+                consultationFlowItemId = if(consultationFlowId == null) requireArguments().getString(
+                    INTENT_EXTRA_CONSULTATION_FLOW_ITEM_ID
+                ) else consultationFlowId,
+                consultationStage = requireArguments().getString(INTENT_EXTRA_CONSULTATION_STAGE)
+            )
+        }
+    }
 
     private fun addQuestionnaireFragment(pair: Pair<String, String>) {
         homeViewModel.questionnaireJson = pair.first
@@ -134,6 +149,13 @@ class PatientQuestionnaireFragment : BaseFragment<FragmentPatientQuestionnaireBi
                 (activity as? HomeActivity)?.sidepaneAdapter?.addAll(it)
             }
         }
+
+        observeNotNull(homeViewModel.deleteNextConsultations) { apiResponse ->
+            apiResponse.whenSuccess {
+                saveQuestionnaire()
+            }
+        }
+
         observeNotNull(homeViewModel.saveQuestionnaire) { apiResponse ->
             apiResponse.handleApiView(binding.progressLayout, skipIds = listOf(R.id.headerLayout)) {
                 if (it is ConsultationFlowItem) {

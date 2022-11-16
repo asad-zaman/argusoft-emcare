@@ -46,7 +46,12 @@ class SidepaneAdapter(
                         INTENT_EXTRA_ENCOUNTER_ID to list[bindingAdapterPosition]?.consultationItemData?.encounterId,
                         INTENT_EXTRA_CONSULTATION_STAGE to list[bindingAdapterPosition]?.consultationItemData?.consultationStage,
                         INTENT_EXTRA_QUESTIONNAIRE_RESPONSE to list[bindingAdapterPosition]?.consultationItemData?.questionnaireResponseText,
-                        INTENT_EXTRA_IS_ACTIVE to list[bindingAdapterPosition]?.consultationItemData?.isActive
+                        INTENT_EXTRA_IS_ACTIVE to list[bindingAdapterPosition]?.consultationItemData?.isActive,
+                        try {
+                            INTENT_EXTRA_IS_DELETE_NEXT_CONSULTATIONS to (list[bindingAdapterPosition + 1]?.consultationItemData != null)
+                        } catch (e: java.lang.IndexOutOfBoundsException) {
+                            INTENT_EXTRA_IS_DELETE_NEXT_CONSULTATIONS to false
+                        }
                     ))
 
                 }

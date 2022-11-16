@@ -47,4 +47,11 @@ interface Database {
 
     suspend fun getLastConsultationDateByPatientId(patientId: String): String?
 
+    suspend fun deleteNextConsultations(consultationFlowItemId: String, encounterId: String)
+
+    suspend fun getConsultationFlowItemById(consultationFlowItemId: String): ConsultationFlowItem?
+
+    suspend fun getNextConsultationFlowItemIds(consultationFlowItemId: String, encounterId: String): List<String>
+
+    suspend fun deleteConsultationFlowItemById(consultationFlowItemId: String)
 }

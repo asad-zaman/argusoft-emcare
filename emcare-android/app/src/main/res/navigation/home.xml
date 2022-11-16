@@ -38,6 +38,8 @@
             app:destination="@id/homeFragment" />
         <action
             android:id="@+id/action_addPatientFragment_to_patientQuestionnaireFragment"
+            app:popUpToInclusive="true"
+            app:popUpTo="@id/patientQuestionnaireFragment"
             app:destination="@id/patientQuestionnaireFragment" />
         <action
             android:id="@+id/action_addPatientFragment_to_addPatientFragment"
