@@ -50,11 +50,11 @@ Note:
 
 Steps for running Em Care UI: 
 
-  1) Install primary requirement Node(V16).
-  2) Install Angular 13 CLI.
-  3) Go to the directory emcare-ui/ .
-  4) Run "npm install".
-  5) Run "ng serve". (By default server start on 4200 port).
+    1. Install primary requirement Node(V16).
+    2. Install Angular 13 CLI.
+    3. Go to the directory emcare-ui/ .
+    4. Run "npm install".
+    5. Run "ng serve". (By default server start on 4200 port).
 
 How to Contribute
 
