@@ -48,7 +48,8 @@ Note:
     9. root --> Provide root path for resource management.
 
 
-emcare-ui: 
+Steps for running Em Care UI: 
+
   1) Install primary requirement Node(V16).
   2) Install Angular 13 CLI.
   3) Go to the directory emcare-ui/ .
