@@ -2,11 +2,11 @@
 
  **Description**: Em Care is a digital solution that initially aims to improve health outcomes for mothers and children in emergency settings. It will provide decision-support to frontline health workers in emergencies, preserving the fidelity of, and increasing access to WHO clinical guidelines.
 
- Other things to include:
+ # Other things to include:
 
-    - **Technology stack**: Java,Spring boot,Spring JPA, Hibernate, Angular 13 Framework, HTML/CSS TypeScript.
-    - **Status**: This project is in pilot development phase.
-    - **Links Staging instances**: https://emcare.argusoft.com
+**Technology stack**: Java,Spring boot,Spring JPA, Hibernate, Angular 13 Framework, HTML/CSS TypeScript.
+**Status**: This project is in pilot development phase.
+**Links Staging instances**: https://emcare.argusoft.com
 
 ## Dependencies
 
@@ -23,7 +23,7 @@
  
 ## How to Run:
 
-# **emcare-web**
+**emcare-web**
 
 KeyCloak is an “Identity and Access Management” tool for the Em Care system.
 To setup KeyCloak for Em Care follow the below steps
@@ -31,13 +31,13 @@ To setup KeyCloak for Em Care follow the below steps
     1. Download KeyCloak-15.0.2 from https://www.keycloak.org/downloads
     2. Go to the KeyCloak-15.0.2/standalone/configuration/standalone.xml and change schema or DB credential for your use
 
-    Run KeyCloak
+    **Run KeyCloak**
     1. cd bin 
     2. ./standalone.sh -b 0.0.0.0 -bmanagement 0.0.0.0 -Djboss.socket.binding.port-offset=100 &
     3. Create an admin user from the keycloak UI
     4. Set Client secret and admin user info in KeycloakConfig.java file
 
-Steps for running Em Care web:
+**Steps for running Em Care web**:
 
     1. Go to emcare-web/ directory
     2. Run command "mvn clean install"
@@ -46,7 +46,7 @@ Steps for running Em Care web:
 
         java -jar emcare-web-0.0.1-SNAPSHOT.jar --keycloak.credentials.secret=********-******-****-****-********** --ibm.access-key=******************************** --spring.mail.password=************ --twilio.account.ssid=****************** --twilio.account.token=************** --twilio.phone.number=************ --twilio.messaging.service.id=********************** --spring.datasource.password=************ --root=/home/************
 
-# **Note For emcare-web**
+**Note For emcare-web**
 
     1. keycloak.credentials.secret --> Provide credentials of KeyCloak (You can see this key from the KeyCloak user interface) for user identity and access management.
     2. ibm.access-key --> Provide a key for dynamic language translation (You have to create an account in IBM and get the key from there https://www.ibm.com/cloud/watson-language-translator)
@@ -59,7 +59,7 @@ Steps for running Em Care web:
     9. root --> Provide root path for resource management.
 
 
-# **Steps for running Em Care UI**: 
+**Steps for running Em Care UI**: 
 
     1. Install primary requirement Node(V16).
     2. Install Angular 13 CLI.
@@ -68,13 +68,11 @@ Steps for running Em Care web:
     5. Run "ng serve". (By default server start on 4200 port).
 
 ## Getting involved
-
-
-TODO
+    People should get involved and describe key areas you are currently focusing on; e.g., trying to get feedback on features, fixing certain bugs, building important pieces, etc.
 
 ## Additional Information or Links
+# **Em Care Staging application** : https://emcare.argusoft.com
 
-**Em Care Staging application** : https://emcare.argusoft.com
-**KeyCloak Documentation** : https://www.keycloak.org/documentation
-**IBM Cloud Translation** : https://www.ibm.com/cloud/watson-language-translator
+# **KeyCloak Documentation** : https://www.keycloak.org/documentation
+# **IBM Cloud Translation** : https://www.ibm.com/cloud/watson-language-translator
 
