@@ -15,7 +15,7 @@
 # Dependencies
 
 Em Care have dependencies on KeyCloak Tool, IBM(Watson Language Translator), Twilio, and Google's FHIR SDK.
-## **KeyCloak()**
+## **KeyCloak(Identity and Access Management)**
 ### Settings up KeyCloak
     1. Download KeyCloak-15.0.2 from https://www.keycloak.org/downloads
     2. Go to the KeyCloak-15.0.2/standalone/configuration/standalone.xml and change schema or DB credential for your use
@@ -39,6 +39,9 @@ Em Care have dependencies on KeyCloak Tool, IBM(Watson Language Translator), Twi
     3. Get access-token, ssid, phone-number, and service-id  from the service console.
 ***
 ## **Google FHIR SDK**
+ - **engine**: To manage the FHIR resource locally in the application as well as to handle the sync & management of resources between   application & server
+ - **SDC**: It is used to render the questionnaire using its form filler, fetch questionnaire Response & extract resources from the questionnaire using structure map based extraction.
+ - **Workflow Library**: Currently using to evaluate cql for initialExpression & wip to use it for the plan definition
 
 # Configuration
     Em Care have different configuration based on each components which are describe below in "How to Run" section. 
