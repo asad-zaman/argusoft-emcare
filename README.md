@@ -28,9 +28,8 @@ Em Care have dependencies on KeyCloak Tool, and Google's FHIR SDK.
 *** 
 # Configuration
 
-    Em Care have different configuration based on each components which are describe below in [How to Run](#how-to-run "Goto how-to-run") section. 
+    Em Care have different configuration based on each components which are describe below in "How to Run" section. 
 # How to Run
-#### **emcare-web**
 #### Steps for running Em Care web
 
 
@@ -54,7 +53,7 @@ Em Care have dependencies on KeyCloak Tool, and Google's FHIR SDK.
 - **root** -> Provide root path for resource management.
 
 
-#### **Steps for running Em Care UI**: 
+### **Steps for running Em Care UI**: 
 
     1. Install primary requirement Node(V16).
     2. Install Angular 13 CLI.
