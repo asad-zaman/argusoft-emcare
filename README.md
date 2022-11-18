@@ -13,7 +13,7 @@
     Em Care have dependencies on KeyCloak Tool, and Google's FHIR SDK.
 ## Configuration
 
-    Em Care have different configuration based on each components which are describe below in [How to Run](#How to Run:) section. 
+    Em Care have different configuration based on each components which are describe below in [How to Run](#how-to-run) section. 
 
 ## Components in Project:
 
@@ -21,7 +21,7 @@
 2. emcare-web: Backend application built using Spring Boot framework and PostgreSQL as its database.
 3. emcare-ui: Web application built using Angular framework.
  
-## How to Run:
+## How to Run
 
 **emcare-web**
 
@@ -71,8 +71,7 @@ To setup KeyCloak for Em Care follow the below steps
     People should get involved and describe key areas you are currently focusing on; e.g., trying to get feedback on features, fixing certain bugs, building important pieces, etc.
 
 ## Additional Information or Links
-# **Em Care Staging application** : https://emcare.argusoft.com
-
-# **KeyCloak Documentation** : https://www.keycloak.org/documentation
-# **IBM Cloud Translation** : https://www.ibm.com/cloud/watson-language-translator
+1. **Em Care Staging application** : https://emcare.argusoft.com
+2. **KeyCloak Documentation** : https://www.keycloak.org/documentation
+3. **IBM Cloud Translation** : https://www.ibm.com/cloud/watson-language-translator
 
