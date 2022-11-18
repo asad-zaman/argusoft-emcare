@@ -45,7 +45,7 @@
  - **Workflow Library**: Currently using to evaluate cql for initialExpression & wip to use it for the plan definition
 
 # Configuration
-    Em Care have different configuration based on each components which are describe below in "How to Run" section. 
+Em Care have different configuration based on each components which are describe below in "How to Run" section. 
 ## How to Run
 #### Steps for running Em Care web
 
@@ -82,7 +82,7 @@
     5. Run "ng serve". (By default server start on 4200 port).
 ***
 # Getting involved
-    People should get involved and describe key areas, we are currently focusing on; e.g., trying to get feedback on features, fixing certain bugs, building important pieces, etc.
+People should get involved and describe key areas, we are currently focusing on; e.g., trying to get feedback on features, fixing certain bugs, building important pieces, etc.
 ***
 # Additional Information or Links
 1. **Em Care Staging application** : https://emcare.argusoft.com
