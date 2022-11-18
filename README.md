@@ -9,18 +9,18 @@
 # Dependencies
 
 Em Care have dependencies on KeyCloak Tool, and Google's FHIR SDK.
-    - **KeyCloak**
-        - **What Is KeyCloak?**
-            KeyCloak is an “Identity and Access Management” tool for the Em Care system.
-        - **Set for configuration and run**
-            1. Download KeyCloak-15.0.2 from https://www.keycloak.org/downloads
-            2. Go to the KeyCloak-15.0.2/standalone/configuration/standalone.xml and change schema or DB credential for your use
+## **KeyCloak**
+### What Is KeyCloak?
+    KeyCloak is an “Identity and Access Management” tool for the Em Care system.
+### Steps for KeyCloak configuration and run
+    1. Download KeyCloak-15.0.2 from https://www.keycloak.org/downloads
+    2. Go to the KeyCloak-15.0.2/standalone/configuration/standalone.xml and change schema or DB credential for your use
 
-            **Run KeyCloak**
-            1. cd bin 
-            2. ./standalone.sh -b 0.0.0.0 -bmanagement 0.0.0.0 -Djboss.socket.binding.port-offset=100 &
-            3. Create an admin user from the keycloak UI
-            4. Set Client secret and admin user info in KeycloakConfig.java file
+#### Run KeyCloak
+    1. cd bin 
+    2. ./standalone.sh -b 0.0.0.0 -bmanagement 0.0.0.0 -Djboss.socket.binding.port-offset=100 &
+    3. Create an admin user from the keycloak UI
+    4. Set Client secret and admin user info in KeycloakConfig.java file
 
 # Configuration
 
