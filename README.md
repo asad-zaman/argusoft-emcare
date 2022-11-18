@@ -14,7 +14,11 @@
 *** 
 # Dependencies
 
-Em Care have dependencies on KeyCloak Tool, IBM(Watson Language Translator), Twilio, and Google's FHIR SDK.
+    Following dependencies are being used in the app:
+    1. KeyCloak(Identity and Access Management)
+    2. IBM(Watson Language Translator)
+    3. Twilio
+    4. Google's FHIR SDK
 ## **KeyCloak(Identity and Access Management)**
 ### Settings up KeyCloak
     1. Download KeyCloak-15.0.2 from https://www.keycloak.org/downloads
