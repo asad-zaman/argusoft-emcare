@@ -14,10 +14,10 @@
 *** 
 # Dependencies
 ###### Following dependencies are being used in the app
-    1. KeyCloak(Identity and Access Management)
-    2. IBM(Watson Language Translator)
-    3. Twilio
-    4. Google's FHIR SDK
+- KeyCloak(Identity and Access Management)
+- IBM(Watson Language Translator)
+- Twilio
+- Google's FHIR SDK
 ## **KeyCloak(Identity and Access Management)**
 ### Setting up KeyCloak
     1. Download KeyCloak-15.0.2 from https://www.keycloak.org/downloads
