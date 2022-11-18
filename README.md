@@ -8,12 +8,12 @@
    - **Status**: This project is in pilot development phase.
    - **Links Staging instances**: https://emcare.argusoft.com
 
-## Dependencies
+# Dependencies
 
     Em Care have dependencies on KeyCloak Tool, and Google's FHIR SDK.
-## Configuration
+# Configuration
 
-    Em Care have different configuration based on each components which are describe below in [How to Run](/how-to-run) section. 
+    Em Care have different configuration based on each components which are describe below in "How to Run" section. 
 
 ## Components in Project:
 
@@ -67,7 +67,7 @@ To setup KeyCloak for Em Care follow the below steps
     4. Run "npm install".
     5. Run "ng serve". (By default server start on 4200 port).
 
-## Getting involved
+# Getting involved
     People should get involved and describe key areas you are currently focusing on; e.g., trying to get feedback on features, fixing certain bugs, building important pieces, etc.
 
 ## Additional Information or Links
