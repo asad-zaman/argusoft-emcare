@@ -13,14 +13,13 @@
 - **emcare-ui**: Web application built using Angular framework.
 *** 
 # Dependencies
-
-    Following dependencies are being used in the app:
+###### Following dependencies are being used in the app
     1. KeyCloak(Identity and Access Management)
     2. IBM(Watson Language Translator)
     3. Twilio
     4. Google's FHIR SDK
 ## **KeyCloak(Identity and Access Management)**
-### Settings up KeyCloak
+### Setting up KeyCloak
     1. Download KeyCloak-15.0.2 from https://www.keycloak.org/downloads
     2. Go to the KeyCloak-15.0.2/standalone/configuration/standalone.xml and change schema or DB credential for your use
     3. cd bin 
@@ -28,14 +27,14 @@
 ***
 
 ## **IBM Watson Language Translator**
-### Settings up IBM
+### Setting up IBM
     1. Go to the https://cloud.ibm.com/login?state=/catalog/services/language-translator and make Sign-in or Sign-up.
     2. Make new service for project
     3. Get access-key from the service console.
 ***
 
 ## **Twilio(SMS Service)**
-### Settings up Twilio
+### Setting up Twilio
     1. Go to the https://www.twilio.com/login and make Sign-in or Sign-Up.
     2. Make New SMS Service for project
     3. Get access-token, ssid, phone-number, and service-id  from the service console.
