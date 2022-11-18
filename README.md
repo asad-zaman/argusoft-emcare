@@ -26,13 +26,14 @@ Em Care have dependencies on KeyCloak Tool, IBM(Watson Language Translator), Twi
     IBM Watson® Language Translator translates text from one language to another.
 ### Steps for IBM configuration
     1. Go to the https://cloud.ibm.com/login?state=/catalog/services/language-translator and make Sign-in or Sign-up.
-    2. Make New Service for project
+    2. Make new service for project
     3. Get access-key from the service console.
 ***
 
 ## **Twilio**
 ### What Is Twilio?
-    Twilio is using for global communication. Currently we are using SMS service for Em Care system to communicate with user.
+    Twilio is using for global communication.
+    Currently we are using SMS service for Em Care system to communicate with user.
 ### Steps for Twilio configuration
     1. Go to the https://www.twilio.com/login and make Sign-in or Sign-Up.
     2. Make New SMS Service for project
@@ -87,4 +88,5 @@ Em Care have dependencies on KeyCloak Tool, IBM(Watson Language Translator), Twi
 1. **Em Care Staging application** : https://emcare.argusoft.com
 2. **KeyCloak Documentation** : https://www.keycloak.org/documentation
 3. **IBM Cloud Translation** : https://www.ibm.com/cloud/watson-language-translator
+3. **Twilio** : https://www.twilio.com/docs/sms
 
