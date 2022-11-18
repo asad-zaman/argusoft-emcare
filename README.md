@@ -4,16 +4,16 @@
 
  # Other things to include:
 
-**Technology stack**: Java,Spring boot,Spring JPA, Hibernate, Angular 13 Framework, HTML/CSS TypeScript.
-**Status**: This project is in pilot development phase.
-**Links Staging instances**: https://emcare.argusoft.com
+   - **Technology stack**: Java,Spring boot,Spring JPA, Hibernate, Angular 13 Framework, HTML/CSS TypeScript.
+   - **Status**: This project is in pilot development phase.
+   - **Links Staging instances**: https://emcare.argusoft.com
 
 ## Dependencies
 
     Em Care have dependencies on KeyCloak Tool, and Google's FHIR SDK.
 ## Configuration
 
-    Em Care have different configuration based on each components which are describe below in [How to Run](#how-to-run) section. 
+    Em Care have different configuration based on each components which are describe below in [How to Run](/how-to-run) section. 
 
 ## Components in Project:
 
