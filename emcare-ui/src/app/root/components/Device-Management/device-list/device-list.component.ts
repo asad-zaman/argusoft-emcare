@@ -76,7 +76,14 @@ export class DeviceListComponent implements OnInit {
 
   onIndexChange(event) {
     this.currentPage = event;
-    this.getDevicesByPageIndex(event - 1);
+    if (this.searchString && this.searchString.length >= 1) {
+      this.deviceArr = [];
+      this.deviceManagementService.getDevicesByPageIndex(event - 1, this.searchString).subscribe(res => {
+        this.manipulateResponse(res);
+      });
+    } else {
+      this.getDevicesByPageIndex(event - 1);
+    }
   }
 
   editDevice(event, deviceId) {

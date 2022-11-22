@@ -89,7 +89,14 @@ export class OrganizationListComponent implements OnInit {
 
   onIndexChange(event) {
     this.currentPage = event;
-    this.getOrganizationByPageIndexAndSearch(event - 1);
+    if (this.searchString && this.searchString.length >= 1) {
+      this.orgArr = [];
+      this.fhirService.getOrganizationByPageIndexAndSearch(event - 1, this.searchString).subscribe(res => {
+        this.manipulateRes(res);
+      });
+    } else {
+      this.getOrganizationByPageIndexAndSearch(event - 1);
+    }
   }
 
   getOrganizationByPageIndexAndSearch(index) {

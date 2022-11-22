@@ -73,7 +73,14 @@ export class ShowLocationComponent implements OnInit {
     if (this.isLocationFilterOn) {
       this.getLocationsBasedOnFilteredLocationAndPageIndex(event - 1);
     } else {
-      this.getLocationsByPageIndex(event - 1);
+      if (this.searchString && this.searchString.length >= 1) {
+        this.locationArr = [];
+        this.locationService.getLocationsByPageIndex(event - 1, this.searchString).subscribe(res => {
+          this.manipulateResponse(res);
+        });
+      } else {
+        this.getLocationsByPageIndex(event - 1);
+      }
     }
   }
 
