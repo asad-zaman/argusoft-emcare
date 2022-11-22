@@ -8,10 +8,10 @@
 ***
 # Components in Project:
 
-- **emcare-android-ui**: An android native application built with the help of Google's FHIR SDK.
-- **emcare-web**: Backend application built using Spring Boot framework and PostgreSQL as its database.
-- **emcare-ui**: Web application built using Angular framework.
-*** 
+- **emcare-android-ui**: An android native application built with the help of Google's FHIR SDK. 
+- **emcare-web**: Backend application built using Spring Boot framework and PostgreSQL as its database. [(Read Me)](/emcare-web/backend.md)
+- **emcare-ui**: Web application built using Angular framework. [(Read Me)](/emcare-ui/front-end.md)
+<!-- *** 
 # Dependencies
 ###### Following dependencies are being used in the app
 - KeyCloak(Identity and Access Management)
@@ -80,13 +80,13 @@ Em Care have different configuration based on each components which are describe
 3. Go to the directory emcare-ui/ .
 4. Run "npm install".
 5. Run "ng serve". (By default server start on 4200 port).
-***
+*** -->
 # Getting involved
 People should get involved and describe key areas, we are currently focusing on; e.g., trying to get feedback on features, fixing certain bugs, building important pieces, etc.
 ***
-# Additional Information or Links
+<!-- # Additional Information or Links
 1. **Em Care Staging application** : https://emcare.argusoft.com
 2. **KeyCloak Documentation** : https://www.keycloak.org/documentation
 3. **IBM Cloud Translation** : https://www.ibm.com/cloud/watson-language-translator
-3. **Twilio** : https://www.twilio.com/docs/sms
+3. **Twilio** : https://www.twilio.com/docs/sms -->
 
