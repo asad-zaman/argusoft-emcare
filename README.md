@@ -9,8 +9,8 @@
 # Components in Project:
 
 - **emcare-android-ui**: An android native application built with the help of Google's FHIR SDK. 
-- **emcare-web**: Backend application built using Spring Boot framework and PostgreSQL as its database. [(Read Me)](/emcare-web/backend.md)
-- **emcare-ui**: Web application built using Angular framework. [(Read Me)](/emcare-ui/front-end.md)
+- **emcare-web**: Backend application built using Spring Boot framework and PostgreSQL as its database. [(README.md)](/emcare-web/backend.md)
+- **emcare-ui**: Web application built using Angular framework. [(README.md)](/emcare-ui/front-end.md)
 <!-- *** 
 # Dependencies
 ###### Following dependencies are being used in the app
