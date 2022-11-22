@@ -44,10 +44,10 @@ public class AdminSettingServiceImpl implements AdminSettingService {
     public Settings updateAdminSettings(SettingDto settingDto) {
         try {
             Settings settings = new Settings();
-            settings.setId(settings.getId());
-            settings.setName(settings.getName());
-            settings.setKey(settings.getKey());
-            settings.setValue(settings.getValue());
+            settings.setId(settingDto.getId());
+            settings.setName(settingDto.getName());
+            settings.setKey(settingDto.getKey());
+            settings.setValue(settingDto.getValue());
             switch (settings.getKey()) {
                 case CommonConstant.SETTING_TYPE_REGISTRATION_EMAIL_AS_USERNAME:
                     updateRegistrationEmailAsUsername(settings.getValue());
