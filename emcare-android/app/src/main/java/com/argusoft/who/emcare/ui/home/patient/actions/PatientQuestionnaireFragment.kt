@@ -38,7 +38,7 @@ class PatientQuestionnaireFragment : BaseFragment<FragmentPatientQuestionnaireBi
             homeViewModel.getQuestionnaireWithQR(
                 it,
                 requireArguments().getString(INTENT_EXTRA_PATIENT_ID)!!,
-                requireArguments().getString(INTENT_EXTRA_ENCOUNTER_ID)
+                requireArguments().getString(INTENT_EXTRA_ENCOUNTER_ID)!!
             )
         }
 
