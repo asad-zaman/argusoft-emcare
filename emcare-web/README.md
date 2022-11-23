@@ -4,43 +4,46 @@
 
  - **Technology stack**: Java, Spring boot, Spring JPA, Spring Hibernate, and PostgreSQL.
 
+ - This project contains the web (backend) module of Em Care. 
+
 # Dependencies
 
-###### Following dependencies are being used in the app
-- KeyCloak(Identity and Access Management)
-- IBM(Watson Language Translator)
-- Twilio
+###### Following are the dependencies,being used in the app:
+- KeyCloak(for Identity and Access Management)
+- IBM Watson (for Internationalisation)
+- Twilio (for SMS services)
 ***
 
 ## **KeyCloak(Identity and Access Management)**
 ### Setting up KeyCloak
 1. Download KeyCloak-15.0.2 from https://www.keycloak.org/downloads
-2. Go to the KeyCloak-15.0.2/standalone/configuration/standalone.xml and change schema or DB credential for your use
-3. cd bin 
-4. ./standalone.sh -b 0.0.0.0 -bmanagement 0.0.0.0 -Djboss.socket.binding.port-offset=100 &
+2. Extract the downloaded zip file
+3. Go to folder KeyCloak-15.0.2/standalone/configuration/standalone.xml for changing the database to use. If you want to use the default one, ignore this step.
+4. Go to "bin" folder.
+5. Run command "./standalone.sh -b 0.0.0.0 -bmanagement 0.0.0.0 -Djboss.socket.binding.port-offset=100 &" - this shall start the KeyCloak server in a background process.
 
 ## **IBM Watson Language Translator**
-### Setting up IBM
-1. Go to the https://cloud.ibm.com/login?state=/catalog/services/language-translator and make Sign-in or Sign-up.
-2. Make new service for project
-3. Get access-key from the service console.
+### Setting up IBM Watson Language Translator
+1. Go to the https://cloud.ibm.com/login?state=/catalog/services/language-translator and Sign-in/ Sign-up.
+2. Create a new service for your project
+3. Get access-key from the service console. (access-key to be used in steps below)
 
 ## **Twilio(SMS Service)**
 ### Setting up Twilio
 1. Go to the https://www.twilio.com/login and make Sign-in or Sign-Up.
 2. Make New SMS Service for project
-3. Get access-token, ssid, phone-number, and service-id  from the service console.
+3. Get access-token, ssid, phone-number, and service-id  from the service console. (to be used in the steps below)
 
 ***
 
 ## How to Run
 #### Steps for running Em Care web
 
-        1. Go to emcare-web/ directory
+        1. Go to folder emcare-web/ 
         2. Create an admin user from the keycloak UI (http://server-ip:port/auth/)
         3. Get access-key from the IBM service console. (https://cloud.ibm.com/login?state=/catalog/services/language-translator)
         4. Get access-token, ssid, phone-number, and service-id  from the twilio service console. (https://www.twilio.com/login)
-        5. Set KeyCloak Client secret and admin user info in KeycloakConfig.java file (emcare-web/src/main/java/com/argusoft/who/emcare/web/config/KeyCloakConfig.java)(Ignore if you done before)
+        5. Set KeyCloak Client secret and admin user info in KeycloakConfig.java file (emcare-web/src/main/java/com/argusoft/who/emcare/web/config/KeyCloakConfig.java) (Ignore if you have done it before)
         6. Run command "mvn clean install"
         7. Go to "/target" folder
         8. Run "java -jar emcare-web.jar"
