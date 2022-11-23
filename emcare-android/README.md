@@ -1,60 +1,32 @@
-**Prerequisite**
-=============
-*  Android Studio 4.1.2
-*  Android Version 6.0 to 10.0
-*  Kotlin Language
+# Em Care Android
 
-**Setup Instruction**
-* Rename package using project name refactor menu
-* Rename App in string.xml file
- 
-**Feature**
-=============
-* MVVM Architecture
-* AndroidX
-* Material Design
-* Dependency Ejection(Koin)
-* Api Calling(Retrofit, Moshi)
-* Local Database(Room)
-* Shared Preference With Encryption(Tink)
-* Image Loading(Glide) 
-* Debugging(Timber) 
-* RunTime Permission(EasyPermission) 
-* Location
-* Kotlin Coroutines
-* ApiViewStateConstraintLayout(CustomView for API state handling)
+**Description:** Em Care is a digital solution that initially aims to improve health outcomes for mothers and children in emergency settings. It will provide decision-support to frontline health workers in emergencies, preserving the fidelity of, and increasing access to WHO clinical guidelines.
 
-**Git Ignore**(https://www.toptal.com/developers/gitignore)
+ - **Technology stack**: Kotlin, Android Studio, Room Database, Retrofit.
 
- 1. Enable runner: Git project setting -> CI/CD expand the Runner section -> Enable for available runner
- 2. Environment variables: Git project setting -> CI/CD expand the environment variables section
-    * ANDROID_SDK_PATH
-    * DEBUG_BUILD_NAME
-    * DEBUG_KEYSTORE_FILE
-    * DEVELOPER_EMAILS
-    * KEYSTORE_FILE
-    * KEYSTORE_PASSWORD
-    * PROJECT_NAME
-    * KEY_ALIAS
-    * KEY_PASSWORD
-    * RELEASE_BUILD_NAME
-    * SEND_OTA_TOKEN
-    * URLOFMM
- 3. Add script file into the project folder with file name ".gitlab-ci.yml" in Project Level
+ # Dependencies
+###### Following dependencies are being used in the app
+- Android FHIR : Engine, Data Capture & Workflow
+***
 
- **Utility**
- =============
- * AlertExt: This class has commonly used extension function for snackbar alerts
- * CalenderExt: This class has commonly used extension function for calender operations
- * ContextExt: This class extension function user for activity context operations like start activity and hide keyboard
- * CustomViewExt: This class used for ApiViewStateConstraintLayout operations
- * DeviceExt: This class used to get device information
- * DialogExt: This class used for the crating different dialogs
- * EditTextExt: This class has commonly used extension function for edittext operations
- * FileUtils: This class used for files operations
- * LifeCycleExt: This class has used for mutable live data observer extension function
- * StringExt: This class used for string operations
- * Utils: This class used for common utility operations
- * ViewExt: This class has commonly used extension function for view operations
+## **Android FHIR**
+### Setting up Android FHIR Local Build
+1. Download latest local build by going to the [(Actions)](https://github.com/parthfloyd/android-fhir/actions) page & clicking on the latest successful build.
+2. In the build page, go to the Artifacts section and download the *maven-repository* and extract it in any folder.
 
- 
+***
+
+## How to Run
+#### Steps for running Em Care Android:
+
+        1. Open the "emcare-android" folder in Android Studio.
+        2. Go to the "./build.gradle" file and on line 30
+        3. Update the url string in url "file:///home/parth/Downloads/maven-repository" with the path to the unzipped maven-repository.
+        4. Run Gradle Sync.
+        5. Build the project.
+        6. Run the project.
+
+# Additional Information or Links
+1. **Android-Fhir Project** : https://github.com/google/android-fhir
+2. **Android-Fhir Forked Repository (EmCare Specific tweaks)** : https://github.com/parthfloyd/android-fhir
+3. **SMART- EmCare** : https://github.com/WorldHealthOrganization/smart-emcare
