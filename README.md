@@ -81,7 +81,12 @@ Em Care have different configuration based on each components which are describe
 5. Run "ng serve". (By default server start on 4200 port).
 *** -->
 # Getting involved
-People should get involved and describe key areas, we are currently focusing on; e.g., trying to get feedback on features, fixing certain bugs, building important pieces, etc.
+
+Currently, the project is in its development mode, with its pilot scheduled in January, 2023. A lot of changes are occuring in many modules on a daily basis. We would like to get suggestions on the existing code in order to improve it and achieve the vision behind the project. 
+
+- **Forking the project** - You can fork the existing repository and use it as it is, or customise the code based on your requirements. 
+- **Contribution** - Currently, this is a read only repository, we are working on establishing protocols for contribution and shall soon open up the repository for the same. You are free to comment on any of the files in case of any suggestions. 
+
 <!-- # Additional Information or Links
 1. **Em Care Staging application** : https://emcare.argusoft.com
 2. **KeyCloak Documentation** : https://www.keycloak.org/documentation
