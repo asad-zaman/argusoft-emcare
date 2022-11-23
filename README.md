@@ -83,7 +83,6 @@ Em Care have different configuration based on each components which are describe
 *** -->
 # Getting involved
 People should get involved and describe key areas, we are currently focusing on; e.g., trying to get feedback on features, fixing certain bugs, building important pieces, etc.
-***
 <!-- # Additional Information or Links
 1. **Em Care Staging application** : https://emcare.argusoft.com
 2. **KeyCloak Documentation** : https://www.keycloak.org/documentation
