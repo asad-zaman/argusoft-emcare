@@ -5,7 +5,6 @@
    - **Technology stack**: Java,Spring boot,Spring JPA, Hibernate, Angular 13 Framework, HTML/CSS, and TypeScript.
    - **Status**: This project is in pilot development phase.
    - **Links Staging instances**: https://emcare.argusoft.com
-***
 # Components in Project:
 
 - **emcare-android**: An android native application built with the help of Google's FHIR SDK.  [(README.md)](/emcare-android/README.md)
