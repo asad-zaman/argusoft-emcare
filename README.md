@@ -84,6 +84,8 @@ Em Care have different configuration based on each components which are describe
 
 Currently, the project is in its development mode, with its pilot scheduled in January, 2023. A lot of changes are occuring in many modules on a daily basis. We would like to get suggestions on the existing code in order to improve it and achieve the vision behind the project. 
 
+In order to get access to the repository, please create an issue with title "Access for Em Care Repository" for the same with your Name, Organisation Name, Email and Purpose defined in the description of the issue. We shall try our best to give access as soon as possible. 
+
 - **Forking the project** - You can fork the existing repository and use it as it is, or customise the code based on your requirements. 
 - **Contribution** - Currently, this is a read only repository, we are working on establishing protocols for contribution and shall soon open up the repository for the same. You are free to comment on any of the files in case of any suggestions. 
 
