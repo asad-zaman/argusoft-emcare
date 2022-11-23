@@ -1,8 +1,10 @@
-# Em Care Android
+# Em Care Android (emcare-android)
 
 **Description:** Em Care is a digital solution that initially aims to improve health outcomes for mothers and children in emergency settings. It will provide decision-support to frontline health workers in emergencies, preserving the fidelity of, and increasing access to WHO clinical guidelines.
 
+ - This module contains the code for Em Care android application. 
  - **Technology stack**: Kotlin, Android Studio, Room Database, Retrofit.
+
 
  # Dependencies
 ###### Following dependencies are being used in the app
