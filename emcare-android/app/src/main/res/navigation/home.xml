@@ -67,5 +67,20 @@
         <action
             android:id="@+id/action_patientProfileFragment_to_patientQuestionnaireFragment"
             app:destination="@id/patientQuestionnaireFragment" />
+        <action
+            android:id="@+id/action_patientProfileFragment_to_previousConsultationQuestionnaireFragment"
+            app:destination="@id/previousConsultationQuestionnaireFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/previousConsultationQuestionnaireFragment"
+        android:name="com.argusoft.who.emcare.ui.home.patient.profile.PreviousConsultationQuestionnaireFragment"
+        tools:layout="@layout/fragment_previous_consultation_questionnaire">
+        <action
+            android:id="@+id/action_previousConsultationQuestionnaireFragment_to_patientProfileFragment"
+            app:destination="@id/patientProfileFragment"/>
+        <action
+            android:id="@+id/action_previousConsultationQuestionnaireFragment_to_previousConsultationQuestionnaireFragment"
+            app:destination="@id/previousConsultationQuestionnaireFragment"/>
     </fragment>
 </navigation>

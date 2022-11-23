@@ -60,8 +60,12 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
         binding.drawerLayout.closeDrawer(GravityCompat.END)
     }
 
-    fun setupSidepane() {
+    fun setupSidepane(isPreviousConsultation: Boolean = false) {
+        if(isPreviousConsultation) {
+            sidepaneAdapter = SidepaneAdapter(onClickListener = this, navHostFragment = navHostFragment,isPreviousConsultation = true)
+        }
         binding.sidepaneRecyclerView.adapter = sidepaneAdapter
+
     }
 
     override fun initListener() {
