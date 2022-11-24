@@ -6,8 +6,11 @@ This project contains the front-end (user interface for admins) related code imp
 
  - **Technology stack**: Angular 13, TypeScript.
 
+# Components in Project:
+- **Questionnaire Builder UI**: This component use for build questionnaire.  [(README.md)](/emcare-ui//src/app/shared/module/structor/README.md)
+
 # Dependencies
-- All the dependencies are mentioned in the "package.json" file.
+- All the other dependencies are mentioned in the "package.json" file.
 
 ***
 

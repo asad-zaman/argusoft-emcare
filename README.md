@@ -95,3 +95,11 @@ In order to get access to the repository, please create an issue with title "Acc
 3. **IBM Cloud Translation** : https://www.ibm.com/cloud/watson-language-translator
 3. **Twilio** : https://www.twilio.com/docs/sms -->
 
+# Copyright
+Copyright The Em Care Contributors.
+
+# Terms of Use and License Agreement
+Em Care is available under the [(Apache License)](LICENSE).
+
+Except as contained in this notice, the name of a copyright holder shall not be used in advertising or otherwise to promote the sale, use or other dealings in these Data Files or Software without prior written authorization of the copyright holder.
+
