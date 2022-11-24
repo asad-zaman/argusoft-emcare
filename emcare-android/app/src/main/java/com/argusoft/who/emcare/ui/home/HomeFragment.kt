@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.argusoft.who.emcare.R
+import com.argusoft.who.emcare.data.remote.ApiResponse
 import com.argusoft.who.emcare.databinding.FragmentHomeBinding
 import com.argusoft.who.emcare.sync.SyncViewModel
 import com.argusoft.who.emcare.ui.common.base.BaseFragment
@@ -84,10 +85,9 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(){
                     duration = Snackbar.LENGTH_INDEFINITE,
                     isError = false
                 )
-            }
-            apiResponse.handleListApiView(binding.rootLayout) {
-                when (it) {
-                    is State.Finished -> {
+            }.whenResult(
+                onSuccess = {
+                    apiResponse.handleListApiView(binding.rootLayout) {
                         requireContext().showSnackBar(
                             view = binding.rootLayout,
                             message = getString(R.string.msg_sync_successfully),
@@ -95,7 +95,9 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(){
                             isError = false
                         )
                     }
-                    is State.Failed -> {
+                },
+                onFailed = {
+                    apiResponse.handleListApiView(binding.rootLayout) {
                         requireContext().showSnackBar(
                             view = binding.rootLayout,
                             message = getString(R.string.msg_sync_failed),
@@ -104,7 +106,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(){
                         )
                     }
                 }
-            }
+            )
         }
     }
 }

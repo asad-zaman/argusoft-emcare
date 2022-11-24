@@ -41,6 +41,7 @@ class SyncViewModel @Inject constructor(
             val emCareResult = EmCareSync.oneTimeSync(api, database, preference, listOf(SyncType.FACILITY, SyncType.CONSULTATION_FLOW_ITEM))
             if (fhirResult is Result.Success || emCareResult is SyncResult.Success) {
                 _syncState.value = (fhirResult as? Result.Success)?.let { ApiResponse.Success(State.Finished(it)) }
+                _syncState.value = null
             } else {
                 _syncState.value = (fhirResult as? Result.Error)?.let { ApiResponse.ApiError(apiErrorMessageResId = R.string.msg_sync_failed) }
             }

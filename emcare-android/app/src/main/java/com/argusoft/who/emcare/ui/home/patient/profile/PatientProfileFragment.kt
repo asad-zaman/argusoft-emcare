@@ -100,11 +100,9 @@ class PatientProfileFragment : BaseFragment<FragmentPatientProfileBinding>() {
                     duration = Snackbar.LENGTH_INDEFINITE,
                     isError = false
                 )
-            }
-
-            apiResponse.handleListApiView(binding.patientProfileLayout) {
-                when (it) {
-                    is State.Finished -> {
+            }.whenResult(
+                onSuccess = {
+                    apiResponse.handleListApiView(binding.patientProfileLayout) {
                         requireContext().showSnackBar(
                             view = binding.patientProfileLayout,
                             message = getString(R.string.msg_sync_successfully),
@@ -112,7 +110,9 @@ class PatientProfileFragment : BaseFragment<FragmentPatientProfileBinding>() {
                             isError = false
                         )
                     }
-                    is State.Failed -> {
+                },
+                onFailed = {
+                    apiResponse.handleListApiView(binding.patientProfileLayout) {
                         requireContext().showSnackBar(
                             view = binding.patientProfileLayout,
                             message = getString(R.string.msg_sync_failed),
@@ -121,8 +121,7 @@ class PatientProfileFragment : BaseFragment<FragmentPatientProfileBinding>() {
                         )
                     }
                 }
-            }
-
+            )
         }
 
         observeNotNull(patientProfileViewModel.activeConsultations) { apiResponse ->
