@@ -2,7 +2,7 @@
 
 **Description:** Em Care is a digital solution that initially aims to improve health outcomes for mothers and children in emergency settings. It will provide decision-support to frontline health workers in emergencies, preserving the fidelity of, and increasing access to WHO clinical guidelines.
 
-This project contains the front-end (user interface for admins) related code implemented in the Angular framework. 
+This project contains the front-end (user interface for admins) related code implemented in the React framework. 
 
  - **Technology stack**: React JS, JavaScript.
 
