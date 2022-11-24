@@ -4,7 +4,7 @@
 
 This project contains the front-end (user interface for admins) related code implemented in the Angular framework. 
 
- - **Technology stack**: Angular 13, TypeScript.
+ - **Technology stack**: React JS, JavaScript.
 
 # Dependencies
 - All the dependencies are mentioned in the "package.json" file.
