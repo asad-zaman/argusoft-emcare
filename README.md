@@ -99,7 +99,7 @@ In order to get access to the repository, please create an issue with title "Acc
 Copyright The Em Care Contributors.
 
 # Terms of Use and License Agreement
-Em Care is available under the [(Apache License)](LICENSE).
+Em Care is available under the [Apache License 2.0](LICENSE).
 
 Except as contained in this notice, the name of a copyright holder shall not be used in advertising or otherwise to promote the sale, use or other dealings in these Data Files or Software without prior written authorization of the copyright holder.
 
