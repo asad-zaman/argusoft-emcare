@@ -37,13 +37,17 @@ class HomeAdapter(
             itemView.setOnClickListener {
                 it.navigate(R.id.action_homeFragment_to_patientProfileFragment) {
                     putString(INTENT_EXTRA_PATIENT_ID,list[bindingAdapterPosition]?.resourceId)
-                    putString(INTENT_EXTRA_PATIENT_NAME,if(list[bindingAdapterPosition]?.name.isNullOrEmpty()) list[bindingAdapterPosition]?.identifier else list[bindingAdapterPosition]?.name)
+                    putString(INTENT_EXTRA_PATIENT_NAME,if(list[bindingAdapterPosition]?.name.isNullOrEmpty()) (if (list[bindingAdapterPosition]?.identifier.isNullOrEmpty()) list[bindingAdapterPosition]?.resourceId else list[bindingAdapterPosition]?.identifier) else list[bindingAdapterPosition]?.name)
                     putString(INTENT_EXTRA_PATIENT_DOB,list[bindingAdapterPosition]?.dob)
                 }
             }
         }
         fun bind(album: PatientItem) = with(album) {
-            binding.nameTextView.setText(name.orEmpty { identifier ?:"NA #${resourceId?.takeLast(9)}"})
+            var patientName = name.orEmpty { identifier ?:"#${resourceId?.take(8)}"}
+            if(patientName.isEmpty()) {
+                patientName = "#${resourceId?.take(8)}"
+            }
+            binding.nameTextView.setText(patientName)
             binding.idTextView.text = binding.root.context.getString(R.string.label_id_with_colon, resourceId?.takeLast(3))
             if(!gender.isNullOrEmpty()){
                 if(gender.equals("male" ,false))

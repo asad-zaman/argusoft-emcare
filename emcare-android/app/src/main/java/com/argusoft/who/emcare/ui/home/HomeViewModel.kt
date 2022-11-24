@@ -150,7 +150,7 @@ class HomeViewModel @Inject constructor(
                         if (patientItem != null) {
                             consultationsArrayList.add(
                                 ConsultationItemData(
-                                    name = patientItem.nameFirstRep.nameAsSingleString.orEmpty { patientItem.identifierFirstRep.value ?:"NA #${patientItem.id?.takeLast(9)}"},
+                                    name = patientItem.nameFirstRep.nameAsSingleString.orEmpty { patientItem.identifierFirstRep.value ?:"#${patientItem.id?.takeLast(9)}"},
                                     gender = patientItem.genderElement?.valueAsString,
                                     identifier = patientItem.identifierFirstRep.value ,
                                     dateOfBirth = patientItem.birthDateElement.valueAsString ?: "Not Provided",

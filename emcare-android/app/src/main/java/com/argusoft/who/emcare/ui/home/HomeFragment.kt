@@ -11,6 +11,7 @@ import com.argusoft.who.emcare.utils.extention.*
 import com.argusoft.who.emcare.utils.glide.GlideApp
 import com.argusoft.who.emcare.utils.glide.GlideRequests
 import com.google.android.fhir.sync.State
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -74,23 +75,36 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(){
     }
 
     override fun initObserver() {
-        observeNotNull(syncViewModel.syncState) {
-            when (it) {
-                is State.Started -> {
-                    val message = getString(R.string.msg_sync_started)
-                    requireContext().showToast(message = message)
-                }
-                is State.Finished -> {
-                    val message = getString(R.string.msg_sync_successfully)
-                    homeViewModel.loadLibraries()
-                    requireContext().showToast(message = message)
-                }
-                is State.Failed -> {
-                    val message = getString(R.string.msg_sync_failed)
-                    requireContext().showToast(message = message)
+        observeNotNull(syncViewModel.syncState) { apiResponse ->
+            apiResponse.whenLoading {
+                binding.rootLayout.showHorizontalProgress()
+                requireContext().showSnackBar(
+                    view = binding.rootLayout,
+                    message = getString(R.string.msg_sync_started),
+                    duration = Snackbar.LENGTH_INDEFINITE,
+                    isError = false
+                )
+            }
+            apiResponse.handleListApiView(binding.rootLayout) {
+                when (it) {
+                    is State.Finished -> {
+                        requireContext().showSnackBar(
+                            view = binding.rootLayout,
+                            message = getString(R.string.msg_sync_successfully),
+                            duration = Snackbar.LENGTH_SHORT,
+                            isError = false
+                        )
+                    }
+                    is State.Failed -> {
+                        requireContext().showSnackBar(
+                            view = binding.rootLayout,
+                            message = getString(R.string.msg_sync_failed),
+                            duration = Snackbar.LENGTH_SHORT,
+                            isError = true
+                        )
+                    }
                 }
             }
         }
     }
-
 }

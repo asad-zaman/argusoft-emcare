@@ -13,6 +13,7 @@ import com.argusoft.who.emcare.ui.common.base.BaseFragment
 import com.argusoft.who.emcare.ui.home.HomeActivity
 import com.argusoft.who.emcare.utils.extention.*
 import com.google.android.fhir.sync.State
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
 import java.util.*
@@ -90,21 +91,38 @@ class PatientProfileFragment : BaseFragment<FragmentPatientProfileBinding>() {
     }
 
     override fun initObserver() {
-        observeNotNull(syncViewModel.syncState) {
-            when (it) {
-                is State.Started -> {
-                    val message = getString(R.string.msg_sync_started)
-                    requireContext().showToast(message = message)
-                }
-                is State.Finished -> {
-                    val message = getString(R.string.msg_sync_successfully)
-                    requireContext().showToast(message = message)
-                }
-                is State.Failed -> {
-                    val message = getString(R.string.msg_sync_failed)
-                    requireContext().showToast(message = message)
+        observeNotNull(syncViewModel.syncState) { apiResponse ->
+            apiResponse.whenLoading {
+                binding.patientProfileLayout.showHorizontalProgress()
+                requireContext().showSnackBar(
+                    view = binding.patientProfileLayout,
+                    message = getString(R.string.msg_sync_started),
+                    duration = Snackbar.LENGTH_INDEFINITE,
+                    isError = false
+                )
+            }
+
+            apiResponse.handleListApiView(binding.patientProfileLayout) {
+                when (it) {
+                    is State.Finished -> {
+                        requireContext().showSnackBar(
+                            view = binding.patientProfileLayout,
+                            message = getString(R.string.msg_sync_successfully),
+                            duration = Snackbar.LENGTH_SHORT,
+                            isError = false
+                        )
+                    }
+                    is State.Failed -> {
+                        requireContext().showSnackBar(
+                            view = binding.patientProfileLayout,
+                            message = getString(R.string.msg_sync_failed),
+                            duration = Snackbar.LENGTH_SHORT,
+                            isError = true
+                        )
+                    }
                 }
             }
+
         }
 
         observeNotNull(patientProfileViewModel.activeConsultations) { apiResponse ->

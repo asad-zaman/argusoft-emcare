@@ -122,7 +122,7 @@ class PatientQuestionnaireFragment : BaseFragment<FragmentPatientQuestionnaireBi
         observeNotNull(homeViewModel.patient) { apiResponse ->
             apiResponse.whenSuccess { patientItem ->
                 binding.nameTextView.text = patientItem.nameFirstRep.nameAsSingleString.orEmpty {
-                    patientItem.identifierFirstRep.value ?: "NA #${patientItem.id?.takeLast(9)}"
+                    patientItem.identifierFirstRep.value ?: "#${patientItem.id?.take(9)}"
                 }
                 val dateOfBirth = patientItem.birthDateElement.valueAsString
                 if(dateOfBirth != null && dateOfBirth.isNotBlank()){

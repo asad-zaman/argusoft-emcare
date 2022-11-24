@@ -5,9 +5,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.data.local.database.Database
 import com.argusoft.who.emcare.data.local.pref.Preference
 import com.argusoft.who.emcare.data.remote.Api
+import com.argusoft.who.emcare.data.remote.ApiResponse
 import com.google.android.fhir.FhirEngine
 import com.google.android.fhir.sync.*
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,11 +25,11 @@ class SyncViewModel @Inject constructor(
     private val applicationContext: Application
 ): ViewModel(){
 
-    private val _syncState = MutableLiveData<State>()
-    val syncState: LiveData<State> = _syncState
+    private val _syncState = MutableLiveData<ApiResponse<State>>()
+    val syncState: LiveData<ApiResponse<State>> = _syncState
 
     fun syncPatients() {
-        _syncState.value = State.Started
+        _syncState.value = ApiResponse.Loading(false)
         viewModelScope.launch {
             val fhirResult = Sync.oneTimeSync(
                 applicationContext,
@@ -38,9 +40,9 @@ class SyncViewModel @Inject constructor(
             )
             val emCareResult = EmCareSync.oneTimeSync(api, database, preference, listOf(SyncType.FACILITY, SyncType.CONSULTATION_FLOW_ITEM))
             if (fhirResult is Result.Success || emCareResult is SyncResult.Success) {
-                _syncState.value = (fhirResult as? Result.Success)?.let { State.Finished(it) }
+                _syncState.value = (fhirResult as? Result.Success)?.let { ApiResponse.Success(State.Finished(it)) }
             } else {
-                _syncState.value = (fhirResult as? Result.Error)?.let { State.Failed(it) }
+                _syncState.value = (fhirResult as? Result.Error)?.let { ApiResponse.ApiError(apiErrorMessageResId = R.string.msg_sync_failed) }
             }
         }
     }
