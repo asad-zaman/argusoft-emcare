@@ -64,7 +64,6 @@ class PatientRepository @Inject constructor(
                 )
                 operation = Operation.OR
             }
-            sort(Patient.GIVEN, Order.ASCENDING)
             count = 100
             from = 0
         }.filter {
