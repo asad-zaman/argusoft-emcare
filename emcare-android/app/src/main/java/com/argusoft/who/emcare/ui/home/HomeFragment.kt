@@ -85,28 +85,27 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(){
                     duration = Snackbar.LENGTH_INDEFINITE,
                     isError = false
                 )
-            }.whenResult(
-                onSuccess = {
-                    apiResponse.handleListApiView(binding.rootLayout) {
-                        requireContext().showSnackBar(
-                            view = binding.rootLayout,
-                            message = getString(R.string.msg_sync_successfully),
-                            duration = Snackbar.LENGTH_SHORT,
-                            isError = false
-                        )
-                    }
-                },
-                onFailed = {
-                    apiResponse.handleListApiView(binding.rootLayout) {
-                        requireContext().showSnackBar(
-                            view = binding.rootLayout,
-                            message = getString(R.string.msg_sync_failed),
-                            duration = Snackbar.LENGTH_SHORT,
-                            isError = true
-                        )
-                    }
+            }
+            apiResponse.whenFailed {
+                apiResponse.handleListApiView(binding.rootLayout) {
+                    requireContext().showSnackBar(
+                        view = binding.rootLayout,
+                        message = getString(R.string.msg_sync_failed),
+                        duration = Snackbar.LENGTH_SHORT,
+                        isError = true
+                    )
                 }
-            )
+            }
+            apiResponse.whenSuccess {
+                apiResponse.handleListApiView(binding.rootLayout) {
+                    requireContext().showSnackBar(
+                        view = binding.rootLayout,
+                        message = getString(R.string.msg_sync_successfully),
+                        duration = Snackbar.LENGTH_SHORT,
+                        isError = false
+                    )
+                }
+            }
         }
     }
 }

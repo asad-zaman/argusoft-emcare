@@ -52,7 +52,10 @@
         tools:layout="@layout/fragment_patient_questionnaire" >
         <action
             android:id="@+id/action_patientQuestionnaireFragment_to_patientQuestionnaireFragment"
-            app:destination="@id/patientQuestionnaireFragment" />
+            app:popUpToInclusive="true"
+            app:popUpTo="@id/patientQuestionnaireFragment"
+            app:destination="@id/patientQuestionnaireFragment"
+            />
         <action
             android:id="@+id/action_patientQuestionnaireFragment_to_homeFragment"
             app:popUpToInclusive="true"
