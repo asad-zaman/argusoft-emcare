@@ -1,7 +1,13 @@
 package com.argusoft.who.emcare.ui.home.patient.actions
 
+import android.content.ClipData
+import android.content.Context
+import android.os.Build
+import android.text.ClipboardManager
 import android.view.View
+import android.widget.Toast
 import androidx.activity.addCallback
+import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
@@ -15,7 +21,9 @@ import com.argusoft.who.emcare.ui.home.HomeViewModel
 import com.argusoft.who.emcare.utils.extention.*
 import com.google.android.fhir.datacapture.QuestionnaireFragment
 import dagger.hilt.android.AndroidEntryPoint
+import org.hl7.fhir.r4.model.Bundle
 import java.text.SimpleDateFormat
+
 
 @AndroidEntryPoint
 class PatientQuestionnaireFragment : BaseFragment<FragmentPatientQuestionnaireBinding>() {
@@ -65,6 +73,7 @@ class PatientQuestionnaireFragment : BaseFragment<FragmentPatientQuestionnaireBi
             activity?.alertDialog {
                 setMessage(R.string.msg_exit_consultation)
                 setPositiveButton(R.string.button_yes) { _, _ ->
+                    preference.setSubmittedResource(Bundle())
                     navigate(R.id.action_patientQuestionnaireFragment_to_homeFragment)
                 }
                 setNegativeButton(R.string.button_no) { _, _ -> }
@@ -116,6 +125,28 @@ class PatientQuestionnaireFragment : BaseFragment<FragmentPatientQuestionnaireBi
     override fun initListener() {
         binding.resetQuestionnaireButton.setOnClickListener(this)
         binding.saveDraftQuestionnaireButton.setOnClickListener(this)
+        binding.childImageView.setOnLongClickListener {
+            val submittedResources = preference.getSubmittedResourceAsString()
+            if(submittedResources != null) {
+                val clipboard =
+                    context!!.getSystemService(Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
+                val clip = ClipData.newPlainText("Extracted Resource", preference.getSubmittedResourceAsString())
+                clipboard.setPrimaryClip(clip)
+                context?.showSnackBar(
+                    view = binding.progressLayout,
+                    message = "Resource Copied to Clipboard!",
+                    isError = false
+                )
+            } else {
+                context?.showSnackBar(
+                    view = binding.progressLayout,
+                    message = "No Resource to Copy!",
+                    isError = true
+                )
+            }
+
+            return@setOnLongClickListener true
+        }
     }
 
     override fun initObserver() {

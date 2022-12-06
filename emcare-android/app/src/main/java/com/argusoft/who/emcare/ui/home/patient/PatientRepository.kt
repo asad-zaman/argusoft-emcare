@@ -4,6 +4,7 @@ import android.app.Application
 import com.argusoft.who.emcare.R
 import ca.uhn.fhir.context.FhirContext
 import ca.uhn.fhir.context.FhirVersionEnum
+import com.argusoft.who.emcare.data.local.pref.Preference
 import com.argusoft.who.emcare.data.remote.ApiResponse
 import com.argusoft.who.emcare.ui.common.*
 import com.argusoft.who.emcare.ui.common.model.ConsultationFlowItem
@@ -34,6 +35,7 @@ class PatientRepository @Inject constructor(
     private val fhirEngine: FhirEngine,
     private val application: Application,
     private val consultationFlowRepository: ConsultationFlowRepository,
+    private val preference: Preference
 ) {
 
     private val Z_UTC = "Z[UTC]"
@@ -113,7 +115,8 @@ class PatientRepository @Inject constructor(
                 StructureMapExtractionContext(context = application.applicationContext) { _, _ -> structureMap
                 }
             )
-
+            preference.setSubmittedResource(Bundle().setEntry(mutableListOf(Bundle.BundleEntryComponent()
+                .setResource(questionnaireResponse))))
             saveResourcesFromBundle(extractedBundle, patientId, encounterId, facilityId, consultationFlowItemId)
             //update QuestionnarieResponse in currentConsultation and createNext Consultation
             if(consultationFlowItemId != null) {
@@ -240,6 +243,7 @@ class PatientRepository @Inject constructor(
     }
 
     private suspend fun saveResourcesFromBundle(bundle: Bundle, patientId: String, encounterId: String, facilityId: String, consultationFlowItemId: String?): Boolean {
+        val clipboardBundle = preference.getSubmittedResource() ?: Bundle()
         bundle.entry.forEach { entry ->
             if(entry.hasResource()){
                 val resource = entry.resource
@@ -275,10 +279,17 @@ class PatientRepository @Inject constructor(
                         resource.id = UUID.randomUUID().toString()
                     }
                 }
+                clipboardBundle.addEntry(Bundle.BundleEntryComponent().setResource(resource))
                 fhirEngine.create(resource)
             }
         }
-        return true
+        fhirEngine.get(ResourceType.Encounter, encounterId).apply {
+            clipboardBundle.addEntry(Bundle.BundleEntryComponent().setResource(this))
+            fhirEngine.get(ResourceType.Patient, patientId).apply {
+                preference.setSubmittedResource(clipboardBundle)
+                return true
+            }
+        }
     }
 
     private fun Patient.convertPatientToPatientItem(): PatientItem {

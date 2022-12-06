@@ -1,10 +1,14 @@
 package com.argusoft.who.emcare.data.local.pref
 
+import ca.uhn.fhir.context.FhirContext
+import ca.uhn.fhir.context.FhirVersionEnum
 import com.argusoft.who.emcare.ui.common.model.LoggedInUser
 import com.argusoft.who.emcare.ui.common.model.User
 import com.argusoft.who.emcare.utils.extention.fromJson
 import com.argusoft.who.emcare.utils.extention.orEmpty
 import com.argusoft.who.emcare.utils.extention.toJson
+import org.hl7.fhir.r4.model.Bundle
+import org.hl7.fhir.r4.model.ResourceType
 
 class PreferenceManager(private val sharedPreferences: EncPref) : Preference {
 
@@ -15,7 +19,10 @@ class PreferenceManager(private val sharedPreferences: EncPref) : Preference {
         private const val FACILITY_ID = "FACILITY_ID"
         private const val LOGGED_IN_USER = "LOGGED_IN_USER"
         private const val EMCARE_LAST_SYNC_TIME_STAMP = "EMCARE_LAST_SYNC_TIME_STAMP"
+        private const val SUBMITTED_RESOURCE = "SUBMITTED_RESOURCE"
     }
+
+    val parser = FhirContext.forCached(FhirVersionEnum.R4).newJsonParser()
 
     override fun setLogin() {
         sharedPreferences.putBoolean(IS_LOGIN, true)
@@ -59,6 +66,28 @@ class PreferenceManager(private val sharedPreferences: EncPref) : Preference {
 
     override fun writeLastSyncTimestamp(timestamp: String) {
         sharedPreferences.putString(EMCARE_LAST_SYNC_TIME_STAMP, timestamp)
+    }
+
+    override fun getSubmittedResource(): Bundle? {
+        val submittedResource = sharedPreferences.getString(SUBMITTED_RESOURCE)
+        return if(submittedResource.isNotEmpty()) {
+            parser.parseResource(Bundle::class.java, submittedResource) as Bundle
+        } else {
+            null
+        }
+    }
+
+    override fun getSubmittedResourceAsString(): String? {
+        val submittedResource = getSubmittedResource()
+        return if(submittedResource != null) {
+            parser.encodeResourceToString(submittedResource)
+        } else {
+            null
+        }
+    }
+
+    override fun setSubmittedResource(bundle: Bundle) {
+        sharedPreferences.putString(SUBMITTED_RESOURCE, parser.encodeResourceToString(bundle))
     }
 
     override fun clear() {
