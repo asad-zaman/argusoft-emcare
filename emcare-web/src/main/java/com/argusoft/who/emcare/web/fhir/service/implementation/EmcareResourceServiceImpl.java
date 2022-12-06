@@ -5,16 +5,11 @@ import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.rest.param.DateParam;
 import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.common.dto.PageDto;
-import com.argusoft.who.emcare.web.fhir.dao.ActivityDefinitionResourceRepository;
-import com.argusoft.who.emcare.web.fhir.dao.EmcareResourceRepository;
-import com.argusoft.who.emcare.web.fhir.dao.LocationResourceRepository;
+import com.argusoft.who.emcare.web.fhir.dao.*;
 import com.argusoft.who.emcare.web.fhir.dto.FacilityDto;
 import com.argusoft.who.emcare.web.fhir.dto.PatientDto;
 import com.argusoft.who.emcare.web.fhir.mapper.EmcareResourceMapper;
-import com.argusoft.who.emcare.web.fhir.model.ActivityDefinitionResource;
-import com.argusoft.who.emcare.web.fhir.model.EmcareResource;
-import com.argusoft.who.emcare.web.fhir.model.QuestionnaireMaster;
-import com.argusoft.who.emcare.web.fhir.model.RelatedPersonResource;
+import com.argusoft.who.emcare.web.fhir.model.*;
 import com.argusoft.who.emcare.web.fhir.resourceprovider.QuestionnaireResourceProvider;
 import com.argusoft.who.emcare.web.fhir.service.*;
 import com.argusoft.who.emcare.web.location.dao.LocationMasterDao;
@@ -105,6 +100,15 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
 
     @Autowired
     RelatedPersonResourceService relatedPersonResourceService;
+
+    @Autowired
+    ConditionResourceService conditionResourceService;
+
+    @Autowired
+    EncounterResourceRepository encounterResourceRepository;
+
+    @Autowired
+    ObservationResourceRepository observationResourceRepository;
 
 
     @Override
@@ -248,6 +252,14 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
                     relatedPersonResourceService.saveResource(parser.parseResource(RelatedPerson.class, resourceString));
                 }
                 break;
+            case CommonConstant.CONDITION:
+                Condition condition = conditionResourceService.getResourceById(resourceId);
+                if (condition != null) {
+                    conditionResourceService.updateConditionResource(resource.getIdElement(), parser.parseResource(Condition.class, resourceString));
+                } else {
+                    conditionResourceService.saveResource(parser.parseResource(Condition.class, resourceString));
+                }
+                break;
             case CommonConstant.STRUCTURE_MAP:
                 StructureMap structureMap = structureMapResourceService.getResourceById(resourceId);
                 if (structureMap != null) {
@@ -298,9 +310,9 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
                 RelatedPerson caregiver = relatedPersonResourceService.getResourceById(patientDto.getCaregiver());
 //                EmcareResource caregiverResource = findByResourceId(patientDto.getCaregiver());
 //                RelatedPerson caregiver = parser.parseResource(RelatedPerson.class, caregiverResource.getText());
-                if(caregiver != null){
+                if (caregiver != null) {
                     patientDto.setCaregiver(caregiver.getNameFirstRep().getGiven().get(0) + " " + caregiver.getNameFirstRep().getFamily());
-                }else{
+                } else {
                     patientDto.setCaregiver(null);
                 }
             }
@@ -373,9 +385,9 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
                 RelatedPerson caregiver = relatedPersonResourceService.getResourceById(patientDto.getCaregiver());
 //                EmcareResource caregiverResource = findByResourceId(patientDto.getCaregiver());
 //                RelatedPerson caregiver = parser.parseResource(RelatedPerson.class, caregiverResource.getText());
-                if(caregiver != null){
+                if (caregiver != null) {
                     patientDto.setCaregiver(caregiver.getNameFirstRep().getGiven().get(0) + " " + caregiver.getNameFirstRep().getFamily());
-                }else{
+                } else {
                     patientDto.setCaregiver(null);
                 }
             }
@@ -410,10 +422,7 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
         List<UserLocationMapping> userLocationMapping = userLocationMappingRepository.findByUserId(loggedInUserId);
         if (!userLocationMapping.isEmpty()) {
             List<String> assignedFacilityIds = userLocationMapping.stream().map(UserLocationMapping::getFacilityId).collect(Collectors.toList());
-            List<Integer> assignedLocationIds = locationResourceRepository.findAllLocationId(assignedFacilityIds).stream()
-                    .mapToInt(Long::intValue)
-                    .boxed()
-                    .collect(Collectors.toList());
+            List<Integer> assignedLocationIds = locationResourceRepository.findAllLocationId(assignedFacilityIds).stream().mapToInt(Long::intValue).boxed().collect(Collectors.toList());
             List<Integer> childLocations = locationMasterDao.getAllChildLocationIdWithMultipalLocationId(assignedLocationIds);
             List<String> childFacilityIds = locationResourceRepository.findResourceIdIn(childLocations);
             patientsList = patientsList.stream().filter(e -> childFacilityIds.contains(((Identifier) e.getExtension().get(0).getValue()).getValue())).collect(Collectors.toList());
@@ -429,9 +438,9 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
                 RelatedPerson caregiver = relatedPersonResourceService.getResourceById(patientDto.getCaregiver());
 //                EmcareResource caregiverResource = findByResourceId(patientDto.getCaregiver());
 //                RelatedPerson caregiver = parser.parseResource(RelatedPerson.class, caregiverResource.getText());
-                if(caregiver != null){
+                if (caregiver != null) {
                     patientDto.setCaregiver(caregiver.getNameFirstRep().getGiven().get(0) + " " + caregiver.getNameFirstRep().getFamily());
-                }else{
+                } else {
                     patientDto.setCaregiver(null);
                 }
             }
@@ -473,9 +482,9 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
                 RelatedPerson caregiver = relatedPersonResourceService.getResourceById(patientDto.getCaregiver());
 //                EmcareResource caregiverResource = findByResourceId(patientDto.getCaregiver());
 //                RelatedPerson caregiver = parser.parseResource(RelatedPerson.class, caregiverResource.getText());
-                if(caregiver != null){
+                if (caregiver != null) {
                     patientDto.setCaregiver(caregiver.getNameFirstRep().getGiven().get(0) + " " + caregiver.getNameFirstRep().getFamily());
-                }else{
+                } else {
                     patientDto.setCaregiver(null);
                 }
             }
@@ -531,9 +540,9 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
                 RelatedPerson caregiver = relatedPersonResourceService.getResourceById(patientDto.getCaregiver());
 //                EmcareResource caregiverResource = findByResourceId(patientDto.getCaregiver());
 //                RelatedPerson caregiver = parser.parseResource(RelatedPerson.class, caregiverResource.getText());
-                if(caregiver != null){
+                if (caregiver != null) {
                     patientDto.setCaregiver(caregiver.getNameFirstRep().getGiven().get(0) + " " + caregiver.getNameFirstRep().getFamily());
-                }else{
+                } else {
                     patientDto.setCaregiver(null);
                 }
             }
@@ -548,6 +557,38 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
             }
         }
         return patientDtosList;
+    }
+
+    /**
+     * @param theId Patient Id
+     * @return Bundle resource
+     */
+    @Override
+    public Bundle getPatientBundle(String theId) {
+
+        Bundle bundle = new Bundle();
+//        GET PATIENT DETAILS
+        EmcareResource emcareResource = repository.findByResourceId(theId);
+        Patient patient = null;
+        if (emcareResource != null) {
+            patient = parser.parseResource(Patient.class, emcareResource.getText());
+        }
+        bundle.addEntry(new Bundle.BundleEntryComponent().setResource(patient));
+
+//        GET AND ADD ENCOUNTER OF PATIENT IN BUNDLE
+        List<EncounterResource> encounterResources = encounterResourceRepository.findByPatientId(theId);
+        for (EncounterResource encounterResource : encounterResources) {
+            Encounter encounter = parser.parseResource(Encounter.class, encounterResource.getText());
+            bundle.addEntry(new Bundle.BundleEntryComponent().setResource(encounter));
+        }
+
+//        GET AND ADD OBSERVATION OF PATIENT IN BUNDLE
+        List<ObservationResource> observationResources = observationResourceRepository.findBySubjectIdAndSubjectType(theId, "Patient");
+        for (ObservationResource observationResource : observationResources) {
+            Observation observation = parser.parseResource(Observation.class, observationResource.getText());
+            bundle.addEntry(new Bundle.BundleEntryComponent().setResource(observation));
+        }
+        return bundle;
     }
 
     private List<PatientDto> getAllPatientsForChart() {
@@ -572,9 +613,9 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
                 RelatedPerson caregiver = relatedPersonResourceService.getResourceById(patientDto.getCaregiver());
 //                EmcareResource caregiverResource = findByResourceId(patientDto.getCaregiver());
 //                RelatedPerson caregiver = parser.parseResource(RelatedPerson.class, caregiverResource.getText());
-                if(caregiver != null){
-                patientDto.setCaregiver(caregiver.getNameFirstRep().getGiven().get(0) + " " + caregiver.getNameFirstRep().getFamily());
-                }else{
+                if (caregiver != null) {
+                    patientDto.setCaregiver(caregiver.getNameFirstRep().getGiven().get(0) + " " + caregiver.getNameFirstRep().getFamily());
+                } else {
                     patientDto.setCaregiver(null);
                 }
             }

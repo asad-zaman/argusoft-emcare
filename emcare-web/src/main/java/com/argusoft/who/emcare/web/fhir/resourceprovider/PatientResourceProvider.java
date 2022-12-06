@@ -235,4 +235,11 @@ public class PatientResourceProvider implements IResourceProvider {
         return retVal;
 
     }
+
+    @Search()
+    public Bundle getPatientBundle(@RequiredParam(name = CommonConstant.RESOURCE_ID) IdType theId) {
+
+        Bundle bundle = emcareResourceService.getPatientBundle(theId.getIdPart());
+        return bundle;
+    }
 }

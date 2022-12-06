@@ -29,6 +29,7 @@ public class CommonConstant {
     public static final String MEDICATION = "MEDICATION";
     public static final String ACTIVITY_DEFINITION = "ACTIVITYDEFINITION";
     public static final String ENCOUNTER = "ENCOUNTER";
+    public static final String CONDITION = "CONDITION";
     public static final String RELATED_PERSON = "RELATEDPERSON";
     public static final String ORGANIZATION_TYPE_STRING = "ORGANIZATION";
     public static final String PLANDEFINITION_TYPE_STRING = "PLANDEFINITION";
@@ -57,6 +58,9 @@ public class CommonConstant {
     public static final String SETTING_TYPE_WELCOME_EMAIL = "WELCOME_EMAIL";
     public static final String SETTING_TYPE_SEND_CONFIRMATION_EMAIL = "SEND_CONFIRMATION_EMAIL";
     public static final String RESOURCE_LAST_UPDATED_AT = "_lastUpdated";
+    public static final String RESOURCE_TEXT = "_text";
+    public static final String RESOURCE_ID = "_id";
+    public static final String RESOURCE_CONTENT = "_content";
     public static final String FIRST_NAME = "firstName";
     public static final String LAST_NAME = "lastName";
 

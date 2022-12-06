@@ -47,7 +47,7 @@ public class EncounterResourceServiceImpl implements EncounterResourceService {
 
         EncounterResource encounterResource = new EncounterResource();
         encounterResource.setText(locationString);
-        encounterResource.setPatientId(encounter.getSubject().getTypeElement().getId());
+        encounterResource.setPatientId(encounter.getSubject().getIdentifier().getId());
         encounterResource.setResourceId(encounterId);
 
         encounterResourceRepository.save(encounterResource);
@@ -92,13 +92,17 @@ public class EncounterResourceServiceImpl implements EncounterResourceService {
     }
 
     @Override
-    public List<Encounter> getAllEncounter(DateParam theDate) {
+    public List<Encounter> getAllEncounter(DateParam theDate, String searchText) {
         List<Encounter> encounters = new ArrayList<>();
-        List<EncounterResource> encounterResources;
+        List<EncounterResource> encounterResources = new ArrayList<>();
 
-        if (theDate == null) {
-            encounterResources =  encounterResourceRepository.findAll();
-        } else {
+        if (theDate == null && searchText == null) {
+            encounterResources = encounterResourceRepository.findAll();
+        } else if (theDate != null && searchText != null) {
+            encounterResources = encounterResourceRepository.fetchByDateAndText(searchText, theDate.getValue());
+        } else if (theDate == null && searchText != null) {
+            encounterResources = encounterResourceRepository.findByTextContainingIgnoreCase(searchText);
+        } else if (theDate != null && searchText == null) {
             encounterResources = encounterResourceRepository.findByModifiedOnGreaterThanOrCreatedOnGreaterThan(theDate.getValue(), theDate.getValue());
         }
 

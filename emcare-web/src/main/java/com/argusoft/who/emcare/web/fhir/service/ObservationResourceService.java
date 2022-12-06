@@ -15,5 +15,5 @@ public interface ObservationResourceService {
 
     public MethodOutcome updateObservationResource(IdType idType, Observation observation);
 
-    public List<Observation> getAllObservation(DateParam theDate);
+    public List<Observation> getAllObservation(DateParam theDate, String searchText);
 }

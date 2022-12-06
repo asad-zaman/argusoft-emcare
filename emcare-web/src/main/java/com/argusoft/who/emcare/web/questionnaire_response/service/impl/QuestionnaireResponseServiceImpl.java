@@ -3,10 +3,12 @@ package com.argusoft.who.emcare.web.questionnaire_response.service.impl;
 import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.common.dto.PageDto;
 import com.argusoft.who.emcare.web.fhir.dao.EmcareResourceRepository;
+import com.argusoft.who.emcare.web.fhir.dao.EncounterResourceRepository;
 import com.argusoft.who.emcare.web.fhir.dao.LocationResourceRepository;
 import com.argusoft.who.emcare.web.fhir.dto.FacilityDto;
 import com.argusoft.who.emcare.web.fhir.dto.PatientDto;
 import com.argusoft.who.emcare.web.fhir.model.EmcareResource;
+import com.argusoft.who.emcare.web.fhir.model.EncounterResource;
 import com.argusoft.who.emcare.web.fhir.service.EmcareResourceService;
 import com.argusoft.who.emcare.web.location.dao.LocationMasterDao;
 import com.argusoft.who.emcare.web.questionnaire_response.dto.MiniPatient;
@@ -22,10 +24,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -48,6 +47,9 @@ public class QuestionnaireResponseServiceImpl implements QuestionnaireResponseSe
 
     @Autowired
     LocationResourceRepository locationResourceRepository;
+
+    @Autowired
+    EncounterResourceRepository encounterResourceRepository;
 
 
     @Override
@@ -100,8 +102,15 @@ public class QuestionnaireResponseServiceImpl implements QuestionnaireResponseSe
     }
 
     @Override
-    public Map<String, List<QuestionnaireResponse>> getQuestionnaireResponseByPatientId(String patientId) {
+    public Map<String, Object> getQuestionnaireResponseByPatientId(String patientId) {
         List<QuestionnaireResponse> questionnaireResponses = questionnaireResponseRepository.findByPatientId(patientId);
-        return questionnaireResponses.stream().collect(Collectors.groupingBy(QuestionnaireResponse::getEncounterId));
+        Map<String, List<QuestionnaireResponse>> responses = new HashMap<>();
+        responses = questionnaireResponses.stream().collect(Collectors.groupingBy(QuestionnaireResponse::getEncounterId));
+        Map<String, Object> responsesWithEncounter = new HashMap<>();
+        for (String key : responses.keySet()){
+            EncounterResource  encounterResource = encounterResourceRepository.findByResourceId(key);
+            responsesWithEncounter.put(encounterResource.getCreatedOn().toString(),responses.get(key));
+        }
+        return responsesWithEncounter;
     }
 }
