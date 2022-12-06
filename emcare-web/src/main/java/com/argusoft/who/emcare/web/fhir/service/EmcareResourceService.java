@@ -4,6 +4,7 @@ import ca.uhn.fhir.rest.param.DateParam;
 import com.argusoft.who.emcare.web.common.dto.PageDto;
 import com.argusoft.who.emcare.web.fhir.dto.PatientDto;
 import com.argusoft.who.emcare.web.fhir.model.EmcareResource;
+import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Resource;
@@ -38,5 +39,7 @@ public interface EmcareResourceService {
     public Map<String, Integer> getPatientAgeGroupCount();
 
     public List<PatientDto> getPatientDtoByIds(List<String> ids);
+
+    public Bundle getPatientBundle(String theId);
 
 }

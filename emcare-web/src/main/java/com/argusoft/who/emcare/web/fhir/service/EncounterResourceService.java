@@ -15,6 +15,6 @@ public interface EncounterResourceService {
 
     public MethodOutcome updateEncounterResource(IdType idType, Encounter encounter);
 
-    public List<Encounter> getAllEncounter(DateParam theDate);
+    public List<Encounter> getAllEncounter(DateParam theDate, String searchText);
 
 }

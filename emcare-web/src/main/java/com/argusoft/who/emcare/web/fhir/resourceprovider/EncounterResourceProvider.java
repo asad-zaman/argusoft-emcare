@@ -30,6 +30,7 @@ public class EncounterResourceProvider implements IResourceProvider {
     @Autowired
     EncounterResourceService encounterResourceService;
 
+    @Create
     public MethodOutcome createEncounter(@ResourceParam Encounter encounter) {
         encounterResourceService.saveResource(encounter);
         MethodOutcome retVal = new MethodOutcome();
@@ -49,7 +50,9 @@ public class EncounterResourceProvider implements IResourceProvider {
     }
 
     @Search()
-    public List<Encounter> getAllEncounter(@OptionalParam(name = CommonConstant.RESOURCE_LAST_UPDATED_AT) DateParam theDate) {
-        return encounterResourceService.getAllEncounter(theDate);
+    public List<Encounter> getAllEncounter(
+            @OptionalParam(name = CommonConstant.RESOURCE_LAST_UPDATED_AT) DateParam theDate,
+            @OptionalParam(name = CommonConstant.RESOURCE_CONTENT) String searchText) {
+        return encounterResourceService.getAllEncounter(theDate, searchText);
     }
 }
