@@ -56,7 +56,7 @@ class ConsultationAdapter(
             binding.nameTextView.setText(name)
             //Using correct date format
             if(dateOfBirth != null && !dateOfBirth.equals("Not Provided", true) && dateOfBirth.isNotBlank()){
-                val oldFormatDate = SimpleDateFormat("YYYY-MM-DD").parse(dateOfBirth)
+                val oldFormatDate = SimpleDateFormat("yyyy-MM-dd").parse(dateOfBirth)
                 binding.dateOfBirthValueTextView.text = SimpleDateFormat(DATE_FORMAT).format(oldFormatDate!!)
             }
             binding.consultationDateValueTextView.text = dateOfConsultation
