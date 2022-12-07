@@ -283,9 +283,15 @@ class PatientRepository @Inject constructor(
                 fhirEngine.create(resource)
             }
         }
-        fhirEngine.get(ResourceType.Encounter, encounterId).apply {
+        fhirEngine.get(ResourceType.Patient, patientId).apply {
             clipboardBundle.addEntry(Bundle.BundleEntryComponent().setResource(this))
-            fhirEngine.get(ResourceType.Patient, patientId).apply {
+            try {
+                fhirEngine.get(ResourceType.Encounter, patientId).apply {
+                    clipboardBundle.addEntry(Bundle.BundleEntryComponent().setResource(this))
+                    preference.setSubmittedResource(clipboardBundle)
+                    return true
+                }
+            } catch(e: Exception) {
                 preference.setSubmittedResource(clipboardBundle)
                 return true
             }
