@@ -47,7 +47,7 @@ public class EncounterResourceServiceImpl implements EncounterResourceService {
 
         EncounterResource encounterResource = new EncounterResource();
         encounterResource.setText(locationString);
-        encounterResource.setPatientId(encounter.getSubject().getIdentifier().getId());
+        encounterResource.setPatientId(encounter.getSubject().getReference().replace("Patient/",""));
         encounterResource.setResourceId(encounterId);
 
         encounterResourceRepository.save(encounterResource);
