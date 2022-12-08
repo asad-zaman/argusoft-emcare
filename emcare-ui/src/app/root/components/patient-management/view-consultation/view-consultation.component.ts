@@ -23,9 +23,10 @@ export class ViewConsultationComponent implements OnInit {
     4: 'Signs', 5: 'Assessments', 6: 'Classifications',
   }
   iconObjRes = {
-    0: 'REGISTRATION_PATIENT', 1: 'DANGER_SIGNS', 2: 'MEASUREMENTS',
+    0: 'REGISTRATION_ENCOUNTER', 1: 'DANGER_SIGNS', 2: 'MEASUREMENTS',
     3: 'SYMPTOMS', 4: 'SIGNS', 5: 'ASSESSMENTS', 6: 'CLASSIFICATIONS'
   }
+  patientData = {};
 
   constructor(
     private readonly fhirService: FhirService,
@@ -47,6 +48,7 @@ export class ViewConsultationComponent implements OnInit {
     this.editId = routeParams.get('id');
     if (this.editId) {
       this.isEdit = true;
+      this.getPatientDetails();
       this.getPatientEncounter();
     }
   }
@@ -88,50 +90,50 @@ export class ViewConsultationComponent implements OnInit {
   manipulateResAsPerKey(tempkeyData) {
     let tempDataArr = [];
     tempkeyData.forEach(el => {
-      if (el.consultationStage !== 'REGISTRATION_ENCOUNTER') {
-        tempDataArr.push({
-          stage: el.consultationStage,
-          resText: JSON.parse(el.questionnaireResponseText)
-        });
-      }
+      tempDataArr.push({
+        stage: el.consultationStage,
+        resText: el.questionnaireResponseText !== '' ? JSON.parse(el.questionnaireResponseText) : null
+      });
     });
     tempDataArr.forEach(el => {
       let queAnsObj = [];
-      el.resText.item.forEach(itemEl => {
-        if (itemEl.text && itemEl.answer) {
-          if (itemEl.answer[0].valueCoding && itemEl.answer[0].valueCoding.display) {
-            queAnsObj.push({
-              label: itemEl.text,
-              value: itemEl.answer[0].valueCoding.display
-            });
-          } else if (itemEl.answer[0].valueBoolean && itemEl.answer[0].valueBoolean) {
-            queAnsObj.push({
-              label: itemEl.text,
-              value: itemEl.answer[0].valueBoolean
-            });
-          } else if (itemEl.answer[0].valueString && itemEl.answer[0].valueString) {
-            queAnsObj.push({
-              label: itemEl.text,
-              value: itemEl.answer[0].valueString
-            });
-          } else if (itemEl.answer[0].valueDate && itemEl.answer[0].valueDate) {
-            queAnsObj.push({
-              label: itemEl.text,
-              value: itemEl.answer[0].valueDate
-            });
-          } else if (itemEl.answer[0].valueQuantity && itemEl.answer[0].valueQuantity.value) {
-            queAnsObj.push({
-              label: itemEl.text,
-              value: itemEl.answer[0].valueQuantity.value
-            });
-          } else if (itemEl.answer[0].valueInteger && itemEl.answer[0].valueInteger) {
-            queAnsObj.push({
-              label: itemEl.text,
-              value: itemEl.answer[0].valueInteger
-            });
-          } else { }
-        }
-      });
+      if (el.resText) {
+        el.resText.item.forEach(itemEl => {
+          if (itemEl.text && itemEl.answer) {
+            if (itemEl.answer[0].valueCoding && itemEl.answer[0].valueCoding.display) {
+              queAnsObj.push({
+                label: itemEl.text,
+                value: itemEl.answer[0].valueCoding.display
+              });
+            } else if (itemEl.answer[0].valueBoolean && itemEl.answer[0].valueBoolean) {
+              queAnsObj.push({
+                label: itemEl.text,
+                value: itemEl.answer[0].valueBoolean
+              });
+            } else if (itemEl.answer[0].valueString && itemEl.answer[0].valueString) {
+              queAnsObj.push({
+                label: itemEl.text,
+                value: itemEl.answer[0].valueString
+              });
+            } else if (itemEl.answer[0].valueDate && itemEl.answer[0].valueDate) {
+              queAnsObj.push({
+                label: itemEl.text,
+                value: itemEl.answer[0].valueDate
+              });
+            } else if (itemEl.answer[0].valueQuantity && itemEl.answer[0].valueQuantity.value) {
+              queAnsObj.push({
+                label: itemEl.text,
+                value: itemEl.answer[0].valueQuantity.value
+              });
+            } else if (itemEl.answer[0].valueInteger && itemEl.answer[0].valueInteger) {
+              queAnsObj.push({
+                label: itemEl.text,
+                value: itemEl.answer[0].valueInteger
+              });
+            } else { }
+          }
+        });
+      }
       el['queAnsObj'] = queAnsObj;
     });
     for (let key in this.iconObjRes) {
@@ -141,5 +143,19 @@ export class ViewConsultationComponent implements OnInit {
       }
     }
     this.currentObj = this.data[0];
+  }
+
+  getPatientDetails() {
+    this.fhirService.getPatientById(this.editId).subscribe(res => {
+      if (res) {
+        this.patientData['fLetter'] = res['givenName'] ? res['givenName'].substr(0, 1) : null;
+        this.patientData['name'] = `${res['givenName']} ${res['familyName']}`;
+        this.patientData['gender'] = res['gender'];
+        let ageDifMs = Date.now() - new Date(res['dob']).getTime();
+        let ageDate = new Date(ageDifMs);
+        this.patientData['age'] = Math.abs(ageDate.getUTCFullYear() - 1970);
+        console.log(this.patientData);
+      }
+    });
   }
 }
