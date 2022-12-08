@@ -31,6 +31,7 @@ android {
             buildConfigField "String", "KEYCLOAK_BASE_URL", "\"https://emcare.argusoft.com/auth/realms/emcare/protocol/openid-connect/\""
             shrinkResources false
             minifyEnabled false
+            resValue "string", "app_version", "${defaultConfig.versionName}"
         }
         release {
             buildConfigField "String", "BASE_URL", "\"http://192.1.200.197:8080/api/\""
@@ -38,6 +39,7 @@ android {
             buildConfigField "String", "KEYCLOAK_BASE_URL", "\"http://192.1.200.197:8180/auth/realms/emcare/protocol/openid-connect/\""
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            resValue "string", "app_version", "${defaultConfig.versionName}"
         }
     }
 

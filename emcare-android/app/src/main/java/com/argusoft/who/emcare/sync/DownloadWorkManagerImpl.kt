@@ -30,7 +30,7 @@ class DownloadWorkManagerImpl constructor(
   private val preference: Preference
 ): DownloadWorkManager {
   private val resourceTypeList = ResourceType.values().map { it.name }
-  private val urls = LinkedList(listOf("Patient", "Questionnaire", "Encounter", "StructureDefinition", "StructureMap", "ValueSet", "Library", "OperationDefinition", "Observation", "RelatedPerson"))
+  private val urls = LinkedList(listOf("Patient", "Questionnaire", "Encounter", "StructureDefinition", "StructureMap", "ValueSet", "Library", "OperationDefinition", "Observation", "RelatedPerson", "PlanDefinition"))
 
   override suspend fun getNextRequestUrl(context: SyncDownloadContext): String? {
     var url = urls.poll() ?: return null

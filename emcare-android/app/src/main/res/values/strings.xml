@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">EmCare</string>
+    <string name="about_app_name_start">Em</string>
+    <string name="about_app_name_end">Care</string>
 
     <string name="title_patient">Registered Patients</string>
     <string name="title_patient_detail">SamplePatient Detail</string>
@@ -8,6 +10,8 @@
     <string name="title_patient_actions">Patient Actions</string>
     <string name="title_patient_profile">Patient Profile</string>
     <string name="title_home">Em Care</string>
+    <string name="title_about">About</string>
+
     <string name="title_select_location">Select Location</string>
     <string name="menu_about">About Fhir Engine</string>
     <string name="menu_load_resource">Load CQL Resources &amp; Patients</string>
@@ -141,6 +145,7 @@
     <string name="reason_for_consultation"><u>REASON FOR CONSULTATION</u></string>
     <string name="healthcare_worker">Health Care Worker</string>
     <string name="facility_name">Facility Name</string>
+    <string name="about">About</string>
 
 
     <string name="menu_home">Home</string>
@@ -203,5 +208,9 @@
     <string name="label_reset">Reset</string>
     <string name="label_save_as_draft">Save Draft</string>
     <string name="save_as_draft_successful">Save as draft successful!</string>
+
+    <string name="label_last_sync">Last Synced: </string>
+    <string name="label_app_version_about">App Version: </string>
+    <string name="label_bundle_version">Bundle Version: </string>
 
 </resources>

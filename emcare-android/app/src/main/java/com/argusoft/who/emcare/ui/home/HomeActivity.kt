@@ -45,8 +45,8 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
             binding.navView.menu.getItem(0).title = preference.getLoggedInUser()?.firstName
             binding.navView.menu.getItem(1).title = preference.getLoggedInUser()?.facility?.get(0)?.facilityName
         }
-        binding.navView.menu.getItem(2).title = "Logout"
-
+        binding.navView.menu.getItem(2).title = "About"
+        binding.navView.menu.getItem(3).title = "Logout"
         sidepaneAdapter = SidepaneAdapter(onClickListener = this, navHostFragment = navHostFragment)
         setupSidepane()
         homeViewModel.loadLibraries()
@@ -84,6 +84,10 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
                         }
                         setNegativeButton(R.string.button_no) { _, _ -> }
                     }.show()
+                }
+                R.id.action_about -> {
+                    closeDrawer()
+                    navHostFragment.navController.navigate(R.id.action_global_aboutFragment)
                 }
             }
             return@setNavigationItemSelectedListener true

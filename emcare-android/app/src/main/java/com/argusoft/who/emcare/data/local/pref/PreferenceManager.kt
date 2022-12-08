@@ -64,6 +64,10 @@ class PreferenceManager(private val sharedPreferences: EncPref) : Preference {
         return sharedPreferences.getString(LOGGED_IN_USER).orEmpty { "{}" }.fromJson<LoggedInUser>()
     }
 
+    override fun getLastSyncTimestamp(): String {
+        return sharedPreferences.getString(EMCARE_LAST_SYNC_TIME_STAMP)
+    }
+
     override fun writeLastSyncTimestamp(timestamp: String) {
         sharedPreferences.putString(EMCARE_LAST_SYNC_TIME_STAMP, timestamp)
     }

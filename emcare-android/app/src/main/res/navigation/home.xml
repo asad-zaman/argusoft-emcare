@@ -6,9 +6,14 @@
     app:startDestination="@+id/homeFragment">
 
     <action
-        android:id="@+id/action_global_settingsFragment"
-        app:destination="@+id/settingsFragment"
+        android:id="@+id/action_global_aboutFragment"
+        app:destination="@id/aboutFragment"
         app:launchSingleTop="true" />
+
+    <fragment
+        android:id="@+id/aboutFragment"
+        android:name="com.argusoft.who.emcare.ui.home.about.AboutFragment"
+        tools:layout="@layout/fragment_about"/>
 
     <fragment
         android:id="@+id/homeFragment"

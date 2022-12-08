@@ -26,6 +26,8 @@ interface Preference {
 
     fun getLoggedInUser() : LoggedInUser?
 
+    fun getLastSyncTimestamp(): String
+
     fun writeLastSyncTimestamp(timestamp: String)
 
     fun getSubmittedResource(): Bundle?
