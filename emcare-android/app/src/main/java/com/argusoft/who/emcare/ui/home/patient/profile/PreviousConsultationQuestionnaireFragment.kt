@@ -60,9 +60,8 @@ class PreviousConsultationQuestionnaireFragment: BaseFragment<FragmentPreviousCo
                 bundleOf(
                     QuestionnaireFragment.EXTRA_QUESTIONNAIRE_JSON_STRING to cleanedQuestionnairePair.first,
                     QuestionnaireFragment.EXTRA_QUESTIONNAIRE_RESPONSE_JSON_STRING to cleanedQuestionnairePair.second,
-                    QuestionnaireFragment.EXTRA_ENABLE_REVIEW_PAGE to true,
-                    QuestionnaireFragment.EXTRA_SHOW_REVIEW_PAGE_FIRST to true
-                )
+                    QuestionnaireFragment.EXTRA_READ_ONLY to true
+                    )
             childFragmentManager.commit {
                 add(
                     R.id.fragmentContainerView,

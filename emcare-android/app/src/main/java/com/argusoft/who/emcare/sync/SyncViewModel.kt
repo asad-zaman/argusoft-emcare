@@ -40,7 +40,6 @@ class SyncViewModel @Inject constructor(
                 applicationContext,
                 fhirEngine,
                 DownloadWorkManagerImpl(preference),
-                UploadConfiguration(uploadBundleSize = 1000),
                 AcceptRemoteConflictResolver
             )
             val emCareResult = EmCareSync.oneTimeSync(api, database, preference, listOf(SyncType.FACILITY, SyncType.CONSULTATION_FLOW_ITEM))

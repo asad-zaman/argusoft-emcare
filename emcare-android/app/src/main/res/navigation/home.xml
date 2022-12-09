@@ -86,9 +86,13 @@
         tools:layout="@layout/fragment_previous_consultation_questionnaire">
         <action
             android:id="@+id/action_previousConsultationQuestionnaireFragment_to_patientProfileFragment"
+            app:popUpToInclusive="true"
+            app:popUpTo="@id/patientProfileFragment"
             app:destination="@id/patientProfileFragment"/>
         <action
             android:id="@+id/action_previousConsultationQuestionnaireFragment_to_previousConsultationQuestionnaireFragment"
+            app:popUpToInclusive="true"
+            app:popUpTo="@id/previousConsultationQuestionnaireFragment"
             app:destination="@id/previousConsultationQuestionnaireFragment"/>
     </fragment>
 </navigation>
