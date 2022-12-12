@@ -79,4 +79,15 @@ interface Dao {
     @Query("SELECT MAX(consultationDate) from consultationflowitem WHERE patientId=:patientId")
     suspend fun getLastConsultationDateByPatientId(patientId: String): String?
 
+    @Query("DElETE FROM consultationflowitem WHERE encounterId=:encounterId AND consultationDate>(SELECT consultationDate FROM consultationflowitem WHERE id=:consultationFlowItemId)")
+    suspend fun deleteNextConsultations(consultationFlowItemId: String, encounterId: String)
+
+    @Query("SELECT * FROM consultationflowitem WHERE id=:consultationFlowItemId")
+    suspend fun getConsultationFLowItemById(consultationFlowItemId: String): ConsultationFlowItem?
+
+    @Query("SELECT id FROM consultationflowitem WHERE encounterId=:encounterId AND consultationDate>(SELECT consultationDate FROM consultationflowitem WHERE id=:consultationFlowItemId)")
+    suspend fun getNextConsultationFlowItemIds(consultationFlowItemId: String, encounterId: String): List<String>
+
+    @Query("DElETE FROM consultationflowitem WHERE id=:consultationFlowItemId")
+    suspend fun deleteConsultationFlowItemById(consultationFlowItemId: String)
 }

@@ -2,6 +2,7 @@ package com.argusoft.who.emcare.data.local.pref
 
 import com.argusoft.who.emcare.ui.common.model.LoggedInUser
 import com.argusoft.who.emcare.ui.common.model.User
+import org.hl7.fhir.r4.model.Bundle
 
 interface Preference {
 
@@ -25,7 +26,15 @@ interface Preference {
 
     fun getLoggedInUser() : LoggedInUser?
 
+    fun getLastSyncTimestamp(): String
+
     fun writeLastSyncTimestamp(timestamp: String)
+
+    fun getSubmittedResource(): Bundle?
+
+    fun getSubmittedResourceAsString(): String?
+
+    fun setSubmittedResource(bundle: Bundle)
 
     fun clear()
 }

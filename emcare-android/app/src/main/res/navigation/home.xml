@@ -6,9 +6,14 @@
     app:startDestination="@+id/homeFragment">
 
     <action
-        android:id="@+id/action_global_settingsFragment"
-        app:destination="@+id/settingsFragment"
+        android:id="@+id/action_global_aboutFragment"
+        app:destination="@id/aboutFragment"
         app:launchSingleTop="true" />
+
+    <fragment
+        android:id="@+id/aboutFragment"
+        android:name="com.argusoft.who.emcare.ui.home.about.AboutFragment"
+        tools:layout="@layout/fragment_about"/>
 
     <fragment
         android:id="@+id/homeFragment"
@@ -38,6 +43,8 @@
             app:destination="@id/homeFragment" />
         <action
             android:id="@+id/action_addPatientFragment_to_patientQuestionnaireFragment"
+            app:popUpToInclusive="true"
+            app:popUpTo="@id/patientQuestionnaireFragment"
             app:destination="@id/patientQuestionnaireFragment" />
         <action
             android:id="@+id/action_addPatientFragment_to_addPatientFragment"
@@ -50,7 +57,10 @@
         tools:layout="@layout/fragment_patient_questionnaire" >
         <action
             android:id="@+id/action_patientQuestionnaireFragment_to_patientQuestionnaireFragment"
-            app:destination="@id/patientQuestionnaireFragment" />
+            app:popUpToInclusive="true"
+            app:popUpTo="@id/patientQuestionnaireFragment"
+            app:destination="@id/patientQuestionnaireFragment"
+            />
         <action
             android:id="@+id/action_patientQuestionnaireFragment_to_homeFragment"
             app:popUpToInclusive="true"
@@ -65,5 +75,24 @@
         <action
             android:id="@+id/action_patientProfileFragment_to_patientQuestionnaireFragment"
             app:destination="@id/patientQuestionnaireFragment" />
+        <action
+            android:id="@+id/action_patientProfileFragment_to_previousConsultationQuestionnaireFragment"
+            app:destination="@id/previousConsultationQuestionnaireFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/previousConsultationQuestionnaireFragment"
+        android:name="com.argusoft.who.emcare.ui.home.patient.profile.PreviousConsultationQuestionnaireFragment"
+        tools:layout="@layout/fragment_previous_consultation_questionnaire">
+        <action
+            android:id="@+id/action_previousConsultationQuestionnaireFragment_to_patientProfileFragment"
+            app:popUpToInclusive="true"
+            app:popUpTo="@id/patientProfileFragment"
+            app:destination="@id/patientProfileFragment"/>
+        <action
+            android:id="@+id/action_previousConsultationQuestionnaireFragment_to_previousConsultationQuestionnaireFragment"
+            app:popUpToInclusive="true"
+            app:popUpTo="@id/previousConsultationQuestionnaireFragment"
+            app:destination="@id/previousConsultationQuestionnaireFragment"/>
     </fragment>
 </navigation>

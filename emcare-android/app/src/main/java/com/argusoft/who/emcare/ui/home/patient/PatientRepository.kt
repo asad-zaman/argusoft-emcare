@@ -4,6 +4,7 @@ import android.app.Application
 import com.argusoft.who.emcare.R
 import ca.uhn.fhir.context.FhirContext
 import ca.uhn.fhir.context.FhirVersionEnum
+import com.argusoft.who.emcare.data.local.pref.Preference
 import com.argusoft.who.emcare.data.remote.ApiResponse
 import com.argusoft.who.emcare.ui.common.*
 import com.argusoft.who.emcare.ui.common.model.ConsultationFlowItem
@@ -17,12 +18,14 @@ import com.google.android.fhir.datacapture.validation.Invalid
 import com.google.android.fhir.datacapture.validation.QuestionnaireResponseValidator
 import com.google.android.fhir.delete
 import com.google.android.fhir.get
+import com.google.android.fhir.logicalId
 import com.google.android.fhir.search.Operation
 import com.google.android.fhir.search.Order
 import com.google.android.fhir.search.StringFilterModifier
 import com.google.android.fhir.search.search
 import kotlinx.coroutines.flow.flow
 import org.hl7.fhir.r4.model.*
+import java.time.Instant
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.util.*
@@ -32,6 +35,7 @@ class PatientRepository @Inject constructor(
     private val fhirEngine: FhirEngine,
     private val application: Application,
     private val consultationFlowRepository: ConsultationFlowRepository,
+    private val preference: Preference
 ) {
 
     private val Z_UTC = "Z[UTC]"
@@ -62,7 +66,6 @@ class PatientRepository @Inject constructor(
                 )
                 operation = Operation.OR
             }
-            sort(Patient.GIVEN, Order.ASCENDING)
             count = 100
             from = 0
         }.filter {
@@ -112,9 +115,9 @@ class PatientRepository @Inject constructor(
                 StructureMapExtractionContext(context = application.applicationContext) { _, _ -> structureMap
                 }
             )
-
-            saveResourcesFromBundle(extractedBundle, patientId, encounterId, facilityId)
-
+            preference.setSubmittedResource(Bundle().setEntry(mutableListOf(Bundle.BundleEntryComponent()
+                .setResource(questionnaireResponse))))
+            saveResourcesFromBundle(extractedBundle, patientId, encounterId, facilityId, consultationFlowItemId)
             //update QuestionnarieResponse in currentConsultation and createNext Consultation
             if(consultationFlowItemId != null) {
                 consultationFlowRepository.updateConsultationQuestionnaireResponseText(consultationFlowItemId, parser.encodeResourceToString(questionnaireResponse), ZonedDateTime.now(ZoneId.of("UTC")).toString().removeSuffix(Z_UTC))
@@ -200,6 +203,38 @@ class PatientRepository @Inject constructor(
 
     }
 
+    /*
+    Deletes observation of current and next consultations &
+     deletes next consultations
+     */
+    fun deleteNextConsultations(consultationFlowItemId: String, encounterId: String) = flow {
+        consultationFlowRepository.getNextConsultationFlowItemIds(consultationFlowItemId, encounterId).collect{ consultationFlowItemIdListResponse ->
+            val consultationIds = mutableListOf(consultationFlowItemId)
+            if(consultationFlowItemIdListResponse.data != null)
+                consultationIds.addAll(consultationFlowItemIdListResponse.data)
+            //Delete Next consultations
+            consultationFlowRepository.deleteNextConsultations(consultationFlowItemId, encounterId).collect {
+                deleteObservations(encounterId,consultationIds).apply {
+                    emit(ApiResponse.Success("Deleted"))
+                }
+            }
+        }
+    }
+
+    private suspend fun deleteObservations(encounterId: String, consultationFlowItemIdList: List<String>) {
+        //Fetch observations using encounterId and after consultationDate
+        val observations = fhirEngine.search<Observation> {
+        }.filter { observation ->
+            observation.encounter.id == encounterId
+        }.filter { observation ->
+            observation.hasNote() && consultationFlowItemIdList.contains(observation.noteFirstRep.text)
+        }
+        //delete the observations
+        observations.forEach { observation ->
+            fhirEngine.delete(ResourceType.Observation, observation.logicalId)
+        }
+    }
+
     fun deletePatient(patientId: String?) = flow {
         if (patientId != null) {
             fhirEngine.delete<Patient>(patientId)
@@ -207,7 +242,8 @@ class PatientRepository @Inject constructor(
         emit(ApiResponse.Success(1))
     }
 
-    private suspend fun saveResourcesFromBundle(bundle: Bundle, patientId: String, encounterId: String, facilityId: String): Boolean {
+    private suspend fun saveResourcesFromBundle(bundle: Bundle, patientId: String, encounterId: String, facilityId: String, consultationFlowItemId: String?): Boolean {
+        val clipboardBundle = preference.getSubmittedResource() ?: Bundle()
         bundle.entry.forEach { entry ->
             if(entry.hasResource()){
                 val resource = entry.resource
@@ -230,14 +266,36 @@ class PatientRepository @Inject constructor(
                     ResourceType.Encounter -> {
                         resource.id = encounterId
                     }
+                    ResourceType.Observation -> {
+                        resource.id = UUID.randomUUID().toString()
+                        if(consultationFlowItemId != null) {
+                            (resource as Observation).addNote(Annotation().apply {
+                                text = consultationFlowItemId
+                            })
+                        }
+                        (resource as Observation).issuedElement = InstantType.now()
+                    }
                     else -> {
                         resource.id = UUID.randomUUID().toString()
                     }
                 }
+                clipboardBundle.addEntry(Bundle.BundleEntryComponent().setResource(resource))
                 fhirEngine.create(resource)
             }
         }
-        return true
+        fhirEngine.get(ResourceType.Patient, patientId).apply {
+            clipboardBundle.addEntry(Bundle.BundleEntryComponent().setResource(this))
+            try {
+                fhirEngine.get(ResourceType.Encounter, patientId).apply {
+                    clipboardBundle.addEntry(Bundle.BundleEntryComponent().setResource(this))
+                    preference.setSubmittedResource(clipboardBundle)
+                    return true
+                }
+            } catch(e: Exception) {
+                preference.setSubmittedResource(clipboardBundle)
+                return true
+            }
+        }
     }
 
     private fun Patient.convertPatientToPatientItem(): PatientItem {

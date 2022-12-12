@@ -13,6 +13,7 @@ import com.argusoft.who.emcare.ui.common.base.BaseFragment
 import com.argusoft.who.emcare.ui.home.HomeActivity
 import com.argusoft.who.emcare.utils.extention.*
 import com.google.android.fhir.sync.State
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
@@ -47,24 +48,42 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(), EasyPermissions.Perm
                 }
         }
 
-        observeNotNull(syncViewModel.syncState) {
-            when (it) {
-                is State.Started -> {
-                    binding.progressLayout.showHorizontalProgress()
-                    requireContext().showToast(messageResId = R.string.msg_sync_started)
-                }
-                is State.Finished -> {
-                    binding.progressLayout.showContent()
-                    requireContext().showToast(messageResId = R.string.msg_sync_successfully)
-                    startActivity(Intent(requireContext(), HomeActivity::class.java))
-                    requireActivity().finish()
-                }
-                is State.Failed -> {
-                    binding.progressLayout.showContent()
-                    requireContext().showToast(messageResId = R.string.msg_sync_failed)
-                    startActivity(Intent(requireContext(), HomeActivity::class.java))
-                    requireActivity().finish()
-                }
+        observeNotNull(syncViewModel.syncState) { apiResponse ->
+
+            apiResponse.whenLoading {
+                binding.progressLayout.showHorizontalProgress()
+                requireContext().showSnackBar(
+                    view = binding.progressLayout,
+                    message = getString(R.string.msg_sync_started),
+                    duration = Snackbar.LENGTH_INDEFINITE,
+                    isError = false
+                )
+            }
+            apiResponse.handleListApiView(binding.progressLayout) {
+                    when (it) {
+                        is State.Finished -> {
+//                            binding.progressLayout.showContent()
+                            requireContext().showSnackBar(
+                                view = binding.progressLayout,
+                                message = getString(R.string.msg_sync_successfully),
+                                duration = Snackbar.LENGTH_SHORT,
+                                isError = false
+                            )
+                            startActivity(Intent(requireContext(), HomeActivity::class.java))
+                            requireActivity().finish()
+                        }
+                        is State.Failed -> {
+                            binding.progressLayout.showContent()
+                            requireContext().showSnackBar(
+                                view = binding.progressLayout,
+                                message = getString(R.string.msg_sync_failed),
+                                duration = Snackbar.LENGTH_SHORT,
+                                isError = true
+                            )
+                            startActivity(Intent(requireContext(), HomeActivity::class.java))
+                            requireActivity().finish()
+                        }
+                    }
             }
         }
     }

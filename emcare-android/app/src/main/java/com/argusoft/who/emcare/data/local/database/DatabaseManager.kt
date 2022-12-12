@@ -98,4 +98,20 @@ class DatabaseManager(roomDatabase: RoomDatabase) : Database {
     override suspend fun getLastConsultationDateByPatientId(patientId: String): String? {
         return dao.getLastConsultationDateByPatientId(patientId)
     }
+
+    override suspend fun deleteNextConsultations(consultationFlowItemId: String, encounterId: String) {
+        return dao.deleteNextConsultations(consultationFlowItemId, encounterId)
+    }
+
+    override suspend fun getConsultationFlowItemById(consultationFlowItemId: String): ConsultationFlowItem? {
+        return dao.getConsultationFLowItemById(consultationFlowItemId)
+    }
+
+    override suspend fun getNextConsultationFlowItemIds(consultationFlowItemId: String, encounterId: String): List<String> {
+        return dao.getNextConsultationFlowItemIds(consultationFlowItemId, encounterId)
+    }
+
+    override suspend fun deleteConsultationFlowItemById(consultationFlowItemId: String) {
+        return dao.deleteConsultationFlowItemById(consultationFlowItemId)
+    }
 }

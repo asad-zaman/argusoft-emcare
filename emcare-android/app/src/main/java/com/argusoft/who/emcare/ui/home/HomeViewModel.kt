@@ -44,6 +44,9 @@ class HomeViewModel @Inject constructor(
     private val _patient = SingleLiveEvent<ApiResponse<Patient>>()
     val patient: LiveData<ApiResponse<Patient>> = _patient
 
+    private val _deleteNextConsultations = SingleLiveEvent<ApiResponse<String>>()
+    val deleteNextConsultations: LiveData<ApiResponse<String>> = _deleteNextConsultations
+
     private val _draftQuestionnaire = SingleLiveEvent<ApiResponse<String>>()
     val draftQuestionnaire: LiveData<ApiResponse<String>> = _draftQuestionnaire
 
@@ -147,7 +150,7 @@ class HomeViewModel @Inject constructor(
                         if (patientItem != null) {
                             consultationsArrayList.add(
                                 ConsultationItemData(
-                                    name = patientItem.nameFirstRep.nameAsSingleString.orEmpty { patientItem.identifierFirstRep.value ?:"NA #${patientItem.id?.takeLast(9)}"},
+                                    name = patientItem.nameFirstRep.nameAsSingleString.orEmpty { patientItem.identifierFirstRep.value ?:"#${patientItem.id?.take(9)}"},
                                     gender = patientItem.genderElement?.valueAsString,
                                     identifier = patientItem.identifierFirstRep.value ,
                                     dateOfBirth = patientItem.birthDateElement.valueAsString ?: "Not Provided",
@@ -179,6 +182,14 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    fun deleteNextConsultations(consultationFlowItemId: String, encounterId: String) {
+        viewModelScope.launch {
+            patientRepository.deleteNextConsultations(consultationFlowItemId, encounterId).collect {
+                _deleteNextConsultations.value = it
+            }
+        }
+    }
+
     fun saveQuestionnaireAsDraft(consultationFlowItemId: String, questionnaireResponse: QuestionnaireResponse) {
         viewModelScope.launch {
             patientRepository.updateConsultationQuestionnaireResponse(consultationFlowItemId, questionnaireResponse).collect {
@@ -196,12 +207,12 @@ class HomeViewModel @Inject constructor(
     }
 
 
-    fun getQuestionnaireWithQR(questionnaireId: String, patientId: String, encounterId: String? = null) {
+    fun getQuestionnaireWithQR(questionnaireId: String, patientId: String, encounterId: String) {
         _questionnaireWithQR.value = ApiResponse.Loading()
         viewModelScope.launch {
             patientRepository.getQuestionnaire(questionnaireId).collect {
                 val parser = FhirContext.forR4().newJsonParser()
-                val questionnaireJsonWithQR: Questionnaire = preProcessQuestionnaire(it.data!!, patientId)
+                val questionnaireJsonWithQR: Questionnaire = preProcessQuestionnaire(it.data!!, patientId, encounterId)
                 val questionnaireResponse: QuestionnaireResponse = generateQuestionnaireResponseWithPatientIdAndEncounterId(questionnaireJsonWithQR, patientId!!, encounterId!!)
 
                 val questionnaireString = parser.encodeResourceToString(questionnaireJsonWithQR)
@@ -231,6 +242,7 @@ class HomeViewModel @Inject constructor(
         //Inject patientId as subject & encounterId as Encounter.
         questionnaireResponse.subject = Reference().apply {
             id = IdType(patientId).id
+            reference = "/Patient/${patientId}"
             type = ResourceType.Patient.name
             identifier = Identifier().apply {
                 value = patientId
@@ -238,6 +250,7 @@ class HomeViewModel @Inject constructor(
         }
         questionnaireResponse.encounter = Reference().apply {
             id = encounterId
+            reference = "/Encounter/${encounterId}"
             type = ResourceType.Encounter.name
             identifier = Identifier().apply {
                 value = encounterId
@@ -247,10 +260,10 @@ class HomeViewModel @Inject constructor(
         return questionnaireResponse
     }
 
-    private suspend fun preProcessQuestionnaire(questionnaire: Questionnaire, patientId: String) : Questionnaire {
+    private suspend fun preProcessQuestionnaire(questionnaire: Questionnaire, patientId: String, encounterId: String) : Questionnaire {
         var ansQuestionnaire = injectUuid(questionnaire)
         if(questionnaire.hasExtension(URL_CQF_LIBRARY)){
-            ansQuestionnaire = injectInitialExpressionCqlValues(questionnaire, patientId)
+            ansQuestionnaire = injectInitialExpressionCqlValues(questionnaire, patientId, encounterId)
         }
         return ansQuestionnaire
     }
@@ -266,7 +279,7 @@ class HomeViewModel @Inject constructor(
         return questionnaire
     }
 
-    private suspend fun injectInitialExpressionCqlValues(questionnaire: Questionnaire, patientId: String): Questionnaire = withContext(dispatcher) {
+    private suspend fun injectInitialExpressionCqlValues(questionnaire: Questionnaire, patientId: String, encounterId: String): Questionnaire = withContext(dispatcher) {
         val cqlLibraryURL = questionnaire.getExtensionByUrl(URL_CQF_LIBRARY).value.asStringValue()
         val expressionSet = mutableSetOf<String>()
         //If questionnaire has Cql library then evaluate library and inject the parameters
@@ -277,8 +290,17 @@ class HomeViewModel @Inject constructor(
                     expressionSet.add((item.getExtensionByUrl(URL_INITIAL_EXPRESSION).value as Expression).expression)
                 }
             }
+            //Creating parameterObject to pass encounterId
+            val parameterObject = Parameters().apply {
+                parameter = listOf(
+                    Parameters.ParametersParameterComponent().apply {
+                        name = "encounterid"
+                        value = StringType(encounterId)
+                    }
+                )
+            }
             //Evaluating Library
-            val parameters = fhirOperator.evaluateLibrary(cqlLibraryURL, patientId, expressionSet) as Parameters
+            val parameters = fhirOperator.evaluateLibrary(cqlLibraryURL, patientId, expressionSet, parameterObject) as Parameters
             //Inject parameters to appropriate places
             questionnaire.item.forEach { item ->
                 if(item.hasExtension(URL_INITIAL_EXPRESSION)) {
@@ -289,7 +311,6 @@ class HomeViewModel @Inject constructor(
                 }
             }
         }
-
         return@withContext questionnaire
     }
 }
