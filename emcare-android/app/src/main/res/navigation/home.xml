@@ -27,6 +27,7 @@
             app:destination="@id/patientProfileFragment" />
         <action
             android:id="@+id/action_homeFragment_to_patientQuestionnaireFragment"
+            app:launchSingleTop="true"
             app:destination="@id/patientQuestionnaireFragment" />
 
     </fragment>
@@ -44,6 +45,7 @@
         <action
             android:id="@+id/action_addPatientFragment_to_patientQuestionnaireFragment"
             app:popUpToInclusive="true"
+            app:launchSingleTop="true"
             app:popUpTo="@id/patientQuestionnaireFragment"
             app:destination="@id/patientQuestionnaireFragment" />
         <action
@@ -60,6 +62,7 @@
             app:popUpToInclusive="true"
             app:popUpTo="@id/patientQuestionnaireFragment"
             app:destination="@id/patientQuestionnaireFragment"
+            app:launchSingleTop="true"
             />
         <action
             android:id="@+id/action_patientQuestionnaireFragment_to_homeFragment"
@@ -74,7 +77,8 @@
         tools:layout="@layout/fragment_patient_profile">
         <action
             android:id="@+id/action_patientProfileFragment_to_patientQuestionnaireFragment"
-            app:destination="@id/patientQuestionnaireFragment" />
+            app:destination="@id/patientQuestionnaireFragment"
+            app:launchSingleTop="true"/>
         <action
             android:id="@+id/action_patientProfileFragment_to_previousConsultationQuestionnaireFragment"
             app:destination="@id/previousConsultationQuestionnaireFragment" />

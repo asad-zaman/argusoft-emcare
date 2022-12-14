@@ -33,10 +33,16 @@ class PatientProfileFragment : BaseFragment<FragmentPatientProfileBinding>() {
         previousConsultationsAdapter = PatientProfilePreviousConsultationsAdapter()
     }
 
-    override fun initView() {
-        binding.headerLayout.toolbar.setTitleDashboard(getString(R.string.title_patient_profile))
+    override fun onResume() {
+        super.onResume()
+        activeConsultationsAdapter.clearAllItems() // Added to remove duplicate consultations on coming back to this screen.
+        previousConsultationsAdapter.clearAllItems()
         setupActiveConsultationsRecyclerView()
         setupPreviousConsultationsRecyclerView()
+    }
+
+    override fun initView() {
+        binding.headerLayout.toolbar.setTitleDashboard(getString(R.string.title_patient_profile))
         patientProfileViewModel.getLastConsultationDate(requireArguments().getString(INTENT_EXTRA_PATIENT_ID)!!)
         binding.nameTextView.setText(requireArguments().getString(INTENT_EXTRA_PATIENT_NAME))
         val dateOfBirth = requireArguments().getString(INTENT_EXTRA_PATIENT_DOB)

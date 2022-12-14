@@ -34,7 +34,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(){
         homePagerAdapter = HomePagerAdapter(this, PatientListFragment(), ConsultationListFragment())
         binding.viewPager2.adapter = homePagerAdapter
         binding.viewPager2.isUserInputEnabled = false
-        binding.tabLayout.selectTab(binding.tabLayout.getTabAt(homeViewModel.currentTab))
     }
 
     override fun initListener() {
@@ -70,7 +69,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(){
 
     override fun onResume() {
         super.onResume()
-        homeViewModel.currentTab = 0
         binding.tabLayout.selectTab(binding.tabLayout.getTabAt(homeViewModel.currentTab))
         (activity as? HomeActivity)?.closeSidepane()
     }
