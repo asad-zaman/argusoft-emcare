@@ -289,10 +289,16 @@ public class UserServiceImpl implements UserService {
         attribute.put(CommonConstant.COUNTRY_CODE, Arrays.asList(user.getCountryCode()));
         kcUser.setAttributes(attribute);
 
+        Map<String,Long> locationMap = new HashMap<>();
+        for (String facilityId : user.getFacilityIds()) {
+            FacilityDto facilityDto = locationResourceService.getFacilityDto(facilityId);
+            locationMap.put(facilityId,facilityDto.getLocationId());
+        }
+
         try {
             javax.ws.rs.core.Response response = usersResource.create(kcUser);
             String userId = CreatedResponseUtil.getCreatedId(response);
-            userLocationMappingRepository.saveAll(UserMapper.getUserMappingEntityPerLocation(user, userId));
+            userLocationMappingRepository.saveAll(UserMapper.getUserMappingEntityPerLocation(user, userId,locationMap));
             UserResource userResource = usersResource.get(userId);
 
 //        Set Realm Role
@@ -350,9 +356,16 @@ public class UserServiceImpl implements UserService {
         kcUser.setAttributes(attribute);
 
         try {
+
+            Map<String,Long> locationMap = new HashMap<>();
+            for (String facilityId : user.getFacilityIds()) {
+                FacilityDto facilityDto = locationResourceService.getFacilityDto(facilityId);
+                locationMap.put(facilityId,facilityDto.getLocationId());
+            }
+
             javax.ws.rs.core.Response response = usersResource.create(kcUser);
             String userId = CreatedResponseUtil.getCreatedId(response);
-            userLocationMappingRepository.saveAll(UserMapper.getUserMappingEntityPerLocation(user, userId));
+            userLocationMappingRepository.saveAll(UserMapper.getUserMappingEntityPerLocation(user, userId, locationMap));
             UserResource userResource = usersResource.get(userId);
 
 //        Set Realm Role
@@ -494,12 +507,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public PageDto getUsersUnderLocation(Integer locationId, Integer pageNo) {
+    public PageDto getUsersUnderLocation(Object locationId, Integer pageNo) {
         List<MultiLocationUserListDto> userList = new ArrayList<>();
-
+        if (locationId instanceof String) {
+            locationId = locationResourceService.getFacilityDto(locationId.toString()).getLocationId().intValue();
+        }
         Keycloak keycloak = keyCloakConfig.getInstance();
-        Integer totalCount = userLocationMappingRepository.getAllUserOnChildLocations(locationId).size();
-        List<String> allUsersIdUnderLocation = userLocationMappingRepository.getAllUserOnChildLocationsWithPage(locationId, pageNo, CommonConstant.PAGE_SIZE);
+        Integer totalCount = userLocationMappingRepository.getAllUserOnChildLocations(((Integer) locationId).intValue()).size();
+        List<String> allUsersIdUnderLocation = userLocationMappingRepository.getAllUserOnChildLocationsWithPage(((Integer) locationId).intValue(), pageNo, CommonConstant.PAGE_SIZE);
         List<UserRepresentation> userRepresentations = new ArrayList<>();
         for (String userId : allUsersIdUnderLocation) {
             userRepresentations.add(getUserById(userId));

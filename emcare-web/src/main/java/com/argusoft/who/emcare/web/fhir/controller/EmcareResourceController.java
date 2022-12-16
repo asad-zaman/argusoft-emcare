@@ -78,7 +78,7 @@ public class EmcareResourceController {
     }
 
     @GetMapping("/patient/locationId/{locationId}")
-    public PageDto getAllPatientsUnderLocation(@PathVariable(value = "locationId") Integer locationId,
+    public PageDto getAllPatientsUnderLocation(@PathVariable(value = "locationId") Object locationId,
                                                @RequestParam(value = "pageNo") Integer pageNo) {
         return emcareResourceService.getPatientUnderLocationId(locationId, pageNo);
     }
