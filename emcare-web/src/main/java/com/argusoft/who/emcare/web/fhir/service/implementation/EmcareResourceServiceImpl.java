@@ -363,12 +363,18 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
     }
 
     @Override
-    public PageDto getPatientUnderLocationId(Integer locationId, Integer pageNo) {
+    public PageDto getPatientUnderLocationId(Object locationId, Integer pageNo) {
         List<Patient> patientsList = new ArrayList<>();
         Pageable page = PageRequest.of(pageNo, CommonConstant.PAGE_SIZE);
 
-        List<Integer> locationIds = locationMasterDao.getAllChildLocationId(locationId);
-        List<String> childFacilityIds = locationResourceRepository.findResourceIdIn(locationIds);
+        List<Integer> locationIds = new ArrayList<>();
+        List<String> childFacilityIds = new ArrayList<>();
+        if (locationId instanceof Integer) {
+            locationIds = locationMasterDao.getAllChildLocationId(((Integer) locationId).intValue());
+            childFacilityIds = locationResourceRepository.findResourceIdIn(locationIds);
+        } else {
+            childFacilityIds.add(locationId.toString());
+        }
 
 
         Long totalCount = Long.valueOf(repository.findByFacilityIdIn(childFacilityIds).size());

@@ -28,7 +28,7 @@ public interface EmcareResourceService {
 
     public void remove(EmcareResource emcareResource);
 
-    public PageDto getPatientUnderLocationId(Integer locationId, Integer pageNo);
+    public PageDto getPatientUnderLocationId(Object locationId, Integer pageNo);
 
     public List<PatientDto> getAllPatients();
 

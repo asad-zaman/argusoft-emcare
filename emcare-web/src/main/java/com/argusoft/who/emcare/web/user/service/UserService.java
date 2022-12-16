@@ -60,7 +60,7 @@ public interface UserService {
 
     public String getRoleNameById(String roleId);
 
-    public PageDto getUsersUnderLocation(Integer locationId, Integer pageNo);
+    public PageDto getUsersUnderLocation(Object locationId, Integer pageNo);
 
     public UserRepresentation getUserByEmailId(String emailId);
 
