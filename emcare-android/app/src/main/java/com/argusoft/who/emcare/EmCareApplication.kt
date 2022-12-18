@@ -102,5 +102,4 @@ class EmCareApplication : Application(), Configuration.Provider, DataCaptureConf
             )
         )
     }
-
 }

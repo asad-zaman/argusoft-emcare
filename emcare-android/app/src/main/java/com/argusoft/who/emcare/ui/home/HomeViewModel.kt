@@ -207,12 +207,12 @@ class HomeViewModel @Inject constructor(
     }
 
 
-    fun getQuestionnaireWithQR(questionnaireId: String, patientId: String, encounterId: String) {
+    fun getQuestionnaireWithQR(questionnaireId: String, patientId: String, encounterId: String, isPreviouslySavedConsultation: Boolean) {
         _questionnaireWithQR.value = ApiResponse.Loading()
         viewModelScope.launch {
             patientRepository.getQuestionnaire(questionnaireId).collect {
                 val parser = FhirContext.forR4().newJsonParser()
-                val questionnaireJsonWithQR: Questionnaire = preProcessQuestionnaire(it.data!!, patientId, encounterId)
+                val questionnaireJsonWithQR: Questionnaire = preProcessQuestionnaire(it.data!!, patientId, encounterId, isPreviouslySavedConsultation)
                 val questionnaireResponse: QuestionnaireResponse = generateQuestionnaireResponseWithPatientIdAndEncounterId(questionnaireJsonWithQR, patientId!!, encounterId!!)
 
                 val questionnaireString = parser.encodeResourceToString(questionnaireJsonWithQR)
@@ -260,9 +260,9 @@ class HomeViewModel @Inject constructor(
         return questionnaireResponse
     }
 
-    private suspend fun preProcessQuestionnaire(questionnaire: Questionnaire, patientId: String, encounterId: String) : Questionnaire {
+    private suspend fun preProcessQuestionnaire(questionnaire: Questionnaire, patientId: String, encounterId: String, isPreviouslySavedConsultation: Boolean) : Questionnaire {
         var ansQuestionnaire = injectUuid(questionnaire)
-        if(questionnaire.hasExtension(URL_CQF_LIBRARY)){
+        if(questionnaire.hasExtension(URL_CQF_LIBRARY) && !isPreviouslySavedConsultation){
             ansQuestionnaire = injectInitialExpressionCqlValues(questionnaire, patientId, encounterId)
         }
         return ansQuestionnaire

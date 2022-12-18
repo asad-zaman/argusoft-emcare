@@ -44,10 +44,13 @@ class PatientQuestionnaireFragment : BaseFragment<FragmentPatientQuestionnaireBi
         )
 
         requireArguments().getString(INTENT_EXTRA_QUESTIONNAIRE_ID)?.let {
+            val questionnaireResponse = requireArguments().getString(
+                INTENT_EXTRA_QUESTIONNAIRE_RESPONSE)
             homeViewModel.getQuestionnaireWithQR(
                 it,
                 requireArguments().getString(INTENT_EXTRA_PATIENT_ID)!!,
-                requireArguments().getString(INTENT_EXTRA_ENCOUNTER_ID)!!
+                requireArguments().getString(INTENT_EXTRA_ENCOUNTER_ID)!!,
+                isPreviouslySavedConsultation = !questionnaireResponse.isNullOrEmpty()
             )
         }
 
