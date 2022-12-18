@@ -14,8 +14,8 @@ android {
         applicationId "com.argusoft.who.emcare"
         minSdkVersion 26
         targetSdkVersion 31
-        versionCode 4
-        versionName "1.0.7"
+        versionCode 5
+        versionName "1.0.8"
         vectorDrawables.useSupportLibrary = true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
