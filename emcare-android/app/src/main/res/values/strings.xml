@@ -2,6 +2,7 @@
     <string name="app_name">EmCare</string>
     <string name="about_app_name_start">Em</string>
     <string name="about_app_name_end">Care</string>
+    <string name="about_description">Em Care is a digital solution that initially aims to improve health outcomes for mothers and children in emergency settings.\nIt will provide decision-support to frontline health workers in emergencies, preserving the fidelity of,\n and increasing access to WHO clinical guidelines.</string>
 
     <string name="title_patient">Registered Patients</string>
     <string name="title_patient_detail">SamplePatient Detail</string>

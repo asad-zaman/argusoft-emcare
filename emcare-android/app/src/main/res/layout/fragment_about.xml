@@ -82,7 +82,7 @@
         app:layout_constraintStart_toStartOf="@id/leftGuidLine"
         app:layout_constraintEnd_toEndOf="@id/rightGuidLine"
         app:layout_constraintTop_toBottomOf="@id/logoTextConstraintView"
-        android:text="Reference site about Lorem Ipsum, giving\n information on its origins, as well as a\n random Lipsum generator"
+        android:text="@string/about_description"
         android:gravity="center"
         />
 
