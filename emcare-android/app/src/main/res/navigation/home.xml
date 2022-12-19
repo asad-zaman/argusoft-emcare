@@ -50,6 +50,9 @@
             app:destination="@id/patientQuestionnaireFragment" />
         <action
             android:id="@+id/action_addPatientFragment_to_addPatientFragment"
+            app:popUpToInclusive="true"
+            app:popUpTo="@id/addPatientFragment"
+            app:launchSingleTop="true"
             app:destination="@+id/addPatientFragment"/>
     </fragment>
 
