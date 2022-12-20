@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 @Component({
   selector: 'app-location-filter',
   templateUrl: './location-filter.component.html',
@@ -12,6 +12,7 @@ export class LocationFilterComponent implements OnInit {
   currentLan;
   formData;
   dropdownActiveArr = [];
+  @Input() isOtherPage?: boolean;
 
   constructor() { }
 

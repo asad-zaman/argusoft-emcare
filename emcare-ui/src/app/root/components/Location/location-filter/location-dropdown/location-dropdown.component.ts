@@ -28,6 +28,7 @@ export class LocationDropdownComponent implements OnInit {
 
   eventsSubscription: Subscription;
   @Input() events: Observable<boolean>;
+  currentSelection: number;
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -146,10 +147,18 @@ export class LocationDropdownComponent implements OnInit {
     });
   }
 
+  onChangeFacility() {
+    // 1 is for facility
+    this.currentSelection = 1;
+    this.checkFacilityAndLocationAndRemoveFirstSelection();
+  }
+
   onClicked(event, dropdownNum) {
-    const val = event.value.id;
+    // 2 is for location
+    this.currentSelection = 2;
+    const val = event.value ? event.value.id : null;
     // getting child locations based on dropdown
-    if (dropdownNum == 1 && val !== 'default') {
+    if (dropdownNum == 1 && val !== null) {
       this.dropdownActiveArr = [true, true, false, false, false];
       this.stateArr = [];
       this.locationFilterForm.patchValue({
@@ -159,7 +168,7 @@ export class LocationDropdownComponent implements OnInit {
         other: ''
       });
       this.getChildLocations(val, this.stateArr);
-    } else if (dropdownNum == 2 && val !== 'default') {
+    } else if (dropdownNum == 2 && val !== null) {
       this.dropdownActiveArr = [true, true, true, false, false];
       this.cityArr = [];
       this.locationFilterForm.patchValue({
@@ -168,7 +177,7 @@ export class LocationDropdownComponent implements OnInit {
         other: ''
       });
       this.getChildLocations(val, this.cityArr);
-    } else if (dropdownNum == 3 && val !== 'default') {
+    } else if (dropdownNum == 3 && val !== null) {
       this.dropdownActiveArr = [true, true, true, true, false];
       this.regionArr = [];
       this.locationFilterForm.patchValue({
@@ -176,7 +185,7 @@ export class LocationDropdownComponent implements OnInit {
         other: ''
       });
       this.getChildLocations(val, this.regionArr);
-    } else if (dropdownNum == 4 && val !== 'default') {
+    } else if (dropdownNum == 4 && val !== null) {
       this.dropdownActiveArr = [true, true, true, true, true];
       this.otherArr = [];
       this.locationFilterForm.patchValue({
@@ -185,10 +194,31 @@ export class LocationDropdownComponent implements OnInit {
       this.getChildLocations(val, this.otherArr);
     }
     // to remove dropdowns if value is reset
-    if (val === 'default') {
+    if (val === null) {
       for (let index = dropdownNum; index < this.dropdownActiveArr.length; index++) {
         this.dropdownActiveArr[index] = false;
       }
+    }
+    this.checkFacilityAndLocationAndRemoveFirstSelection();
+  }
+
+  // if facility is selected then location should be removed
+  // if location is selected then facility should be removed
+  // as api is not ready yet so both things can not work together
+  checkFacilityAndLocationAndRemoveFirstSelection() {
+    if (this.currentSelection === 1) {
+      this.dropdownActiveArr = [true, false, false, false, false];
+      this.locationFilterForm.patchValue({
+        country: null,
+        state: null,
+        city: null,
+        region: null,
+        other: null
+      });
+    } else {
+      this.locationFilterForm.patchValue({
+        facility: null
+      });
     }
     this.emitData();
   }
@@ -207,7 +237,7 @@ export class LocationDropdownComponent implements OnInit {
 
   getIdFromFormValue(formValue) {
     return {
-      facility: formValue.facility ? formValue.facility : '',  
+      facility: formValue.facility ? formValue.facility : '',
       country: formValue.country ? formValue.country.id : '',
       state: formValue.state ? formValue.state.id : '',
       city: formValue.city ? formValue.city.id : '',

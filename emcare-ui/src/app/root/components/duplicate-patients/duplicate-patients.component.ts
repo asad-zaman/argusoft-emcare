@@ -38,6 +38,8 @@ export class DuplicatePatientsComponent implements OnInit {
     this.fhirService.getAllDuplicatePatientEntries().subscribe((res: Array<Array<Object>>) => {
       if (res) {
         this.duplicatePatientArr = res;
+        console.log(this.duplicatePatientArr);
+        
       }
     }, (_error) => {
       this.toasterService.showToast('warn', 'API issue!', 'EMCARE');
@@ -91,7 +93,6 @@ export class DuplicatePatientsComponent implements OnInit {
   }
 
   selectedDuplicatePatient(index) {
-    console.log(this.tempararyPatientData[index]);
     this.selectedPatientIndex = index;
   }
 

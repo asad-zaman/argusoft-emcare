@@ -1,4 +1,4 @@
-<app-location-filter *ngIf="isView" (locationId)="getLocationId($event)"></app-location-filter>
+<app-location-filter *ngIf="isView" [isOtherPage]="false" (locationId)="getLocationId($event)"></app-location-filter>
 <div *ngIf="isView" class="main-wrapper">
   <h1 class="heading">{{'User list Heading' | translate}}</h1>
   <hr>
@@ -39,8 +39,7 @@
               <td class="text-center">{{user.phone ? user.phone : 'NA'}}</td>
               <td class="text-center">{{user.realmRoles[0] ? (user.realmRoles[0] | uppercase) : 'NA'}}</td>
               <ng-container></ng-container>
-              <td class="cst-text-overflow"
-                [ngClass]="{'text-center': getFacilityNames(user.facilities) == 'NA'}"
+              <td class="cst-text-overflow" [ngClass]="{'text-center': getFacilityNames(user.facilities) == 'NA'}"
                 pTooltip={{getFacilityNames(user.facilities)}} tooltipPosition="bottom">
                 <ng-container *ngIf="getFacilityNames(user.facilities) !== 'NA'; else noContent">
                   <ul style="list-style-type:circle">
@@ -53,8 +52,7 @@
                   <span>NA</span>
                 </ng-template>
               </td>
-              <td class="cst-text-overflow"
-                [ngClass]="{'text-center': getFacilityNames(user.facilities) == 'NA'}"
+              <td class="cst-text-overflow" [ngClass]="{'text-center': getFacilityNames(user.facilities) == 'NA'}"
                 pTooltip={{getLocation(user.facilities)}} tooltipPosition="bottom">
                 <ng-container *ngIf="getLocation(user.facilities) !== 'NA'; else noContent">
                   <ul style="list-style-type:circle">
