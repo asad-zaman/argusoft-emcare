@@ -369,8 +369,8 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
 
         List<Integer> locationIds = new ArrayList<>();
         List<String> childFacilityIds = new ArrayList<>();
-        if (locationId instanceof Integer) {
-            locationIds = locationMasterDao.getAllChildLocationId(((Integer) locationId).intValue());
+        if (isNumeric(locationId.toString())) {
+            locationIds = locationMasterDao.getAllChildLocationId(Integer.parseInt(locationId.toString()));
             childFacilityIds = locationResourceRepository.findResourceIdIn(locationIds);
         } else {
             childFacilityIds.add(locationId.toString());
@@ -641,6 +641,18 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
         LocalDate curDate = LocalDate.now();
         LocalDate date = dob.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         return Period.between(date, curDate).getYears();
+    }
+
+    private boolean isNumeric(String strNum) {
+        if (strNum == null) {
+            return false;
+        }
+        try {
+            Integer d = Integer.parseInt(strNum);
+        } catch (NumberFormatException nfe) {
+            return false;
+        }
+        return true;
     }
 
 }
