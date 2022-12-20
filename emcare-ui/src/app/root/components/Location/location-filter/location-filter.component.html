@@ -18,7 +18,7 @@
       <i class="bi bi-x-lg mouse-pointer" (click)="this.sideMenu=false" aria-hidden="true"></i>
     </div>
     <div class="right-side-menu-inner">
-      <app-location-dropdown (locationFormValueAndDropdownArr)="getFormValue($event)">
+      <app-location-dropdown [isOtherPage]="isOtherPage" (locationFormValueAndDropdownArr)="getFormValue($event)">
       </app-location-dropdown>
     </div>
     <div class="side-menu-footer">
