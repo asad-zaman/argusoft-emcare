@@ -5,6 +5,7 @@ import androidx.activity.addCallback
 import androidx.core.os.bundleOf
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.databinding.FragmentAddPatientBinding
 import com.argusoft.who.emcare.ui.common.*
@@ -30,7 +31,7 @@ class AddPatientFragment : BaseFragment<FragmentAddPatientBinding>() {
 
     override fun initView() {
         binding.headerLayout.toolbar.title = getString(R.string.title_emcare_registration)
-        homeViewModel.getQuestionnaireWithQR(stageToQuestionnaireId[CONSULTATION_STAGE_REGISTRATION_PATIENT]!!, UUID.randomUUID().toString(), UUID.randomUUID().toString())
+        homeViewModel.getQuestionnaireWithQR(stageToQuestionnaireId[CONSULTATION_STAGE_REGISTRATION_PATIENT]!!, UUID.randomUUID().toString(), UUID.randomUUID().toString(), isPreviouslySavedConsultation = false)
         childFragmentManager.setFragmentResultListener(SUBMIT_REQUEST_KEY, viewLifecycleOwner) { _, _ ->
             homeViewModel.questionnaireJson?.let {
                 homeViewModel.saveQuestionnaire(
@@ -82,7 +83,8 @@ class AddPatientFragment : BaseFragment<FragmentAddPatientBinding>() {
                     activity?.alertDialog {
                         setMessage(R.string.msg_continue_consultation)
                         setPositiveButton(R.string.button_yes) { _, _ ->
-                            navigate(R.id.action_addPatientFragment_to_patientQuestionnaireFragment) {
+                            findNavController().popBackStack(R.id.addPatientFragment, true)
+                            navigate(R.id.action_homeFragment_to_patientQuestionnaireFragment) {
                                 putString(INTENT_EXTRA_QUESTIONNAIRE_ID, it.questionnaireId)
                                 putString(INTENT_EXTRA_STRUCTUREMAP_ID, it.structureMapId)
                                 putString(INTENT_EXTRA_QUESTIONNAIRE_HEADER, it.questionnaireId)

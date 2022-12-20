@@ -36,7 +36,7 @@ class AboutViewModel @Inject constructor(
         viewModelScope.launch {
             val planDefinitions = fhirEngine.search<PlanDefinition> {}
             if(planDefinitions.isNotEmpty())
-                _bundleVersion.value = ApiResponse.Success(planDefinitions.last().version)
+                _bundleVersion.value = ApiResponse.Success(planDefinitions.last().meta.versionId)
         }
     }
 }

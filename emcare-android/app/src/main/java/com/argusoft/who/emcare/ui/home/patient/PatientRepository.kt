@@ -89,7 +89,7 @@ class PatientRepository @Inject constructor(
     }
 
     fun saveQuestionnaire(questionnaireResponse: QuestionnaireResponse, questionnaire: String, facilityId: String, structureMapId: String = "", consultationFlowItemId: String? = null,consultationStage: String? = null) = flow {
-        val parser = FhirContext.forR4().newJsonParser()
+        val parser = FhirContext.forCached(FhirVersionEnum.R4).newJsonParser()
         val questionnaireResource: Questionnaire = parser.parseResource(questionnaire) as Questionnaire
         try {
             if (QuestionnaireResponseValidator.validateQuestionnaireResponse(

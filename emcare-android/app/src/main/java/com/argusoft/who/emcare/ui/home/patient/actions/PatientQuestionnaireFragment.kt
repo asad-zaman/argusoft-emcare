@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.databinding.FragmentPatientQuestionnaireBinding
 import com.argusoft.who.emcare.ui.common.*
@@ -43,10 +44,13 @@ class PatientQuestionnaireFragment : BaseFragment<FragmentPatientQuestionnaireBi
         )
 
         requireArguments().getString(INTENT_EXTRA_QUESTIONNAIRE_ID)?.let {
+            val questionnaireResponse = requireArguments().getString(
+                INTENT_EXTRA_QUESTIONNAIRE_RESPONSE)
             homeViewModel.getQuestionnaireWithQR(
                 it,
                 requireArguments().getString(INTENT_EXTRA_PATIENT_ID)!!,
-                requireArguments().getString(INTENT_EXTRA_ENCOUNTER_ID)!!
+                requireArguments().getString(INTENT_EXTRA_ENCOUNTER_ID)!!,
+                isPreviouslySavedConsultation = !questionnaireResponse.isNullOrEmpty()
             )
         }
 
@@ -74,7 +78,7 @@ class PatientQuestionnaireFragment : BaseFragment<FragmentPatientQuestionnaireBi
                 setMessage(R.string.msg_exit_consultation)
                 setPositiveButton(R.string.button_yes) { _, _ ->
                     preference.setSubmittedResource(Bundle())
-                    navigate(R.id.action_patientQuestionnaireFragment_to_homeFragment)
+                    findNavController().popBackStack()
                 }
                 setNegativeButton(R.string.button_no) { _, _ -> }
             }?.show()
