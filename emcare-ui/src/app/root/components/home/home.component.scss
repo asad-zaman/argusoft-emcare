@@ -2,16 +2,22 @@
     cursor: pointer;
 }
 
-.ctype-1 {
-    background-color: #F90047;
-}
+.ctype {
+    text-align: center;
+    padding: 23px 0px;
+    align-self: center;
 
-.ctype-2 {
-    background-color: #198A27;
-}
-
-.ctype-3 {
-    background-color: #F50231;
+    &-1 {
+        background-color: #F90047;
+    }
+    
+    &-2 {
+        background-color: #198A27;
+    }
+    
+    &-3 {
+        background-color: #F50231;
+    }
 }
 
 .dashboard-title {

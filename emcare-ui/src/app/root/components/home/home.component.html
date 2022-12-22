@@ -9,8 +9,8 @@
           [style]="{'overflow': 'hidden', 'width': '200px', 'height': '80px', 'margin-right': '2em','cursor': 'pointer'}"
           (click)="redirectToRoute('/showPatients')">
           <div class="row">
-            <h3 class="col-4 w-700 ctype-1">{{dashboardData.totalPatient}}</h3>
-            <div class="col-8 c-style">
+            <h3 class="col-5 w-700 ctype ctype-1">{{dashboardData.totalPatient}}</h3>
+            <div class="col-7 c-style">
               <h6>{{'Total Patients' | translate}}</h6>
             </div>
           </div>
@@ -19,8 +19,8 @@
           [style]="{'overflow': 'hidden', 'width': '200px', 'height': '80px', 'margin-right': '2em','cursor': 'pointer'}"
           (click)="redirectToRoute('/showUsers')">
           <div class="row">
-            <h3 class="col-4 w-700 ctype-2">{{dashboardData.totalUser}}</h3>
-            <div class="col-8 c-style">
+            <h3 class="col-5 w-700 ctype ctype-2">{{dashboardData.totalUser}}</h3>
+            <div class="col-7 c-style">
               <h6>{{'Total Users' | translate}}</h6>
             </div>
           </div>
@@ -29,8 +29,8 @@
           [style]="{'overflow': 'hidden', 'width': '200px', 'height': '80px', 'margin-right': '2em','cursor': 'pointer'}"
           (click)="redirectToRoute('/confirmUsers')">
           <div class="row">
-            <h3 class="col-4 w-700 ctype-3">{{dashboardData.pendingRequest}}</h3>
-            <div class="col-8 c-style">
+            <h3 class="col-5 w-700 ctype ctype-3">{{dashboardData.pendingRequest}}</h3>
+            <div class="col-7 c-style">
               <h6>{{'Pending User Requests' | translate}}</h6>
             </div>
           </div>
