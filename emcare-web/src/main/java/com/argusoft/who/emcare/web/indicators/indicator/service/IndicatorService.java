@@ -1,0 +1,18 @@
+package com.argusoft.who.emcare.web.indicators.indicator.service;
+
+import com.argusoft.who.emcare.web.indicators.indicator.dto.IndicatorDto;
+import org.springframework.http.ResponseEntity;
+
+/**
+ * <h1> Add heading here </h1>
+ * <p>
+ * Add Description here.
+ * </p>
+ *
+ * @author - jaykalariya
+ * @since - 28/12/22  10:38 am
+ */
+public interface IndicatorService {
+
+    public ResponseEntity<Object> addNewIndicator(IndicatorDto indicatorDto);
+}
