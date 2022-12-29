@@ -1,5 +1,6 @@
 package com.argusoft.who.emcare.web.indicators.indicator.service;
 
+import com.argusoft.who.emcare.web.common.dto.PageDto;
 import com.argusoft.who.emcare.web.indicators.indicator.dto.IndicatorDto;
 import org.springframework.http.ResponseEntity;
 
@@ -15,4 +16,8 @@ import org.springframework.http.ResponseEntity;
 public interface IndicatorService {
 
     public ResponseEntity<Object> addNewIndicator(IndicatorDto indicatorDto);
+
+    public ResponseEntity<Object> getAllIndicatorData();
+
+    public PageDto getIndicatorDataPage(Integer pageNo, String searchText);
 }
