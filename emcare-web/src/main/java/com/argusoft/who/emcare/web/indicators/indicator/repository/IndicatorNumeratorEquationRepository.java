@@ -1,7 +1,6 @@
 package com.argusoft.who.emcare.web.indicators.indicator.repository;
 
-import com.argusoft.who.emcare.web.indicators.indicator.entity.Indicator;
-import com.argusoft.who.emcare.web.indicators.indicator.entity.IndicatorEquation;
+import com.argusoft.who.emcare.web.indicators.indicator.entity.IndicatorNumeratorEquation;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -15,5 +14,5 @@ import org.springframework.stereotype.Repository;
  * @since - 28/12/22  2:15 pm
  */
 @Repository
-public interface IndicatorEquationRepository extends JpaRepository<IndicatorEquation, Long> {
+public interface IndicatorNumeratorEquationRepository extends JpaRepository<IndicatorNumeratorEquation, Long> {
 }

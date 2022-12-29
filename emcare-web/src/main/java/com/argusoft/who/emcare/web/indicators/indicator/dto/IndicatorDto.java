@@ -14,14 +14,14 @@ import java.util.List;
 public class IndicatorDto {
 
     private Long indicatorId;
-
     private String indicatorCode;
-
     private String indicatorName;
-
     private String description;
-
-    private List<IndicatorEquationDto> equations;
+    private String facilityId;
+    private String numeratorIndicatorEquation;
+    private String denominatorIndicatorEquation;
+    private List<IndicatorNumeratorEquationDto> numeratorEquations;
+    private List<IndicatorDenominatorEquationDto> denominatorEquations;
 
     public Long getIndicatorId() {
         return indicatorId;
@@ -55,11 +55,43 @@ public class IndicatorDto {
         this.description = description;
     }
 
-    public List<IndicatorEquationDto> getEquations() {
-        return equations;
+    public String getFacilityId() {
+        return facilityId;
     }
 
-    public void setEquations(List<IndicatorEquationDto> equations) {
-        this.equations = equations;
+    public void setFacilityId(String facilityId) {
+        this.facilityId = facilityId;
+    }
+
+    public String getNumeratorIndicatorEquation() {
+        return numeratorIndicatorEquation;
+    }
+
+    public void setNumeratorIndicatorEquation(String numeratorIndicatorEquation) {
+        this.numeratorIndicatorEquation = numeratorIndicatorEquation;
+    }
+
+    public String getDenominatorIndicatorEquation() {
+        return denominatorIndicatorEquation;
+    }
+
+    public void setDenominatorIndicatorEquation(String denominatorIndicatorEquation) {
+        this.denominatorIndicatorEquation = denominatorIndicatorEquation;
+    }
+
+    public List<IndicatorNumeratorEquationDto> getNumeratorEquations() {
+        return numeratorEquations;
+    }
+
+    public void setNumeratorEquations(List<IndicatorNumeratorEquationDto> numeratorEquations) {
+        this.numeratorEquations = numeratorEquations;
+    }
+
+    public List<IndicatorDenominatorEquationDto> getDenominatorEquations() {
+        return denominatorEquations;
+    }
+
+    public void setDenominatorEquations(List<IndicatorDenominatorEquationDto> denominatorEquations) {
+        this.denominatorEquations = denominatorEquations;
     }
 }

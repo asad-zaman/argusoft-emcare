@@ -9,21 +9,23 @@ package com.argusoft.who.emcare.web.indicators.indicator.dto;
  * @author - jaykalariya
  * @since - 28/12/22  12:08 pm
  */
-public class IndicatorEquationDto {
+public class IndicatorNumeratorEquationDto {
 
-    private Long equationId;
+    private Long numeratorId;
     private Long codeId;
     private String code;
     private String condition;
     private String value;
     private String valueType;
+    private String eqIdentifier;
 
-    public Long getEquationId() {
-        return equationId;
+
+    public Long getNumeratorId() {
+        return numeratorId;
     }
 
-    public void setEquationId(Long equationId) {
-        this.equationId = equationId;
+    public void setNumeratorId(Long numeratorId) {
+        this.numeratorId = numeratorId;
     }
 
     public Long getCodeId() {
@@ -64,5 +66,13 @@ public class IndicatorEquationDto {
 
     public void setValueType(String valueType) {
         this.valueType = valueType;
+    }
+
+    public String getEqIdentifier() {
+        return eqIdentifier;
+    }
+
+    public void setEqIdentifier(String eqIdentifier) {
+        this.eqIdentifier = eqIdentifier;
     }
 }

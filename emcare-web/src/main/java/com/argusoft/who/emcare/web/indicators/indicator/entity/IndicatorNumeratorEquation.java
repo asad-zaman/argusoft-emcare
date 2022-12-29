@@ -16,13 +16,13 @@ import java.io.Serializable;
  * @since - 28/12/22  11:42 am
  */
 @Entity
-@Table(name = "indicator_equation")
-public class IndicatorEquation extends EntityAuditInfo implements Serializable {
+@Table(name = "indicator_numerator_equation")
+public class IndicatorNumeratorEquation extends EntityAuditInfo implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "equation_id", nullable = false)
-    private Long equationId;
+    @Column(name = "numerator_id", nullable = false)
+    private Long numeratorId;
 
     @Column(name = "code_id")
     private Long codeId;
@@ -39,18 +39,20 @@ public class IndicatorEquation extends EntityAuditInfo implements Serializable {
     @Column(name = "value_type")
     private String valueType;
 
+    @Column(name = "eq_identifier")
+    private String eqIdentifier;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "indicator_id", nullable = false)
-    private Indicator indicator;
+    private Indicator numeratorIndicator;
 
-    public Long getEquationId() {
-        return equationId;
+    public Long getNumeratorId() {
+        return numeratorId;
     }
 
-    public void setEquationId(Long equationId) {
-        this.equationId = equationId;
+    public void setNumeratorId(Long numeratorId) {
+        this.numeratorId = numeratorId;
     }
 
     public Long getCodeId() {
@@ -93,11 +95,19 @@ public class IndicatorEquation extends EntityAuditInfo implements Serializable {
         this.valueType = valueType;
     }
 
-    public Indicator getIndicator() {
-        return indicator;
+    public Indicator getNumeratorIndicator() {
+        return numeratorIndicator;
     }
 
-    public void setIndicator(Indicator indicator) {
-        this.indicator = indicator;
+    public void setNumeratorIndicator(Indicator numeratorIndicator) {
+        this.numeratorIndicator = numeratorIndicator;
+    }
+
+    public String getEqIdentifier() {
+        return eqIdentifier;
+    }
+
+    public void setEqIdentifier(String eqIdentifier) {
+        this.eqIdentifier = eqIdentifier;
     }
 }

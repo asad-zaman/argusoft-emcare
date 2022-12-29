@@ -33,9 +33,20 @@ public class Indicator extends EntityAuditInfo implements Serializable {
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
-    @OneToMany(mappedBy = "indicator", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
-    private List<IndicatorEquation> equations;
+    @Column(name = "facility_id")
+    private String facilityId;
 
+    @Column(name = "numerator_indicator_equation")
+    private String numeratorIndicatorEquation;
+
+    @Column(name = "denominator_indicator_equation")
+    private String denominatorIndicatorEquation;
+
+    @OneToMany(mappedBy = "numeratorIndicator", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<IndicatorNumeratorEquation> numeratorEquation;
+
+    @OneToMany(mappedBy = "denominatorIndicator", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<IndicatorDenominatorEquation> denominatorEquation;
 
     public Long getIndicatorId() {
         return indicatorId;
@@ -69,11 +80,43 @@ public class Indicator extends EntityAuditInfo implements Serializable {
         this.description = description;
     }
 
-    public List<IndicatorEquation> getEquations() {
-        return equations;
+    public List<IndicatorNumeratorEquation> getNumeratorEquation() {
+        return numeratorEquation;
     }
 
-    public void setEquations(List<IndicatorEquation> equations) {
-        this.equations = equations;
+    public void setNumeratorEquation(List<IndicatorNumeratorEquation> numeratorEquation) {
+        this.numeratorEquation = numeratorEquation;
+    }
+
+    public List<IndicatorDenominatorEquation> getDenominatorEquation() {
+        return denominatorEquation;
+    }
+
+    public void setDenominatorEquation(List<IndicatorDenominatorEquation> denominatorEquation) {
+        this.denominatorEquation = denominatorEquation;
+    }
+
+    public String getFacilityId() {
+        return facilityId;
+    }
+
+    public void setFacilityId(String facilityId) {
+        this.facilityId = facilityId;
+    }
+
+    public String getNumeratorIndicatorEquation() {
+        return numeratorIndicatorEquation;
+    }
+
+    public void setNumeratorIndicatorEquation(String numeratorIndicatorEquation) {
+        this.numeratorIndicatorEquation = numeratorIndicatorEquation;
+    }
+
+    public String getDenominatorIndicatorEquation() {
+        return denominatorIndicatorEquation;
+    }
+
+    public void setDenominatorIndicatorEquation(String denominatorIndicatorEquation) {
+        this.denominatorIndicatorEquation = denominatorIndicatorEquation;
     }
 }
