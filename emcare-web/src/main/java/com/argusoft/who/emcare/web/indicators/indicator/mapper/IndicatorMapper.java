@@ -30,6 +30,7 @@ public class IndicatorMapper {
         indicator.setFacilityId(indicatorDto.getFacilityId());
         indicator.setNumeratorIndicatorEquation(indicatorDto.getNumeratorIndicatorEquation());
         indicator.setDenominatorIndicatorEquation(indicatorDto.getDenominatorIndicatorEquation());
+        indicator.setDisplayType(indicatorDto.getDisplayType());
         indicator.setNumeratorEquation(getIndicatorEquationList(indicatorDto.getNumeratorEquations(), indicator));
         indicator.setDenominatorEquation(getDenominatorIndicatorEquationList(indicatorDto.getDenominatorEquations(), indicator));
         return indicator;
