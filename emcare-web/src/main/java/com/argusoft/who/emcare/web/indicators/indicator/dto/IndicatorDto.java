@@ -20,6 +20,8 @@ public class IndicatorDto {
     private String facilityId;
     private String numeratorIndicatorEquation;
     private String denominatorIndicatorEquation;
+
+    private String displayType;
     private List<IndicatorNumeratorEquationDto> numeratorEquations;
     private List<IndicatorDenominatorEquationDto> denominatorEquations;
 
@@ -93,5 +95,13 @@ public class IndicatorDto {
 
     public void setDenominatorEquations(List<IndicatorDenominatorEquationDto> denominatorEquations) {
         this.denominatorEquations = denominatorEquations;
+    }
+
+    public String getDisplayType() {
+        return displayType;
+    }
+
+    public void setDisplayType(String displayType) {
+        this.displayType = displayType;
     }
 }
