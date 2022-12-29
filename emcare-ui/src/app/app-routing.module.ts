@@ -32,7 +32,9 @@ import {
   ManageOrganizationComponent,
   OrganizationListComponent,
   ConsultationListComponent,
-  ViewConsultationComponent
+  ViewConsultationComponent,
+  ManageCodeComponent,
+  CodeListComponent
 } from './root/index';
 
 const routes: Routes = [
@@ -75,6 +77,9 @@ const routes: Routes = [
   { path: 'duplicatePatients', component: DuplicatePatientsComponent, canActivate: [AuthGuard] },
   { path: 'consultation-list', component: ConsultationListComponent, canActivate: [AuthGuard] },
   { path: 'view-consultation/:id', component: ViewConsultationComponent, canActivate: [AuthGuard] },
+  { path: 'manageCode', component: ManageCodeComponent },
+  { path: 'manageCode/:id', component: ManageCodeComponent },
+  { path: 'code-list', component: CodeListComponent },
   { path: '**', redirectTo: 'dashboard' }
 ];
 @NgModule({
