@@ -215,4 +215,29 @@ export class FhirService {
         let url = `${environment.apiUrl}/api/questionnaire_response/byPatient?patientId=${id}`;
         return this.http.get(url, this.getHeaders());
     }
+
+    getCodes(pageIndex, search?) {
+        let url;
+        if (search) {
+            url = `${environment.apiUrl}/api/custom/code/page?pageNo=${pageIndex}&search=${search}`;
+        } else {
+            url = `${environment.apiUrl}/api/custom/code/page?pageNo=${pageIndex}`;
+        }
+        return this.http.get(url, this.getHeaders());
+    }
+
+    getCodeById(codeId) {
+        let url = `${environment.apiUrl}/api/custom/code/${codeId}`;
+        return this.http.get(url, this.getHeaders());
+    }
+
+    addCustomCode(codeObj) {
+        const url = `${environment.apiUrl}/api/custom/code/add`;
+        return this.http.post(url, codeObj, this.getHeaders());
+    }
+
+    updateCustomCode(codeObj) {
+        const url = `${environment.apiUrl}/api/custom/code/update`;
+        return this.http.put(url, codeObj, this.getHeaders());
+    }
 }

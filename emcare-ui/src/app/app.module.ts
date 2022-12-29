@@ -35,7 +35,9 @@ import {
   LanguageListComponent,
   DuplicatePatientsComponent,
   ConsultationListComponent,
-  ViewConsultationComponent
+  ViewConsultationComponent,
+  ManageCodeComponent,
+  CodeListComponent
 } from './root/index';
 import { AuthenticationService, ToasterService } from './shared';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -101,7 +103,9 @@ import { NgxIntlTelInputModule } from 'ngx-intl-tel-input';
     OrganizationListComponent,
     DuplicatePatientsComponent,
     ConsultationListComponent,
-    ViewConsultationComponent
+    ViewConsultationComponent,
+    ManageCodeComponent,
+    CodeListComponent
   ],
   imports: [
     BrowserModule,

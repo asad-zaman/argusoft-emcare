@@ -230,5 +230,14 @@
   "Key Performance Indicators": "Key Performance Indicators",
   "Last sync": "Last sync",
   "Consultation": "Consultation",
-  "Select Encounter Key": "Select Encounter"
+  "Select Encounter Key": "Select Encounter",
+  "Code": "Code",
+  "Code Description": "Code Description",
+  "Add Code": "Add Code",
+  "Update Code": "Update Code",
+  "Code Name": "Code Name",
+  "CodePlaceholder": "Enter Code",
+  "Code Required Message": "Code is required",
+  "CodeDescriptionPlaceholder": "Enter Code Description",
+  "Code Description Required Message": "Code Description is required"
 }

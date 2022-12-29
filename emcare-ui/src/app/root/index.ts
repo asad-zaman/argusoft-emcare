@@ -35,4 +35,6 @@ export { OrganizationListComponent } from './components/organization-list/organi
 export { DuplicatePatientsComponent } from './components/duplicate-patients/duplicate-patients.component';
 export { ConsultationListComponent } from './components/patient-management/consultation-list/consultation-list.component';
 export { ViewConsultationComponent } from './components/patient-management/view-consultation/view-consultation.component';
+export { ManageCodeComponent } from './components/code/manage-code/manage-code.component';
+export { CodeListComponent } from './components/code/code-list/code-list.component';
 
