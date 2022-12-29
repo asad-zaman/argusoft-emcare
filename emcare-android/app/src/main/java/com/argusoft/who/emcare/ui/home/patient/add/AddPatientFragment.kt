@@ -31,7 +31,7 @@ class AddPatientFragment : BaseFragment<FragmentAddPatientBinding>() {
 
     override fun initView() {
         binding.headerLayout.toolbar.title = getString(R.string.title_emcare_registration)
-        homeViewModel.getQuestionnaireWithQR(stageToQuestionnaireId[CONSULTATION_STAGE_REGISTRATION_PATIENT]!!, UUID.randomUUID().toString(), UUID.randomUUID().toString(), isPreviouslySavedConsultation = false)
+        homeViewModel.getQuestionnaireFromPlanDefinition(MASTER_PLAN_DEFINITION)
         childFragmentManager.setFragmentResultListener(SUBMIT_REQUEST_KEY, viewLifecycleOwner) { _, _ ->
             homeViewModel.questionnaireJson?.let {
                 homeViewModel.saveQuestionnaire(
@@ -77,6 +77,12 @@ class AddPatientFragment : BaseFragment<FragmentAddPatientBinding>() {
     }
 
     override fun initObserver() {
+        observeNotNull(homeViewModel.questionnaireId) {
+            it.handleApiView(binding.progressLayout, skipIds = listOf(R.id.headerLayout)) { questionnaireId ->
+                questionnaireId.let { homeViewModel.getQuestionnaireWithQR(questionnaireId!!, UUID.randomUUID().toString(), UUID.randomUUID().toString(), isPreviouslySavedConsultation = false) }
+            }
+        }
+
         observeNotNull(homeViewModel.saveQuestionnaire) { apiResponse ->
             apiResponse.handleApiView(binding.progressLayout, skipIds = listOf(R.id.headerLayout)) {
                 if (it is ConsultationFlowItem) {

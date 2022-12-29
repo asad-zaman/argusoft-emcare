@@ -68,6 +68,9 @@ class HomeViewModel @Inject constructor(
     private val _sidepaneItems = SingleLiveEvent<ApiResponse<List<SidepaneItem>>>()
     val sidepaneItems: LiveData<ApiResponse<List<SidepaneItem>>> = _sidepaneItems
 
+    private val _questionnaireId = SingleLiveEvent<ApiResponse<String>>()
+    val questionnaireId: LiveData<ApiResponse<String>> = _questionnaireId
+
     fun getPatients(search: String? = null, facilityId: String?, isRefresh: Boolean = false) {
         _patients.value = ApiResponse.Loading(isRefresh)
         viewModelScope.launch {
@@ -206,6 +209,14 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    fun getQuestionnaireFromPlanDefinition(planDefinitionId: String) {
+        _questionnaireId.value = ApiResponse.Loading()
+        viewModelScope.launch {
+            patientRepository.getQuestionnaireFromPlanDefinition(planDefinitionId).collect {
+                _questionnaireId.value = ApiResponse.Success(data = it)
+            }
+        }
+    }
 
     fun getQuestionnaireWithQR(questionnaireId: String, patientId: String, encounterId: String, isPreviouslySavedConsultation: Boolean) {
         _questionnaireWithQR.value = ApiResponse.Loading()

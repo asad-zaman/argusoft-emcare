@@ -20,12 +20,11 @@ import com.google.android.fhir.delete
 import com.google.android.fhir.get
 import com.google.android.fhir.logicalId
 import com.google.android.fhir.search.Operation
-import com.google.android.fhir.search.Order
 import com.google.android.fhir.search.StringFilterModifier
 import com.google.android.fhir.search.search
+import com.google.android.fhir.workflow.FhirOperator
 import kotlinx.coroutines.flow.flow
 import org.hl7.fhir.r4.model.*
-import java.time.Instant
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.util.*
@@ -34,6 +33,7 @@ import javax.inject.Inject
 class PatientRepository @Inject constructor(
     private val fhirEngine: FhirEngine,
     private val application: Application,
+    private val fhirOperator: FhirOperator,
     private val consultationFlowRepository: ConsultationFlowRepository,
     private val preference: Preference
 ) {
@@ -66,8 +66,6 @@ class PatientRepository @Inject constructor(
                 )
                 operation = Operation.OR
             }
-            count = 100
-            from = 0
         }.filter {
             (it.getExtensionByUrl(LOCATION_EXTENSION_URL)?.value as? Identifier)?.value == facilityId
         }.mapIndexed { index, fhirPatient ->
@@ -118,6 +116,12 @@ class PatientRepository @Inject constructor(
             preference.setSubmittedResource(Bundle().setEntry(mutableListOf(Bundle.BundleEntryComponent()
                 .setResource(questionnaireResponse))))
             saveResourcesFromBundle(extractedBundle, patientId, encounterId, facilityId, consultationFlowItemId)
+
+            //Generate Careplan & get questionnaireId & add logic of getting stage from nextQuestionnaireId
+            val careplan = fhirOperator.generateCarePlan(MASTER_PLAN_DEFINITION, patientId, encounterId)
+            val currentQuestionnaireId = questionnaireResource.id
+            //get index of current questionnaireId and get nextQuestionnaireId using it.
+            val nextQuestionnaireId = ""//TODO: add logic to fetch nextQuestionnaireID
             //update QuestionnarieResponse in currentConsultation and createNext Consultation
             if(consultationFlowItemId != null) {
                 consultationFlowRepository.updateConsultationQuestionnaireResponseText(consultationFlowItemId, parser.encodeResourceToString(questionnaireResponse), ZonedDateTime.now(ZoneId.of("UTC")).toString().removeSuffix(Z_UTC))
@@ -240,6 +244,16 @@ class PatientRepository @Inject constructor(
             fhirEngine.delete<Patient>(patientId)
         }
         emit(ApiResponse.Success(1))
+    }
+
+    fun getQuestionnaireFromPlanDefinition(planDefinitionId: String) = flow {
+        val planDefinition = fhirEngine.get<PlanDefinition>(planDefinitionId)
+        if(planDefinition.hasAction()){
+
+            emit((planDefinition.actionFirstRep.definition as PrimitiveType<*>).asStringValue().substringAfterLast("/"))
+        } else {
+            emit(DEFAULT_REGISTRATION_QUESTIONNAIRE)
+        }
     }
 
     private suspend fun saveResourcesFromBundle(bundle: Bundle, patientId: String, encounterId: String, facilityId: String, consultationFlowItemId: String?): Boolean {

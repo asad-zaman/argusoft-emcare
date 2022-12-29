@@ -113,3 +113,6 @@ val stageToStructureMapId = mapOf(
     CONSULTATION_STAGE_CLASSIFICATIONS to "emcare.b23.classification",
     CONSULTATION_STAGE_TREATMENTS to "emcare.treatment",
     )
+
+const val MASTER_PLAN_DEFINITION = "emcaredt01"
+const val DEFAULT_REGISTRATION_QUESTIONNAIRE = "emcarea.registration.p"
