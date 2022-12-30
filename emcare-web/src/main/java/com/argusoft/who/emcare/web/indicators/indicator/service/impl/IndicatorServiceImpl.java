@@ -2,8 +2,12 @@ package com.argusoft.who.emcare.web.indicators.indicator.service.impl;
 
 import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.common.dto.PageDto;
+import com.argusoft.who.emcare.web.fhir.dao.ObservationResourceRepository;
+import com.argusoft.who.emcare.web.fhir.model.ObservationResource;
 import com.argusoft.who.emcare.web.indicators.indicator.dto.IndicatorDto;
 import com.argusoft.who.emcare.web.indicators.indicator.entity.Indicator;
+import com.argusoft.who.emcare.web.indicators.indicator.entity.IndicatorDenominatorEquation;
+import com.argusoft.who.emcare.web.indicators.indicator.entity.IndicatorNumeratorEquation;
 import com.argusoft.who.emcare.web.indicators.indicator.mapper.IndicatorMapper;
 import com.argusoft.who.emcare.web.indicators.indicator.repository.IndicatorDenominatorEquationRepository;
 import com.argusoft.who.emcare.web.indicators.indicator.repository.IndicatorNumeratorEquationRepository;
@@ -17,6 +21,12 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * <h1> Indicator Service like Add, Update, and Get.</h1>
@@ -38,6 +48,9 @@ public class IndicatorServiceImpl implements IndicatorService {
 
     @Autowired
     IndicatorDenominatorEquationRepository indicatorDenominatorEquationRepository;
+
+    @Autowired
+    ObservationResourceRepository observationResourceRepository;
 
     /**
      * @param indicatorDto
@@ -91,5 +104,56 @@ public class IndicatorServiceImpl implements IndicatorService {
         pageDto.setList(indicators.getContent());
         pageDto.setTotalCount(totalCount);
         return pageDto;
+    }
+
+    @Override
+    public ResponseEntity<Object> getIndicatorsCompileValue(List<Long> indicatorIds) {
+        List<Indicator> indicators = indicatorRepository.findAllById(indicatorIds);
+        Map<String, Object> stringObjectMap = new HashMap<>();
+        for (Indicator indicator : indicators) {
+            Map<String, Long> numerator = new HashMap<>();
+            Map<String, Long> denominator = new HashMap<>();
+            if (indicator.getDisplayType().equals(CommonConstant.INDICATOR_DISPLAY_TYPE_COUNT)) {
+                for (IndicatorNumeratorEquation indicatorNumeratorEquation : indicator.getNumeratorEquation()) {
+                    List<ObservationResource> observationResources = observationResourceRepository.fetchByCustomCode(
+                            indicator.getFacilityId(),
+                            indicatorNumeratorEquation.getCode());
+                    numerator.put(indicatorNumeratorEquation.getEqIdentifier(), Long.valueOf(observationResources.size()));
+                }
+
+                for (IndicatorDenominatorEquation indicatorDenominatorEquation : indicator.getDenominatorEquation()) {
+                    List<ObservationResource> observationResources = observationResourceRepository.fetchByCustomCode(
+                            indicator.getFacilityId(),
+                            indicatorDenominatorEquation.getCode());
+                    denominator.put(indicatorDenominatorEquation.getEqIdentifier(), Long.valueOf(observationResources.size()));
+                }
+
+                Integer numeratorResult = replaceValueToEquationAndResolve(indicator.getNumeratorIndicatorEquation(), numerator);
+                Integer denominatorResult = replaceValueToEquationAndResolve(indicator.getDenominatorIndicatorEquation(), denominator);
+                Double finalValue =(numeratorResult.doubleValue()/denominatorResult.doubleValue())*100;
+                stringObjectMap.put(indicator.getIndicatorCode(), finalValue);
+            }
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(stringObjectMap);
+    }
+
+    private Integer replaceValueToEquationAndResolve(String equation, Map<String, Long> data) {
+        String eq = equation;
+        for (String key : data.keySet()) {
+            eq = eq.replace(key, data.get(key).toString());
+        }
+        return resolveEquation(eq);
+    }
+
+    public Integer resolveEquation(String equation) {
+        Integer result = 0;
+        try {
+            ScriptEngineManager mgr = new ScriptEngineManager();
+            ScriptEngine engine = mgr.getEngineByName("JavaScript");
+            result = (Integer) engine.eval(equation);
+        } catch (Exception ex) {
+            System.out.println(ex.getLocalizedMessage());
+        }
+        return result;
     }
 }

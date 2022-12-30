@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Nullable;
+import java.util.List;
 
 /**
  * <h1> Add heading here </h1>
@@ -40,5 +41,10 @@ public class IndicatorController {
     public PageDto getIndicatorPage(@RequestParam(value = "pageNo") Integer pageNo,
                                     @Nullable @RequestParam(value = "search", required = false) String searchString) {
         return indicatorService.getIndicatorDataPage(pageNo, searchString);
+    }
+
+    @PostMapping("/compile/value")
+    public ResponseEntity<Object> getIndicatorCompileValue(@RequestBody List<Long> indicatorIds) {
+        return indicatorService.getIndicatorsCompileValue(indicatorIds);
     }
 }

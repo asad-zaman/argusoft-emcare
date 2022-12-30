@@ -4,6 +4,8 @@ import com.argusoft.who.emcare.web.common.dto.PageDto;
 import com.argusoft.who.emcare.web.indicators.indicator.dto.IndicatorDto;
 import org.springframework.http.ResponseEntity;
 
+import java.util.List;
+
 /**
  * <h1> Add heading here </h1>
  * <p>
@@ -20,4 +22,6 @@ public interface IndicatorService {
     public ResponseEntity<Object> getAllIndicatorData();
 
     public PageDto getIndicatorDataPage(Integer pageNo, String searchText);
+
+    public ResponseEntity<Object> getIndicatorsCompileValue(List<Long> indicatorIds);
 }
