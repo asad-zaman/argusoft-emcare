@@ -1,7 +1,7 @@
 package com.argusoft.who.emcare.web.indicators.codes.service;
 
 import com.argusoft.who.emcare.web.common.dto.PageDto;
-import com.argusoft.who.emcare.web.indicators.codes.CustomCodeRequestDto;
+import com.argusoft.who.emcare.web.indicators.codes.dto.CustomCodeRequestDto;
 import org.springframework.http.ResponseEntity;
 
 /**
