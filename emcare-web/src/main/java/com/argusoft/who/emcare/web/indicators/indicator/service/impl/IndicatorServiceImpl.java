@@ -19,9 +19,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 /**
- * <h1> Add heading here </h1>
+ * <h1> Indicator Service like Add, Update, and Get.</h1>
  * <p>
- * Add Description here.
+ * Apis.
  * </p>
  *
  * @author - jaykalariya
@@ -39,19 +39,31 @@ public class IndicatorServiceImpl implements IndicatorService {
     @Autowired
     IndicatorDenominatorEquationRepository indicatorDenominatorEquationRepository;
 
+    /**
+     * @param indicatorDto
+     * @return
+     */
     @Override
-    public ResponseEntity<Object> addNewIndicator(IndicatorDto indicatorDto) {
+    public ResponseEntity<Object> addOrUpdateIndicator(IndicatorDto indicatorDto) {
         Indicator indicator = indicatorRepository.save(IndicatorMapper.getIndicator(indicatorDto));
         indicatorNumeratorEquationRepository.saveAll(indicator.getNumeratorEquation());
         indicatorDenominatorEquationRepository.saveAll(indicator.getDenominatorEquation());
         return ResponseEntity.status(HttpStatus.OK).body(indicator);
     }
 
+    /**
+     * @return All Indicator
+     */
     @Override
     public ResponseEntity<Object> getAllIndicatorData() {
         return ResponseEntity.status(HttpStatus.OK).body(indicatorRepository.findAll());
     }
 
+    /**
+     * @param pageNo     Integer
+     * @param searchText String
+     * @return PageDto Model
+     */
     @Override
     public PageDto getIndicatorDataPage(Integer pageNo, String searchText) {
         Sort sort = Sort.by("createdOn").descending();

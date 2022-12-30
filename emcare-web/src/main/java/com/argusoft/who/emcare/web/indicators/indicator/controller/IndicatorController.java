@@ -28,7 +28,7 @@ public class IndicatorController {
 
     @PostMapping("/add")
     public ResponseEntity<Object> addNewCodeSystem(@RequestBody IndicatorDto indicatorDto) {
-        return indicatorService.addNewIndicator(indicatorDto);
+        return indicatorService.addOrUpdateIndicator(indicatorDto);
     }
 
     @GetMapping("/all")

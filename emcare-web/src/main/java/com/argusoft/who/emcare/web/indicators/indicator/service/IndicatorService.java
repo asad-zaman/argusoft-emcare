@@ -15,7 +15,7 @@ import org.springframework.http.ResponseEntity;
  */
 public interface IndicatorService {
 
-    public ResponseEntity<Object> addNewIndicator(IndicatorDto indicatorDto);
+    public ResponseEntity<Object> addOrUpdateIndicator(IndicatorDto indicatorDto);
 
     public ResponseEntity<Object> getAllIndicatorData();
 
