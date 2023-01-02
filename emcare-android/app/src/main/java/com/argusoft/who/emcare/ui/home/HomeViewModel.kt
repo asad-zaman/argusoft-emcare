@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.uhn.fhir.context.FhirContext
+import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.data.remote.ApiResponse
 import com.argusoft.who.emcare.di.AppModule
 import com.argusoft.who.emcare.ui.common.*
@@ -212,12 +213,16 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             patientRepository.getQuestionnaire(questionnaireId).collect {
                 val parser = FhirContext.forR4().newJsonParser()
-                val questionnaireJsonWithQR: Questionnaire = preProcessQuestionnaire(it.data!!, patientId, encounterId, isPreviouslySavedConsultation)
-                val questionnaireResponse: QuestionnaireResponse = generateQuestionnaireResponseWithPatientIdAndEncounterId(questionnaireJsonWithQR, patientId!!, encounterId!!)
+                val questionnaireJsonWithQR: Questionnaire? = preProcessQuestionnaire(it.data!!, patientId, encounterId, isPreviouslySavedConsultation)
+                if(questionnaireJsonWithQR == null) {
+                    _questionnaireWithQR.value = ApiResponse.ApiError(apiErrorMessageResId = R.string.initial_expression_error)
+                } else {
+                    val questionnaireResponse: QuestionnaireResponse = generateQuestionnaireResponseWithPatientIdAndEncounterId(questionnaireJsonWithQR, patientId!!, encounterId!!)
 
-                val questionnaireString = parser.encodeResourceToString(questionnaireJsonWithQR)
-                val questionnaireResponseString = parser.encodeResourceToString(questionnaireResponse)
-                _questionnaireWithQR.value = ApiResponse.Success(data=questionnaireString to questionnaireResponseString)
+                    val questionnaireString = parser.encodeResourceToString(questionnaireJsonWithQR)
+                    val questionnaireResponseString = parser.encodeResourceToString(questionnaireResponse)
+                    _questionnaireWithQR.value = ApiResponse.Success(data=questionnaireString to questionnaireResponseString)
+                }
             }
         }
     }
@@ -260,8 +265,8 @@ class HomeViewModel @Inject constructor(
         return questionnaireResponse
     }
 
-    private suspend fun preProcessQuestionnaire(questionnaire: Questionnaire, patientId: String, encounterId: String, isPreviouslySavedConsultation: Boolean) : Questionnaire {
-        var ansQuestionnaire = injectUuid(questionnaire)
+    private suspend fun preProcessQuestionnaire(questionnaire: Questionnaire, patientId: String, encounterId: String, isPreviouslySavedConsultation: Boolean) : Questionnaire? {
+        var ansQuestionnaire: Questionnaire? = injectUuid(questionnaire)
         if(questionnaire.hasExtension(URL_CQF_LIBRARY) && !isPreviouslySavedConsultation){
             ansQuestionnaire = injectInitialExpressionCqlValues(questionnaire, patientId, encounterId)
         }
@@ -279,38 +284,50 @@ class HomeViewModel @Inject constructor(
         return questionnaire
     }
 
-    private suspend fun injectInitialExpressionCqlValues(questionnaire: Questionnaire, patientId: String, encounterId: String): Questionnaire = withContext(dispatcher) {
-        val cqlLibraryURL = questionnaire.getExtensionByUrl(URL_CQF_LIBRARY).value.asStringValue()
-        val expressionSet = mutableSetOf<String>()
-        //If questionnaire has Cql library then evaluate library and inject the parameters
-        if(cqlLibraryURL.isNotEmpty()){
-            //Creating ExpressionSet
-            questionnaire.item.forEach { item ->
-                if(item.hasExtension(URL_INITIAL_EXPRESSION)) {
-                    expressionSet.add((item.getExtensionByUrl(URL_INITIAL_EXPRESSION).value as Expression).expression)
-                }
-            }
-            //Creating parameterObject to pass encounterId
-            val parameterObject = Parameters().apply {
-                parameter = listOf(
-                    Parameters.ParametersParameterComponent().apply {
-                        name = "encounterid"
-                        value = StringType(encounterId)
+    private suspend fun injectInitialExpressionCqlValues(questionnaire: Questionnaire, patientId: String, encounterId: String): Questionnaire? = withContext(dispatcher) {
+        try {
+            val cqlLibraryURL =
+                questionnaire.getExtensionByUrl(URL_CQF_LIBRARY).value.asStringValue()
+            val expressionSet = mutableSetOf<String>()
+            //If questionnaire has Cql library then evaluate library and inject the parameters
+            if (cqlLibraryURL.isNotEmpty()) {
+                //Creating ExpressionSet
+                questionnaire.item.forEach { item ->
+                    if (item.hasExtension(URL_INITIAL_EXPRESSION)) {
+                        expressionSet.add((item.getExtensionByUrl(URL_INITIAL_EXPRESSION).value as Expression).expression)
                     }
-                )
-            }
-            //Evaluating Library
-            val parameters = fhirOperator.evaluateLibrary(cqlLibraryURL, patientId, expressionSet, parameterObject) as Parameters
-            //Inject parameters to appropriate places
-            questionnaire.item.forEach { item ->
-                if(item.hasExtension(URL_INITIAL_EXPRESSION)) {
-                    val value = parameters.getParameter((item.getExtensionByUrl(URL_INITIAL_EXPRESSION).value as Expression).expression) //parameter has same name as linkId
-                    //inject value in the QuestionnaireItem as InitialComponent
-                    if(value != null)
-                        item.initial = mutableListOf(Questionnaire.QuestionnaireItemInitialComponent(value))
+                }
+                //Creating parameterObject to pass encounterId
+                val parameterObject = Parameters().apply {
+                    parameter = listOf(
+                        Parameters.ParametersParameterComponent().apply {
+                            name = "encounterid"
+                            value = StringType(encounterId)
+                        }
+                    )
+                }
+                //Evaluating Library
+                val parameters = fhirOperator.evaluateLibrary(
+                    cqlLibraryURL,
+                    patientId,
+                    expressionSet,
+                    parameterObject
+                ) as Parameters
+                //Inject parameters to appropriate places
+                questionnaire.item.forEach { item ->
+                    if (item.hasExtension(URL_INITIAL_EXPRESSION)) {
+                        val value =
+                            parameters.getParameter((item.getExtensionByUrl(URL_INITIAL_EXPRESSION).value as Expression).expression) //parameter has same name as linkId
+                        //inject value in the QuestionnaireItem as InitialComponent
+                        if (value != null)
+                            item.initial =
+                                mutableListOf(Questionnaire.QuestionnaireItemInitialComponent(value))
+                    }
                 }
             }
+            return@withContext questionnaire
+        } catch (e: Exception) {
+            return@withContext null
         }
-        return@withContext questionnaire
     }
 }

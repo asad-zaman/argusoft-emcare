@@ -214,4 +214,6 @@
     <string name="label_app_version_about">App Version: </string>
     <string name="label_bundle_version">Bundle Version: </string>
 
+    <string name="initial_expression_error">Error encountered while loading initial Expressions</string>
+
 </resources>
