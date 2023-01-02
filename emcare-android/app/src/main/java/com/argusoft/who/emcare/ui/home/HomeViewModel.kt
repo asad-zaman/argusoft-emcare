@@ -21,6 +21,7 @@ import com.google.android.fhir.datacapture.createQuestionnaireResponseItem
 import com.google.android.fhir.workflow.FhirOperator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.collect
 import org.hl7.fhir.r4.model.*
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -65,6 +66,9 @@ class HomeViewModel @Inject constructor(
 
     private val _saveQuestionnaire = MutableLiveData<ApiResponse<ConsultationFlowItem>>()
     val saveQuestionnaire: LiveData<ApiResponse<ConsultationFlowItem>> = _saveQuestionnaire
+
+    private val _nextQuestionnaire = MutableLiveData<ApiResponse<ConsultationFlowItem>>()
+    val nextQuestionnaire: LiveData<ApiResponse<ConsultationFlowItem>> = _nextQuestionnaire
 
     private val _sidepaneItems = SingleLiveEvent<ApiResponse<List<SidepaneItem>>>()
     val sidepaneItems: LiveData<ApiResponse<List<SidepaneItem>>> = _sidepaneItems
@@ -223,6 +227,15 @@ class HomeViewModel @Inject constructor(
                     val questionnaireResponseString = parser.encodeResourceToString(questionnaireResponse)
                     _questionnaireWithQR.value = ApiResponse.Success(data=questionnaireString to questionnaireResponseString)
                 }
+            }
+        }
+    }
+
+    fun moveToNextQuestionnaire(consultationFlowItemId: String, encounterId: String){
+        _questionnaireWithQR.value = ApiResponse.Loading()
+        viewModelScope.launch {
+            consultationFlowRepository.getNextConsultationByConsultationIdAndEncounterId(consultationFlowItemId, encounterId).collect{
+                _nextQuestionnaire.value = it
             }
         }
     }

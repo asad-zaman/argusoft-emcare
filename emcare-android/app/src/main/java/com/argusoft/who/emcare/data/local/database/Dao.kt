@@ -90,4 +90,7 @@ interface Dao {
 
     @Query("DElETE FROM consultationflowitem WHERE id=:consultationFlowItemId")
     suspend fun deleteConsultationFlowItemById(consultationFlowItemId: String)
+
+    @Query("SELECT * FROM consultationflowitem WHERE encounterId=:encounterId AND consultationStage !=(SELECT consultationStage FROM consultationflowitem WHERE id=:consultationId) AND consultationDate>(SELECT consultationDate FROM consultationflowitem WHERE id=:consultationId) ORDER BY consultationDate ASC LIMIT 1")
+    suspend fun getNextConsultationByConsultationIdAndEncounterId(consultationId: String, encounterId: String): ConsultationFlowItem?
 }

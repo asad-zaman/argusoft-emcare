@@ -12,6 +12,8 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import ca.uhn.fhir.context.FhirContext
+import ca.uhn.fhir.context.FhirVersionEnum
 import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.databinding.FragmentPatientQuestionnaireBinding
 import com.argusoft.who.emcare.ui.common.*
@@ -59,15 +61,26 @@ class PatientQuestionnaireFragment : BaseFragment<FragmentPatientQuestionnaireBi
             viewLifecycleOwner
         ) { _, _ ->
             if(requireArguments().getBoolean(INTENT_EXTRA_IS_DELETE_NEXT_CONSULTATIONS)){
-                activity?.alertDialog {
-                    setMessage(R.string.msg_delete_on_save_consultation)
-                    setPositiveButton(R.string.button_yes) { _, _ ->
-                        homeViewModel.deleteNextConsultations(
-                            requireArguments().getString(INTENT_EXTRA_CONSULTATION_FLOW_ITEM_ID)!!,
-                            requireArguments().getString(INTENT_EXTRA_ENCOUNTER_ID)!!)
-                    }
-                    setNegativeButton(R.string.button_no) { _, _ -> }
-                }?.show()
+                //Logic to avoid saving questionnaire if no changes are done
+                val latestQuestionnaireResponse = FhirContext.forCached(FhirVersionEnum.R4).newJsonParser()
+                    .encodeResourceToString(questionnaireFragment.getQuestionnaireResponse())
+                if(latestQuestionnaireResponse.equals(
+                        requireArguments().getString(INTENT_EXTRA_QUESTIONNAIRE_RESPONSE))){
+                    moveToNextQuestionnaire(
+                        requireArguments().getString(INTENT_EXTRA_CONSULTATION_FLOW_ITEM_ID)!!,
+                        requireArguments().getString(INTENT_EXTRA_ENCOUNTER_ID)!!)
+                } else {
+                    activity?.alertDialog {
+                        setMessage(R.string.msg_delete_on_save_consultation)
+                        setPositiveButton(R.string.button_yes) { _, _ ->
+                            homeViewModel.deleteNextConsultations(
+                                requireArguments().getString(INTENT_EXTRA_CONSULTATION_FLOW_ITEM_ID)!!,
+                                requireArguments().getString(INTENT_EXTRA_ENCOUNTER_ID)!!)
+                        }
+                        setNegativeButton(R.string.button_no) { _, _ -> }
+                    }?.show()
+                }
+
             } else {
                 saveQuestionnaire()
             }
@@ -105,6 +118,10 @@ class PatientQuestionnaireFragment : BaseFragment<FragmentPatientQuestionnaireBi
                 consultationStage = requireArguments().getString(INTENT_EXTRA_CONSULTATION_STAGE)
             )
         }
+    }
+
+    private fun moveToNextQuestionnaire(consultationFlowItemId: String, encounterId: String) {
+        homeViewModel.moveToNextQuestionnaire(consultationFlowItemId, encounterId)
     }
 
     private fun addQuestionnaireFragment(pair: Pair<String, String>) {
@@ -192,6 +209,25 @@ class PatientQuestionnaireFragment : BaseFragment<FragmentPatientQuestionnaireBi
         }
 
         observeNotNull(homeViewModel.saveQuestionnaire) { apiResponse ->
+            apiResponse.handleApiView(binding.progressLayout, skipIds = listOf(R.id.headerLayout)) {
+                if (it is ConsultationFlowItem) {
+                    navigate(R.id.action_patientQuestionnaireFragment_to_patientQuestionnaireFragment) {
+                        putString(INTENT_EXTRA_QUESTIONNAIRE_ID, it.questionnaireId)
+                        putString(INTENT_EXTRA_STRUCTUREMAP_ID, it.structureMapId)
+                        putString(INTENT_EXTRA_QUESTIONNAIRE_HEADER, it.questionnaireId)
+                        putString(INTENT_EXTRA_CONSULTATION_FLOW_ITEM_ID, it.id)
+                        putString(INTENT_EXTRA_PATIENT_ID, it.patientId)
+                        putString(INTENT_EXTRA_ENCOUNTER_ID, it.encounterId)
+                        putString(INTENT_EXTRA_CONSULTATION_STAGE, it.consultationStage)
+                        putString(INTENT_EXTRA_QUESTIONNAIRE_RESPONSE, it.questionnaireResponseText)
+                    }
+                } else {
+                    navigate(R.id.action_patientQuestionnaireFragment_to_homeFragment)
+                }
+            }
+        }
+
+        observeNotNull(homeViewModel.nextQuestionnaire) { apiResponse ->
             apiResponse.handleApiView(binding.progressLayout, skipIds = listOf(R.id.headerLayout)) {
                 if (it is ConsultationFlowItem) {
                     navigate(R.id.action_patientQuestionnaireFragment_to_patientQuestionnaireFragment) {

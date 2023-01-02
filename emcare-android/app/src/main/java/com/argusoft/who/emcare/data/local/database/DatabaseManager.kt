@@ -114,4 +114,11 @@ class DatabaseManager(roomDatabase: RoomDatabase) : Database {
     override suspend fun deleteConsultationFlowItemById(consultationFlowItemId: String) {
         return dao.deleteConsultationFlowItemById(consultationFlowItemId)
     }
+
+    override suspend fun getNextConsultationByConsultationIdAndEncounterId(
+        consultationId: String,
+        encounterId: String
+    ): ConsultationFlowItem? {
+        return dao.getNextConsultationByConsultationIdAndEncounterId(consultationId, encounterId)
+    }
 }
