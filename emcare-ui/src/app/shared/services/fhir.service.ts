@@ -216,6 +216,11 @@ export class FhirService {
         return this.http.get(url, this.getHeaders());
     }
 
+    getAllCodes() {
+        let url = `${environment.apiUrl}/api/custom/code/all`;
+        return this.http.get(url, this.getHeaders());
+    }
+
     getCodes(pageIndex, search?) {
         let url;
         if (search) {
@@ -239,5 +244,10 @@ export class FhirService {
     updateCustomCode(codeObj) {
         const url = `${environment.apiUrl}/api/custom/code/update`;
         return this.http.put(url, codeObj, this.getHeaders());
+    }
+
+    addIndicator(body) {
+        const url = `${environment.apiUrl}/api/indicator/add`;
+        return this.http.post(url, body, this.getHeaders());
     }
 }

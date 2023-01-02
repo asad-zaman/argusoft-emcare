@@ -37,4 +37,5 @@ export { ConsultationListComponent } from './components/patient-management/consu
 export { ViewConsultationComponent } from './components/patient-management/view-consultation/view-consultation.component';
 export { ManageCodeComponent } from './components/code/manage-code/manage-code.component';
 export { CodeListComponent } from './components/code/code-list/code-list.component';
+export { IndicatorComponent } from './components/indicator/indicator.component';
 
