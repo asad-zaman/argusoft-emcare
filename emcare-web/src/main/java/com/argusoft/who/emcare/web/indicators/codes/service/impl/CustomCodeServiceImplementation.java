@@ -3,7 +3,7 @@ package com.argusoft.who.emcare.web.indicators.codes.service.impl;
 import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.common.dto.PageDto;
 import com.argusoft.who.emcare.web.common.response.Response;
-import com.argusoft.who.emcare.web.indicators.codes.CustomCodeRequestDto;
+import com.argusoft.who.emcare.web.indicators.codes.dto.CustomCodeRequestDto;
 import com.argusoft.who.emcare.web.indicators.codes.entity.EmCareCustomCodeSystem;
 import com.argusoft.who.emcare.web.indicators.codes.mapper.CustomCodeMapper;
 import com.argusoft.who.emcare.web.indicators.codes.repository.EmCareCustomCodeSystemRepository;

@@ -65,4 +65,7 @@ public class CommonConstant {
     public static final String LAST_NAME = "lastName";
 
 
+    public static final String INDICATOR_DISPLAY_TYPE_COUNT = "Count";
+
+
 }

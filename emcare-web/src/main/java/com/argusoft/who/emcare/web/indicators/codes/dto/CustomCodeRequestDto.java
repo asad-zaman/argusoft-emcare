@@ -1,4 +1,4 @@
-package com.argusoft.who.emcare.web.indicators.codes;
+package com.argusoft.who.emcare.web.indicators.codes.dto;
 
 /**
  * <h1> Add heading here </h1>

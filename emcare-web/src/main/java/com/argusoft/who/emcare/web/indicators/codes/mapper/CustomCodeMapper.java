@@ -1,6 +1,6 @@
 package com.argusoft.who.emcare.web.indicators.codes.mapper;
 
-import com.argusoft.who.emcare.web.indicators.codes.CustomCodeRequestDto;
+import com.argusoft.who.emcare.web.indicators.codes.dto.CustomCodeRequestDto;
 import com.argusoft.who.emcare.web.indicators.codes.entity.EmCareCustomCodeSystem;
 
 /**
