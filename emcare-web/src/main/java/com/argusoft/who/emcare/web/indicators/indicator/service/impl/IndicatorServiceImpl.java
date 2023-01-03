@@ -2,6 +2,7 @@ package com.argusoft.who.emcare.web.indicators.indicator.service.impl;
 
 import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.common.dto.PageDto;
+import com.argusoft.who.emcare.web.fhir.dao.ObservationCustomResourceRepository;
 import com.argusoft.who.emcare.web.fhir.dao.ObservationResourceRepository;
 import com.argusoft.who.emcare.web.fhir.model.ObservationResource;
 import com.argusoft.who.emcare.web.indicators.indicator.dto.IndicatorDto;
@@ -24,6 +25,7 @@ import org.springframework.stereotype.Service;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,6 +53,9 @@ public class IndicatorServiceImpl implements IndicatorService {
 
     @Autowired
     ObservationResourceRepository observationResourceRepository;
+
+    @Autowired
+    ObservationCustomResourceRepository observationCustomResourceRepository;
 
     /**
      * @param indicatorDto
@@ -108,8 +113,11 @@ public class IndicatorServiceImpl implements IndicatorService {
 
     @Override
     public ResponseEntity<Object> getIndicatorsCompileValue(List<Long> indicatorIds) {
+        // System.out.println("=======================");
+        // observationCustomResourceRepository.findByPublished();
+        // System.out.println("=======================");
         List<Indicator> indicators = indicatorRepository.findAllById(indicatorIds);
-        Map<String, Object> stringObjectMap = new HashMap<>();
+        List<Map<String, Object>> responseList = new ArrayList<>();
         for (Indicator indicator : indicators) {
             Map<String, Long> numerator = new HashMap<>();
             Map<String, Long> denominator = new HashMap<>();
@@ -131,10 +139,15 @@ public class IndicatorServiceImpl implements IndicatorService {
                 Integer numeratorResult = replaceValueToEquationAndResolve(indicator.getNumeratorIndicatorEquation(), numerator);
                 Integer denominatorResult = replaceValueToEquationAndResolve(indicator.getDenominatorIndicatorEquation(), denominator);
                 Double finalValue =(numeratorResult.doubleValue()/denominatorResult.doubleValue())*100;
-                stringObjectMap.put(indicator.getIndicatorCode(), finalValue);
+                Map<String, Object> stringObjectMap = new HashMap<>();
+
+                stringObjectMap.put("indicatorCode", indicator.getIndicatorCode());
+                stringObjectMap.put("indicatorName", indicator.getIndicatorName());
+                stringObjectMap.put("indicatorValue", finalValue);
+                responseList.add(stringObjectMap);
             }
         }
-        return ResponseEntity.status(HttpStatus.OK).body(stringObjectMap);
+        return ResponseEntity.status(HttpStatus.OK).body(responseList);
     }
 
     private Integer replaceValueToEquationAndResolve(String equation, Map<String, Long> data) {
