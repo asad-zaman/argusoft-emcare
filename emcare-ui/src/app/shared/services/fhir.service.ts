@@ -250,4 +250,9 @@ export class FhirService {
         const url = `${environment.apiUrl}/api/indicator/add`;
         return this.http.post(url, body, this.getHeaders());
     }
+
+    getIndicatorCompileValue(codeIdArr) {
+        const url = `${environment.apiUrl}/api/indicator/compile/value`;
+        return this.http.post(url, codeIdArr, this.getHeaders());
+    }
 }

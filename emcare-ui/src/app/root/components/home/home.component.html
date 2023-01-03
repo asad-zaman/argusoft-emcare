@@ -35,6 +35,16 @@
             </div>
           </div>
         </p-card>
+        <p-card
+          [style]="{'overflow': 'hidden', 'width': '285px', 'height': '80px', 'margin-right': '2em','cursor': 'pointer'}"
+          (click)="redirectToRoute('/confirmUsers')">
+          <div class="row">
+            <h3 class="col-5 w-700 ctype ctype-4">{{dashboardData.indicatorValue}}</h3>
+            <div class="col-7 c-style">
+              <h6>{{dashboardData.indicatorName}}</h6>
+            </div>
+          </div>
+        </p-card>
       </ng-container>
     </div>
   </div>

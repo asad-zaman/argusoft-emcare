@@ -89,10 +89,14 @@ label {
 
 .signup_left-col {
     display: flex;
-
     align-items: center;
     background: linear-gradient(160.59deg, #ffffff 5.63%, #eeeeee 60.17%);
     height: 100vh;
+
+    &-signin {
+        height: 110vh;
+    }
+
     @media screen and (max-width: 767px) {
         height: auto;
         margin-bottom: 30px;
