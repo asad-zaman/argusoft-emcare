@@ -92,7 +92,8 @@ export class IndicatorComponent implements OnInit {
       condition: null,
       value: null,
       valueType: null,
-      eqIdentifier: null
+      eqIdentifier: null,
+      appendOtherNumeratorDropdown: false
     })
   }
 
@@ -102,7 +103,8 @@ export class IndicatorComponent implements OnInit {
       condition: null,
       value: null,
       valueType: null,
-      eqIdentifier: null
+      eqIdentifier: null,
+      appendOtherDenominatorDropdown: false
     })
   }
 
@@ -216,18 +218,22 @@ export class IndicatorComponent implements OnInit {
       if (isNumerator) {
         const isCodeAlreadySelected = this.selectedNumeratorArr.indexOf(event.value.codeId) > -1 ? true : false;
         this.getSelectedNumeratorsId();
+        this.getNumerators().controls[index].patchValue({ appendOtherNumeratorDropdown: true });
         if (isCodeAlreadySelected) {
           this.getNumerators().controls[index].patchValue({
-            code: null
+            code: null,
+            appendOtherNumeratorDropdown: false
           });
           this.toasterService.showToast('error', 'Same code can not be selected again !!', 'EMCARE !!');
         }
       } else {
         const isCodeAlreadySelected = this.selectedDenominatorArr.indexOf(event.value.codeId) > -1 ? true : false;
         this.getSelectedDenominatorsId();
+        this.getDenominators().controls[index].patchValue({ appendOtherDenominatorDropdown: true });
         if (isCodeAlreadySelected) {
           this.getDenominators().controls[index].patchValue({
-            code: null
+            code: null,
+            appendOtherDenominatorDropdown: false
           });
           this.toasterService.showToast('error', 'Same code can not be selected again !!', 'EMCARE !!');
         }
