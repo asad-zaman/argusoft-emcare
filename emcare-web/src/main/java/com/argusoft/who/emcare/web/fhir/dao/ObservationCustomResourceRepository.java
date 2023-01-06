@@ -14,5 +14,5 @@ import java.util.Map;
  */
 public interface ObservationCustomResourceRepository {
 
-    public List<Map<String, Object>> findByPublished();
+    public List<Map<String, Object>> findByPublished(String query);
 }
