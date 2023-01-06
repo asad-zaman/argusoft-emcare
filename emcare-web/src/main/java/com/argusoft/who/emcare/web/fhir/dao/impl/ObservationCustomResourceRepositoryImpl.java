@@ -23,11 +23,11 @@ import java.util.Map;
 public class ObservationCustomResourceRepositoryImpl extends GenericRepositoryImpl implements ObservationCustomResourceRepository {
 
     @Override
-    public List<Map<String, Object>> findByPublished() {
-        String queryString = "with custom_code as (select cast(text AS json)->'code'->'coding'->0->>'code' as code,\n" +
-                " cast(cast(cast(text AS json)->>'valueBoolean' as text) AS BOOLEAN) as valueText\n" +
-                " from observation_resource)\n" +
-                "select * from custom_code where code = 'EmCare.B12S2.DE01' and valueText = false;;";
+    public List<Map<String, Object>> findByPublished(String queryString) {
+//        String queryString = "with custom_code as (select cast(text AS json)->'code'->'coding'->0->>'code' as code,\n" +
+//                " cast(cast(cast(text AS json)->>'valueBoolean' as text) AS BOOLEAN) as valueText\n" +
+//                " from observation_resource)\n" +
+//                "select * from custom_code where code = 'EmCare.B12S2.DE01' and valueText = false;;";
         Query query = getSession().createNativeQuery(queryString);
         query.setResultTransformer(AliasToEntityMapResultTransformer.INSTANCE);
         List<Map<String, Object>> maps = query.list();

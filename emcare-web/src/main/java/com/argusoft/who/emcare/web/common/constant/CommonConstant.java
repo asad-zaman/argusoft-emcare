@@ -1,9 +1,6 @@
 package com.argusoft.who.emcare.web.common.constant;
 
 public class CommonConstant {
-    private CommonConstant() {
-    }
-
     public static final String EMAIL_ALREADY_EXISTS = "This Email Or Username Already Register With Em-Care";
     public static final String REGISTER_SUCCESS = "Successfully Register";
     public static final String UPDATE_SUCCESS = "Successfully Update";
@@ -37,23 +34,17 @@ public class CommonConstant {
     public static final String EM_CARE_SYSTEM = "EM CARE SYSTEM";
     public static final String ACTIVE = "Active";
     public static final String INACTIVE = "Inactive";
-
     //    FHIR
     public static final String FHIR_PATIENT = "PATIENT";
     public static final String FHIR_QUESTIONNAIRE = "Questionnaire";
     public static final String LOCATION_EXTENSION_URL = "http://hl7.org/fhir/StructureDefinition/patient-locationId";
     public static final String PRIMARY_CAREGIVER_EXTENSION_URL = "https://fhir.dk.swisstph-mis.ch/matchbox/fhir/StructureDefinition/primary-caregiver";
-
     //    Exception Strings
     public static final String EM_CARE_NO_DATA_FOUND = "Data Not Found";
-
-
     public static final String MAIL_FOR_ADD_USER = "ADD_USER";
     public static final String MAIL_FOR_GENERATE_OTP = "GENERATE_OTP";
     public static final String MAIL_FOR_CONFIRMATION_EMAIL_APPROVED = "CONFIRMATION_EMAIL_APPROVED";
     public static final String MAIL_FOR_CONFIRMATION_EMAIL_REJECTED = "CONFIRMATION_EMAIL_REJECTED";
-
-
     public static final String SETTING_TYPE_REGISTRATION_EMAIL_AS_USERNAME = "REGISTRATION_EMAIL_AS_USERNAME";
     public static final String SETTING_TYPE_WELCOME_EMAIL = "WELCOME_EMAIL";
     public static final String SETTING_TYPE_SEND_CONFIRMATION_EMAIL = "SEND_CONFIRMATION_EMAIL";
@@ -63,9 +54,10 @@ public class CommonConstant {
     public static final String RESOURCE_CONTENT = "_content";
     public static final String FIRST_NAME = "firstName";
     public static final String LAST_NAME = "lastName";
-
-
     public static final String INDICATOR_DISPLAY_TYPE_COUNT = "Count";
-
-
+    public static final String FHIR_TYPE_BOOLEAN_CONDITION = "Boolean";
+    public static final String FHIR_TYPE_BOOLEAN_KEY = "BOOLEAN";
+    public static final String FHIR_TYPE_BOOLEAN_VALUE = "valueBoolean";
+    private CommonConstant() {
+    }
 }
