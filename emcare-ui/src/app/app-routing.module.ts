@@ -34,7 +34,8 @@ import {
   ConsultationListComponent,
   ViewConsultationComponent,
   ManageCodeComponent,
-  CodeListComponent
+  CodeListComponent,
+  IndicatorComponent
 } from './root/index';
 
 const routes: Routes = [
@@ -80,6 +81,7 @@ const routes: Routes = [
   { path: 'manageCode', component: ManageCodeComponent },
   { path: 'manageCode/:id', component: ManageCodeComponent },
   { path: 'code-list', component: CodeListComponent },
+  { path: 'addIndicator', component: IndicatorComponent },
   { path: '**', redirectTo: 'dashboard' }
 ];
 @NgModule({

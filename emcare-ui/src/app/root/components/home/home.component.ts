@@ -36,6 +36,7 @@ export class HomeComponent implements OnInit {
     this.checkFeatures();
     this.getDashboardData();
     this.getChartData();
+    this.getIndicatorCompileValue();
   }
 
   getDashboardData() {
@@ -295,5 +296,16 @@ export class HomeComponent implements OnInit {
     let month = monthArr[d.getMonth()];
     let year = d.getFullYear();
     return `${month} ${year}`;
+  }
+
+  getIndicatorCompileValue() {
+    //  toDo
+    const codeArr = [3843];
+    this.fhirService.getIndicatorCompileValue(codeArr).subscribe(res => {
+      if (res) {
+        this.dashboardData.indicatorName = res[0].indicatorName;
+        this.dashboardData.indicatorValue = res[0].indicatorValue;
+      }
+    });
   }
 }

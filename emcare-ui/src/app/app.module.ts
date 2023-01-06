@@ -37,7 +37,8 @@ import {
   ConsultationListComponent,
   ViewConsultationComponent,
   ManageCodeComponent,
-  CodeListComponent
+  CodeListComponent,
+  IndicatorComponent
 } from './root/index';
 import { AuthenticationService, ToasterService } from './shared';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -105,7 +106,8 @@ import { NgxIntlTelInputModule } from 'ngx-intl-tel-input';
     ConsultationListComponent,
     ViewConsultationComponent,
     ManageCodeComponent,
-    CodeListComponent
+    CodeListComponent,
+    IndicatorComponent
   ],
   imports: [
     BrowserModule,
