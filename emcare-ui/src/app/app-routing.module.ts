@@ -78,10 +78,10 @@ const routes: Routes = [
   { path: 'duplicatePatients', component: DuplicatePatientsComponent, canActivate: [AuthGuard] },
   { path: 'consultation-list', component: ConsultationListComponent, canActivate: [AuthGuard] },
   { path: 'view-consultation/:id', component: ViewConsultationComponent, canActivate: [AuthGuard] },
-  { path: 'manageCode', component: ManageCodeComponent },
-  { path: 'manageCode/:id', component: ManageCodeComponent },
-  { path: 'code-list', component: CodeListComponent },
-  { path: 'addIndicator', component: IndicatorComponent },
+  { path: 'manageCode', component: ManageCodeComponent, canActivate: [AuthGuard] },
+  { path: 'manageCode/:id', component: ManageCodeComponent, canActivate: [AuthGuard] },
+  { path: 'code-list', component: CodeListComponent, canActivate: [AuthGuard] },
+  { path: 'addIndicator', component: IndicatorComponent, canActivate: [AuthGuard] },
   { path: '**', redirectTo: 'dashboard' }
 ];
 @NgModule({

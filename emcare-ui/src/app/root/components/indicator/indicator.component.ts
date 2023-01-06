@@ -202,14 +202,18 @@ export class IndicatorComponent implements OnInit {
   getSelectedNumeratorsId() {
     this.selectedNumeratorArr = [];
     this.getNumerators().controls.forEach(element => {
-      this.selectedNumeratorArr.push(element.value.code.codeId);
+      if (element && element.value.code) {
+        this.selectedNumeratorArr.push(element.value.code.codeId);
+      }
     });
   }
 
   getSelectedDenominatorsId() {
     this.selectedDenominatorArr = [];
     this.getDenominators().controls.forEach(element => {
-      this.selectedDenominatorArr.push(element.value.code.codeId);
+      if (element && element.value.code) {
+        this.selectedDenominatorArr.push(element.value.code.codeId);
+      }
     });
   }
 
