@@ -41,7 +41,8 @@ export class AppComponent implements OnInit {
     'Facility': 'bi bi-columns-gap nav-link_icon',
     'Advanced settings': 'bi bi-gear nav-link_icon',
     'Dashboard': 'bi bi-house-door nav-link_icon',
-    'Organizations': 'bi bi-border-outer nav-link_icon'
+    'Organizations': 'bi bi-border-outer nav-link_icon',
+    'Indicators': 'bi bi-app-indicator nav-link_icon'
   }
 
   constructor(
@@ -288,7 +289,7 @@ export class AppComponent implements OnInit {
       feature['subMenuActive'] = true;
     }
     const routeArr = this.authGuard.getFeatureAndRedirectUser(featureName);
-    return routeArr.includes(this.currentUrl);
+    // return routeArr.includes(this.currentUrl);
   }
 
   changeSidebarVar() {
