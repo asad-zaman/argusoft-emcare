@@ -261,5 +261,8 @@
   "Numerator Equation Required Message": "Numerator Equation is Required",
   "Denominator Equation": "Denominator Equation",
   "Denominator Equation Placeholder": "Enter Denominator Equation",
-  "Denominator Equation Required Message": "Denominator Equation is Required"
+  "Denominator Equation Required Message": "Denominator Equation is Required",
+  "Add Indicator": "Add Indicator",
+  "Indicator Code": "Indicator Code",
+  "Display Type": "Display Type"
 }
