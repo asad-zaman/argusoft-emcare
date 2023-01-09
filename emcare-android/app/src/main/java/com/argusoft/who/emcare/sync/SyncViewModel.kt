@@ -17,6 +17,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
+import java.util.*
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @HiltViewModel
@@ -28,29 +31,33 @@ class SyncViewModel @Inject constructor(
     private val applicationContext: Application
 ): ViewModel(){
 
-    private val _syncState = MutableLiveData<ApiResponse<State>>()
-    val syncState: LiveData<ApiResponse<State>> = _syncState
+    private val _syncState = MutableLiveData<ApiResponse<SyncState>>()
+    val syncState: LiveData<ApiResponse<SyncState>> = _syncState
 
     private val formatString24 = "dd/MM/yyyy HH:mm:ss"
     private val formatString12 = "dd/MM/yyyy hh:mm:ss a"
     fun syncPatients() {
         _syncState.value = ApiResponse.Loading(false)
         viewModelScope.launch {
-            val fhirResult = Sync.oneTimeSync(
-                applicationContext,
-                fhirEngine,
-                DownloadWorkManagerImpl(preference),
-                AcceptRemoteConflictResolver
-            )
             val emCareResult = EmCareSync.oneTimeSync(api, database, preference, listOf(SyncType.FACILITY, SyncType.CONSULTATION_FLOW_ITEM))
-            if (fhirResult is Result.Success || emCareResult is SyncResult.Success) {
-                _syncState.value = (fhirResult as? Result.Success)?.let { ApiResponse.Success(State.Finished(it)) }
-                _syncState.value = null
-                preference.writeLastSyncTimestamp(OffsetDateTime.now().toLocalDateTime().format(
-                    DateTimeFormatter.ofPattern(if (DateFormat.is24HourFormat(applicationContext)) formatString24 else formatString12)))
-            } else {
-                _syncState.value = (fhirResult as? Result.Error)?.let { ApiResponse.ApiError(apiErrorMessageResId = R.string.msg_sync_failed) }
+            Sync.oneTimeSync<com.argusoft.who.emcare.sync.FhirSyncWorker>(
+                applicationContext
+            ).collect {
+                Executors.newSingleThreadScheduledExecutor().schedule({
+                    //blank body
+                }, 1, TimeUnit.SECONDS)
+                if (it is SyncJobStatus.Finished || emCareResult is SyncResult.Success) {
+                    _syncState.value = (it is SyncJobStatus.Finished)?.let { ApiResponse.Success(SyncState.Finished(com.argusoft.who.emcare.sync.SyncResult.Success)) }
+                    _syncState.value = null
+                    preference.writeLastSyncTimestamp(OffsetDateTime.now().toLocalDateTime().format(
+                        DateTimeFormatter.ofPattern(if (DateFormat.is24HourFormat(applicationContext)) formatString24 else formatString12)))
+                } else if( it is SyncJobStatus.InProgress) {
+                    //Do nothing for now
+                } else {
+                    _syncState.value = (it is SyncJobStatus.Failed)?.let { ApiResponse.ApiError(apiErrorMessageResId = R.string.msg_sync_failed) }
+                }
             }
+
         }
     }
 }

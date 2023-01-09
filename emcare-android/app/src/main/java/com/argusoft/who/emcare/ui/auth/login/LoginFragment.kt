@@ -7,12 +7,12 @@ import androidx.fragment.app.viewModels
 import com.argusoft.who.emcare.BuildConfig
 import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.databinding.FragmentLoginBinding
+import com.argusoft.who.emcare.sync.SyncState
 import com.argusoft.who.emcare.sync.SyncViewModel
 import com.argusoft.who.emcare.ui.common.REQUEST_CODE_READ_PHONE_STATE
 import com.argusoft.who.emcare.ui.common.base.BaseFragment
 import com.argusoft.who.emcare.ui.home.HomeActivity
 import com.argusoft.who.emcare.utils.extention.*
-import com.google.android.fhir.sync.State
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import pub.devrel.easypermissions.AppSettingsDialog
@@ -43,9 +43,9 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(), EasyPermissions.Perm
             )
         }
         observeNotNull(loginViewModel.loginApiState) {
-                it.handleApiView(binding.progressLayout) {
-                    syncViewModel.syncPatients()
-                }
+            it.handleApiView(binding.progressLayout) {
+                syncViewModel.syncPatients()
+            }
         }
 
         observeNotNull(syncViewModel.syncState) { apiResponse ->
@@ -60,30 +60,29 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(), EasyPermissions.Perm
                 )
             }
             apiResponse.handleListApiView(binding.progressLayout) {
-                    when (it) {
-                        is State.Finished -> {
-//                            binding.progressLayout.showContent()
-                            requireContext().showSnackBar(
-                                view = binding.progressLayout,
-                                message = getString(R.string.msg_sync_successfully),
-                                duration = Snackbar.LENGTH_SHORT,
-                                isError = false
-                            )
-                            startActivity(Intent(requireContext(), HomeActivity::class.java))
-                            requireActivity().finish()
-                        }
-                        is State.Failed -> {
-                            binding.progressLayout.showContent()
-                            requireContext().showSnackBar(
-                                view = binding.progressLayout,
-                                message = getString(R.string.msg_sync_failed),
-                                duration = Snackbar.LENGTH_SHORT,
-                                isError = true
-                            )
-                            startActivity(Intent(requireContext(), HomeActivity::class.java))
-                            requireActivity().finish()
-                        }
+                when (it) {
+                    is SyncState.Finished -> {
+                        requireContext().showSnackBar(
+                            view = binding.progressLayout,
+                            message = getString(R.string.msg_sync_successfully),
+                            duration = Snackbar.LENGTH_SHORT,
+                            isError = false
+                        )
+                        startActivity(Intent(requireContext(), HomeActivity::class.java))
+                        requireActivity().finish()
                     }
+                    is SyncState.Failed -> {
+                        binding.progressLayout.showContent()
+                        requireContext().showSnackBar(
+                            view = binding.progressLayout,
+                            message = getString(R.string.msg_sync_failed),
+                            duration = Snackbar.LENGTH_SHORT,
+                            isError = true
+                        )
+                        startActivity(Intent(requireContext(), HomeActivity::class.java))
+                        requireActivity().finish()
+                    }
+                }
             }
         }
     }

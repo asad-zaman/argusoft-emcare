@@ -7,12 +7,12 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.databinding.FragmentPatientProfileBinding
+import com.argusoft.who.emcare.sync.SyncState
 import com.argusoft.who.emcare.sync.SyncViewModel
 import com.argusoft.who.emcare.ui.common.*
 import com.argusoft.who.emcare.ui.common.base.BaseFragment
 import com.argusoft.who.emcare.ui.home.HomeActivity
 import com.argusoft.who.emcare.utils.extention.*
-import com.google.android.fhir.sync.State
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
@@ -106,9 +106,10 @@ class PatientProfileFragment : BaseFragment<FragmentPatientProfileBinding>() {
                     duration = Snackbar.LENGTH_INDEFINITE,
                     isError = false
                 )
-            }.whenResult(
-                onSuccess = {
-                    apiResponse.handleListApiView(binding.patientProfileLayout) {
+            }
+            apiResponse.handleListApiView(binding.patientProfileLayout) {
+                when (it) {
+                    is SyncState.Finished -> {
                         requireContext().showSnackBar(
                             view = binding.patientProfileLayout,
                             message = getString(R.string.msg_sync_successfully),
@@ -116,9 +117,8 @@ class PatientProfileFragment : BaseFragment<FragmentPatientProfileBinding>() {
                             isError = false
                         )
                     }
-                },
-                onFailed = {
-                    apiResponse.handleListApiView(binding.patientProfileLayout) {
+                    is SyncState.Failed -> {
+                        binding.patientProfileLayout.showContent()
                         requireContext().showSnackBar(
                             view = binding.patientProfileLayout,
                             message = getString(R.string.msg_sync_failed),
@@ -127,7 +127,7 @@ class PatientProfileFragment : BaseFragment<FragmentPatientProfileBinding>() {
                         )
                     }
                 }
-            )
+            }
         }
 
         observeNotNull(patientProfileViewModel.activeConsultations) { apiResponse ->

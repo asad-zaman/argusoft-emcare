@@ -1,17 +1,17 @@
 package com.argusoft.who.emcare.ui.home
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.argusoft.who.emcare.R
-import com.argusoft.who.emcare.data.remote.ApiResponse
 import com.argusoft.who.emcare.databinding.FragmentHomeBinding
+import com.argusoft.who.emcare.sync.SyncState
 import com.argusoft.who.emcare.sync.SyncViewModel
 import com.argusoft.who.emcare.ui.common.base.BaseFragment
 import com.argusoft.who.emcare.utils.extention.*
 import com.argusoft.who.emcare.utils.glide.GlideApp
 import com.argusoft.who.emcare.utils.glide.GlideRequests
-import com.google.android.fhir.sync.State
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import dagger.hilt.android.AndroidEntryPoint
@@ -84,24 +84,25 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(){
                     isError = false
                 )
             }
-            apiResponse.whenFailed {
-                apiResponse.handleListApiView(binding.rootLayout) {
-                    requireContext().showSnackBar(
-                        view = binding.rootLayout,
-                        message = getString(R.string.msg_sync_failed),
-                        duration = Snackbar.LENGTH_SHORT,
-                        isError = true
-                    )
-                }
-            }
-            apiResponse.whenSuccess {
-                apiResponse.handleListApiView(binding.rootLayout) {
-                    requireContext().showSnackBar(
-                        view = binding.rootLayout,
-                        message = getString(R.string.msg_sync_successfully),
-                        duration = Snackbar.LENGTH_SHORT,
-                        isError = false
-                    )
+            apiResponse.handleListApiView(binding.rootLayout) {
+                when (it) {
+                    is SyncState.Finished -> {
+                        requireContext().showSnackBar(
+                            view = binding.rootLayout,
+                            message = getString(R.string.msg_sync_successfully),
+                            duration = Snackbar.LENGTH_SHORT,
+                            isError = false
+                        )
+                    }
+                    is SyncState.Failed -> {
+                        binding.rootLayout.showContent()
+                        requireContext().showSnackBar(
+                            view = binding.rootLayout,
+                            message = getString(R.string.msg_sync_failed),
+                            duration = Snackbar.LENGTH_SHORT,
+                            isError = true
+                        )
+                    }
                 }
             }
         }
