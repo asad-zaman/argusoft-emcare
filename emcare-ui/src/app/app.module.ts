@@ -66,6 +66,7 @@ import { MessageService } from 'primeng/api';
 import { ManageOrganizationComponent } from './root/components/manage-organization/manage-organization.component';
 import { OrganizationListComponent } from './root/components/organization-list/organization-list.component';
 import { NgxIntlTelInputModule } from 'ngx-intl-tel-input';
+import { IndicatorListComponent } from './root/components/indicator-list/indicator-list.component';
 
 @NgModule({
   declarations: [
@@ -107,7 +108,8 @@ import { NgxIntlTelInputModule } from 'ngx-intl-tel-input';
     ViewConsultationComponent,
     ManageCodeComponent,
     CodeListComponent,
-    IndicatorComponent
+    IndicatorComponent,
+    IndicatorListComponent
   ],
   imports: [
     BrowserModule,

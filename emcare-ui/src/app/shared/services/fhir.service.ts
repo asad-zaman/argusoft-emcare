@@ -255,4 +255,14 @@ export class FhirService {
         const url = `${environment.apiUrl}/api/indicator/compile/value`;
         return this.http.post(url, codeIdArr, this.getHeaders());
     }
+
+    getIndicators(pageIndex, search?) {
+        let url;
+        if (search) {
+            url = `${environment.apiUrl}/api/indicator/page?pageNo=${pageIndex}&search=${search}`;
+        } else {
+            url = `${environment.apiUrl}/api/indicator/page?pageNo=${pageIndex}`;
+        }
+        return this.http.get(url, this.getHeaders());
+    }
 }

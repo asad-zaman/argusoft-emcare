@@ -4,6 +4,7 @@ import { AuthGuard } from './auth/auth.guard';
 import { AdminPanelComponent } from './root/components/admin-panel/admin-panel.component';
 import { DuplicatePatientsComponent } from './root/components/duplicate-patients/duplicate-patients.component';
 import { HomeComponent } from './root/components/home/home.component';
+import { IndicatorListComponent } from './root/components/indicator-list/indicator-list.component';
 import {
   LoginComponent,
   SignupComponent,
@@ -82,6 +83,7 @@ const routes: Routes = [
   { path: 'manageCode/:id', component: ManageCodeComponent, canActivate: [AuthGuard] },
   { path: 'code-list', component: CodeListComponent, canActivate: [AuthGuard] },
   { path: 'addIndicator', component: IndicatorComponent, canActivate: [AuthGuard] },
+  { path: 'indicator-list', component: IndicatorListComponent, canActivate: [AuthGuard] },
   { path: '**', redirectTo: 'dashboard' }
 ];
 @NgModule({
