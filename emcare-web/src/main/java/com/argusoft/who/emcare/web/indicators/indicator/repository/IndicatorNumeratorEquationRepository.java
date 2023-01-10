@@ -1,7 +1,10 @@
 package com.argusoft.who.emcare.web.indicators.indicator.repository;
 
+import com.argusoft.who.emcare.web.indicators.indicator.entity.Indicator;
 import com.argusoft.who.emcare.web.indicators.indicator.entity.IndicatorNumeratorEquation;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -15,4 +18,8 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface IndicatorNumeratorEquationRepository extends JpaRepository<IndicatorNumeratorEquation, Long> {
+
+    @Modifying
+    @Query(value = "delete from indicator_numerator_equation where indicator_id = :indicatorId", nativeQuery = true)
+    public void deleteByNumeratorIndicator(Long indicatorId);
 }

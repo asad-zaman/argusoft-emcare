@@ -4,7 +4,6 @@ import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.common.dto.PageDto;
 import com.argusoft.who.emcare.web.fhir.dao.ObservationCustomResourceRepository;
 import com.argusoft.who.emcare.web.fhir.dao.ObservationResourceRepository;
-import com.argusoft.who.emcare.web.fhir.model.ObservationResource;
 import com.argusoft.who.emcare.web.indicators.indicator.dto.IndicatorDto;
 import com.argusoft.who.emcare.web.indicators.indicator.entity.Indicator;
 import com.argusoft.who.emcare.web.indicators.indicator.entity.IndicatorDenominatorEquation;
@@ -26,10 +25,8 @@ import org.springframework.stereotype.Service;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import javax.transaction.Transactional;
+import java.util.*;
 
 /**
  * <h1> Indicator Service like Add, Update, and Get.</h1>
@@ -65,8 +62,13 @@ public class IndicatorServiceImpl implements IndicatorService {
      * @param indicatorDto
      * @return
      */
+    @Transactional
     @Override
     public ResponseEntity<Object> addOrUpdateIndicator(IndicatorDto indicatorDto) {
+        if (Objects.nonNull(indicatorDto.getIndicatorId())) {
+            indicatorNumeratorEquationRepository.deleteByNumeratorIndicator(indicatorDto.getIndicatorId());
+            indicatorDenominatorEquationRepository.deleteByDenominatorIndicator(indicatorDto.getIndicatorId());
+        }
         Indicator indicator = indicatorRepository.save(IndicatorMapper.getIndicator(indicatorDto));
         indicatorNumeratorEquationRepository.saveAll(indicator.getNumeratorEquation());
         indicatorDenominatorEquationRepository.saveAll(indicator.getDenominatorEquation());
@@ -79,6 +81,11 @@ public class IndicatorServiceImpl implements IndicatorService {
     @Override
     public ResponseEntity<Object> getAllIndicatorData() {
         return ResponseEntity.status(HttpStatus.OK).body(indicatorRepository.findAll());
+    }
+
+    @Override
+    public ResponseEntity<Object> getIndicatorById(Long indicatorId) {
+        return ResponseEntity.status(HttpStatus.OK).body(indicatorRepository.findById(indicatorId));
     }
 
     /**
@@ -124,33 +131,38 @@ public class IndicatorServiceImpl implements IndicatorService {
             Map<String, Long> numerator = new HashMap<>();
             Map<String, Long> denominator = new HashMap<>();
             if (indicator.getDisplayType().equals(CommonConstant.INDICATOR_DISPLAY_TYPE_COUNT)) {
-                for (IndicatorNumeratorEquation indicatorNumeratorEquation : indicator.getNumeratorEquation()) {
-
-                    String query = indicatorQueryBuilder.getQueryForIndicatorNumeratorEquation(indicatorNumeratorEquation, indicator.getFacilityId());
-                    System.out.println(query);
-                    List<Map<String,Object>> observationResources = observationCustomResourceRepository.findByPublished(query);
-                    numerator.put(indicatorNumeratorEquation.getEqIdentifier(), (long) observationResources.size());
-                }
-
-                for (IndicatorDenominatorEquation indicatorDenominatorEquation : indicator.getDenominatorEquation()) {
-                    String query = indicatorQueryBuilder.getQueryForIndicatorDenominatorEquation(indicatorDenominatorEquation, indicator.getFacilityId());
-                    System.out.println(query);
-                    List<Map<String,Object>> observationResources = observationCustomResourceRepository.findByPublished(query);
-                    denominator.put(indicatorDenominatorEquation.getEqIdentifier(), (long) observationResources.size());
-                }
-
-                Integer numeratorResult = replaceValueToEquationAndResolve(indicator.getNumeratorIndicatorEquation(), numerator);
-                Integer denominatorResult = replaceValueToEquationAndResolve(indicator.getDenominatorIndicatorEquation(), denominator);
-                Double finalValue = (numeratorResult.doubleValue() / denominatorResult.doubleValue()) * 100;
-                Map<String, Object> stringObjectMap = new HashMap<>();
-
-                stringObjectMap.put("indicatorCode", indicator.getIndicatorCode());
-                stringObjectMap.put("indicatorName", indicator.getIndicatorName());
-                stringObjectMap.put("indicatorValue", finalValue);
-                responseList.add(stringObjectMap);
+                getCountIndicatorValue(indicator, numerator, denominator, responseList);
             }
         }
         return ResponseEntity.status(HttpStatus.OK).body(responseList);
+    }
+
+    private void getCountIndicatorValue(Indicator indicator, final Map<String, Long> numerator, final Map<String, Long> denominator, final List<Map<String, Object>> responseList) {
+        for (IndicatorNumeratorEquation indicatorNumeratorEquation : indicator.getNumeratorEquation()) {
+
+            String query = indicatorQueryBuilder.getQueryForIndicatorNumeratorEquation(indicatorNumeratorEquation, indicator.getFacilityId());
+            System.out.println(query);
+            List<Map<String, Object>> observationResources = observationCustomResourceRepository.findByPublished(query);
+            numerator.put(indicatorNumeratorEquation.getEqIdentifier(), (long) observationResources.size());
+        }
+
+        for (IndicatorDenominatorEquation indicatorDenominatorEquation : indicator.getDenominatorEquation()) {
+            String query = indicatorQueryBuilder.getQueryForIndicatorDenominatorEquation(indicatorDenominatorEquation, indicator.getFacilityId());
+            System.out.println(query);
+            List<Map<String, Object>> observationResources = observationCustomResourceRepository.findByPublished(query);
+            denominator.put(indicatorDenominatorEquation.getEqIdentifier(), (long) observationResources.size());
+        }
+
+        Integer numeratorResult = replaceValueToEquationAndResolve(indicator.getNumeratorIndicatorEquation(), numerator);
+        Integer denominatorResult = replaceValueToEquationAndResolve(indicator.getDenominatorIndicatorEquation(), denominator);
+        Double finalValue = (numeratorResult.doubleValue() / denominatorResult.doubleValue()) * 100;
+        Map<String, Object> stringObjectMap = new HashMap<>();
+
+        stringObjectMap.put("indicatorCode", indicator.getIndicatorCode());
+        stringObjectMap.put("indicatorName", indicator.getIndicatorName());
+        stringObjectMap.put("IndicatorType", indicator.getDisplayType());
+        stringObjectMap.put("indicatorValue", finalValue);
+        responseList.add(stringObjectMap);
     }
 
     private Integer replaceValueToEquationAndResolve(String equation, Map<String, Long> data) {
