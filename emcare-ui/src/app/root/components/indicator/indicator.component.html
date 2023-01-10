@@ -233,7 +233,12 @@
       <div class="text-end mt-5">
         <hr>
         <button (click)="saveData()" class="btn-blue btn">
-          {{'Save' | translate}}
+          <ng-container *ngIf="isEdit === true; else fresh">
+            {{'Update' | translate}}
+          </ng-container>
+          <ng-template #fresh>
+            {{'Save' | translate}}
+          </ng-template>
         </button>
       </div>
     </form>

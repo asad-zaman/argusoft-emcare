@@ -265,4 +265,14 @@ export class FhirService {
         }
         return this.http.get(url, this.getHeaders());
     }
+
+    getAllIndicators() {
+        let url = `${environment.apiUrl}/api/indicator/all`;
+        return this.http.get(url, this.getHeaders());
+    }
+
+    getIndicatorById(indicatorId) {
+        let url = `${environment.apiUrl}/api/indicator/${indicatorId}`;
+        return this.http.get(url, this.getHeaders());
+    }
 }

@@ -20,6 +20,7 @@
           <th>{{'Indicator Name' | translate}}</th>
           <th>{{'Indicator Description' | translate}}</th>
           <th>{{'Display Type' | translate}}</th>
+          <th>{{'Action' | translate}}</th>
         </tr>
       </thead>
       <tbody>
@@ -32,6 +33,10 @@
               <td class="width-30">{{indicator.indicatorName}}</td>
               <td class="width-30">{{indicator.description}}</td>
               <td class="width-25">{{indicator.displayType}}</td>
+              <td>
+                <i (click)="editIndicator(indicator)" class="bi bi-pencil-square cursor-pointer font-size-14"
+                  aria-hidden="true"></i>
+              </td>
             </tr>
           </ng-container>
         </ng-container>

@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FhirService, ToasterService } from 'src/app/shared';
+
 @Component({
   selector: 'app-indicator',
   templateUrl: './indicator.component.html',
@@ -9,6 +10,8 @@ import { FhirService, ToasterService } from 'src/app/shared';
 })
 export class IndicatorComponent implements OnInit {
 
+  isEdit: boolean = false;
+  editId: string;
   indicatorForm: FormGroup;
   submitted: boolean;
   isAllowed = true;
@@ -40,7 +43,8 @@ export class IndicatorComponent implements OnInit {
     private readonly formBuilder: FormBuilder,
     private readonly toasterService: ToasterService,
     private readonly fhirService: FhirService,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly route: ActivatedRoute
   ) { }
 
   ngOnInit(): void {
@@ -48,9 +52,83 @@ export class IndicatorComponent implements OnInit {
   }
 
   prerequisite() {
-    this.getCodeList();
     this.getFacilities();
+    this.getCodeList();
+    // toDo when both api succeds then only this should be init
     this.initIndicatorForm();
+  }
+
+  checkEditParam() {
+    if (this.editId) {
+      this.isEdit = true;
+      this.fhirService.getIndicatorById(this.editId).subscribe((res: any) => {
+        if (res) {
+          this.setCurrentIndicator(res);
+        }
+      });
+    }
+  }
+
+  getFacilityById(facilityId) {
+    return this.facilityArr.find(el => el.id === facilityId);
+  }
+
+  getDSTById(dst) {
+    return this.displayTypeArr.find(el => el.id === dst);
+  }
+
+  setCurrentIndicator(currentIndicator) {
+    this.indicatorForm.patchValue({
+      codeName: currentIndicator.indicatorCode,
+      indicatorName: currentIndicator.indicatorName,
+      indicatorDescription: currentIndicator.description,
+      facility: this.getFacilityById(currentIndicator.facilityId),
+      displayType: this.getDSTById(currentIndicator.displayType),
+      numerators: currentIndicator.numeratorEquation.length > 0 ?
+        this.setNumerators(currentIndicator.numeratorEquation) : [],
+      denominators: currentIndicator.denominatorEquation.length > 0 ?
+        this.setDenominators(currentIndicator.denominatorEquation) : [],
+      numeratorEquation: currentIndicator.numeratorIndicatorEquation,
+      denominatorEquation: currentIndicator.denominatorIndicatorEquation
+    });
+  }
+
+  setNumerators(numeratorEquation) {
+    const numeratorArr = [];
+    numeratorEquation.forEach(element => {
+      const obj = {
+        numeratorId: element.numeratorId,
+        code: element.code ? this.codeArr.find(el => el.code === element.code) : null,
+        condition: element.condition ? this.conditionArr.find(el => el.id === element.condition) : null,
+        value: element.value,
+        valueType: element.valueType ? this.valueTypeArr.find(el => el.id === element.valueType) : null,
+        eqIdentifier: element.eqIdentifier,
+        appendOtherNumeratorDropdown: true
+      }
+      numeratorArr.push(obj);
+      this.addNumerator();
+    });
+    this.getNumerators().patchValue(numeratorArr);
+    return numeratorArr;
+  }
+
+  setDenominators(denominatorEquation) {
+    const denominatorArr = [];
+    denominatorEquation.forEach(element => {
+      const obj = {
+        denominatorId: element.denominatorId,
+        code: element.code ? this.codeArr.find(el => el.code === element.code) : null,
+        condition: element.condition ? this.conditionArr.find(el => el.id === element.condition) : null,
+        value: element.value,
+        valueType: element.valueType ? this.valueTypeArr.find(el => el.id === element.valueType) : null,
+        eqIdentifier: element.eqIdentifier,
+        appendOtherDenominatorDropdown: true
+      }
+      denominatorArr.push(obj);
+      this.addDenominator();
+    });
+    this.getDenominators().patchValue(denominatorArr);
+    return denominatorArr;
   }
 
   getCodeList() {
@@ -65,17 +143,23 @@ export class IndicatorComponent implements OnInit {
   }
 
   initIndicatorForm() {
+    //  check and set values
+    const routeParams = this.route.snapshot.paramMap;
+    this.editId = routeParams.get('id');
     this.indicatorForm = this.formBuilder.group({
       codeName: ['', [Validators.required]],
       indicatorName: ['', [Validators.required]],
       indicatorDescription: ['', [Validators.required]],
       facility: ['', [Validators.required]],
       displayType: ['', [Validators.required]],
-      numerators: this.formBuilder.array([this.newNumeratorAddition()]),
-      denominators: this.formBuilder.array([this.newDenominatorAddition()]),
+      numerators: this.editId ?
+        this.formBuilder.array([]) : this.formBuilder.array([this.newNumeratorAddition()]),
+      denominators: this.editId ?
+        this.formBuilder.array([]) : this.formBuilder.array([this.newDenominatorAddition()]),
       numeratorEquation: ['', [Validators.required]],
       denominatorEquation: ['', [Validators.required]]
     });
+    this.checkEditParam();
   }
 
   getNumerators(): FormArray {
@@ -88,6 +172,7 @@ export class IndicatorComponent implements OnInit {
 
   newNumeratorAddition(): FormGroup {
     return this.formBuilder.group({
+      numeratorId: null, 
       code: null,
       condition: null,
       value: null,
@@ -99,6 +184,7 @@ export class IndicatorComponent implements OnInit {
 
   newDenominatorAddition(): FormGroup {
     return this.formBuilder.group({
+      denominatorId: null,
       code: null,
       condition: null,
       value: null,
@@ -143,12 +229,19 @@ export class IndicatorComponent implements OnInit {
   }
 
   saveData() {
-    this, this.submitted = true;
+    this.submitted = true;
     if (this.indicatorForm.valid) {
       const body = this.getRequestBody(this.indicatorForm.value);
+      if (this.isEdit) {
+        body['indicatorId'] = this.editId;
+      }
       this.fhirService.addIndicator(body).subscribe(() => {
-        this.toasterService.showToast('success', 'Indicator added successfully!', 'EMCARE !!');
-        this.router.navigate(['/dashboard']);
+        if (this.isEdit) {
+          this.toasterService.showToast('success', 'Indicator updated successfully!', 'EMCARE !!');
+        } else {
+          this.toasterService.showToast('success', 'Indicator added successfully!', 'EMCARE !!');
+        }
+        this.router.navigate(['/indicator-list']);
       }, () => {
         this.toasterService.showToast('error', 'Server issue!', 'EMCARE !!');
       });
@@ -173,12 +266,13 @@ export class IndicatorComponent implements OnInit {
     const tempArr = [];
     this.getNumerators().controls.forEach(element => {
       tempArr.push({
-        "codeId": element.value.code.codeId,
-        "code": element.value.code.code,
-        "condition": element.value.condition.id,
-        "value": element.value.value,
-        "valueType": element.value.valueType.id,
-        "eqIdentifier": element.value.eqIdentifier
+        numeratorId: element.value.numeratorId,
+        codeId: element.value.code.codeId,
+        code: element.value.code.code,
+        condition: element.value.condition.id,
+        value: element.value.value,
+        valueType: element.value.valueType.id,
+        eqIdentifier: element.value.eqIdentifier
       });
     });
     return tempArr;
@@ -188,12 +282,13 @@ export class IndicatorComponent implements OnInit {
     const tempArr = [];
     this.getDenominators().controls.forEach(element => {
       tempArr.push({
-        "codeId": element.value.code.codeId,
-        "code": element.value.code.code,
-        "condition": element.value.condition.id,
-        "value": element.value.value,
-        "valueType": element.value.valueType.id,
-        "eqIdentifier": element.value.eqIdentifier
+        denominatorId: element.value.denominatorId,
+        codeId: element.value.code.codeId,
+        code: element.value.code.code,
+        condition: element.value.condition.id,
+        value: element.value.value,
+        valueType: element.value.valueType.id,
+        eqIdentifier: element.value.eqIdentifier
       });
     });
     return tempArr;

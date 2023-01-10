@@ -62,7 +62,6 @@ export class IndicatorListComponent implements OnInit {
 
   manipulateResponse(res) {
     this.indicatorArr = res['list'];
-    console.log(this.indicatorArr);
   }
 
   addIndicator() {
@@ -110,5 +109,9 @@ export class IndicatorListComponent implements OnInit {
     } else {
       this.getIndicatorsByPageIndex(event - 1);
     }
+  }
+
+  editIndicator(indicator) {
+    this.router.navigate([`/editIndicator/${indicator.indicatorId}`])
   }
 }
