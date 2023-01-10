@@ -37,6 +37,11 @@ public class IndicatorController {
         return indicatorService.getAllIndicatorData();
     }
 
+    @GetMapping("/{indicatorId}")
+    public ResponseEntity<Object> getAllIndicator(@PathVariable(value = "indicatorId") Long indicatorId) {
+        return indicatorService.getIndicatorById(indicatorId);
+    }
+
     @GetMapping("/page")
     public PageDto getIndicatorPage(@RequestParam(value = "pageNo") Integer pageNo,
                                     @Nullable @RequestParam(value = "search", required = false) String searchString) {

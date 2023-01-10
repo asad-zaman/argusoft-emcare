@@ -21,6 +21,8 @@ public interface IndicatorService {
 
     public ResponseEntity<Object> getAllIndicatorData();
 
+    public ResponseEntity<Object> getIndicatorById(Long indicatorId);
+
     public PageDto getIndicatorDataPage(Integer pageNo, String searchText);
 
     public ResponseEntity<Object> getIndicatorsCompileValue(List<Long> indicatorIds);
