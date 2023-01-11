@@ -1,5 +1,5 @@
 <div *ngIf="isAllowed" class="main-wrapper">
-  <div class="form-wrapper-facility">
+  <div *ngIf="!apiBusy" class="form-wrapper-facility">
     <form [formGroup]="facilityForm" name="facilityForm" novalidate>
       <div class="mb-5">
         <span class="heading">
@@ -41,10 +41,9 @@
           <div class="mb-3">
             <label class="form-label">{{'Organization' | translate}}</label>
             <p-dropdown [filter]="true" (click)="checkOrgAsFacility(f.isOrganizationAsFacility.value)"
-              formControlName="organization" placeholder="Select an organization"
+              formControlName="organization" placeholder="Select an organization" [options]="this.orgArr"
               [ngStyle]="{'border': submitted && this.facilityForm.controls.organization.value == '' ? '1px solid red' : ''}"
-              [options]="this.orgArr" optionLabel="name"
-              [ngClass]="{ 'is-invalid': submitted && f.organization.errors }">
+              optionLabel="name" [ngClass]="{ 'is-invalid': submitted && f.organization.errors }">
             </p-dropdown>
             <div *ngIf="submitted && this.facilityForm.controls.organization.value == ''" style="color: #dc3545">
               <div class="cst-error-style" *ngIf="f.organization.errors.required">
