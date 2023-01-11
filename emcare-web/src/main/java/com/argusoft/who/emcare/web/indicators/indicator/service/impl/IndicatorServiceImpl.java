@@ -130,7 +130,7 @@ public class IndicatorServiceImpl implements IndicatorService {
         for (Indicator indicator : indicators) {
             Map<String, Long> numerator = new HashMap<>();
             Map<String, Long> denominator = new HashMap<>();
-            if (indicator.getDisplayType().equals(CommonConstant.INDICATOR_DISPLAY_TYPE_COUNT)) {
+            if (indicator.getDisplayType().equalsIgnoreCase(CommonConstant.INDICATOR_DISPLAY_TYPE_COUNT)) {
                 getCountIndicatorValue(indicator, numerator, denominator, responseList);
             }
         }
