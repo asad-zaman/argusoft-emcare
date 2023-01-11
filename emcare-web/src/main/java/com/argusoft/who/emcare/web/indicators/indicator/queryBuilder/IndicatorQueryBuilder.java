@@ -33,7 +33,7 @@ public class IndicatorQueryBuilder {
             }
             query = query.append("select * from custom_code where code = '" + indicatorNumeratorEquation.getCode() + "' ");
             if (Objects.nonNull(indicatorNumeratorEquation.getCondition())) {
-                query = query.append(" and valueText" + indicatorNumeratorEquation.getCondition() + " " + indicatorNumeratorEquation.getValue());
+                query = query.append(" and valueText" + indicatorNumeratorEquation.getCondition() + " '" + indicatorNumeratorEquation.getValue()+"'");
             }
 
         }
@@ -55,7 +55,7 @@ public class IndicatorQueryBuilder {
             }
             query = query.append(" select * from custom_code where code = '" + indicatorDenominatorEquation.getCode() + "' ");
             if (Objects.nonNull(indicatorDenominatorEquation.getCondition())) {
-                query = query.append(" and valueText" + indicatorDenominatorEquation.getCondition() + " " + indicatorDenominatorEquation.getValue());
+                query = query.append(" and valueText" + indicatorDenominatorEquation.getCondition() + " '" + indicatorDenominatorEquation.getValue()+"'");
             }
 
         }
@@ -73,7 +73,7 @@ public class IndicatorQueryBuilder {
 
     public String getTypeValue(String valueType) {
         String type = "TEXT";
-        if (valueType.equals(CommonConstant.FHIR_TYPE_BOOLEAN_CONDITION)) {
+        if (valueType.equalsIgnoreCase(CommonConstant.FHIR_TYPE_BOOLEAN_CONDITION)) {
             type = CommonConstant.FHIR_TYPE_BOOLEAN_VALUE;
         }
         return type;
