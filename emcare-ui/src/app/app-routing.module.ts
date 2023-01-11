@@ -84,6 +84,7 @@ const routes: Routes = [
   { path: 'code-list', component: CodeListComponent, canActivate: [AuthGuard] },
   { path: 'addIndicator', component: IndicatorComponent, canActivate: [AuthGuard] },
   { path: 'indicator-list', component: IndicatorListComponent, canActivate: [AuthGuard] },
+  { path: 'editIndicator/:id', component: IndicatorComponent },
   { path: '**', redirectTo: 'dashboard' }
 ];
 @NgModule({
