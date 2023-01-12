@@ -3,6 +3,7 @@ import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FhirService, ToasterService } from 'src/app/shared';
 import { forkJoin } from 'rxjs';
+import { AuthGuard } from 'src/app/auth/auth.guard';
 
 @Component({
   selector: 'app-indicator',
@@ -40,13 +41,16 @@ export class IndicatorComponent implements OnInit {
     { id: 'number', name: 'Number' }
   ];
   apiBusy = true;
+  isAddFeature = true;
+  isEditFeature = true;
 
   constructor(
     private readonly formBuilder: FormBuilder,
     private readonly toasterService: ToasterService,
     private readonly fhirService: FhirService,
     private readonly router: Router,
-    private readonly route: ActivatedRoute
+    private readonly route: ActivatedRoute,
+    private readonly authGuard: AuthGuard
   ) { }
 
   ngOnInit(): void {
@@ -54,6 +58,7 @@ export class IndicatorComponent implements OnInit {
   }
 
   prerequisite() {
+    this.checkFeatures();
     forkJoin([
       this.fhirService.getFacility(),
       this.fhirService.getAllCodes()
@@ -70,6 +75,28 @@ export class IndicatorComponent implements OnInit {
       }
     }, (_e) => {
       this.toasterService.showToast('error', 'Server issue!', 'EM CARE !!');
+    });
+  }
+
+  checkFeatures() {
+    this.authGuard.getFeatureData().subscribe(res => {
+      if (res.relatedFeature && res.relatedFeature.length > 0) {
+        this.isAddFeature = res.featureJSON['canAdd'];
+        this.isEditFeature = res.featureJSON['canEdit'];
+        if (this.isAddFeature && this.isEditFeature) {
+          this.isAllowed = true;
+        } else if (this.isAddFeature && !this.isEdit) {
+          this.isAllowed = true;
+        } else if (!this.isEditFeature && this.isEdit) {
+          this.isAllowed = false;
+        } else if (!this.isAddFeature && this.isEdit) {
+          this.isAllowed = true;
+        } else if (this.isEditFeature && this.isEdit) {
+          this.isAllowed = true;
+        } else {
+          this.isAllowed = false;
+        }
+      }
     });
   }
 
