@@ -18,7 +18,7 @@
           <th>{{'Sr. No' | translate}}.</th>
           <th>{{'Code' | translate}}</th>
           <th>{{'Code Description' | translate}}</th>
-          <th>{{'Action' | translate}}</th>
+          <th *ngIf="isEdit">{{'Action' | translate}}</th>
         </tr>
       </thead>
       <tbody>
@@ -29,8 +29,9 @@
               <td>{{currentPage == 0 ? ((currentPage)*10 + i + 1) : ((currentPage-1)*10 + i + 1)}}</td>
               <td>{{code.code ? code.code : 'NA'}}</td>
               <td>{{code.codeDescription}}</td>
-              <td>
-                <i (click)="editCode(code)" class="bi bi-pencil-square cursor-pointer font-size-14" aria-hidden="true"></i>
+              <td *ngIf="isEdit">
+                <i (click)="editCode(code)" class="bi bi-pencil-square cursor-pointer font-size-14"
+                  aria-hidden="true"></i>
               </td>
             </tr>
           </ng-container>

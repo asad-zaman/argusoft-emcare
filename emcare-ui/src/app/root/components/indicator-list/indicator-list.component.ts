@@ -18,6 +18,7 @@ export class IndicatorListComponent implements OnInit {
   searchString: string;
   isAPIBusy: boolean = true;
   isAdd: boolean = true;
+  isEdit: boolean = true;
   isView: boolean = true;
   indicatorArr = [];
   searchTermChanged: Subject<string> = new Subject<string>();
@@ -42,6 +43,7 @@ export class IndicatorListComponent implements OnInit {
     this.authGuard.getFeatureData().subscribe(res => {
       if (res.relatedFeature && res.relatedFeature.length > 0) {
         this.isAdd = res.featureJSON['canAdd'];
+        this.isEdit = res.featureJSON['canEdit'];
         this.isView = res.featureJSON['canView'];
       }
     });
