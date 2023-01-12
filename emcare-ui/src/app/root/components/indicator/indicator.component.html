@@ -1,5 +1,5 @@
 <div *ngIf="isAllowed" class="main-wrapper">
-  <div class="form-wrapper-indicator">
+  <div *ngIf="!apiBusy" class="form-wrapper-indicator">
     <form [formGroup]="indicatorForm" name="indicatorForm" novalidate>
       <h1 class="d-inline heading">
         {{'Indicator' | translate}}
@@ -69,8 +69,9 @@
                 <div class="row mb-3">
                   <div class="col-md col-12">
                     <label class="form-label">{{'Code' | translate}}</label>
-                    <p-dropdown [filter]="true" placeholder="Select" [options]="codeArr" formControlName="code"
-                      optionLabel="codeDescription" dataKey="codeId" (onChange)="onCodeSelected($event, i, true)">
+                    <p-dropdown styleClass="custom-code-dropdown" [filter]="true" placeholder="Select"
+                      [options]="codeArr" formControlName="code" optionLabel="codeDescription" dataKey="codeId"
+                      (onChange)="onCodeSelected($event, i, true)">
                     </p-dropdown>
                   </div>
                   <div class="col-md col-12">
@@ -149,8 +150,9 @@
                 <div class="row mb-3">
                   <div class="col-md col-12">
                     <label class="form-label">{{'Code' | translate}}</label>
-                    <p-dropdown [filter]="true" placeholder="Select" [options]="codeArr" formControlName="code"
-                      optionLabel="codeDescription" dataKey="codeId" (onChange)="onCodeSelected($event, i, false)">
+                    <p-dropdown styleClass="custom-code-dropdown" [filter]="true" placeholder="Select"
+                      [options]="codeArr" formControlName="code" optionLabel="codeDescription" dataKey="codeId"
+                      (onChange)="onCodeSelected($event, i, false)">
                     </p-dropdown>
                   </div>
                   <div class="col-md col-12">

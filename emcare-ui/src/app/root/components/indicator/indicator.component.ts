@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FhirService, ToasterService } from 'src/app/shared';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-indicator',
@@ -38,6 +39,7 @@ export class IndicatorComponent implements OnInit {
     { id: 'date', name: 'Date' },
     { id: 'number', name: 'Number' }
   ];
+  apiBusy = true;
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -52,10 +54,23 @@ export class IndicatorComponent implements OnInit {
   }
 
   prerequisite() {
-    this.getFacilities();
-    this.getCodeList();
-    // toDo when both api succeds then only this should be init
-    this.initIndicatorForm();
+    forkJoin([
+      this.fhirService.getFacility(),
+      this.fhirService.getAllCodes()
+    ]).subscribe(result => {
+      if (result && result.length > 0) {
+        this.setFailityResponse(result[0]);
+        this.setCodesResponse(result[1]);
+        this.apiBusy = false;
+        //  toDo when both api succeds then only this should be init
+        //  check and set values
+        const routeParams = this.route.snapshot.paramMap;
+        this.editId = routeParams.get('id');
+        this.initIndicatorForm();
+      }
+    }, (_e) => {
+      this.toasterService.showToast('error', 'Server issue!', 'EM CARE !!');
+    });
   }
 
   checkEditParam() {
@@ -131,21 +146,14 @@ export class IndicatorComponent implements OnInit {
     return denominatorArr;
   }
 
-  getCodeList() {
+  setCodesResponse(res) {
     this.codeArr = [];
-    this.fhirService.getAllCodes().subscribe((res: any) => {
-      if (res) {
-        this.codeArr = res;
-      }
-    }, () => {
-      this.toasterService.showToast('error', 'Server issue!', 'EMCARE');
-    });
+    if (res) {
+      this.codeArr = res;
+    }
   }
 
   initIndicatorForm() {
-    //  check and set values
-    const routeParams = this.route.snapshot.paramMap;
-    this.editId = routeParams.get('id');
     this.indicatorForm = this.formBuilder.group({
       codeName: ['', [Validators.required]],
       indicatorName: ['', [Validators.required]],
@@ -172,7 +180,7 @@ export class IndicatorComponent implements OnInit {
 
   newNumeratorAddition(): FormGroup {
     return this.formBuilder.group({
-      numeratorId: null, 
+      numeratorId: null,
       code: null,
       condition: null,
       value: null,
@@ -210,18 +218,16 @@ export class IndicatorComponent implements OnInit {
     this.getDenominators().removeAt(i);
   }
 
-  getFacilities() {
-    this.fhirService.getFacility().subscribe((res: Array<any>) => {
-      if (res) {
-        res.forEach(element => {
-          this.facilityArr.push({
-            id: element.facilityId,
-            name: element.facilityName,
-            organizationName: element.organizationName
-          });
+  setFailityResponse(res) {
+    if (res) {
+      res.forEach(element => {
+        this.facilityArr.push({
+          id: element.facilityId,
+          name: element.facilityName,
+          organizationName: element.organizationName
         });
-      }
-    });
+      });
+    }
   }
 
   get f() {
