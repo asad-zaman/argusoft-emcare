@@ -156,12 +156,16 @@ public class IndicatorServiceImpl implements IndicatorService {
         Integer numeratorResult = replaceValueToEquationAndResolve(indicator.getNumeratorIndicatorEquation(), numerator);
         Integer denominatorResult = replaceValueToEquationAndResolve(indicator.getDenominatorIndicatorEquation(), denominator);
         Double finalValue = (numeratorResult.doubleValue() / denominatorResult.doubleValue()) * 100;
+
+        if (finalValue.isInfinite() || finalValue.isNaN()) {
+            finalValue = 0D;
+        }
         Map<String, Object> stringObjectMap = new HashMap<>();
 
         stringObjectMap.put("indicatorCode", indicator.getIndicatorCode());
         stringObjectMap.put("indicatorName", indicator.getIndicatorName());
         stringObjectMap.put("IndicatorType", indicator.getDisplayType());
-        stringObjectMap.put("indicatorValue", finalValue);
+        stringObjectMap.put("indicatorValue", finalValue.intValue());
         responseList.add(stringObjectMap);
     }
 
