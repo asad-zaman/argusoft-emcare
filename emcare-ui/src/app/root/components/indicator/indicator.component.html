@@ -66,7 +66,11 @@
             <div [formGroupName]="i">
               <p-card
                 [style]="{'background-color': '#f7f7f7', 'margin-bottom': '20px', 'padding': '20px 5px', 'width': '100%', 'height': 'auto','cursor': 'pointer'}">
-                <h4 class="mb-4">{{'Equation' | translate}} {{i+1}}</h4>
+                <h4 class="mb-4">{{'Equation' | translate}} {{i+1}}
+                  <ng-container *ngIf="this.getNumerators().controls[i].value.eqIdentifier">
+                    ({{this.getNumerators().controls[i].value.eqIdentifier}})
+                  </ng-container>
+                </h4>
                 <div class="row mb-3">
                   <div class="col-md-4 col-12">
                     <label class="form-label">{{'Data Fields' | translate}}</label>
@@ -150,7 +154,11 @@
             <div [formGroupName]="i">
               <p-card
                 [style]="{'background-color': '#f7f7f7', 'margin-bottom': '20px', 'padding': '20px 5px', 'width': '100%', 'height': 'auto','cursor': 'pointer'}">
-                <h4 class="mb-4">{{'Equation' | translate}} {{i+1}}</h4>
+                <h4 class="mb-4">{{'Equation' | translate}} {{i+1}}
+                  <ng-container *ngIf="this.getDenominators().controls[i].value.eqIdentifier">
+                    ({{this.getDenominators().controls[i].value.eqIdentifier}})
+                  </ng-container>
+                </h4>
                 <div class="row mb-3">
                   <div class="col-md-4 col-12">
                     <label class="form-label">{{'Data Fields' | translate}}</label>
