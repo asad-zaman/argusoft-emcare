@@ -305,6 +305,8 @@ export class HomeComponent implements OnInit {
       if (res) {
         this.dashboardData.indicatorName = res[0].indicatorName;
         this.dashboardData.indicatorValue = res[0].indicatorValue;
+        console.log(this.dashboardData.indicatorName, this.dashboardData.indicatorValue);
+        
       }
     });
   }
