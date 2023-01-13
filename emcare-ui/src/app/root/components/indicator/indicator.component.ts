@@ -43,6 +43,16 @@ export class IndicatorComponent implements OnInit {
   apiBusy = true;
   isAddFeature = true;
   isEditFeature = true;
+  nEqArr = [];
+  dEqArr = [];
+  eqConditionArr = [
+    { id: '+', name: '+ Plus' },
+    { id: '-', name: '- Minus' },
+    { id: '*', name: '* Multiplication' },
+    { id: '/', name: '/ Division)' }
+  ];
+  selectedEqs = [];
+  finalEqs = [];
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -133,6 +143,7 @@ export class IndicatorComponent implements OnInit {
       numeratorEquation: currentIndicator.numeratorIndicatorEquation,
       denominatorEquation: currentIndicator.denominatorIndicatorEquation
     });
+    this.setNumeratorEquationArr();
   }
 
   setNumerators(numeratorEquation) {
@@ -239,6 +250,9 @@ export class IndicatorComponent implements OnInit {
 
   removeNumerator(i: number) {
     this.getNumerators().removeAt(i);
+    this.nEqArr.splice(i, 1);
+    this.selectedEqs.splice(i, 1);
+    this.finalEqs.splice(i, 1);
   }
 
   removeDenominator(i: number) {
@@ -369,6 +383,48 @@ export class IndicatorComponent implements OnInit {
           });
           this.toasterService.showToast('error', 'Same code can not be selected again !!', 'EMCARE !!');
         }
+      }
+    }
+  }
+
+  setNumeratorEquationArr() {
+    this.nEqArr = [];
+    this.getNumerators().controls.forEach(element => {
+      if (element.value.eqIdentifier) {
+        this.nEqArr.push({ id: element.value.eqIdentifier, name: element.value.eqIdentifier });
+      }
+    });
+    return this.nEqArr;
+  }
+
+  setDenominatorEquationArr() {
+    this.dEqArr = [];
+    this.getDenominators().controls.forEach(element => {
+      if (element.value.eqIdentifier) {
+        this.dEqArr.push({ id: element.value.eqIdentifier, name: element.value.eqIdentifier });
+      }
+    });
+    return this.dEqArr;
+  }
+
+  onEquationSelected(event, index, isNumerator) {
+    if (event) {
+      if (isNumerator) {
+        if (this.selectedEqs.length == 0) {
+          this.selectedEqs.push(event.value.id);
+        } else {
+          if (this.selectedEqs.indexOf(event.value.id) >= 0) {
+            this.toasterService.showToast('error', 'Please Select other Equation!', 'EM CARE !!')
+            this.finalEqs.splice(index, 1);
+            this.finalEqs[index] = null;
+            this.selectedEqs.splice(index, 1);
+          } else {
+            this.selectedEqs.push(event.value.id);
+          }
+        }
+        console.log(this.finalEqs, this.selectedEqs);
+      } else {
+
       }
     }
   }
