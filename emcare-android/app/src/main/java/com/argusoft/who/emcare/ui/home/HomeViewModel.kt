@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.uhn.fhir.context.FhirContext
+import ca.uhn.fhir.context.FhirVersionEnum
 import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.data.remote.ApiResponse
 import com.argusoft.who.emcare.di.AppModule
@@ -16,6 +17,7 @@ import com.argusoft.who.emcare.ui.common.model.SidepaneItem
 import com.argusoft.who.emcare.ui.home.patient.PatientRepository
 import com.argusoft.who.emcare.utils.extention.orEmpty
 import com.argusoft.who.emcare.utils.listener.SingleLiveEvent
+import com.google.android.fhir.datacapture.allItems
 import com.google.android.fhir.datacapture.common.datatype.asStringValue
 import com.google.android.fhir.datacapture.createQuestionnaireResponseItem
 import com.google.android.fhir.workflow.FhirOperator
@@ -23,6 +25,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import org.hl7.fhir.r4.model.*
+import org.hl7.fhir.r4.model.QuestionnaireResponse.QuestionnaireResponseItemComponent
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -212,7 +215,7 @@ class HomeViewModel @Inject constructor(
     }
 
 
-    fun getQuestionnaireWithQR(questionnaireId: String, patientId: String, encounterId: String, isPreviouslySavedConsultation: Boolean) {
+    fun getQuestionnaireWithQR(questionnaireId: String, patientId: String, encounterId: String, isPreviouslySavedConsultation: Boolean, previousQuestionnaireResponse: String? = "") {
         _questionnaireWithQR.value = ApiResponse.Loading()
         viewModelScope.launch {
             patientRepository.getQuestionnaire(questionnaireId).collect {
@@ -221,7 +224,12 @@ class HomeViewModel @Inject constructor(
                 if(questionnaireJsonWithQR == null) {
                     _questionnaireWithQR.value = ApiResponse.ApiError(apiErrorMessageResId = R.string.initial_expression_error)
                 } else {
-                    val questionnaireResponse: QuestionnaireResponse = generateQuestionnaireResponseWithPatientIdAndEncounterId(questionnaireJsonWithQR, patientId!!, encounterId!!)
+                    var questionnaireResponse: QuestionnaireResponse = QuestionnaireResponse()
+                    questionnaireResponse = if(isPreviouslySavedConsultation) {
+                        addHiddenQuestionnaireItems(previousQuestionnaireResponse!!, questionnaireJsonWithQR)
+                    } else
+                        generateQuestionnaireResponseWithPatientIdAndEncounterId(questionnaireJsonWithQR, patientId!!, encounterId!!)
+
 
                     val questionnaireString = parser.encodeResourceToString(questionnaireJsonWithQR)
                     val questionnaireResponseString = parser.encodeResourceToString(questionnaireResponse)
@@ -276,6 +284,34 @@ class HomeViewModel @Inject constructor(
         }
 
         return questionnaireResponse
+    }
+
+    private fun addHiddenQuestionnaireItems(previousQuestionnaireResponse: String, questionnaire: Questionnaire): QuestionnaireResponse {
+        val previousQuestionnaireResponseObject = FhirContext.forCached(FhirVersionEnum.R4).newJsonParser().parseResource(QuestionnaireResponse::class.java, previousQuestionnaireResponse)
+        val questionnaireLinkIdList = mutableListOf<String>()
+
+        //Adding link id of all questionnaire items
+        questionnaire.item.forEach { item ->
+            questionnaireLinkIdList.add(item.linkId)
+        }
+
+        //Fetching list of all questionnaire items
+        val questionnaireResponseItemsList = mutableListOf<QuestionnaireResponse.QuestionnaireResponseItemComponent>()
+        questionnaireResponseItemsList.addAll(previousQuestionnaireResponseObject.allItems)
+
+        val finalQuestionnaireResponseItemsList = mutableListOf<QuestionnaireResponse.QuestionnaireResponseItemComponent>()
+
+        questionnaireLinkIdList.forEachIndexed { index, linkId ->
+            if(questionnaireResponseItemsList[index].linkId.equals(linkId)){
+                finalQuestionnaireResponseItemsList.add(questionnaireResponseItemsList[index])
+            } else {
+                questionnaireResponseItemsList.add(index, QuestionnaireResponse.QuestionnaireResponseItemComponent(StringType(linkId)))
+                finalQuestionnaireResponseItemsList.add(QuestionnaireResponse.QuestionnaireResponseItemComponent(StringType(linkId)))
+            }
+        }
+
+        previousQuestionnaireResponseObject.item = finalQuestionnaireResponseItemsList
+        return previousQuestionnaireResponseObject
     }
 
     private suspend fun preProcessQuestionnaire(questionnaire: Questionnaire, patientId: String, encounterId: String, isPreviouslySavedConsultation: Boolean) : Questionnaire? {

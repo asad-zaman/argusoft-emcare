@@ -52,7 +52,8 @@ class PatientQuestionnaireFragment : BaseFragment<FragmentPatientQuestionnaireBi
                 it,
                 requireArguments().getString(INTENT_EXTRA_PATIENT_ID)!!,
                 requireArguments().getString(INTENT_EXTRA_ENCOUNTER_ID)!!,
-                isPreviouslySavedConsultation = !questionnaireResponse.isNullOrEmpty()
+                isPreviouslySavedConsultation = !questionnaireResponse.isNullOrEmpty(),
+                questionnaireResponse
             )
         }
 
@@ -251,20 +252,9 @@ class PatientQuestionnaireFragment : BaseFragment<FragmentPatientQuestionnaireBi
                 binding.progressLayout,
                 skipIds = listOf(R.id.headerLayout)
             ) {
-                if (requireArguments().getString(INTENT_EXTRA_QUESTIONNAIRE_RESPONSE)
-                        .isNullOrEmpty()
-                )
-                    it?.let { addQuestionnaireFragment(it) }
-                else
-                    it?.let {
-                        addQuestionnaireFragment(
-                            it.first to
-                                    requireArguments().getString(
-                                        INTENT_EXTRA_QUESTIONNAIRE_RESPONSE,
-                                        it.second
-                                    )
-                        )
-                    }
+                it?.let {
+                    addQuestionnaireFragment(it.first to it.second)
+                }
             }
         }
 
