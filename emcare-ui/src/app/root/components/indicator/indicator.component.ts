@@ -43,6 +43,20 @@ export class IndicatorComponent implements OnInit {
   apiBusy = true;
   isAddFeature = true;
   isEditFeature = true;
+  nEqArr = [];
+  dEqArr = [];
+  eqConditionArr = [
+    { id: '+', name: '+ Plus' },
+    { id: '-', name: '- Minus' },
+    { id: '*', name: '* Multiplication' },
+    { id: '/', name: '/ Division)' }
+  ];
+  selectedNumEqs = [];
+  selectedDenEqs = [];
+  finalNumEqs = [];
+  finalDenEqs = [];
+  numEqCOnditionArr = [];
+  denEqCOnditionArr = [];
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -133,6 +147,8 @@ export class IndicatorComponent implements OnInit {
       numeratorEquation: currentIndicator.numeratorIndicatorEquation,
       denominatorEquation: currentIndicator.denominatorIndicatorEquation
     });
+    this.setNumeratorEquationArr();
+    this.setDenominatorEquationArr();
   }
 
   setNumerators(numeratorEquation) {
@@ -239,10 +255,16 @@ export class IndicatorComponent implements OnInit {
 
   removeNumerator(i: number) {
     this.getNumerators().removeAt(i);
+    this.nEqArr.splice(i, 1);
+    this.finalNumEqs.splice(i, 1);
+    this.setSelectedNumEqsArr();
   }
 
   removeDenominator(i: number) {
     this.getDenominators().removeAt(i);
+    this.dEqArr.splice(i, 1);
+    this.finalDenEqs.splice(i, 1);
+    this.setSelectedDenEqsArr();
   }
 
   setFailityResponse(res) {
@@ -281,14 +303,38 @@ export class IndicatorComponent implements OnInit {
     }
   }
 
+  getNumEquation() {
+    let numEq = '';
+    this.finalNumEqs.forEach((element, index) => {
+      if (element) {
+        numEq += element.id;
+        if (index < this.finalNumEqs.length - 1)
+          numEq += this.numEqCOnditionArr[index].id;
+      }
+    });
+    return numEq;
+  }
+
+  getDenEquation() {
+    let denEq = '';
+    this.finalDenEqs.forEach((element, index) => {
+      if (element) {
+        denEq += element.id;
+        if (index < this.finalDenEqs.length - 1)
+          denEq += this.denEqCOnditionArr[index].id;
+      }
+    });
+    return denEq;
+  }
+
   getRequestBody(formValue) {
     return {
       "indicatorCode": formValue.codeName,
       "indicatorName": formValue.indicatorName,
       "description": formValue.indicatorDescription,
       "facilityId": formValue.facility.id,
-      "numeratorIndicatorEquation": formValue.numeratorEquation,
-      "denominatorIndicatorEquation": formValue.denominatorEquation,
+      "numeratorIndicatorEquation": this.getNumEquation(),
+      "denominatorIndicatorEquation": this.getDenEquation(),
       "displayType": formValue.displayType.id,
       "numeratorEquations": this.getNumeratorsBody(),
       "denominatorEquations": this.getDenominatorsBody()
@@ -300,11 +346,11 @@ export class IndicatorComponent implements OnInit {
     this.getNumerators().controls.forEach(element => {
       tempArr.push({
         numeratorId: element.value.numeratorId,
-        codeId: element.value.code.codeId,
-        code: element.value.code.code,
-        condition: element.value.condition.id,
+        codeId: element.value.code ? element.value.code.codeId : null,
+        code: element.value.code ? element.value.code.code : null,
+        condition: element.value.condition ? element.value.condition.id : null,
         value: element.value.value,
-        valueType: element.value.valueType.id,
+        valueType: element.value.valueType ? element.value.valueType.id : null,
         eqIdentifier: element.value.eqIdentifier
       });
     });
@@ -316,11 +362,11 @@ export class IndicatorComponent implements OnInit {
     this.getDenominators().controls.forEach(element => {
       tempArr.push({
         denominatorId: element.value.denominatorId,
-        codeId: element.value.code.codeId,
-        code: element.value.code.code,
-        condition: element.value.condition.id,
+        codeId: element.value.code ? element.value.code.codeId : null,
+        code: element.value.code ? element.value.code.code : null,
+        condition: element.value.condition ? element.value.condition.id : null,
         value: element.value.value,
-        valueType: element.value.valueType.id,
+        valueType: element.value.valueType ? element.value.valueType.id : null,
         eqIdentifier: element.value.eqIdentifier
       });
     });
@@ -371,5 +417,75 @@ export class IndicatorComponent implements OnInit {
         }
       }
     }
+  }
+
+  setNumeratorEquationArr() {
+    this.nEqArr = [];
+    this.getNumerators().controls.forEach(element => {
+      if (element.value.eqIdentifier) {
+        this.nEqArr.push({ id: element.value.eqIdentifier, name: element.value.eqIdentifier });
+      }
+    });
+    return this.nEqArr;
+  }
+
+  setDenominatorEquationArr() {
+    this.dEqArr = [];
+    this.getDenominators().controls.forEach(element => {
+      if (element.value.eqIdentifier) {
+        this.dEqArr.push({ id: element.value.eqIdentifier, name: element.value.eqIdentifier });
+      }
+    });
+    return this.dEqArr;
+  }
+
+  onEquationSelected(event, index, isNumerator) {
+    if (event) {
+      if (isNumerator) {
+        if (this.selectedNumEqs.length == 0) {
+          this.selectedNumEqs.push(event.value.id);
+        } else {
+          if (this.finalNumEqs.length < this.selectedNumEqs.length) {
+            this.setSelectedNumEqsArr();
+          } else if (this.selectedNumEqs.indexOf(event.value.id) >= 0) {
+            this.toasterService.showToast('error', 'Please Select other Equation!', 'EM CARE !!')
+            this.finalNumEqs[index] = null;
+            this.setSelectedNumEqsArr();
+          } else {
+            this.setSelectedNumEqsArr();
+          }
+        }
+      } else {
+        if (this.selectedDenEqs.length == 0) {
+          this.selectedDenEqs.push(event.value.id);
+        } else {
+          if (this.finalDenEqs.length < this.selectedDenEqs.length) {
+            this.setSelectedDenEqsArr();
+          } else if (this.selectedDenEqs.indexOf(event.value.id) >= 0) {
+            this.toasterService.showToast('error', 'Please Select other Equation!', 'EM CARE !!')
+            this.finalDenEqs[index] = null;
+            this.setSelectedDenEqsArr();
+          } else {
+            this.setSelectedDenEqsArr();
+          }
+        }
+      }
+    }
+  }
+
+  setSelectedNumEqsArr() {
+    this.selectedNumEqs = [];
+    this.finalNumEqs.forEach(element => {
+      if (element)
+        this.selectedNumEqs.push(element.id);
+    });
+  }
+
+  setSelectedDenEqsArr() {
+    this.selectedDenEqs = [];
+    this.finalDenEqs.forEach(element => {
+      if (element)
+        this.selectedDenEqs.push(element.id);
+    });
   }
 }

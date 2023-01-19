@@ -82,7 +82,8 @@
                   <div class="col-md-4 col-12">
                     <label class="form-label">{{'Identifier' | translate}}</label>
                     <input class="form-control custom-input" formControlName="eqIdentifier" type="text"
-                      id="eqIdentifier" placeholder="{{'Identifier Placeholder' | translate}}">
+                      id="eqIdentifier" placeholder="{{'Identifier Placeholder' | translate}}"
+                      (change)="setNumeratorEquationArr()">
                   </div>
                   <div class="col-md-3 col-12"
                     [ngClass]="{'col-md-4': this.getNumerators().controls[i].value.appendOtherNumeratorDropdown == true}">
@@ -122,15 +123,27 @@
           </div>
         </div>
         <div class="row">
-          <div class="col-4">
+          <div class="col-12">
             <div class="my-3">
               <label class="form-label">{{'Numerator Equation' | translate}}</label>
-              <input class="form-control custom-input" formControlName="numeratorEquation" type="text"
-                id="numeratorEquation" placeholder="{{'Numerator Equation Placeholder' | translate}}"
-                [ngClass]="{ 'is-invalid': submitted && f.numeratorEquation.errors }">
-              <div *ngIf="submitted && f.numeratorEquation.errors" class="invalid-feedback">
-                <div class="cst-error-style" *ngIf="f.numeratorEquation.errors.required">
-                  {{'Numerator Equation Required Message' | translate}}</div>
+              <button pButton pRipple type="button" icon="pi pi-info"
+                class="p-button-rounded p-button-outlined top-35 cst-info"
+                pTooltip="All Equations shoud have Identifier!"></button>
+              <!-- numeratorEquation -->
+              <div class="row">
+                <ng-container *ngFor="let el of [].constructor(this.nEqArr.length); let j=index">
+                  <div class="col-md-2">
+                    <p-dropdown [(ngModel)]="finalNumEqs[j]" [ngModelOptions]="{standalone: true}" placeholder="Select"
+                      [options]="nEqArr" optionLabel="name" dataKey="id"
+                      (onChange)="onEquationSelected($event, j, true)">
+                    </p-dropdown>
+                  </div>
+                  <div *ngIf="j !== this.nEqArr.length-1" class="col-1">
+                    <p-dropdown [(ngModel)]="numEqCOnditionArr[j]" [ngModelOptions]="{standalone: true}"
+                      [options]="eqConditionArr" optionLabel="name" dataKey="id">
+                    </p-dropdown>
+                  </div>
+                </ng-container>
               </div>
             </div>
           </div>
@@ -170,7 +183,8 @@
                   <div class="col-md-4 col-12">
                     <label class="form-label">{{'Identifier' | translate}}</label>
                     <input class="form-control custom-input" formControlName="eqIdentifier" type="text"
-                      id="eqIdentifier" placeholder="{{'Identifier Placeholder' | translate}}">
+                      id="eqIdentifier" placeholder="{{'Identifier Placeholder' | translate}}"
+                      (change)="setDenominatorEquationArr()">
                   </div>
                   <div class="col-md-3 col-12"
                     [ngClass]="{'col-md-4': this.getDenominators().controls[i].value.appendOtherDenominatorDropdown == true}">
@@ -213,15 +227,27 @@
           </ng-container>
         </div>
         <div *ngIf="getDenominators().controls.length !== 0" class="row">
-          <div class="col-4">
+          <div class="col-12">
             <div class="my-3">
               <label class="form-label">{{'Denominator Equation' | translate}}</label>
-              <input class="form-control custom-input" formControlName="denominatorEquation" type="text"
-                id="denominatorEquation" placeholder="{{'Denominator Equation Placeholder' | translate}}"
-                [ngClass]="{ 'is-invalid': submitted && f.denominatorEquation.errors }">
-              <div *ngIf="submitted && f.denominatorEquation.errors" class="invalid-feedback">
-                <div class="cst-error-style" *ngIf="f.denominatorEquation.errors.required">
-                  {{'Denominator Equation Required Message' | translate}}</div>
+              <button pButton pRipple type="button" icon="pi pi-info"
+                class="p-button-rounded p-button-outlined top-35 cst-info"
+                pTooltip="All Equations shoud have Identifier!"></button>
+              <!-- denominatorEquation -->
+              <div class="row">
+                <ng-container *ngFor="let el of [].constructor(this.dEqArr.length); let j=index">
+                  <div class="col-md-2">
+                    <p-dropdown [(ngModel)]="finalDenEqs[j]" [ngModelOptions]="{standalone: true}" placeholder="Select"
+                      [options]="dEqArr" optionLabel="name" dataKey="id"
+                      (onChange)="onEquationSelected($event, j, false)">
+                    </p-dropdown>
+                  </div>
+                  <div *ngIf="j !== this.dEqArr.length-1" class="col-1">
+                    <p-dropdown [(ngModel)]="denEqCOnditionArr[j]" [ngModelOptions]="{standalone: true}"
+                      [options]="eqConditionArr" optionLabel="name" dataKey="id">
+                    </p-dropdown>
+                  </div>
+                </ng-container>
               </div>
             </div>
           </div>
