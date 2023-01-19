@@ -42,6 +42,12 @@ public class Indicator extends EntityAuditInfo implements Serializable {
     @Column(name = "denominator_indicator_equation")
     private String denominatorIndicatorEquation;
 
+    @Column(name = "numerator_equation_string", columnDefinition = "TEXT")
+    private String numeratorEquationString;
+
+    @Column(name = "denominator_equation_string", columnDefinition = "TEXT")
+    private String denominatorEquationString;
+
     @Column(name = "display_type")
     private String displayType;
 
@@ -129,5 +135,21 @@ public class Indicator extends EntityAuditInfo implements Serializable {
 
     public void setDisplayType(String displayType) {
         this.displayType = displayType;
+    }
+
+    public String getNumeratorEquationString() {
+        return numeratorEquationString;
+    }
+
+    public void setNumeratorEquationString(String numeratorEquationString) {
+        this.numeratorEquationString = numeratorEquationString;
+    }
+
+    public String getDenominatorEquationString() {
+        return denominatorEquationString;
+    }
+
+    public void setDenominatorEquationString(String denominatorEquationString) {
+        this.denominatorEquationString = denominatorEquationString;
     }
 }
