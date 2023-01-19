@@ -139,13 +139,17 @@ export class IndicatorComponent implements OnInit {
     this.numeratorEquationStringArr = JSON.parse(currentIndicator.numeratorEquationString);
     this.denominatorEquationStringArr = JSON.parse(currentIndicator.denominatorEquationString);
     let numeratorEquation = '';
-    this.numeratorEquationStringArr.forEach(element => {
-      numeratorEquation += element
-    });
+    if (this.numeratorEquationStringArr && this.numeratorEquationStringArr.length > 0) {
+      this.numeratorEquationStringArr.forEach(element => {
+        numeratorEquation += element
+      });
+    }
     let denominatorEquation = '';
-    this.denominatorEquationStringArr.forEach(element => {
-      denominatorEquation += element
-    });
+    if (this.denominatorEquationStringArr && this.denominatorEquationStringArr.length > 0) {
+      this.denominatorEquationStringArr.forEach(element => {
+        denominatorEquation += element
+      });
+    }
     this.indicatorForm.patchValue({
       codeName: currentIndicator.indicatorCode,
       indicatorName: currentIndicator.indicatorName,
@@ -161,7 +165,7 @@ export class IndicatorComponent implements OnInit {
     });
     this.setNumeratorEquationArr();
     this.setDenominatorEquationArr();
-    this.numeratorEquationStringArr.forEach((element, index) => {
+    this.numeratorEquationStringArr && this.numeratorEquationStringArr.forEach((element, index) => {
       if (index % 2 == 0) {
         this.finalNumEqs.push({ id: element, name: element });
         this.selectedNumEqs.push(element);
@@ -169,7 +173,7 @@ export class IndicatorComponent implements OnInit {
         this.numEqCOnditionArr.push(this.eqConditionArr.find(el => el.id === element));
       }
     });
-    this.denominatorEquationStringArr.forEach((element, index) => {
+    this.denominatorEquationStringArr && this.denominatorEquationStringArr.forEach((element, index) => {
       if (index % 2 == 0) {
         this.finalDenEqs.push({ id: element, name: element });
         this.selectedDenEqs.push(element);
