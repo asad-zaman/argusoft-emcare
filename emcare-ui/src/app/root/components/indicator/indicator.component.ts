@@ -57,6 +57,8 @@ export class IndicatorComponent implements OnInit {
   finalDenEqs = [];
   numEqCOnditionArr = [];
   denEqCOnditionArr = [];
+  numeratorEquationStringArr = [];
+  denominatorEquationStringArr = [];
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -134,6 +136,16 @@ export class IndicatorComponent implements OnInit {
   }
 
   setCurrentIndicator(currentIndicator) {
+    this.numeratorEquationStringArr = JSON.parse(currentIndicator.numeratorEquationString);
+    this.denominatorEquationStringArr = JSON.parse(currentIndicator.denominatorEquationString);
+    let numeratorEquation = '';
+    this.numeratorEquationStringArr.forEach(element => {
+      numeratorEquation += element
+    });
+    let denominatorEquation = '';
+    this.denominatorEquationStringArr.forEach(element => {
+      denominatorEquation += element
+    });
     this.indicatorForm.patchValue({
       codeName: currentIndicator.indicatorCode,
       indicatorName: currentIndicator.indicatorName,
@@ -144,11 +156,27 @@ export class IndicatorComponent implements OnInit {
         this.setNumerators(currentIndicator.numeratorEquation) : [],
       denominators: currentIndicator.denominatorEquation.length > 0 ?
         this.setDenominators(currentIndicator.denominatorEquation) : [],
-      numeratorEquation: currentIndicator.numeratorIndicatorEquation,
-      denominatorEquation: currentIndicator.denominatorIndicatorEquation
+      numeratorEquation: numeratorEquation,
+      denominatorEquation: denominatorEquation
     });
     this.setNumeratorEquationArr();
     this.setDenominatorEquationArr();
+    this.numeratorEquationStringArr.forEach((element, index) => {
+      if (index % 2 == 0) {
+        this.finalNumEqs.push({ id: element, name: element });
+        this.selectedNumEqs.push(element);
+      } else {
+        this.numEqCOnditionArr.push(this.eqConditionArr.find(el => el.id === element));
+      }
+    });
+    this.denominatorEquationStringArr.forEach((element, index) => {
+      if (index % 2 == 0) {
+        this.finalDenEqs.push({ id: element, name: element });
+        this.selectedDenEqs.push(element);
+      } else {
+        this.denEqCOnditionArr.push(this.eqConditionArr.find(el => el.id === element));
+      }
+    });
   }
 
   setNumerators(numeratorEquation) {
@@ -207,8 +235,8 @@ export class IndicatorComponent implements OnInit {
         this.formBuilder.array([]) : this.formBuilder.array([this.newNumeratorAddition()]),
       denominators: this.editId ?
         this.formBuilder.array([]) : this.formBuilder.array([this.newDenominatorAddition()]),
-      numeratorEquation: ['', [Validators.required]],
-      denominatorEquation: ['', [Validators.required]]
+      numeratorEquation: [''],
+      denominatorEquation: ['']
     });
     this.checkEditParam();
   }
@@ -305,11 +333,15 @@ export class IndicatorComponent implements OnInit {
 
   getNumEquation() {
     let numEq = '';
+    this.numeratorEquationStringArr = [];
     this.finalNumEqs.forEach((element, index) => {
       if (element) {
         numEq += element.id;
-        if (index < this.finalNumEqs.length - 1)
+        this.numeratorEquationStringArr.push(element.id);
+        if (index < this.finalNumEqs.length - 1) {
           numEq += this.numEqCOnditionArr[index].id;
+          this.numeratorEquationStringArr.push(this.numEqCOnditionArr[index].id);
+        }
       }
     });
     return numEq;
@@ -317,11 +349,15 @@ export class IndicatorComponent implements OnInit {
 
   getDenEquation() {
     let denEq = '';
+    this.denominatorEquationStringArr = [];
     this.finalDenEqs.forEach((element, index) => {
       if (element) {
         denEq += element.id;
-        if (index < this.finalDenEqs.length - 1)
+        this.denominatorEquationStringArr.push(element.id);
+        if (index < this.finalDenEqs.length - 1) {
           denEq += this.denEqCOnditionArr[index].id;
+          this.denominatorEquationStringArr.push(this.denEqCOnditionArr[index].id);
+        }
       }
     });
     return denEq;
@@ -337,7 +373,9 @@ export class IndicatorComponent implements OnInit {
       "denominatorIndicatorEquation": this.getDenEquation(),
       "displayType": formValue.displayType.id,
       "numeratorEquations": this.getNumeratorsBody(),
-      "denominatorEquations": this.getDenominatorsBody()
+      "denominatorEquations": this.getDenominatorsBody(),
+      "numeratorEquationString": JSON.stringify(this.numeratorEquationStringArr),
+      "denominatorEquationString": JSON.stringify(this.denominatorEquationStringArr),
     }
   }
 
