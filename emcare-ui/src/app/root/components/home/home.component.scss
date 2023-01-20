@@ -18,9 +18,27 @@
     &-3 {
         background-color: #F50231;
     }
+}
+
+.indicatorType {
+    text-align: center;
+    padding: 23px 0px;
+    align-self: center;
+
+    &-1 {
+        background-color: #ff0048;
+    }
+    
+    &-2 {
+        background-color: #df5846;
+    }
+    
+    &-3 {
+        background-color: #f0ed3c;
+    }
 
     &-4 {
-        background-color: #e75571;
+        background-color: #56a30e;
     }
 }
 

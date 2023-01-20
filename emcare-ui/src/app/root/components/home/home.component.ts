@@ -15,7 +15,7 @@ export class HomeComponent implements OnInit {
   isView = true;
   facilityArr = [];
   lastScDate = `${new Date().toDateString()} ${new Date().toLocaleTimeString()}`;
-
+  indicatorArr = [];
   scatterData = [];
   consultationPerFacility = [];
   consultationByAgeGroup = [];
@@ -301,12 +301,9 @@ export class HomeComponent implements OnInit {
   getIndicatorCompileValue() {
     //  toDo
     const codeArr = [3843];
-    this.fhirService.getIndicatorCompileValue(codeArr).subscribe(res => {
-      if (res) {
-        this.dashboardData.indicatorName = res[0].indicatorName;
-        this.dashboardData.indicatorValue = res[0].indicatorValue;
-        console.log(this.dashboardData.indicatorName, this.dashboardData.indicatorValue);
-        
+    this.fhirService.getIndicatorCompileValue(codeArr).subscribe((res: any) => {
+      if (res && res.length > 0) {
+        this.indicatorArr = res;
       }
     });
   }

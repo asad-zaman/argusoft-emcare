@@ -35,6 +35,7 @@ export class IndicatorComponent implements OnInit {
     { id: '>=', name: '>= (greater than equal to)' }
   ];
   valueTypeArr = [
+    { id: null, name: 'Any' },
     { id: 'boolean', name: 'Boolean' },
     { id: 'text', name: 'String' },
     { id: 'date', name: 'Date' },
@@ -191,7 +192,7 @@ export class IndicatorComponent implements OnInit {
         code: element.code ? this.codeArr.find(el => el.code === element.code) : null,
         condition: element.condition ? this.conditionArr.find(el => el.id === element.condition) : null,
         value: element.value,
-        valueType: element.valueType ? this.valueTypeArr.find(el => el.id === element.valueType) : null,
+        valueType: element.valueType || element.valueType === null ? this.valueTypeArr.find(el => el.id === element.valueType) : null,
         eqIdentifier: element.eqIdentifier,
         appendOtherNumeratorDropdown: true
       }
@@ -210,7 +211,7 @@ export class IndicatorComponent implements OnInit {
         code: element.code ? this.codeArr.find(el => el.code === element.code) : null,
         condition: element.condition ? this.conditionArr.find(el => el.id === element.condition) : null,
         value: element.value,
-        valueType: element.valueType ? this.valueTypeArr.find(el => el.id === element.valueType) : null,
+        valueType: element.valueType || element.valueType === null ? this.valueTypeArr.find(el => el.id === element.valueType) : null,
         eqIdentifier: element.eqIdentifier,
         appendOtherDenominatorDropdown: true
       }
