@@ -124,7 +124,7 @@ public class IndicatorServiceImpl implements IndicatorService {
 
     @Override
     public ResponseEntity<Object> getIndicatorsCompileValue(List<Long> indicatorIds) {
-        List<Indicator> indicators = indicatorRepository.findAllById(indicatorIds);
+        List<Indicator> indicators = indicatorRepository.findAll();
 
         List<Map<String, Object>> responseList = new ArrayList<>();
         for (Indicator indicator : indicators) {

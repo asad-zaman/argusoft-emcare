@@ -58,6 +58,7 @@ public class CommonConstant {
     public static final String FHIR_TYPE_BOOLEAN_CONDITION = "Boolean";
     public static final String FHIR_TYPE_BOOLEAN_KEY = "BOOLEAN";
     public static final String FHIR_TYPE_BOOLEAN_VALUE = "valueBoolean";
+    public static final String ALL_CODE = "All";
     private CommonConstant() {
     }
 }
