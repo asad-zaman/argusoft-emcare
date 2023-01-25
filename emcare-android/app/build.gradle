@@ -96,6 +96,14 @@ android {
         exclude "META-INF/LICENSE.md"
         exclude "META-INF/NOTICE.md"
     }
+
+    configurations.all {
+        resolutionStrategy {
+            force 'com.github.ben-manes.caffeine:caffeine:2.9.1'
+            force 'ca.uhn.hapi.fhir:org.hl7.fhir.r4:5.6.36'
+        }
+    }
+
 }
 
 dependencies {
@@ -169,10 +177,10 @@ dependencies {
     implementation "androidx.work:work-runtime-ktx:2.7.1"
 
     //Fhir
-    //Local Build Link: https://github.com/parthfloyd/android-fhir/actions/runs/3871295797
-    implementation "com.google.android.fhir:engine:0.1.0-beta02-build_3871295797"
-    implementation "com.google.android.fhir:data-capture:0.1.0-beta06-build_3871295797"
-    implementation "com.google.android.fhir:workflow:0.1.0-alpha02-build_3871295797"
+    //Local Build Link: https://github.com/khyativyasargus/android-fhir/actions/runs/3967867003
+    implementation "com.google.android.fhir:engine:0.1.0-beta02-build_3967867003"
+    implementation "com.google.android.fhir:data-capture:0.1.0-beta06-build_3967867003"
+    implementation "com.google.android.fhir:workflow:0.1.0-alpha02-build_3967867003"
 
     //EventBus
     implementation("org.greenrobot:eventbus:3.3.1")

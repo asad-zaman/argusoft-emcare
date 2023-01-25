@@ -359,8 +359,8 @@ class HomeViewModel @Inject constructor(
                 val parameters = fhirOperator.evaluateLibrary(
                     cqlLibraryURL,
                     patientId,
-                    expressionSet,
-                    parameterObject
+                    parameterObject,
+                    expressionSet
                 ) as Parameters
                 //Inject parameters to appropriate places
                 questionnaire.item.forEach { item ->
