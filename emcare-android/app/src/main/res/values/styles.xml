@@ -240,7 +240,7 @@
     <style name="Questionnaire" parent="Theme.MaterialComponents.Light.DarkActionBar">
         <item name="colorAccent">@color/colorAccent</item>
         <item name="questionnaireEditButtonStyle">@style/Questionnaire.EditButtonStyle</item>
-        <item name="questionnaireQuestionTextStyle">@style/TextAppearance.MaterialComponents.Body2</item>
+        <item name="questionnaireQuestionTextStyle">@style/TextAppearance.MaterialComponents.Body1</item>
         <item name="questionnaireCheckBoxStyle">@style/Questionnaire.CheckBoxStyle</item>
         <item name="questionnaireRadioButtonStyle">@style/Questionnaire.RadioButton</item>
         <item name="questionnaireDropDownTextStyle">@style/Questionnaire.questionnaireDropDownTextStyle</item>
