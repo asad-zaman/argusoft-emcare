@@ -56,7 +56,7 @@
               {{'Numerator' | translate}}
             </h1>
           </div>
-          <div class="col-1">
+          <div class="col-1 pl-0">
             <button pButton pRipple type="button" icon="pi pi-plus" class="p-button-rounded p-button-outlined top-20"
               (click)="addNumerator()"></button>
           </div>
@@ -64,61 +64,65 @@
         <div formArrayName="numerators">
           <div *ngFor="let numerator of getNumerators().controls; let i=index">
             <div [formGroupName]="i">
-              <p-card
-                [style]="{'background-color': '#f7f7f7', 'margin-bottom': '20px', 'padding': '20px 5px', 'width': '100%', 'height': 'auto','cursor': 'pointer'}">
-                <h4 class="mb-4">{{'Equation' | translate}} {{i+1}}
-                  <ng-container *ngIf="this.getNumerators().controls[i].value.eqIdentifier">
-                    ({{this.getNumerators().controls[i].value.eqIdentifier}})
-                  </ng-container>
-                </h4>
-                <div class="row mb-3">
-                  <div class="col-md-4 col-12">
-                    <label class="form-label">{{'Data Fields' | translate}}</label>
-                    <p-dropdown styleClass="custom-code-dropdown" [filter]="true" placeholder="Select"
-                      [options]="codeArr" formControlName="code" optionLabel="codeDescription" dataKey="codeId"
-                      (onChange)="onCodeSelected($event, i, true)">
-                    </p-dropdown>
-                  </div>
-                  <div class="col-md-4 col-12">
-                    <label class="form-label">{{'Identifier' | translate}}</label>
-                    <input class="form-control custom-input" formControlName="eqIdentifier" type="text"
-                      id="eqIdentifier" placeholder="{{'Identifier Placeholder' | translate}}"
-                      (change)="setNumeratorEquationArr()">
-                  </div>
-                  <div class="col-md-3 col-12"
-                    [ngClass]="{'col-md-4': this.getNumerators().controls[i].value.appendOtherNumeratorDropdown == true}">
-                    <label class="form-label">{{'Value Type' | translate}}</label>
-                    <p-dropdown placeholder="Select" [options]="valueTypeArr" formControlName="valueType"
-                      optionLabel="name" dataKey="id">
-                    </p-dropdown>
-                  </div>
-                  <div *ngIf="this.getNumerators().controls[i].value.appendOtherNumeratorDropdown !== true"
-                    class="col-md-1 col-12">
-                    <button [disabled]="(getNumerators().controls.length <= 1)" pButton pRipple type="button"
-                      icon="pi pi-trash" class="p-button-rounded p-button-outlined top-35"
-                      (click)="removeNumerator(i)"></button>
-                  </div>
-                </div>
-                <div *ngIf="this.getNumerators().controls[i].value.appendOtherNumeratorDropdown == true" class="row">
-                  <div class="col-md-4 col-12">
-                    <label class="form-label">{{'Condition' | translate}}</label>
-                    <p-dropdown placeholder="Select" [options]="conditionArr" formControlName="condition"
-                      optionLabel="name" dataKey="id">
-                    </p-dropdown>
-                  </div>
-                  <div class="col-md-4 col-12">
-                    <label class="form-label">{{'Value' | translate}}</label>
-                    <input class="form-control custom-input" formControlName="value" type="text" id="value"
-                      placeholder="{{'Value Placeholder' | translate}}" title="{{numerator.value.value}}">
-                  </div>
-                  <div class="col-md-3 col-12"></div>
-                  <div class="col-md-1 col-12">
-                    <button [disabled]="(getNumerators().controls.length <= 1)" pButton pRipple type="button"
-                      icon="pi pi-trash" class="p-button-rounded p-button-outlined top-35"
-                      (click)="removeNumerator(i)"></button>
-                  </div>
-                </div>
-              </p-card>
+              <p-accordion styleClass="cst-indicator-accordion mb-4">
+                <p-accordionTab>
+                  <ng-template pTemplate="header">
+                    <div class="row w-100">
+                      <div class="col-11 align-self-center">
+                        <h6 class="">{{'Equation' | translate}} {{i+1}}
+                          <ng-container *ngIf="this.getNumerators().controls[i].value.eqIdentifier">
+                            ({{this.getNumerators().controls[i].value.eqIdentifier}})
+                          </ng-container>
+                        </h6>
+                      </div>
+                      <div class="col-1 pr-0">
+                        <button [disabled]="(getNumerators().controls.length <= 1)" pButton pRipple type="button"
+                          icon="pi pi-trash" class="p-button-rounded p-button-outlined float-right"
+                          (click)="removeNumerator(i)"></button>
+                      </div>
+                    </div>
+                  </ng-template>
+                  <ng-template pTemplate="content">
+                    <div class="row mb-3">
+                      <div class="col-md-4 col-12">
+                        <label class="form-label">{{'Data Fields' | translate}}</label>
+                        <p-dropdown styleClass="custom-code-dropdown" [filter]="true" placeholder="Select"
+                          [options]="codeArr" formControlName="code" optionLabel="codeDescription" dataKey="codeId"
+                          (onChange)="onCodeSelected($event, i, true)">
+                        </p-dropdown>
+                      </div>
+                      <div class="col-md-4 col-12">
+                        <label class="form-label">{{'Identifier' | translate}}</label>
+                        <input class="form-control custom-input" formControlName="eqIdentifier" type="text"
+                          id="eqIdentifier" placeholder="{{'Identifier Placeholder' | translate}}"
+                          (change)="setNumeratorEquationArr()">
+                      </div>
+                      <div class="col-md-4 col-12"
+                        [ngClass]="{'col-md-4': this.getNumerators().controls[i].value.appendOtherNumeratorDropdown == true}">
+                        <label class="form-label">{{'Value Type' | translate}}</label>
+                        <p-dropdown placeholder="Select" [options]="valueTypeArr" formControlName="valueType"
+                          optionLabel="name" dataKey="id">
+                        </p-dropdown>
+                      </div>
+                    </div>
+                    <div *ngIf="this.getNumerators().controls[i].value.appendOtherNumeratorDropdown == true"
+                      class="row">
+                      <div class="col-md-4 col-12">
+                        <label class="form-label">{{'Condition' | translate}}</label>
+                        <p-dropdown placeholder="Select" [options]="conditionArr" formControlName="condition"
+                          optionLabel="name" dataKey="id">
+                        </p-dropdown>
+                      </div>
+                      <div class="col-md-4 col-12">
+                        <label class="form-label">{{'Value' | translate}}</label>
+                        <input class="form-control custom-input" formControlName="value" type="text" id="value"
+                          placeholder="{{'Value Placeholder' | translate}}" title="{{numerator.value.value}}">
+                      </div>
+                      <div class="col-md-4 col-12"></div>
+                    </div>
+                  </ng-template>
+                </p-accordionTab>
+              </p-accordion>
             </div>
           </div>
         </div>
@@ -132,7 +136,7 @@
               <!-- numeratorEquation -->
               <div class="row">
                 <ng-container *ngFor="let el of [].constructor(this.nEqArr.length); let j=index">
-                  <div class="col-md-2">
+                  <div class="col-md-2 mb-2">
                     <p-dropdown [(ngModel)]="finalNumEqs[j]" [ngModelOptions]="{standalone: true}" placeholder="Select"
                       [options]="nEqArr" optionLabel="name" dataKey="id"
                       (onChange)="onEquationSelected($event, j, true)">
@@ -157,7 +161,7 @@
               {{'Denominator' | translate}}
             </h1>
           </div>
-          <div class="col-1">
+          <div class="col-1 pl-0">
             <button pButton pRipple type="button" icon="pi pi-plus" class="p-button-rounded p-button-outlined top-20"
               (click)="addDenominator()"></button>
           </div>
@@ -165,61 +169,66 @@
         <div formArrayName="denominators">
           <div *ngFor="let denominator of getDenominators().controls; let i=index">
             <div [formGroupName]="i">
-              <p-card
-                [style]="{'background-color': '#f7f7f7', 'margin-bottom': '20px', 'padding': '20px 5px', 'width': '100%', 'height': 'auto','cursor': 'pointer'}">
-                <h4 class="mb-4">{{'Equation' | translate}} {{i+1}}
-                  <ng-container *ngIf="this.getDenominators().controls[i].value.eqIdentifier">
-                    ({{this.getDenominators().controls[i].value.eqIdentifier}})
-                  </ng-container>
-                </h4>
-                <div class="row mb-3">
-                  <div class="col-md-4 col-12">
-                    <label class="form-label">{{'Data Fields' | translate}}</label>
-                    <p-dropdown styleClass="custom-code-dropdown" [filter]="true" placeholder="Select"
-                      [options]="codeArr" formControlName="code" optionLabel="codeDescription" dataKey="codeId"
-                      (onChange)="onCodeSelected($event, i, false)">
-                    </p-dropdown>
-                  </div>
-                  <div class="col-md-4 col-12">
-                    <label class="form-label">{{'Identifier' | translate}}</label>
-                    <input class="form-control custom-input" formControlName="eqIdentifier" type="text"
-                      id="eqIdentifier" placeholder="{{'Identifier Placeholder' | translate}}"
-                      (change)="setDenominatorEquationArr()">
-                  </div>
-                  <div class="col-md-3 col-12"
-                    [ngClass]="{'col-md-4': this.getDenominators().controls[i].value.appendOtherDenominatorDropdown == true}">
-                    <label class="form-label">{{'Value Type' | translate}}</label>
-                    <p-dropdown placeholder="Select" [options]="valueTypeArr" formControlName="valueType"
-                      optionLabel="name" dataKey="id">
-                    </p-dropdown>
-                  </div>
-                  <div *ngIf="this.getDenominators().controls[i].value.appendOtherDenominatorDropdown !== true"
-                    class="col-md-1 col-12">
-                    <button pButton pRipple type="button" icon="pi pi-trash"
-                      class="p-button-rounded p-button-outlined top-35" (click)="removeDenominator(i)"></button>
-                  </div>
-                </div>
-                <div *ngIf="this.getDenominators().controls[i].value.appendOtherDenominatorDropdown == true"
-                  class="row">
-                  <div class="col-md-4 col-12">
-                    <label class="form-label">{{'Condition' | translate}}</label>
-                    <p-dropdown placeholder="Select" [options]="conditionArr" formControlName="condition"
-                      optionLabel="name" dataKey="id">
-                    </p-dropdown>
-                  </div>
-                  <div class="col-md-4 col-12">
-                    <label class="form-label">{{'Value' | translate}}</label>
-                    <input class="form-control custom-input" formControlName="value" value="{{denominator.value.value}}"
-                      type="text" id="value" placeholder="{{'Value Placeholder' | translate}}"
-                      title="{{denominator.value.value}}">
-                  </div>
-                  <div class="col-md-3 col-12"></div>
-                  <div class="col-md-1 col-12">
-                    <button pButton pRipple type="button" icon="pi pi-trash"
-                      class="p-button-rounded p-button-outlined top-35" (click)="removeDenominator(i)"></button>
-                  </div>
-                </div>
-              </p-card>
+              <p-accordion styleClass="cst-indicator-accordion mb-4">
+                <p-accordionTab>
+                  <ng-template pTemplate="header">
+                    <div class="row w-100">
+                      <div class="col-11 align-self-center">
+                        <h6 class="">{{'Equation' | translate}} {{i+1}}
+                          <ng-container *ngIf="this.getDenominators().controls[i].value.eqIdentifier">
+                            ({{this.getDenominators().controls[i].value.eqIdentifier}})
+                          </ng-container>
+                        </h6>
+                      </div>
+                      <div class="col-1 pr-0">
+                        <button pButton pRipple type="button" icon="pi pi-trash"
+                          class="p-button-rounded p-button-outlined float-right"
+                          (click)="removeDenominator(i)"></button>
+                      </div>
+                    </div>
+                  </ng-template>
+                  <ng-template pTemplate="content">
+                    <div class="row mb-3">
+                      <div class="col-md-4 col-12">
+                        <label class="form-label">{{'Data Fields' | translate}}</label>
+                        <p-dropdown styleClass="custom-code-dropdown" [filter]="true" placeholder="Select"
+                          [options]="codeArr" formControlName="code" optionLabel="codeDescription" dataKey="codeId"
+                          (onChange)="onCodeSelected($event, i, false)">
+                        </p-dropdown>
+                      </div>
+                      <div class="col-md-4 col-12">
+                        <label class="form-label">{{'Identifier' | translate}}</label>
+                        <input class="form-control custom-input" formControlName="eqIdentifier" type="text"
+                          id="eqIdentifier" placeholder="{{'Identifier Placeholder' | translate}}"
+                          (change)="setDenominatorEquationArr()">
+                      </div>
+                      <div class="col-md-4 col-12"
+                        [ngClass]="{'col-md-4': this.getDenominators().controls[i].value.appendOtherDenominatorDropdown == true}">
+                        <label class="form-label">{{'Value Type' | translate}}</label>
+                        <p-dropdown placeholder="Select" [options]="valueTypeArr" formControlName="valueType"
+                          optionLabel="name" dataKey="id">
+                        </p-dropdown>
+                      </div>
+                    </div>
+                    <div *ngIf="this.getDenominators().controls[i].value.appendOtherDenominatorDropdown == true"
+                      class="row">
+                      <div class="col-md-4 col-12">
+                        <label class="form-label">{{'Condition' | translate}}</label>
+                        <p-dropdown placeholder="Select" [options]="conditionArr" formControlName="condition"
+                          optionLabel="name" dataKey="id">
+                        </p-dropdown>
+                      </div>
+                      <div class="col-md-4 col-12">
+                        <label class="form-label">{{'Value' | translate}}</label>
+                        <input class="form-control custom-input" formControlName="value"
+                          value="{{denominator.value.value}}" type="text" id="value"
+                          placeholder="{{'Value Placeholder' | translate}}" title="{{denominator.value.value}}">
+                      </div>
+                      <div class="col-md-4 col-12"></div>
+                    </div>
+                  </ng-template>
+                </p-accordionTab>
+              </p-accordion>
             </div>
           </div>
           <ng-container *ngIf="getDenominators().controls.length == 0">
