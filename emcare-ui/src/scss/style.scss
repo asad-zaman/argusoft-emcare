@@ -509,3 +509,13 @@ ngx-intl-tel-input input[disabled] {
     white-space: normal !important;
   }
 }
+
+.p-accordion.cst-indicator-accordion {
+  .p-accordion-header .p-accordion-header-link .p-accordion-toggle-icon {
+    display: none;
+  }
+
+  .p-accordion-content {
+    background-color: #f7f7f7;
+  }
+}
