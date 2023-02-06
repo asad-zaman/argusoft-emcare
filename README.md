@@ -72,11 +72,11 @@ By installing and/or using Em Care, you (the “Licensee”) enter into an agree
 
   **7.2** WHO further expressly excludes liability for any indirect, special, incidental or consequential damages which may arise in respect of Em Care and its use, and the results thereof, including, without limitation, any use of data.
 
-  ### 8. Your Indemnification of WHO
+  ### 8. Term and Termination of this Agreement
 
   **8.1**  You shall indemnify, hold harmless, and defend at your own expense WHO, its officers, agents, and employees from and against any claims, demands, causes of action, and liability of any nature or kind resulting from or relating to your use of Em Care.
 
-  ### 9. Term and Termination of this Agreement
+  ### 9. General Provisions
 
   **9.1** This Agreement shall remain in effect so long as you hold any copy of Em Care on any of your computer systems or storage media. This Agreement, including the rights granted under it, shall terminate automatically upon any breach by you of any of its terms. Further, WHO may terminate this Agreement, including the rights granted under it, at any time, with immediate effect, for any reason, by written notice to you.  This Agreement is the entire agreement between you and WHO with respect to its subject matter.  This Agreement may only be amended by mutual written agreement of you and WHO.
   **9.2**  Upon termination of this License for any reason whatsoever, you shall immediately cease all use of Em Care and destroy and/or remove all copies of Em Care on your computer systems and storage media.
