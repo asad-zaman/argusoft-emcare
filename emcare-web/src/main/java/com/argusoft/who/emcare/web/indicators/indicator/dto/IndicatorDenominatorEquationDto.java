@@ -1,7 +1,5 @@
 package com.argusoft.who.emcare.web.indicators.indicator.dto;
 
-import javax.persistence.Column;
-
 /**
  * <h1> Add heading here </h1>
  * <p>

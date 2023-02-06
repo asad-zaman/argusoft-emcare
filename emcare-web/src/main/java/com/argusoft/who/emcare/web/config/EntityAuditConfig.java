@@ -38,7 +38,7 @@ public class EntityAuditConfig {
         public Optional<String> getCurrentAuditor() {
             KeycloakAuthenticationToken token = (KeycloakAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
             if (token != null && token.getPrincipal() != null) {
-                KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
+                var principal = (KeycloakPrincipal) token.getPrincipal();
                 KeycloakSecurityContext session = principal.getKeycloakSecurityContext();
                 AccessToken accessToken = session.getToken();
                 return Optional.ofNullable(accessToken.getSubject());

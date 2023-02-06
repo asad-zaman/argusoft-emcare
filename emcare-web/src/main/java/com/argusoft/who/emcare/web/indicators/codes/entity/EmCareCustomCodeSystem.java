@@ -4,6 +4,7 @@ import com.argusoft.who.emcare.web.common.model.EntityAuditInfo;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * <h1> EmCare Custom Code System </h1>
@@ -51,5 +52,19 @@ public class EmCareCustomCodeSystem extends EntityAuditInfo implements Serializa
 
     public void setCodeDescription(String codeDescription) {
         this.codeDescription = codeDescription;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof EmCareCustomCodeSystem)) return false;
+        if (!super.equals(o)) return false;
+        EmCareCustomCodeSystem that = (EmCareCustomCodeSystem) o;
+        return Objects.equals(getCodeId(), that.getCodeId()) && Objects.equals(getCode(), that.getCode()) && Objects.equals(getCodeDescription(), that.getCodeDescription());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), getCodeId(), getCode(), getCodeDescription());
     }
 }

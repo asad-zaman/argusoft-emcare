@@ -9,11 +9,13 @@ import com.argusoft.who.emcare.web.indicators.indicator.entity.Indicator;
 import com.argusoft.who.emcare.web.indicators.indicator.entity.IndicatorDenominatorEquation;
 import com.argusoft.who.emcare.web.indicators.indicator.entity.IndicatorNumeratorEquation;
 import com.argusoft.who.emcare.web.indicators.indicator.mapper.IndicatorMapper;
-import com.argusoft.who.emcare.web.indicators.indicator.queryBuilder.IndicatorQueryBuilder;
+import com.argusoft.who.emcare.web.indicators.indicator.query_builder.IndicatorQueryBuilder;
 import com.argusoft.who.emcare.web.indicators.indicator.repository.IndicatorDenominatorEquationRepository;
 import com.argusoft.who.emcare.web.indicators.indicator.repository.IndicatorNumeratorEquationRepository;
 import com.argusoft.who.emcare.web.indicators.indicator.repository.IndicatorRepository;
 import com.argusoft.who.emcare.web.indicators.indicator.service.IndicatorService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -57,6 +59,9 @@ public class IndicatorServiceImpl implements IndicatorService {
 
     @Autowired
     IndicatorQueryBuilder indicatorQueryBuilder;
+
+    Logger logger = LoggerFactory.getLogger(IndicatorServiceImpl.class);
+
 
     /**
      * @param indicatorDto
@@ -141,14 +146,12 @@ public class IndicatorServiceImpl implements IndicatorService {
         for (IndicatorNumeratorEquation indicatorNumeratorEquation : indicator.getNumeratorEquation()) {
 
             String query = indicatorQueryBuilder.getQueryForIndicatorNumeratorEquation(indicatorNumeratorEquation, indicator.getFacilityId());
-            System.out.println(query);
             List<Map<String, Object>> observationResources = observationCustomResourceRepository.findByPublished(query);
             numerator.put(indicatorNumeratorEquation.getEqIdentifier(), (long) observationResources.size());
         }
 
         for (IndicatorDenominatorEquation indicatorDenominatorEquation : indicator.getDenominatorEquation()) {
             String query = indicatorQueryBuilder.getQueryForIndicatorDenominatorEquation(indicatorDenominatorEquation, indicator.getFacilityId());
-            System.out.println(query);
             List<Map<String, Object>> observationResources = observationCustomResourceRepository.findByPublished(query);
             denominator.put(indicatorDenominatorEquation.getEqIdentifier(), (long) observationResources.size());
         }
@@ -171,8 +174,8 @@ public class IndicatorServiceImpl implements IndicatorService {
 
     private Integer replaceValueToEquationAndResolve(String equation, Map<String, Long> data) {
         String eq = equation;
-        for (String key : data.keySet()) {
-            eq = eq.replace(key, data.get(key).toString());
+        for (Map.Entry<String, Long> key : data.entrySet()) {
+            eq = eq.replace(key.getKey(), data.get(key.getKey()).toString());
         }
         return resolveEquation(eq);
     }
@@ -184,7 +187,7 @@ public class IndicatorServiceImpl implements IndicatorService {
             ScriptEngine engine = mgr.getEngineByName("JavaScript");
             result = (Integer) engine.eval(equation);
         } catch (Exception ex) {
-            System.out.println(ex.getLocalizedMessage());
+            logger.error(ex.getLocalizedMessage());
         }
         return result;
     }

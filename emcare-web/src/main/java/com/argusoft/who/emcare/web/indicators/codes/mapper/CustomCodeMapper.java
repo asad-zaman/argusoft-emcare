@@ -14,6 +14,9 @@ import com.argusoft.who.emcare.web.indicators.codes.entity.EmCareCustomCodeSyste
  */
 public class CustomCodeMapper {
 
+    private CustomCodeMapper() {
+    }
+
     public static EmCareCustomCodeSystem getEmCareCustomCodeSystem(CustomCodeRequestDto customCodeRequestDto) {
         EmCareCustomCodeSystem emCareCustomCodeSystem = new EmCareCustomCodeSystem();
         emCareCustomCodeSystem.setCodeId(customCodeRequestDto.getCodeId());

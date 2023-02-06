@@ -21,6 +21,9 @@ import java.util.List;
  */
 public class IndicatorMapper {
 
+    private IndicatorMapper() {
+    }
+
     public static Indicator getIndicator(IndicatorDto indicatorDto) {
         Indicator indicator = new Indicator();
         indicator.setIndicatorId(indicatorDto.getIndicatorId());

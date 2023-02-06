@@ -5,6 +5,7 @@ import com.argusoft.who.emcare.web.common.model.EntityAuditInfo;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * <h1> Add heading here </h1>
@@ -151,5 +152,19 @@ public class Indicator extends EntityAuditInfo implements Serializable {
 
     public void setDenominatorEquationString(String denominatorEquationString) {
         this.denominatorEquationString = denominatorEquationString;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Indicator)) return false;
+        if (!super.equals(o)) return false;
+        Indicator indicator = (Indicator) o;
+        return Objects.equals(getIndicatorId(), indicator.getIndicatorId()) && Objects.equals(getIndicatorCode(), indicator.getIndicatorCode()) && Objects.equals(getIndicatorName(), indicator.getIndicatorName()) && Objects.equals(getDescription(), indicator.getDescription()) && Objects.equals(getFacilityId(), indicator.getFacilityId()) && Objects.equals(getNumeratorIndicatorEquation(), indicator.getNumeratorIndicatorEquation()) && Objects.equals(getDenominatorIndicatorEquation(), indicator.getDenominatorIndicatorEquation()) && Objects.equals(getNumeratorEquationString(), indicator.getNumeratorEquationString()) && Objects.equals(getDenominatorEquationString(), indicator.getDenominatorEquationString()) && Objects.equals(getDisplayType(), indicator.getDisplayType()) && Objects.equals(getNumeratorEquation(), indicator.getNumeratorEquation()) && Objects.equals(getDenominatorEquation(), indicator.getDenominatorEquation());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), getIndicatorId(), getIndicatorCode(), getIndicatorName(), getDescription(), getFacilityId(), getNumeratorIndicatorEquation(), getDenominatorIndicatorEquation(), getNumeratorEquationString(), getDenominatorEquationString(), getDisplayType(), getNumeratorEquation(), getDenominatorEquation());
     }
 }

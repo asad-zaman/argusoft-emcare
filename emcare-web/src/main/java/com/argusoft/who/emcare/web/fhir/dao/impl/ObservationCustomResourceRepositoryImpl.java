@@ -4,7 +4,6 @@ import com.argusoft.who.emcare.web.common.dao.GenericRepositoryImpl;
 import com.argusoft.who.emcare.web.fhir.dao.ObservationCustomResourceRepository;
 import org.hibernate.query.Query;
 import org.hibernate.transform.AliasToEntityMapResultTransformer;
-import org.hibernate.transform.Transformers;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -26,7 +25,6 @@ public class ObservationCustomResourceRepositoryImpl extends GenericRepositoryIm
     public List<Map<String, Object>> findByPublished(String queryString) {
         Query query = getSession().createNativeQuery(queryString);
         query.setResultTransformer(AliasToEntityMapResultTransformer.INSTANCE);
-        List<Map<String, Object>> maps = query.list();
-        return maps;
+        return query.list();
     }
 }
