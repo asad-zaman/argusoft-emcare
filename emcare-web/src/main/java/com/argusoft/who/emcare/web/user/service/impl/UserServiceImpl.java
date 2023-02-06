@@ -1,8 +1,8 @@
 package com.argusoft.who.emcare.web.user.service.impl;
 
-import com.argusoft.who.emcare.web.adminsetting.Entity.Settings;
-import com.argusoft.who.emcare.web.adminsetting.repository.AdminSettingRepository;
-import com.argusoft.who.emcare.web.adminsetting.service.AdminSettingService;
+import com.argusoft.who.emcare.web.admin_setting.entity.Settings;
+import com.argusoft.who.emcare.web.admin_setting.repository.AdminSettingRepository;
+import com.argusoft.who.emcare.web.admin_setting.service.AdminSettingService;
 import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.common.dto.PageDto;
 import com.argusoft.who.emcare.web.common.response.Response;
@@ -769,7 +769,7 @@ public class UserServiceImpl implements UserService {
             return false;
         }
         try {
-            Integer d = Integer.parseInt(strNum);
+            Integer.parseInt(strNum);
         } catch (NumberFormatException nfe) {
             return false;
         }

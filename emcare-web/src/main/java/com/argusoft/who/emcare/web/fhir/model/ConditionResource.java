@@ -5,6 +5,7 @@ import com.argusoft.who.emcare.web.common.model.EntityAuditInfo;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Objects;
 
 @Entity
 @Table(name = "condition_resource")
@@ -62,5 +63,19 @@ public class ConditionResource extends EntityAuditInfo implements Serializable {
 
     public void setEncounterId(String encounterId) {
         this.encounterId = encounterId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ConditionResource)) return false;
+        if (!super.equals(o)) return false;
+        ConditionResource that = (ConditionResource) o;
+        return Objects.equals(getId(), that.getId()) && Objects.equals(getText(), that.getText()) && Objects.equals(getResourceId(), that.getResourceId()) && Objects.equals(getPatientId(), that.getPatientId()) && Objects.equals(getEncounterId(), that.getEncounterId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), getId(), getText(), getResourceId(), getPatientId(), getEncounterId());
     }
 }

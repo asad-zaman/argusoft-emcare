@@ -1,9 +1,9 @@
-package com.argusoft.who.emcare.web.adminsetting.service.impl;
+package com.argusoft.who.emcare.web.admin_setting.service.impl;
 
-import com.argusoft.who.emcare.web.adminsetting.Entity.Settings;
-import com.argusoft.who.emcare.web.adminsetting.dto.SettingDto;
-import com.argusoft.who.emcare.web.adminsetting.repository.AdminSettingRepository;
-import com.argusoft.who.emcare.web.adminsetting.service.AdminSettingService;
+import com.argusoft.who.emcare.web.admin_setting.entity.Settings;
+import com.argusoft.who.emcare.web.admin_setting.dto.SettingDto;
+import com.argusoft.who.emcare.web.admin_setting.repository.AdminSettingRepository;
+import com.argusoft.who.emcare.web.admin_setting.service.AdminSettingService;
 import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.config.KeyCloakConfig;
 import com.argusoft.who.emcare.web.exception.EmCareException;

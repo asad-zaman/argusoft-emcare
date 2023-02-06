@@ -4,6 +4,7 @@ import com.argusoft.who.emcare.web.common.model.EntityAuditInfo;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Objects;
 
 @Entity
 @Table(name = "plan_definition_resources")
@@ -51,5 +52,19 @@ public class PlanDefinitionResource extends EntityAuditInfo implements Serializa
 
     public void setResourceId(String resourceId) {
         this.resourceId = resourceId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof PlanDefinitionResource)) return false;
+        if (!super.equals(o)) return false;
+        PlanDefinitionResource that = (PlanDefinitionResource) o;
+        return Objects.equals(getId(), that.getId()) && Objects.equals(getText(), that.getText()) && Objects.equals(getType(), that.getType()) && Objects.equals(getResourceId(), that.getResourceId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), getId(), getText(), getType(), getResourceId());
     }
 }

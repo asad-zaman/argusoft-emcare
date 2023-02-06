@@ -1,6 +1,5 @@
 package com.argusoft.who.emcare.web.indicators.indicator.repository;
 
-import com.argusoft.who.emcare.web.indicators.indicator.entity.Indicator;
 import com.argusoft.who.emcare.web.indicators.indicator.entity.IndicatorNumeratorEquation;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
