@@ -4,6 +4,7 @@ import com.argusoft.who.emcare.web.common.model.EntityAuditInfo;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * @author jay
@@ -133,5 +134,19 @@ public class DeviceMaster extends EntityAuditInfo implements Serializable {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof DeviceMaster)) return false;
+        if (!super.equals(o)) return false;
+        DeviceMaster that = (DeviceMaster) o;
+        return getDeviceId().equals(that.getDeviceId()) && getAndroidVersion().equals(that.getAndroidVersion()) && Objects.equals(getImeiNumber(), that.getImeiNumber()) && getDeviceUUID().equals(that.getDeviceUUID()) && getDeviceName().equals(that.getDeviceName()) && getDeviceOs().equals(that.getDeviceOs()) && getDeviceModel().equals(that.getDeviceModel()) && Objects.equals(getMacAddress(), that.getMacAddress()) && Objects.equals(getLastLoggedInUser(), that.getLastLoggedInUser()) && Objects.equals(getIsBlocked(), that.getIsBlocked()) && Objects.equals(getUserName(), that.getUserName());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), getDeviceId(), getAndroidVersion(), getImeiNumber(), getDeviceUUID(), getDeviceName(), getDeviceOs(), getDeviceModel(), getMacAddress(), getLastLoggedInUser(), getIsBlocked(), getUserName());
     }
 }

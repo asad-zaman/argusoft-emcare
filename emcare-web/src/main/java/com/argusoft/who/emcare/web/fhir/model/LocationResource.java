@@ -4,6 +4,7 @@ import com.argusoft.who.emcare.web.common.model.EntityAuditInfo;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Objects;
 
 @Entity
 @Table(name = "location_resources")
@@ -96,5 +97,19 @@ public class LocationResource extends EntityAuditInfo implements Serializable {
 
     public void setOrganizationName(String organizationName) {
         this.organizationName = organizationName;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof LocationResource)) return false;
+        if (!super.equals(o)) return false;
+        LocationResource that = (LocationResource) o;
+        return Objects.equals(getId(), that.getId()) && Objects.equals(getText(), that.getText()) && Objects.equals(getType(), that.getType()) && Objects.equals(getOrgId(), that.getOrgId()) && Objects.equals(getLocationId(), that.getLocationId()) && Objects.equals(getLocationName(), that.getLocationName()) && Objects.equals(getOrganizationName(), that.getOrganizationName()) && Objects.equals(getResourceId(), that.getResourceId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), getId(), getText(), getType(), getOrgId(), getLocationId(), getLocationName(), getOrganizationName(), getResourceId());
     }
 }

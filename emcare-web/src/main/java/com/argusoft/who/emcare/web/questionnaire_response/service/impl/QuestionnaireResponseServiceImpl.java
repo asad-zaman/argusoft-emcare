@@ -104,12 +104,12 @@ public class QuestionnaireResponseServiceImpl implements QuestionnaireResponseSe
     @Override
     public Map<String, Object> getQuestionnaireResponseByPatientId(String patientId) {
         List<QuestionnaireResponse> questionnaireResponses = questionnaireResponseRepository.findByPatientId(patientId);
-        Map<String, List<QuestionnaireResponse>> responses = new HashMap<>();
+        Map<String, List<QuestionnaireResponse>> responses;
         responses = questionnaireResponses.stream().collect(Collectors.groupingBy(QuestionnaireResponse::getEncounterId));
         Map<String, Object> responsesWithEncounter = new HashMap<>();
-        for (String key : responses.keySet()){
-            EncounterResource  encounterResource = encounterResourceRepository.findByResourceId(key);
-            responsesWithEncounter.put(encounterResource.getCreatedOn().toString(),responses.get(key));
+        for (Map.Entry<String, List<QuestionnaireResponse>> key : responses.entrySet()) {
+            EncounterResource encounterResource = encounterResourceRepository.findByResourceId(key.getKey());
+            responsesWithEncounter.put(encounterResource.getCreatedOn().toString(), responses.get(key.getKey()));
         }
         return responsesWithEncounter;
     }

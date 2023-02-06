@@ -1,6 +1,6 @@
-package com.argusoft.who.emcare.web.adminsetting.repository;
+package com.argusoft.who.emcare.web.admin_setting.repository;
 
-import com.argusoft.who.emcare.web.adminsetting.Entity.Settings;
+import com.argusoft.who.emcare.web.admin_setting.entity.Settings;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

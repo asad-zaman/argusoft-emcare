@@ -1,4 +1,4 @@
-package com.argusoft.who.emcare.web.indicators.indicator.queryBuilder;
+package com.argusoft.who.emcare.web.indicators.indicator.query_builder;
 
 import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.indicators.indicator.entity.IndicatorDenominatorEquation;

@@ -1,6 +1,5 @@
 package com.argusoft.who.emcare.web.indicators.codes.repository;
 
-import com.argusoft.who.emcare.web.device.model.DeviceMaster;
 import com.argusoft.who.emcare.web.indicators.codes.entity.EmCareCustomCodeSystem;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

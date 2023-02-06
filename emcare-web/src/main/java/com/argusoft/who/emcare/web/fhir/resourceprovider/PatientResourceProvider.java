@@ -21,11 +21,10 @@ import java.util.*;
 @Component
 public class PatientResourceProvider implements IResourceProvider {
 
-    @Autowired
-    private EmcareResourceService emcareResourceService;
-
     private final FhirContext fhirCtx = FhirContext.forR4();
     private final IParser parser = fhirCtx.newJsonParser().setPrettyPrint(false);
+    @Autowired
+    private EmcareResourceService emcareResourceService;
 
     /**
      * The getResourceType method comes from IResourceProvider, and must be
@@ -172,7 +171,7 @@ public class PatientResourceProvider implements IResourceProvider {
             @OptionalParam(name = CommonConstant.RESOURCE_LAST_UPDATED_AT) DateParam theDate,
             @OptionalParam(name = IAnyResource.SP_RES_ID) IdType theId) {
         List<Patient> patientsList = new ArrayList<>();
-        List<EmcareResource> resourcesList = emcareResourceService.retrieveResourcesByType("PATIENT", theDate,theId);
+        List<EmcareResource> resourcesList = emcareResourceService.retrieveResourcesByType("PATIENT", theDate, theId);
         for (EmcareResource emcareResource : resourcesList) {
             Patient patient = parser.parseResource(Patient.class, emcareResource.getText());
             patientsList.add(patient);
@@ -238,8 +237,6 @@ public class PatientResourceProvider implements IResourceProvider {
 
     @Search()
     public Bundle getPatientBundle(@RequiredParam(name = CommonConstant.RESOURCE_ID) IdType theId) {
-
-        Bundle bundle = emcareResourceService.getPatientBundle(theId.getIdPart());
-        return bundle;
+        return emcareResourceService.getPatientBundle(theId.getIdPart());
     }
 }

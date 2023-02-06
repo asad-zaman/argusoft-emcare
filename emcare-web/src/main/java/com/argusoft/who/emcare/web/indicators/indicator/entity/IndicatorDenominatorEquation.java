@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * <h1> Add heading here </h1>
@@ -109,5 +110,19 @@ public class IndicatorDenominatorEquation extends EntityAuditInfo implements Ser
 
     public void setEqIdentifier(String eqIdentifier) {
         this.eqIdentifier = eqIdentifier;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof IndicatorDenominatorEquation)) return false;
+        if (!super.equals(o)) return false;
+        IndicatorDenominatorEquation that = (IndicatorDenominatorEquation) o;
+        return Objects.equals(getDenominatorId(), that.getDenominatorId()) && Objects.equals(getCodeId(), that.getCodeId()) && Objects.equals(getCode(), that.getCode()) && Objects.equals(getCondition(), that.getCondition()) && Objects.equals(getValue(), that.getValue()) && Objects.equals(getValueType(), that.getValueType()) && Objects.equals(getEqIdentifier(), that.getEqIdentifier()) && Objects.equals(getDenominatorIndicator(), that.getDenominatorIndicator());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), getDenominatorId(), getCodeId(), getCode(), getCondition(), getValue(), getValueType(), getEqIdentifier(), getDenominatorIndicator());
     }
 }

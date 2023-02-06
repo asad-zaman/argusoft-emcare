@@ -4,6 +4,7 @@ import com.argusoft.who.emcare.web.common.model.EntityAuditInfo;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Objects;
 
 
 @Entity
@@ -63,5 +64,19 @@ public class ObservationResource extends EntityAuditInfo implements Serializable
 
     public void setSubjectId(String subjectId) {
         this.subjectId = subjectId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ObservationResource)) return false;
+        if (!super.equals(o)) return false;
+        ObservationResource that = (ObservationResource) o;
+        return Objects.equals(getId(), that.getId()) && Objects.equals(getText(), that.getText()) && Objects.equals(getResourceId(), that.getResourceId()) && Objects.equals(getSubjectType(), that.getSubjectType()) && Objects.equals(getSubjectId(), that.getSubjectId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), getId(), getText(), getResourceId(), getSubjectType(), getSubjectId());
     }
 }

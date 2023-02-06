@@ -22,12 +22,10 @@ import java.util.UUID;
 @Service
 public class ConditionResourceServiceImpl implements ConditionResourceService {
 
-    @Autowired
-    ConditionResourceRepository conditionResourceRepository;
-
     private final FhirContext fhirCtx = FhirContext.forR4();
     private final IParser parser = fhirCtx.newJsonParser().setPrettyPrint(true);
-
+    @Autowired
+    ConditionResourceRepository conditionResourceRepository;
 
     @Override
     public Condition saveResource(Condition condition) {
@@ -97,16 +95,20 @@ public class ConditionResourceServiceImpl implements ConditionResourceService {
     @Override
     public List<Condition> getAllCondition(DateParam theDate, String searchText) {
         List<Condition> conditions = new ArrayList<>();
-        List<ConditionResource> conditionResources = new ArrayList<>();
+        List<ConditionResource> conditionResources;
 
-        if (theDate == null && searchText == null) {
-            conditionResources = conditionResourceRepository.findAll();
-        } else if (theDate != null && searchText != null) {
-            conditionResources = conditionResourceRepository.fetchByDateAndText(searchText, theDate.getValue());
-        } else if (theDate == null && searchText != null) {
-            conditionResources = conditionResourceRepository.findByTextContainingIgnoreCase(searchText);
-        } else if (theDate != null && searchText == null) {
-            conditionResources = conditionResourceRepository.findByModifiedOnGreaterThanOrCreatedOnGreaterThan(theDate.getValue(), theDate.getValue());
+        if (theDate == null) {
+            if (searchText == null) {
+                conditionResources = conditionResourceRepository.findAll();
+            } else {
+                conditionResources = conditionResourceRepository.findByTextContainingIgnoreCase(searchText);
+            }
+        } else {
+            if (searchText == null) {
+                conditionResources = conditionResourceRepository.findByModifiedOnGreaterThanOrCreatedOnGreaterThan(theDate.getValue(), theDate.getValue());
+            } else {
+                conditionResources = conditionResourceRepository.fetchByDateAndText(searchText, theDate.getValue());
+            }
         }
 
         for (ConditionResource conditionResource : conditionResources) {

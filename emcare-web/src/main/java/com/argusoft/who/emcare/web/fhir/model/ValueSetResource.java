@@ -4,6 +4,7 @@ import com.argusoft.who.emcare.web.common.model.EntityAuditInfo;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Objects;
 
 @Entity
 @Table(name = "value_set_resources")
@@ -51,5 +52,19 @@ public class ValueSetResource extends EntityAuditInfo implements Serializable {
 
     public void setResourceId(String resourceId) {
         this.resourceId = resourceId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ValueSetResource)) return false;
+        if (!super.equals(o)) return false;
+        ValueSetResource that = (ValueSetResource) o;
+        return Objects.equals(getId(), that.getId()) && Objects.equals(getText(), that.getText()) && Objects.equals(getType(), that.getType()) && Objects.equals(getResourceId(), that.getResourceId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), getId(), getText(), getType(), getResourceId());
     }
 }

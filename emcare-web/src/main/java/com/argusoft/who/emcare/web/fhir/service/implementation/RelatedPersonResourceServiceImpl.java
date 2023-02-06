@@ -55,7 +55,7 @@ public class RelatedPersonResourceServiceImpl implements RelatedPersonResourceSe
         String patientId = relatedPerson.getPatient().getId();
         if (patientId == null) {
             List<EmcareResource> emcareResources = emcareResourceRepository.findByTypeContainingAndTextContainingIgnoreCase(CommonConstant.FHIR_PATIENT, relatedPersonId);
-            patientId = emcareResources.size() > 0 ? emcareResources.get(1).getResourceId() : null;
+            patientId = !emcareResources.isEmpty() ? emcareResources.get(1).getResourceId() : null;
         }
         relatedPersonResource.setPatientId(patientId);
         relatedPersonResource.setResourceId(relatedPersonId);

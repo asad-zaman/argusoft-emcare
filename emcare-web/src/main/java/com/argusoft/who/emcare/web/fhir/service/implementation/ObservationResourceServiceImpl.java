@@ -95,17 +95,22 @@ public class ObservationResourceServiceImpl implements ObservationResourceServic
     @Override
     public List<Observation> getAllObservation(DateParam theDate, String searchText) {
         List<Observation> observations = new ArrayList<>();
-        List<ObservationResource> observationResources = new ArrayList<>();
+        List<ObservationResource> observationResources;
 
         if (theDate == null) {
-            observationResources = observationResourceRepository.findAll();
-        } else if (theDate != null && searchText != null) {
-            observationResources = observationResourceRepository.fetchByDateAndText(searchText, theDate.getValue());
-        } else if (theDate == null && searchText != null) {
-            observationResources = observationResourceRepository.findByTextContainingIgnoreCase(searchText);
-        } else if (theDate != null && searchText == null) {
-            observationResources = observationResourceRepository.findByModifiedOnGreaterThanOrCreatedOnGreaterThan(theDate.getValue(), theDate.getValue());
+            if (searchText == null) {
+                observationResources = observationResourceRepository.findAll();
+            } else {
+                observationResources = observationResourceRepository.findByTextContainingIgnoreCase(searchText);
+            }
+        } else {
+            if (searchText != null) {
+                observationResources = observationResourceRepository.fetchByDateAndText(searchText, theDate.getValue());
+            } else {
+                observationResources = observationResourceRepository.findByModifiedOnGreaterThanOrCreatedOnGreaterThan(theDate.getValue(), theDate.getValue());
+            }
         }
+
 
         for (ObservationResource observationResource : observationResources) {
             Observation observation = parser.parseResource(Observation.class, observationResource.getText());
