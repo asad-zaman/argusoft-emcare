@@ -1,0 +1,45 @@
+<div *ngIf="isView" class="main-wrapper">
+  <h1 class="heading">{{'Features' | translate}}</h1>
+  <hr>
+  <div class="row align-items-center mb-3">
+    <div class=" col-lg-3 col-xxl-2 col-md-5 position-relative">
+      <input class="form-control custom-input" id="exampleFormControlInput1" [(ngModel)]="searchString"
+        (input)="searchFilter()" placeholder="{{'Search Placeholder' | translate}}">
+    </div>
+  </div>
+  <!--Table-->
+  <div *ngIf="!isAPIBusy" class="table-responsive">
+    <table class="data-table" aria-labelledby="feature-list">
+      <thead>
+        <tr>
+          <th>{{'Sr. No' | translate}}</th>
+          <th>{{'Feature Name' | translate}}</th>
+          <th *ngIf="isEdit"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngIf="filteredFeatureList && filteredFeatureList.length > 0; else noRecords">
+          <ng-container *ngFor="let feature of filteredFeatureList; let i=index">
+            <tr>
+              <td>{{i + 1}}</td>
+              <td>{{feature.menuName}}</td>
+              <td *ngIf="isEdit">
+                <i aria-hidden="true" (click)="updateFeature(i)"
+                  class="bi bi-pencil-square cursor-pointer font-size-14"></i>
+              </td>
+            </tr>
+          </ng-container>
+        </ng-container>
+        <ng-template #noRecords>
+          <div class="no-record">
+            {{'No Records' | translate}}
+          </div>
+        </ng-template>
+      </tbody>
+    </table>
+  </div>
+  <!--Table-END-->
+</div>
+<div *ngIf="!isView" class="main-wrapper-nodata">
+  {{'NoAccess' | translate}}
+</div>

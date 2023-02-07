@@ -1,0 +1,89 @@
+<div *ngIf="isView" class="main-wrapper">
+  <h1 class="heading">{{'Registration Request' | translate}}</h1>
+  <hr>
+  <div class="row align-items-center mb-3">
+    <div class=" col-lg-3 col-xxl-2 col-md-5 position-relative">
+      <input class="form-control custom-input h-35" id="exampleFormControlInput1" [(ngModel)]="searchString"
+        (input)="searchFilter()" placeholder="{{'Search Placeholder' | translate}}">
+    </div>
+  </div>
+  <!--Table-->
+  <div *ngIf="!isAPIBusy" class="table-responsive">
+    <table class="data-table" aria-labelledby="confirm-user-list">
+      <thead>
+        <tr>
+          <th>{{'Sr. No' | translate}}</th>
+          <th>{{'First Name' | translate}}</th>
+          <th>{{'Last Name' | translate}}</th>
+          <th>{{'Email' | translate}}</th>
+          <th>{{'Facility' | translate}}</th>
+          <th>{{'Role' | translate}}</th>
+          <th></th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngIf="filteredUserList && filteredUserList.length > 0; else noRecords">
+          <ng-container *ngFor="let user of filteredUserList; let i=index">
+            <tr>
+              <td>{{i + 1}}</td>
+              <td>{{user.firstName}}</td>
+              <td>{{user.lastName}}</td>
+              <td>{{user.email}}</td>
+              <td>{{user.facilityDto ? getFacilityStr(user.facilityDto) : 'NA'}}</td>
+              <td>{{user.realmRoles[0]}}</td>
+              <td>
+                <i (click)="onApproveUser(i)" class="bi bi-check-circle text-success cursor-pointer font-size-18"
+                  aria-hidden="true"></i>
+              </td>
+              <td>
+                <i (click)="onDisapproveUser(i)" class="bi bi-x-circle text-red cursor-pointer font-size-18"
+                  aria-hidden="true"></i>
+              </td>
+            </tr>
+          </ng-container>
+        </ng-container>
+        <ng-template #noRecords>
+          <div class="no-record">
+            {{'No Records' | translate}}
+          </div>
+        </ng-template>
+      </tbody>
+    </table>
+  </div>
+  <!--Table-END-->
+  <div *ngIf="showConfirmDialogFlag" class="modal" tabindex="-1" role="dialog" style="display:block">
+    <div class="modal-dialog modal-dialog-centered" style="width: 350px; height: 500px">
+      <div class="modal-content">
+        <div class="modal-body">
+          <h2 class="modal-title text-center">
+            <ng-container *ngIf="isApproveUser; else disapprove">
+              {{'Approve User' | translate}}
+            </ng-container>
+            <ng-template #disapprove>
+              {{'Disapprove User' | translate}}
+            </ng-template>
+          </h2>
+          <div class="text-center my-3">
+            <p class="font-size-15">
+              <ng-container *ngIf="isApproveUser; else disapprove">
+                {{'Confirm Approval' | translate}}
+              </ng-container>
+              <ng-template #disapprove>
+                {{'DisApproval' | translate}}
+              </ng-template>
+          </div>
+          <div class="text-center">
+            <button type="button" class="btn-blue btn mr-2" style="width: 100px;"
+              (click)="authorizeUser()">{{'Ok' | translate}}</button>
+            <button type="button" class="btn-blue btn" style="width: 100px;"
+              (click)="showConfirmDialogFlag = false">{{'Cancel' | translate}}</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div *ngIf="!isView" class="main-wrapper-nodata">
+  {{'NoAccess' | translate}}
+</div>

@@ -1,0 +1,110 @@
+.content-style {
+    font-size: 16px;
+}
+
+.custom-accordion .accordion-button:not(.collapsed) {
+    color: #4d4d4d;
+    background-color: #f9eaea;
+    box-shadow: none;
+}
+
+.custom-accordion .accordion-button:not(.collapsed):after {
+    background-image: url(../../../../assets/images/accordion_arrow.svg);
+    transform: rotate(-180deg);
+}
+
+.custom-accordion .accordion-item {
+    border: 0px;
+}
+
+.custom-accordion .accordion-button {
+    background-color: #f9eaea;
+    margin-top: 8px;
+    border: 0px;
+    box-shadow: none;
+}
+
+.custom-accordion .accordion-body {
+    color: #57686f;
+}
+
+.custom-accordion .accordion-body p {
+    font-weight: 600;
+}
+
+.custom-accordion .badge-duplicate {
+    background: #d96060;
+    padding: 3px 8px;
+    display: inline-block;
+    color: #fff;
+    text-align: center;
+    border-radius: 5px;
+    font-size: 12px;
+    margin-right: 15px;
+}
+
+.custom-accordion .accordion-header {
+    position: relative;
+}
+
+.custom-accordion .accordion-header .pos {
+    position: absolute;
+    right: 50px;
+    display: inline-block;
+    top: 58%;
+    transform: translateY(-60%);
+    z-index: 9;
+}
+
+.custom-accordion .accordion-header .pos i {
+    color: #57686f !important;
+    font-size: 16px;
+    line-height: 0px;
+    cursor: pointer;
+}
+
+.custom-accordion .accordion-header .pos a {
+    display: block;
+    padding: 1px 10px;
+    text-decoration: none;
+    color: #57686f;
+}
+
+.custom-accordion .accordion-header .pos .dropdown-menu {
+    z-index: 100;
+}
+
+.cst-card-btn {
+    color: white;
+    background: #d96060;
+    border: none;
+
+    &:focus,
+    &:hover,
+    &:active {
+        border: none;
+        background: #d96060;
+        box-shadow: none;
+    }
+}
+
+.p-15 {
+    padding: 15px;
+}
+
+.cst-margin {
+    margin: 5px 10px;
+}
+
+.cst-top {
+    top: 10%;
+}
+
+.cst-border {
+    border-bottom: 1px solid grey;
+}
+
+.cst-patient-border {
+    border: 2px solid green;
+    border-radius: 15px;
+}

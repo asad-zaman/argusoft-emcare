@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { Router } from '@angular/router';
-
+import { LocationService } from 'src/app/root/services/location.service';
+import { ToasterService } from 'src/app/shared';
+import { AuthGuard } from 'src/app/auth/auth.guard';
 @Component({
   selector: 'app-show-location',
   templateUrl: './show-location.component.html',
@@ -8,11 +12,25 @@ import { Router } from '@angular/router';
 })
 export class ShowLocationComponent implements OnInit {
 
-  locationArr = [];
-  locationTypeArr: any;
+  filteredLocations: any;
+  locationArr: any;
+  searchString: string;
+  isAPIBusy: boolean = true;
+  currentPage = 0;
+  totalCount = 0;
+  tableSize = 10;
+  searchTermChanged: Subject<string> = new Subject<string>();
+  isAdd: boolean = true;
+  isEdit: boolean = true;
+  isView: boolean = true;
+  selectedId: any;
+  isLocationFilterOn: boolean = false;
 
   constructor(
-    private router: Router
+    private readonly router: Router,
+    private readonly locationService: LocationService,
+    private readonly toasterService: ToasterService,
+    private readonly authGuard: AuthGuard
   ) { }
 
   ngOnInit(): void {
@@ -20,29 +38,65 @@ export class ShowLocationComponent implements OnInit {
   }
 
   prerequisite() {
-    this.getLocationTypes();
-    this.getLocations();
+    this.checkFeatures();
+    this.getLocationsByPageIndex(this.currentPage);
   }
 
-  getLocationTypes() {
-    const data = localStorage.getItem('locationType');
-    if (data) {
-      this.locationTypeArr = JSON.parse(data);
+  checkFeatures() {
+    this.authGuard.getFeatureData().subscribe(res => {
+      if (res.relatedFeature && res.relatedFeature.length > 0) {
+        this.isAdd = res.featureJSON['canAdd'];
+        this.isEdit = res.featureJSON['canEdit'];
+        this.isView = res.featureJSON['canView'];
+      }
+    });
+  }
+
+  manipulateResponse(res) {
+    if (res && res['list']) {
+      this.locationArr = res['list'];
+      this.filteredLocations = this.locationArr;
+      this.isAPIBusy = false;
+      this.totalCount = res['totalCount'];
     }
   }
 
-  getLocations() {
-    const data = localStorage.getItem('locations');
-    if (data) {
-      this.locationArr = JSON.parse(data);
+  getLocationsByPageIndex(index) {
+    this.locationArr = [];
+    this.locationService.getLocationsByPageIndex(index).subscribe(res => {
+      this.manipulateResponse(res);
+    });
+  }
+
+  onIndexChange(event) {
+    this.currentPage = event;
+    if (this.isLocationFilterOn) {
+      this.getLocationsBasedOnFilteredLocationAndPageIndex(event - 1);
     } else {
-      this.locationArr = [];
+      if (this.searchString && this.searchString.length >= 1) {
+        this.locationArr = [];
+        this.locationService.getLocationsByPageIndex(event - 1, this.searchString).subscribe(res => {
+          this.manipulateResponse(res);
+        });
+      } else {
+        this.getLocationsByPageIndex(event - 1);
+      }
     }
   }
 
-  getTypeName(index) {
-    const data = this.locationTypeArr.find(el => el.level === index);
-    return data.name;
+  getLocationsBasedOnFilteredLocationAndPageIndex(pageIndex) {
+    this.locationService.getLocationBasedOnFilterAndPageIndex(this.selectedId, pageIndex).subscribe(res => {
+      if (res) {
+        this.filteredLocations = [];
+        this.filteredLocations = res['list'];
+        this.totalCount = res['totalCount'];
+        this.isAPIBusy = false;
+      }
+    });
+  }
+
+  resetCurrentPage() {
+    this.currentPage = 0;
   }
 
   addLocation() {
@@ -50,11 +104,55 @@ export class ShowLocationComponent implements OnInit {
   }
 
   editLocation(index) {
-    this.router.navigate([`editLocation/${index}`]);
+    this.router.navigate([`editLocation/${this.filteredLocations[index]['id']}`]);
   }
 
   deleteLocation(index) {
-    this.locationArr.splice(index, 1);
-    localStorage.setItem('locations', JSON.stringify(this.locationArr));
+    this.locationService.deleteLocationById(this.filteredLocations[index]['id']).subscribe(res => {
+      this.toasterService.showToast('success', 'Location Deleted successfully!', 'EMCARE');
+      this.resetCurrentPage();
+      this.getLocationsByPageIndex(this.currentPage);
+    }, (err) => {
+      alert(err.error);
+    });
+  }
+
+  searchFilter() {
+    this.resetCurrentPage();
+    if (this.searchTermChanged.observers.length === 0) {
+      this.searchTermChanged.pipe(
+        debounceTime(1000),
+        distinctUntilChanged()
+      ).subscribe(_term => {
+        if (this.searchString && this.searchString.length >= 1) {
+          this.locationArr = [];
+          this.locationService.getLocationsByPageIndex(this.currentPage, this.searchString).subscribe(res => {
+            this.manipulateResponse(res);
+          });
+        } else {
+          if (this.isLocationFilterOn) {
+            this.getLocationsBasedOnFilteredLocationAndPageIndex(this.currentPage);
+          } else {
+            this.getLocationsByPageIndex(this.currentPage);
+          }
+        }
+      });
+    }
+    this.searchTermChanged.next(this.searchString);
+  }
+
+  resetPageIndex() {
+    this.currentPage = 0;
+  }
+
+  getLocationId(data) {
+    this.selectedId = data;
+    if (this.selectedId) {
+      this.isLocationFilterOn = true;
+      this.resetPageIndex();
+      this.getLocationsBasedOnFilteredLocationAndPageIndex(this.currentPage);
+    } else {
+      this.toasterService.showToast('info', 'Please select Location!', 'EMCARE')
+    }
   }
 }

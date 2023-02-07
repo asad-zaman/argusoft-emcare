@@ -1,0 +1,30 @@
+.data-table {
+    width: 100%;
+    th {
+        white-space: nowrap;
+        background: $color-black;
+        padding: 10px;
+        font-size: 13px;
+        font-weight: 500;
+        color: $color-white;
+        &:first-child {
+            border-top-left-radius: 5px;
+        }
+        &:last-child {
+            border-top-right-radius: 5px;
+        }
+    }
+    tbody {
+        td {
+            padding: 10px;
+            border-bottom: 1px solid $color-gray-40;
+            color: $color-gray-90;
+            font-size: 14px;
+            white-space: nowrap;
+        }
+    }
+}
+
+.navigation{
+    margin-bottom: 0px;
+}

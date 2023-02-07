@@ -1,0 +1,106 @@
+<div *ngIf="isView" class="main-wrapper">
+  <h1 class="heading">{{'Consultation' | translate}}</h1>
+  <hr>
+  <div class="row">
+    <div class="col-2 align-self-center">
+      <label>{{'Select Encounter' | translate}}</label>
+    </div>
+    <div class="col-4">
+      <p-dropdown (onChange)="getEncounterData()" [(ngModel)]="selectedEnKey" placeholder="Select an encounter"
+        [options]="this.encounterKeys" optionLabel="name">
+      </p-dropdown>
+    </div>
+    <div class="col-6"></div>
+  </div>
+  <hr>
+  <ng-container *ngIf="selectedEnKey && selectedEnKey.id">
+    <div class="my-2 d-flex">
+      <span *ngIf="patientData['fLetter']" class="cst-letter">
+        {{patientData['fLetter']}}
+      </span>
+      <div class="ml-1">
+        <div class="">
+          <span class="cst-detail">Patient Name: </span>
+          <span class="">{{patientData['name']}}</span>
+        </div>
+        <div class="">
+          <span class="cst-detail">Patient Age: </span>
+          <span class="">{{patientData['age']}}</span>
+        </div>
+        <div class="">
+          <span class="cst-detail">Patient Gender: </span>
+          <span class="">{{patientData['gender']}}</span>
+        </div>
+      </div>
+    </div>
+    <div class="ml-1 d-flex cst-border">
+      <div class="cst-icons">
+        <div class="my-3">
+          <div class="d-grid">
+            <img (click)="selectEncounter(0)" class="cst-img-icon" [ngClass]="{'selected': selectedEncounterIcon === 0}"
+              src="assets/images/Registration.svg" alt="EMCARE">
+            <h3 (click)="selectEncounter(0)" class="mx-2 icon-text cursor-pointer">Registration</h3>
+          </div>
+
+          <div class="d-grid">
+            <img (click)="selectEncounter(1)" class="cst-img-icon" [ngClass]="{'selected': selectedEncounterIcon === 1}"
+              src="assets/images/danger_signs.svg" alt="EMCARE">
+            <span (click)="selectEncounter(0)" class="mx-2 icon-text cursor-pointer">Danger Sign</span>
+          </div>
+
+          <div class="d-grid">
+            <img (click)="selectEncounter(2)" class="cst-img-icon" [ngClass]="{'selected': selectedEncounterIcon === 2}"
+              src="assets/images/Measurements.svg" alt="EMCARE">
+            <span (click)="selectEncounter(0)" class="mx-2 icon-text cursor-pointer">Measurements</span>
+          </div>
+
+          <div class="d-grid">
+            <img (click)="selectEncounter(3)" class="cst-img-icon" [ngClass]="{'selected': selectedEncounterIcon === 3}"
+              src="assets/images/Symptoms.svg" alt="EMCARE">
+            <span (click)="selectEncounter(0)" class="mx-2 icon-text cursor-pointer">Symptoms</span>
+          </div>
+
+          <div class="d-grid">
+            <img (click)="selectEncounter(4)" class="cst-img-icon" [ngClass]="{'selected': selectedEncounterIcon === 4}"
+              src="assets/images/Signs.svg" alt="EMCARE">
+            <span (click)="selectEncounter(0)" class="mx-2 icon-text cursor-pointer">Signs</span>
+          </div>
+
+          <div class="d-grid">
+            <img (click)="selectEncounter(5)" class="cst-img-icon" [ngClass]="{'selected': selectedEncounterIcon === 5}"
+              src="assets/images/assessments.svg" alt="EMCARE">
+            <span (click)="selectEncounter(0)" class="mx-2 icon-text cursor-pointer">Assessments</span>
+          </div>
+
+          <div class="d-grid">
+            <img (click)="selectEncounter(6)" class="cst-img-icon" [ngClass]="{'selected': selectedEncounterIcon === 6}"
+              src="assets/images/classifications.svg" alt="EMCARE">
+            <span (click)="selectEncounter(0)" class="mx-2 icon-text cursor-pointer">Classifications</span>
+          </div>
+        </div>
+      </div>
+      <div class="">
+        <h3 class="ml-3 my-3">{{iconObj[selectedEncounterIcon]}}</h3>
+        <div class="ml-3">
+          <div class="row pb-4" *ngIf="currentObj && currentObj['queAnsObj'].length > 0">
+            <!-- inner loop -->
+            <ng-container *ngFor="let obj of currentObj['queAnsObj']">
+              <div class="ml-1 d-flex">
+                <span class="f-17 cst-ques">{{obj.label}}:&nbsp;</span>
+                <span class="f-17 cst-ans">&nbsp;{{obj.value}}</span>
+              </div>
+            </ng-container>
+          </div>
+          <div class="row py-4" *ngIf="!currentObj || currentObj['queAnsObj'].length == 0">
+            <div class="col-12 mt-2">
+              <h5 class="no-label">There are not enought consultations!!!</h5>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>
+<div *ngIf="!isView" class="main-wrapper-nodata">
+  {{'NoAccess' | translate}}
+</div>

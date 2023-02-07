@@ -1,44 +1,59 @@
-<div class="container">
-    <div class="row mt-5">
-        <div class="col-2"></div>
-        <div class="col-8">
-            <div class="card">
-                <div class="card-body">
-                    <h3 class="mt-3">Create Location Type</h3>
-                    <form [formGroup]="locationTypeForm" name="locationTypeForm" novalidate>
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="form-group">
-                                    <label for="type">Location Type</label>
-                                    <input formControlName="type" type="text" class="form-control"
-                                        id="type" placeholder="Enter type">
-                                </div>
-                            </div>
-                            <div class="col-12">
-                                <div class="form-group">
-                                    <label for="name">Name</label>
-                                    <input formControlName="name" type="text" class="form-control"
-                                        id="name" placeholder="Enter name">
-                                </div>
-                            </div>
-                            <div class="col-12">
-                                <div class="form-group">
-                                    <label for="level">Level</label>
-                                    <input formControlName="level" type="text" class="form-control"
-                                        id="level" placeholder="Enter level">
-                                </div>
-                            </div>
-                            <div class="col-2">
-                                <button type="submit" class="btn btn-primary" (click)="saveData()">Submit</button>
-                            </div>
-                            <div class="col-5">
-                                <button type="submit" class="btn btn-primary" (click)="showLocationType()">Show Location Types</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
+<div *ngIf="isAllowed" class="main-wrapper">
+  <div class="form-wrapper">
+    <form [formGroup]="locationTypeForm" name="locationTypeForm" novalidate>
+      <div class="mb-5">
+        <h1 class="heading">
+          <ng-container *ngIf="!isEdit; else UpdateLocationType">
+            {{'Add Location Type' | translate}}
+          </ng-container>
+          <ng-template #UpdateLocationType>
+            {{'Update Location Type' | translate}}
+          </ng-template>
+        </h1>
+        <hr>
+      </div>
+      <div class="row">
+        <div class="col-12 col-sm-6">
+          <div class="mb-3">
+            <label class="form-label">{{'Location Type' | translate}}</label>
+            <input class="form-control custom-input" formControlName="type" type="text" id="type"
+              placeholder="{{'Location Type Placeholder' | translate}}"
+              [ngClass]="{ 'is-invalid': submitted && f.type.errors }">
+            <div *ngIf="submitted && f.type.errors" class="invalid-feedback">
+              <div class="cst-error-style" *ngIf="f.type.errors.required">
+                {{'Location Type Required Message' | translate}}</div>
             </div>
+          </div>
         </div>
-        <div class="col-2"></div>
-    </div>
+        <div class="col-12 col-sm-6">
+          <div class="mb-3">
+            <label class="form-label">{{'Name' | translate}}</label>
+            <input class="form-control custom-input" formControlName="name" type="text" id="name"
+              placeholder="{{'Name Placeholder' | translate}}" [ngClass]="{ 'is-invalid': submitted && f.name.errors }">
+            <div *ngIf="submitted && f.name.errors" class="invalid-feedback">
+              <div class="cst-error-style" *ngIf="f.name.errors.required">
+                {{'Name Required Message' | translate}}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="text-end mt-5">
+        <hr>
+        <button routerLink="/showLocationType" class="btn-black btn ms-3">
+          <i class="bi bi-chevron-left" aria-hidden="true"></i> {{'Back' | translate}}
+        </button>
+        <button (click)="saveData()" class="btn-blue btn">
+          <ng-container *ngIf="!isEdit; else UpdateLocationType">
+            {{'Add Location Type' | translate}}
+          </ng-container>
+          <ng-template #UpdateLocationType>
+            {{'Update Location Type' | translate}}
+          </ng-template>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+<div *ngIf="!isAllowed" class="main-wrapper-nodata">
+  {{'NoAccess' | translate}}
 </div>

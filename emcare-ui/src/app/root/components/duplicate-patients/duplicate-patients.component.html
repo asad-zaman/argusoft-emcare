@@ -1,0 +1,126 @@
+<div class="main-wrapper">
+  <div class="">
+    <h1 class="heading mr-3">{{'Duplicate Patients' | translate}}</h1>
+  </div>
+  <hr>
+  <div *ngIf="duplicatePatientArr.length > 0; else noData" class="custom-accordion">
+    <div class="accordion" id="accordionExample">
+      <ng-container *ngFor="let dPatient of duplicatePatientArr; let i=index">
+        <div class="accordion-item">
+          <div class="accordion-header" id="heading{{i+1}}">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" attr.data-bs-target="#col_{{i+1}}"
+              aria-expanded="true" attr.aria-controls="col_{{i+1}}">
+              <span class="badge-duplicate">Duplicate</span>
+              <span><strong>{{getPatientName(i)}}</strong></span>
+            </button>
+            <div class="dropdown pos">
+              <!-- toDO currently disabled -->
+              <button disabled="true" class="btn cst-card-btn mr-3" type="button" (click)="openModal(i)"
+                data-bs-toggle="modal" data-bs-target="#patientModal">
+                Merge
+              </button>
+              <button disabled="true" class="btn cst-card-btn" type="button" (click)="deletePatient(i)">
+                Delete
+              </button>
+            </div>
+          </div>
+          <div id="col_{{i+1}}" class="accordion-collapse collapse" aria-labelledby="heading{{i+1}}"
+            data-bs-parent="#accordionExample">
+            <ng-container *ngFor="let patient of dPatient; let i=index">
+              <div class="accordion-body" [ngClass]="{'cst-border': i!==dPatient.length-1}">
+                <div class="row">
+                  <div class="col-sm-2">
+                    <span>Name</span>
+                    <ng-container *ngIf="patient.givenName && patient.familyName; else noName">
+                      <p>{{patient.givenName}} {{patient.familyName}}</p>
+                    </ng-container>
+                    <ng-template #noName>
+                      <p>'NA'</p>
+                    </ng-template>
+                  </div>
+                  <div class="col-sm-2">
+                    <span>Caregiver Name</span>
+                    <p>{{patient.caregiver ? patient.caregiver : 'NA'}}</p>
+                  </div>
+                  <div class="col-sm-2">
+                    <span>Gender</span>
+                    <p>{{patient.gender}}</p>
+                  </div>
+                  <div class="col-sm-2">
+                    <span>DOB</span>
+                    <p>{{patient.dob | date: 'dd.MM.YYYY'}}</p>
+                  </div>
+                  <div class="col-sm-2">
+                    <span>Facility</span>
+                    <p>{{patient.facility}}</p>
+                  </div>
+                  <div class="col-sm-2">
+                    <span>Location Name</span>
+                    <p>{{patient.locationName}}</p>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+  <ng-template #noData>
+    Oops, No Duplicates are there!!
+  </ng-template>
+</div>
+<div class="modal fade" id="patientModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl cst-top">
+    <div class="modal-content">
+      <div class="modal-header cst-header">
+        <h5 class="modal-title ml-3" id="exampleModalLabel">{{'Duplicate Patient' | translate}}</h5>
+        <button type="button" class="btn-close p-15" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body custom-accordion">
+        <ng-container *ngFor="let patient of tempararyPatientData let i=index">
+          <div (click)="selectedDuplicatePatient(i)" class="accordion-body cursor-pointer"
+            [ngClass]="{'cst-border': i!==tempararyPatientData.length-1, 'cst-patient-border': selectedPatientIndex === i}">
+            <div class="row">
+              <div class="col-sm-2">
+                <span>Name</span>
+                <ng-container *ngIf="patient.givenName && patient.familyName; else noName">
+                  <p>{{patient.givenName}} {{patient.familyName}}</p>
+                </ng-container>
+                <ng-template #noName>
+                  <p>'NA'</p>
+                </ng-template>
+              </div>
+              <div class="col-sm-2">
+                <span>Caregiver Name</span>
+                <p>{{patient.caregiver}}</p>
+              </div>
+              <div class="col-sm-2">
+                <span>Gender</span>
+                <p>{{patient.gender}}</p>
+              </div>
+              <div class="col-sm-2">
+                <span>DOB</span>
+                <p>{{patient.dob | date: 'dd.MM.YYYY'}}</p>
+              </div>
+              <div class="col-sm-2">
+                <span>Facility</span>
+                <p>{{patient.facility}}</p>
+              </div>
+              <div class="col-sm-2">
+                <span>Location Name</span>
+                <p>{{patient.locationName}}</p>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-black cst-margin" data-bs-dismiss="modal"
+          aria-label="Close">{{'Cancel' | translate}}</button>
+        <button type="button" class="btn btn-blue cst-margin" data-bs-dismiss="modal"
+          (click)="mergePatient()">{{'Save' | translate}}</button>
+      </div>
+    </div>
+  </div>
+</div>

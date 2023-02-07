@@ -1,0 +1,58 @@
+<div *ngIf="isView" class="main-wrapper">
+  <h1 class="heading">Indicators</h1>
+  <hr>
+  <div class="row align-items-center mb-3">
+    <div class="col-lg-3 col-xxl-2 col-md-5 position-relative">
+      <input class="form-control custom-input h-35" id="exampleFormControlInput1" [(ngModel)]="searchString"
+        (input)="searchFilter()" placeholder="{{'Search Placeholder' | translate}}">
+    </div>
+    <div *ngIf="isAdd" class="col text-end">
+      <button class="btn btn-blue" routerLink="/addIndicator">+ {{'Add Indicator' | translate}}</button>
+    </div>
+  </div>
+  <!--Table-->
+  <div *ngIf="!isAPIBusy" class="table-responsive">
+    <table class="data-table" aria-labelledby="consultations-list">
+      <thead>
+        <tr>
+          <th>{{'Sr. No' | translate}}.</th>
+          <th>{{'Indicator Code' | translate}}</th>
+          <th>{{'Indicator Name' | translate}}</th>
+          <th>{{'Indicator Description' | translate}}</th>
+          <th>{{'Display Type' | translate}}</th>
+          <th *ngIf="isEdit">{{'Action' | translate}}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngIf="indicatorArr && indicatorArr.length > 0; else noRecords">
+          <ng-container *ngFor="let indicator of indicatorArr |
+              paginate : { itemsPerPage: tableSize, currentPage: currentPage, totalItems: totalCount }; let i=index">
+            <tr>
+              <td class="width-5">{{currentPage == 0 ? ((currentPage)*10 + i + 1) : ((currentPage-1)*10 + i + 1)}}</td>
+              <td class="width-10">{{indicator.indicatorCode}}</td>
+              <td class="width-30">{{indicator.indicatorName}}</td>
+              <td class="width-30">{{indicator.description}}</td>
+              <td class="width-25">{{indicator.displayType}}</td>
+              <td *ngIf="isEdit">
+                <i (click)="editIndicator(indicator)" class="bi bi-pencil-square cursor-pointer font-size-14"
+                  aria-hidden="true"></i>
+              </td>
+            </tr>
+          </ng-container>
+        </ng-container>
+        <ng-template #noRecords>
+          <div class="no-record">
+            {{'No Records' | translate}}
+          </div>
+        </ng-template>
+      </tbody>
+    </table>
+    <div *ngIf="indicatorArr && indicatorArr.length > 0" class="d-flex justify-content-end mt-3">
+      <pagination-controls responsive="true" previousLabel="Prev" nextLabel="Next" (pageChange)="onIndexChange($event)">
+      </pagination-controls>
+    </div>
+  </div>
+</div>
+<div *ngIf="!isView" class="main-wrapper-nodata">
+  {{'NoAccess' | translate}}
+</div>

@@ -11,7 +11,6 @@ public class GenericRepositoryImpl {
     private EntityManager entityManager;
 
     public Session getSession() {
-        Session session = entityManager.unwrap(Session.class);
-        return session;
+        return entityManager.unwrap(Session.class);
     }
 }

@@ -1,0 +1,179 @@
+plugins {
+    id 'com.android.application'
+    id 'dagger.hilt.android.plugin'
+    id 'kotlin-android'
+    id 'kotlin-parcelize'
+    id 'kotlin-kapt'
+    id "androidx.navigation.safeargs.kotlin"
+}
+
+android {
+    compileSdkVersion 31
+
+    defaultConfig {
+        applicationId "com.argusoft.who.emcare"
+        minSdkVersion 26
+        targetSdkVersion 31
+        versionCode 5
+        versionName "1.0.8"
+        vectorDrawables.useSupportLibrary = true
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        debug {
+//            buildConfigField "String", "BASE_URL", "\"http://192.1.200.197:8080/api/\""
+//            buildConfigField "String", "FHIR_BASE_URL", "\"http://192.1.200.197:8080/fhir/\""
+//            buildConfigField "String", "KEYCLOAK_BASE_URL", "\"http://192.1.200.197:8180/auth/realms/emcare/protocol/openid-connect/\""
+            buildConfigField "String", "BASE_URL", "\"https://emcare.argusoft.com/api/\""
+            buildConfigField "String", "FHIR_BASE_URL", "\"https://emcare.argusoft.com/fhir/\""
+            buildConfigField "String", "KEYCLOAK_BASE_URL", "\"https://emcare.argusoft.com/auth/realms/emcare/protocol/openid-connect/\""
+            shrinkResources false
+            minifyEnabled false
+            resValue "string", "app_version", "${defaultConfig.versionName}"
+        }
+        release {
+            buildConfigField "String", "BASE_URL", "\"http://192.1.200.197:8080/api/\""
+            buildConfigField "String", "FHIR_BASE_URL", "\"http://192.1.200.197:8080/fhir/\""
+            buildConfigField "String", "KEYCLOAK_BASE_URL", "\"http://192.1.200.197:8180/auth/realms/emcare/protocol/openid-connect/\""
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            resValue "string", "app_version", "${defaultConfig.versionName}"
+        }
+    }
+
+    bundle {
+        language {
+            enableSplit = false
+        }
+    }
+
+    lintOptions {
+        // In general we want to check for problems. Any time, all the time.
+        checkReleaseBuilds true
+        // And fail the build if we have errors
+        abortOnError true
+
+        // Level depends on the type AccountModel the job
+        /// Fail the build if buildGreenhouseRelease target is called and we have missing translations!
+        warning("MissingTranslation")
+        // Error level things
+        /// Hardcoded text should not exist or should have case by case exceptions
+        error "HardcodedText"
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = "1.8"
+        // Enable Coroutines and Flow APIs
+        freeCompilerArgs += "-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi"
+        freeCompilerArgs += "-Xopt-in=kotlinx.coroutines.FlowPreview"
+    }
+
+    buildFeatures {
+        viewBinding true
+    }
+
+    packagingOptions {
+        pickFirst("META-INF/ASL-2.0.txt")
+        pickFirst("META-INF/LGPL-3.0.txt")
+        exclude "license.html"
+        exclude "readme.html"
+        exclude "META-INF/sun-jaxb.episode"
+        exclude "META-INF/LICENSE.md"
+        exclude "META-INF/NOTICE.md"
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    //Support library dependency
+    implementation 'androidx.appcompat:appcompat:1.4.1'
+    implementation 'androidx.core:core-ktx:1.7.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
+    implementation 'com.google.android.material:material:1.5.0'
+    implementation 'androidx.recyclerview:recyclerview:1.2.1'
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
+
+    // Retrofit dependency
+    implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
+    implementation 'com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.2'
+
+    // Moshi converter dependency
+    implementation "com.squareup.retrofit2:converter-moshi:$retrofitVersion"
+    kapt "com.squareup.moshi:moshi-kotlin-codegen:1.13.0"
+    implementation("com.squareup.moshi:moshi:1.13.0")
+
+    // ViewModel & LiveData dependency
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycleVersion"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycleVersion"
+
+    // Room dependency
+    implementation "androidx.room:room-ktx:$roomVersion"
+    kapt "androidx.room:room-compiler:$roomVersion"
+
+    // Timber dependency
+    implementation 'com.jakewharton.timber:timber:5.0.1'
+
+    // For Managing Dimension based on different device
+    implementation "com.intuit.sdp:sdp-android:$dimensionVersion"
+    implementation "com.intuit.ssp:ssp-android:$dimensionVersion"
+
+    // Glide: For Display url in ImageView
+    implementation "com.github.bumptech.glide:glide:$glideVersion"
+    kapt "com.github.bumptech.glide:compiler:$glideVersion"
+
+    // For developers using AndroidX in their applications
+    implementation 'pub.devrel:easypermissions:3.0.0'
+
+    // Location dependency
+    implementation 'com.google.android.gms:play-services-location:19.0.1'
+
+    // Encryption dependency
+    implementation 'com.google.crypto.tink:tink-android:1.6.0'
+
+    //Hilt dependency
+    implementation "com.google.dagger:hilt-android:$hiltVersion"
+    kapt "com.google.dagger:hilt-android-compiler:$hiltVersion"
+    implementation("androidx.hilt:hilt-work:1.0.0")
+    // When using Kotlin.
+    kapt("androidx.hilt:hilt-compiler:1.0.0")
+
+    //Fragment ktx
+    implementation 'androidx.fragment:fragment-ktx:1.4.1'
+    implementation 'androidx.activity:activity-ktx:1.4.0'
+
+    // Navigation Component
+    implementation "androidx.navigation:navigation-fragment-ktx:$navigationVersion"
+    implementation "androidx.navigation:navigation-ui-ktx:$navigationVersion"
+
+    // InApp Update & In app Review
+    implementation 'com.google.android.play:core-ktx:1.8.1'
+
+    //Work Manager
+    implementation "androidx.work:work-runtime-ktx:2.7.1"
+
+    //Fhir
+    //Local Build Link: https://github.com/parthfloyd/android-fhir/actions/runs/3730362500
+    implementation "com.google.android.fhir:engine:0.1.0-beta02-build_3730362500"
+    implementation "com.google.android.fhir:data-capture:0.1.0-beta06-build_3730362500"
+    implementation "com.google.android.fhir:workflow:0.1.0-alpha02-build_3730362500"
+
+    //EventBus
+    implementation("org.greenrobot:eventbus:3.3.1")
+
+    //Gson Converter
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+
+    //Test
+    testImplementation 'junit:junit:4.+'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+}

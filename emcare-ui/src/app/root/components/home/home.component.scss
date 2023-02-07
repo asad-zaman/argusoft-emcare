@@ -1,3 +1,67 @@
 .cursor-pointer {
     cursor: pointer;
 }
+
+.ctype {
+    text-align: center;
+    padding: 23px 0px;
+    align-self: center;
+
+    &-1 {
+        background-color: #f90047;
+    }
+
+    &-2 {
+        background-color: #198a27;
+    }
+
+    &-3 {
+        background-color: #f50231;
+    }
+}
+
+.indicatorType {
+    text-align: center;
+    padding: 23px 0px;
+    align-self: center;
+
+    &-1 {
+        background-color: #ff0048;
+    }
+
+    &-2 {
+        background-color: #df5846;
+    }
+
+    &-3 {
+        background-color: #f0ed3c;
+    }
+
+    &-4 {
+        background-color: #56a30e;
+    }
+}
+
+.dashboard-title {
+    font-size: 25px;
+    padding-bottom: 20px;
+    font-weight: 500;
+}
+
+.date-title {
+    font-size: 22px;
+}
+
+.sync-title {
+    font-size: 17px;
+    cursor: pointer;
+    float: right;
+}
+
+.cst-elipsis {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+}

@@ -1,0 +1,72 @@
+<div *ngIf="isView" class="main-wrapper">
+  <h1 class="heading">{{'Questionnaires' | translate}}</h1>
+  <hr>
+  <div class="row align-items-center mb-3">
+    <div class="col-lg-3 col-xxl-2 col-md-5 position-relative">
+      <input class="form-control custom-input h-35" id="exampleFormControlInput1" [(ngModel)]="searchString"
+        (input)="searchFilter()" placeholder="Search">
+    </div>
+    <div *ngIf="isAdd" class="col text-end">
+      <button class=" btn btn-blue" routerLink="/addQuestionnaire">+ {{'Add Questionnaire' | translate}}</button>
+    </div>
+  </div>
+  <!--Table-->
+  <div *ngIf="!isAPIBusy" class="table-responsive">
+    <table class="data-table" aria-labelledby="questionnaire-list">
+      <thead>
+        <tr>
+          <th>{{'Sr. No' | translate}}</th>
+          <th>{{'Questionnaire Sr. No' | translate}}</th>
+          <th>{{'Title' | translate}}</th>
+          <th>{{'Description' | translate}}</th>
+          <th *ngIf="isEdit"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngIf="filteredQuestionnaireList && filteredQuestionnaireList.length > 0; else noRecords">
+          <ng-container *ngFor="let questionnaire of filteredQuestionnaireList | 
+          paginate : { itemsPerPage: tableSize, currentPage: currentPage, totalItems: totalCount }; let i=index">
+            <tr>
+              <td>{{currentPage == 0 ? ((currentPage)*10 + i + 1) : ((currentPage-1)*10 + i + 1)}}
+              </td>
+              <td>{{questionnaire.id}}</td>
+              <td>{{questionnaire.title ? questionnaire.title : 'NA'}}</td>
+              <td>{{questionnaire.description ? questionnaire.description : 'NA'}}
+              <td *ngIf="isEdit">
+                <ul class="navigation" style="list-style-type: none;">
+                  <li class="dropdown mt-3 cursor-pointer">
+                    <div class="d-flex align-items-center" data-bs-toggle="dropdown">
+                      <i class="bi bi-three-dots-vertical ps-2" aria-hidden="true"></i>
+                    </div>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                      <li (click)="updateQuestionnaire(i)">
+                        <a class="dropdown-item">
+                          <i class="bi bi-pencil font-size-14 mr-2"
+                            aria-hidden="true"></i>{{'Update Questionnaire' | translate}}
+                        </a>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </td>
+            </tr>
+          </ng-container>
+        </ng-container>
+        <ng-template #noRecords>
+          <div class="no-record">
+            {{'No Records' | translate}}
+          </div>
+        </ng-template>
+      </tbody>
+    </table>
+    <div *ngIf="filteredQuestionnaireList && filteredQuestionnaireList.length > 0"
+      class="d-flex justify-content-end mt-3">
+      <pagination-controls responsive="true" previousLabel="Prev" nextLabel="Next" (pageChange)="onIndexChange($event)">
+      </pagination-controls>
+    </div>
+  </div>
+  <!--Table-END-->
+</div>
+<div *ngIf="!isView" class="main-wrapper-nodata">
+  {{'NoAccess' | translate}}
+</div>

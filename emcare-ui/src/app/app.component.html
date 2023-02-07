@@ -1,1 +1,70 @@
-<router-outlet></router-outlet>
+<p-toast></p-toast>
+<div class="spinner-border" *ngIf="HTTPActivity">
+  <span class="sr-only" id="loadbar"></span>
+</div>
+<ng-container *ngIf="sidebarShow">
+  <!--header-->
+  <header>
+    <div class="logo cursor-pointer" (click)="navigateToDashboard()">
+      <img src="assets/images/emcare-logo.svg" alt="EMCARE">
+    </div>
+    <i (click)="changeSidebarVar()" class="bi bi-card-list sideBarBtn" aria-hidden="true"></i>
+    <ul class="navigation">
+      <li class="dropdown">
+        <div class="d-flex align-items-center" data-bs-toggle="dropdown">
+          <span class="user-char-logo">
+            {{userCharLogo}}
+          </span>
+          {{ userName }}<i class="bi bi-chevron-down ps-2" aria-hidden="true"></i>
+        </div>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+          <li><a class="dropdown-item" routerLink="/editProfile">{{'Edit_Profile' | translate}}</a></li>
+          <li><a class="dropdown-item" (click)="logout()">{{'Logout' | translate}}</a></li>
+        </ul>
+      </li>
+    </ul>
+  </header>
+  <!--header-END-->
+  <!--Sidenav-->
+  <ng-container *ngIf="isSidebarOpen">
+    <div class="sidenav cst-overflow" *ngIf="featureList.length !== 0">
+      <ul class="nav-link">
+        <ng-container *ngFor="let feature of featureArr">
+          <li *ngIf="hasAccess(feature.menuName) && feature.menuName !== 'Organizations'">
+            <a class="mouse-pointer"
+              [ngClass]="{'active': checkIsActiveOrNot(feature, feature.menuName) || feature.subMenuActive}"
+              (click)="changeDropdownValueOrRoute(feature)">
+              <i class="{{getIconClassFromFeatureName(feature.menuName)}}" aria-hidden="true"></i>
+              {{feature.menuName | translate}}
+              <ng-container *ngIf="feature.subMenu.length>0">
+                <ng-container *ngIf="feature.dropdownValue; else upIcon">
+                  <i class="bi bi-chevron-up drop-icon" aria-hidden="true"></i>
+                </ng-container>
+                <ng-template #upIcon>
+                  <i class="bi bi-chevron-down drop-icon" aria-hidden="true"></i>
+                </ng-template>
+              </ng-container>
+            </a>
+            <ng-container *ngIf="feature.subMenu.length>0">
+              <div *ngIf="feature.dropdownValue" class="dropdown_list_wrapper">
+                <ul class="dropdown_list">
+                  <ng-container *ngFor="let subMenu of feature.subMenu">
+                    <li *ngIf="hasAccess(subMenu.menuName)">
+                      <a class="mouse-pointer"
+                        [ngClass]="{'dropdown-link_active': checkIsActiveOrNot(feature, subMenu.menuName, true)}"
+                        (click)="changeDropdownValueOrRoute(subMenu.menuName, true)">{{subMenu.menuName | translate}}</a>
+                    </li>
+                  </ng-container>
+                </ul>
+              </div>
+            </ng-container>
+          </li>
+        </ng-container>
+      </ul>
+    </div>
+  </ng-container>
+</ng-container>
+<div>
+  <div id="map"></div>
+  <router-outlet></router-outlet>
+</div>

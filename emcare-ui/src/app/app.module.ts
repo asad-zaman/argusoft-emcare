@@ -6,36 +6,110 @@ import { SharedModule } from './shared/shared.module';
 import {
   LoginComponent,
   SignupComponent,
-  // ManagePatientComponent,
-  // ShowPatientComponent,
-  // ManageOrganizationComponent,
-  // ShowOrganizationComponent,
   LocationManagementComponent,
-  LocationTypeComponent
+  LocationTypeComponent,
+  LocationService,
+  DeviceManagementComponent,
+  DeviceManagementService,
+  UserListComponent,
+  ManageUserComponent,
+  ConfirmUserComponent,
+  FeatureListComponent,
+  ManageFeatureComponent,
+  ComparePatientComponent,
+  UserManagementService,
+  FeatureManagementService,
+  ManageFacilityComponent,
+  ShowLocationTypeComponent,
+  ShowLocationComponent,
+  DeviceListComponent,
+  PatientListComponent,
+  ManageRoleComponent,
+  ShowRoleComponent,
+  LocationFilterComponent,
+  ManageProfileComponent,
+  ManageTranslationsComponent,
+  QuestionnaireListComponent,
+  QuestionnaireBuilderComponent,
+  LocationDropdownComponent,
+  LanguageListComponent,
+  DuplicatePatientsComponent,
+  ConsultationListComponent,
+  ViewConsultationComponent,
+  ManageCodeComponent,
+  CodeListComponent,
+  IndicatorComponent
 } from './root/index';
-import { AuthenticationService } from './shared';
+import { AuthenticationService, ToasterService } from './shared';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { HomeComponent } from './root/components/home/home.component';
-import { tempBackendProvider } from './auth/temp-backend';
+import { HTTPStatus, LaunguageSubjects, TokenInterceptor } from './auth/token-interceptor';
 import { CommonModule } from '@angular/common';
-// import { FhirService } from './root/services/fhir.service';
-import { ShowLocationTypeComponent } from './root/components/Location/location-type/show-location-type/show-location-type.component';
-import { ShowLocationComponent } from './root/components/Location/location-management/show-location/show-location.component';
+import { NgxPaginationModule } from 'ngx-pagination';
+import { ToastrModule } from 'ngx-toastr';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { BaseModule } from './base.module';
+import { DropdownModule } from 'primeng/dropdown';
+import { ShowFacilityComponent } from './root/components/Facility/show-facility/show-facility.component';
+import { CheckboxModule } from 'primeng/checkbox';
+import { MultiSelectModule } from 'primeng/multiselect';
+import { TooltipModule } from 'primeng/tooltip';
+import { ForgotPasswordComponent } from './root/components/forgot-password/forgot-password.component';
+import { AdminPanelComponent } from './root/components/admin-panel/admin-panel.component';
+import { AccordionModule } from 'primeng/accordion';
+import { ButtonModule } from 'primeng/button';
+import { CardModule } from 'primeng/card';
+import { ChartModule } from 'angular-highcharts';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
+import { ManageOrganizationComponent } from './root/components/manage-organization/manage-organization.component';
+import { OrganizationListComponent } from './root/components/organization-list/organization-list.component';
+import { NgxIntlTelInputModule } from 'ngx-intl-tel-input';
+import { IndicatorListComponent } from './root/components/indicator-list/indicator-list.component';
+
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     HomeComponent,
     SignupComponent,
-    // ManagePatientComponent,
-    // ShowPatientComponent,
-    // ManageOrganizationComponent,
-    // ShowOrganizationComponent,
     LocationTypeComponent,
     LocationManagementComponent,
     ShowLocationTypeComponent,
-    ShowLocationComponent
+    ShowLocationComponent,
+    DeviceManagementComponent,
+    DeviceListComponent,
+    UserListComponent,
+    ManageUserComponent,
+    PatientListComponent,
+    ManageRoleComponent,
+    ShowRoleComponent,
+    ConfirmUserComponent,
+    LocationFilterComponent,
+    FeatureListComponent,
+    ManageFeatureComponent,
+    ManageFeatureComponent,
+    QuestionnaireListComponent,
+    QuestionnaireBuilderComponent,
+    ManageProfileComponent,
+    ManageTranslationsComponent,
+    ComparePatientComponent,
+    ManageFacilityComponent,
+    ShowFacilityComponent,
+    LocationDropdownComponent,
+    LanguageListComponent,
+    ForgotPasswordComponent,
+    AdminPanelComponent,
+    ManageOrganizationComponent,
+    OrganizationListComponent,
+    DuplicatePatientsComponent,
+    ConsultationListComponent,
+    ViewConsultationComponent,
+    ManageCodeComponent,
+    CodeListComponent,
+    IndicatorComponent,
+    IndicatorListComponent
   ],
   imports: [
     BrowserModule,
@@ -44,12 +118,37 @@ import { ShowLocationComponent } from './root/components/Location/location-manag
     ReactiveFormsModule,
     HttpClientModule,
     CommonModule,
-    SharedModule
+    SharedModule,
+    NgxPaginationModule,
+    BrowserAnimationsModule,
+    ToastrModule.forRoot(),
+    BaseModule.forRoot(),
+    DropdownModule,
+    CheckboxModule,
+    MultiSelectModule,
+    TooltipModule,
+    AccordionModule,
+    ButtonModule,
+    CardModule,
+    ChartModule,
+    ToastModule,
+    NgxIntlTelInputModule
   ],
   providers: [
     AuthenticationService,
-    tempBackendProvider,
-    // FhirService
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: TokenInterceptor,
+      multi: true
+    },
+    LocationService,
+    DeviceManagementService,
+    UserManagementService,
+    FeatureManagementService,
+    HTTPStatus,
+    ToasterService,
+    LaunguageSubjects,
+    MessageService,
   ],
   bootstrap: [AppComponent]
 })

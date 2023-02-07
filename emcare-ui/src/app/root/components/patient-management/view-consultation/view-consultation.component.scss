@@ -1,0 +1,64 @@
+.cst-border {
+    border: 2px solid #746c70;
+    width: 800px;
+}
+
+.cst-icons {
+    border-right: 2px solid #746c70;
+}
+
+.icon-text {
+    font-size: 11px;
+    justify-self: center;
+}
+
+.cst-img-icon {
+    opacity: 0.55;
+    cursor: pointer;
+    justify-self: center;
+
+    &.selected {
+        opacity: 1;
+    }
+
+    &:hover {
+        opacity: 1;
+    }
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.cst-ques {
+    font-weight: 500;
+    color: #A5A5A5;
+}
+
+.cst-ans {
+    color: #898989;
+}
+
+.f-17 {
+    font-size: 17px;
+}
+
+.cst-detail {
+    font-weight: 600;
+}
+
+.cst-letter {
+    font-size: 35px;
+    padding: 5px 20px;
+    background-color: #d9d9d9;
+    border-radius: 50%;
+    font-weight: 600;
+    color: white;
+    margin-left: 15px;
+    margin-right: 20px;
+    margin-bottom: 10px;
+}
+
+.no-label {
+    color: #A5A5A5;
+}

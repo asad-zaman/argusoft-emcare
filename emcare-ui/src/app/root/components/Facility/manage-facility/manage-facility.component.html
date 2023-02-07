@@ -1,0 +1,164 @@
+<div *ngIf="isAllowed" class="main-wrapper">
+  <div *ngIf="!apiBusy" class="form-wrapper-facility">
+    <form [formGroup]="facilityForm" name="facilityForm" novalidate>
+      <div class="mb-5">
+        <span class="heading">
+          {{'Manage Facility' | translate}}
+        </span>
+        <div class="d-inline float-right">
+          <button type="button" class="btn btn-blue" (click)="redirectToOrganizations()">
+            {{'Manage Organization' | translate}}</button>
+        </div>
+        <hr>
+      </div>
+      <div class="row">
+        <div class="col-12 col-sm-4">
+          <div class="mb-3">
+            <div class="d-flex">
+              <label class="form-label mr-2">{{'Name' | translate}}</label>
+              <div class="cst-end">
+                <p-checkbox styleClass="form-label" formControlName="isOrganizationAsFacility"
+                  (onChange)="setFacility($event)" label="Same as Organization" value="true">
+                </p-checkbox>
+              </div>
+            </div>
+            <input formControlName="name" type="text" class="form-control custom-input" id="name"
+              placeholder="Enter facility name" onkeyup="this.value = this.value.toUpperCase();">
+          </div>
+        </div>
+        <div class="col-12 col-sm-4">
+          <div class="mb-3">
+            <label class="form-label">{{'Address Street' | translate}}</label>
+            <input formControlName="addressStreet" type="text" class="form-control custom-input" id="addressStreet1"
+              placeholder="Enter address street" [ngClass]="{ 'is-invalid': submitted && f.addressStreet.errors }">
+            <div *ngIf="submitted && f.addressStreet.errors" class="invalid-feedback">
+              <div class="cst-error-style" *ngIf="f.addressStreet.errors.required">
+                *{{'Address street is required' | translate}}</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-sm-4">
+          <div class="mb-3">
+            <label class="form-label">{{'Organization' | translate}}</label>
+            <p-dropdown [filter]="true" (click)="checkOrgAsFacility(f.isOrganizationAsFacility.value)"
+              formControlName="organization" placeholder="Select an organization" [options]="this.orgArr"
+              [ngStyle]="{'border': submitted && this.facilityForm.controls.organization.value == '' ? '1px solid red' : ''}"
+              optionLabel="name" [ngClass]="{ 'is-invalid': submitted && f.organization.errors }">
+            </p-dropdown>
+            <div *ngIf="submitted && this.facilityForm.controls.organization.value == ''" style="color: #dc3545">
+              <div class="cst-error-style" *ngIf="f.organization.errors.required">
+                *{{'Organization is required' | translate}}</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-sm-4">
+          <div class="mb-3 d-grid">
+            <label class="form-label">{{'Administrative Location' | translate}}</label>
+            <div class="d-flex">
+              <ng-container *ngIf="f.location.value; else noLocation">
+                <span class="f-16 cursor-pointer" data-bs-toggle="modal"
+                  data-bs-target="#locationModal">{{f.location.value.name}}</span>
+                <i class="ml-3 bi bi-pencil-square f-16 cursor-pointer" data-bs-toggle="modal"
+                  data-bs-target="#locationModal" aria-hidden="true"></i>
+              </ng-container>
+              <ng-template #noLocation>
+                <a class="cursor-pointer" data-bs-toggle="modal"
+                  data-bs-target="#locationModal">{{'Select_Location' | translate}}</a>
+              </ng-template>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-sm-4">
+          <div class="mb-3">
+            <label class="form-label">{{'Status' | translate}}</label>
+            <p-dropdown formControlName="status" [options]="statusArr" placeholder="Select a status"
+              [ngStyle]="{'border': submitted && this.facilityForm.controls.status.value == '' ? '1px solid red' : ''}"
+              optionLabel="name" [ngClass]="{ 'is-invalid': submitted && f.status.errors }">
+            </p-dropdown>
+            <div *ngIf="submitted && this.facilityForm.controls.status.value == ''" style="color: #dc3545">
+              <div class="cst-error-style" *ngIf="f.status.errors.required">
+                *{{'Status is required' | translate}}</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-sm-4">
+          <div class="mb-3">
+            <label class="form-label">{{'Telecom' | translate}}</label>
+            <input formControlName="telecom" type="number" class="form-control custom-input" id="telecom"
+              placeholder="Enter telecom" [ngClass]="{ 'is-invalid': submitted && f.telecom.errors }">
+            <div *ngIf="submitted && f.telecom.errors" class="invalid-feedback">
+              <div class="cst-error-style" *ngIf="f.telecom.errors.required">
+                *{{'Telecom is required' | translate}}</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-sm-4 align-self-center">
+          <div class="">
+            <div class="">
+              <button type="button" class="btn btn-blue" (click)="getLocationCoordinates()">
+                {{'Detect Location' | translate}}</button>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-sm-4">
+          <div class="mb-3">
+            <label class="form-label">{{'Latitude' | translate}}</label>
+            <input formControlName="latitude" type="number" class="form-control custom-input" id="latitude"
+              placeholder="Enter latitude" [ngClass]="{ 'is-invalid': submitted && f.latitude.errors }">
+            <div *ngIf="submitted && f.latitude.errors" class="invalid-feedback">
+              <div class="cst-error-style" *ngIf="f.latitude.errors.required">
+                *{{'Latitude is required' | translate}}</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-sm-4">
+          <div class="mb-3">
+            <label class="form-label">{{'Longitude' | translate}}</label>
+            <input formControlName="longitude" type="number" class="form-control custom-input" id="longitude"
+              placeholder="Enter longitude" [ngClass]="{ 'is-invalid': submitted && f.longitude.errors }">
+            <div *ngIf="submitted && f.longitude.errors" class="invalid-feedback">
+              <div class="cst-error-style" *ngIf="f.longitude.errors.required">
+                *{{'Longitude is required' | translate}}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="text-end mt-5">
+        <hr>
+        <button routerLink="/showFacility" class="btn-black btn ms-3">
+          <i class="bi bi-chevron-left" aria-hidden="true"></i> {{'Back' | translate}}
+        </button>
+        <button (click)="saveData()" class="btn-blue btn">
+          <ng-container *ngIf="!isEdit; else updateFacility">
+            {{'Save Facility' | translate}}
+          </ng-container>
+          <ng-template #updateFacility>
+            {{'Edit Facility' | translate}}
+          </ng-template>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+<div *ngIf="!isAllowed" class="main-wrapper-nodata">
+  {{'NoAccess' | translate}}
+</div>
+<div class="modal fade" id="locationModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header cst-header">
+        <h5 class="modal-title" id="exampleModalLabel">{{'Select_Location' | translate}}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body cst-body">
+        <app-location-dropdown [isOtherPage]="true" [idArr]="locationIdArr"
+          (locationFormValueAndDropdownArr)="getFormValue($event)">
+        </app-location-dropdown>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class=" btn btn-blue" (click)="saveLocationData()"
+          data-bs-dismiss="modal">{{'Save' | translate}}</button>
+      </div>
+    </div>
+  </div>
+</div>

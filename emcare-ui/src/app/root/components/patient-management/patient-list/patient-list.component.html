@@ -1,0 +1,144 @@
+<app-location-filter *ngIf="isView" [isOtherPage]="false" (locationId)="getLocationId($event)"></app-location-filter>
+<div *ngIf="isView" class="main-wrapper">
+  <h1 class="heading">{{'Patients' | translate}}</h1>
+  <hr>
+  <div class="row align-items-center mb-3">
+    <div class=" col-lg-3 col-xxl-2 col-md-5 position-relative">
+      <input class="form-control custom-input h-35" id="exampleFormControlInput1" [(ngModel)]="searchString"
+        (input)="searchFilter()" placeholder="{{'Search Placeholder' | translate}}">
+    </div>
+  </div>
+  <!--Table-->
+  <div *ngIf="!isAPIBusy" class="table-responsive">
+    <table class="data-table" aria-labelledby="patient-list">
+      <thead>
+        <tr>
+          <th>{{'Sr. No' | translate}}.</th>
+          <th>{{'Identifier' | translate}}</th>
+          <th>{{'Name' | translate}}</th>
+          <th>{{'Gender' | translate}}</th>
+          <th>{{'Date of Birth' | translate}}</th>
+          <th>{{'Caregiver Name' | translate}}</th>
+          <th>{{'Facility' | translate}}</th>
+          <th>{{'Location' | translate}}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngIf="filteredPatients && filteredPatients.length > 0; else noRecords">
+          <ng-container *ngFor="let patient of filteredPatients |
+          paginate : { itemsPerPage: tableSize, currentPage: currentPage, totalItems: totalCount }; let i=index">
+            <tr>
+              <td>{{currentPage == 0 ? ((currentPage)*10 + i + 1) : ((currentPage-1)*10 + i + 1)}}</td>
+              <td>{{patient.identifier ? patient.identifier : 'NA'}}</td>
+              <td>
+                <ng-container *ngIf="patient.givenName || patient.familyName; else blankName">
+                  <a style="cursor: pointer;" (click)="showPatientDetails(patient.id)"
+                    class="link">{{patient.givenName}}
+                    {{patient.familyName}}</a>
+                </ng-container>
+                <ng-template #blankName>
+                  NA
+                </ng-template>
+              </td>
+              <td>{{patient.gender}}</td>
+              <td>{{patient.dob ? (patient.dob | date:'mediumDate') : 'NA'}}</td>
+              <td>{{patient.caregiver || "NOT PROVIDED"}}</td>
+              <td>
+                <ng-container *ngIf="patient.facility">
+                  {{patient.facility}}
+                </ng-container>
+                <ng-container *ngIf="patient.organizationName">
+                  - {{patient.organizationName}}
+                </ng-container>
+              </td>
+              <td>{{patient.locationName}}</td>
+            </tr>
+          </ng-container>
+        </ng-container>
+        <ng-template #noRecords>
+          <div class="no-record">
+            {{'No Records' | translate}}
+          </div>
+        </ng-template>
+      </tbody>
+    </table>
+    <div *ngIf="filteredPatients && filteredPatients.length > 0" class="d-flex justify-content-end mt-3">
+      <pagination-controls responsive="true" previousLabel="Prev" nextLabel="Next" (pageChange)="onIndexChange($event)">
+      </pagination-controls>
+    </div>
+  </div>
+  <!--Table-END-->
+  <div *ngIf="showPatientDetailsFlag" class="modal" tabindex="-1" role="dialog" style="display:block">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">{{'Patient Details' | translate}}</h4>
+        </div>
+        <div class="modal-body">
+          <table class="table table-borderless" aria-labelledby="patient-data">
+            <thead *ngIf="false">
+              <th></th>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="font-weight-bold">{{'Identifier' | translate}}:</td>
+                <td>{{patientDetails.identifier}}</td>
+              </tr>
+              <tr *ngIf="!!patientDetails.id">
+                <td class="font-weight-bold">{{'Sr. No' | translate}}:</td>
+                <td>{{patientDetails.id}}</td>
+              </tr>
+              <tr *ngIf="!!patientDetails.givenName">
+                <td class="font-weight-bold">{{'Patient Details' | translate}}:</td>
+                <td>{{patientDetails.givenName}}</td>
+              </tr>
+              <tr *ngIf="!!patientDetails.familyName">
+                <td class="font-weight-bold">{{'Patient Details' | translate}}:</td>
+                <td>{{patientDetails.familyName}}</td>
+              </tr>
+              <tr *ngIf="!!patientDetails.gender">
+                <td class="font-weight-bold">{{'Gender' | translate}}:</td>
+                <td>{{patientDetails.gender}}</td>
+              </tr>
+              <tr *ngIf="!!patientDetails.dob">
+                <td class="font-weight-bold">{{'Date of Birth' | translate}}::</td>
+                <td>{{patientDetails.dob | date:'mediumDate'}}</td>
+              </tr>
+              <tr *ngIf="!!patientDetails.caregiver">
+                <td class="font-weight-bold">{{'Patient Details' | translate}}:</td>
+                <td>{{patientDetails.caregiver}}</td>
+              </tr>
+              <tr
+                *ngIf="!!patientDetails.addressLine || !!patientDetails.addressCity || !!patientDetails.addressCountry">
+                <td class="font-weight-bold">{{'Patient Details' | translate}}:</td>
+                <td>
+                  <div>
+                    <span *ngIf="!!patientDetails.addressLine">{{patientDetails.addressLine}},<br /></span>
+                    <span *ngIf="!!patientDetails.addressCity">{{patientDetails.addressCity}},<br /></span>
+                    <span *ngIf="!!patientDetails.addressCountry">{{patientDetails.addressCountry}}</span>
+                  </div>
+                </td>
+              </tr>
+              <tr *ngIf="!!patientDetails.addressPostalCode">
+                <td class="font-weight-bold">{{'Patient Details' | translate}}:</td>
+                <td>{{patientDetails.addressPostalCode}}</td>
+              </tr>
+              <tr *ngIf="!!patientDetails.location">
+                <td class="font-weight-bold">{{'Location' | translate}}:</td>
+                <td>{{patientDetails.location}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class=" btn btn-blue" (click)="closePopup()">
+            {{'Close' | translate}}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div *ngIf="!isView" class="main-wrapper-nodata">
+  {{'NoAccess' | translate}}
+</div>

@@ -1,0 +1,74 @@
+<div *ngIf="isAllowed" class="main-wrapper">
+  <div *ngIf="!editLanCode" class="form-wrapper">
+    <div class="mb-5">
+      <h1 class="heading">{{'Manage Language' | translate}}</h1>
+      <hr>
+    </div>
+    <div class="row">
+      <div *ngIf="availableLanguages.length>0; else loading" class="col-12 col-sm-6">
+        <div class="mb-3">
+          <label class="form-label">{{'Launguage' | translate}}</label>
+          <p-dropdown [options]="availableLanguages" [(ngModel)]="newSelectedLanguage" optionLabel="name"
+            placeholder="{{'Select Launguage' | translate}}" [filter]="true" filterBy="name" [showClear]="true">
+          </p-dropdown>
+        </div>
+      </div>
+      <ng-template #loading>
+        <div class="col-12 col-sm-6">
+          <span><strong>Loading ...</strong></span>
+        </div>
+      </ng-template>
+    </div>
+    <div class="text-end mt-5">
+      <hr>
+      <button routerLink="/language-list" class="btn-black btn ms-3">
+        <i class="bi bi-chevron-left" aria-hidden="true"></i> {{'Back' | translate}}
+      </button>
+      <button [disabled]="!newSelectedLanguage" class=" btn btn-blue"
+        (click)="addNewLanguage()">{{'Add Launguage' | translate}}</button>
+    </div>
+  </div>
+  <div *ngIf="editLanCode">
+    <div class="row align-items-center mb-3">
+      <div class="col-lg-6 col-xxl-2 col-md-5 position-relative">
+        <h1 class="heading">{{'Manage Translations' | translate}}</h1>
+      </div>
+      <div class="col text-end">
+        <button [disabled]="!isTranslationSaved" routerLink="/language-list" class="btn-black btn ms-3">
+          <i class="bi bi-chevron-left" aria-hidden="true"></i> {{'Back' | translate}}
+        </button>
+      </div>
+    </div>
+    <hr>
+    <div class="d-flex">
+      <div class="ms-2 align-self-center">
+        <ng-container *ngFor="let item of alphabetArr; let i = index">
+          <a class="mr-3 mouse-pointer cst-alpha" (click)="showCurrCharKeys(item)">{{item}}</a>
+        </ng-container>
+      </div>
+      <button *ngIf="isChanged" class="ml-4 btn btn-blue"
+        (click)="saveTranslation()">{{'Save Changes' | translate}}</button>
+    </div>
+    <div class="cst-main-style">
+      <div *ngFor="let item of currentNames | keyvalue; let i=index" class="cst-child-style">
+        <div class="cst-parent d-flex">
+          <div class="cst-key">
+            <label class="cst-label">{{item.key}}</label>
+          </div>
+          <div class="cst-value d-flex">
+            <input (input)="setValue($event)" type="text" class="form-control custom-input ml-3" name="item.key"
+              value="{{item.value}}">
+            <i aria-hidden="true" (click)="saveChange(item.key)"
+              class="bi bi-check-circle text-success cursor-pointer font-size-18 ml-3 cst-checkmark"></i>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="noRecords" class="p-10">
+        <h4 class="m-0">{{'No Translations' | translate}}</h4>
+      </div>
+    </div>
+  </div>
+</div>
+<div *ngIf="!isAllowed" class="main-wrapper-nodata">
+  {{'NoAccess' | translate}}
+</div>

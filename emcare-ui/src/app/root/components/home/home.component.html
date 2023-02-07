@@ -1,39 +1,92 @@
-<nav *ngIf="userName" class="navbar navbar-expand navbar-dark bg-dark">
-  <div class="navbar-nav">
-    <a class="nav-item nav-link cursor-pointer float-right" (click)="logout()">Logout</a>
+<div class="main-wrapper">
+  <div *ngIf="isView">
+    <span class="dashboard-title">{{'Key Performance Indicators' | translate}}</span>
+    <span class="date-title"> | {{getDateData()}}</span>
+    <span class="sync-title" (click)="getLastSyncDate()">{{'Last sync' | translate}}: {{lastScDate}}</span>
+    <ng-container *ngIf="!isEmpty(dashboardData)">
+      <div class="row mt-3">
+        <div class="col-lg-3 col-md-4 col-sm-6 col-12 mb-3">
+          <p-card
+            [style]="{'height': '80px', 'cursor': 'pointer'}"
+            (click)="redirectToRoute('/showPatients')">
+            <div class="row">
+              <h3 class="col-5 w-700 ctype ctype-1">{{dashboardData.totalPatient}}</h3>
+              <div class="col-7 c-style">
+                <h6>{{'Total Patients' | translate}}</h6>
+              </div>
+            </div>
+          </p-card>
+        </div>
+        <div class="col-lg-3 col-md-4 col-sm-6 col-12 mb-3">
+          <p-card
+            [style]="{'height': '80px', 'cursor': 'pointer'}"
+            (click)="redirectToRoute('/showUsers')">
+            <div class="row">
+              <h3 class="col-5 w-700 ctype ctype-2">{{dashboardData.totalUser}}</h3>
+              <div class="col-7 c-style">
+                <h6>{{'Total Users' | translate}}</h6>
+              </div>
+            </div>
+          </p-card>
+        </div>
+        <div class="col-lg-3 col-md-4 col-sm-6 col-12 mb-3">
+          <p-card
+            [style]="{'height': '80px', 'cursor': 'pointer'}"
+            (click)="redirectToRoute('/confirmUsers')">
+            <div class="row">
+              <h3 class="col-5 w-700 ctype ctype-3">{{dashboardData.pendingRequest}}</h3>
+              <div class="col-7 c-style">
+                <h6>{{'Pending User Requests' | translate}}</h6>
+              </div>
+            </div>
+          </p-card>
+        </div>
+        <ng-container *ngFor="let indicator of this.indicatorArr">
+          <div class="col-lg-3 col-md-4 col-sm-6 col-12 mb-3">
+            <p-card 
+              [style]="{'height': '80px', 'cursor': 'pointer'}">
+              <div class="row">
+                <h3 class="col-5 w-700 indicatorType" [ngClass]="{'indicatorType-1': indicator.indicatorValue > 75,
+                  'indicatorType-2': indicator.indicatorValue > 50 && indicator.indicatorValue < 75,
+                  'indicatorType-3': indicator.indicatorValue > 25 && indicator.indicatorValue < 50,
+                  'indicatorType-4': indicator.indicatorValue < 25}">{{indicator.indicatorValue}}</h3>
+                <div class="col-7 c-style" title="{{indicator.indicatorName}}">
+                  <h6 class="cst-elipsis">{{indicator.indicatorName}}</h6>
+                </div>
+              </div>
+            </p-card>
+          </div>
+        </ng-container>
+      </div>
+    </ng-container>
   </div>
-  <!-- <div class="navbar-nav">
-    <a class="nav-item nav-link cursor-pointer float-right" (click)="addPatients()">Add patient</a>
-  </div>
-  <div class="navbar-nav">
-    <a class="nav-item nav-link cursor-pointer float-right" (click)="showPatients()">Show patients</a>
-  </div>
-  <div class="navbar-nav">
-    <a class="nav-item nav-link cursor-pointer float-right" (click)="addOrganization()">Add Organization</a>
-  </div>
-  <div class="navbar-nav">
-    <a class="nav-item nav-link cursor-pointer float-right" (click)="showOrganizations()">Show Organizations</a>
-  </div> -->
-  <div class="navbar-nav">
-    <a class="nav-item nav-link cursor-pointer float-right" (click)="addLocationType()">Add Location Type</a>
-  </div>
-  <div class="navbar-nav">
-    <a class="nav-item nav-link cursor-pointer float-right" (click)="showLocationType()">Show Location Types</a>
-  </div>
-  <div class="navbar-nav">
-    <a class="nav-item nav-link cursor-pointer float-right" (click)="addLocation()">Add Location</a>
-  </div>
-  <div class="navbar-nav">
-    <a class="nav-item nav-link cursor-pointer float-right" (click)="showLocation()">Show Location</a>
-  </div>
-</nav>
-<div class="container">
-  <div class="card mt-4">
-    <h4 class="card-header">Welcome</h4>
-    <div class="card-body">
-      <ul>
-        <li>{{userName}}</li>
-      </ul>
+  <div class="row mt-5">
+    <div class="col-6">
+      <h3 class="text-left">{{'Map' | translate}}</h3>
+      <div class="card mt-3">
+        <div class="card-body">
+          <div #mapRef style="width:100%;height:800px"></div>
+        </div>
+      </div>
+    </div>
+    <div class="col-6">
+      <h3 class="mt-2">{{'Analysis' | translate}} | {{getDateData()}}</h3>
+      <div class="row">
+        <div class="col-12 mb-3">
+          <div id="container" style="min-width: 310px; max-width: 800px; height: 400px; margin: 0 auto"></div>
+          <h5 class="card-title text-center">Number of consultations per week
+          </h5>
+        </div>
+        <div class="col-6">
+          <div id="consultationPerFacility" style="width:100%; height:400px;"></div>
+        </div>
+        <div class="col-6">
+          <div id="consultationByAgeGroup" style="width:100%; height:400px;"></div>
+        </div>
+      </div>
     </div>
   </div>
+</div>
+<div *ngIf="!isView" class="main-wrapper-nodata">
+  {{'NoAccess' | translate}}
 </div>

@@ -1,0 +1,82 @@
+<div class="main-wrapper">
+  <div class="form-wrapper">
+    <form [formGroup]="currentUserForm" name="currentUserForm" novalidate>
+      <div class="mb-5">
+        <h1 class="heading">
+          {{'Edit Profile' | translate}}
+        </h1>
+        <hr>
+      </div>
+      <div class="row">
+        <div class="col-12 col-sm-6">
+          <div class="mb-3">
+            <label class="form-label">{{'First Name' | translate}}'</label>
+            <input class="form-control custom-input" formControlName="firstName" type="text" id="firstName"
+              placeholder="{{'FirstName Placeholder' | translate}}"
+              [ngClass]="{ 'is-invalid': submitted && f.firstName.errors }">
+            <div *ngIf="submitted && f.firstName.errors" class="invalid-feedback">
+              <div class="cst-error-style" *ngIf="f.firstName.errors.required">
+                {{'FirstName Required Message' | translate}}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-sm-6">
+          <div class="mb-3">
+            <label class="form-label">{{'Last Name' | translate}}</label>
+            <input class="form-control custom-input" formControlName="lastName" type="text" id="lastName"
+              placeholder="{{'LastName Placeholder' | translate}}"
+              [ngClass]="{ 'is-invalid': submitted && f.lastName.errors }">
+            <div *ngIf="submitted && f.lastName.errors" class="invalid-feedback">
+              <div class="cst-error-style" *ngIf="f.lastName.errors.required">
+                {{'LastName Required Message' | translate}}</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-sm-6">
+          <div class="mb-3">
+            <label class="form-label">{{'Email' | translate}}</label>
+            <input class="form-control custom-input" formControlName="email" type="text" id="email"
+              placeholder="{{'Email Placeholder' | translate}}"
+              [ngClass]="{ 'is-invalid': submitted && f.email.errors }" disabled="true">
+            <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
+              <div class="cst-error-style" *ngIf="f.email.errors.required">
+                {{'Email Required Message' | translate}}</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-sm-6">
+          <div class="mb-3">
+            <label class="form-label">{{'Language' | translate}}</label>
+            <p-dropdown [filter]="true" filterBy="name" [options]="lanArr" formControlName="language"
+              optionLabel="name"></p-dropdown>
+          </div>
+        </div>
+        <div class="col-12 col-sm-12">
+          <div class="mb-3">
+            <label class="form-label">{{'PhoneNumber' | translate}}</label>
+            <ngx-intl-tel-input [cssClass]="'custom'" [preferredCountries]="preferredCountries"
+              [enableAutoCountrySelect]="false" [enablePlaceholder]="true" [searchCountryFlag]="true"
+              [searchCountryField]="[SearchCountryField.Iso2, SearchCountryField.Name]" [selectFirstCountry]="false"
+              [selectedCountryISO]="this.currentUserForm.get('countryCode').value" [maxLength]="15"
+              [separateDialCode]="separateDialCode" [phoneValidation]="true" [numberFormat]="PhoneNumberFormat.National"
+              name="phone" formControlName="phone">
+            </ngx-intl-tel-input>
+            <div *ngIf="submitted && this.currentUserForm.controls.phone.value == null" class="error">
+              {{'Phone Required Message' | translate}}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="text-end mt-5">
+        <hr>
+        <button routerLink="/dashboard" class="btn-black btn ms-3">
+          <i class="bi bi-chevron-left" aria-hidden="true"></i> {{'Back' | translate}}
+        </button>
+        <button (click)="saveData()" class="btn-blue btn">
+          {{'Save Details' | translate}}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

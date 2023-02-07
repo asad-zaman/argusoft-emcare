@@ -1,0 +1,90 @@
+<div class="main-wrapper">
+  <h1 class="heading">{{'Update Feature Config' | translate}}</h1>
+  <hr>
+  <h4 *ngIf="isAdd" class="sub-heading my-4">{{ featureName }}</h4>
+  <div *ngIf="isAdd" class="row align-items-center mb-3">
+    <div class="col-3 col-sm-3">
+      <div class="mb-3">
+        <label class="form-label">{{'User' | translate}}</label>
+        <p-dropdown [options]="userList" [(ngModel)]="selectedUser" optionLabel="email" (onChange)="selectedRole=null"
+          [filter]="true" filterBy="email" placeholder="Select an email">
+        </p-dropdown>
+      </div>
+    </div>
+    <div class="col-3 col-sm-3">
+      <div class="mb-3">
+        <label class="form-label">{{'Role' | translate}}</label>
+        <p-dropdown [options]="roleList" [(ngModel)]="selectedRole" optionLabel="name" (onChange)="selectedUser=null"
+          [filter]="true" filterBy="name" placeholder="Select a role">
+        </p-dropdown>
+      </div>
+    </div>
+    <div class="col-3 col-sm-3">
+      <button (click)="AddFeatureConfig()" [disabled]="!selectedUser && !selectedRole" class="btn btn-blue mt-3">+
+        {{'ADD' | translate}}</button>
+    </div>
+  </div>
+  <!--Table-->
+  <div *ngIf="!isAPIBusy" class="table-responsive">
+    <table class="data-table" aria-labelledby="manage-feature">
+      <thead>
+        <tr>
+          <th class="cst-theader-1">{{'Sr. No' | translate}}</th>
+          <th class="cst-theader-2">{{'Type' | translate}}</th>
+          <th class="cst-theader-2">{{'Name' | translate}}</th>
+          <th class="cst-theader-4">Action</th>
+          <th *ngIf="isDelete" class="cst-theader-1"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngIf="featureConfigList && featureConfigList.length > 0; else noRecords">
+          <ng-container *ngFor="let featureConfig of featureConfigList; let i=index">
+            <tr>
+              <td>{{i + 1}}</td>
+              <td>
+                <ng-container *ngIf="featureConfig.userId; else Role">
+                  {{'User' | translate}}
+                </ng-container>
+                <ng-template #Role>
+                  {{'Role' | translate}}
+                </ng-template>
+              </td>
+              <td>{{ featureConfig.userId ? featureConfig.userName : featureConfig.roleName }}</td>
+              <td>
+                <p-checkbox (click)="onCheckboxClicked(i)" name="group1" label="Can Add" value="canAdd"
+                  [(ngModel)]="featureConfig.selectedFeatures">
+                </p-checkbox>
+                <p-checkbox (click)="onCheckboxClicked(i)" styleClass="ml-3" name="group1" label="Can Edit"
+                  value="canEdit" [(ngModel)]="featureConfig.selectedFeatures">
+                </p-checkbox>
+                <p-checkbox (click)="onCheckboxClicked(i)" styleClass="ml-3" name="group1" label="Can View"
+                  value="canView" [(ngModel)]="featureConfig.selectedFeatures">
+                </p-checkbox>
+                <p-checkbox (click)="onCheckboxClicked(i)" styleClass="ml-3" name="group1" label="Can Delete"
+                  value="canDelete" [(ngModel)]="featureConfig.selectedFeatures">
+                </p-checkbox>
+              </td>
+              <td *ngIf="isDelete">
+                <i aria-hidden="true" (click)="deleteFeatureConfig(i)"
+                  class="bi bi-trash cursor-pointer font-size-14"></i>
+              </td>
+            </tr>
+          </ng-container>
+        </ng-container>
+        <ng-template #noRecords>
+          <div class="no-record">
+            {{'No Records' | translate}}
+          </div>
+        </ng-template>
+      </tbody>
+    </table>
+  </div>
+  <!--Table-END-->
+  <div class="row">
+    <div class="col-3 col-sm-3">
+      <button routerLink="/showFeatures" class="btn btn-black mt-3 mr-5 text-center" style="width: 150px;">
+        <i class="bi bi-chevron-left" aria-hidden="true"></i>{{'Back' | translate}}
+      </button>
+    </div>
+  </div>
+</div>

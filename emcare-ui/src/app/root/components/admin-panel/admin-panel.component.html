@@ -1,0 +1,71 @@
+<div *ngIf="isView" class="main-wrapper">
+  <h1 class="heading">Welcome, {{ userName }}!</h1>
+  <hr>
+  <div *ngIf="isEdit">
+    <h5 class="my-4">{{'Manage Settings' | translate}}</h5>
+    <p-accordion *ngIf="userSettingObj.length>0 && templateArr.length>0" [multiple]="true"
+      (onOpen)="updateSetting($event)" (onClose)="updateSetting($event)">
+      <p-accordionTab class="cst-register-email cursor-pointer" [(selected)]="userSettingObj[0].value">
+        <ng-template pTemplate="header">
+          <div class="row w-100 align-items-center">
+            <div class="col-10">
+              {{'RegisterEmail' | translate}}
+            </div>
+            <div class="col-2">
+              <label class="switch ml-5">
+                <input [(ngModel)]="userSettingObj[0].value" id="emailAsUsername" type="checkbox" checked>
+                <span class="slider round"></span>
+              </label>
+            </div>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="content">
+        </ng-template>
+      </p-accordionTab>
+      <p-accordionTab class="cursor-pointer" [(selected)]="userSettingObj[1].value">
+        <ng-template pTemplate="header">
+          <div class="row w-100 align-items-center">
+            <div class="col-10">
+              {{'WelcomeEmail' | translate}}
+            </div>
+            <div class="col-2">
+              <label class="switch ml-5">
+                <input [(ngModel)]="userSettingObj[1].value" id="welcomeEmail" type="checkbox" checked>
+                <span class="slider round"></span>
+              </label>
+            </div>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="content">
+          <h5>{{templateArr[0].code}}</h5>
+          <h6>{{'Subject' | translate}}: {{templateArr[0].subject}}</h6>
+        </ng-template>
+      </p-accordionTab>
+      <p-accordionTab class="cursor-pointer" [(selected)]="userSettingObj[2].value">
+        <ng-template pTemplate="header">
+          <div class="row w-100 align-items-center">
+            <div class="col-10">
+              {{'ConfirmationEmail' | translate}}
+            </div>
+            <div class="col-2">
+              <label class="switch ml-5">
+                <input [(ngModel)]="userSettingObj[2].value" id="confirmationEmail" type="checkbox" checked>
+                <span class="slider round"></span>
+              </label>
+            </div>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="content">
+          <h5>{{templateArr[1].code}}</h5>
+          <h6>{{'Subject' | translate}}: {{templateArr[1].subject}}</h6>
+          <hr>
+          <h5>{{templateArr[2].code}}</h5>
+          <h6>Subject: {{templateArr[2].subject}}</h6>
+        </ng-template>
+      </p-accordionTab>
+    </p-accordion>
+  </div>
+</div>
+<div *ngIf="!isView" class="main-wrapper-nodata">
+  {{'NoAccess' | translate}}
+</div>

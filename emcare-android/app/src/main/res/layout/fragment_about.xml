@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.argusoft.who.emcare.widget.ApiViewStateConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/progressLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/fragmentBackground">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/leftGuidLine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.10" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/rightGuidLine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.90" />
+
+    <include
+        android:id="@+id/headerLayout"
+        layout="@layout/layout_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/backgroundImageView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/logoImageView"
+        android:layout_width="@dimen/_200sdp"
+        android:layout_height="@dimen/_96sdp"
+        android:layout_marginTop="@dimen/_96sdp"
+        android:src="@drawable/emcare_about_logo"
+        app:layout_constraintEnd_toEndOf="@id/rightGuidLine"
+        app:layout_constraintStart_toStartOf="@id/leftGuidLine"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/logoTextConstraintView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/logoImageView"
+        app:layout_constraintStart_toStartOf="@id/leftGuidLine"
+        app:layout_constraintEnd_toEndOf="@id/rightGuidLine"
+        android:layout_marginTop="@dimen/_36sdp">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/logoStartTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="0dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:text="@string/about_app_name_start"
+            android:fontFamily="@font/poppins_light"
+            android:textColor="@color/colorAccent0"
+            android:textSize="@dimen/_24sdp"
+            />
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/logoEndTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toEndOf="@id/logoStartTextView"
+            android:layout_marginStart="@dimen/_4sdp"
+            android:text="@string/about_app_name_end"
+            android:fontFamily="@font/poppins_medium"
+            android:textColor="@color/colorAccent0"
+            android:textSize="@dimen/_24sdp"
+            />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/aboutDetailsTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/leftGuidLine"
+        app:layout_constraintEnd_toEndOf="@id/rightGuidLine"
+        app:layout_constraintTop_toBottomOf="@id/logoTextConstraintView"
+        android:text="@string/about_description"
+        android:gravity="center"
+        />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/lastSyncedConstraintView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/aboutDetailsTextView"
+        app:layout_constraintStart_toStartOf="@id/leftGuidLine"
+        app:layout_constraintEnd_toEndOf="@id/rightGuidLine"
+        android:layout_marginTop="@dimen/_96sdp">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/lastSyncedLabelTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="0dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:text="@string/label_last_sync"
+            android:fontFamily="@font/poppins_medium"
+            android:textColor="@color/colorAccent0"
+            android:textSize="@dimen/_12sdp"
+            />
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/lastSyncTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toEndOf="@id/lastSyncedLabelTextView"
+            android:layout_marginStart="@dimen/_4sdp"
+            android:text="Not Synced Yet"
+            android:fontFamily="@font/poppins_regular"
+            android:textColor="@color/colorAccent0"
+            android:textSize="@dimen/_12sdp"
+            />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/bundleVersionConstraintLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/lastSyncedConstraintView"
+        app:layout_constraintStart_toStartOf="@id/leftGuidLine"
+        app:layout_constraintEnd_toEndOf="@id/rightGuidLine"
+        android:layout_marginTop="@dimen/_12sdp">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/bundleVersionLabelTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="0dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:text="@string/label_bundle_version"
+            android:fontFamily="@font/poppins_medium"
+            android:textColor="@color/colorAccent0"
+            android:textSize="@dimen/_12sdp"
+            />
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/bundleVersionTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toEndOf="@id/bundleVersionLabelTextView"
+            android:layout_marginStart="@dimen/_4sdp"
+            android:text="Not Available"
+            android:fontFamily="@font/poppins_regular"
+            android:textColor="@color/colorAccent0"
+            android:textSize="@dimen/_12sdp"
+            />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/appVersionConstraintLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/bundleVersionConstraintLayout"
+        app:layout_constraintStart_toStartOf="@id/leftGuidLine"
+        app:layout_constraintEnd_toEndOf="@id/rightGuidLine"
+        android:layout_marginTop="@dimen/_12sdp">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/appVersionLabelTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="0dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:text="@string/label_app_version_about"
+            android:fontFamily="@font/poppins_medium"
+            android:textColor="@color/colorAccent0"
+            android:textSize="@dimen/_12sdp"
+            />
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/appVersionTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toEndOf="@id/appVersionLabelTextView"
+            android:layout_marginStart="@dimen/_4sdp"
+            android:text="@string/app_version"
+            android:fontFamily="@font/poppins_regular"
+            android:textColor="@color/colorAccent0"
+            android:textSize="@dimen/_12sdp"
+            />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</com.argusoft.who.emcare.widget.ApiViewStateConstraintLayout>

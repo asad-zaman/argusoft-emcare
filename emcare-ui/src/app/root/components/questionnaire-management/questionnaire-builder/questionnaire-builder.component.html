@@ -1,0 +1,19 @@
+<div *ngIf="isAllowed" class="main-wrapper">
+  <div class="row align-items-center mb-3">
+    <div class="col-lg-6 col-xxl-2 col-md-5 position-relative">
+      <h1 class="heading">{{'Questionnaire Builder' | translate}}</h1>
+    </div>
+    <div class="col text-end">
+      <button routerLink="/showQuestionnaires" class="btn-black btn ms-3">
+        <i class="bi bi-chevron-left" aria-hidden="true"></i> {{'Back' | translate}}
+      </button>
+    </div>
+  </div>
+  <iframe id="iframe" *ngIf="!isEdit" style="height: 720px; width: 100%;" [src]="questionnaireBuilderUrl"
+    title="Questionnaire Builder" (load)="sendAuthToken()"></iframe>
+  <iframe *ngIf="!!isEdit" id="iframe" style="height: 720px; width: 100%;" [src]="questionnaireBuilderEditUrl"
+    title="Questionnaire Builder" (load)="sendAuthToken()"></iframe>
+</div>
+<div *ngIf="!isAllowed" class="main-wrapper-nodata">
+  {{'NoAccess' | translate}}
+</div>

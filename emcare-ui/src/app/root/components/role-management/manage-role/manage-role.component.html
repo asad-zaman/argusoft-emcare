@@ -1,0 +1,55 @@
+<div *ngIf="isAllowed" class="main-wrapper">
+  <div class="form-wrapper">
+    <form [formGroup]="roleForm" name="roleForm" novalidate>
+      <div class="mb-5">
+        <h1 class="heading">
+          <ng-container *ngIf="!isEdit; else UpdateRole">
+            {{'Add Role' | translate}}
+          </ng-container>
+          <ng-template #UpdateRole>
+            {{'Update Role' | translate}}
+          </ng-template>
+          <hr>
+        </h1>
+      </div>
+      <div class="row">
+        <div class="col-12 col-sm-6">
+          <div class="mb-3">
+            <label class="form-label">{{'Role Name' | translate}}</label>
+            <input class="form-control custom-input" formControlName="name" type="text" id="name"
+              placeholder="{{'Role Name Placeholder' | translate}}"
+              [ngClass]="{ 'is-invalid': submitted && f.name.errors }">
+            <div *ngIf="submitted && f.name.errors" class="invalid-feedback">
+              <div class="cst-error-style" *ngIf="f.name.errors.required">
+                {{'Role Name Required Message' | translate}}</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-sm-6">
+          <div class="mb-3">
+            <label class="form-label">{{'Description' | translate}}</label>
+            <input class="form-control custom-input" formControlName="description" type="text" id="description"
+              placeholder="{{'Description Placeholder' | translate}}">
+          </div>
+        </div>
+      </div>
+      <div class="text-end mt-5">
+        <hr>
+        <button routerLink="/showRoles" class="btn-black btn ms-3">
+          <i class="bi bi-chevron-left" aria-hidden="true"></i> {{'Back' | translate}}
+        </button>
+        <button (click)="saveData()" class="btn-blue btn">
+          <ng-container *ngIf="!isEdit; else UpdateRole">
+            {{'Add Role' | translate}}
+          </ng-container>
+          <ng-template #UpdateRole>
+            {{'Update Role' | translate}}
+          </ng-template>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+<div *ngIf="!isAllowed" class="main-wrapper-nodata">
+  {{'NoAccess' | translate}}
+</div>

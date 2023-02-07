@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-
+import { AuthGuard } from 'src/app/auth/auth.guard';
+import { LocationService } from 'src/app/root/services/location.service';
+import { ToasterService } from 'src/app/shared';
 @Component({
   selector: 'app-location-management',
   templateUrl: './location-management.component.html',
@@ -10,15 +12,22 @@ import { ActivatedRoute, Router } from '@angular/router';
 export class LocationManagementComponent implements OnInit {
 
   locationForm: FormGroup;
-  isEdit: boolean;
+  isEdit: boolean = false;
   editId: string;
-  locationArr = [];
-  locationTypeArr = [];
+  locationArr: any;
+  locationTypeArr: any = [];
+  submitted: boolean;
+  isAddFeature: boolean = true;
+  isEditFeature: boolean = true;
+  isAllowed: boolean = true;
 
   constructor(
     private readonly formBuilder: FormBuilder,
-    private router: Router,
-    private route: ActivatedRoute
+    private readonly router: Router,
+    private readonly route: ActivatedRoute,
+    private readonly locationService: LocationService,
+    private readonly toasterService: ToasterService,
+    private readonly authGuard: AuthGuard
   ) { }
 
   ngOnInit(): void {
@@ -28,34 +37,55 @@ export class LocationManagementComponent implements OnInit {
   prerequisite() {
     this.getLocationTypes();
     this.initLocationInputForm();
-    this.setLocationArr();
     this.getAllLocations();
-    this.checkEditParam();
+  }
+
+  checkFeatures() {
+    this.authGuard.getFeatureData().subscribe(res => {
+      if (res.relatedFeature && res.relatedFeature.length > 0) {
+        this.isAddFeature = res.featureJSON['canAdd'];
+        this.isEditFeature = res.featureJSON['canEdit'];
+        if (this.isAddFeature && this.isEditFeature) {
+          this.isAllowed = true;
+        } else if (this.isAddFeature && !this.isEdit) {
+          this.isAllowed = true;
+        } else if (!this.isEditFeature && this.isEdit) {
+          this.isAllowed = false;
+        } else if (!this.isAddFeature && this.isEdit) {
+          this.isAllowed = true;
+        } else if (this.isEditFeature && this.isEdit) {
+          this.isAllowed = true;
+        } else {
+          this.isAllowed = false;
+        }
+      }
+    });
   }
 
   getLocationTypes() {
-    this.locationTypeArr = JSON.parse(localStorage.getItem('locationType'));
-  }
-
-  setLocationArr() {
-    const data = localStorage.getItem('locations');
-    if (data) {
-      this.locationArr = JSON.parse(data);
-    } else {
-      this.locationArr = [];
-    }
+    this.locationService.getAllLocationTypes().subscribe(res => {
+      if (res) {
+        this.locationTypeArr = res;
+      }
+    });
   }
 
   getAllLocations() {
-    // this.nameArr = [];
-    // this.fhirService.getAllOrganizations().subscribe(res => {
-    //   if (res && res['entry']) {
-    //     res['entry'].map(entry => {
-    //       const fullName = `${entry['resource']['name']}`;
-    //       this.nameArr.push({ name: fullName, id: entry['resource']['id'] });
-    //     }, () => { });
-    //   }
-    // });
+    this.locationArr = [];
+    this.locationService.getAllLocations().subscribe(res => {
+      if (res) {
+        this.locationArr = res;
+        this.checkEditParam();
+      }
+    });
+  }
+
+  findLocationType(type) {
+    return this.locationTypeArr.find(t => t.code === type);
+  }
+
+  findLocation(locationId) {
+    return this.locationArr.find(l => l.id === locationId);
   }
 
   checkEditParam() {
@@ -63,16 +93,18 @@ export class LocationManagementComponent implements OnInit {
     this.editId = routeParams.get('id');
     if (this.editId) {
       this.isEdit = true;
-      this.setCurrentLocation(this.editId);
-      // this.fhirService.getOrganizationDetailById(this.editId).subscribe(res => {
-      //   this.mapOrganizationData(res);
-      // });
+      this.locationService.getLocationById(this.editId).subscribe(res => {
+        if (res) {
+          const data = {
+            locationType: this.findLocationType(res['type']),
+            locationName: res['name'],
+            parent: this.findLocation(res['parent'])
+          };
+          this.locationForm.patchValue(data);
+        }
+      });
     }
-  }
-
-  setCurrentLocation(index) {
-    const data = this.locationArr[index];
-    this.locationForm.patchValue(data);
+    this.checkFeatures();
   }
 
   initLocationInputForm() {
@@ -83,17 +115,39 @@ export class LocationManagementComponent implements OnInit {
     });
   }
 
+  get f() {
+    return this.locationForm.controls;
+  }
+
   saveData() {
+    this.submitted = true;
     if (this.locationForm.valid) {
-      const obj = this.locationForm.value;
-      obj['id'] = this.locationArr.length > 0 ? this.locationArr.length : 0;
       if (this.isEdit) {
-        this.locationArr[this.editId] = obj;
+        const data = {
+          "id": this.editId,
+          "name": this.locationForm.get('locationName').value,
+          "type": this.locationForm.get('locationType').value ? this.locationForm.get('locationType').value.code : '',
+          "parent": this.locationForm.get('parent').value ? this.locationForm.get('parent').value.id : ''
+        }
+        this.locationService.updateLocationById(data).subscribe(res => {
+          if (res) {
+            this.toasterService.showToast('success', 'Location updated successfully!', 'EMCARE');
+            this.showLocation();
+          }
+        });
       } else {
-        this.locationArr.push(obj);
+        const data = {
+          "name": this.locationForm.get('locationName').value,
+          "type": this.locationForm.get('locationType').value ? this.locationForm.get('locationType').value.code : '',
+          "parent": this.locationForm.get('parent').value ? this.locationForm.get('parent').value.id : ''
+        }
+        this.locationService.createLocation(data).subscribe(res => {
+          if (res) {
+            this.toasterService.showToast('success', 'Location added successfully!', 'EMCARE');
+            this.showLocation();
+          }
+        });
       }
-      localStorage.setItem('locations', JSON.stringify(this.locationArr));
-      this.showLocation();
     }
   }
 

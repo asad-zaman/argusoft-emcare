@@ -1,49 +1,150 @@
-<div class="col-md-6 offset-md-3 mt-5">
-  <h1 class="text-center">Welcome to Em-Care</h1>
-  <div class="card">
-    <div class="card-body">
-      <form [formGroup]="signupForm" (ngSubmit)="userSignup()">
-        <div class="form-group">
-          <label for="firstname">Firstname</label>
-          <input type="text" formControlName="firstname" class="form-control"
-            [ngClass]="{ 'is-invalid': submitted && f.firstname.errors }" />
-          <div *ngIf="submitted && f.firstname.errors" class="invalid-feedback">
-            <div *ngIf="f.firstname.errors.required">Firstname is required</div>
+<div class="container-fluid">
+  <div class="row align-items-center">
+    <!--signup_left-col-->
+    <div class="col-sm-12 col-md-5 col-12 p-0">
+      <div class="signup_left-col signup_left-col-signin">
+        <div class="signup_left-col_inner">
+          <div><img src="../../../../assets/images/emcare-icon.png" alt="EMCARE"></div>
+          <div class="mt-3"> <img src="../../../../assets/images/img-01.png" class="people-img-fluid img-fluid"
+              alt="person-logo"> </div>
+          <p class="font-size-15 mt-3">The WHO Em Care application is an executable reference software, which accurately
+            represents the intentions, operational, and functional requirements of the WHO recommendations for emergency
+            settings.
+          </p>
+          <div class="mt-3"> <img src="../../../../assets/images/whologo.jpg" class="who-img-fluid" alt="person-logo">
           </div>
         </div>
-        <div class="form-group">
-          <label for="lastname">Lastname</label>
-          <input type="text" formControlName="lastname" class="form-control"
-            [ngClass]="{ 'is-invalid': submitted && f.lastname.errors }" />
-          <div *ngIf="submitted && f.lastname.errors" class="invalid-feedback">
-            <div *ngIf="f.lastname.errors.required">Lastname is required</div>
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="username">Username</label>
-          <input type="text" formControlName="username" class="form-control"
-            [ngClass]="{ 'is-invalid': submitted && f.username.errors }" />
-          <div *ngIf="submitted && f.username.errors" class="invalid-feedback">
-            <div *ngIf="f.username.errors.required">Username is required</div>
-            <div *ngIf="f.username.errors.pattern">Invalid username</div>
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="password">Password</label>
-          <input type="password" formControlName="password" class="form-control"
-            [ngClass]="{ 'is-invalid': submitted && f.password.errors }" />
-          <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
-            <div *ngIf="f.password.errors.required">Password is required</div>
-          </div>
-        </div>
-        <button (click)="userSignup()" class="btn btn-primary">
-          Signup
-        </button>
-        <button (click)="navigateToLogin()" class="btn btn-primary float-right">
-          Login
-        </button>
-        <div *ngIf="error" class="alert alert-danger mt-3 mb-0">{{error}}</div>
-      </form>
+      </div>
     </div>
+    <!--signup_left-col-END-->
+
+    <!--signup_form_wrapper-->
+    <div class="col-12 col-sm-12 col-md-7">
+      <div class="signup_form_wrapper">
+        <form [formGroup]="signupForm">
+          <div class="mt-5 mb-5 text-center">
+            <h1 class="heading">Sign Up</h1>
+          </div>
+          <div class="row">
+            <div class="col-6">
+              <div class="mb-3">
+                <label class="form-label">First Name</label>
+                <input type="text" class="form-control custom-input" formControlName="firstname"
+                  [ngClass]="{ 'is-invalid': submitted && f.firstname.errors }" />
+                <div *ngIf="submitted && f.firstname.errors" class="invalid-feedback">
+                  <div *ngIf="f.firstname.errors.required">Firstname is required</div>
+                  <div *ngIf="f.firstname.errors.pattern">Invalid First Name</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="mb-3">
+                <label class="form-label">Last Name</label>
+                <input type="text" class="form-control custom-input" formControlName="lastname"
+                  [ngClass]="{ 'is-invalid': submitted && f.lastname.errors }" />
+                <div *ngIf="submitted && f.lastname.errors" class="invalid-feedback">
+                  <div *ngIf="f.lastname.errors.required">Lastname is required</div>
+                  <div *ngIf="f.lastname.errors.pattern">Invalid Last Name</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12">
+              <div class="mb-3">
+                <label class="form-label">Email</label>
+                <input type="email" class="form-control custom-input" formControlName="username"
+                  (input)="error ? error = null : ''"
+                  [ngClass]="{ 'is-invalid': submitted && (f.username.errors || !!this.error) }" />
+                <div *ngIf="submitted && f.username.errors" class="invalid-feedback">
+                  <div *ngIf="f.username.errors.required">Username is required</div>
+                  <div *ngIf="f.username.errors.pattern">Invalid username</div>
+                </div>
+                <div *ngIf="submitted && !!error" class="invalid-feedback">
+                  <div *ngIf="!!error">This Email is Already Registered with Emcare</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row mt-3">
+            <div class="col-6">
+              <div class="mb-3">
+                <label class="form-label">Password</label>
+                <input type="password" formControlName="password" class="form-control custom-input"
+                  [ngClass]="{ 'is-invalid': submitted && f.password.errors }" />
+                <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
+                  <div *ngIf="f.password.errors.required">Password is required</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-6 ">
+              <div class="mb-3">
+                <label class="form-label">Confirm Password</label>
+                <input type="password" formControlName="confirmPassword" class="form-control custom-input"
+                  [ngClass]="{ 'is-invalid': submitted && f.confirmPassword.errors }" />
+                <div *ngIf="submitted && f.confirmPassword.errors" class="invalid-feedback">
+                  <div *ngIf="f.confirmPassword.errors.required">Confirm Password is required</div>
+                  <div *ngIf="f.confirmPassword.errors.mustMatch">Passwords must match</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12 mt-3">
+              <div class="mb-3">
+                <label class="form-label">{{'PhoneNumber' | translate}}</label>
+                <ngx-intl-tel-input [cssClass]="'custom'" [preferredCountries]="preferredCountries"
+                  [enableAutoCountrySelect]="false" [enablePlaceholder]="true" [searchCountryFlag]="true"
+                  [searchCountryField]="[SearchCountryField.Iso2, SearchCountryField.Name]" [selectFirstCountry]="false"
+                  [selectedCountryISO]="this.signupForm.get('countryCode').value" [maxLength]="15"
+                  [separateDialCode]="separateDialCode" [phoneValidation]="true"
+                  [numberFormat]="PhoneNumberFormat.National" name="phone" formControlName="phone">
+                </ngx-intl-tel-input>
+                <div *ngIf="submitted && this.signupForm.controls.phone.value == null" class="error">
+                  {{'Phone Required Message' | translate}}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row mt-3">
+            <div class="col-12 col-sm-6">
+              <div class="mb-3">
+                <label class="form-label">Facility</label>
+                <p-multiSelect
+                  [ngStyle]="{'border': submitted && this.signupForm.controls.location.value == '' ? '1px solid red' : ''}"
+                  [options]="facilityArr" placeholder="Select a facility" formControlName="location" optionLabel="name">
+                </p-multiSelect>
+                <div *ngIf="submitted && this.signupForm.controls.location.value == ''" style="color: #dc3545">
+                  <div *ngIf="f.location.errors.required">Location is required</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-sm-6">
+              <div *ngIf="roleArr.length>0" class="mb-3">
+                <label class="form-label">Role</label>
+                <p-dropdown
+                  [ngStyle]="{'border': submitted && this.signupForm.controls.role.value == '' ? '1px solid red' : ''}"
+                  [options]="roleArr" placeholder="Select a role" formControlName="role" optionLabel="name">
+                </p-dropdown>
+                <div *ngIf="submitted && this.signupForm.controls.role.value == ''" style="color: #dc3545">
+                  <div *ngIf="f.role.errors.required">Role is required</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row mt-3">
+            <div class="col-12 col-sm-6">
+              <button (click)="navigateToLogin()" class="btn btn-black p-l-70 p-r-70 mb-5 mr-5" style="width: 210px;"><i
+                  class="bi bi-chevron-left" aria-hidden="true"></i>Back</button>
+            </div>
+            <div class="col-12 col-sm-6">
+              <button (click)="userSignup()" class="btn btn-blue p-l-70 p-r-70 mb-5"
+                style="width: 210px;">Signup</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!--signup_form_wrapper-END-->
   </div>
 </div>
