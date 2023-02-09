@@ -66,8 +66,6 @@ class PatientRepository @Inject constructor(
                 )
                 operation = Operation.OR
             }
-            count = 100
-            from = 0
         }.filter {
             (it.getExtensionByUrl(LOCATION_EXTENSION_URL)?.value as? Identifier)?.value == facilityId
         }.mapIndexed { index, fhirPatient ->
