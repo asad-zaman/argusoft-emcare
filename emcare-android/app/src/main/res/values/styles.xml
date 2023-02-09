@@ -165,8 +165,9 @@
     <style name="Questionnaire.RadioButton" parent="Widget.AppCompat.CompoundButton.RadioButton">
         <item name="android:background">@drawable/questionnaire_radio_selector</item>
         <item name="android:button">@android:color/transparent</item>
-        <item name="android:padding">@dimen/_16sdp</item>
-        <item name="android:width">@dimen/_50sdp</item>
+        <item name="android:paddingHorizontal">@dimen/_16sdp</item>
+        <item name="android:paddingVertical">@dimen/_10sdp</item>
+        <item name="android:minWidth">@dimen/_120sdp</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:textAlignment">center</item>
