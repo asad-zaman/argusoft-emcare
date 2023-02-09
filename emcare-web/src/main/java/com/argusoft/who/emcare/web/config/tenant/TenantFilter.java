@@ -14,7 +14,7 @@ import java.io.IOException;
  * </p>
  *
  * @author - jaykalariya
- * @since - 06/02/23  12:23 pm
+ * @since - 08/02/23  2:05 pm
  */
 @Component
 @Order(1)
@@ -26,12 +26,13 @@ class TenantFilter implements Filter {
 
         HttpServletRequest req = (HttpServletRequest) request;
         String tenantName = req.getHeader("X-TenantID");
+        System.out.println(tenantName);
         TenantContext.setCurrentTenant(tenantName);
 
         try {
             chain.doFilter(request, response);
-        } finally {
-            TenantContext.setCurrentTenant("");
+        } catch (Exception ex){
+
         }
 
     }

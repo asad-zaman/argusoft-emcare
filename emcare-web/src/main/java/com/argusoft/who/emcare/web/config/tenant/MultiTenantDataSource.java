@@ -9,13 +9,13 @@ import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
  * </p>
  *
  * @author - jaykalariya
- * @since - 06/02/23  11:53 am
+ * @since - 08/02/23  2:03 pm
  */
-public class MultiTenantDataSource extends AbstractRoutingDataSource {
-
+public class MultitenantDataSource extends AbstractRoutingDataSource {
 
     @Override
-    protected Object determineCurrentLookupKey() {
+    protected String determineCurrentLookupKey() {
+        System.out.println(TenantContext.getCurrentTenant() + "======18");
         return TenantContext.getCurrentTenant();
     }
 }

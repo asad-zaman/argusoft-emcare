@@ -1,18 +1,16 @@
 package com.argusoft.who.emcare.web.config.tenant;
 
-import com.argusoft.who.emcare.web.tenant.entity.TenantConfig;
-import com.argusoft.who.emcare.web.tenant.repository.TenantConfigRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -22,37 +20,61 @@ import java.util.Map;
  * </p>
  *
  * @author - jaykalariya
- * @since - 06/02/23  11:56 am
+ * @since - 08/02/23  2:06 pm
  */
 @Configuration
-public class MultiTenantConfiguration {
+public class MultitenantConfiguration {
 
     @Autowired
-    TenantConfigRepository tenantConfigRepository;
+    private ApplicationContext context;
+
+
     @Value("${defaultTenant}")
     private String defaultTenant;
 
+//    public static AbstractRoutingDataSource dataSource = new MultitenantDataSource();
+
+
     @Bean
-    @ConfigurationProperties(prefix = "tenants")
+    @Primary
+//    @RefreshScope
     public DataSource dataSource() {
+        System.out.println("line number 43");
         Map<Object, Object> resolvedDataSources = new HashMap<>();
 
-        List<TenantConfig> tenantConfigs = tenantConfigRepository.findAll();
-        for (TenantConfig tenantConfig : tenantConfigs) {
-            DataSourceBuilder dataSourceBuilder = DataSourceBuilder.create();
-            String tenantId = tenantConfig.getTenantId();
-            dataSourceBuilder.driverClassName("org.postgresql.Driver");
-            dataSourceBuilder.username(tenantConfig.getUsername());
-            dataSourceBuilder.password(tenantConfig.getPassword());
-            dataSourceBuilder.url(tenantConfig.getUrl());
-            resolvedDataSources.put(tenantId, dataSourceBuilder.build());
-        }
+        DataSourceBuilder dataSourceBuilder = DataSourceBuilder.create();
+        String tenantId = defaultTenant;
+        dataSourceBuilder.driverClassName("org.postgresql.Driver");
+        dataSourceBuilder.username("postgres");
+        dataSourceBuilder.password("argusadmin");
+        dataSourceBuilder.url("jdbc:postgresql://192.1.200.197:5432/emcare");
+        resolvedDataSources.put(tenantId, dataSourceBuilder.build());
 
-        AbstractRoutingDataSource dataSource = new MultiTenantDataSource();
+//        List<TenantConfig> tenantConfigList = context.getBean(TenantConfigMaster.class).getAll();
+//
+//        for (TenantConfig tenantConfig : tenantConfigList) {
+//            DataSourceBuilder dataSourceBuilder1 = DataSourceBuilder.create();
+//            dataSourceBuilder1.driverClassName("org.postgresql.Driver");
+//            dataSourceBuilder1.username(tenantConfig.getUsername());
+//            dataSourceBuilder1.password(tenantConfig.getPassword());
+//            dataSourceBuilder1.url(tenantConfig.getUrl());
+//            resolvedDataSources.put(tenantConfig.getTenantId(), dataSourceBuilder1.build());
+//        }
+
+//        DataSourceBuilder dataSourceBuilder1 = DataSourceBuilder.create();
+//        String tenantId2 = "tenantId2";
+//        dataSourceBuilder1.driverClassName("org.postgresql.Driver");
+//        dataSourceBuilder1.username("postgres");
+//        dataSourceBuilder1.password("argusadmin");
+//        dataSourceBuilder1.url("jdbc:postgresql://192.1.200.197:5432/emcare-dev");
+//        resolvedDataSources.put(tenantId2, dataSourceBuilder1.build());
+
+        AbstractRoutingDataSource dataSource = new MultitenantDataSource();
         dataSource.setDefaultTargetDataSource(resolvedDataSources.get(defaultTenant));
         dataSource.setTargetDataSources(resolvedDataSources);
-
         dataSource.afterPropertiesSet();
         return dataSource;
     }
+
+
 }
