@@ -38,6 +38,8 @@ import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -91,6 +93,12 @@ public class UserServiceImpl implements UserService {
     @Autowired
     LocationResourceService locationResourceService;
 
+    @Autowired
+    Environment env;
+
+    @Value("${keycloak.realm}")
+    String realm;
+
     private static CredentialRepresentation createPasswordCredentials(String password) {
         CredentialRepresentation passwordCredentials = new CredentialRepresentation();
         passwordCredentials.setTemporary(false);
@@ -103,7 +111,7 @@ public class UserServiceImpl implements UserService {
     public UserMasterDto getCurrentUser() {
         AccessToken user = emCareSecurityUser.getLoggedInUser();
         Keycloak keycloak = keyCloakConfig.getInstance();
-        UserRepresentation userInfo = keycloak.realm(KeyCloakConfig.REALM).users().get(user.getSubject()).toRepresentation();
+        UserRepresentation userInfo = keycloak.realm(realm).users().get(user.getSubject()).toRepresentation();
         List<UserLocationMapping> userLocationList = userLocationMappingRepository.findByUserId(user.getSubject());
         List<UserLocationMapping> fecilitys;
         List<FacilityDto> facilityDtos = new ArrayList<>();
@@ -114,7 +122,7 @@ public class UserServiceImpl implements UserService {
                 facilityDtos.add(locationResourceService.getFacilityDto(id));
         }
         UserMasterDto masterUser = UserMapper.getMasterUser(user, facilityDtos, userInfo);
-        List<RoleRepresentation> roleRepresentationList = keycloak.realm(KeyCloakConfig.REALM).users().get(masterUser.getUserId()).roles().realmLevel().listAll();
+        List<RoleRepresentation> roleRepresentationList = keycloak.realm(realm).users().get(masterUser.getUserId()).roles().realmLevel().listAll();
         List<String> roleIds = new ArrayList<>();
         for (RoleRepresentation role : roleRepresentationList) {
             roleIds.add(role.getId());
@@ -128,9 +136,9 @@ public class UserServiceImpl implements UserService {
     public List<UserListDto> getAllUser(HttpServletRequest request) {
         List<UserListDto> userList = new ArrayList<>();
         Keycloak keycloak = keyCloakConfig.getInstance();
-        List<UserRepresentation> userRepresentations = keycloak.realm(KeyCloakConfig.REALM).users().list();
+        List<UserRepresentation> userRepresentations = keycloak.realm(realm).users().list();
         for (UserRepresentation representation : userRepresentations) {
-            List<RoleRepresentation> roleRepresentationList = keycloak.realm(KeyCloakConfig.REALM).users().get(representation.getId()).roles().realmLevel().listAll();
+            List<RoleRepresentation> roleRepresentationList = keycloak.realm(realm).users().get(representation.getId()).roles().realmLevel().listAll();
             List<String> roles = new ArrayList<>();
             for (RoleRepresentation roleRepresentation : roleRepresentationList) {
                 roles.add(roleRepresentation.getName());
@@ -148,9 +156,9 @@ public class UserServiceImpl implements UserService {
     public List<MultiLocationUserListDto> getAllUserWithMultiLocation(HttpServletRequest request) {
         List<MultiLocationUserListDto> userList = new ArrayList<>();
         Keycloak keycloak = keyCloakConfig.getInstance();
-        List<UserRepresentation> userRepresentations = keycloak.realm(KeyCloakConfig.REALM).users().list();
+        List<UserRepresentation> userRepresentations = keycloak.realm(realm).users().list();
         for (UserRepresentation representation : userRepresentations) {
-            List<RoleRepresentation> roleRepresentationList = keycloak.realm(KeyCloakConfig.REALM).users().get(representation.getId()).roles().realmLevel().listAll();
+            List<RoleRepresentation> roleRepresentationList = keycloak.realm(realm).users().get(representation.getId()).roles().realmLevel().listAll();
             List<String> roles = new ArrayList<>();
             for (RoleRepresentation roleRepresentation : roleRepresentationList) {
                 roles.add(roleRepresentation.getName());
@@ -182,13 +190,13 @@ public class UserServiceImpl implements UserService {
         Integer endIndex = (pageNo + 1) * pageSize;
         List<MultiLocationUserListDto> userList = new ArrayList<>();
         Keycloak keycloak = keyCloakConfig.getInstance();
-        Integer userTotalCount = keycloak.realm(KeyCloakConfig.REALM).users().list().size();
+        Integer userTotalCount = keycloak.realm(realm).users().list().size();
         if (endIndex > userTotalCount) {
             endIndex = userTotalCount;
         }
         List<UserRepresentation> userRepresentations;
         if (searchString != null && !searchString.isEmpty()) {
-            userRepresentations = keycloak.realm(KeyCloakConfig.REALM).users().search(searchString, 0, 1000);
+            userRepresentations = keycloak.realm(realm).users().search(searchString, 0, 1000);
             Collections.sort(userRepresentations, (rp1, rp2) -> rp2.getCreatedTimestamp().compareTo(rp1.getCreatedTimestamp()));
             if (userRepresentations.size() <= endIndex) {
                 endIndex = userRepresentations.size();
@@ -201,13 +209,13 @@ public class UserServiceImpl implements UserService {
                 userRepresentations = userRepresentations.subList(startIndex, endIndex);
             }
         } else {
-            List<UserRepresentation> representations = keycloak.realm(KeyCloakConfig.REALM).users().list();
+            List<UserRepresentation> representations = keycloak.realm(realm).users().list();
             Collections.sort(representations, (rp1, rp2) -> rp2.getCreatedTimestamp().compareTo(rp1.getCreatedTimestamp()));
             userRepresentations = representations.subList(startIndex, endIndex);
         }
 
         for (UserRepresentation representation : userRepresentations) {
-            List<RoleRepresentation> roleRepresentationList = keycloak.realm(KeyCloakConfig.REALM).users().get(representation.getId()).roles().realmLevel().listAll();
+            List<RoleRepresentation> roleRepresentationList = keycloak.realm(realm).users().get(representation.getId()).roles().realmLevel().listAll();
             List<String> roles = new ArrayList<>();
             for (RoleRepresentation roleRepresentation : roleRepresentationList) {
                 roles.add(roleRepresentation.getName());
@@ -252,28 +260,28 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<RoleRepresentation> getAllRoles(HttpServletRequest request) {
         Keycloak keycloakInstance = keyCloakConfig.getInstanceByAuth();
-        return keycloakInstance.realm(KeyCloakConfig.REALM).roles().list();
+        return keycloakInstance.realm(realm).roles().list();
     }
 
     @Override
     public RoleRepresentation getRoleByName(String roleId, HttpServletRequest request) {
         Keycloak keycloakInstance = keyCloakConfig.getInstanceByAuth();
-        return keycloakInstance.realm(KeyCloakConfig.REALM).rolesById().getRole(roleId);
+        return keycloakInstance.realm(realm).rolesById().getRole(roleId);
     }
 
     @Override
     public RolesResource getAllRolesForSignUp(HttpServletRequest request) {
-        return getKeyCloakInstance().realm(KeyCloakConfig.REALM).roles();
+        return keyCloakConfig.getKeyCloakInstance().realm(realm).roles();
     }
 
     @Override
     public ResponseEntity<Object> signUp(UserDto user) {
-        Keycloak keycloakInstance = getKeyCloakInstance();
+        Keycloak keycloakInstance = keyCloakConfig.getKeyCloakInstance();
 
 //        Get Realm Resource
-        RealmResource realmResource = keycloakInstance.realm(KeyCloakConfig.REALM);
+        RealmResource realmResource = keycloakInstance.realm(realm);
 //        Get User Resource
-        UsersResource usersResource = keycloakInstance.realm(KeyCloakConfig.REALM).users();
+        UsersResource usersResource = keycloakInstance.realm(realm).users();
 //        Generate Password
         CredentialRepresentation credentialRepresentation = createPasswordCredentials(user.getPassword());
 
@@ -337,9 +345,9 @@ public class UserServiceImpl implements UserService {
     public ResponseEntity<Object> addUser(UserDto user) {
         Keycloak keycloak = keyCloakConfig.getInstance();
 //        Get Realm Resource
-        RealmResource realmResource = keycloak.realm(KeyCloakConfig.REALM);
+        RealmResource realmResource = keycloak.realm(realm);
 //        Get User Resource
-        UsersResource usersResource = keycloak.realm(KeyCloakConfig.REALM).users();
+        UsersResource usersResource = keycloak.realm(realm).users();
 
         CredentialRepresentation credentialRepresentation = createPasswordCredentials(user.getPassword());
 //        Create User Representation
@@ -403,19 +411,19 @@ public class UserServiceImpl implements UserService {
         RoleRepresentation roleRep = new RoleRepresentation();
         roleRep.setName(role.getRoleName());
         roleRep.setDescription(role.getRoleDescription());
-        keycloak.realm(KeyCloakConfig.REALM).roles().create(roleRep);
-        RoleResource roleResource = keycloak.realm(KeyCloakConfig.REALM).roles().get(role.getRoleName());
+        keycloak.realm(realm).roles().create(roleRep);
+        RoleResource roleResource = keycloak.realm(realm).roles().get(role.getRoleName());
 //      ADD COMPOSITE ROLE
-        RoleRepresentation defaultRoleRepresentation = keycloak.realm(KeyCloakConfig.REALM).roles().get("default-roles-emcare").toRepresentation();
+        RoleRepresentation defaultRoleRepresentation = keycloak.realm(realm).roles().get("default-roles-emcare").toRepresentation();
         List<RoleRepresentation> compositeRoles = new ArrayList<>();
         compositeRoles.add(defaultRoleRepresentation);
         roleResource.addComposites(compositeRoles);
 
 //      ADD ALL MENU CONFIG FOR NEWLY ADDED ROLE
-        RoleRepresentation roleRepresentation = keycloak.realm(KeyCloakConfig.REALM).roles().get(role.getRoleName()).toRepresentation();
+        RoleRepresentation roleRepresentation = keycloak.realm(realm).roles().get(role.getRoleName()).toRepresentation();
         List<MenuConfig> menuList = menuConfigRepository.findAll();
         List<UserMenuConfig> userMenuConfigs = userMenuConfigRepository.findAll();
-        List<RoleRepresentation> roleRepresentationList = keycloak.realm(KeyCloakConfig.REALM).roles().list();
+        List<RoleRepresentation> roleRepresentationList = keycloak.realm(realm).roles().list();
         if (userMenuConfigs.isEmpty()) {
             for (MenuConfig menu : menuList) {
                 for (RoleRepresentation roleReps : roleRepresentationList) {
@@ -439,7 +447,7 @@ public class UserServiceImpl implements UserService {
     public ResponseEntity<Object> updateUserStatus(UserUpdateDto userUpdateDto) {
         Keycloak keycloak = keyCloakConfig.getInstanceByAuth();
 //        Get User Resource
-        UsersResource usersResource = keycloak.realm(KeyCloakConfig.REALM).users();
+        UsersResource usersResource = keycloak.realm(realm).users();
         UserRepresentation user = usersResource.get(userUpdateDto.getUserId()).toRepresentation();
         user.setEnabled(userUpdateDto.getIsEnabled());
         usersResource.get(userUpdateDto.getUserId()).update(user);
@@ -481,7 +489,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseEntity<Object> getUserRolesById(String userId) {
         Keycloak keycloak = keyCloakConfig.getInstanceByAuth();
-        RoleMappingResource userRoles = keycloak.realm(KeyCloakConfig.REALM).users().get(userId).roles();
+        RoleMappingResource userRoles = keycloak.realm(realm).users().get(userId).roles();
         return ResponseEntity.ok(userRoles.getAll());
     }
 
@@ -491,7 +499,7 @@ public class UserServiceImpl implements UserService {
         RoleRepresentation roleRep = new RoleRepresentation();
         roleRep.setName(roleUpdateDto.getName());
         roleRep.setDescription(roleUpdateDto.getDescription());
-        RoleResource roleResource = keycloak.realm(KeyCloakConfig.REALM).roles().get(roleUpdateDto.getOldRoleName());
+        RoleResource roleResource = keycloak.realm(realm).roles().get(roleUpdateDto.getOldRoleName());
         roleResource.update(roleRep);
         return ResponseEntity.ok(roleUpdateDto);
     }
@@ -499,7 +507,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public String getRoleIdByName(String roleName) {
         Keycloak keycloak = keyCloakConfig.getInstanceByAuth();
-        RoleResource roleResource = keycloak.realm(KeyCloakConfig.REALM).roles().get(roleName);
+        RoleResource roleResource = keycloak.realm(realm).roles().get(roleName);
         return roleResource.toRepresentation().getId();
     }
 
@@ -507,7 +515,7 @@ public class UserServiceImpl implements UserService {
     public String getRoleNameById(String roleId) {
         String roleName = "";
         Keycloak keycloak = keyCloakConfig.getInstanceByAuth();
-        RoleRepresentation roleResource = keycloak.realm(KeyCloakConfig.REALM).roles().list().stream().filter(role -> roleId.equals(role.getId())).findAny().orElse(null);
+        RoleRepresentation roleResource = keycloak.realm(realm).roles().list().stream().filter(role -> roleId.equals(role.getId())).findAny().orElse(null);
         if (roleResource != null) {
             roleName = roleResource.getName();
         }
@@ -528,7 +536,7 @@ public class UserServiceImpl implements UserService {
             userRepresentations.add(getUserById(userId));
         }
         for (UserRepresentation representation : userRepresentations) {
-            List<RoleRepresentation> roleRepresentationList = keycloak.realm(KeyCloakConfig.REALM).users().get(representation.getId()).roles().realmLevel().listAll();
+            List<RoleRepresentation> roleRepresentationList = keycloak.realm(realm).users().get(representation.getId()).roles().realmLevel().listAll();
             List<String> roles = new ArrayList<>();
             for (RoleRepresentation roleRepresentation : roleRepresentationList) {
                 roles.add(roleRepresentation.getName());
@@ -561,7 +569,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserRepresentation getUserByEmailId(String emailId) {
         Keycloak keycloak = keyCloakConfig.getInsideInstance();
-        UsersResource usersResource = keycloak.realm(KeyCloakConfig.REALM).users();
+        UsersResource usersResource = keycloak.realm(realm).users();
         List<UserRepresentation> userRepresentation = usersResource.search(emailId);
         if (!userRepresentation.isEmpty()) {
             return userRepresentation.get(0);
@@ -574,9 +582,9 @@ public class UserServiceImpl implements UserService {
     public UserRepresentation resetPassword(String emailId, String password) {
         Keycloak keycloak = keyCloakConfig.getInsideInstance();
         UserRepresentation userRepresentation = null;
-        UsersResource usersResource = keycloak.realm(KeyCloakConfig.REALM).users();
+        UsersResource usersResource = keycloak.realm(realm).users();
 
-        List<UserRepresentation> userRepresentations = keycloak.realm(KeyCloakConfig.REALM).users().search(emailId);
+        List<UserRepresentation> userRepresentations = keycloak.realm(realm).users().search(emailId);
         if (!userRepresentations.isEmpty()) {
             userRepresentation = userRepresentations.get(0);
             CredentialRepresentation credentialRepresentation = createPasswordCredentials(password);
@@ -591,8 +599,8 @@ public class UserServiceImpl implements UserService {
     public MultiLocationUserListDto getUserDtoById(String userId) {
         Keycloak keycloak = keyCloakConfig.getInstanceByAuth();
         MultiLocationUserListDto user;
-        UserRepresentation userRepresentation = keycloak.realm(KeyCloakConfig.REALM).users().get(userId).toRepresentation();
-        List<RoleRepresentation> roleRepresentationList = keycloak.realm(KeyCloakConfig.REALM).users().get(userRepresentation.getId()).roles().realmLevel().listAll();
+        UserRepresentation userRepresentation = keycloak.realm(realm).users().get(userId).toRepresentation();
+        List<RoleRepresentation> roleRepresentationList = keycloak.realm(realm).users().get(userRepresentation.getId()).roles().realmLevel().listAll();
         List<String> roles = new ArrayList<>();
         for (RoleRepresentation roleRepresentation : roleRepresentationList) {
             roles.add(roleRepresentation.getName());
@@ -619,14 +627,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserRepresentation getUserById(String userId) {
         Keycloak keycloak = keyCloakConfig.getInstance();
-        return keycloak.realm(KeyCloakConfig.REALM).users().get(userId).toRepresentation();
+        return keycloak.realm(realm).users().get(userId).toRepresentation();
     }
 
     @Override
     public ResponseEntity<Object> updateUser(UserDto userDto, String userId) {
         Keycloak keycloak = keyCloakConfig.getInstance();
-        RealmResource realmResource = keycloak.realm(KeyCloakConfig.REALM);
-        UserResource userResource = keycloak.realm(KeyCloakConfig.REALM).users().get(userId);
+        RealmResource realmResource = keycloak.realm(realm);
+        UserResource userResource = keycloak.realm(realm).users().get(userId);
         UserRepresentation newUser = userResource.toRepresentation();
 
         newUser.setFirstName(userDto.getFirstName());
@@ -673,7 +681,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseEntity<Object> updatePassword(UserDto userDto, String userId) {
         Keycloak keycloak = keyCloakConfig.getInstance();
-        UserResource userResource = keycloak.realm(KeyCloakConfig.REALM).users().get(userId);
+        UserResource userResource = keycloak.realm(realm).users().get(userId);
         UserRepresentation newUser = userResource.toRepresentation();
 
         if (userDto.getPassword() != null) {
@@ -746,8 +754,8 @@ public class UserServiceImpl implements UserService {
     private UserListDto getUserDtoByIdAndLocation(String userId, String facilityId) {
         Keycloak keycloak = keyCloakConfig.getInstanceByAuth();
         UserListDto user;
-        UserRepresentation userRepresentation = keycloak.realm(KeyCloakConfig.REALM).users().get(userId).toRepresentation();
-        List<RoleRepresentation> roleRepresentationList = keycloak.realm(KeyCloakConfig.REALM).users().get(userRepresentation.getId()).roles().realmLevel().listAll();
+        UserRepresentation userRepresentation = keycloak.realm(realm).users().get(userId).toRepresentation();
+        List<RoleRepresentation> roleRepresentationList = keycloak.realm(realm).users().get(userRepresentation.getId()).roles().realmLevel().listAll();
         List<String> roles = new ArrayList<>();
         for (RoleRepresentation roleRepresentation : roleRepresentationList) {
             roles.add(roleRepresentation.getName());

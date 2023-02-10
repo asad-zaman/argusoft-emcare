@@ -2,11 +2,13 @@ package com.argusoft.who.emcare.web.exception;
 
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
  * @author jay
  */
 @Data
-public class EmCareExceptionResponseEntity {
+public class EmCareExceptionResponseEntity implements Serializable {
 
     private String message;
     private Object data;

@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Objects;
 
 @Entity
 @Table(name = "questionnaire_response")
@@ -115,5 +116,19 @@ public class QuestionnaireResponse extends EntityAuditInfo implements Serializab
 
     public void setConsultationDate(Date consultationDate) {
         this.consultationDate = consultationDate;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof QuestionnaireResponse)) return false;
+        if (!super.equals(o)) return false;
+        QuestionnaireResponse that = (QuestionnaireResponse) o;
+        return isActive == that.isActive && Objects.equals(getId(), that.getId()) && Objects.equals(getQuestionnaireResponseText(), that.getQuestionnaireResponseText()) && Objects.equals(getPatientId(), that.getPatientId()) && Objects.equals(getConsultationStage(), that.getConsultationStage()) && Objects.equals(getEncounterId(), that.getEncounterId()) && Objects.equals(getStructureMapId(), that.getStructureMapId()) && Objects.equals(getQuestionnaireId(), that.getQuestionnaireId()) && Objects.equals(getConsultationDate(), that.getConsultationDate());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), getId(), getQuestionnaireResponseText(), getPatientId(), getConsultationStage(), isActive, getEncounterId(), getStructureMapId(), getQuestionnaireId(), getConsultationDate());
     }
 }
