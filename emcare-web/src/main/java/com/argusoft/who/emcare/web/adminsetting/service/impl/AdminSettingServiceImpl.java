@@ -1,7 +1,7 @@
 package com.argusoft.who.emcare.web.adminsetting.service.impl;
 
-import com.argusoft.who.emcare.web.adminsetting.entity.Settings;
 import com.argusoft.who.emcare.web.adminsetting.dto.SettingDto;
+import com.argusoft.who.emcare.web.adminsetting.entity.Settings;
 import com.argusoft.who.emcare.web.adminsetting.repository.AdminSettingRepository;
 import com.argusoft.who.emcare.web.adminsetting.service.AdminSettingService;
 import com.argusoft.who.emcare.web.common.constant.CommonConstant;
@@ -14,6 +14,7 @@ import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.representations.idm.RealmRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
@@ -35,7 +36,8 @@ public class AdminSettingServiceImpl implements AdminSettingService {
 
     @Autowired
     MailRepository mailRepository;
-
+    @Value("${keycloak.realm}")
+    String realm;
     @Autowired
     private Environment env;
 
@@ -83,8 +85,8 @@ public class AdminSettingServiceImpl implements AdminSettingService {
 
     private void updateRegistrationEmailAsUsername(String status) {
         try {
-            Keycloak keycloak = userService.getKeyCloakInstance();
-            RealmResource realmResource = keycloak.realm(KeyCloakConfig.REALM);
+            Keycloak keycloak = keyCloakConfig.getKeyCloakInstance();
+            RealmResource realmResource = keycloak.realm(realm);
             RealmRepresentation realmRepresentation = new RealmRepresentation();
             realmRepresentation.setRegistrationEmailAsUsername(false);
             if (CommonConstant.ACTIVE.equals(status)) {
