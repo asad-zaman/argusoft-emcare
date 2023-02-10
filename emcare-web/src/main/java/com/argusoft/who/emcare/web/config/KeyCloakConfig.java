@@ -1,12 +1,12 @@
 package com.argusoft.who.emcare.web.config;
 
-import com.argusoft.who.emcare.web.user.dto.AccessTokenForUser;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.keycloak.KeycloakSecurityContext;
 import org.keycloak.OAuth2Constants;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -16,6 +16,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 /**
  * @author jay
@@ -23,30 +24,60 @@ import javax.servlet.http.HttpServletRequest;
 @Component
 public class KeyCloakConfig {
 
+    @Value("${keycloak.auth-server-url}")
+    public String serverURL;
+    @Value("${keycloak.credentials.secret}")
+    public String clientSecret;
+    @Value("${config.keycloak.clientId}")
+    public String clientId;
+    @Value("${config.keycloak.username}")
+    public String username;
+    @Value("${config.keycloak.password}")
+    public String password;
+    @Value("${config.keycloak.masterUserId}")
+    public String masterUserId;
+    @Value("${config.keycloak.masterUserPassword}")
+    public String masterUserPassword;
+    @Value("${keycloak.realm}")
+    public String realm;
     @Autowired
     HttpServletRequest request;
 
+
     Keycloak keycloak = null;
-    public static final String SERVER_URL = "https://emcare.argusoft.com/auth";
-    public static final String CLIENT_SECRET = "b5a37bde-8d54-4837-a8dc-12e1f808e26e";
-    public static final String CLIENT_ID = "emcare";
-    public static final String REALM = "emcare";
-    public static final String USER_NAME = "emcare_admin";
-    public static final String PASSWORD = "argusadmin";
-    public static final String MASTER_USER_ID = "emcare@gmail.com";
-    public static final String MASTER_USER_PASSWORD = "argusadmin";
+
+    public String getAccessToken() {
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.add("username", masterUserId);
+        map.add("password", masterUserPassword);
+        map.add("grant_type", "password");
+        map.add("client_id", clientId);
+        map.add("client_secret", clientSecret);
+        HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(map, headers);
+        String url = serverURL + "/realms/" + realm + "/protocol/openid-connect/token";
+        String token = null;
+        Map<String, Object> accessToken = restTemplate.postForObject(url, entity, Map.class);
+        if (accessToken != null) {
+            token = accessToken.get("access_token").toString();
+        }
+        return token;
+    }
 
     public Keycloak getInstance() {
         KeycloakSecurityContext context = (KeycloakSecurityContext) request.getAttribute(KeycloakSecurityContext.class.getName());
         keycloak = KeycloakBuilder.builder()
-                .serverUrl(KeyCloakConfig.SERVER_URL)
-                .realm(KeyCloakConfig.REALM)
+                .serverUrl(serverURL)
+                .realm(realm)
                 .grantType(OAuth2Constants.PASSWORD)
-                .username(KeyCloakConfig.USER_NAME)
-                .password(KeyCloakConfig.PASSWORD)
-                .clientId(KeyCloakConfig.CLIENT_ID)
+                .username(username)
+                .password(password)
+                .clientId(clientId)
                 .authorization(context.getTokenString())
-                .clientSecret(KeyCloakConfig.CLIENT_SECRET)
+                .clientSecret(clientSecret)
                 .resteasyClient(new ResteasyClientBuilder().connectionPoolSize(10).build())
                 .build();
         return keycloak;
@@ -55,41 +86,34 @@ public class KeyCloakConfig {
     public Keycloak getInstanceByAuth() {
         KeycloakSecurityContext context = (KeycloakSecurityContext) request.getAttribute(KeycloakSecurityContext.class.getName());
         return KeycloakBuilder.builder()
-                .serverUrl(SERVER_URL)
-                .realm(REALM)
+                .serverUrl(serverURL)
+                .realm(realm)
                 .authorization(context.getTokenString())
                 .resteasyClient(new ResteasyClientBuilder().connectionPoolSize(20).build())
                 .build();
     }
 
-    public static String getAccessToken() {
-        RestTemplate restTemplate = new RestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-
-        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-        map.add("username", MASTER_USER_ID);
-        map.add("password", MASTER_USER_PASSWORD);
-        map.add("grant_type", "password");
-        map.add("client_id", CLIENT_ID);
-        map.add("client_secret", CLIENT_SECRET);
-        HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(map, headers);
-        String url = SERVER_URL + "/realms/" + REALM + "/protocol/openid-connect/token";
-        String token = null;
-        AccessTokenForUser accessToken = restTemplate.postForObject(url, entity, AccessTokenForUser.class);
-        if (accessToken != null) {
-            token = accessToken.getAccess_token();
-        }
-        return token;
-    }
-
     public Keycloak getInsideInstance() {
         String token = getAccessToken();
         return KeycloakBuilder.builder()
-                .serverUrl(SERVER_URL)
-                .realm(REALM)
+                .serverUrl(serverURL)
+                .realm(realm)
                 .authorization(token)
                 .resteasyClient(new ResteasyClientBuilder().connectionPoolSize(20).build())
+                .build();
+    }
+
+    public Keycloak getKeyCloakInstance() {
+        return KeycloakBuilder.builder()
+                .serverUrl(serverURL)
+                .realm(realm)
+                .grantType(OAuth2Constants.PASSWORD)
+                .username(username)
+                .password(password)
+                .clientId(clientId)
+                .authorization(getAccessToken())
+                .clientSecret(clientSecret)
+                .resteasyClient(new ResteasyClientBuilder().connectionPoolSize(10).build())
                 .build();
     }
 }
