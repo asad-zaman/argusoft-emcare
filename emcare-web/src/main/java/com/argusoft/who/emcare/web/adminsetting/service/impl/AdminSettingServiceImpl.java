@@ -41,9 +41,6 @@ public class AdminSettingServiceImpl implements AdminSettingService {
     @Autowired
     private Environment env;
 
-    @Autowired
-    private Environment env;
-
     @Override
     public List<Settings> getAdminSetting() {
         return adminSettingRepository.findAllWithOrderById();
