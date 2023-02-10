@@ -59,6 +59,15 @@ public class CommonConstant {
     public static final String FHIR_TYPE_BOOLEAN_KEY = "BOOLEAN";
     public static final String FHIR_TYPE_BOOLEAN_VALUE = "valueBoolean";
     public static final String ALL_CODE = "All";
+
+    public static final String IBM_ACCESS_KEY = "ibm.access-key";
+    public static final String IBM_VERSION_DATE = "2018-05-01";
+    public static final String IBM_ACCESS_URL = "ibm.access-url";
+    public static final String FHIR_SERVLET = "FhirServlet";
+    public static final String FHIR_SERVLET_URL_MAPPING = "/fhir/*";
+
+    public static final String KEYCLOAK_REALM="keycloak.realm";
+
     private CommonConstant() {
     }
 }

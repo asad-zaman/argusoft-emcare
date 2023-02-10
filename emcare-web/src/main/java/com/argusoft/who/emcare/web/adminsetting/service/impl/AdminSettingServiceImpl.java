@@ -1,9 +1,9 @@
-package com.argusoft.who.emcare.web.admin_setting.service.impl;
+package com.argusoft.who.emcare.web.adminsetting.service.impl;
 
-import com.argusoft.who.emcare.web.admin_setting.entity.Settings;
-import com.argusoft.who.emcare.web.admin_setting.dto.SettingDto;
-import com.argusoft.who.emcare.web.admin_setting.repository.AdminSettingRepository;
-import com.argusoft.who.emcare.web.admin_setting.service.AdminSettingService;
+import com.argusoft.who.emcare.web.adminsetting.entity.Settings;
+import com.argusoft.who.emcare.web.adminsetting.dto.SettingDto;
+import com.argusoft.who.emcare.web.adminsetting.repository.AdminSettingRepository;
+import com.argusoft.who.emcare.web.adminsetting.service.AdminSettingService;
 import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.config.KeyCloakConfig;
 import com.argusoft.who.emcare.web.exception.EmCareException;
@@ -14,6 +14,7 @@ import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.representations.idm.RealmRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -34,6 +35,9 @@ public class AdminSettingServiceImpl implements AdminSettingService {
 
     @Autowired
     MailRepository mailRepository;
+
+    @Autowired
+    private Environment env;
 
     @Override
     public List<Settings> getAdminSetting() {

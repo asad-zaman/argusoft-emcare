@@ -1,24 +1,10 @@
-package com.argusoft.who.emcare.web.admin_setting.entity;
+package com.argusoft.who.emcare.web.adminsetting.dto;
 
-import javax.persistence.*;
-import java.io.Serializable;
+public class SettingDto {
 
-@Entity
-@Table(name = "settings")
-public class Settings implements Serializable {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id", nullable = false)
     private Long id;
-
-    @Column(name = "name", nullable = false)
     private String name;
-
-    @Column(name = "key", nullable = false)
     private String key;
-
-    @Column(name = "value", nullable = false)
     private String value;
 
     public Long getId() {

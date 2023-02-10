@@ -1,5 +1,6 @@
 package com.argusoft.who.emcare.web.config;
 
+import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.fhir.FhirServlet;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -16,8 +17,8 @@ public class ServletBeanConfig {
     @Bean
     public ServletRegistrationBean<FhirServlet> servletRegistrationBean() {
         ServletRegistrationBean<FhirServlet> registration =
-                new ServletRegistrationBean<>(fhirServletBean(), "/fhir/*");
-        registration.setName("FhirServlet");
+                new ServletRegistrationBean<>(fhirServletBean(), CommonConstant.FHIR_SERVLET_URL_MAPPING);
+        registration.setName(CommonConstant.FHIR_SERVLET);
         return registration;
     }
 }

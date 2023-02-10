@@ -1,4 +1,4 @@
-package com.argusoft.who.emcare.web.questionnaire_response.model;
+package com.argusoft.who.emcare.web.questionnaireresponse.model;
 
 import com.argusoft.who.emcare.web.common.model.EntityAuditInfo;
 
