@@ -1,4 +1,4 @@
-package com.argusoft.who.emcare.web.questionnaire_response.service.impl;
+package com.argusoft.who.emcare.web.questionnaireresponse.service.impl;
 
 import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.common.dto.PageDto;
@@ -11,12 +11,12 @@ import com.argusoft.who.emcare.web.fhir.model.EmcareResource;
 import com.argusoft.who.emcare.web.fhir.model.EncounterResource;
 import com.argusoft.who.emcare.web.fhir.service.EmcareResourceService;
 import com.argusoft.who.emcare.web.location.dao.LocationMasterDao;
-import com.argusoft.who.emcare.web.questionnaire_response.dto.MiniPatient;
-import com.argusoft.who.emcare.web.questionnaire_response.dto.QuestionnaireResponseRequestDto;
-import com.argusoft.who.emcare.web.questionnaire_response.mapper.QuestionnaireResponseMapper;
-import com.argusoft.who.emcare.web.questionnaire_response.model.QuestionnaireResponse;
-import com.argusoft.who.emcare.web.questionnaire_response.respository.QuestionnaireResponseRepository;
-import com.argusoft.who.emcare.web.questionnaire_response.service.QuestionnaireResponseService;
+import com.argusoft.who.emcare.web.questionnaireresponse.dto.MiniPatient;
+import com.argusoft.who.emcare.web.questionnaireresponse.dto.QuestionnaireResponseRequestDto;
+import com.argusoft.who.emcare.web.questionnaireresponse.mapper.QuestionnaireResponseMapper;
+import com.argusoft.who.emcare.web.questionnaireresponse.model.QuestionnaireResponse;
+import com.argusoft.who.emcare.web.questionnaireresponse.respository.QuestionnaireResponseRepository;
+import com.argusoft.who.emcare.web.questionnaireresponse.service.QuestionnaireResponseService;
 import com.argusoft.who.emcare.web.user.dto.UserMasterDto;
 import com.argusoft.who.emcare.web.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;

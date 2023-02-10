@@ -1,8 +1,8 @@
-package com.argusoft.who.emcare.web.questionnaire_response.controller;
+package com.argusoft.who.emcare.web.questionnaireresponse.controller;
 
-import com.argusoft.who.emcare.web.questionnaire_response.dto.QuestionnaireResponseRequestDto;
-import com.argusoft.who.emcare.web.questionnaire_response.model.QuestionnaireResponse;
-import com.argusoft.who.emcare.web.questionnaire_response.service.QuestionnaireResponseService;
+import com.argusoft.who.emcare.web.questionnaireresponse.dto.QuestionnaireResponseRequestDto;
+import com.argusoft.who.emcare.web.questionnaireresponse.model.QuestionnaireResponse;
+import com.argusoft.who.emcare.web.questionnaireresponse.service.QuestionnaireResponseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

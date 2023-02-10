@@ -1,8 +1,8 @@
-package com.argusoft.who.emcare.web.questionnaire_response.service;
+package com.argusoft.who.emcare.web.questionnaireresponse.service;
 
 import com.argusoft.who.emcare.web.common.dto.PageDto;
-import com.argusoft.who.emcare.web.questionnaire_response.dto.QuestionnaireResponseRequestDto;
-import com.argusoft.who.emcare.web.questionnaire_response.model.QuestionnaireResponse;
+import com.argusoft.who.emcare.web.questionnaireresponse.dto.QuestionnaireResponseRequestDto;
+import com.argusoft.who.emcare.web.questionnaireresponse.model.QuestionnaireResponse;
 
 import java.util.List;
 import java.util.Map;

@@ -1,4 +1,4 @@
-package com.argusoft.who.emcare.web.questionnaire_response.dto;
+package com.argusoft.who.emcare.web.questionnaireresponse.dto;
 
 public interface MiniPatient {
 

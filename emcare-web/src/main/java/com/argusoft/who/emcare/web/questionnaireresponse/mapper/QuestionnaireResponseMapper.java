@@ -1,7 +1,7 @@
-package com.argusoft.who.emcare.web.questionnaire_response.mapper;
+package com.argusoft.who.emcare.web.questionnaireresponse.mapper;
 
-import com.argusoft.who.emcare.web.questionnaire_response.dto.QuestionnaireResponseRequestDto;
-import com.argusoft.who.emcare.web.questionnaire_response.model.QuestionnaireResponse;
+import com.argusoft.who.emcare.web.questionnaireresponse.dto.QuestionnaireResponseRequestDto;
+import com.argusoft.who.emcare.web.questionnaireresponse.model.QuestionnaireResponse;
 
 public class QuestionnaireResponseMapper {
 
