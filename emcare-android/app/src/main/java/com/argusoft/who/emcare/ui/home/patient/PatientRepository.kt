@@ -20,7 +20,6 @@ import com.google.android.fhir.delete
 import com.google.android.fhir.get
 import com.google.android.fhir.logicalId
 import com.google.android.fhir.search.Operation
-import com.google.android.fhir.search.Order
 import com.google.android.fhir.search.StringFilterModifier
 import com.google.android.fhir.search.search
 import kotlinx.coroutines.flow.flow
@@ -140,13 +139,24 @@ class PatientRepository @Inject constructor(
                 } else {
                     val nextConsultationStage = consultationFlowStageList[consultationStageIndex + 1]
 
+                    val patient = fhirEngine.get<Patient>(patientId)
+                    var questionnaireId = stageToQuestionnaireId[nextConsultationStage]
+                    var structureMapId = stageToStructureMapId[nextConsultationStage]
+                    if(patient.hasBirthDate()) {
+                        val isAgeUnderTwoMonths = patient.birthDate.toInstant().isAfter(Instant.now().minusSeconds(3600*24*60))
+                        if(isAgeUnderTwoMonths) {
+                            questionnaireId = stageToQuestionnaireIdUnderTwoMonths[nextConsultationStage]
+                            structureMapId = stageToStructureMapIdUnderTwoMonths[nextConsultationStage]
+                        }
+                    }
+
                     //create nextConsultationItem
                     val nextConsultationFlowItem = ConsultationFlowItem(
                         consultationStage = nextConsultationStage,
                         patientId = patientId,
                         encounterId = encounterId,
-                        questionnaireId = stageToQuestionnaireId[nextConsultationStage],
-                        structureMapId = stageToStructureMapId[nextConsultationStage],
+                        questionnaireId = questionnaireId,
+                        structureMapId = structureMapId,
                         questionnaireResponseText = "",
                         isActive = true,
                         consultationDate = ZonedDateTime.now(ZoneId.of("UTC")).toString().removeSuffix(Z_UTC),
@@ -171,12 +181,23 @@ class PatientRepository @Inject constructor(
         val patientId = questionnaireResponse.subject.identifier.value
         val encounterId = questionnaireResponse.encounter.id
         val parser = FhirContext.forCached(FhirVersionEnum.R4).newJsonParser()
+
+        val patient = fhirEngine.get<Patient>(patientId)
+        var questionnaireId = stageToQuestionnaireId[consultationStage]
+        var structureMapId = stageToStructureMapId[consultationStage]
+        if(patient.hasBirthDate()) {
+            val isAgeUnderTwoMonths = patient.birthDate.toInstant().isAfter(Instant.now().minusSeconds(3600*24*60))
+            if(isAgeUnderTwoMonths) {
+                questionnaireId = stageToQuestionnaireIdUnderTwoMonths[consultationStage]
+                structureMapId = stageToStructureMapIdUnderTwoMonths[consultationStage]
+            }
+        }
         consultationFlowRepository.saveConsultation(ConsultationFlowItem(
             consultationStage = consultationStage,
             patientId = patientId,
             encounterId = encounterId,
-            questionnaireId = stageToQuestionnaireId[consultationStage],
-            structureMapId = stageToStructureMapId[consultationStage],
+            questionnaireId = questionnaireId,
+            structureMapId = structureMapId,
             questionnaireResponseText = parser.encodeResourceToString(questionnaireResponse),
             isActive = true,
             consultationDate = ZonedDateTime.now(ZoneId.of("UTC")).toString().removeSuffix(Z_UTC),

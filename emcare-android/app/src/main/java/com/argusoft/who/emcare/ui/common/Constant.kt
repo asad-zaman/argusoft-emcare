@@ -113,3 +113,27 @@ val stageToStructureMapId = mapOf(
     CONSULTATION_STAGE_CLASSIFICATIONS to "emcare.b23.classification",
     CONSULTATION_STAGE_TREATMENTS to "emcare.treatment",
     )
+
+val stageToQuestionnaireIdUnderTwoMonths = mapOf(
+    CONSULTATION_STAGE_REGISTRATION_PATIENT to "emcarea.registration.p",
+    CONSULTATION_STAGE_REGISTRATION_ENCOUNTER to "emcareb.registration.e",
+    CONSULTATION_STAGE_DANGER_SIGNS to "emcare.b7.lti-dangersigns",
+    CONSULTATION_STAGE_MEASUREMENTS to "emcare.b6.measurements",
+    CONSULTATION_STAGE_SYMPTOMS to "emcare.b18-21.symptoms.2m.m",
+    CONSULTATION_STAGE_SIGNS to "emcare.b18-21.signs.2m.m",
+    CONSULTATION_STAGE_ASSESSMENTS to "emcare.b22.assessmentstests",
+    CONSULTATION_STAGE_CLASSIFICATIONS to "emcare.b23.classification.m",
+    CONSULTATION_STAGE_TREATMENTS to "emcare.treatment",
+)
+
+val stageToStructureMapIdUnderTwoMonths = mapOf(
+    CONSULTATION_STAGE_REGISTRATION_PATIENT to "emcarea.registration.p",
+    CONSULTATION_STAGE_REGISTRATION_ENCOUNTER to "emcareb.registration.e",
+    CONSULTATION_STAGE_DANGER_SIGNS to "emcare.b7.lti-dangersigns",
+    CONSULTATION_STAGE_MEASUREMENTS to "emcare.b6.measurements",
+    CONSULTATION_STAGE_SYMPTOMS to "emcare.b18-21.symptoms.2m.m",
+    CONSULTATION_STAGE_SIGNS to "emcare.b18-21.signs.2m.m",
+    CONSULTATION_STAGE_ASSESSMENTS to "emcare.b22.assessmentstests",
+    CONSULTATION_STAGE_CLASSIFICATIONS to "emcare.b23.classification.2m",
+    CONSULTATION_STAGE_TREATMENTS to "emcare.treatment",
+)
