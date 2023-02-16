@@ -156,6 +156,8 @@ class PatientRepository @Inject constructor(
                             emit(ApiResponse.Success(null))
                         }
                     } else {
+                        val nextConsultationStage = consultationFlowStageList[consultationStageIndex + 1]
+
                         val patient = fhirEngine.get<Patient>(patientId)
                         var questionnaireId = stageToQuestionnaireId[nextConsultationStage]
                         var structureMapId = stageToStructureMapId[nextConsultationStage]
