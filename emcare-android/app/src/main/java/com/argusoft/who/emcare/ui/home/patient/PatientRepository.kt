@@ -137,32 +137,50 @@ class PatientRepository @Inject constructor(
                         emit(ApiResponse.Success(null))
                     }
                 } else {
-                    val nextConsultationStage = consultationFlowStageList[consultationStageIndex + 1]
+                    var exitConsultation = false
 
-                    val patient = fhirEngine.get<Patient>(patientId)
-                    var questionnaireId = stageToQuestionnaireId[nextConsultationStage]
-                    var structureMapId = stageToStructureMapId[nextConsultationStage]
-                    if(patient.hasBirthDate()) {
-                        val isAgeUnderTwoMonths = patient.birthDate.toInstant().isAfter(Instant.now().minusSeconds(3600*24*60))
-                        if(isAgeUnderTwoMonths) {
-                            questionnaireId = stageToQuestionnaireIdUnderTwoMonths[nextConsultationStage]
-                            structureMapId = stageToStructureMapIdUnderTwoMonths[nextConsultationStage]
+                    if(consultationStage.equals(CONSULTATION_STAGE_DANGER_SIGNS)) {
+                        if(questionnaireResponse.hasItem()){
+                            questionnaireResponse.item.forEach { item ->
+                                if(item.linkId.equals(ASSESS_SICK_CHILD_LINK_ID) && item.hasAnswer()
+                                    && item.answerFirstRep.valueCoding.code.equals(END_CONSULTATION_CODING_VALUE)) {
+                                    exitConsultation = true
+
+                                }
+                            }
                         }
                     }
 
-                    //create nextConsultationItem
-                    val nextConsultationFlowItem = ConsultationFlowItem(
-                        consultationStage = nextConsultationStage,
-                        patientId = patientId,
-                        encounterId = encounterId,
-                        questionnaireId = questionnaireId,
-                        structureMapId = structureMapId,
-                        questionnaireResponseText = "",
-                        isActive = true,
-                        consultationDate = ZonedDateTime.now(ZoneId.of("UTC")).toString().removeSuffix(Z_UTC),
-                    )
-                    consultationFlowRepository.saveConsultation(nextConsultationFlowItem).collect{
-                        emit(it)
+                    if(exitConsultation) {
+                        consultationFlowRepository.updateConsultationFlowInactiveByEncounterId(encounterId).collect {
+                            emit(ApiResponse.Success(null))
+                        }
+                    } else {
+                        val patient = fhirEngine.get<Patient>(patientId)
+                        var questionnaireId = stageToQuestionnaireId[nextConsultationStage]
+                        var structureMapId = stageToStructureMapId[nextConsultationStage]
+                        if(patient.hasBirthDate()) {
+                            val isAgeUnderTwoMonths = patient.birthDate.toInstant().isAfter(Instant.now().minusSeconds(3600*24*60))
+                            if(isAgeUnderTwoMonths) {
+                                questionnaireId = stageToQuestionnaireIdUnderTwoMonths[nextConsultationStage]
+                                structureMapId = stageToStructureMapIdUnderTwoMonths[nextConsultationStage]
+                            }
+                        }
+
+                        //create nextConsultationItem
+                        val nextConsultationFlowItem = ConsultationFlowItem(
+                            consultationStage = nextConsultationStage,
+                            patientId = patientId,
+                            encounterId = encounterId,
+                            questionnaireId = questionnaireId,
+                            structureMapId = structureMapId,
+                            questionnaireResponseText = "",
+                            isActive = true,
+                            consultationDate = ZonedDateTime.now(ZoneId.of("UTC")).toString().removeSuffix(Z_UTC),
+                        )
+                        consultationFlowRepository.saveConsultation(nextConsultationFlowItem).collect{
+                            emit(it)
+                        }
                     }
                 }
             }
