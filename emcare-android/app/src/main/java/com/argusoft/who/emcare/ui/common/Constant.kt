@@ -21,7 +21,9 @@ const val INTENT_EXTRA_QUESTIONNAIRE_HEADER = "INTENT_EXTRA_QUESTIONNAIRE_HEADER
 const val INTENT_EXTRA_IS_DELETE_NEXT_CONSULTATIONS = "INTENT_EXTRA_IS_DELETE_NEXT_CONSULTATIONS"
 const val MY_UPDATE_REQUEST_CODE = 50
 const val DATE_FORMAT = "dd/MM/YY"
-
+const val APP_THEME_COMPACT = -1
+const val APP_THEME_COMFORTABLE = 0
+const val APP_THEME_ENLARGED = 2
 //URLS
 const val URL_CQF_LIBRARY = "http://hl7.org/fhir/StructureDefinition/cqf-library"
 const val URL_INITIAL_EXPRESSION = "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression"

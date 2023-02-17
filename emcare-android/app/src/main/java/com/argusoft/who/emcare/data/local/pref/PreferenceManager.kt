@@ -20,6 +20,7 @@ class PreferenceManager(private val sharedPreferences: EncPref) : Preference {
         private const val LOGGED_IN_USER = "LOGGED_IN_USER"
         private const val EMCARE_LAST_SYNC_TIME_STAMP = "EMCARE_LAST_SYNC_TIME_STAMP"
         private const val SUBMITTED_RESOURCE = "SUBMITTED_RESOURCE"
+        private const val THEME = "THEME"
     }
 
     val parser = FhirContext.forCached(FhirVersionEnum.R4).newJsonParser()
@@ -92,6 +93,14 @@ class PreferenceManager(private val sharedPreferences: EncPref) : Preference {
 
     override fun setSubmittedResource(bundle: Bundle) {
         sharedPreferences.putString(SUBMITTED_RESOURCE, parser.encodeResourceToString(bundle))
+    }
+
+    override fun setTheme(theme: Int) {
+        sharedPreferences.putInt(THEME, theme)
+    }
+
+    override fun getTheme(): Int {
+        return sharedPreferences.getInt(THEME, 0)
     }
 
     override fun clear() {
