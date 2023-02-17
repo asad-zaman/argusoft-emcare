@@ -317,6 +317,7 @@ class HomeViewModel @Inject constructor(
     private suspend fun preProcessQuestionnaire(questionnaire: Questionnaire, patientId: String, encounterId: String, isPreviouslySavedConsultation: Boolean) : Questionnaire? {
         var ansQuestionnaire: Questionnaire? = injectUuid(questionnaire)
         if(questionnaire.hasExtension(URL_CQF_LIBRARY) && !isPreviouslySavedConsultation){
+            loadLibraries()
             ansQuestionnaire = injectInitialExpressionCqlValues(questionnaire, patientId, encounterId)
         }
         return ansQuestionnaire

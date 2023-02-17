@@ -66,8 +66,6 @@ class PatientRepository @Inject constructor(
                 )
                 operation = Operation.OR
             }
-            count = 100
-            from = 0
         }.filter {
             (it.getExtensionByUrl(LOCATION_EXTENSION_URL)?.value as? Identifier)?.value == facilityId
         }.mapIndexed { index, fhirPatient ->
@@ -115,8 +113,6 @@ class PatientRepository @Inject constructor(
                 StructureMapExtractionContext(context = application.applicationContext) { _, _ -> structureMap
                 }
             )
-            preference.setSubmittedResource(Bundle().setEntry(mutableListOf(Bundle.BundleEntryComponent()
-                .setResource(questionnaireResponse))))
             saveResourcesFromBundle(extractedBundle, patientId, encounterId, facilityId, consultationFlowItemId)
             //update QuestionnarieResponse in currentConsultation and createNext Consultation
             if(consultationFlowItemId != null) {
@@ -142,21 +138,40 @@ class PatientRepository @Inject constructor(
                         emit(ApiResponse.Success(null))
                     }
                 } else {
-                    val nextConsultationStage = consultationFlowStageList[consultationStageIndex + 1]
+                    var exitConsultation = false
 
-                    //create nextConsultationItem
-                    val nextConsultationFlowItem = ConsultationFlowItem(
-                        consultationStage = nextConsultationStage,
-                        patientId = patientId,
-                        encounterId = encounterId,
-                        questionnaireId = stageToQuestionnaireId[nextConsultationStage],
-                        structureMapId = stageToStructureMapId[nextConsultationStage],
-                        questionnaireResponseText = "",
-                        isActive = true,
-                        consultationDate = ZonedDateTime.now(ZoneId.of("UTC")).toString().removeSuffix(Z_UTC),
-                    )
-                    consultationFlowRepository.saveConsultation(nextConsultationFlowItem).collect{
-                        emit(it)
+                    if(consultationStage.equals(CONSULTATION_STAGE_DANGER_SIGNS)) {
+                        if(questionnaireResponse.hasItem()){
+                            questionnaireResponse.item.forEach { item ->
+                                if(item.linkId.equals(ASSESS_SICK_CHILD_LINK_ID) && item.hasAnswer()
+                                    && item.answerFirstRep.valueCoding.code.equals(END_CONSULTATION_CODING_VALUE)) {
+                                    exitConsultation = true
+
+                                }
+                            }
+                        }
+                    }
+                    if(exitConsultation) {
+                        consultationFlowRepository.updateConsultationFlowInactiveByEncounterId(encounterId).collect {
+                            emit(ApiResponse.Success(null))
+                        }
+                    } else {
+                        val nextConsultationStage = consultationFlowStageList[consultationStageIndex + 1]
+
+                        //create nextConsultationItem
+                        val nextConsultationFlowItem = ConsultationFlowItem(
+                            consultationStage = nextConsultationStage,
+                            patientId = patientId,
+                            encounterId = encounterId,
+                            questionnaireId = stageToQuestionnaireId[nextConsultationStage],
+                            structureMapId = stageToStructureMapId[nextConsultationStage],
+                            questionnaireResponseText = "",
+                            isActive = true,
+                            consultationDate = ZonedDateTime.now(ZoneId.of("UTC")).toString().removeSuffix(Z_UTC),
+                        )
+                        consultationFlowRepository.saveConsultation(nextConsultationFlowItem).collect{
+                            emit(it)
+                        }
                     }
                 }
             }
