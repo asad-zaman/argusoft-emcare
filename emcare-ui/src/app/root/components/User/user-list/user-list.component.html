@@ -127,9 +127,9 @@
                 <div class="mb-3">
                   <label class="form-label">{{'Password' | translate}}</label>
                   <input type="password" formControlName="password" class="form-control custom-input"
-                    [ngClass]="{ 'is-invalid': submitted && f.password.errors }" />
-                  <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
-                    <div *ngIf="f.password.errors.required">
+                    [ngClass]="{ 'is-invalid': submitted && getFormConfrols.password.errors }" />
+                  <div *ngIf="submitted && getFormConfrols.password.errors" class="invalid-feedback">
+                    <div *ngIf="getFormConfrols.password.errors.required">
                       {{'Password Required Message' | translate}}</div>
                   </div>
                 </div>
@@ -140,12 +140,12 @@
                 <div class="mb-3">
                   <label class="form-label">{{'ConfirmPassword' | translate}}</label>
                   <input type="password" formControlName="confirmPassword" class="form-control custom-input"
-                    [ngClass]="{ 'is-invalid': submitted && f.confirmPassword.errors }" />
-                  <div *ngIf="submitted && f.confirmPassword.errors" class="invalid-feedback">
-                    <div *ngIf="f.confirmPassword.errors.required">
+                    [ngClass]="{ 'is-invalid': submitted && getFormConfrols.confirmPassword.errors }" />
+                  <div *ngIf="submitted && getFormConfrols.confirmPassword.errors" class="invalid-feedback">
+                    <div *ngIf="getFormConfrols.confirmPassword.errors.required">
                       {{'Confirm Password Required Message' | translate}}
                     </div>
-                    <div *ngIf="f.confirmPassword.errors.mustMatch">
+                    <div *ngIf="getFormConfrols.confirmPassword.errors.mustMatch">
                       {{'Passwords Match Message' | translate}}
                     </div>
                   </div>

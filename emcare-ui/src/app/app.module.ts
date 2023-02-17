@@ -9,7 +9,6 @@ import {
   LocationManagementComponent,
   LocationTypeComponent,
   LocationService,
-  DeviceManagementComponent,
   DeviceManagementService,
   UserListComponent,
   ManageUserComponent,
@@ -38,7 +37,12 @@ import {
   ViewConsultationComponent,
   ManageCodeComponent,
   CodeListComponent,
-  IndicatorComponent
+  IndicatorComponent,
+  IndicatorListComponent,
+  ForgotPasswordComponent,
+  AdminPanelComponent,
+  ManageOrganizationComponent,
+  OrganizationListComponent
 } from './root/index';
 import { AuthenticationService, ToasterService } from './shared';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -55,19 +59,13 @@ import { ShowFacilityComponent } from './root/components/Facility/show-facility/
 import { CheckboxModule } from 'primeng/checkbox';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { TooltipModule } from 'primeng/tooltip';
-import { ForgotPasswordComponent } from './root/components/forgot-password/forgot-password.component';
-import { AdminPanelComponent } from './root/components/admin-panel/admin-panel.component';
 import { AccordionModule } from 'primeng/accordion';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { ChartModule } from 'angular-highcharts';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
-import { ManageOrganizationComponent } from './root/components/manage-organization/manage-organization.component';
-import { OrganizationListComponent } from './root/components/organization-list/organization-list.component';
 import { NgxIntlTelInputModule } from 'ngx-intl-tel-input';
-import { IndicatorListComponent } from './root/components/indicator-list/indicator-list.component';
-
 @NgModule({
   declarations: [
     AppComponent,
@@ -78,7 +76,6 @@ import { IndicatorListComponent } from './root/components/indicator-list/indicat
     LocationManagementComponent,
     ShowLocationTypeComponent,
     ShowLocationComponent,
-    DeviceManagementComponent,
     DeviceListComponent,
     UserListComponent,
     ManageUserComponent,

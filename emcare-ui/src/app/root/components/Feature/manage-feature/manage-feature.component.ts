@@ -7,6 +7,8 @@ import { RoleManagementService } from 'src/app/root/services/role-management.ser
 import { UserManagementService } from 'src/app/root/services/user-management.service';
 import { ToasterService } from 'src/app/shared';
 import { AuthenticationService } from 'src/app/shared/services/authentication.service';
+import { appConstants } from 'src/app/app.config';
+
 @Component({
   selector: 'app-manage-feature',
   templateUrl: './manage-feature.component.html',
@@ -114,7 +116,7 @@ export class ManageFeatureComponent implements OnInit {
       "featureJson": this.featureConfigList[index]['featureJson'],
       "menuId": this.featureConfigList[index]['menuId']
     }
-    this.featureService.updateFeatureConfig(data).subscribe(() => { 
+    this.featureService.updateFeatureConfig(data).subscribe(() => {
       this.toasterService.showToast('success', 'Feature changes have been saved!', 'EMCARE');
       /*  on change of anu particular feature api should be called again and features should
         be set again so that we can manage features properly  */
@@ -172,7 +174,7 @@ export class ManageFeatureComponent implements OnInit {
     this.authenticationService.getLoggedInUser().subscribe(res => {
       if (res) {
         const featureObj = { feature: res['feature'] };
-        localStorage.setItem('userFeatures', JSON.stringify(featureObj));
+        localStorage.setItem(appConstants.localStorageKeys.userFeatures, JSON.stringify(featureObj));
         this.authenticationService.setFeatures(res['feature']);
       }
     });

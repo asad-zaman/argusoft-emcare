@@ -7,6 +7,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { UserProvider } from './contexts/UserContext';
 import './helpers/i18n';
+
 //import { debugContextDevtool } from 'react-context-devtool';
 
 const container = document.getElementById('root');
@@ -16,7 +17,7 @@ window.addEventListener('message', (data) => {
     accessToken = data.data.accessToken;
     questionnaireBody = data.data.questionnaireBody;
     if (accessToken != null) {
-        localStorage.setItem('access_token', accessToken);
+        localStorage.setItem(, accessToken);
     }
     if (questionnaireBody != null) {
         localStorage.setItem('questionnaire_body', questionnaireBody);

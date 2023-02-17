@@ -16,9 +16,9 @@
             <label class="form-label">{{'Code Name' | translate}}</label>
             <input class="form-control custom-input" formControlName="codeName" type="text" id="codeName"
               placeholder="{{'Code Name Placeholder' | translate}}"
-              [ngClass]="{ 'is-invalid': submitted && f.codeName.errors }">
-            <div *ngIf="submitted && f.codeName.errors" class="invalid-feedback">
-              <div class="cst-error-style" *ngIf="f.codeName.errors.required">
+              [ngClass]="{ 'is-invalid': submitted && getFormConfrols.codeName.errors }">
+            <div *ngIf="submitted && getFormConfrols.codeName.errors" class="invalid-feedback">
+              <div class="cst-error-style" *ngIf="getFormConfrols.codeName.errors.required">
                 {{'Code Name Required Message' | translate}}</div>
             </div>
           </div>
@@ -28,9 +28,9 @@
             <label class="form-label">{{'Indicator Name' | translate}}</label>
             <input class="form-control custom-input" formControlName="indicatorName" type="text" id="indicatorName"
               placeholder="{{'Indicator Name Placeholder' | translate}}"
-              [ngClass]="{ 'is-invalid': submitted && f.indicatorName.errors }">
-            <div *ngIf="submitted && f.indicatorName.errors" class="invalid-feedback">
-              <div class="cst-error-style" *ngIf="f.indicatorName.errors.required">
+              [ngClass]="{ 'is-invalid': submitted && getFormConfrols.indicatorName.errors }">
+            <div *ngIf="submitted && getFormConfrols.indicatorName.errors" class="invalid-feedback">
+              <div class="cst-error-style" *ngIf="getFormConfrols.indicatorName.errors.required">
                 {{'Indicator Name Required Message' | translate}}</div>
             </div>
           </div>
@@ -40,9 +40,9 @@
             <label class="form-label">{{'Indicator Description' | translate}}</label>
             <input class="form-control custom-input" formControlName="indicatorDescription" type="text"
               id="indicatorDescription" placeholder="{{'Indicator Description Placeholder' | translate}}"
-              [ngClass]="{ 'is-invalid': submitted && f.indicatorDescription.errors }">
-            <div *ngIf="submitted && f.indicatorDescription.errors" class="invalid-feedback">
-              <div class="cst-error-style" *ngIf="f.indicatorDescription.errors.required">
+              [ngClass]="{ 'is-invalid': submitted && getFormConfrols.indicatorDescription.errors }">
+            <div *ngIf="submitted && getFormConfrols.indicatorDescription.errors" class="invalid-feedback">
+              <div class="cst-error-style" *ngIf="getFormConfrols.indicatorDescription.errors.required">
                 {{'Indicator Description Required Message' | translate}}</div>
             </div>
           </div>

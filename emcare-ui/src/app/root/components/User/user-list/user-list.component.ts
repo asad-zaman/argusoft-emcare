@@ -167,7 +167,7 @@ export class UserListComponent implements OnInit {
     });
   }
 
-  get f() {
+  get getFormConfrols() {
     return this.resetPasswordForm.controls;
   }
 
