@@ -32,7 +32,7 @@ import java.text.SimpleDateFormat
 class PatientQuestionnaireFragment : BaseFragment<FragmentPatientQuestionnaireBinding>() {
 
     private val homeViewModel: HomeViewModel by viewModels()
-    private val questionnaireFragment = QuestionnaireFragment()
+    private var questionnaireFragment = QuestionnaireFragment()
     private var consultationFlowId: String? = null
 
     override fun initView() {
@@ -128,12 +128,11 @@ class PatientQuestionnaireFragment : BaseFragment<FragmentPatientQuestionnaireBi
     private fun addQuestionnaireFragment(pair: Pair<String, String>) {
         homeViewModel.questionnaireJson = pair.first
         homeViewModel.questionnaireJson?.let {
-            questionnaireFragment.arguments =
-                bundleOf(
-                    QuestionnaireFragment.EXTRA_QUESTIONNAIRE_JSON_STRING to pair.first,
-                    QuestionnaireFragment.EXTRA_QUESTIONNAIRE_RESPONSE_JSON_STRING to pair.second,
-                    QuestionnaireFragment.EXTRA_ENABLE_REVIEW_PAGE to true
-                )
+            questionnaireFragment = QuestionnaireFragment.builder()
+                .setQuestionnaire(pair.first)
+                .setQuestionnaireResponse(pair.second)
+                .showReviewPageBeforeSubmit(true)
+                .build()
             childFragmentManager.commit {
                 add(
                     R.id.fragmentContainerView,
@@ -151,7 +150,7 @@ class PatientQuestionnaireFragment : BaseFragment<FragmentPatientQuestionnaireBi
             val submittedResources = preference.getSubmittedResourceAsString()
             if(submittedResources != null) {
                 val clipboard =
-                    context!!.getSystemService(Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
+                    requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
                 val clip = ClipData.newPlainText("Extracted Resource", preference.getSubmittedResourceAsString())
                 clipboard.setPrimaryClip(clip)
                 context?.showSnackBar(
