@@ -20,4 +20,8 @@ public class TenantContext {
     public static void setCurrentTenant(String tenant) {
         CURRENT_TENANT.set(tenant);
     }
+
+    public static void clearTenant() {
+        CURRENT_TENANT.remove();
+    }
 }

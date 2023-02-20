@@ -6,6 +6,7 @@ import com.argusoft.who.emcare.web.adminsetting.service.AdminSettingService;
 import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.common.dto.PageDto;
 import com.argusoft.who.emcare.web.common.response.Response;
+import com.argusoft.who.emcare.web.common.service.CommonService;
 import com.argusoft.who.emcare.web.config.KeyCloakConfig;
 import com.argusoft.who.emcare.web.fhir.dto.FacilityDto;
 import com.argusoft.who.emcare.web.fhir.service.LocationResourceService;
@@ -30,6 +31,7 @@ import com.argusoft.who.emcare.web.user.service.UserService;
 import com.argusoft.who.emcare.web.userlocationmapping.dao.UserLocationMappingRepository;
 import com.argusoft.who.emcare.web.userlocationmapping.model.UserLocationMapping;
 import com.google.gson.Gson;
+import org.keycloak.TokenVerifier;
 import org.keycloak.admin.client.CreatedResponseUtil;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.resource.*;
@@ -40,10 +42,12 @@ import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
@@ -94,10 +98,22 @@ public class UserServiceImpl implements UserService {
     LocationResourceService locationResourceService;
 
     @Autowired
+    CommonService commonService;
+
+    @Autowired
     Environment env;
 
     @Value("${keycloak.realm}")
     String realm;
+
+    @Value("${config.keycloak.clientId}")
+    String clientId;
+
+    @Value("${config.keycloak.clientSecret}")
+    String clientSecret;
+
+    @Value("${config.keycloak.login-server-url}")
+    String keycloakLoginURL;
 
     private static CredentialRepresentation createPasswordCredentials(String password) {
         CredentialRepresentation passwordCredentials = new CredentialRepresentation();
@@ -339,6 +355,42 @@ public class UserServiceImpl implements UserService {
         });
 
         return ResponseEntity.ok(new Response(CommonConstant.REGISTER_SUCCESS, HttpStatus.OK.value()));
+    }
+
+    @Override
+    public ResponseEntity<Object> userLogin(LoginRequestDto loginCred, HttpServletRequest request) {
+
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.add(CommonConstant.USERNAME, loginCred.getUsername());
+        map.add(CommonConstant.PASSWORD, loginCred.getPassword());
+        map.add(CommonConstant.GRANT_TYPE, CommonConstant.PASSWORD);
+        map.add(CommonConstant.CLIENT_ID, clientId);
+        map.add(CommonConstant.CLIENT_SECRET, clientSecret);
+        HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(map, headers);
+        ResponseEntity data = restTemplate.exchange(keycloakLoginURL, HttpMethod.POST, entity, Map.class);
+        if (!data.getStatusCode().equals(HttpStatus.OK)) {
+            return data;
+        } else {
+            String domain = commonService.getDomainFormUrl(request.getRequestURL().toString(), request.getRequestURI());
+            Map<String, Object> loginResponse = (Map<String, Object>) data.getBody();
+            try {
+                AccessToken accessToken = TokenVerifier.create(loginResponse.get(CommonConstant.ACCESS_TOKEN).toString(), AccessToken.class).getToken();
+                String userId = accessToken.getSubject();
+                List<UserLocationMapping> userLocationMappings = userLocationMappingRepository.findByUserId(userId);
+                if (userLocationMappings.size() > 0) {
+                    return data;
+                } else {
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response("You don't have access for this domain", HttpStatus.BAD_REQUEST.value()));
+                }
+            } catch (Exception ex) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response("You don't have access for this domain", HttpStatus.BAD_REQUEST.value()));
+            }
+        }
+
     }
 
     @Override

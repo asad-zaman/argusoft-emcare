@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Nullable;
 import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 /**
  * @author jay
@@ -39,7 +40,7 @@ public class UserController {
     @GetMapping("/user/page")
     public ResponseEntity<Object> getUserPage(HttpServletRequest request,
                                               @RequestParam(value = "pageNo") Integer pageNo,
-                                              @Nullable @RequestParam(value = "search",required = false) String searchString) {
+                                              @Nullable @RequestParam(value = "search", required = false) String searchString) {
         return ResponseEntity.ok(userService.getUserPage(request, pageNo, searchString));
     }
 
@@ -66,6 +67,11 @@ public class UserController {
     @PostMapping("/signup")
     public ResponseEntity<Object> addUser(@RequestBody UserDto user) {
         return userService.signUp(user);
+    }
+
+    @PostMapping("/auth/login")
+    public ResponseEntity<Object> userLogin(@RequestBody LoginRequestDto loginCred, HttpServletRequest request) {
+        return userService.userLogin(loginCred, request);
     }
 
     @PostMapping("/user/add")

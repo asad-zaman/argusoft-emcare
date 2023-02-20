@@ -37,6 +37,9 @@ public class TenantConfig extends EntityAuditInfo implements Serializable {
     @Column(name = "tenant_id", nullable = false)
     private String tenantId;
 
+    @Column(name = "domain", nullable = false)
+    private String domain;
+
     public Integer getId() {
         return id;
     }
@@ -75,5 +78,13 @@ public class TenantConfig extends EntityAuditInfo implements Serializable {
 
     public void setTenantId(String tenantId) {
         this.tenantId = tenantId;
+    }
+
+    public String getDomain() {
+        return domain;
+    }
+
+    public void setDomain(String domain) {
+        this.domain = domain;
     }
 }

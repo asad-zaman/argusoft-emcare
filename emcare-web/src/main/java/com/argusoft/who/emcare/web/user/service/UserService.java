@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author jay
@@ -32,6 +33,8 @@ public interface UserService {
     public RolesResource getAllRolesForSignUp(HttpServletRequest request);
 
     public ResponseEntity<Object> signUp(UserDto user);
+
+    public ResponseEntity<Object> userLogin(LoginRequestDto loginCred, HttpServletRequest request);
 
     public ResponseEntity<Object> addUser(UserDto user);
 

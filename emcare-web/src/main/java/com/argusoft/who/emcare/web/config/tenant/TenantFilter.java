@@ -1,11 +1,19 @@
 package com.argusoft.who.emcare.web.config.tenant;
 
+import com.argusoft.who.emcare.web.common.service.CommonService;
+import com.argusoft.who.emcare.web.tenant.entity.TenantConfig;
+import com.argusoft.who.emcare.web.tenant.repository.TenantConfigRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * <h1> Add heading here </h1>
@@ -20,19 +28,40 @@ import java.io.IOException;
 @Order(1)
 class TenantFilter implements Filter {
 
+    @Autowired
+    CommonService commonService;
+
+    @Autowired
+    TenantConfigRepository tenantConfigRepository;
+
+    @Value("${defaultTenant}")
+    private String defaultTenant;
+
+    @Value("${defaultTenantDomain}")
+    private String defaultTenantDomain;
+
+    private Map<String, String> TENANT_ID_MAP = new HashMap<>();
+
     @Override
     public void doFilter(ServletRequest request, ServletResponse response,
                          FilterChain chain) throws IOException, ServletException {
-
         HttpServletRequest req = (HttpServletRequest) request;
-        String tenantName = req.getHeader("X-TenantID");
-        System.out.println(tenantName);
-        TenantContext.setCurrentTenant(tenantName);
-
+        if (TENANT_ID_MAP.isEmpty()) {
+            TENANT_ID_MAP.put(defaultTenantDomain, defaultTenant);
+            List<TenantConfig> tenantConfigList = tenantConfigRepository.findAll();
+            for (TenantConfig tenantConfig : tenantConfigList) {
+                TENANT_ID_MAP.put(tenantConfig.getDomain(), tenantConfig.getTenantId());
+            }
+        }
+        String domain = commonService.getDomainFormUrl(req.getRequestURL().toString(), req.getRequestURI());
+        String tenantId = TENANT_ID_MAP.get(domain.trim());
+        TenantContext.setCurrentTenant(tenantId);
         try {
             chain.doFilter(request, response);
-        } catch (Exception ex){
+        } catch (Exception ex) {
 
+        } finally {
+            TenantContext.clearTenant();
         }
 
     }
