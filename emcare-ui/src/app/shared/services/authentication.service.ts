@@ -59,7 +59,7 @@ export class AuthenticationService {
     }
 
     login(username: string, password: string) {
-        const url = `https://emcare.argusoft.com/auth/realms/emcare/protocol/openid-connect/token`;
+        const url = `http://localhost:8080/api/auth/login`;
         // const url = `${this.backendURL}/auth/realms/emcare/protocol/openid-connect/token`;
         const body = new HttpParams()
             .set('username', username)
