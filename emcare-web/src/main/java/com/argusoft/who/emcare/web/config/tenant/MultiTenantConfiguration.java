@@ -1,5 +1,6 @@
 package com.argusoft.who.emcare.web.config.tenant;
 
+import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.jdbc.DataSourceBuilder;
@@ -32,42 +33,27 @@ public class MultitenantConfiguration {
     @Value("${defaultTenant}")
     private String defaultTenant;
 
-//    public static AbstractRoutingDataSource dataSource = new MultitenantDataSource();
+    @Value("${spring.datasource.username}")
+    private String username;
 
+    @Value("${spring.datasource.password}")
+    private String databasePassword;
+
+    @Value("${spring.datasource.url}")
+    private String databaseUrl;
 
     @Bean
     @Primary
-//    @RefreshScope
     public DataSource dataSource() {
-        System.out.println("line number 43");
         Map<Object, Object> resolvedDataSources = new HashMap<>();
 
         DataSourceBuilder dataSourceBuilder = DataSourceBuilder.create();
         String tenantId = defaultTenant;
-        dataSourceBuilder.driverClassName("org.postgresql.Driver");
-        dataSourceBuilder.username("postgres");
-        dataSourceBuilder.password("argusadmin");
-        dataSourceBuilder.url("jdbc:postgresql://192.1.200.197:5432/emcare");
+        dataSourceBuilder.driverClassName(CommonConstant.POSTGRESQL_DRIVER);
+        dataSourceBuilder.username(username);
+        dataSourceBuilder.password(databasePassword);
+        dataSourceBuilder.url(databaseUrl);
         resolvedDataSources.put(tenantId, dataSourceBuilder.build());
-
-//        List<TenantConfig> tenantConfigList = context.getBean(TenantConfigMaster.class).getAll();
-//
-//        for (TenantConfig tenantConfig : tenantConfigList) {
-//            DataSourceBuilder dataSourceBuilder1 = DataSourceBuilder.create();
-//            dataSourceBuilder1.driverClassName("org.postgresql.Driver");
-//            dataSourceBuilder1.username(tenantConfig.getUsername());
-//            dataSourceBuilder1.password(tenantConfig.getPassword());
-//            dataSourceBuilder1.url(tenantConfig.getUrl());
-//            resolvedDataSources.put(tenantConfig.getTenantId(), dataSourceBuilder1.build());
-//        }
-
-//        DataSourceBuilder dataSourceBuilder1 = DataSourceBuilder.create();
-//        String tenantId2 = "tenantId2";
-//        dataSourceBuilder1.driverClassName("org.postgresql.Driver");
-//        dataSourceBuilder1.username("postgres");
-//        dataSourceBuilder1.password("argusadmin");
-//        dataSourceBuilder1.url("jdbc:postgresql://192.1.200.197:5432/emcare-dev");
-//        resolvedDataSources.put(tenantId2, dataSourceBuilder1.build());
 
         AbstractRoutingDataSource dataSource = new MultitenantDataSource();
         dataSource.setDefaultTargetDataSource(resolvedDataSources.get(defaultTenant));

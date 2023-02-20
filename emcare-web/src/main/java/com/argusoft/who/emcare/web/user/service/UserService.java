@@ -34,6 +34,8 @@ public interface UserService {
 
     public ResponseEntity<Object> signUp(UserDto user);
 
+    public ResponseEntity<Object> userLogin(LoginRequestDto loginCred, HttpServletRequest request);
+
     public ResponseEntity<Object> addUser(UserDto user);
 
     public void addRealmRole(RoleDto role);

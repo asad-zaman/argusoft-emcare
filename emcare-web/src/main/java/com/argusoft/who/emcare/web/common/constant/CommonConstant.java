@@ -70,6 +70,16 @@ public class CommonConstant {
     public static final String FHIR_SERVLET_URL_MAPPING = "/fhir/*";
 
     public static final String KEYCLOAK_REALM = "keycloak.realm";
+    public static final String HTTPS = "https://";
+    public static final String HTTP = "http://";
+    public static final String USERNAME = "username";
+    public static final String PASSWORD = "password";
+    public static final String GRANT_TYPE = "grant_type";
+    public static final String CLIENT_SECRET = "client_secret";
+    public static final String CLIENT_ID = "client_id";
+    public static final String ACCESS_TOKEN = "access_token";
+    public static final String POSTGRESQL_DRIVER = "org.postgresql.Driver";
+
 
     private CommonConstant() {
     }
