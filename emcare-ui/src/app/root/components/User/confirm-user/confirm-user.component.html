@@ -31,7 +31,7 @@
               <td>{{user.lastName}}</td>
               <td>{{user.email}}</td>
               <td>{{user.facilityDto ? getFacilityStr(user.facilityDto) : 'NA'}}</td>
-              <td>{{user.realmRoles[0]}}</td>
+              <td>{{user.realmRoles[0] ? user.realmRoles[0] : 'NA'}}</td>
               <td>
                 <i (click)="onApproveUser(i)" class="bi bi-check-circle text-success cursor-pointer font-size-18"
                   aria-hidden="true"></i>
@@ -56,21 +56,21 @@
     <div class="modal-dialog modal-dialog-centered" style="width: 350px; height: 500px">
       <div class="modal-content">
         <div class="modal-body">
-          <h2 class="modal-title text-center">
+          <h3 class="modal-title text-center mb-3">
             <ng-container *ngIf="isApproveUser; else disapprove">
               {{'Approve User' | translate}}
             </ng-container>
             <ng-template #disapprove>
               {{'Disapprove User' | translate}}
             </ng-template>
-          </h2>
-          <div class="text-center my-3">
+          </h3>
+          <div class="text-center my-4">
             <p class="font-size-15">
-              <ng-container *ngIf="isApproveUser; else disapprove">
-                {{'Confirm Approval' | translate}}
+              <ng-container *ngIf="isApproveUser; else disapproveText">
+                Are you sure you want to approve {{this.selectedUser.firstName}} {{this.selectedUser.lastName}} ?
               </ng-container>
-              <ng-template #disapprove>
-                {{'DisApproval' | translate}}
+              <ng-template #disapproveText>
+                Are you sure you want to disapprove {{this.selectedUser.firstName}} {{this.selectedUser.lastName}} ?
               </ng-template>
           </div>
           <div class="text-center">

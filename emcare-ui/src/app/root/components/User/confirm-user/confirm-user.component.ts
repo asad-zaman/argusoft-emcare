@@ -70,7 +70,8 @@ export class ConfirmUserComponent implements OnInit {
       "isEnabled": this.isApproveUser
     }
     this.userService.updateUserStatus(data).subscribe(res => {
-      this.toasterService.showToast('success', 'User approved successfully!', 'EMCARE');
+      this.toasterService.showToast('success',
+        this.isApproveUser ? 'User approved successfully!' : 'User disapproved successfully!', 'EMCARE');
       this.getAllSignedUpUsers();
     });
     this.showConfirmDialogFlag = false;

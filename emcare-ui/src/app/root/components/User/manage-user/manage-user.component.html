@@ -129,8 +129,8 @@
             <div class="col-12">
               <div class="mb-3">
                 <label class="form-label">{{'Facility' | translate}}</label>
-                <p-dropdown placeholder="Select" [options]="facilityArr" formControlName="selectedFacility"
-                  optionLabel="name" dataKey="name">
+                <p-dropdown [showClear]="userForm.get('selectedFacility').value ? true : false" placeholder="Select" [options]="facilityArr"
+                  formControlName="selectedFacility" optionLabel="name" dataKey="name">
                 </p-dropdown>
               </div>
             </div>
