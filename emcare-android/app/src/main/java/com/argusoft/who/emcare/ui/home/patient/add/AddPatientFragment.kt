@@ -27,7 +27,7 @@ class AddPatientFragment : BaseFragment<FragmentAddPatientBinding>() {
 
     private val homeViewModel: HomeViewModel by viewModels()
 //    private val settingsViewModel: SettingsViewModel by activityViewModels()
-    private val questionnaireFragment = QuestionnaireFragment()
+    private var questionnaireFragment = QuestionnaireFragment()
 
     override fun initView() {
         binding.headerLayout.toolbar.title = getString(R.string.title_emcare_registration)
@@ -60,12 +60,11 @@ class AddPatientFragment : BaseFragment<FragmentAddPatientBinding>() {
     private fun addQuestionnaireFragmentWithQR(pair: Pair<String, String>) {
         homeViewModel.questionnaireJson = pair.first
         homeViewModel.questionnaireJson?.let {
-            questionnaireFragment.arguments =
-                bundleOf(
-                    QuestionnaireFragment.EXTRA_QUESTIONNAIRE_JSON_STRING to pair.first,
-                    QuestionnaireFragment.EXTRA_QUESTIONNAIRE_RESPONSE_JSON_STRING to pair.second,
-                    QuestionnaireFragment.EXTRA_ENABLE_REVIEW_PAGE to true
-                )
+            questionnaireFragment = QuestionnaireFragment.builder()
+                .setQuestionnaire(pair.first)
+                .setQuestionnaireResponse(pair.second)
+                .showReviewPageBeforeSubmit(true)
+                .build()
             childFragmentManager.commit {
                 add(R.id.fragmentContainerView, questionnaireFragment, QuestionnaireFragment::class.java.simpleName)
             }

@@ -36,5 +36,9 @@ interface Preference {
 
     fun setSubmittedResource(bundle: Bundle)
 
+    fun setTheme(theme: Int)
+
+    fun getTheme(): Int
+
     fun clear()
 }

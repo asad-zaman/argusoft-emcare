@@ -18,7 +18,7 @@ import java.text.SimpleDateFormat
 @AndroidEntryPoint
 class PreviousConsultationQuestionnaireFragment: BaseFragment<FragmentPreviousConsultationQuestionnaireBinding>() {
 
-    private val questionnaireFragment = QuestionnaireFragment()
+    private var questionnaireFragment = QuestionnaireFragment()
     private val previousConsultationQuestionnaireViewModel: PreviousConsultationQuestionnaireViewModel by viewModels()
 
     override fun initView() {
@@ -56,12 +56,11 @@ class PreviousConsultationQuestionnaireFragment: BaseFragment<FragmentPreviousCo
         val cleanedQuestionnairePair = previousConsultationQuestionnaireViewModel.cleanQuestionnairePair(pair)
         previousConsultationQuestionnaireViewModel.questionnaireJson = cleanedQuestionnairePair.first
         previousConsultationQuestionnaireViewModel.questionnaireJson?.let {
-            questionnaireFragment.arguments =
-                bundleOf(
-                    QuestionnaireFragment.EXTRA_QUESTIONNAIRE_JSON_STRING to cleanedQuestionnairePair.first,
-                    QuestionnaireFragment.EXTRA_QUESTIONNAIRE_RESPONSE_JSON_STRING to cleanedQuestionnairePair.second,
-                    QuestionnaireFragment.EXTRA_READ_ONLY to true
-                    )
+            questionnaireFragment = QuestionnaireFragment.builder()
+                .setQuestionnaire(cleanedQuestionnairePair.first)
+                .setQuestionnaireResponse(cleanedQuestionnairePair.second)
+                .setIsReadOnly(true)
+                .build()
             childFragmentManager.commit {
                 add(
                     R.id.fragmentContainerView,
@@ -71,7 +70,6 @@ class PreviousConsultationQuestionnaireFragment: BaseFragment<FragmentPreviousCo
             }
         }
     }
-
     override fun initObserver() {
         observeNotNull(previousConsultationQuestionnaireViewModel.patient) { apiResponse ->
             apiResponse.whenSuccess { patientItem ->

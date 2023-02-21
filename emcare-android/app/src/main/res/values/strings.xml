@@ -215,5 +215,12 @@
     <string name="label_bundle_version">Bundle Version: </string>
 
     <string name="initial_expression_error">Error encountered while loading initial Expressions</string>
+    <string name="text_compact">Compact</string>
+    <string name="text_comfortable">Comfortable</string>
+    <string name="title_change_theme">Change Theme</string>
+    <string name="label_close">Close</string>
+    <string name="label_save">Save</string>
+    <string name="text_enlarged">Enlarged</string>
+    <string name="change_theme">Change Theme</string>
 
 </resources>
