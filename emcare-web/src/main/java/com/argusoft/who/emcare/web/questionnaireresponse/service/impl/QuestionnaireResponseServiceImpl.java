@@ -89,7 +89,7 @@ public class QuestionnaireResponseServiceImpl implements QuestionnaireResponseSe
             resourcesList = emcareResourceRepository.findAllByType(CommonConstant.FHIR_PATIENT);
         }
         List<String> resourceIds = resourcesList.stream().map(EmcareResource::getResourceId).collect(Collectors.toList());
-        List<MiniPatient> responseList = questionnaireResponseRepository.findDistinctByPatientIdIn(
+        List<MiniPatient> responseList = questionnaireResponseRepository.getDistinctPatientIdInAndConsultationDate(
                 resourceIds,
                 page);
         List<String> patientIds = responseList.stream().map(MiniPatient::getPatientId).collect(Collectors.toList());
