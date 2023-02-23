@@ -30,9 +30,9 @@
           <div class="mb-3">
             <label class="form-label">{{'Address Street' | translate}}</label>
             <input formControlName="addressStreet" type="text" class="form-control custom-input" id="addressStreet1"
-              placeholder="Enter address street" [ngClass]="{ 'is-invalid': submitted && f.addressStreet.errors }">
-            <div *ngIf="submitted && f.addressStreet.errors" class="invalid-feedback">
-              <div class="cst-error-style" *ngIf="f.addressStreet.errors.required">
+              placeholder="Enter address street" [ngClass]="{ 'is-invalid': submitted && getFormConfrols.addressStreet.errors }">
+            <div *ngIf="submitted && getFormConfrols.addressStreet.errors" class="invalid-feedback">
+              <div class="cst-error-style" *ngIf="getFormConfrols.addressStreet.errors.required">
                 *{{'Address street is required' | translate}}</div>
             </div>
           </div>
@@ -40,13 +40,13 @@
         <div class="col-12 col-sm-4">
           <div class="mb-3">
             <label class="form-label">{{'Organization' | translate}}</label>
-            <p-dropdown [filter]="true" (click)="checkOrgAsFacility(f.isOrganizationAsFacility.value)"
+            <p-dropdown [filter]="true" (click)="checkOrgAsFacility(getFormConfrols.isOrganizationAsFacility.value)"
               formControlName="organization" placeholder="Select an organization" [options]="this.orgArr"
               [ngStyle]="{'border': submitted && this.facilityForm.controls.organization.value == '' ? '1px solid red' : ''}"
-              optionLabel="name" [ngClass]="{ 'is-invalid': submitted && f.organization.errors }">
+              optionLabel="name" [ngClass]="{ 'is-invalid': submitted && getFormConfrols.organization.errors }">
             </p-dropdown>
             <div *ngIf="submitted && this.facilityForm.controls.organization.value == ''" style="color: #dc3545">
-              <div class="cst-error-style" *ngIf="f.organization.errors.required">
+              <div class="cst-error-style" *ngIf="getFormConfrols.organization.errors.required">
                 *{{'Organization is required' | translate}}</div>
             </div>
           </div>
@@ -55,9 +55,9 @@
           <div class="mb-3 d-grid">
             <label class="form-label">{{'Administrative Location' | translate}}</label>
             <div class="d-flex">
-              <ng-container *ngIf="f.location.value; else noLocation">
+              <ng-container *ngIf="getFormConfrols.location.value; else noLocation">
                 <span class="f-16 cursor-pointer" data-bs-toggle="modal"
-                  data-bs-target="#locationModal">{{f.location.value.name}}</span>
+                  data-bs-target="#locationModal">{{getFormConfrols.location.value.name}}</span>
                 <i class="ml-3 bi bi-pencil-square f-16 cursor-pointer" data-bs-toggle="modal"
                   data-bs-target="#locationModal" aria-hidden="true"></i>
               </ng-container>
@@ -73,10 +73,10 @@
             <label class="form-label">{{'Status' | translate}}</label>
             <p-dropdown formControlName="status" [options]="statusArr" placeholder="Select a status"
               [ngStyle]="{'border': submitted && this.facilityForm.controls.status.value == '' ? '1px solid red' : ''}"
-              optionLabel="name" [ngClass]="{ 'is-invalid': submitted && f.status.errors }">
+              optionLabel="name" [ngClass]="{ 'is-invalid': submitted && getFormConfrols.status.errors }">
             </p-dropdown>
             <div *ngIf="submitted && this.facilityForm.controls.status.value == ''" style="color: #dc3545">
-              <div class="cst-error-style" *ngIf="f.status.errors.required">
+              <div class="cst-error-style" *ngIf="getFormConfrols.status.errors.required">
                 *{{'Status is required' | translate}}</div>
             </div>
           </div>
@@ -85,9 +85,9 @@
           <div class="mb-3">
             <label class="form-label">{{'Telecom' | translate}}</label>
             <input formControlName="telecom" type="number" class="form-control custom-input" id="telecom"
-              placeholder="Enter telecom" [ngClass]="{ 'is-invalid': submitted && f.telecom.errors }">
-            <div *ngIf="submitted && f.telecom.errors" class="invalid-feedback">
-              <div class="cst-error-style" *ngIf="f.telecom.errors.required">
+              placeholder="Enter telecom" [ngClass]="{ 'is-invalid': submitted && getFormConfrols.telecom.errors }">
+            <div *ngIf="submitted && getFormConfrols.telecom.errors" class="invalid-feedback">
+              <div class="cst-error-style" *ngIf="getFormConfrols.telecom.errors.required">
                 *{{'Telecom is required' | translate}}</div>
             </div>
           </div>
@@ -104,9 +104,9 @@
           <div class="mb-3">
             <label class="form-label">{{'Latitude' | translate}}</label>
             <input formControlName="latitude" type="number" class="form-control custom-input" id="latitude"
-              placeholder="Enter latitude" [ngClass]="{ 'is-invalid': submitted && f.latitude.errors }">
-            <div *ngIf="submitted && f.latitude.errors" class="invalid-feedback">
-              <div class="cst-error-style" *ngIf="f.latitude.errors.required">
+              placeholder="Enter latitude" [ngClass]="{ 'is-invalid': submitted && getFormConfrols.latitude.errors }">
+            <div *ngIf="submitted && getFormConfrols.latitude.errors" class="invalid-feedback">
+              <div class="cst-error-style" *ngIf="getFormConfrols.latitude.errors.required">
                 *{{'Latitude is required' | translate}}</div>
             </div>
           </div>
@@ -115,9 +115,9 @@
           <div class="mb-3">
             <label class="form-label">{{'Longitude' | translate}}</label>
             <input formControlName="longitude" type="number" class="form-control custom-input" id="longitude"
-              placeholder="Enter longitude" [ngClass]="{ 'is-invalid': submitted && f.longitude.errors }">
-            <div *ngIf="submitted && f.longitude.errors" class="invalid-feedback">
-              <div class="cst-error-style" *ngIf="f.longitude.errors.required">
+              placeholder="Enter longitude" [ngClass]="{ 'is-invalid': submitted && getFormConfrols.longitude.errors }">
+            <div *ngIf="submitted && getFormConfrols.longitude.errors" class="invalid-feedback">
+              <div class="cst-error-style" *ngIf="getFormConfrols.longitude.errors.required">
                 *{{'Longitude is required' | translate}}</div>
             </div>
           </div>

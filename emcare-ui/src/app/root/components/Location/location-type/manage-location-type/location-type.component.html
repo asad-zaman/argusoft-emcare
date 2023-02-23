@@ -18,9 +18,9 @@
             <label class="form-label">{{'Location Type' | translate}}</label>
             <input class="form-control custom-input" formControlName="type" type="text" id="type"
               placeholder="{{'Location Type Placeholder' | translate}}"
-              [ngClass]="{ 'is-invalid': submitted && f.type.errors }">
-            <div *ngIf="submitted && f.type.errors" class="invalid-feedback">
-              <div class="cst-error-style" *ngIf="f.type.errors.required">
+              [ngClass]="{ 'is-invalid': submitted && getFormConfrols.type.errors }">
+            <div *ngIf="submitted && getFormConfrols.type.errors" class="invalid-feedback">
+              <div class="cst-error-style" *ngIf="getFormConfrols.type.errors.required">
                 {{'Location Type Required Message' | translate}}</div>
             </div>
           </div>
@@ -29,9 +29,9 @@
           <div class="mb-3">
             <label class="form-label">{{'Name' | translate}}</label>
             <input class="form-control custom-input" formControlName="name" type="text" id="name"
-              placeholder="{{'Name Placeholder' | translate}}" [ngClass]="{ 'is-invalid': submitted && f.name.errors }">
-            <div *ngIf="submitted && f.name.errors" class="invalid-feedback">
-              <div class="cst-error-style" *ngIf="f.name.errors.required">
+              placeholder="{{'Name Placeholder' | translate}}" [ngClass]="{ 'is-invalid': submitted && getFormConfrols.name.errors }">
+            <div *ngIf="submitted && getFormConfrols.name.errors" class="invalid-feedback">
+              <div class="cst-error-style" *ngIf="getFormConfrols.name.errors.required">
                 {{'Name Required Message' | translate}}</div>
             </div>
           </div>

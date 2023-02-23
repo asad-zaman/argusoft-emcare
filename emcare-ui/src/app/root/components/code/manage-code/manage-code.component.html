@@ -17,9 +17,9 @@
           <div class="mb-3">
             <label class="form-label">{{'Code Name' | translate}}</label>
             <input class="form-control custom-input" formControlName="code" type="text" id="name"
-              placeholder="{{'CodePlaceholder' | translate}}" [ngClass]="{ 'is-invalid': submitted && f.code.errors }">
-            <div *ngIf="submitted && f.code.errors" class="invalid-feedback">
-              <div class="cst-error-style" *ngIf="f.code.errors.required">
+              placeholder="{{'CodePlaceholder' | translate}}" [ngClass]="{ 'is-invalid': submitted && getFormConfrols.code.errors }">
+            <div *ngIf="submitted && getFormConfrols.code.errors" class="invalid-feedback">
+              <div class="cst-error-style" *ngIf="getFormConfrols.code.errors.required">
                 {{'Code Required Message' | translate}}</div>
             </div>
           </div>
@@ -29,9 +29,9 @@
             <label class="form-label">{{'Code Description' | translate}}</label>
             <input class="form-control custom-input" formControlName="codeDescription" type="text" id="codeDescription"
               placeholder="{{'CodeDescriptionPlaceholder' | translate}}"
-              [ngClass]="{ 'is-invalid': submitted && f.codeDescription.errors }">
-            <div *ngIf="submitted && f.codeDescription.errors" class="invalid-feedback">
-              <div class="cst-error-style" *ngIf="f.codeDescription.errors.required">
+              [ngClass]="{ 'is-invalid': submitted && getFormConfrols.codeDescription.errors }">
+            <div *ngIf="submitted && getFormConfrols.codeDescription.errors" class="invalid-feedback">
+              <div class="cst-error-style" *ngIf="getFormConfrols.codeDescription.errors.required">
                 {{'Code Description Required Message' | translate}}</div>
             </div>
           </div>

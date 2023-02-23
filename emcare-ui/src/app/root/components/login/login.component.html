@@ -28,10 +28,10 @@
               <div class="mb-3">
                 <label class="form-label">Email</label>
                 <input type="email" formControlName="username" class="form-control custom-input"
-                  [ngClass]="{ 'is-invalid': submitted && f.username.errors }">
-                <div *ngIf="submitted && f.username.errors" class="invalid-feedback">
-                  <div *ngIf="f.username.errors.required">Username is required</div>
-                  <div *ngIf="f.username.errors.pattern">Invalid username</div>
+                  [ngClass]="{ 'is-invalid': submitted && getFormConfrols.username.errors }">
+                <div *ngIf="submitted && getFormConfrols.username.errors" class="invalid-feedback">
+                  <div *ngIf="getFormConfrols.username.errors.required">Username is required</div>
+                  <div *ngIf="getFormConfrols.username.errors.pattern">Invalid username</div>
                 </div>
               </div>
             </div>
@@ -41,9 +41,9 @@
               <div class="mb-3">
                 <label class="form-label">Password</label>
                 <input type="password" class="form-control custom-input" formControlName="password"
-                  [ngClass]="{ 'is-invalid': submitted && f.password.errors }" />
-                <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
-                  <div *ngIf="f.password.errors.required">Password is required</div>
+                  [ngClass]="{ 'is-invalid': submitted && getFormConfrols.password.errors }" />
+                <div *ngIf="submitted && getFormConfrols.password.errors" class="invalid-feedback">
+                  <div *ngIf="getFormConfrols.password.errors.required">Password is required</div>
                 </div>
               </div>
               <div class="font-size-14">
