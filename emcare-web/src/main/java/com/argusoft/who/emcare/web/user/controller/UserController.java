@@ -39,7 +39,7 @@ public class UserController {
     @GetMapping("/user/page")
     public ResponseEntity<Object> getUserPage(HttpServletRequest request,
                                               @RequestParam(value = "pageNo") Integer pageNo,
-                                              @Nullable @RequestParam(value = "search",required = false) String searchString) {
+                                              @Nullable @RequestParam(value = "search", required = false) String searchString) {
         return ResponseEntity.ok(userService.getUserPage(request, pageNo, searchString));
     }
 
@@ -118,5 +118,10 @@ public class UserController {
     public PageDto getUsersUnderLocation(@PathVariable(value = "locationId") Object locationId,
                                          @RequestParam(value = "pageNo") Integer pageNo) {
         return userService.getUsersUnderLocation(locationId, pageNo);
+    }
+
+    @GetMapping("user/check/email")
+    public ResponseEntity checkEmailAlreadyExist(@RequestParam(value = "emailId") String emailId) {
+        return ResponseEntity.status(HttpStatus.OK).body(userService.checkEmailIdExist(emailId));
     }
 }

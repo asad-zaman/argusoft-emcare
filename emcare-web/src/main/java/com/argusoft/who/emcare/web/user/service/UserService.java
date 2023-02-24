@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author jay
@@ -60,6 +61,8 @@ public interface UserService {
     public UserRepresentation getUserByEmailId(String emailId);
 
     public UserRepresentation resetPassword(String emailId, String password);
+
+    public Map<String,Object> checkEmailIdExist(String email);
 
 
 }
