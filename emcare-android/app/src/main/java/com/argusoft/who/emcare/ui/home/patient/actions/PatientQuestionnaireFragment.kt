@@ -126,12 +126,14 @@ class PatientQuestionnaireFragment : BaseFragment<FragmentPatientQuestionnaireBi
     }
 
     private fun addQuestionnaireFragment(pair: Pair<String, String>) {
+        val isReviewModeEnabled = consultationFlowStageList.indexOf(requireArguments()
+            .getString(INTENT_EXTRA_CONSULTATION_STAGE)) >= consultationFlowStageList.indexOf(CONSULTATION_STAGE_CLASSIFICATIONS)
         homeViewModel.questionnaireJson = pair.first
         homeViewModel.questionnaireJson?.let {
             questionnaireFragment = QuestionnaireFragment.builder()
                 .setQuestionnaire(pair.first)
                 .setQuestionnaireResponse(pair.second)
-                .showReviewPageBeforeSubmit(true)
+                .showReviewPageBeforeSubmit(isReviewModeEnabled)
                 .build()
             childFragmentManager.commit {
                 add(

@@ -320,7 +320,17 @@ class HomeViewModel @Inject constructor(
             loadLibraries()
             ansQuestionnaire = injectInitialExpressionCqlValues(questionnaire, patientId, encounterId)
         }
+        ansQuestionnaire = addEmptySpaceToScroll(questionnaire)
         return ansQuestionnaire
+    }
+
+    private fun addEmptySpaceToScroll(questionnaire: Questionnaire): Questionnaire {
+        questionnaire.item.add(Questionnaire.QuestionnaireItemComponent().apply {
+            linkId = UUID.randomUUID().toString()
+            type = Questionnaire.QuestionnaireItemType.DISPLAY
+            text = "<br><br><br><br><br><br><br>"
+        })
+        return questionnaire
     }
 
     private fun injectUuid(questionnaire: Questionnaire) : Questionnaire {
