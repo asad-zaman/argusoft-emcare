@@ -83,25 +83,22 @@
 
     <Button
         android:id="@+id/save_draft_questionnaire_button"
-        style="@style/Questionnaire.SaveDraftButtonStyle"
+        style="?appThemeButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/label_save_as_draft"
-        android:layout_marginHorizontal="@dimen/item_margin_horizontal"
         android:layout_marginVertical="@dimen/item_margin_vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        />
+        app:backgroundTint="@color/colorAccent"/>
 
     <Button
         android:id="@+id/reset_questionnaire_button"
-        style="@style/Questionnaire.ResetButtonStyle"
+        style="?appThemeButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/label_reset"
         android:layout_marginVertical="@dimen/item_margin_vertical"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        />
+        app:layout_constraintStart_toEndOf="@+id/save_draft_questionnaire_button"        />
 </com.argusoft.who.emcare.widget.ApiViewStateConstraintLayout>

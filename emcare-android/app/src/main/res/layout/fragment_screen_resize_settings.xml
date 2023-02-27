@@ -137,10 +137,12 @@
 
         <Button
             android:id="@+id/save_button"
-            style="@style/Questionnaire.SaveDraftButtonStyle"
+            style="?appThemeButtonStyle"
+            app:backgroundTint="@color/colorAccent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/label_save"
+            android:textSize="@dimen/_16sdp"
             android:layout_marginHorizontal="@dimen/recyclerview_bottom_padding"
             android:layout_marginVertical="@dimen/recyclerview_bottom_padding"
             app:layout_constraintTop_toBottomOf="@id/mainLayout"
@@ -149,10 +151,11 @@
 
         <Button
             android:id="@+id/close_button"
-            style="@style/Questionnaire.ResetButtonStyle"
+            style="?appThemeButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/label_close"
+            android:textSize="@dimen/_16sdp"
             android:layout_marginHorizontal="@dimen/recyclerview_bottom_padding"
             android:layout_marginVertical="@dimen/recyclerview_bottom_padding"
             app:layout_constraintStart_toEndOf="@id/save_button"

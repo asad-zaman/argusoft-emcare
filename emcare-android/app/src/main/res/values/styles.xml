@@ -14,6 +14,7 @@
         <item name="android:windowDrawsSystemBarBackgrounds">false</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="questionnaire_theme">@style/Questionnaire</item>
+        <item name="appThemeButtonStyle">@style/Questionnaire.CustomButtonStyle</item>
     </style>
 
     <style name="AppThemeCompact" parent="Theme.MaterialComponents.Light.NoActionBar">
@@ -29,6 +30,7 @@
         <item name="android:windowDrawsSystemBarBackgrounds">false</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="questionnaire_theme">@style/QuestionnaireCompact</item>
+        <item name="appThemeButtonStyle">@style/QuestionnaireCompact.CustomButtonStyle</item>
     </style>
 
     <style name="AppThemeEnlarged" parent="Theme.MaterialComponents.Light.NoActionBar">
@@ -44,6 +46,7 @@
         <item name="android:windowDrawsSystemBarBackgrounds">false</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="questionnaire_theme">@style/QuestionnaireEnlarged</item>
+        <item name="appThemeButtonStyle">@style/QuestionnaireEnlarged.CustomButtonStyle</item>
     </style>
 
     <style name="SplashTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
@@ -119,8 +122,6 @@
     </style>
 
     <style name="TextInputEditText" parent="Widget.AppCompat.EditText">
-        <item name="android:paddingStart">0dp</item>
-        <item name="android:paddingEnd">0dp</item>
         <item name="android:inputType">text</item>
     </style>
 
@@ -191,7 +192,7 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="questionnaireEditButtonStyle">@style/Questionnaire.EditButtonStyle</item>
         <item name="questionnaireTextInputEditTextStyle">@style/Questionnaire.TextInputEditText</item>
-        <item name="questionnaireQuestionTextStyle">@style/Questionnaire.QuestionTextStyleComfortable</item>
+        <item name="questionnaireQuestionTextStyle">@style/Questionnaire.QuestionTextStyle</item>
         <item name="questionnaireCheckBoxStyle">@style/Questionnaire.CheckBoxStyle</item>
         <item name="questionnaireRadioButtonStyle">@style/Questionnaire.RadioButton</item>
         <item name="questionnaireDropDownTextStyle">@style/Questionnaire.questionnaireDropDownTextStyle</item>
@@ -210,7 +211,7 @@
     <style name="Questionnaire.Button">
         <item name="android:backgroundTint">@color/buttonColor</item>
         <item name="android:textColor">@color/white</item>
-        <item name="android:textSize">@dimen/_18sdp</item>
+        <item name="android:textSize">@dimen/_16sdp</item>
     </style>
 
     <style name="Questionnaire.RadioButton" parent="Widget.AppCompat.CompoundButton.RadioButton">
@@ -247,7 +248,7 @@
     </style>
 
     <style name="Questionnaire.SubmitButtonStyle">
-        <item name="android:textSize">@dimen/_18sdp</item>
+        <item name="android:textSize">@dimen/_16sdp</item>
         <item name="android:backgroundTint">@color/buttonColor</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:text">Submit</item>
@@ -255,51 +256,43 @@
     <style name="Questionnaire.HelpButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Icon">
         <item name="iconTint">@color/black</item>
         <item name="iconGravity">textStart</item>
-        <item name="iconSize">@dimen/_16sdp</item>
+        <item name="iconSize">@dimen/_18sdp</item>
     </style>
 
     <style name="Questionnaire.HelpHeaderStyle">
         <item name="android:textColor">@color/black</item>
-        <item name="android:textSize">@dimen/_18sdp</item>
+        <item name="android:textSize">@dimen/_16sdp</item>
     </style>
 
     <style name="Questionnaire.SubtitleTextStyle">
-        <item name="android:textSize">@dimen/_16sdp</item>
+        <item name="android:textSize">@dimen/_14sdp</item>
         <item name="android:textColor">@color/black</item>
     </style>
 
-    <style name="Questionnaire.QuestionTextStyleComfortable">
+    <style name="Questionnaire.QuestionTextStyle">
         <item name="android:textSize">@dimen/_18sdp</item>
     </style>
 
     <style name="Questionnaire.EditButtonStyle">
-        <item name="android:textSize">@dimen/_18sdp</item>
+        <item name="android:textSize">@dimen/_16sdp</item>
         <item name="android:text">@string/edit_button_text</item>
         <item name="backgroundTint">@color/colorAccent</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:textAllCaps">false</item>
     </style>
 
-    <style name="Questionnaire.ResetButtonStyle">
-        <item name="android:textSize">@dimen/_18sdp</item>
+    <style name="Questionnaire.CustomButtonStyle"  parent="Widget.AppCompat.Button">
+        <item name="android:textSize">@dimen/_16sdp</item>
         <item name="android:text">@string/label_reset</item>
         <item name="backgroundTint">@color/colorAccent2</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:textAllCaps">false</item>
-    </style>
-
-    <style name="Questionnaire.SaveDraftButtonStyle">
-        <item name="android:text">@string/label_save_as_draft</item>
-        <item name="backgroundTint">@color/colorAccent</item>
-        <item name="android:textColor">@color/white</item>
-        <item name="android:textAllCaps">false</item>
-        <item name="android:textSize">@dimen/_18sdp</item>
-
+        <item name="android:layout_marginHorizontal">@dimen/_8sdp</item>
     </style>
 
     <style name="Questionnaire.questionnaireErrorTextStyle">
         <item name="android:textColor">@color/questionnaireErrorTextColor</item>
-        <item name="android:textSize">@dimen/_12sdp</item>
+        <item name="android:textSize">@dimen/_14sdp</item>
     </style>
 
     <style name="QuestionnaireCompact" parent="Theme.MaterialComponents.Light.DarkActionBar">
@@ -314,7 +307,7 @@
         <item name="questionnaireChipStyle">@style/Widget.MaterialComponents.Chip.Entry</item>
         <item name="questionnaireButtonStyle">@style/QuestionnaireCompact.Button</item>
         <item name="questionnaireTextInputLayoutStyle">@style/TextInputLayout</item>
-        <item name="questionnaireErrorTextStyle">@style/Questionnaire.questionnaireErrorTextStyle</item>
+        <item name="questionnaireErrorTextStyle">@style/QuestionnaireCompact.questionnaireErrorTextStyle</item>
         <item name="questionnaireSubmitButtonStyle">@style/QuestionnaireCompact.SubmitButtonStyle</item>
         <item name="questionnaireHelpButtonStyle">@style/QuestionnaireCompact.HelpButtonStyle</item>
         <item name="questionnaireHelpHeaderStyle">@style/QuestionnaireCompact.HelpHeaderStyle</item>
@@ -322,14 +315,16 @@
         <item name="questionnaireSubtitleTextStyle">@style/QuestionnaireCompact.SubtitleTextStyle</item>
     </style>
 
-    <style name="QuestionnaireCompact.Button" parent="Questionnaire.Button">
-        <item name="android:textSize">@dimen/_16sdp</item>
+    <style name="QuestionnaireCompact.Button">
+        <item name="android:backgroundTint">@color/buttonColor</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">@dimen/_14sdp</item>
     </style>
 
     <style name="QuestionnaireCompact.RadioButton" parent="Questionnaire.RadioButton">
         <item name="android:padding">@dimen/_16sdp</item>
         <item name="android:width">@dimen/_50sdp</item>
-        <item name="android:textSize">@dimen/_16sdp</item>
+        <item name="android:textSize">@dimen/_14sdp</item>
     </style>
 
     <style name="QuestionnaireCompact.CheckBoxStyle" parent="Questionnaire.CheckBoxStyle">
@@ -345,19 +340,19 @@
     </style>
 
     <style name="QuestionnaireCompact.SubmitButtonStyle" parent="Questionnaire.SubmitButtonStyle">
-        <item name="android:textSize">@dimen/_16sdp</item>
+        <item name="android:textSize">@dimen/_14sdp</item>
     </style>
 
     <style name="QuestionnaireCompact.HelpButtonStyle" parent="Questionnaire.HelpButtonStyle">
-        <item name="iconSize">@dimen/_14sdp</item>
+        <item name="iconSize">@dimen/_16sdp</item>
     </style>
 
     <style name="QuestionnaireCompact.HelpHeaderStyle" parent="Questionnaire.HelpHeaderStyle">
-        <item name="android:textSize">@dimen/_16sdp</item>
+        <item name="android:textSize">@dimen/_14sdp</item>
     </style>
 
     <style name="QuestionnaireCompact.SubtitleTextStyle" parent="Questionnaire.SubtitleTextStyle">
-        <item name="android:textSize">@dimen/_14sdp</item>
+        <item name="android:textSize">@dimen/_12sdp</item>
     </style>
 
     <style name="QuestionnaireCompact.QuestionTextStyle">
@@ -365,17 +360,17 @@
     </style>
 
     <style name="QuestionnaireCompact.EditButtonStyle" parent="Questionnaire.EditButtonStyle">
-        <item name="android:textSize">@dimen/_16sdp</item>
+        <item name="android:textSize">@dimen/_14sdp</item>
     </style>
 
-    <style name="QuestionnaireCompact.ResetButtonStyle" parent="Questionnaire.ResetButtonStyle">
-        <item name="android:textSize">@dimen/_16sdp</item>
+    <style name="QuestionnaireCompact.CustomButtonStyle" parent="Questionnaire.CustomButtonStyle">
+        <item name="android:textSize">@dimen/_14sdp</item>
     </style>
 
-    <style name="QuestionnaireCompact.SaveDraftButtonStyle" parent="Questionnaire.SaveDraftButtonStyle">
-        <item name="android:textSize">@dimen/_16sdp</item>
+    <style name="QuestionnaireCompact.questionnaireErrorTextStyle">
+        <item name="android:textColor">@color/questionnaireErrorTextColor</item>
+        <item name="android:textSize">@dimen/_12sdp</item>
     </style>
-
 
     <style name="QuestionnaireEnlarged" parent="Theme.MaterialComponents.Light.DarkActionBar">
         <item name="colorAccent">@color/colorAccent</item>
@@ -389,7 +384,7 @@
         <item name="questionnaireChipStyle">@style/Widget.MaterialComponents.Chip.Entry</item>
         <item name="questionnaireButtonStyle">@style/QuestionnaireEnlarged.Button</item>
         <item name="questionnaireTextInputLayoutStyle">@style/TextInputLayout</item>
-        <item name="questionnaireErrorTextStyle">@style/Questionnaire.questionnaireErrorTextStyle</item>
+        <item name="questionnaireErrorTextStyle">@style/QuestionnaireEnlarged.questionnaireErrorTextStyle</item>
         <item name="questionnaireSubmitButtonStyle">@style/QuestionnaireEnlarged.SubmitButtonStyle</item>
         <item name="questionnaireHelpButtonStyle">@style/QuestionnaireEnlarged.HelpButtonStyle</item>
         <item name="questionnaireHelpHeaderStyle">@style/QuestionnaireEnlarged.HelpHeaderStyle</item>
@@ -398,7 +393,7 @@
     </style>
 
     <style name="QuestionnaireEnlarged.Button" parent="Questionnaire.Button">
-        <item name="android:textSize">@dimen/_20sdp</item>
+        <item name="android:textSize">@dimen/_18sdp</item>
     </style>
 
     <style name="QuestionnaireEnlarged.RadioButton" parent="Questionnaire.RadioButton">
@@ -420,19 +415,19 @@
     </style>
 
     <style name="QuestionnaireEnlarged.SubmitButtonStyle" parent="Questionnaire.SubmitButtonStyle">
-        <item name="android:textSize">@dimen/_20sdp</item>
+        <item name="android:textSize">@dimen/_18sdp</item>
     </style>
 
     <style name="QuestionnaireEnlarged.HelpButtonStyle" parent="Questionnaire.HelpButtonStyle">
-        <item name="iconSize">@dimen/_18sdp</item>
+        <item name="iconSize">@dimen/_20sdp</item>
     </style>
 
     <style name="QuestionnaireEnlarged.HelpHeaderStyle" parent="Questionnaire.HelpHeaderStyle">
-        <item name="android:textSize">@dimen/_20sdp</item>
+        <item name="android:textSize">@dimen/_18sdp</item>
     </style>
 
     <style name="QuestionnaireEnlarged.SubtitleTextStyle" parent="Questionnaire.SubtitleTextStyle">
-        <item name="android:textSize">@dimen/_18sdp</item>
+        <item name="android:textSize">@dimen/_16sdp</item>
     </style>
 
     <style name="QuestionnaireEnlarged.QuestionTextStyle">
@@ -440,15 +435,15 @@
     </style>
 
     <style name="QuestionnaireEnlarged.EditButtonStyle" parent="Questionnaire.EditButtonStyle">
-        <item name="android:textSize">@dimen/_20sdp</item>
+        <item name="android:textSize">@dimen/_18sdp</item>
     </style>
 
-    <style name="QuestionnaireEnlarged.ResetButtonStyle" parent="Questionnaire.ResetButtonStyle">
-        <item name="android:textSize">@dimen/_20sdp</item>
+    <style name="QuestionnaireEnlarged.CustomButtonStyle" parent="Questionnaire.CustomButtonStyle">
+        <item name="android:textSize">@dimen/_18sdp</item>
     </style>
 
-    <style name="QuestionnaireEnlarged.SaveDraftButtonStyle" parent="Questionnaire.SaveDraftButtonStyle">
-        <item name="android:textSize">@dimen/_20sdp</item>
+    <style name="QuestionnaireEnlarged.questionnaireErrorTextStyle">
+        <item name="android:textColor">@color/questionnaireErrorTextColor</item>
+        <item name="android:textSize">@dimen/_16sdp</item>
     </style>
-
 </resources>

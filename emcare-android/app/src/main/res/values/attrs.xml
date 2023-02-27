@@ -22,4 +22,6 @@
         <attr name="enableRecyclerView" format="boolean" />
         <attr name="enableSwipeRefreshLayout" format="boolean" />
     </declare-styleable>
+
+    <attr name="appThemeButtonStyle" format="reference" />
 </resources>
