@@ -17,7 +17,7 @@ window.addEventListener('message', (data) => {
     accessToken = data.data.accessToken;
     questionnaireBody = data.data.questionnaireBody;
     if (accessToken != null) {
-        localStorage.setItem("access_token", accessToken);
+        localStorage.setItem('access_token', accessToken);
     }
     if (questionnaireBody != null) {
         localStorage.setItem('questionnaire_body', questionnaireBody);
