@@ -58,7 +58,8 @@
               <div class="mb-3">
                 <label class="form-label">{{'Email' | translate}}</label>
                 <input formControlName="email" id="email" placeholder="{{'Email Placeholder' | translate}}" type="email"
-                  class="form-control custom-input" [ngClass]="{ 'is-invalid': submitted && getFormConfrols.email.errors }">
+                  class="form-control custom-input" (input)="checkEmail()"
+                  [ngClass]="{ 'is-invalid': submitted && getFormConfrols.email.errors }">
                 <div *ngIf="submitted && getFormConfrols.email.errors" class="invalid-feedback">
                   <div class="cst-error-style" *ngIf="getFormConfrols.email.errors.required">
                     {{'Email Required Message' | translate}}</div>

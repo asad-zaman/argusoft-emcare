@@ -30,7 +30,8 @@
           <div class="mb-3">
             <label class="form-label">{{'Address Street' | translate}}</label>
             <input formControlName="addressStreet" type="text" class="form-control custom-input" id="addressStreet1"
-              placeholder="Enter address street" [ngClass]="{ 'is-invalid': submitted && getFormConfrols.addressStreet.errors }">
+              placeholder="Enter address street"
+              [ngClass]="{ 'is-invalid': submitted && getFormConfrols.addressStreet.errors }">
             <div *ngIf="submitted && getFormConfrols.addressStreet.errors" class="invalid-feedback">
               <div class="cst-error-style" *ngIf="getFormConfrols.addressStreet.errors.required">
                 *{{'Address street is required' | translate}}</div>
@@ -65,6 +66,9 @@
                 <a class="cursor-pointer" data-bs-toggle="modal"
                   data-bs-target="#locationModal">{{'Select_Location' | translate}}</a>
               </ng-template>
+            </div>
+            <div class="mt-3" *ngIf="submitted && getFormConfrols.location.value == ''" style="color: #dc3545">
+              *{{'Location is required' | translate}}
             </div>
           </div>
         </div>
