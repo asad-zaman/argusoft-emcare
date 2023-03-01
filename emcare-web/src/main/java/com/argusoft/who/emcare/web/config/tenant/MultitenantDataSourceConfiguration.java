@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.List;
@@ -63,7 +62,7 @@ public class MultitenantDataSourceConfiguration {
             dataSourceBuilder1.driverClassName(CommonConstant.POSTGRESQL_DRIVER);
             dataSourceBuilder1.username(tenantConfig.getUsername());
             dataSourceBuilder1.password(tenantConfig.getPassword());
-            dataSourceBuilder1.url(tenantConfig.getUrl());
+            dataSourceBuilder1.url(CommonConstant.URL_PREFIX + tenantConfig.getUrl());
             resolvedDataSources.put(tenantConfig.getTenantId(), dataSourceBuilder1.build());
         }
         AbstractRoutingDataSource dataSource1 = (AbstractRoutingDataSource) dataSource;

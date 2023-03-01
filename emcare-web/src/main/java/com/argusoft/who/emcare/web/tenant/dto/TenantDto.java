@@ -11,11 +11,20 @@ package com.argusoft.who.emcare.web.tenant.dto;
  */
 public class TenantDto {
 
+    private Integer id;
     private String password;
     private String url;
     private String tenantId;
     private String username;
     private String domain;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     public String getPassword() {
         return password;

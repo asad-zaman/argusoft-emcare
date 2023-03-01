@@ -87,4 +87,14 @@ public class TenantConfig extends EntityAuditInfo implements Serializable {
     public void setDomain(String domain) {
         this.domain = domain;
     }
+
+    public static class Fields {
+
+        public static final String DOMAIN = "domain";
+        public static final String TENANT_ID = "tenantId";
+        public static final String URL = "url";
+        private Fields() {
+        }
+
+    }
 }
