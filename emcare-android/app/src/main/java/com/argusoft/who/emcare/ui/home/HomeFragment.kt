@@ -12,6 +12,7 @@ import com.argusoft.who.emcare.ui.common.base.BaseFragment
 import com.argusoft.who.emcare.utils.extention.*
 import com.argusoft.who.emcare.utils.glide.GlideApp
 import com.argusoft.who.emcare.utils.glide.GlideRequests
+import com.google.android.fhir.sync.SyncJobStatus
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import dagger.hilt.android.AndroidEntryPoint
@@ -86,7 +87,11 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(){
             }
             apiResponse.handleListApiView(binding.rootLayout) {
                 when (it) {
-                    is SyncState.Finished -> {
+                    is SyncJobStatus.InProgress -> {
+                        //Code to show text.
+                    }
+
+                    is SyncJobStatus.Finished -> {
                         requireContext().showSnackBar(
                             view = binding.rootLayout,
                             message = getString(R.string.msg_sync_successfully),
@@ -94,7 +99,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(){
                             isError = false
                         )
                     }
-                    is SyncState.Failed -> {
+                    is SyncJobStatus.Failed -> {
                         binding.rootLayout.showContent()
                         requireContext().showSnackBar(
                             view = binding.rootLayout,

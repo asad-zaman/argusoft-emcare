@@ -8,6 +8,7 @@ import com.argusoft.who.emcare.sync.SyncViewModel
 import com.argusoft.who.emcare.ui.common.base.BaseFragment
 import com.argusoft.who.emcare.ui.home.HomeActivity
 import com.argusoft.who.emcare.utils.extention.*
+import com.google.android.fhir.sync.SyncJobStatus
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -57,7 +58,13 @@ class AboutFragment : BaseFragment<FragmentAboutBinding>() {
             }
             apiResponse.handleListApiView(binding.progressLayout) {
                 when (it) {
-                    is SyncState.Finished -> {
+
+                    is SyncJobStatus.InProgress -> {
+                        //Code to show text.
+                        //Reference: https://github.com/google/android-fhir/blob/master/demo/src/main/java/com/google/android/fhir/demo/PatientListFragment.kt
+                    }
+
+                    is SyncJobStatus.Finished -> {
                         requireContext().showSnackBar(
                             view = binding.progressLayout,
                             message = getString(R.string.msg_sync_successfully),
@@ -65,7 +72,7 @@ class AboutFragment : BaseFragment<FragmentAboutBinding>() {
                             isError = false
                         )
                     }
-                    is SyncState.Failed -> {
+                    is SyncJobStatus.Failed -> {
                         binding.progressLayout.showContent()
                         requireContext().showSnackBar(
                             view = binding.progressLayout,
