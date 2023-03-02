@@ -20,6 +20,8 @@ import android.text.format.DateFormat
 import com.argusoft.who.emcare.data.local.database.Database
 import com.argusoft.who.emcare.data.local.pref.Preference
 import com.argusoft.who.emcare.data.remote.Api
+import com.argusoft.who.emcare.data.remote.ApiResponse
+import com.argusoft.who.emcare.ui.common.model.ConsultationFlowItem
 import com.argusoft.who.emcare.utils.extention.whenFailed
 import com.argusoft.who.emcare.utils.extention.whenSuccess
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -62,6 +64,8 @@ internal class EmCareSynchronizer(
     private val preference: Preference,
     private val syncTypeParams: SyncTypeParams
 ) {
+    val formatString12 = "dd/MM/yyyy hh:mm:ss a"
+
     private var flow: MutableSharedFlow<SyncState>? = null
 
     private fun isSubscribed(): Boolean {
@@ -130,7 +134,13 @@ internal class EmCareSynchronizer(
                     }
                 }
                 SyncType.CONSULTATION_FLOW_ITEM -> {
-                    val consultations = api.getConsultationFlow()
+                    val consultations =
+                        if(preference.getLastSyncTimestamp().isNotEmpty()) {
+                        val timestamp = ZonedDateTime.parse(preference.getLastSyncTimestamp(), DateTimeFormatter.ofPattern(formatString12).withZone(ZoneId.systemDefault())).toOffsetDateTime().atZoneSameInstant(ZoneId.of("UTC")).toString().substringBefore("Z[UTC]")
+                        api.getConsultationFlowWithTimestamp(timestamp)
+                    } else {
+                        api.getConsultationFlow()
+                    }
                     consultations.whenSuccess {
                         it.forEach {
                             consultationFlowItem ->
@@ -160,12 +170,10 @@ internal class EmCareSynchronizer(
 
         syncTypeParams.forEach { syncType ->
             emit(SyncState.InProgress(syncType))
-            val formatString12 = "dd/MM/yyyy hh:mm:ss a"
             if (syncType == SyncType.CONSULTATION_FLOW_ITEM) {
                 if(preference.getLastSyncTimestamp().isNotEmpty()){
                     val timestamp = ZonedDateTime.parse(preference.getLastSyncTimestamp(), DateTimeFormatter.ofPattern(formatString12).withZone(ZoneId.systemDefault())).toOffsetDateTime().atZoneSameInstant(ZoneId.of("UTC")).toString().substringBefore("Z[UTC]")
                     val consultationsList = database.getAllConsultationsAfterTimestamp(timestamp.toString())
-
                     if(!consultationsList.isNullOrEmpty()) {
                         val consultations = api.saveConsultations(consultationsList)
                         consultations.whenFailed {
