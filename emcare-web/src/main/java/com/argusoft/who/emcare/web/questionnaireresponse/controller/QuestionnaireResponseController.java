@@ -1,5 +1,7 @@
 package com.argusoft.who.emcare.web.questionnaireresponse.controller;
 
+import ca.uhn.fhir.rest.param.DateParam;
+import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.questionnaireresponse.dto.QuestionnaireResponseRequestDto;
 import com.argusoft.who.emcare.web.questionnaireresponse.model.QuestionnaireResponse;
 import com.argusoft.who.emcare.web.questionnaireresponse.service.QuestionnaireResponseService;
@@ -27,8 +29,8 @@ public class QuestionnaireResponseController {
     }
 
     @GetMapping("/fetch/all")
-    public ResponseEntity<Object> getQuestionnaireResponseByUserLocation() {
-        List<QuestionnaireResponse> questionnaireResponses = questionnaireResponseService.getQuestionnaireResponseByUserLocation();
+    public ResponseEntity<Object> getQuestionnaireResponseByUserLocation(@Nullable @RequestParam(value = CommonConstant.RESOURCE_LAST_UPDATED_AT) DateParam theDate) {
+        List<QuestionnaireResponse> questionnaireResponses = questionnaireResponseService.getQuestionnaireResponseByUserLocation(theDate.getValue());
         return ResponseEntity.ok().body(questionnaireResponses);
     }
 
