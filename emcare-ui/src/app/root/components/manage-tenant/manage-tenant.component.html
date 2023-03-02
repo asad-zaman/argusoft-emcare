@@ -1,0 +1,95 @@
+<div *ngIf="isAllowed" class="main-wrapper">
+  <div class="form-wrapper">
+    <form [formGroup]="tenantForm" name="tenantForm" novalidate>
+      <div class="mb-5">
+        <h1 class="heading">
+          <ng-container *ngIf="!isEdit; else UpdateTenant">
+            {{'Add Tenant' | translate}}
+          </ng-container>
+          <ng-template #UpdateTenant>
+            {{'Update Tenant' | translate}}
+          </ng-template>
+        </h1>
+        <hr>
+      </div>
+      <div class="row">
+        <div class="col-12 col-sm-6">
+          <div class="mb-3">
+            <label class="form-label">{{'Tenant Id' | translate}}</label>
+            <input class="form-control custom-input" formControlName="tenantId" type="text" id="tenantId"
+              (input)="checkField(1)" placeholder="{{'Tenant Id Placeholder' | translate}}"
+              [ngClass]="{ 'is-invalid': submitted && f.tenantId.errors }">
+            <div *ngIf="submitted && f.tenantId.errors" class="invalid-feedback">
+              <div class="cst-error-style" *ngIf="f.tenantId.errors.required">
+                {{'Tenant Id Required Message' | translate}}</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-sm-6">
+          <div class="mb-3">
+            <label class="form-label">{{'URL' | translate}}</label>
+            <input class="form-control custom-input" formControlName="url" type="text" id="url" (input)="checkField(2)"
+              placeholder="{{'URL Placeholder' | translate}}" [ngClass]="{ 'is-invalid': submitted && f.url.errors }">
+            <div *ngIf="submitted && f.url.errors" class="invalid-feedback">
+              <div class="cst-error-style" *ngIf="f.url.errors.required">
+                {{'URL Required Message' | translate}}</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-sm-6">
+          <div class="mb-3">
+            <label class="form-label">{{'Username' | translate}}</label>
+            <input class="form-control custom-input" formControlName="username" type="text" id="username"
+              placeholder="{{'Username Placeholder' | translate}}"
+              [ngClass]="{ 'is-invalid': submitted && f.username.errors }">
+            <div *ngIf="submitted && f.username.errors" class="invalid-feedback">
+              <div class="cst-error-style" *ngIf="f.username.errors.required">
+                {{'Username Required Message' | translate}}</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-sm-6">
+          <div class="mb-3">
+            <label class="form-label">{{'Password' | translate}}</label>
+            <input class="form-control custom-input" formControlName="password" type="text" id="password"
+              placeholder="{{'Password Placeholder' | translate}}"
+              [ngClass]="{ 'is-invalid': submitted && f.password.errors }">
+            <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
+              <div class="cst-error-style" *ngIf="f.password.errors.required">
+                {{'Password Required Message' | translate}}</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-sm-6">
+          <div class="mb-3">
+            <label class="form-label">{{'Domain' | translate}}</label>
+            <input class="form-control custom-input" formControlName="domain" type="text" id="domain"
+              (input)="checkField(3)" placeholder="{{'Domain Placeholder' | translate}}"
+              [ngClass]="{ 'is-invalid': submitted && f.domain.errors }">
+            <div *ngIf="submitted && f.domain.errors" class="invalid-feedback">
+              <div class="cst-error-style" *ngIf="f.domain.errors.required">
+                {{'Domain Required Message' | translate}}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="text-end mt-5">
+        <hr>
+        <button routerLink="/tenantList" class="btn-black btn ms-3">
+          <i class="bi bi-chevron-left" aria-hidden="true"></i> {{'Back' | translate}}
+        </button>
+        <button (click)="saveData()" class="btn-blue btn">
+          <ng-container *ngIf="!isEdit; else UpdateTenant">
+            {{'Add Tenant' | translate}}
+          </ng-container>
+          <ng-template #UpdateTenant>
+            {{'Update Tenant' | translate}}
+          </ng-template>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+<div *ngIf="!isAllowed" class="main-wrapper-nodata">
+  {{'NoAccess' | translate}}
+</div>

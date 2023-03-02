@@ -98,11 +98,21 @@ export class AuthGuard implements CanActivate {
                 localStorage.clear();
                 return false;
             } else {
-                const userFeatures = localStorage.getItem('userFeatures');
-                if (userFeatures) {
-                    this.user = JSON.parse(userFeatures);
-                    this.getResultAndRedirect(route);
+                const isSuperAdmin = localStorage.getItem('isSuperAdmin') === 'true';
+                if (!isSuperAdmin && (route.routeConfig.path === 'tenantList'
+                    || route.routeConfig.path === 'manageTenant')) {
+                    this.router.navigate(['/dashboard']);
+                    return false;
+                } else if (isSuperAdmin && (route.routeConfig.path === 'tenantList'
+                    || route.routeConfig.path === 'manageTenant')) {
                     return true;
+                } else {
+                    const userFeatures = localStorage.getItem('userFeatures');
+                    if (userFeatures) {
+                        this.user = JSON.parse(userFeatures);
+                        this.getResultAndRedirect(route);
+                        return true;
+                    }
                 }
                 return true;
             }

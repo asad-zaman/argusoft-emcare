@@ -84,8 +84,13 @@ export class LoginComponent implements OnInit {
         localStorage.setItem(appConstants.localStorageKeys.userFeatures, JSON.stringify(featureObj));
         localStorage.setItem(appConstants.localStorageKeys.language, res['language']);
         localStorage.setItem(appConstants.localStorageKeys.Username, res.userName);
+        localStorage.setItem('userFeatures', JSON.stringify(featureObj));
+        localStorage.setItem('language', res['language']);
+        localStorage.setItem('Username', res.userName);
+        const isSuperAdmin = res['roles'].findIndex(el => el === 'SUPER_ADMIN') > -1;
+        localStorage.setItem('isSuperAdmin', `${isSuperAdmin}`);
         this.authService.setFeatures(res['feature']);
-        this.router.navigate(["/dashboard"]);
+        isSuperAdmin ? this.router.navigate(["/tenantList"]) : this.router.navigate(["/dashboard"]);
         this.toasterService.showToast('success', 'Welcome to EmCare!', 'EMCARE');
         this.authService.setIsLoggedIn(true);
       }

@@ -268,5 +268,15 @@
   "Update": "Update",
   "Data Fields": "Data Fields",
   "Equation": "Equation",
-  "Ig Version": "Ig Version"
+  "Ig Version": "Ig Version",
+  "Add Tenant": "Add Tenant",
+  "Update Tenant": "Update Tenant",
+  "Tenant Id Placeholder": "Enter Tenant Id",
+  "Tenant Id Required Message": "Tenant Id is Required",
+  "URL Placeholder": "Ex. 127.0.0.1:5432/{database_name}",
+  "URL Required Message": "URL is Required",
+  "Domain Placeholder": "Enter Domain",
+  "Domain Required Message": "Domain in Required",
+  "Tenants": "Tenants",
+  "URL": "Database URL"
 }

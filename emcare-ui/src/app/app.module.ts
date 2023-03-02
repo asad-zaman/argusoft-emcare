@@ -106,7 +106,9 @@ import { NgxIntlTelInputModule } from 'ngx-intl-tel-input';
     ManageCodeComponent,
     CodeListComponent,
     IndicatorComponent,
-    IndicatorListComponent
+    IndicatorListComponent,
+    TenantListComponent,
+    ManageTenantComponent
   ],
   imports: [
     BrowserModule,
