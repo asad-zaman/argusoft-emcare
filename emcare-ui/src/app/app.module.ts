@@ -67,6 +67,8 @@ import { ManageOrganizationComponent } from './root/components/manage-organizati
 import { OrganizationListComponent } from './root/components/organization-list/organization-list.component';
 import { NgxIntlTelInputModule } from 'ngx-intl-tel-input';
 import { IndicatorListComponent } from './root/components/indicator-list/indicator-list.component';
+import { TenantListComponent } from './root/components/tenant-list/tenant-list.component';
+import { ManageTenantComponent } from './root/components/manage-tenant/manage-tenant.component';
 
 @NgModule({
   declarations: [
@@ -109,7 +111,9 @@ import { IndicatorListComponent } from './root/components/indicator-list/indicat
     ManageCodeComponent,
     CodeListComponent,
     IndicatorComponent,
-    IndicatorListComponent
+    IndicatorListComponent,
+    TenantListComponent,
+    ManageTenantComponent
   ],
   imports: [
     BrowserModule,

@@ -44,6 +44,7 @@ export class AppComponent implements OnInit {
     'Organizations': 'bi bi-border-outer nav-link_icon',
     'Indicators': 'bi bi-app-indicator nav-link_icon'
   }
+  isSuperAdmin = false;
 
   constructor(
     private readonly router: Router,
@@ -70,6 +71,7 @@ export class AppComponent implements OnInit {
   }
 
   ngAfterViewChecked() {
+    this.checkSuperAdmin();
     this.checkCurrentUrlAndShowHeaderBar();
     this.cdr.detectChanges();
   }
@@ -96,6 +98,10 @@ export class AppComponent implements OnInit {
       }
     });
     this.detectLanChange();
+  }
+
+  checkSuperAdmin() {
+    this.isSuperAdmin = localStorage.getItem('isSuperAdmin') === 'true';
   }
 
   detectLanChange() {
