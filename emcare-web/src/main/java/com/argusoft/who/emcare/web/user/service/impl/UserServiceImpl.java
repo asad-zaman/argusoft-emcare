@@ -380,10 +380,14 @@ public class UserServiceImpl implements UserService {
             try {
                 AccessToken accessToken = TokenVerifier.create(loginResponse.get(CommonConstant.ACCESS_TOKEN).toString(), AccessToken.class).getToken();
                 String userId = accessToken.getSubject();
+                Set<String> roles = accessToken.getRealmAccess().getRoles();
                 List<UserLocationMapping> userLocationMappings = userLocationMappingRepository.findByUserId(userId);
                 if (userLocationMappings.size() > 0) {
                     return data;
                 } else {
+                    if (roles.contains(CommonConstant.SUPER_ADMIN_ROLE)) {
+                        return data;
+                    }
                     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response("You don't have access for this domain", HttpStatus.BAD_REQUEST.value()));
                 }
             } catch (Exception ex) {
