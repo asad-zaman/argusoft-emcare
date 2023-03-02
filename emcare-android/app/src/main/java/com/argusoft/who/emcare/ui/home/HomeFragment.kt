@@ -2,11 +2,13 @@ package com.argusoft.who.emcare.ui.home
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
+import android.view.animation.AnimationUtils
+import android.widget.TextView
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.databinding.FragmentHomeBinding
-import com.argusoft.who.emcare.sync.SyncState
 import com.argusoft.who.emcare.sync.SyncViewModel
 import com.argusoft.who.emcare.ui.common.base.BaseFragment
 import com.argusoft.who.emcare.utils.extention.*
@@ -24,6 +26,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(){
     private val syncViewModel: SyncViewModel by viewModels()
     private val homeViewModel: HomeViewModel by activityViewModels()
     private lateinit var homePagerAdapter: HomePagerAdapter
+    private lateinit var syncPercent: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -89,6 +92,14 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(){
                 when (it) {
                     is SyncJobStatus.InProgress -> {
                         //Code to show text.
+                        fadeInTopBanner(it)
+//                        val progress =
+//                            it
+//                                .let { it.completed.toDouble().div(it.total) }
+//                                .let { if (it.isNaN()) 0.0 else it }
+//                                .times(100)
+//                                .roundToInt()
+//                        "$progress% ${state.syncOperation.name.lowercase()}ed".also { syncPercent.text = it }
                     }
 
                     is SyncJobStatus.Finished -> {
@@ -110,6 +121,27 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(){
                     }
                 }
             }
+        }
+    }
+
+    private fun fadeInTopBanner(state: SyncJobStatus) {
+      /*  if (topBanner.visibility != View.VISIBLE) {
+            syncStatus.text = resources.getString(R.string.syncing).uppercase()
+            syncPercent.text = ""
+            syncProgress.progress = 0
+            syncProgress.visibility = View.VISIBLE
+            topBanner.visibility = View.VISIBLE
+            val animation = AnimationUtils.loadAnimation(topBanner.context, R.anim.fade_in)
+            topBanner.startAnimation(animation)
+        } else*/ if (state is SyncJobStatus.InProgress) {
+            (state as? SyncJobStatus.InProgress)?.resourceType
+            val progress =
+                state
+                    .let { it.completed.toDouble().div(it.total) }
+                    .let { if (it.isNaN()) 0.0 else it }
+                    .times(100)
+                    .roundToInt()
+            "$progress% ${state.syncOperation.name.lowercase()}ed".also { syncPercent = it }
         }
     }
 }
