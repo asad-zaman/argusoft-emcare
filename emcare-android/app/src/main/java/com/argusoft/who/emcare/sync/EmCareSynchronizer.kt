@@ -16,6 +16,7 @@
 
 package com.argusoft.who.emcare.sync
 
+import android.text.format.DateFormat
 import com.argusoft.who.emcare.data.local.database.Database
 import com.argusoft.who.emcare.data.local.pref.Preference
 import com.argusoft.who.emcare.data.remote.Api
@@ -25,6 +26,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import java.time.Instant
 import java.time.ZoneId
 import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 
 sealed class SyncResult {
 //    val timestamp: OffsetDateTime = OffsetDateTime.now()
@@ -158,15 +160,19 @@ internal class EmCareSynchronizer(
 
         syncTypeParams.forEach { syncType ->
             emit(SyncState.InProgress(syncType))
+            val formatString12 = "dd/MM/yyyy hh:mm:ss a"
             if (syncType == SyncType.CONSULTATION_FLOW_ITEM) {
-                val consultationsList = database.getAllConsultations()
-                if(!consultationsList.isNullOrEmpty()) {
-                    val consultations = api.saveConsultations(consultationsList)
-                    consultations.whenFailed {
-                        exceptions.add(SyncException(syncType))
+                if(preference.getLastSyncTimestamp().isNotEmpty()){
+                    val timestamp = ZonedDateTime.parse(preference.getLastSyncTimestamp(), DateTimeFormatter.ofPattern(formatString12).withZone(ZoneId.systemDefault())).toOffsetDateTime().atZoneSameInstant(ZoneId.of("UTC")).toString().substringBefore("Z[UTC]")
+                    val consultationsList = database.getAllConsultationsAfterTimestamp(timestamp.toString())
+
+                    if(!consultationsList.isNullOrEmpty()) {
+                        val consultations = api.saveConsultations(consultationsList)
+                        consultations.whenFailed {
+                            exceptions.add(SyncException(syncType))
+                        }
                     }
                 }
-
             }
         }
 

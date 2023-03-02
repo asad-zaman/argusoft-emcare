@@ -36,7 +36,6 @@ class SyncViewModel @Inject constructor(
     private val _syncState = MutableLiveData<ApiResponse<SyncJobStatus>>()
     val syncState: LiveData<ApiResponse<SyncJobStatus>> = _syncState
 
-    private val formatString24 = "dd/MM/yyyy HH:mm:ss"
     private val formatString12 = "dd/MM/yyyy hh:mm:ss a"
     fun syncPatients() {
         _syncState.value = ApiResponse.Loading(false)
@@ -53,7 +52,7 @@ class SyncViewModel @Inject constructor(
                     _syncState.value = (syncJobStatus is SyncJobStatus.Finished)?.let { ApiResponse.Success(syncJobStatus) }
                     _syncState.value = null
                     preference.writeLastSyncTimestamp(OffsetDateTime.now().toLocalDateTime().format(
-                        DateTimeFormatter.ofPattern(if (DateFormat.is24HourFormat(applicationContext)) formatString24 else formatString12)))
+                        DateTimeFormatter.ofPattern(formatString12)))
                 } else if( syncJobStatus is SyncJobStatus.InProgress) {
                     _syncState.value = ApiResponse.Success(syncJobStatus)
                     _syncState.value = null
