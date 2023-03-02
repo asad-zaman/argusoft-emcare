@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Objects;
 
 
 @CrossOrigin(origins = "**")
@@ -30,7 +31,7 @@ public class QuestionnaireResponseController {
 
     @GetMapping("/fetch/all")
     public ResponseEntity<Object> getQuestionnaireResponseByUserLocation(@Nullable @RequestParam(value = CommonConstant.RESOURCE_LAST_UPDATED_AT) DateParam theDate) {
-        List<QuestionnaireResponse> questionnaireResponses = questionnaireResponseService.getQuestionnaireResponseByUserLocation(theDate.getValue());
+        List<QuestionnaireResponse> questionnaireResponses = questionnaireResponseService.getQuestionnaireResponseByUserLocation(Objects.nonNull(theDate) ? theDate.getValue() : null);
         return ResponseEntity.ok().body(questionnaireResponses);
     }
 
