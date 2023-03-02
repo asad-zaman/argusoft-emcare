@@ -19,6 +19,7 @@ package com.argusoft.who.emcare.sync
 import com.argusoft.who.emcare.data.local.pref.Preference
 import com.google.android.fhir.SyncDownloadContext
 import com.google.android.fhir.sync.DownloadWorkManager
+import com.google.android.fhir.sync.SyncDataParams
 import org.hl7.fhir.exceptions.FHIRException
 import org.hl7.fhir.r4.model.*
 import java.time.OffsetDateTime
@@ -44,6 +45,15 @@ class DownloadWorkManagerImpl constructor(
       }
     }
     return url
+  }
+
+  override suspend fun getSummaryRequestUrls(
+    context: SyncDownloadContext
+  ): Map<ResourceType, String> {
+    return urls.associate {
+      ResourceType.fromCode(it.substringBefore("?")) to
+              it.plus("&${SyncDataParams.SUMMARY_KEY}=${SyncDataParams.SUMMARY_COUNT_VALUE}")
+    }
   }
 
   override suspend fun processResponse(response: Resource): Collection<Resource> {
