@@ -16,14 +16,16 @@ fun <T> ApiResponse<T>?.handleApiView(
 ) {
     when (this) {
         is ApiResponse.Loading -> {
-            progressLayout?.showHorizontalProgress(skipIds)
+            progressLayout?.showHorizontalProgress(false, skipIds)
         }
         is ApiResponse.Success -> {
             progressLayout?.showContent(skipIds)
+            progressLayout?.updateProgressUi(true, false)
             isSuccess(data)
         }
         is ApiResponse.ApiError -> {
             progressLayout?.showContent(skipIds)
+            progressLayout?.updateProgressUi(true, false)
             progressLayout?.context?.showSnackBar(
                 view = progressLayout,
                 message = apiErrorMessage ?: apiErrorMessageResId?.let { progressLayout.context?.getString(it) },
@@ -32,6 +34,7 @@ fun <T> ApiResponse<T>?.handleApiView(
         }
         is ApiResponse.ServerError -> {
             progressLayout?.showContent(skipIds)
+            progressLayout?.updateProgressUi(true, false)
             progressLayout?.context?.showSnackBar(
                 view = progressLayout,
                 message = errorMessage,
@@ -40,6 +43,7 @@ fun <T> ApiResponse<T>?.handleApiView(
         }
         is ApiResponse.NoInternetConnection -> {
             progressLayout?.showContent(skipIds)
+            progressLayout?.updateProgressUi(true, false)
             progressLayout?.context?.showSnackBar(
                 view = progressLayout,
                 message = progressLayout.getString(R.string.no_internet_message),

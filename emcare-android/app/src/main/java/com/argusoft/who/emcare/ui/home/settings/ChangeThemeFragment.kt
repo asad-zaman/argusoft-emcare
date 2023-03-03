@@ -1,6 +1,7 @@
 package com.argusoft.who.emcare.ui.home.settings
 
 import android.content.Intent
+import android.util.Log
 import android.view.View
 import android.widget.CompoundButton
 import androidx.fragment.app.viewModels
@@ -78,32 +79,40 @@ class ChangeThemeFragment : BaseFragment<FragmentScreenResizeSettingsBinding>() 
     override fun initObserver() {
         observeNotNull(syncViewModel.syncState) { apiResponse ->
             apiResponse.whenLoading {
-                binding.rootLayout.showHorizontalProgress()
-                requireContext().showSnackBar(
-                    view = binding.rootLayout,
-                    message = getString(R.string.msg_sync_started),
-                    duration = Snackbar.LENGTH_INDEFINITE,
-                    isError = false
-                )
+                binding.rootLayout.showHorizontalProgress(true)
+//                requireContext().showSnackBar(
+//                    view = binding.rootLayout,
+//                    message = getString(R.string.msg_sync_started),
+//                    duration = Snackbar.LENGTH_INDEFINITE,
+//                    isError = false
+//                )
             }
             apiResponse.handleListApiView(binding.rootLayout) {
                 when (it) {
 
                     is SyncJobStatus.InProgress -> {
+                        Log.d("it.completed.toDouble()", it.completed.toDouble().toString())
+                        Log.d("it.total.toDouble()", it.total.toDouble().toString())
+                        if(it.total > 0) {
+                            val progress =
+                                it
+                                    .let { it.completed.toDouble().div(it.total) }
+                                    .let { if (it.isNaN()) 0.0 else it }
+                                    .times(100)
+                            "Synced $progress%".also { binding.rootLayout.showProgress(it) }
+                        }else{
+                            "Synced 0%".also { binding.rootLayout.showProgress(it) }
+                        }
                         //Code to show text.
                         //Reference: https://github.com/google/android-fhir/blob/master/demo/src/main/java/com/google/android/fhir/demo/PatientListFragment.kt
                     }
 
                     is SyncJobStatus.Finished -> {
-                        requireContext().showSnackBar(
-                            view = binding.rootLayout,
-                            message = getString(R.string.msg_sync_successfully),
-                            duration = Snackbar.LENGTH_SHORT,
-                            isError = false
-                        )
+                        binding.rootLayout.updateProgressUi(true, true)
                     }
                     is SyncJobStatus.Failed -> {
                         binding.rootLayout.showContent()
+                        binding.rootLayout.updateProgressUi(true, false)
                         requireContext().showSnackBar(
                             view = binding.rootLayout,
                             message = getString(R.string.msg_sync_failed),

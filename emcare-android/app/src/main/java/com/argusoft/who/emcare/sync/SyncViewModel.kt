@@ -39,7 +39,7 @@ class SyncViewModel @Inject constructor(
     private val formatString24 = "dd/MM/yyyy HH:mm:ss"
     private val formatString12 = "dd/MM/yyyy hh:mm:ss a"
     fun syncPatients() {
-        _syncState.value = ApiResponse.Loading(false)
+        _syncState.value = ApiResponse.Loading(true)
         viewModelScope.launch {
             val emCareResult = EmCareSync.oneTimeSync(api, database, preference, listOf(SyncType.FACILITY, SyncType.CONSULTATION_FLOW_ITEM))
             Sync.oneTimeSync<com.argusoft.who.emcare.sync.FhirSyncWorker>(

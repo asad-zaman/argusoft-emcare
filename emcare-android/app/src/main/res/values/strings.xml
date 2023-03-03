@@ -222,5 +222,6 @@
     <string name="label_save">Save</string>
     <string name="text_enlarged">Enlarged</string>
     <string name="change_theme">Change Theme</string>
+    <string name="text_syncing">Syncing</string>
 
 </resources>

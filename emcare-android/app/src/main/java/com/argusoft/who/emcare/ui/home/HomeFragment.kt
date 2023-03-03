@@ -2,6 +2,7 @@ package com.argusoft.who.emcare.ui.home
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.TextView
@@ -14,10 +15,12 @@ import com.argusoft.who.emcare.ui.common.base.BaseFragment
 import com.argusoft.who.emcare.utils.extention.*
 import com.argusoft.who.emcare.utils.glide.GlideApp
 import com.argusoft.who.emcare.utils.glide.GlideRequests
+import com.google.android.fhir.sync.ResourceSyncException
 import com.google.android.fhir.sync.SyncJobStatus
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import dagger.hilt.android.AndroidEntryPoint
+import java.time.OffsetDateTime
 
 @AndroidEntryPoint
 class HomeFragment : BaseFragment<FragmentHomeBinding>(){
@@ -26,7 +29,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(){
     private val syncViewModel: SyncViewModel by viewModels()
     private val homeViewModel: HomeViewModel by activityViewModels()
     private lateinit var homePagerAdapter: HomePagerAdapter
-    private lateinit var syncPercent: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -80,38 +82,44 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(){
     override fun initObserver() {
         observeNotNull(syncViewModel.syncState) { apiResponse ->
             apiResponse.whenLoading {
-                binding.rootLayout.showHorizontalProgress()
-                requireContext().showSnackBar(
-                    view = binding.rootLayout,
-                    message = getString(R.string.msg_sync_started),
-                    duration = Snackbar.LENGTH_INDEFINITE,
-                    isError = false
-                )
+                binding.rootLayout.showHorizontalProgress(true)
+//                requireContext().showSnackBar(
+//                    view = binding.rootLayout,
+//                    message = getString(R.string.msg_sync_started),
+//                    duration = Snackbar.LENGTH_INDEFINITE,
+//                    isError = false
+//                )
             }
             apiResponse.handleListApiView(binding.rootLayout) {
-                when (it) {
+                when(it) {
                     is SyncJobStatus.InProgress -> {
                         //Code to show text.
-                        fadeInTopBanner(it)
-//                        val progress =
-//                            it
-//                                .let { it.completed.toDouble().div(it.total) }
-//                                .let { if (it.isNaN()) 0.0 else it }
-//                                .times(100)
-//                                .roundToInt()
-//                        "$progress% ${state.syncOperation.name.lowercase()}ed".also { syncPercent.text = it }
+                        Log.d("it.completed.toDouble()", it.completed.toDouble().toString())
+                        Log.d("it.total.toDouble()", it.total.toDouble().toString())
+                        if(it.total > 0) {
+                            val progress =
+                                it
+                                    .let { it.completed.toDouble().div(it.total) }
+                                    .let { if (it.isNaN()) 0.0 else it }
+                                    .times(100)
+                            "Synced $progress%".also { binding.rootLayout.showProgress(it) }
+                        }else{
+                            "Synced 0%".also { binding.rootLayout.showProgress(it) }
+                        }
                     }
 
                     is SyncJobStatus.Finished -> {
-                        requireContext().showSnackBar(
-                            view = binding.rootLayout,
-                            message = getString(R.string.msg_sync_successfully),
-                            duration = Snackbar.LENGTH_SHORT,
-                            isError = false
-                        )
+                        binding.rootLayout.updateProgressUi(true, true)
+//                        requireContext().showSnackBar(
+//                            view = binding.rootLayout,
+//                            message = getString(R.string.msg_sync_successfully),
+//                            duration = Snackbar.LENGTH_SHORT,
+//                            isError = false
+//                        )
                     }
                     is SyncJobStatus.Failed -> {
                         binding.rootLayout.showContent()
+                        binding.rootLayout.updateProgressUi(true, false)
                         requireContext().showSnackBar(
                             view = binding.rootLayout,
                             message = getString(R.string.msg_sync_failed),
@@ -121,27 +129,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(){
                     }
                 }
             }
-        }
-    }
-
-    private fun fadeInTopBanner(state: SyncJobStatus) {
-      /*  if (topBanner.visibility != View.VISIBLE) {
-            syncStatus.text = resources.getString(R.string.syncing).uppercase()
-            syncPercent.text = ""
-            syncProgress.progress = 0
-            syncProgress.visibility = View.VISIBLE
-            topBanner.visibility = View.VISIBLE
-            val animation = AnimationUtils.loadAnimation(topBanner.context, R.anim.fade_in)
-            topBanner.startAnimation(animation)
-        } else*/ if (state is SyncJobStatus.InProgress) {
-            (state as? SyncJobStatus.InProgress)?.resourceType
-            val progress =
-                state
-                    .let { it.completed.toDouble().div(it.total) }
-                    .let { if (it.isNaN()) 0.0 else it }
-                    .times(100)
-                    .roundToInt()
-            "$progress% ${state.syncOperation.name.lowercase()}ed".also { syncPercent = it }
         }
     }
 }
