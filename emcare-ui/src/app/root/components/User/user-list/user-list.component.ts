@@ -214,4 +214,11 @@ export class UserListComponent implements OnInit {
       return 'NA';
     }
   }
+
+  clearFilter(event) {
+    if (event) {
+      this.resetPageIndex();
+      this.getUsersByPageIndex(this.currentPage);
+    }
+  }
 }

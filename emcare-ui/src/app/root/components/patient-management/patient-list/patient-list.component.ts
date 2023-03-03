@@ -145,4 +145,11 @@ export class PatientListComponent implements OnInit {
             this.toasterService.showToast('info', 'Please select Location!', 'EMCARE');
         }
     }
+
+    clearFilter(event) {
+        if (event) {
+            this.resetPageIndex();
+            this.getPatientsByPageIndex(this.currentPage);
+        }
+    }
 }

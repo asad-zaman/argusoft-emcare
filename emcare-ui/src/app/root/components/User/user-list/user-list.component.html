@@ -1,4 +1,6 @@
-<app-location-filter *ngIf="isView" [isOtherPage]="false" (locationId)="getLocationId($event)"></app-location-filter>
+<app-location-filter *ngIf="isView" [isOtherPage]="false" (isClear)="clearFilter($event)"
+  (locationId)="getLocationId($event)">
+</app-location-filter>
 <div *ngIf="isView" class="main-wrapper">
   <h1 class="heading">{{'User list Heading' | translate}}</h1>
   <hr>

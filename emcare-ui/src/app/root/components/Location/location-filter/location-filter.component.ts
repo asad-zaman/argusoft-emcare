@@ -13,8 +13,11 @@ export class LocationFilterComponent implements OnInit {
   formData;
   dropdownActiveArr = [];
   @Input() isOtherPage?: boolean;
+  @Output() isClear = new EventEmitter<any>();
+  @Input() isClearFilter;
 
-  constructor() { }
+  constructor(
+  ) { }
 
   ngOnInit(): void {
     this.prerequisite();
@@ -52,5 +55,14 @@ export class LocationFilterComponent implements OnInit {
   getFormValue(event) {
     this.formData = event.formData;
     this.dropdownActiveArr = event.dropdownArr;
+  }
+
+  clearFilter() {
+    this.isClearFilter = true;
+    this.isClear.emit(true);
+  }
+
+  getValue() {
+    return this.isClearFilter;
   }
 }

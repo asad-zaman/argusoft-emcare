@@ -275,4 +275,9 @@ export class FhirService {
         let url = `${environment.apiUrl}/api/indicator/${indicatorId}`;
         return this.http.get(url, this.getHeaders());
     }
+
+    checkEmail(email) {
+        let url = `${environment.apiUrl}/api/user/check/email?emailId=${email}`;
+        return this.http.get(url, this.getHeaders());
+    }
 }
