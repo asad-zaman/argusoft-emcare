@@ -155,4 +155,11 @@ export class ShowLocationComponent implements OnInit {
       this.toasterService.showToast('info', 'Please select Location!', 'EMCARE')
     }
   }
+
+  clearFilter(event) {
+    if (event) {
+      this.resetPageIndex();
+      this.getLocationsByPageIndex(this.currentPage);
+    }
+  }
 }
