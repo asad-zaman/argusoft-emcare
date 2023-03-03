@@ -8,12 +8,15 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 
 @Repository
 public interface QuestionnaireResponseRepository extends JpaRepository<QuestionnaireResponse, String> {
 
     public List<QuestionnaireResponse> findByPatientIdIn(List<String> ids);
+
+    public List<QuestionnaireResponse> findByPatientIdInAndConsultationDateGreaterThan(List<String> ids, Date theDate);
 
     public List<MiniPatient> findDistinctByPatientIdIn(List<String> resourceId, Pageable pageable);
 

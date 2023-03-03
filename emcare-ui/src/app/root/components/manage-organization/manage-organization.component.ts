@@ -89,7 +89,7 @@ export class ManageOrganizationComponent implements OnInit {
       alias: ['', [Validators.required]],
       addressStreet: ['', [Validators.required]],
       telecom: ['', [Validators.required]],
-      status: ['', [Validators.required]]
+      status: [this.statusArr[0], [Validators.required]]
     });
   }
 

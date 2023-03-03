@@ -1,4 +1,5 @@
-<app-location-filter *ngIf="isView" [isOtherPage]="true" (locationId)="getLocationId($event)"></app-location-filter>
+<app-location-filter *ngIf="isView" [isOtherPage]="true" (isClear)="clearFilter($event)"
+  (locationId)="getLocationId($event)"></app-location-filter>
 <div *ngIf="isView" class="main-wrapper">
   <h1 class="heading">{{'Show Location' | translate}}</h1>
   <hr>

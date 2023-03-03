@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter, Input, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input, SimpleChanges, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Observable, Subscription } from 'rxjs';
 import { LocationService } from 'src/app/root/services/location.service';
@@ -30,11 +30,15 @@ export class LocationDropdownComponent implements OnInit {
   @Input() events: Observable<boolean>;
   currentSelection: number;
 
+  @Input() isClearFilter?: boolean;
+
   constructor(
     private readonly formBuilder: FormBuilder,
     private readonly locationService: LocationService,
-    private readonly fhirService: FhirService
-  ) { }
+    private readonly fhirService: FhirService,
+    private readonly cdr: ChangeDetectorRef
+  ) {
+  }
 
   ngOnInit(): void {
     this.prerequisite();
@@ -43,10 +47,21 @@ export class LocationDropdownComponent implements OnInit {
     }
   }
 
+  ngAfterViewChecked() {
+    this.cdr.detectChanges();
+  }
+
   ngOnChanges(changes: SimpleChanges) {
     // only run when property "data" changed
     if (changes['idArr']) {
       this.insertDataFromIdArr(changes['idArr'].currentValue);
+    }
+    console.log('sd', changes['isClearFilter']);
+    if (changes['isClearFilter']) {
+      if (changes['isClearFilter'].currentValue) {
+        this.resetData();
+        this.cdr.detectChanges();
+      }
     }
   }
 
