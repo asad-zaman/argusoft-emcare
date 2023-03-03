@@ -15,6 +15,7 @@ public class DeviceDto {
     private String macAddress;
     private String userId;
     private Boolean isBlocked;
+    private String igVersion;
 
     public Integer getDeviceId() {
         return deviceId;
@@ -94,5 +95,13 @@ public class DeviceDto {
 
     public void setIsBlocked(Boolean blocked) {
         isBlocked = blocked;
+    }
+
+    public String getIgVersion() {
+        return igVersion;
+    }
+
+    public void setIgVersion(String igVersion) {
+        this.igVersion = igVersion;
     }
 }
