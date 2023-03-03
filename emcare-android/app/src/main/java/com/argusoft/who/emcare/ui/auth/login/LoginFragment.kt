@@ -48,7 +48,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(), EasyPermissions.Perm
         observeNotNull(loginViewModel.loginApiState) {
             it.handleApiView(binding.progressLayout) {
                 binding.progressLayout.updateProgressUi(true, false)
-                syncViewModel.syncPatients()
+                syncViewModel.syncPatients(false)
             }
         }
 

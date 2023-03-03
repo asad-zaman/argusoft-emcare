@@ -46,7 +46,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(){
         binding.headerLayout.toolbar.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.action_sync -> {
-                    syncViewModel.syncPatients()
+                    syncViewModel.syncPatients(true)
                 }
                 R.id.action_more -> {
                     (activity as HomeActivity).openDrawer()

@@ -37,8 +37,9 @@ class SyncViewModel @Inject constructor(
     val syncState: LiveData<ApiResponse<SyncJobStatus>> = _syncState
 
     private val formatString12 = "dd/MM/yyyy hh:mm:ss a"
-    fun syncPatients() {
-        _syncState.value = ApiResponse.Loading(true)
+
+    fun syncPatients(isRefresh: Boolean) {
+        _syncState.value = ApiResponse.Loading(isRefresh)
         viewModelScope.launch {
             val emCareResult = EmCareSync.oneTimeSync(api, database, preference, listOf(SyncType.FACILITY, SyncType.CONSULTATION_FLOW_ITEM))
             Sync.oneTimeSync<com.argusoft.who.emcare.sync.FhirSyncWorker>(

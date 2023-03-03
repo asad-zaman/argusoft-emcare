@@ -218,17 +218,18 @@ class ApiViewStateConstraintLayout : ConstraintLayout {
     }
 
     fun showProgress(progressCount : String){
-        horizontalProgressCountText?.text = progressCount
+        if(horizontalProgressView?.ivCompleted?.visibility == GONE)
+            horizontalProgressCountText?.text = progressCount
     }
 
     fun updateProgressUi(isFinishing : Boolean, isShowCompleted : Boolean){
+        horizontalProgressView?.tvProgress?.isVisible = true
         if(isFinishing){
             horizontalProgressView?.tvProgress?.text = context?.getString(R.string.msg_sync_successfully)
             horizontalProgressView?.horizontalProgressBar?.isVisible = false
             if(isShowCompleted) {
                 horizontalProgressView?.ivCompleted?.isVisible = true
                 Handler(Looper.getMainLooper()).postDelayed({
-                    Timber.d("***********  updateProgressUi")
                     horizontalProgressView?.root?.isVisible = false
                 }, 3000)
             }else{

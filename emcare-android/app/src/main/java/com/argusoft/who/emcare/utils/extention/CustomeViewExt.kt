@@ -76,6 +76,7 @@ inline fun <reified T> ApiResponse<T>?.handleListApiView(
             }
         }
         is ApiResponse.Success -> {
+            progressLayout?.updateProgressUi(true, true)
             if (isRequiredClear) {
                 adapter?.clearAllItems()
             }
@@ -121,6 +122,7 @@ inline fun <reified T> ApiResponse<T>?.handleListApiView(
             }
         }
         is ApiResponse.ServerError -> {
+            progressLayout?.updateProgressUi(true, false)
             if (progressLayout?.swipeRefreshLayout?.isRefreshing == true || (adapter?.itemCount ?: 0) > 0) {
                 progressLayout?.swipeRefreshLayout?.isRefreshing = false
                 progressLayout?.swipeRefreshLayout?.isEnabled = true
@@ -138,6 +140,7 @@ inline fun <reified T> ApiResponse<T>?.handleListApiView(
             }
         }
         is ApiResponse.NoInternetConnection -> {
+            progressLayout?.updateProgressUi(true, false)
             if (progressLayout?.swipeRefreshLayout?.isRefreshing == true || (adapter?.itemCount ?: 0) > 0) {
                 progressLayout?.swipeRefreshLayout?.isRefreshing = false
                 progressLayout?.swipeRefreshLayout?.isEnabled = true
