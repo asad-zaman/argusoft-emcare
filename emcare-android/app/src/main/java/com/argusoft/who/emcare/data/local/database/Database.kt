@@ -31,6 +31,8 @@ interface Database {
 
     suspend fun getAllConsultations() : List<ConsultationFlowItem>?
 
+    suspend fun getAllConsultationsAfterTimestamp(timestamp: String): List<ConsultationFlowItem>?
+
     suspend fun getAllConsultationsByEncounterId(encounterId: String): List<ConsultationFlowItem>?
 
     suspend fun getNextConsultationByConsultationIdAndEncounterId(consultationId: String, encounterId: String): ConsultationFlowItem?

@@ -87,6 +87,10 @@ class ApiManager(private val preference: Preference) : Api {
         return executeApiHelper { apiService.getConsultationFlow() }
     }
 
+    override suspend fun getConsultationFlowWithTimestamp(timestamp: String): ApiResponse<List<ConsultationFlowItem>> {
+        return executeApiHelper { apiService.getConsultationFlowWithTimestamp(timestamp) }
+    }
+
     override suspend fun getLoggedInUser(): ApiResponse<LoggedInUser> {
         return executeApiHelper { apiService.getLoggedInUser() }
     }
