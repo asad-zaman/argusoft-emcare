@@ -20,7 +20,9 @@ export class ManageTenantComponent implements OnInit {
   isAddFeature = true;
   isEditFeature = true;
   isAllowed = true;
-
+  isTenantIdRepeat = false;
+  isURLRepeat = false;
+  isDomainRepeat = false;
   domainTermChanged: Subject<string> = new Subject<string>();
   urlTermChanged: Subject<string> = new Subject<string>();
   tenantIdTermChanged: Subject<string> = new Subject<string>();
@@ -80,7 +82,7 @@ export class ManageTenantComponent implements OnInit {
 
   saveData() {
     this.submitted = true;
-    if (this.tenantForm.valid) {
+    if (this.tenantForm.valid && !this.isDomainRepeat && !this.isTenantIdRepeat && !this.isURLRepeat) {
       const data = {
         tenantId: this.tenantForm.get('tenantId').value,
         url: this.tenantForm.get('url').value,
@@ -108,8 +110,8 @@ export class ManageTenantComponent implements OnInit {
             this.fhirService.checkTenantField('tenantId', this.f.tenantId.value).subscribe(() => {
             }, (error) => {
               if (error['status'] === 400) {
+                this.isTenantIdRepeat = true;
                 this.toasterService.showToast('error', 'Field is already exists!!', 'EMCARE!');
-                this.f.tenantId.reset();
               }
             });
           } else { }
@@ -126,8 +128,8 @@ export class ManageTenantComponent implements OnInit {
             this.fhirService.checkTenantField('url', this.f.url.value).subscribe(() => {
             }, (error) => {
               if (error['status'] === 400) {
+                this.isURLRepeat = true;
                 this.toasterService.showToast('error', 'Field is already exists!!', 'EMCARE!');
-                this.f.url.reset();
               }
             });
           } else { }
@@ -144,8 +146,8 @@ export class ManageTenantComponent implements OnInit {
             this.fhirService.checkTenantField('domain', this.f.domain.value).subscribe(res => {
             }, (error) => {
               if (error['status'] === 400) {
+                this.isDomainRepeat = true;
                 this.toasterService.showToast('error', 'Field is already exists!!', 'EMCARE!');
-                this.f.domain.reset();
               }
             });
           } else { }

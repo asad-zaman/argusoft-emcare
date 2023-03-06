@@ -278,5 +278,8 @@
   "Domain Placeholder": "Enter Domain",
   "Domain Required Message": "Domain in Required",
   "Tenants": "Tenants",
-  "URL": "Database URL"
+  "URL": "Database URL",
+  "Tenant Id Repeat Message": "Please enter different Tenant Id!!",
+  "URL Repeat Message": "Please enter different URL!!",
+  "Domain Repeat Message": "Please enter different Domain!!"
 }
