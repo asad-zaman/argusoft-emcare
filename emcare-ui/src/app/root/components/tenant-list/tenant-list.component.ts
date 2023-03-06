@@ -16,8 +16,8 @@ export class TenantListComponent implements OnInit {
   currentPage = 0;
   totalCount = 0;
   tableSize = 10;
-  isAPIBusy: boolean = true;
-  isView: boolean = true;
+  isAPIBusy = true;
+  isView = true;
   searchTermChanged: Subject<string> = new Subject<string>();
   filteredTenants;
 
@@ -67,5 +67,9 @@ export class TenantListComponent implements OnInit {
         || tenant.username?.toLowerCase().includes(lowerCasedSearchString)
         || tenant.url?.toLowerCase().includes(lowerCasedSearchString));
     });
+  }
+
+  hashPassword(password: string) {
+    return "*".repeat(password.length)
   }
 }

@@ -30,7 +30,7 @@
               <td>{{currentPage == 0 ? ((currentPage)*10 + i + 1) : ((currentPage-1)*10 + i + 1)}}</td>
               <td>{{tenant.url}}</td>
               <td>{{tenant.username}}</td>
-              <td>{{tenant.password}}</td>
+              <td>{{hashPassword(tenant.password)}}</td>
               <td>{{tenant.domain}}</td>
             </tr>
           </ng-container>

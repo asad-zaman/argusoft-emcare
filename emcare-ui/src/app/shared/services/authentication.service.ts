@@ -67,6 +67,9 @@ export class AuthenticationService {
             .set('grant_type', 'password')
             .set('client_id', 'emcare')
             .set('client_secret', 'b5a37bde-8d54-4837-a8dc-12e1f808e26e');
+        // const body = {
+        //     username: username, password: password
+        // }
         // return this.http.post<any>(`http:localhost:4200/users/authenticate`, { username, password }, { withCredentials: true })
         return this.http.post<any>(url, body.toString(), this.getHeaders());
     }

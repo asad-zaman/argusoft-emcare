@@ -108,9 +108,14 @@ export class ManageProfileComponent implements OnInit {
         localStorage.setItem('language', this.f.language.value.id);
         this.lanSubjects.setLaunguage(this.f.language.value.id);
         this.lanSubjects.setCurrentTranslation(translations);
-        this.router.navigate(['/dashboard']);
         this.toasterService.showToast('success', 'User profile updated successfully!', 'EMCARE');
+        this.checkSuperAdminAndNavigate();
       });
     }
+  }
+
+  checkSuperAdminAndNavigate() {
+    const isSuperAdmin = localStorage.getItem('isSuperAdmin');
+    isSuperAdmin ? this.router.navigate(["/tenantList"]) : this.router.navigate(["/dashboard"]);
   }
 }

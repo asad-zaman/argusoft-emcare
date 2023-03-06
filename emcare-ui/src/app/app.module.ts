@@ -69,7 +69,8 @@ import { NgxIntlTelInputModule } from 'ngx-intl-tel-input';
 import { IndicatorListComponent } from './root/components/indicator-list/indicator-list.component';
 import { TenantListComponent } from './root/components/tenant-list/tenant-list.component';
 import { ManageTenantComponent } from './root/components/manage-tenant/manage-tenant.component';
-
+import { MessagesModule } from 'primeng/messages';
+import { MessageModule } from 'primeng/message';
 @NgModule({
   declarations: [
     AppComponent,
@@ -136,7 +137,9 @@ import { ManageTenantComponent } from './root/components/manage-tenant/manage-te
     CardModule,
     ChartModule,
     ToastModule,
-    NgxIntlTelInputModule
+    NgxIntlTelInputModule,
+    MessagesModule,
+    MessageModule
   ],
   providers: [
     AuthenticationService,
