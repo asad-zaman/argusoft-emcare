@@ -42,4 +42,6 @@ public interface EmcareResourceService {
 
     public Bundle getPatientBundle(String theId);
 
+    public Bundle getPatientCountBasedOnDate(String summaryType, DateParam theDate);
+
 }

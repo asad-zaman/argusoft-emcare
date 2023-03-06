@@ -11,6 +11,7 @@ import com.argusoft.who.emcare.web.fhir.dto.StructureMapDto;
 import com.argusoft.who.emcare.web.fhir.mapper.EmcareResourceMapper;
 import com.argusoft.who.emcare.web.fhir.model.StructureMapResource;
 import com.argusoft.who.emcare.web.fhir.service.StructureMapResourceService;
+import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.Meta;
 import org.hl7.fhir.r4.model.StructureMap;
@@ -137,5 +138,22 @@ public class StructureMapResourceServiceImpl implements StructureMapResourceServ
         pageDto.setTotalCount(count);
 
         return pageDto;
+    }
+
+    @Override
+    public Bundle getStructureMapCountBasedOnDate(String summaryType, DateParam theDate) {
+        Long count = 0l;
+        if (summaryType.equalsIgnoreCase(CommonConstant.SUMMARY_TYPE_COUNT)) {
+            if (theDate.isEmpty()) {
+                count = structureMapResourceRepository.getCount();
+            } else {
+                count = structureMapResourceRepository.getCountBasedOnDate(theDate.getValue());
+            }
+        } else {
+            return null;
+        }
+        Bundle bundle = new Bundle();
+        bundle.setTotal(count.intValue());
+        return bundle;
     }
 }

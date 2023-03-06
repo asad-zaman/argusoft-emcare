@@ -4,6 +4,7 @@ import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.param.DateParam;
 import com.argusoft.who.emcare.web.common.dto.PageDto;
 import com.argusoft.who.emcare.web.fhir.model.QuestionnaireMaster;
+import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.Questionnaire;
 
@@ -25,6 +26,8 @@ public interface QuestionnaireMasterService {
     public PageDto getQuestionnaireDtosPage(Integer pageNo);
 
     public MethodOutcome updateQuestionnaireResource(IdType theId, Questionnaire questionnaire);
+
+    public Bundle getQuestionnaireCountBasedOnDate(String summaryType, DateParam theDate);
 
 
 }

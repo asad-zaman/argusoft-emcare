@@ -12,6 +12,7 @@ import com.argusoft.who.emcare.web.fhir.mapper.EmcareResourceMapper;
 import com.argusoft.who.emcare.web.fhir.model.QuestionnaireMaster;
 import com.argusoft.who.emcare.web.fhir.service.QuestionnaireMasterService;
 import com.argusoft.who.emcare.web.user.service.UserService;
+import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.Meta;
 import org.hl7.fhir.r4.model.Questionnaire;
@@ -129,6 +130,24 @@ public class QuestionnaireMasterServiceImpl implements QuestionnaireMasterServic
         retVal.setResource(questionnaire);
 
         return retVal;
+    }
+
+    @Override
+    public Bundle getQuestionnaireCountBasedOnDate(String summaryType, DateParam theDate) {
+        Long count = 0l;
+        if (summaryType.equalsIgnoreCase(CommonConstant.SUMMARY_TYPE_COUNT)) {
+            if (theDate.isEmpty()) {
+                count = repository.getCount();
+            } else {
+                count = repository.getCountBasedOnDate(theDate.getValue());
+            }
+        } else {
+            return null;
+        }
+        Bundle bundle = new Bundle();
+        bundle.setTotal(count.intValue());
+        return bundle;
+
     }
 
 

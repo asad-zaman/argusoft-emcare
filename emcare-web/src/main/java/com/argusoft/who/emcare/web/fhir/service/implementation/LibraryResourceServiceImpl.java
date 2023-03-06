@@ -11,6 +11,7 @@ import com.argusoft.who.emcare.web.fhir.dto.LibraryDto;
 import com.argusoft.who.emcare.web.fhir.mapper.EmcareResourceMapper;
 import com.argusoft.who.emcare.web.fhir.model.LibraryResource;
 import com.argusoft.who.emcare.web.fhir.service.LibraryResourceService;
+import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.Library;
 import org.hl7.fhir.r4.model.Meta;
@@ -135,5 +136,22 @@ public class LibraryResourceServiceImpl implements LibraryResourceService {
         pageDto.setTotalCount(count);
 
         return pageDto;
+    }
+
+    @Override
+    public Bundle getLibraryCountBasedOnDate(String summaryType, DateParam theDate) {
+        Long count = 0l;
+        if (summaryType.equalsIgnoreCase(CommonConstant.SUMMARY_TYPE_COUNT)) {
+            if (theDate.isEmpty()) {
+                count = libraryResourceRepository.count();
+            } else {
+                count = libraryResourceRepository.getCountBasedOnDate(theDate.getValue());
+            }
+        } else {
+            return null;
+        }
+        Bundle bundle = new Bundle();
+        bundle.setTotal(count.intValue());
+        return bundle;
     }
 }

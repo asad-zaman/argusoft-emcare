@@ -8,6 +8,7 @@ import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.fhir.dao.ObservationResourceRepository;
 import com.argusoft.who.emcare.web.fhir.model.ObservationResource;
 import com.argusoft.who.emcare.web.fhir.service.ObservationResourceService;
+import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.Meta;
 import org.hl7.fhir.r4.model.Observation;
@@ -117,5 +118,22 @@ public class ObservationResourceServiceImpl implements ObservationResourceServic
             observations.add(observation);
         }
         return observations;
+    }
+
+    @Override
+    public Bundle getObservationCountBasedOnDate(String summaryType, DateParam theDate) {
+        Long count = 0l;
+        if (summaryType.equalsIgnoreCase(CommonConstant.SUMMARY_TYPE_COUNT)) {
+            if (theDate.isEmpty()) {
+                count = observationResourceRepository.count();
+            } else {
+                count = observationResourceRepository.getCountBasedOnDate(theDate.getValue());
+            }
+        } else {
+            return null;
+        }
+        Bundle bundle = new Bundle();
+        bundle.setTotal(count.intValue());
+        return bundle;
     }
 }
