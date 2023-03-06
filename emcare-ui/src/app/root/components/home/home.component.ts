@@ -3,6 +3,8 @@ import { Router } from '@angular/router';
 import * as Highcharts from 'highcharts';
 import { AuthGuard } from 'src/app/auth/auth.guard';
 import { FhirService } from 'src/app/shared';
+import { default as NoData } from 'highcharts/modules/no-data-to-display';
+NoData(Highcharts);
 
 @Component({
   selector: 'app-home',
