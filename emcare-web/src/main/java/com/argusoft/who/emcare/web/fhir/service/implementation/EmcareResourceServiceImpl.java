@@ -43,73 +43,50 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
 
     @Autowired
     LocationMasterDao locationMasterDao;
-
-    @Autowired
-    private LocationService locationService;
-
     @Autowired
     EmCareSecurityUser emCareSecurityUser;
-
     @Autowired
     UserLocationMappingRepository userLocationMappingRepository;
-
-    @Autowired
-    private LocationResourceService locationResourceService;
-
-    @Autowired
-    private LocationResourceRepository locationResourceRepository;
-
     @Autowired
     ActivityDefinitionResourceService activityDefinitionResourceService;
-
     @Autowired
     ActivityDefinitionResourceRepository activityDefinitionResourceRepository;
-
     @Autowired
     CodeSystemResourceService codeSystemResourceService;
-
     @Autowired
     LibraryResourceService libraryResourceService;
-
     @Autowired
     OperationDefinitionResourceService operationDefinitionResourceService;
-
     @Autowired
     PlanDefinitionResourceService planDefinitionResourceService;
-
     @Autowired
     QuestionnaireMasterService questionnaireMasterService;
-
     @Autowired
     QuestionnaireResourceProvider questionnaireResourceProvider;
-
     @Autowired
     StructureDefinitionService structureDefinitionService;
-
     @Autowired
     ValueSetResourceService valueSetResourceService;
-
     @Autowired
     EncounterResourceService encounterResourceService;
-
     @Autowired
     StructureMapResourceService structureMapResourceService;
-
     @Autowired
     ObservationResourceService observationResourceService;
-
     @Autowired
     RelatedPersonResourceService relatedPersonResourceService;
-
     @Autowired
     ConditionResourceService conditionResourceService;
-
     @Autowired
     EncounterResourceRepository encounterResourceRepository;
-
     @Autowired
     ObservationResourceRepository observationResourceRepository;
-
+    @Autowired
+    private LocationService locationService;
+    @Autowired
+    private LocationResourceService locationResourceService;
+    @Autowired
+    private LocationResourceRepository locationResourceRepository;
 
     @Override
     public EmcareResource saveResource(EmcareResource emcareResource) {
@@ -585,6 +562,24 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
             bundle.addEntry(new Bundle.BundleEntryComponent().setResource(observation));
         }
         return bundle;
+    }
+
+    @Override
+    public Bundle getPatientCountBasedOnDate(String summaryType, DateParam theDate) {
+        Long count = 0l;
+        if (summaryType.equalsIgnoreCase(CommonConstant.SUMMARY_TYPE_COUNT)) {
+            if (theDate.isEmpty()) {
+                count = repository.getCount();
+            } else {
+                count = repository.getCountBasedOnDate(theDate.getValue());
+            }
+        } else {
+            return null;
+        }
+        Bundle bundle = new Bundle();
+        bundle.setTotal(count.intValue());
+        return bundle;
+
     }
 
     private List<PatientDto> getAllPatientsForChart() {

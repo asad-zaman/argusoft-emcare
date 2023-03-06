@@ -10,6 +10,7 @@ import com.argusoft.who.emcare.web.fhir.dao.RelatedPersonResourceRepository;
 import com.argusoft.who.emcare.web.fhir.model.EmcareResource;
 import com.argusoft.who.emcare.web.fhir.model.RelatedPersonResource;
 import com.argusoft.who.emcare.web.fhir.service.RelatedPersonResourceService;
+import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.Meta;
 import org.hl7.fhir.r4.model.RelatedPerson;
@@ -99,6 +100,23 @@ public class RelatedPersonResourceServiceImpl implements RelatedPersonResourceSe
         retVal.setId(new IdType(CommonConstant.RELATED_PERSON, relatedPerson.getId(), version.toString()));
         retVal.setResource(relatedPerson);
         return retVal;
+    }
+
+    @Override
+    public Bundle getRelatedPersonCountBasedOnDate(String summaryType, DateParam theDate) {
+        Long count = 0l;
+        if (summaryType.equalsIgnoreCase(CommonConstant.SUMMARY_TYPE_COUNT)) {
+            if (theDate.isEmpty()) {
+                count = relatedPersonResourceRepository.count();
+            } else {
+                count = relatedPersonResourceRepository.getCountBasedOnDate(theDate.getValue());
+            }
+        } else {
+            return null;
+        }
+        Bundle bundle = new Bundle();
+        bundle.setTotal(count.intValue());
+        return bundle;
     }
 
     @Override

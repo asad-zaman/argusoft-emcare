@@ -11,6 +11,7 @@ import com.argusoft.who.emcare.web.fhir.dto.OperationDefinitionDto;
 import com.argusoft.who.emcare.web.fhir.mapper.EmcareResourceMapper;
 import com.argusoft.who.emcare.web.fhir.model.OperationDefinitionResource;
 import com.argusoft.who.emcare.web.fhir.service.OperationDefinitionResourceService;
+import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.Meta;
 import org.hl7.fhir.r4.model.OperationDefinition;
@@ -137,5 +138,22 @@ public class OperationDefinitionResourceServiceImpl implements OperationDefiniti
         pageDto.setTotalCount(count);
 
         return pageDto;
+    }
+
+    @Override
+    public Bundle getOperationDefinitionCountBasedOnDate(String summaryType, DateParam theDate) {
+        Long count = 0l;
+        if (summaryType.equalsIgnoreCase(CommonConstant.SUMMARY_TYPE_COUNT)) {
+            if (theDate.isEmpty()) {
+                count = operationDefinitionResourceRepository.count();
+            } else {
+                count = operationDefinitionResourceRepository.getCountBasedOnDate(theDate.getValue());
+            }
+        } else {
+            return null;
+        }
+        Bundle bundle = new Bundle();
+        bundle.setTotal(count.intValue());
+        return bundle;
     }
 }

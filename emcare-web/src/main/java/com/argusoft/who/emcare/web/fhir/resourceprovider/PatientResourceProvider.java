@@ -239,4 +239,9 @@ public class PatientResourceProvider implements IResourceProvider {
     public Bundle getPatientBundle(@RequiredParam(name = CommonConstant.RESOURCE_ID) IdType theId) {
         return emcareResourceService.getPatientBundle(theId.getIdPart());
     }
+
+    @Search()
+    public Bundle getPatientCountBasedOnDate(@RequiredParam(name = CommonConstant.SUMMARY) String type, @OptionalParam(name = CommonConstant.RESOURCE_LAST_UPDATED_AT) DateParam theDate) {
+        return emcareResourceService.getPatientCountBasedOnDate(type, theDate);
+    }
 }

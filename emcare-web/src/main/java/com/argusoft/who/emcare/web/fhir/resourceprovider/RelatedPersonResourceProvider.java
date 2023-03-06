@@ -8,6 +8,7 @@ import ca.uhn.fhir.rest.param.DateParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.fhir.service.RelatedPersonResourceService;
+import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.RelatedPerson;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,5 +51,10 @@ public class RelatedPersonResourceProvider implements IResourceProvider {
     @Search()
     public List<RelatedPerson> getAllRelatedPerson(@OptionalParam(name = CommonConstant.RESOURCE_LAST_UPDATED_AT) DateParam theDate) {
         return relatedPersonResourceService.getAllRelatedPerson(theDate);
+    }
+
+    @Search()
+    public Bundle getRelatedPersonCountBasedOnDate(@RequiredParam(name = CommonConstant.SUMMARY) String type, @OptionalParam(name = CommonConstant.RESOURCE_LAST_UPDATED_AT) DateParam theDate) {
+        return relatedPersonResourceService.getRelatedPersonCountBasedOnDate(type, theDate);
     }
 }
