@@ -3,7 +3,7 @@
     <span class="dashboard-title">{{'Key Performance Indicators' | translate}}</span>
     <span class="date-title"> | {{getDateData()}}</span>
     <span class="sync-title" (click)="getLastSyncDate()">{{'Last sync' | translate}}: {{lastScDate}}</span>
-    <ng-container *ngIf="!isEmpty(dashboardData)">
+    <ng-container *ngIf="!isEmpty(dashboardData) && this.indicatorArr.length>0">
       <div class="row mt-3">
         <div class="col-lg-3 col-md-4 col-sm-6 col-12 mb-3">
           <p-card
