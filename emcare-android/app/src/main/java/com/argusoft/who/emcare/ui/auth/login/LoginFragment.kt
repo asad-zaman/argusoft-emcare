@@ -19,6 +19,7 @@ import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
+import kotlin.math.roundToInt
 
 @AndroidEntryPoint
 class LoginFragment : BaseFragment<FragmentLoginBinding>(), EasyPermissions.PermissionCallbacks {
@@ -63,6 +64,25 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(), EasyPermissions.Perm
 //                    isError = false
 //                )
             }
+
+            apiResponse.whenInProgress {
+                Log.d("it.completed.toDouble()", it.second.toDouble().toString())
+                Log.d("it.total.toDouble()", it.first.toDouble().toString())
+                if(it.first > 0) {
+                    val progress =
+                        it
+                            .let { it.second.toDouble().div(it.first) }
+                            .let { if (it.isNaN()) 0.0 else it }
+                            .times(100)
+                            .roundToInt()
+                    "Synced $progress%".also { binding.progressLayout.showProgress(it)
+                        Log.d("Synced", "$progress%")
+                    }
+                }else{
+                    "Synced 0%".also { binding.progressLayout.showProgress(it) }
+                }
+            }
+
             apiResponse.handleListApiView(binding.progressLayout) {
                 when (it) {
                     is SyncJobStatus.InProgress -> {
@@ -74,7 +94,10 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(), EasyPermissions.Perm
                                     .let { it.completed.toDouble().div(it.total) }
                                     .let { if (it.isNaN()) 0.0 else it }
                                     .times(100)
-                            "Synced $progress%".also { binding.progressLayout.showProgress(it) }
+                                    .roundToInt()
+                            "Synced $progress%".also { binding.progressLayout.showProgress(it)
+                                Log.d("Synced", "$progress%")
+                            }
                         }else{
                             "Synced 0%".also { binding.progressLayout.showProgress(it) }
                         }

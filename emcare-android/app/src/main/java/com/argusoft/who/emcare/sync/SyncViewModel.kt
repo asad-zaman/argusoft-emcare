@@ -2,10 +2,12 @@ package com.argusoft.who.emcare.sync
 
 import android.app.Application
 import android.text.format.DateFormat
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.work.Constraints
 import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.data.local.database.Database
 import com.argusoft.who.emcare.data.local.pref.Preference
@@ -49,13 +51,14 @@ class SyncViewModel @Inject constructor(
                 Executors.newSingleThreadScheduledExecutor().schedule({
                     //blank body
                 }, 1, TimeUnit.SECONDS)
-                if (syncJobStatus is SyncJobStatus.Finished || emCareResult is SyncResult.Success) {
+                    Log.d("syncJobStatus",syncJobStatus.toString())
+                if (syncJobStatus is SyncJobStatus.Finished && emCareResult is SyncResult.Success) {
                     _syncState.value = (syncJobStatus is SyncJobStatus.Finished)?.let { ApiResponse.Success(syncJobStatus) }
                     _syncState.value = null
                     preference.writeLastSyncTimestamp(OffsetDateTime.now().toLocalDateTime().format(
                         DateTimeFormatter.ofPattern(formatString12)))
-                } else if( syncJobStatus is SyncJobStatus.InProgress) {
-                    _syncState.value = ApiResponse.Success(syncJobStatus)
+                } else if(syncJobStatus is SyncJobStatus.InProgress) {
+                    _syncState.value = ApiResponse.InProgress(total = syncJobStatus.total, completed = syncJobStatus.completed)
                     _syncState.value = null
 
                 } else {

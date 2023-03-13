@@ -21,6 +21,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.OffsetDateTime
+import kotlin.math.roundToInt
 
 @AndroidEntryPoint
 class HomeFragment : BaseFragment<FragmentHomeBinding>(){
@@ -90,6 +91,23 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(){
 //                    isError = false
 //                )
             }
+            apiResponse.whenInProgress {
+                Log.d("it.completed.toDouble()", it.second.toDouble().toString())
+                Log.d("it.total.toDouble()", it.first.toDouble().toString())
+                if(it.first > 0) {
+                    val progress =
+                        it
+                            .let { it.second.toDouble().div(it.first) }
+                            .let { if (it.isNaN()) 0.0 else it }
+                            .times(100)
+                            .roundToInt()
+                    "Synced $progress%".also { binding.rootLayout.showProgress(it)
+                        Log.d("Synced", "$progress%")
+                    }
+                }else{
+                    "Synced 0%".also { binding.rootLayout.showProgress(it) }
+                }
+            }
             apiResponse.handleListApiView(binding.rootLayout) {
                 when(it) {
                     is SyncJobStatus.InProgress -> {
@@ -102,7 +120,9 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(){
                                     .let { it.completed.toDouble().div(it.total) }
                                     .let { if (it.isNaN()) 0.0 else it }
                                     .times(100)
+                                    .roundToInt()
                             "Synced $progress%".also { binding.rootLayout.showProgress(it) }
+                            Log.d("Synced ", "$progress%")
                         }else{
                             "Synced 0%".also { binding.rootLayout.showProgress(it) }
                         }

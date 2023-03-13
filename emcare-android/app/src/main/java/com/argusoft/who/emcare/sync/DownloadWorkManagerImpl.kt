@@ -40,9 +40,9 @@ class DownloadWorkManagerImpl constructor(
       ResourceType.fromCode(url.findAnyOf(resourceTypeList, ignoreCase = true)!!.second)
     context.getLatestTimestampFor(resourceTypeToDownload)?.let {
       url = affixLastUpdatedTimestamp(url!!, it)
-      if(url.contains("Patient",true)){
-        url = url.plus("&_id=${preference.getFacilityId()}")
-      }
+//      if(url.contains("Patient",true)){
+//        url = url.plus("&_id=${preference.getFacilityId()}")
+//      }
     }
     return url
   }
@@ -50,10 +50,23 @@ class DownloadWorkManagerImpl constructor(
   override suspend fun getSummaryRequestUrls(
     context: SyncDownloadContext
   ): Map<ResourceType, String> {
+
+//    var url = urls.poll()
+//    url = url.plus("?${SyncDataParams.SUMMARY_KEY}=${SyncDataParams.SUMMARY_COUNT_VALUE}")
+//    val resourceTypeToDownload =
+//        ResourceType.fromCode(url.findAnyOf(resourceTypeList, ignoreCase = true)!!.second)
+//      context.getLatestTimestampFor(resourceTypeToDownload)?.let {
+//        url = affixLastUpdatedTimestamp(url!!, it)
+////      if(url.contains("Patient",true)){
+////        url = url.plus("&_id=${preference.getFacilityId()}")
+////      }
+//      }
+
     return urls.associate {
       ResourceType.fromCode(it.substringBefore("?")) to
-              it.plus("&${SyncDataParams.SUMMARY_KEY}=${SyncDataParams.SUMMARY_COUNT_VALUE}")
+              it.plus("?${SyncDataParams.SUMMARY_KEY}=${SyncDataParams.SUMMARY_COUNT_VALUE}")
     }
+
   }
 
   override suspend fun processResponse(response: Resource): Collection<Resource> {

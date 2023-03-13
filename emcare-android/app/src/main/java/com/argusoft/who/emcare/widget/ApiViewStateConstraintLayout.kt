@@ -39,7 +39,6 @@ class ApiViewStateConstraintLayout : ConstraintLayout {
     private var viewState = ViewState.SHOW_CONTENT
     private var circularProgressView: ViewStateCircularProgrssBinding? = null
     private var horizontalProgressView: ViewStateHorizontalLoadingBinding? = null
-    private var horizontalProgressCountText: TextView? = null
     private var errorView: ViewStateErrorViewBinding? = null
     private var snackbar: Snackbar? = null
     private var typedArray: TypedArray? = null
@@ -181,7 +180,6 @@ class ApiViewStateConstraintLayout : ConstraintLayout {
     fun showHorizontalProgress(isSync : Boolean, skipIds: List<Int> = emptyList()) {
         viewState = ViewState.HORIZONTAL_LOADING
         horizontalProgressView ?: inflateHorizontalProgressView()
-        horizontalProgressCountText = horizontalProgressView?.tvProgress
         if(isSync)
             updateProgressUi(false, false)
         else{
@@ -218,16 +216,18 @@ class ApiViewStateConstraintLayout : ConstraintLayout {
     }
 
     fun showProgress(progressCount : String){
-        if(horizontalProgressView?.ivCompleted?.visibility == GONE)
-            horizontalProgressCountText?.text = progressCount
+        if(horizontalProgressView?.ivCompleted?.visibility == GONE) {
+            horizontalProgressView?.tvProgress?.isVisible = true
+            horizontalProgressView?.tvProgress?.text = progressCount
+        }
     }
 
     fun updateProgressUi(isFinishing : Boolean, isShowCompleted : Boolean){
         horizontalProgressView?.tvProgress?.isVisible = true
         if(isFinishing){
-            horizontalProgressView?.tvProgress?.text = context?.getString(R.string.msg_sync_successfully)
             horizontalProgressView?.horizontalProgressBar?.isVisible = false
             if(isShowCompleted) {
+                horizontalProgressView?.tvProgress?.text = context?.getString(R.string.msg_sync_successfully)
                 horizontalProgressView?.ivCompleted?.isVisible = true
                 Handler(Looper.getMainLooper()).postDelayed({
                     horizontalProgressView?.root?.isVisible = false
@@ -236,7 +236,7 @@ class ApiViewStateConstraintLayout : ConstraintLayout {
                 horizontalProgressView?.root?.isVisible = false
             }
         }else{
-            horizontalProgressView?.tvProgress?.text = context?.getString(R.string.text_syncing)
+//            horizontalProgressView?.tvProgress?.text = context?.getString(R.string.text_syncing)
             horizontalProgressView?.root?.isVisible = true
             horizontalProgressView?.ivCompleted?.isVisible = false
             horizontalProgressView?.horizontalProgressBar?.isVisible = true

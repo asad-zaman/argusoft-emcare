@@ -75,6 +75,10 @@ inline fun <reified T> ApiResponse<T>?.handleListApiView(
                 }
             }
         }
+        is ApiResponse.InProgress -> {
+            progressLayout?.showHorizontalProgress(true)
+
+        }
         is ApiResponse.Success -> {
             progressLayout?.updateProgressUi(true, true)
             if (isRequiredClear) {
@@ -166,6 +170,15 @@ inline fun <T> ApiResponse<T>.whenLoading(function: () -> Unit): ApiResponse<T> 
     when (this) {
         is ApiResponse.Loading -> {
             function()
+        }
+    }
+    return this
+}
+
+inline fun <T> ApiResponse<T>.whenInProgress(function: (Pair<Int, Int>) -> Unit): ApiResponse<T> {
+    when (this) {
+        is ApiResponse.InProgress -> {
+            function(Pair(total, completed))
         }
     }
     return this
