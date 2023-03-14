@@ -40,9 +40,9 @@ class DownloadWorkManagerImpl constructor(
       ResourceType.fromCode(url.findAnyOf(resourceTypeList, ignoreCase = true)!!.second)
     context.getLatestTimestampFor(resourceTypeToDownload)?.let {
       url = affixLastUpdatedTimestamp(url!!, it)
-//      if(url.contains("Patient",true)){
-//        url = url.plus("&_id=${preference.getFacilityId()}")
-//      }
+      if(url.contains("Patient",true)){
+        url = url.plus("&_id=${preference.getFacilityId()}")
+      }
     }
     return url
   }
@@ -51,20 +51,18 @@ class DownloadWorkManagerImpl constructor(
     context: SyncDownloadContext
   ): Map<ResourceType, String> {
 
-//    var url = urls.poll()
-//    url = url.plus("?${SyncDataParams.SUMMARY_KEY}=${SyncDataParams.SUMMARY_COUNT_VALUE}")
-//    val resourceTypeToDownload =
-//        ResourceType.fromCode(url.findAnyOf(resourceTypeList, ignoreCase = true)!!.second)
-//      context.getLatestTimestampFor(resourceTypeToDownload)?.let {
-//        url = affixLastUpdatedTimestamp(url!!, it)
-////      if(url.contains("Patient",true)){
-////        url = url.plus("&_id=${preference.getFacilityId()}")
-////      }
-//      }
+    return urls.associate { urlString ->
+      if(preference.getFacilityId().isNotEmpty()){
+        val stringWithCount = urlString.plus("?${SyncDataParams.SUMMARY_KEY}=${SyncDataParams.SUMMARY_COUNT_VALUE}")
+        val stringWithTimeStamp = affixLastUpdatedTimestamp(stringWithCount, context.getLatestTimestampFor(ResourceType.fromCode(urlString.substringBefore("?")))!!)
+        val stringWithFacilityId = stringWithTimeStamp.plus("&_id=${preference.getFacilityId()}")
+        ResourceType.fromCode(urlString.substringBefore("?")) to
+                stringWithFacilityId
+      } else {
+        ResourceType.fromCode(urlString.substringBefore("?")) to
+                urlString.plus("?${SyncDataParams.SUMMARY_KEY}=${SyncDataParams.SUMMARY_COUNT_VALUE}")
+      }
 
-    return urls.associate {
-      ResourceType.fromCode(it.substringBefore("?")) to
-              it.plus("?${SyncDataParams.SUMMARY_KEY}=${SyncDataParams.SUMMARY_COUNT_VALUE}")
     }
 
   }
