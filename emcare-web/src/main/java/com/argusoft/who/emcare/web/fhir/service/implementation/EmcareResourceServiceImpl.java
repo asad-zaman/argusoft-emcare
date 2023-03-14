@@ -565,13 +565,25 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
     }
 
     @Override
-    public Bundle getPatientCountBasedOnDate(String summaryType, DateParam theDate) {
+    public Bundle getPatientCountBasedOnDate(String summaryType, DateParam theDate, String theId) {
+        List<String> facilityIds = new ArrayList<>();
+        if (!theId.isEmpty()) {
+            facilityIds = locationResourceService.getAllChildFacilityIds(theId);
+        }
         Long count = 0l;
         if (summaryType.equalsIgnoreCase(CommonConstant.SUMMARY_TYPE_COUNT)) {
             if (theDate.isEmpty()) {
-                count = repository.getCount();
+                if (theId.isEmpty()) {
+                    count = repository.getCount();
+                } else {
+                    count = repository.getCountWithFacilityId(facilityIds);
+                }
             } else {
-                count = repository.getCountBasedOnDate(theDate.getValue());
+                if (theId.isEmpty()) {
+                    count = repository.getCountBasedOnDate(theDate.getValue());
+                } else {
+                    count = repository.getCountBasedOnDateWithFacilityId(theDate.getValue(), facilityIds);
+                }
             }
         } else {
             return null;

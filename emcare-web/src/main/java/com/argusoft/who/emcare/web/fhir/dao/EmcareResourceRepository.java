@@ -39,7 +39,13 @@ public interface EmcareResourceRepository extends JpaRepository<EmcareResource, 
     @Query(value = "SELECT COUNT(*) FROM EMCARE_RESOURCES WHERE (CREATED_ON > :date OR MODIFIED_ON > :date) AND TYPE = 'PATIENT'", nativeQuery = true)
     Long getCountBasedOnDate(@Param("date") Date date);
 
+    @Query(value = "SELECT COUNT(*) FROM EMCARE_RESOURCES WHERE (CREATED_ON > :date OR MODIFIED_ON > :date) AND TYPE = 'PATIENT' AND facility_id in :ids", nativeQuery = true)
+    Long getCountBasedOnDateWithFacilityId(@Param("date") Date date, @Param("ids") List<String> ids);
+
     @Query(value = "SELECT COUNT(*) FROM EMCARE_RESOURCES WHERE TYPE = 'PATIENT'", nativeQuery = true)
     Long getCount();
+
+    @Query(value = "SELECT COUNT(*) FROM EMCARE_RESOURCES WHERE TYPE = 'PATIENT' AND facility_id in :ids", nativeQuery = true)
+    Long getCountWithFacilityId(@Param("ids") List<String> ids);
 
 }
