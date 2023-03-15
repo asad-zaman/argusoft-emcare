@@ -66,7 +66,7 @@ class PreferenceManager(private val sharedPreferences: EncPref) : Preference {
     }
 
     override fun getLastSyncTimestamp(): String {
-        return sharedPreferences.getString(EMCARE_LAST_SYNC_TIME_STAMP)
+        return sharedPreferences.getString(EMCARE_LAST_SYNC_TIME_STAMP,"")
     }
 
     override fun writeLastSyncTimestamp(timestamp: String) {
@@ -106,7 +106,9 @@ class PreferenceManager(private val sharedPreferences: EncPref) : Preference {
     override fun clear() {
         //Tweaked to persist facilityId
         val facilityId = sharedPreferences.getString(FACILITY_ID, "")
+        val lastSyncTimeStamp = sharedPreferences.getString(EMCARE_LAST_SYNC_TIME_STAMP,"")
         sharedPreferences.clear()
         setFacilityId(facilityId)
+        writeLastSyncTimestamp(lastSyncTimeStamp)
     }
 }

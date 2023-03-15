@@ -52,19 +52,20 @@ class DownloadWorkManagerImpl constructor(
   ): Map<ResourceType, String> {
 
     return urls.associate { urlString ->
-      if(preference.getFacilityId().isNotEmpty()){
-        val stringWithCount = urlString.plus("?${SyncDataParams.SUMMARY_KEY}=${SyncDataParams.SUMMARY_COUNT_VALUE}")
-        val stringWithTimeStamp = affixLastUpdatedTimestamp(stringWithCount, context.getLatestTimestampFor(ResourceType.fromCode(urlString.substringBefore("?")))!!)
-        val stringWithFacilityId = stringWithTimeStamp.plus("&_id=${preference.getFacilityId()}")
+      if(preference.getLastSyncTimestamp().isNotEmpty()){
+        val stringWithTimeStamp = affixLastUpdatedTimestamp(urlString, context.getLatestTimestampFor(ResourceType.fromCode(urlString.substringBefore("?")))!!)
+        val stringWithCount = stringWithTimeStamp.plus("&${SyncDataParams.SUMMARY_KEY}=${SyncDataParams.SUMMARY_COUNT_VALUE}")
+        val stringWithFacilityId = if(urlString.contains("Patient", true) || urlString.contains("RelatedPerson", true) || urlString.contains("Observation", true) || urlString.contains("Encounter", true))  stringWithCount.plus("&_id=${preference.getFacilityId()}") else stringWithCount
         ResourceType.fromCode(urlString.substringBefore("?")) to
                 stringWithFacilityId
       } else {
+        val stringWithCount = urlString.plus("?${SyncDataParams.SUMMARY_KEY}=${SyncDataParams.SUMMARY_COUNT_VALUE}")
+        val stringWithFacilityId = if(urlString.contains("Patient", true) || urlString.contains("RelatedPerson", true) || urlString.contains("Observation", true) || urlString.contains("Encounter", true))  stringWithCount.plus("&_id=${preference.getFacilityId()}") else urlString
+
         ResourceType.fromCode(urlString.substringBefore("?")) to
-                urlString.plus("?${SyncDataParams.SUMMARY_KEY}=${SyncDataParams.SUMMARY_COUNT_VALUE}")
+                stringWithFacilityId
       }
-
     }
-
   }
 
   override suspend fun processResponse(response: Resource): Collection<Resource> {
