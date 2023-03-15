@@ -21,14 +21,13 @@ public class RelatedPersonResourceProvider implements IResourceProvider {
 
     private final FhirContext fhirCtx = FhirContext.forR4();
     private final IParser parser = fhirCtx.newJsonParser().setPrettyPrint(false);
+    @Autowired
+    RelatedPersonResourceService relatedPersonResourceService;
 
     @Override
     public Class<RelatedPerson> getResourceType() {
         return RelatedPerson.class;
     }
-
-    @Autowired
-    RelatedPersonResourceService relatedPersonResourceService;
 
     public MethodOutcome createEncounter(@ResourceParam RelatedPerson relatedPerson) {
         relatedPersonResourceService.saveResource(relatedPerson);
@@ -53,8 +52,16 @@ public class RelatedPersonResourceProvider implements IResourceProvider {
         return relatedPersonResourceService.getAllRelatedPerson(theDate);
     }
 
-    @Search()
-    public Bundle getRelatedPersonCountBasedOnDate(@RequiredParam(name = CommonConstant.SUMMARY) String type, @OptionalParam(name = CommonConstant.RESOURCE_LAST_UPDATED_AT) DateParam theDate) {
-        return relatedPersonResourceService.getRelatedPersonCountBasedOnDate(type, theDate);
+    @Search(queryName = "patient")
+    public List<RelatedPerson> getAllRelatedPersonByPatientId(@RequiredParam(name = CommonConstant.RESOURCE_ID) IdType theId) {
+        return relatedPersonResourceService.getAllRelatedPersonByPatientId(theId);
+    }
+
+    @Search(queryName = "summary")
+    public Bundle getRelatedPersonCountBasedOnDate(
+            @RequiredParam(name = CommonConstant.SUMMARY) String type,
+            @OptionalParam(name = CommonConstant.RESOURCE_LAST_UPDATED_AT) DateParam theDate,
+            @OptionalParam(name = CommonConstant.RESOURCE_FACILITY_ID) String theId) {
+        return relatedPersonResourceService.getRelatedPersonCountBasedOnDate(type, theDate, theId);
     }
 }

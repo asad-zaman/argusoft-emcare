@@ -30,6 +30,8 @@ public interface EmcareResourceService {
 
     public PageDto getPatientUnderLocationId(Object locationId, Integer pageNo);
 
+    public List<String> getPatientIdsUnderFacility(String facilityId);
+
     public List<PatientDto> getAllPatients();
 
     public List<Patient> getAllPatientResources();

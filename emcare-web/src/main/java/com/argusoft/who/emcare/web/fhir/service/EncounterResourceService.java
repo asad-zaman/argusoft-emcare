@@ -18,7 +18,7 @@ public interface EncounterResourceService {
 
     public List<Encounter> getAllEncounter(DateParam theDate, String searchText);
 
-    public Bundle getEncounterCountBasedOnDate(String summaryType, DateParam theDate);
+    public Bundle getEncounterCountBasedOnDate(String summaryType, DateParam theDate, String theId);
 
 
 }

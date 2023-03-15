@@ -18,7 +18,9 @@ public interface RelatedPersonResourceService {
 
     public List<RelatedPerson> getAllRelatedPerson(DateParam theDate);
 
-    public Bundle getRelatedPersonCountBasedOnDate(String summaryType, DateParam theDate);
+    public List<RelatedPerson> getAllRelatedPersonByPatientId(IdType theId);
+
+    public Bundle getRelatedPersonCountBasedOnDate(String summaryType, DateParam theDate, String theId);
 
 
 }

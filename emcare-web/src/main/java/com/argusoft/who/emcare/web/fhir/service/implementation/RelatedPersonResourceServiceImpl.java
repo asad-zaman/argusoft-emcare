@@ -9,6 +9,7 @@ import com.argusoft.who.emcare.web.fhir.dao.EmcareResourceRepository;
 import com.argusoft.who.emcare.web.fhir.dao.RelatedPersonResourceRepository;
 import com.argusoft.who.emcare.web.fhir.model.EmcareResource;
 import com.argusoft.who.emcare.web.fhir.model.RelatedPersonResource;
+import com.argusoft.who.emcare.web.fhir.service.EmcareResourceService;
 import com.argusoft.who.emcare.web.fhir.service.RelatedPersonResourceService;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.IdType;
@@ -17,10 +18,7 @@ import org.hl7.fhir.r4.model.RelatedPerson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class RelatedPersonResourceServiceImpl implements RelatedPersonResourceService {
@@ -33,6 +31,9 @@ public class RelatedPersonResourceServiceImpl implements RelatedPersonResourceSe
 
     @Autowired
     EmcareResourceRepository emcareResourceRepository;
+
+    @Autowired
+    EmcareResourceService emcareResourceService;
 
     @Override
     public RelatedPerson saveResource(RelatedPerson relatedPerson) {
@@ -103,13 +104,27 @@ public class RelatedPersonResourceServiceImpl implements RelatedPersonResourceSe
     }
 
     @Override
-    public Bundle getRelatedPersonCountBasedOnDate(String summaryType, DateParam theDate) {
+    public Bundle getRelatedPersonCountBasedOnDate(String summaryType, DateParam theDate, String theId) {
+        List<String> patientId = new ArrayList<>();
+        if (theId != null) {
+            patientId = emcareResourceService.getPatientIdsUnderFacility(theId);
+        }
         Long count = 0l;
         if (summaryType.equalsIgnoreCase(CommonConstant.SUMMARY_TYPE_COUNT)) {
-            if (theDate.isEmpty()) {
-                count = relatedPersonResourceRepository.count();
+            if (Objects.isNull(theDate)) {
+                if (theId == null) {
+                    count = relatedPersonResourceRepository.count();
+                } else {
+                    count = relatedPersonResourceRepository.getCountWithFacilityId(patientId);
+                }
+
             } else {
-                count = relatedPersonResourceRepository.getCountBasedOnDate(theDate.getValue());
+                if (theId == null) {
+                    count = relatedPersonResourceRepository.getCountBasedOnDate(theDate.getValue());
+                } else {
+                    count = relatedPersonResourceRepository.getCountBasedOnDateWithFacilityId(theDate.getValue(), patientId);
+                }
+
             }
         } else {
             return null;
@@ -130,6 +145,17 @@ public class RelatedPersonResourceServiceImpl implements RelatedPersonResourceSe
             relatedPersonResources = relatedPersonResourceRepository.findByModifiedOnGreaterThanOrCreatedOnGreaterThan(theDate.getValue(), theDate.getValue());
         }
 
+        for (RelatedPersonResource personResource : relatedPersonResources) {
+            RelatedPerson person = parser.parseResource(RelatedPerson.class, personResource.getText());
+            relatedPeople.add(person);
+        }
+        return relatedPeople;
+    }
+
+    @Override
+    public List<RelatedPerson> getAllRelatedPersonByPatientId(IdType theId) {
+        List<RelatedPerson> relatedPeople = new ArrayList<>();
+        List<RelatedPersonResource> relatedPersonResources = relatedPersonResourceRepository.findByPatientId(theId.getValue());
         for (RelatedPersonResource personResource : relatedPersonResources) {
             RelatedPerson person = parser.parseResource(RelatedPerson.class, personResource.getText());
             relatedPeople.add(person);

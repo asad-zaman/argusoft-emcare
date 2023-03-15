@@ -7,6 +7,7 @@ import ca.uhn.fhir.rest.param.DateParam;
 import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.fhir.dao.EncounterResourceRepository;
 import com.argusoft.who.emcare.web.fhir.model.EncounterResource;
+import com.argusoft.who.emcare.web.fhir.service.EmcareResourceService;
 import com.argusoft.who.emcare.web.fhir.service.EncounterResourceService;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Encounter;
@@ -15,10 +16,7 @@ import org.hl7.fhir.r4.model.Meta;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class EncounterResourceServiceImpl implements EncounterResourceService {
@@ -27,6 +25,9 @@ public class EncounterResourceServiceImpl implements EncounterResourceService {
     private final IParser parser = fhirCtx.newJsonParser().setPrettyPrint(true);
     @Autowired
     EncounterResourceRepository encounterResourceRepository;
+
+    @Autowired
+    EmcareResourceService emcareResourceService;
 
     @Override
     public Encounter saveResource(Encounter encounter) {
@@ -118,13 +119,27 @@ public class EncounterResourceServiceImpl implements EncounterResourceService {
     }
 
     @Override
-    public Bundle getEncounterCountBasedOnDate(String summaryType, DateParam theDate) {
+    public Bundle getEncounterCountBasedOnDate(String summaryType, DateParam theDate, String theId) {
+        List<String> patientId = new ArrayList<>();
+        if (theId != null) {
+            patientId = emcareResourceService.getPatientIdsUnderFacility(theId);
+        }
         Long count = 0l;
         if (summaryType.equalsIgnoreCase(CommonConstant.SUMMARY_TYPE_COUNT)) {
-            if (theDate.isEmpty()) {
-                count = encounterResourceRepository.getCount();
+            if (Objects.isNull(theDate)) {
+                if (Objects.isNull(theId)) {
+                    count = encounterResourceRepository.count();
+                } else {
+                    count = encounterResourceRepository.getCountWithFacilityId(patientId);
+                }
+
             } else {
-                count = encounterResourceRepository.getCountBasedOnDate(theDate.getValue());
+                if (Objects.isNull(theId)) {
+                    count = encounterResourceRepository.getCountBasedOnDate(theDate.getValue());
+                } else {
+                    count = encounterResourceRepository.getCountBasedOnDateWithFacilityId(theDate.getValue(), patientId);
+                }
+
             }
         } else {
             return null;
