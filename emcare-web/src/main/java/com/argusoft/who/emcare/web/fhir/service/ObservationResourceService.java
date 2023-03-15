@@ -18,6 +18,6 @@ public interface ObservationResourceService {
 
     public List<Observation> getAllObservation(DateParam theDate, String searchText);
 
-    public Bundle getObservationCountBasedOnDate(String summaryType, DateParam theDate);
+    public Bundle getObservationCountBasedOnDate(String summaryType, DateParam theDate, String theId);
 
 }

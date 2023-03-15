@@ -386,6 +386,14 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
     }
 
     @Override
+    public List<String> getPatientIdsUnderFacility(String facilityId) {
+        List<String> facilityIds = new ArrayList<>();
+        facilityIds = locationResourceService.getAllChildFacilityIds(facilityId);
+        List<EmcareResource> emcareResources = repository.findByFacilityIdIn(facilityIds);
+        return emcareResources.stream().map(EmcareResource::getResourceId).collect(Collectors.toList());
+    }
+
+    @Override
     public List<PatientDto> getAllPatients() {
         List<Patient> patientsList = new ArrayList<>();
         List<PatientDto> patientDtosList;

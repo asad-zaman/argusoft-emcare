@@ -55,11 +55,14 @@ public class ObservationResourceProvider implements IResourceProvider {
     public List<Observation> getAllObservation(
             @OptionalParam(name = CommonConstant.RESOURCE_LAST_UPDATED_AT) DateParam theDate,
             @OptionalParam(name = CommonConstant.RESOURCE_CONTENT) String searchText) {
-        return observationResourceService.getAllObservation(theDate,searchText);
+        return observationResourceService.getAllObservation(theDate, searchText);
     }
 
-    @Search()
-    public Bundle getObservationCountBasedOnDate(@RequiredParam(name = CommonConstant.SUMMARY) String type, @OptionalParam(name = CommonConstant.RESOURCE_LAST_UPDATED_AT) DateParam theDate) {
-        return observationResourceService.getObservationCountBasedOnDate(type, theDate);
+    @Search(queryName = "summary")
+    public Bundle getObservationCountBasedOnDate(
+            @RequiredParam(name = CommonConstant.SUMMARY) String type,
+            @OptionalParam(name = CommonConstant.RESOURCE_LAST_UPDATED_AT) DateParam theDate,
+            @OptionalParam(name = CommonConstant.RESOURCE_FACILITY_ID) String theId) {
+        return observationResourceService.getObservationCountBasedOnDate(type, theDate, theId);
     }
 }
