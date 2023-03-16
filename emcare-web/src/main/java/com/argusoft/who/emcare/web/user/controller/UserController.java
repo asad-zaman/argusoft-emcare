@@ -125,4 +125,9 @@ public class UserController {
                                          @RequestParam(value = "pageNo") Integer pageNo) {
         return userService.getUsersUnderLocation(locationId, pageNo);
     }
+
+    @GetMapping("user/check/email")
+    public ResponseEntity checkEmailAlreadyExist(@RequestParam(value = "emailId") String emailId) {
+        return ResponseEntity.status(HttpStatus.OK).body(userService.checkEmailIdExist(emailId));
+    }
 }

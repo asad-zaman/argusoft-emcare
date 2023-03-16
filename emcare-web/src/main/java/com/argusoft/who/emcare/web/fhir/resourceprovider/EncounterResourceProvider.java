@@ -9,6 +9,7 @@ import ca.uhn.fhir.rest.server.IResourceProvider;
 import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.fhir.service.EncounterResourceService;
 import org.hl7.fhir.instance.model.api.IBaseResource;
+import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Encounter;
 import org.hl7.fhir.r4.model.IdType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,14 +22,13 @@ public class EncounterResourceProvider implements IResourceProvider {
 
     private final FhirContext fhirCtx = FhirContext.forR4();
     private final IParser parser = fhirCtx.newJsonParser().setPrettyPrint(false);
+    @Autowired
+    EncounterResourceService encounterResourceService;
 
     @Override
     public Class<? extends IBaseResource> getResourceType() {
         return Encounter.class;
     }
-
-    @Autowired
-    EncounterResourceService encounterResourceService;
 
     @Create
     public MethodOutcome createEncounter(@ResourceParam Encounter encounter) {
@@ -54,5 +54,13 @@ public class EncounterResourceProvider implements IResourceProvider {
             @OptionalParam(name = CommonConstant.RESOURCE_LAST_UPDATED_AT) DateParam theDate,
             @OptionalParam(name = CommonConstant.RESOURCE_CONTENT) String searchText) {
         return encounterResourceService.getAllEncounter(theDate, searchText);
+    }
+
+    @Search(queryName = "summary")
+    public Bundle getEncounterCountBasedOnDate(
+            @RequiredParam(name = CommonConstant.SUMMARY) String type,
+            @OptionalParam(name = CommonConstant.RESOURCE_LAST_UPDATED_AT) DateParam theDate,
+            @OptionalParam(name = CommonConstant.RESOURCE_FACILITY_ID) String theId) {
+        return encounterResourceService.getEncounterCountBasedOnDate(type, theDate, theId);
     }
 }

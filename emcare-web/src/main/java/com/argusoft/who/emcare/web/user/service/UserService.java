@@ -64,5 +64,7 @@ public interface UserService {
 
     public UserRepresentation resetPassword(String emailId, String password);
 
+    public Map<String,Object> checkEmailIdExist(String email);
+
 
 }

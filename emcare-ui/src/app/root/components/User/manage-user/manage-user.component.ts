@@ -7,6 +7,8 @@ import { UserManagementService } from 'src/app/root/services/user-management.ser
 import { FhirService, ToasterService } from 'src/app/shared';
 import { MustMatch } from 'src/app/shared/validators/must-match.validator';
 import { SearchCountryField, CountryISO, PhoneNumberFormat } from 'ngx-intl-tel-input';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'app-manage-user',
@@ -32,6 +34,7 @@ export class ManageUserComponent implements OnInit {
   PhoneNumberFormat = PhoneNumberFormat;
   preferredCountries: CountryISO[] = [CountryISO.Iraq, CountryISO.UnitedStates];
   language: string;
+  emailTermChanged: Subject<string> = new Subject<string>();
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -66,16 +69,10 @@ export class ManageUserComponent implements OnInit {
       if (res.relatedFeature && res.relatedFeature.length > 0) {
         this.isAddFeature = res.featureJSON['canAdd'];
         this.isEditFeature = res.featureJSON['canEdit'];
-        if (this.isAddFeature && this.isEditFeature) {
-          this.isAllowed = true;
-        } else if (this.isAddFeature && !this.isEdit) {
-          this.isAllowed = true;
-        } else if (!this.isEditFeature && this.isEdit) {
-          this.isAllowed = false;
-        } else if (!this.isAddFeature && this.isEdit) {
-          this.isAllowed = true;
-        } else if (this.isEditFeature && this.isEdit) {
-          this.isAllowed = true;
+        if (this.isEdit) {
+          this.isAllowed = this.isEditFeature || !this.isAddFeature ? true : false;
+        } else if (this.isAddFeature) {
+          this.isAllowed = this.isEditFeature || !this.isEdit ? true : false;
         } else {
           this.isAllowed = false;
         }
@@ -156,7 +153,7 @@ export class ManageUserComponent implements OnInit {
     });
   }
 
-  get f() {
+  get getFormConfrols() {
     return this.userForm.controls;
   }
 
@@ -249,5 +246,24 @@ export class ManageUserComponent implements OnInit {
 
   back() {
     this.router.navigate(['/showUsers']);
+  }
+
+  checkEmail() {
+    if (this.emailTermChanged.observers.length === 0) {
+      this.emailTermChanged.pipe(
+        debounceTime(1000),
+        distinctUntilChanged()
+      ).subscribe(_term => {
+        if (this.getFormConfrols.email.valid) {
+          this.fhirService.checkEmail(this.getFormConfrols.email.value).subscribe(res => {
+            if (res['status'] === 400) {
+              this.toasterService.showToast('error', 'Email is already exists!!', 'EMCARE!');
+              this.getFormConfrols.email.reset();
+            }
+          });
+        } else { }
+      });
+    }
+    this.emailTermChanged.next(this.getFormConfrols.email.value);
   }
 }

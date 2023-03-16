@@ -290,4 +290,9 @@ export class FhirService {
         let url = `${environment.apiUrl}/api/tenant/check?key=${field}&value=${fieldValue}`;
         return this.http.get(url, this.getHeaders());
     }
+
+    checkEmail(email) {
+        let url = `${environment.apiUrl}/api/user/check/email?emailId=${email}`;
+        return this.http.get(url, this.getHeaders());
+    }
 }

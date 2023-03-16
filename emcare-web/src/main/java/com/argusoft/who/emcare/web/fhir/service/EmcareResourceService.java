@@ -30,6 +30,8 @@ public interface EmcareResourceService {
 
     public PageDto getPatientUnderLocationId(Object locationId, Integer pageNo);
 
+    public List<String> getPatientIdsUnderFacility(String facilityId);
+
     public List<PatientDto> getAllPatients();
 
     public List<Patient> getAllPatientResources();
@@ -41,5 +43,7 @@ public interface EmcareResourceService {
     public List<PatientDto> getPatientDtoByIds(List<String> ids);
 
     public Bundle getPatientBundle(String theId);
+
+    public Bundle getPatientCountBasedOnDate(String summaryType, DateParam theDate, String theId);
 
 }

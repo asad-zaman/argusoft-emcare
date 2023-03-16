@@ -69,13 +69,18 @@ public class QuestionnaireResponseServiceImpl implements QuestionnaireResponseSe
     }
 
     @Override
-    public List<QuestionnaireResponse> getQuestionnaireResponseByUserLocation() {
+    public List<QuestionnaireResponse> getQuestionnaireResponseByUserLocation(Date theDate) {
         UserMasterDto userMasterDto = userService.getCurrentUser();
         List<String> facilityIds = userMasterDto.getFacilities().stream().map(FacilityDto::getFacilityId).collect(Collectors.toList());
         List<EmcareResource> patientList = emcareResourceRepository.findByFacilityIdIn(facilityIds);
         List<String> patientIds = patientList.stream().map(EmcareResource::getResourceId).collect(Collectors.toList());
-
-        return questionnaireResponseRepository.findByPatientIdIn(patientIds);
+        List<QuestionnaireResponse> questionnaireResponses = new ArrayList<>();
+        if (Objects.nonNull(theDate)) {
+            questionnaireResponses = questionnaireResponseRepository.findByPatientIdInAndConsultationDateGreaterThan(patientIds, theDate);
+        } else {
+            questionnaireResponses = questionnaireResponseRepository.findByPatientIdIn(patientIds);
+        }
+        return questionnaireResponses;
     }
 
     @Override
@@ -89,7 +94,7 @@ public class QuestionnaireResponseServiceImpl implements QuestionnaireResponseSe
             resourcesList = emcareResourceRepository.findAllByType(CommonConstant.FHIR_PATIENT);
         }
         List<String> resourceIds = resourcesList.stream().map(EmcareResource::getResourceId).collect(Collectors.toList());
-        List<MiniPatient> responseList = questionnaireResponseRepository.findDistinctByPatientIdIn(
+        List<MiniPatient> responseList = questionnaireResponseRepository.getDistinctPatientIdInAndConsultationDate(
                 resourceIds,
                 page);
         List<String> patientIds = responseList.stream().map(MiniPatient::getPatientId).collect(Collectors.toList());

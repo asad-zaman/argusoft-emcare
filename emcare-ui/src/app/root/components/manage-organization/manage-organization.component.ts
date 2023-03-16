@@ -48,16 +48,10 @@ export class ManageOrganizationComponent implements OnInit {
       if (res.relatedFeature && res.relatedFeature.length > 0) {
         this.isAddFeature = res.featureJSON['canAdd'];
         this.isEditFeature = res.featureJSON['canEdit'];
-        if (this.isAddFeature && this.isEditFeature) {
-          this.isAllowed = true;
-        } else if (this.isAddFeature && !this.isEdit) {
-          this.isAllowed = true;
-        } else if (!this.isEditFeature && this.isEdit) {
-          this.isAllowed = false;
-        } else if (!this.isAddFeature && this.isEdit) {
-          this.isAllowed = true;
-        } else if (this.isEditFeature && this.isEdit) {
-          this.isAllowed = true;
+        if (this.isEdit) {
+          this.isAllowed = this.isEditFeature || !this.isAddFeature ? true : false;
+        } else if (this.isAddFeature) {
+          this.isAllowed = this.isEditFeature || !this.isEdit ? true : false;
         } else {
           this.isAllowed = false;
         }
@@ -95,11 +89,11 @@ export class ManageOrganizationComponent implements OnInit {
       alias: ['', [Validators.required]],
       addressStreet: ['', [Validators.required]],
       telecom: ['', [Validators.required]],
-      status: ['', [Validators.required]]
+      status: [this.statusArr[0], [Validators.required]]
     });
   }
 
-  get f() {
+  get getFormConfrols() {
     return this.orgForm.controls;
   }
 

@@ -6,6 +6,7 @@ import { UserManagementService } from '../../services/user-management.service';
 import * as _ from 'lodash';
 import { LaunguageSubjects } from 'src/app/auth/token-interceptor';
 import { SearchCountryField, CountryISO, PhoneNumberFormat } from 'ngx-intl-tel-input';
+import { appConstants } from 'src/app/app.config';
 
 @Component({
   selector: 'app-manage-profile',
@@ -88,7 +89,7 @@ export class ManageProfileComponent implements OnInit {
     });
   }
 
-  get f() {
+  get getFormConfrols() {
     return this.currentUserForm.controls;
   }
 
@@ -96,17 +97,18 @@ export class ManageProfileComponent implements OnInit {
     this.submitted = true;
     if (this.currentUserForm.valid) {
       const data = {
-        firstName: this.f.firstName.value,
-        lastName: this.f.lastName.value,
-        language: this.f.language.value.id,
+        firstName: this.getFormConfrols.firstName.value,
+        lastName: this.getFormConfrols.lastName.value,
+        language: this.getFormConfrols.language.value.id,
         facilityIds: this.facilityIds,
-        countryCode: this.f.phone.value.countryCode,
-        phone: this.f.phone.value.number
+        countryCode: this.getFormConfrols.phone.value.countryCode,
+        phone: this.getFormConfrols.phone.value.number
       }
-      const translations = this.lanArr.find(el => el.id === this.f.language.value.id).translations;
+      const translations = this.lanArr.find(el => el.id === this.getFormConfrols.language.value.id).translations;
       this.userService.updateUser(data, this.userId).subscribe(() => {
-        localStorage.setItem('language', this.f.language.value.id);
-        this.lanSubjects.setLaunguage(this.f.language.value.id);
+        localStorage.setItem(appConstants.localStorageKeys.language,
+          this.getFormConfrols.language.value.id);
+        this.lanSubjects.setLaunguage(this.getFormConfrols.language.value.id);
         this.lanSubjects.setCurrentTranslation(translations);
         this.toasterService.showToast('success', 'User profile updated successfully!', 'EMCARE');
         this.checkSuperAdminAndNavigate();

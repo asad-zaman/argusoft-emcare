@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { AuthenticationService, ToasterService } from 'src/app/shared';
 import { Router } from '@angular/router';
+import { environment } from 'src/environments/environment';
+import { appConstants } from 'src/app/app.config';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -24,14 +26,15 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {
     //  only for developement purpose
-    const url = 'http://localhost:4200/login';
+    const url = environment.testUrl;
     this.loginForm = this.formBuilder.group({
-      username: [window.location.href == url ? 'emcare@gmail.com' : '', [Validators.required, Validators.pattern('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-]+$')]],
-      password: [window.location.href == url ? 'argusadmin' : '', Validators.required]
+      username: [window.location.href == url ? environment.testUsername : '', [Validators.required, 
+        Validators.pattern(appConstants.emailPattern)]],
+      password: [window.location.href == url ? environment.testPassword : '', Validators.required]
     });
   }
 
-  get f() {
+  get getFormConfrols() {
     return this.loginForm.controls;
   }
 
@@ -47,13 +50,13 @@ export class LoginComponent implements OnInit {
           if (data) {
             const tokenexpiration: Date = new Date();
             tokenexpiration.setSeconds(new Date().getSeconds() + data.expires_in);
-            localStorage.setItem('access_token', JSON.stringify(data.access_token));
-            localStorage.setItem('access_token_expiry_time', JSON.stringify(tokenexpiration));
+            localStorage.setItem(appConstants.localStorageKeys.accessToken, JSON.stringify(data.access_token));
+            localStorage.setItem(appConstants.localStorageKeys.accessTokenExpiryTime, JSON.stringify(tokenexpiration));
 
             const refreshTokenexpiration: Date = new Date();
             refreshTokenexpiration.setSeconds(new Date().getSeconds() + data.refresh_expires_in);
-            localStorage.setItem('refresh_token', JSON.stringify(data.refresh_token));
-            localStorage.setItem('refresh_token_expiry_time', JSON.stringify(refreshTokenexpiration));
+            localStorage.setItem(appConstants.localStorageKeys.refreshToken, JSON.stringify(data.refresh_token));
+            localStorage.setItem(appConstants.localStorageKeys.refreshTokenExpiryTime, JSON.stringify(refreshTokenexpiration));
 
             this.getLoggedInUserData();
           }
@@ -78,9 +81,9 @@ export class LoginComponent implements OnInit {
     this.authService.getLoggedInUser().subscribe(res => {
       if (res) {
         const featureObj = { feature: res['feature'] };
-        localStorage.setItem('userFeatures', JSON.stringify(featureObj));
-        localStorage.setItem('language', res['language']);
-        localStorage.setItem('Username', res.userName);
+        localStorage.setItem(appConstants.localStorageKeys.userFeatures, JSON.stringify(featureObj));
+        localStorage.setItem(appConstants.localStorageKeys.language, res['language']);
+        localStorage.setItem(appConstants.localStorageKeys.Username, res.userName);
         const isSuperAdmin = res['roles'].findIndex(el => el === 'SUPER_ADMIN') > -1;
         localStorage.setItem('isSuperAdmin', `${isSuperAdmin}`);
         this.authService.setFeatures(res['feature']);

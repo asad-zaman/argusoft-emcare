@@ -17,6 +17,7 @@ public class DeviceWithUserDetails {
     private String deviceModel;
     private String lastLoggedInUser;
     private Boolean isBlocked;
+    private String igVersion;
     private MultiLocationUserListDto usersResource;
 
     public Integer getDeviceId() {
@@ -105,5 +106,13 @@ public class DeviceWithUserDetails {
 
     public void setUsersResource(MultiLocationUserListDto usersResource) {
         this.usersResource = usersResource;
+    }
+
+    public String getIgVersion() {
+        return igVersion;
+    }
+
+    public void setIgVersion(String igVersion) {
+        this.igVersion = igVersion;
     }
 }

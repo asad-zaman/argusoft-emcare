@@ -9,6 +9,7 @@ import ca.uhn.fhir.rest.server.IResourceProvider;
 import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.fhir.service.LibraryResourceService;
 import org.hl7.fhir.instance.model.api.IBaseResource;
+import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.Library;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,5 +55,10 @@ public class LibraryResourceProvider implements IResourceProvider {
     @Search()
     public List<Library> getAllStructureMap(@OptionalParam(name = CommonConstant.RESOURCE_LAST_UPDATED_AT) DateParam theDate) {
         return libraryResourceService.getAllLibrary(theDate);
+    }
+
+    @Search()
+    public Bundle getLibraryCountBasedOnDate(@RequiredParam(name = CommonConstant.SUMMARY) String type, @OptionalParam(name = CommonConstant.RESOURCE_LAST_UPDATED_AT) DateParam theDate) {
+        return libraryResourceService.getLibraryCountBasedOnDate(type, theDate);
     }
 }

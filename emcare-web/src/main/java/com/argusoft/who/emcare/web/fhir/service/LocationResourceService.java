@@ -30,4 +30,6 @@ public interface LocationResourceService {
     public List<FacilityDto> getActiveFacility();
 
     public List<FacilityMapDto> getAllFacilityMapDto();
+
+    public List<String> getAllChildFacilityIds(String facilityId);
 }

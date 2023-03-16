@@ -33,4 +33,13 @@ public interface ObservationResourceRepository extends JpaRepository<Observation
             "where emr.facility_id = :facilityId and obr.text ilike %:customCode% ", nativeQuery = true)
     List<ObservationResource> fetchByCustomCode(@Param("facilityId") String facilityId, @Param("customCode") String customCode);
 
+    @Query(value = "SELECT COUNT(*) FROM observation_resource WHERE (CREATED_ON > :date OR MODIFIED_ON > :date)", nativeQuery = true)
+    Long getCountBasedOnDate(@Param("date") Date date);
+
+    @Query(value = "SELECT COUNT(*) FROM observation_resource WHERE (CREATED_ON > :date OR MODIFIED_ON > :date) AND subject_id in :ids", nativeQuery = true)
+    Long getCountBasedOnDateWithFacilityId(@Param("date") Date date, @Param("ids") List<String> ids);
+
+    @Query(value = "SELECT COUNT(*) FROM observation_resource WHERE subject_id in :ids", nativeQuery = true)
+    Long getCountWithFacilityId(@Param("ids") List<String> ids);
+
 }

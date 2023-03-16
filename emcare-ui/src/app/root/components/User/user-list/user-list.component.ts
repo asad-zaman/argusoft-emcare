@@ -167,7 +167,7 @@ export class UserListComponent implements OnInit {
     });
   }
 
-  get f() {
+  get getFormConfrols() {
     return this.resetPasswordForm.controls;
   }
 
@@ -212,6 +212,13 @@ export class UserListComponent implements OnInit {
       return locationStrArr;
     } else {
       return 'NA';
+    }
+  }
+
+  clearFilter(event) {
+    if (event) {
+      this.resetPageIndex();
+      this.getUsersByPageIndex(this.currentPage);
     }
   }
 }

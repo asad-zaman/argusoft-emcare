@@ -45,7 +45,6 @@ public class PatientResourceProvider implements IResourceProvider {
      * exists.
      */
     @Read()
-
     public Patient getResourceById(@IdParam IdType theId) {
 
         EmcareResource emcareResource = emcareResourceService.findByResourceId(theId.getIdPart());
@@ -238,5 +237,13 @@ public class PatientResourceProvider implements IResourceProvider {
     @Search()
     public Bundle getPatientBundle(@RequiredParam(name = CommonConstant.RESOURCE_ID) IdType theId) {
         return emcareResourceService.getPatientBundle(theId.getIdPart());
+    }
+
+    @Search(queryName="summary")
+    public Bundle getPatientCountBasedOnDate(
+            @RequiredParam(name = CommonConstant.SUMMARY) String type,
+            @OptionalParam(name = CommonConstant.RESOURCE_LAST_UPDATED_AT) DateParam theDate,
+            @OptionalParam(name = CommonConstant.RESOURCE_FACILITY_ID) String theId) {
+        return emcareResourceService.getPatientCountBasedOnDate(type, theDate, theId);
     }
 }

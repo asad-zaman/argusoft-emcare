@@ -13,8 +13,8 @@
             <label class="form-label">{{'First Patient' | translate}}</label>
             <input class="form-control" formControlName="firstPatient" type="file" id="firstPatient"
               placeholder="{{'Upload first Patient' | translate}}" accept=".json,.txt" (change)="onFileUploaded($event)"
-              [ngClass]="{ 'is-invalid': submitted && f.firstPatient.errors }">
-            <div *ngIf="submitted && f.firstPatient.errors" class="invalid-feedback">
+              [ngClass]="{ 'is-invalid': submitted && getFormConfrols.firstPatient.errors }">
+            <div *ngIf="submitted && getFormConfrols.firstPatient.errors" class="invalid-feedback">
               {{'Patient data is required' | translate}}
             </div>
           </div>
@@ -24,8 +24,8 @@
             <label class="form-label">{{'Second Patient' | translate}}</label>
             <input class="form-control" formControlName="secondPatient" type="file" id="secondPatient"
               placeholder="{{'Upload Second Patient' | translate}}" accept=".json,.txt"
-              (change)="onFileUploaded($event)" [ngClass]="{ 'is-invalid': submitted && f.secondPatient.errors }">
-            <div *ngIf="submitted && f.secondPatient.errors" class="invalid-feedback">
+              (change)="onFileUploaded($event)" [ngClass]="{ 'is-invalid': submitted && getFormConfrols.secondPatient.errors }">
+            <div *ngIf="submitted && getFormConfrols.secondPatient.errors" class="invalid-feedback">
               {{'Patient data is required' | translate}}
             </div>
           </div>
@@ -37,8 +37,8 @@
             <label class="form-label">{{'First Patient JSON' | translate}}</label>
             <textarea style="height: 100px;" formControlName="firstPatientDetails" id="firstPatientDetails"
               placeholder="{{'First Patient Details' | translate}}" class="form-control custom-input" rows="8"
-              [ngClass]="{ 'is-invalid': submitted && f.firstPatientDetails.errors }"></textarea>
-            <div *ngIf="submitted && f.firstPatientDetails.errors" class="invalid-feedback">
+              [ngClass]="{ 'is-invalid': submitted && getFormConfrols.firstPatientDetails.errors }"></textarea>
+            <div *ngIf="submitted && getFormConfrols.firstPatientDetails.errors" class="invalid-feedback">
               {{'Patient data is required' | translate}}
             </div>
           </div>
@@ -48,8 +48,8 @@
             <label class="form-label">{{'Second Patient JSON' | translate}}</label>
             <textarea style="height: 100px;" formControlName="secondPatientDetails" id="secondPatientDetails"
               placeholder="{{'Second Patient Details' | translate}}" class="form-control custom-input" rows="8"
-              [ngClass]="{ 'is-invalid': submitted && f.secondPatientDetails.errors }"></textarea>
-            <div *ngIf="submitted && f.secondPatientDetails.errors" class="invalid-feedback">
+              [ngClass]="{ 'is-invalid': submitted && getFormConfrols.secondPatientDetails.errors }"></textarea>
+            <div *ngIf="submitted && getFormConfrols.secondPatientDetails.errors" class="invalid-feedback">
               {{'Patient data is required' | translate}}
             </div>
           </div>

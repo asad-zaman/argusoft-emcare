@@ -9,6 +9,7 @@ import ca.uhn.fhir.rest.server.IResourceProvider;
 import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.fhir.service.ObservationResourceService;
 import org.hl7.fhir.instance.model.api.IBaseResource;
+import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.Observation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +55,14 @@ public class ObservationResourceProvider implements IResourceProvider {
     public List<Observation> getAllObservation(
             @OptionalParam(name = CommonConstant.RESOURCE_LAST_UPDATED_AT) DateParam theDate,
             @OptionalParam(name = CommonConstant.RESOURCE_CONTENT) String searchText) {
-        return observationResourceService.getAllObservation(theDate,searchText);
+        return observationResourceService.getAllObservation(theDate, searchText);
+    }
+
+    @Search(queryName = "summary")
+    public Bundle getObservationCountBasedOnDate(
+            @RequiredParam(name = CommonConstant.SUMMARY) String type,
+            @OptionalParam(name = CommonConstant.RESOURCE_LAST_UPDATED_AT) DateParam theDate,
+            @OptionalParam(name = CommonConstant.RESOURCE_FACILITY_ID) String theId) {
+        return observationResourceService.getObservationCountBasedOnDate(type, theDate, theId);
     }
 }

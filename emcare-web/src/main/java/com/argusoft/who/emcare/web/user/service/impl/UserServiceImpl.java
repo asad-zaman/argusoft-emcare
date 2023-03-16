@@ -652,6 +652,24 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Map<String, Object> checkEmailIdExist(String email) {
+        Keycloak keycloak = keyCloakConfig.getInsideInstance();
+        UserRepresentation userRepresentation = null;
+        UsersResource usersResource = keycloak.realm(realm).users();
+
+        List<UserRepresentation> userRepresentations = keycloak.realm(realm).users().search(email);
+        Map<String,Object> response = new HashMap<>();
+        if (userRepresentations.isEmpty()) {
+            response.put("status",HttpStatus.OK.value());
+            response.put("message","Valid Email Address");
+        }else{
+            response.put("status",HttpStatus.BAD_REQUEST.value());
+            response.put("message","Email Already Taken By User");
+        }
+        return response;
+    }
+
+    @Override
     public MultiLocationUserListDto getUserDtoById(String userId) {
         Keycloak keycloak = keyCloakConfig.getInstanceByAuth();
         MultiLocationUserListDto user;
