@@ -95,9 +95,11 @@ public class ObservationResourceServiceImpl implements ObservationResourceServic
     }
 
     @Override
-    public List<Observation> getAllObservation(DateParam theDate, String searchText) {
+    public List<Observation> getAllObservation(DateParam theDate, String searchText, String theId) {
         List<Observation> observations = new ArrayList<>();
         List<ObservationResource> observationResources;
+
+        List<String> patientIds = emcareResourceService.getPatientIdsUnderFacility(theId);
 
         if (theDate == null) {
             if (searchText == null) {
@@ -115,8 +117,10 @@ public class ObservationResourceServiceImpl implements ObservationResourceServic
 
 
         for (ObservationResource observationResource : observationResources) {
-            Observation observation = parser.parseResource(Observation.class, observationResource.getText());
-            observations.add(observation);
+            if (patientIds.contains(observationResource.getSubjectId())) {
+                Observation observation = parser.parseResource(Observation.class, observationResource.getText());
+                observations.add(observation);
+            }
         }
         return observations;
     }

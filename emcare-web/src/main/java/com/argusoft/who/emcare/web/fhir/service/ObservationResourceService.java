@@ -16,7 +16,7 @@ public interface ObservationResourceService {
 
     public MethodOutcome updateObservationResource(IdType idType, Observation observation);
 
-    public List<Observation> getAllObservation(DateParam theDate, String searchText);
+    public List<Observation> getAllObservation(DateParam theDate, String searchText, String theId);
 
     public Bundle getObservationCountBasedOnDate(String summaryType, DateParam theDate, String theId);
 
