@@ -32,4 +32,10 @@ public interface RelatedPersonResourceRepository extends JpaRepository<RelatedPe
 
     @Query(value = "SELECT COUNT(*) FROM related_person_resource WHERE patient_id in :ids", nativeQuery = true)
     Long getCountWithFacilityId(@Param("ids") List<String> ids);
+
+    @Query(value = "SELECT * FROM related_person_resource WHERE (CREATED_ON > :date OR MODIFIED_ON > :date) AND patient_id in :ids", nativeQuery = true)
+    List<RelatedPersonResource> findByFacilityIdAndDate(@Param("date") Date date, @Param("ids") List<String> ids);
+
+    @Query(value = "SELECT * FROM related_person_resource WHERE patient_id in :ids", nativeQuery = true)
+    List<RelatedPersonResource> findByFacilityId(@Param("ids") List<String> ids);
 }

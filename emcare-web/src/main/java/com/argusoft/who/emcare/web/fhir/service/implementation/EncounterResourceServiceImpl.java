@@ -93,9 +93,11 @@ public class EncounterResourceServiceImpl implements EncounterResourceService {
     }
 
     @Override
-    public List<Encounter> getAllEncounter(DateParam theDate, String searchText) {
+    public List<Encounter> getAllEncounter(DateParam theDate, String searchText, String theId) {
         List<Encounter> encounters = new ArrayList<>();
         List<EncounterResource> encounterResources;
+
+        List<String> patientIds = emcareResourceService.getPatientIdsUnderFacility(theId);
 
         if (theDate == null) {
             if (searchText == null) {
@@ -112,8 +114,10 @@ public class EncounterResourceServiceImpl implements EncounterResourceService {
         }
 
         for (EncounterResource encounterResource : encounterResources) {
-            Encounter encounter = parser.parseResource(Encounter.class, encounterResource.getText());
-            encounters.add(encounter);
+            if (patientIds.contains(encounterResource.getPatientId())) {
+                Encounter encounter = parser.parseResource(Encounter.class, encounterResource.getText());
+                encounters.add(encounter);
+            }
         }
         return encounters;
     }
