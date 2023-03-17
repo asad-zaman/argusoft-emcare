@@ -75,10 +75,10 @@ inline fun <reified T> ApiResponse<T>?.handleListApiView(
                 }
             }
         }
-        is ApiResponse.InProgress -> {
-            progressLayout?.showHorizontalProgress(true)
-
-        }
+//        is ApiResponse.InProgress -> {
+//            progressLayout?.showHorizontalProgress(true)
+//
+//        }
         is ApiResponse.Success -> {
             progressLayout?.updateProgressUi(true, true)
             if (isRequiredClear) {

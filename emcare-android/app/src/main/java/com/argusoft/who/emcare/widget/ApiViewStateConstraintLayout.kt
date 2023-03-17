@@ -217,6 +217,7 @@ class ApiViewStateConstraintLayout : ConstraintLayout {
 
     fun showProgress(progressCount : String){
         if(horizontalProgressView?.ivCompleted?.visibility == GONE) {
+            circularProgressView?.root?.isVisible = false
             horizontalProgressView?.tvProgress?.isVisible = true
             horizontalProgressView?.tvProgress?.text = progressCount
         }
@@ -224,6 +225,7 @@ class ApiViewStateConstraintLayout : ConstraintLayout {
 
     fun updateProgressUi(isFinishing : Boolean, isShowCompleted : Boolean){
         horizontalProgressView?.tvProgress?.isVisible = true
+        circularProgressView?.root?.isVisible = false
         if(isFinishing){
             horizontalProgressView?.horizontalProgressBar?.isVisible = false
             if(isShowCompleted) {
@@ -240,6 +242,7 @@ class ApiViewStateConstraintLayout : ConstraintLayout {
             horizontalProgressView?.root?.isVisible = true
             horizontalProgressView?.ivCompleted?.isVisible = false
             horizontalProgressView?.horizontalProgressBar?.isVisible = true
+
         }
     }
 

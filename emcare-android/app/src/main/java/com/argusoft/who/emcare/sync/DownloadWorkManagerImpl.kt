@@ -35,15 +35,23 @@ class DownloadWorkManagerImpl constructor(
 
   override suspend fun getNextRequestUrl(context: SyncDownloadContext): String? {
     var url = urls.poll() ?: return null
-
-    val resourceTypeToDownload =
-      ResourceType.fromCode(url.findAnyOf(resourceTypeList, ignoreCase = true)!!.second)
-    context.getLatestTimestampFor(resourceTypeToDownload)?.let {
-      url = affixLastUpdatedTimestamp(url!!, it)
-      if(url.contains("Patient",true)){
-        url = url.plus("&_id=${preference.getFacilityId()}")
+    if(url.contains("Patient", true) || url.contains("RelatedPerson", true) || url.contains("Observation", true) || url.contains("Encounter", true)){
+      url = url.plus("?_facilityId=${preference.getFacilityId()}")
+    }
+    if(preference.getLastSyncTimestamp().isNotEmpty()){
+      context.getLatestTimestampFor(ResourceType.fromCode(url.findAnyOf(resourceTypeList, ignoreCase = true)!!.second))?.let {
+        url = affixLastUpdatedTimestamp(url, it, !url.contains("?_facilityId"))
       }
     }
+
+//    val resourceTypeToDownload =
+//      ResourceType.fromCode(url.findAnyOf(resourceTypeList, ignoreCase = true)!!.second)
+//    context.getLatestTimestampFor(resourceTypeToDownload)?.let {
+//      url = affixLastUpdatedTimestamp(url!!, it)
+//      if(url.contains("Patient", true) || url.contains("RelatedPerson", true) || url.contains("Observation", true) || url.contains("Encounter", true))
+//        url = url.plus("?_facilityId=${preference.getFacilityId()}")
+//      }
+
     return url
   }
 
@@ -52,19 +60,18 @@ class DownloadWorkManagerImpl constructor(
   ): Map<ResourceType, String> {
 
     return urls.associate { urlString ->
+      val stringWithCount = urlString.plus("?${SyncDataParams.SUMMARY_KEY}=${SyncDataParams.SUMMARY_COUNT_VALUE}")
+      val stringWithFacilityId = if(stringWithCount.contains("Patient", true) || stringWithCount.contains("RelatedPerson", true) || stringWithCount.contains("Observation", true) || stringWithCount.contains("Encounter", true))  stringWithCount.plus("&_facilityId=${preference.getFacilityId()}") else stringWithCount
+      var stringWithTimeStamp = stringWithFacilityId
       if(preference.getLastSyncTimestamp().isNotEmpty()){
-        val stringWithTimeStamp = affixLastUpdatedTimestamp(urlString, context.getLatestTimestampFor(ResourceType.fromCode(urlString.substringBefore("?")))!!)
-        val stringWithCount = stringWithTimeStamp.plus("&${SyncDataParams.SUMMARY_KEY}=${SyncDataParams.SUMMARY_COUNT_VALUE}")
-        val stringWithFacilityId = if(urlString.contains("Patient", true) || urlString.contains("RelatedPerson", true) || urlString.contains("Observation", true) || urlString.contains("Encounter", true))  stringWithCount.plus("&_id=${preference.getFacilityId()}") else stringWithCount
-        ResourceType.fromCode(urlString.substringBefore("?")) to
-                stringWithFacilityId
-      } else {
-        val stringWithCount = urlString.plus("?${SyncDataParams.SUMMARY_KEY}=${SyncDataParams.SUMMARY_COUNT_VALUE}")
-        val stringWithFacilityId = if(urlString.contains("Patient", true) || urlString.contains("RelatedPerson", true) || urlString.contains("Observation", true) || urlString.contains("Encounter", true))  stringWithCount.plus("&_id=${preference.getFacilityId()}") else urlString
-
-        ResourceType.fromCode(urlString.substringBefore("?")) to
-                stringWithFacilityId
+        context.getLatestTimestampFor(ResourceType.fromCode(stringWithFacilityId.substringBefore("?")))?.let {
+          stringWithTimeStamp = affixLastUpdatedTimestamp(stringWithFacilityId, it, false)
+          if(stringWithTimeStamp.contains("&_facilityId"))
+            stringWithTimeStamp = stringWithTimeStamp.plus("&_query=summary")
+        }
       }
+      ResourceType.fromCode(urlString.substringBefore("?")) to
+              stringWithTimeStamp
     }
   }
 
@@ -113,7 +120,7 @@ class DownloadWorkManagerImpl constructor(
    * attached using the `_since` parameter. Otherwise, the last updated timestamp will be attached
    * using the `_lastUpdated` parameter.
    */
-  private fun affixLastUpdatedTimestamp(url: String, lastUpdated: String): String {
+  private fun affixLastUpdatedTimestamp(url: String, lastUpdated: String, isFirstQueryParam: Boolean): String {
     val zonedDateTime: ZonedDateTime = ZonedDateTime.parse(lastUpdated)
     val lastUpdatedTimeWithoutTimeZone: OffsetDateTime = ZonedDateTime.ofInstant(zonedDateTime.toInstant(), ZoneId.of("UTC")).toOffsetDateTime()
     var downloadUrl = url
@@ -127,7 +134,8 @@ class DownloadWorkManagerImpl constructor(
     // Affix lastUpdate to non-$everything queries as per:
     // https://hl7.org/fhir/operation-patient-everything.html
     if (!downloadUrl.contains("\$everything")) {
-      downloadUrl = "$downloadUrl?_lastUpdated=gt$lastUpdatedTimeWithoutTimeZone"
+      downloadUrl = if(isFirstQueryParam) "$downloadUrl?_lastUpdated=gt$lastUpdatedTimeWithoutTimeZone"
+      else "$downloadUrl&_lastUpdated=gt$lastUpdatedTimeWithoutTimeZone"
     }
 
     // Do not modify any URL set by a server that specifies the token of the page to return.

@@ -54,6 +54,7 @@ class SyncViewModel @Inject constructor(
                     Log.d("syncJobStatus",syncJobStatus.toString())
                 if (syncJobStatus is SyncJobStatus.Finished && emCareResult is SyncResult.Success) {
                     _syncState.value = (syncJobStatus is SyncJobStatus.Finished)?.let { ApiResponse.Success(syncJobStatus) }
+                    _syncState.value = ApiResponse.Success(null)
                     preference.writeLastSyncTimestamp(OffsetDateTime.now().toLocalDateTime().format(
                         DateTimeFormatter.ofPattern(formatString12)))
                 } else if(syncJobStatus is SyncJobStatus.InProgress) {

@@ -21,6 +21,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.OffsetDateTime
+import java.time.format.DateTimeFormatter
 import kotlin.math.roundToInt
 
 @AndroidEntryPoint
@@ -30,6 +31,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(){
     private val syncViewModel: SyncViewModel by viewModels()
     private val homeViewModel: HomeViewModel by activityViewModels()
     private lateinit var homePagerAdapter: HomePagerAdapter
+    private val formatString12 = "dd/MM/yyyy hh:mm:ss a"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -94,7 +96,13 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(){
             apiResponse.whenInProgress {
                 Log.d("it.completed.toDouble()", it.second.toDouble().toString())
                 Log.d("it.total.toDouble()", it.first.toDouble().toString())
-                if(it.first > 0) {
+                if(it.first.toDouble() == it.second.toDouble()){
+                    binding.rootLayout.updateProgressUi(true, true)
+                    preference.writeLastSyncTimestamp(
+                        OffsetDateTime.now().toLocalDateTime().format(
+                            DateTimeFormatter.ofPattern(formatString12)))
+                    startActivity(Intent(requireContext(), HomeActivity::class.java))
+                }else if(it.first > 0) {
                     val progress =
                         it
                             .let { it.second.toDouble().div(it.first) }

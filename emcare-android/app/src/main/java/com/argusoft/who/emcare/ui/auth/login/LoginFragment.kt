@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Intent
 import android.util.Log
 import android.view.View
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import com.argusoft.who.emcare.BuildConfig
 import com.argusoft.who.emcare.R
@@ -19,6 +20,8 @@ import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
+import java.time.OffsetDateTime
+import java.time.format.DateTimeFormatter
 import kotlin.math.roundToInt
 
 @AndroidEntryPoint
@@ -26,6 +29,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(), EasyPermissions.Perm
 
     private val syncViewModel: SyncViewModel by viewModels()
     private val loginViewModel: LoginViewModel by viewModels()
+    private val formatString12 = "dd/MM/yyyy hh:mm:ss a"
 
     override fun initView() {
         //No initialization required
@@ -68,7 +72,20 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(), EasyPermissions.Perm
             apiResponse.whenInProgress {
                 Log.d("it.completed.toDouble()", it.second.toDouble().toString())
                 Log.d("it.total.toDouble()", it.first.toDouble().toString())
-                if(it.first > 0) {
+                if(it.first.toDouble() == it.second.toDouble()){
+                    binding.progressLayout.updateProgressUi(true, true)
+//                        requireContext().showSnackBar(
+//                            view = binding.progressLayout,
+//                            message = getString(R.string.msg_sync_successfully),
+//                            duration = Snackbar.LENGTH_SHORT,
+//                            isError = false
+//                        )
+                    preference.writeLastSyncTimestamp(
+                        OffsetDateTime.now().toLocalDateTime().format(
+                        DateTimeFormatter.ofPattern(formatString12)))
+                    startActivity(Intent(requireContext(), HomeActivity::class.java))
+                    requireActivity().finish()
+                }else if(it.first > 0) {
                     val progress =
                         it
                             .let { it.second.toDouble().div(it.first) }
@@ -85,25 +102,25 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(), EasyPermissions.Perm
 
             apiResponse.handleListApiView(binding.progressLayout) {
                 when (it) {
-                    is SyncJobStatus.InProgress -> {
-                        Log.d("it.completed.toDouble()", it.completed.toDouble().toString())
-                        Log.d("it.total.toDouble()", it.total.toDouble().toString())
-                        if(it.total > 0) {
-                            val progress =
-                                it
-                                    .let { it.completed.toDouble().div(it.total) }
-                                    .let { if (it.isNaN()) 0.0 else it }
-                                    .times(100)
-                                    .roundToInt()
-                            "Synced $progress%".also { binding.progressLayout.showProgress(it)
-                                Log.d("Synced", "$progress%")
-                            }
-                        }else{
-                            "Synced 0%".also { binding.progressLayout.showProgress(it) }
-                        }
-                        //Code to show text.
-                        //Reference: https://github.com/google/android-fhir/blob/master/demo/src/main/java/com/google/android/fhir/demo/PatientListFragment.kt
-                    }
+//                    is SyncJobStatus.InProgress -> {
+//                        Log.d("it.completed.toDouble()", it.completed.toDouble().toString())
+//                        Log.d("it.total.toDouble()", it.total.toDouble().toString())
+//                        if(it.total > 0) {
+//                            val progress =
+//                                it
+//                                    .let { it.completed.toDouble().div(it.total) }
+//                                    .let { if (it.isNaN()) 0.0 else it }
+//                                    .times(100)
+//                                    .roundToInt()
+//                            "Synced $progress%".also { binding.progressLayout.showProgress(it)
+//                                Log.d("Synced", "$progress%")
+//                            }
+//                        }else{
+//                            "Synced 0%".also { binding.progressLayout.showProgress(it) }
+//                        }
+//                        //Code to show text.
+//                        //Reference: https://github.com/google/android-fhir/blob/master/demo/src/main/java/com/google/android/fhir/demo/PatientListFragment.kt
+//                    }
 
                     is SyncJobStatus.Finished -> {
                         binding.progressLayout.updateProgressUi(true, true)

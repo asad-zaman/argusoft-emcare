@@ -31,11 +31,23 @@ android {
 
     buildTypes {
         debug {
+            buildConfigField "String", "BASE_URL", "\"https://emcare.argusoft.com/api/\""
+            buildConfigField "String", "FHIR_BASE_URL", "\"https://emcare.argusoft.com/fhir/\""
+            buildConfigField "String", "KEYCLOAK_BASE_URL", "\"https://emcare.argusoft.com/auth/realms/emcare/protocol/openid-connect/\""
+            shrinkResources false
+            minifyEnabled false
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            resValue "string", "app_version", "${defaultConfig.versionName}.debug"
+            resValue "string", "app_name", "EmCare debug"
+            applicationIdSuffix ".debug"
+        }
+        dev {
             buildConfigField "String", "BASE_URL", "\"http://3.111.94.246:8080/api/\""
             buildConfigField "String", "FHIR_BASE_URL", "\"http://3.111.94.246:8080/fhir/\""
             buildConfigField "String", "KEYCLOAK_BASE_URL", "\"http://3.111.94.246:8180/auth/realms/emcare/protocol/openid-connect/\""
             shrinkResources false
             minifyEnabled false
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
             resValue "string", "app_version", "${defaultConfig.versionName}.dev"
             resValue "string", "app_name", "EmCare dev"
             applicationIdSuffix ".dev"
