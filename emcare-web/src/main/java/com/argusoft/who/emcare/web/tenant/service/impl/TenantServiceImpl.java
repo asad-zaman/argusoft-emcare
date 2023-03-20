@@ -1,19 +1,40 @@
 package com.argusoft.who.emcare.web.tenant.service.impl;
 
-import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.common.response.Response;
+import com.argusoft.who.emcare.web.config.tenant.MultitenantDataSourceConfiguration;
+import com.argusoft.who.emcare.web.config.tenant.TenantContext;
+import com.argusoft.who.emcare.web.fhir.model.LocationResource;
+import com.argusoft.who.emcare.web.fhir.resourceprovider.OrganizationResourceProvider;
+import com.argusoft.who.emcare.web.fhir.service.LocationResourceService;
+import com.argusoft.who.emcare.web.location.dto.HierarchyMasterDto;
+import com.argusoft.who.emcare.web.location.dto.LocationMasterDto;
+import com.argusoft.who.emcare.web.location.model.HierarchyMaster;
+import com.argusoft.who.emcare.web.location.model.LocationMaster;
+import com.argusoft.who.emcare.web.location.service.LocationService;
 import com.argusoft.who.emcare.web.tenant.dto.TenantDto;
 import com.argusoft.who.emcare.web.tenant.entity.TenantConfig;
 import com.argusoft.who.emcare.web.tenant.mapper.TenantMapper;
 import com.argusoft.who.emcare.web.tenant.repository.TenantConfigRepository;
 import com.argusoft.who.emcare.web.tenant.service.TenantService;
+import com.argusoft.who.emcare.web.user.service.UserService;
+import org.hl7.fhir.r4.model.Location;
+import org.hl7.fhir.r4.model.Organization;
+import org.hl7.fhir.r4.model.Reference;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.util.FileCopyUtils;
 
+import javax.sql.DataSource;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -31,6 +52,25 @@ public class TenantServiceImpl implements TenantService {
     @Autowired
     TenantConfigRepository tenantConfigRepository;
 
+    @Autowired
+    DataSource dataSource;
+
+    @Autowired
+    MultitenantDataSourceConfiguration multitenantDataSourceConfiguration;
+
+    @Autowired
+    LocationService locationService;
+
+    @Autowired
+    LocationResourceService locationResourceService;
+
+    @Autowired
+    OrganizationResourceProvider organizationResourceProvider;
+
+    @Autowired
+    UserService userService;
+
+
     @Override
     public ResponseEntity addNewTenant(TenantDto tenantDto) {
         Optional<TenantConfig> tConfig = tenantConfigRepository.findByTenantId(tenantDto.getTenantId());
@@ -47,7 +87,98 @@ public class TenantServiceImpl implements TenantService {
         }
 
         TenantConfig tenantConfig = TenantMapper.getTenantConfig(tenantDto);
-        tenantConfigRepository.save(tenantConfig);
+        tenantConfig = tenantConfigRepository.save(tenantConfig);
+
+        multitenantDataSourceConfiguration.addDataSourceDynamic();
+
+        TenantContext.setCurrentTenant(tenantConfig.getTenantId());
+
+        try {
+            Resource resource = new ClassPathResource("New_Database.sql");
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+            jdbcTemplate.execute(FileCopyUtils.copyToString(new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8)));
+        } catch (Exception ex) {
+            tenantConfigRepository.delete(tenantConfig);
+            TenantContext.clearTenant();
+            return ResponseEntity.badRequest().body(
+                    new Response(
+                            "Database not setup properly! Please Contact Administrative Department.",
+                            HttpStatus.BAD_REQUEST.value()
+                    )
+            );
+        }
+
+        HierarchyMaster hierarchyMaster;
+        LocationMaster locationMaster;
+        Organization organization;
+        String orgId;
+        Location facility;
+        LocationResource locationResource;
+        try {
+            HierarchyMasterDto hierarchyMasterDto = tenantDto.getHierarchy();
+            if (Objects.isNull(hierarchyMasterDto)) {
+                throw new RuntimeException("Hierarchy not saved!");
+            }
+            hierarchyMaster = (HierarchyMaster) locationService.createHierarchyMaster(hierarchyMasterDto).getBody();
+        } catch (Exception ex) {
+            return ResponseEntity.badRequest().body(
+                    new Response(
+                            "Hierarchy not saved properly! Please Contact Administrative Department.",
+                            HttpStatus.BAD_REQUEST.value()
+                    )
+            );
+        }
+
+        try {
+            LocationMasterDto locationMasterDto = tenantDto.getLocation();
+            if (Objects.isNull(locationMasterDto)) {
+                throw new RuntimeException("Hierarchy not saved!");
+            }
+            locationMaster = (LocationMaster) locationService.createOrUpdate(locationMasterDto).getBody();
+        } catch (Exception ex) {
+            return ResponseEntity.badRequest().body(
+                    new Response(
+                            "Location not saved properly! Please Contact Administrative Department.",
+                            HttpStatus.BAD_REQUEST.value()
+                    )
+            );
+        }
+
+        try {
+            organization = tenantDto.getOrganization();
+            if (Objects.isNull(organization)) {
+                throw new RuntimeException("Please Enter Organization Details");
+            }
+            orgId = organizationResourceProvider.createOrganization(organization).getId().getValue();
+            organization.setId(orgId);
+        } catch (Exception ex) {
+            return ResponseEntity.badRequest().body(
+                    new Response(
+                            "Organization not saved properly! Please Contact Administrative Department.",
+                            HttpStatus.BAD_REQUEST.value()
+                    )
+            );
+        }
+
+        try {
+            facility = tenantDto.getFacility();
+            if (Objects.isNull(facility)) {
+                throw new RuntimeException("Please Enter Facility Details");
+            }
+            Reference reference = new Reference();
+            reference.setResource(organization);
+            facility.setManagingOrganization(reference);
+            locationResource = locationResourceService.saveResource(facility);
+        } catch (Exception ex) {
+            return ResponseEntity.badRequest().body(
+                    new Response(
+                            "Facility not saved properly! Please Contact Administrative Department.",
+                            HttpStatus.BAD_REQUEST.value()
+                    )
+            );
+        }
+
+
         return ResponseEntity.ok().body(tenantConfig);
     }
 
