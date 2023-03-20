@@ -4,8 +4,6 @@ import com.argusoft.who.emcare.web.language.dto.LanguageAddDto;
 import com.argusoft.who.emcare.web.location.dto.HierarchyMasterDto;
 import com.argusoft.who.emcare.web.location.dto.LocationMasterDto;
 import com.argusoft.who.emcare.web.user.dto.UserDto;
-import org.hl7.fhir.r4.model.Location;
-import org.hl7.fhir.r4.model.Organization;
 
 /**
  * <h1> Add heading here </h1>
@@ -24,9 +22,9 @@ public class TenantDto {
     private String tenantId;
     private String username;
     private String domain;
-    private Location facility;
-    private Organization organization;
-    private UserDto userDto;
+    private String facility;
+    private String organization;
+    private UserDto user;
     private LanguageAddDto language;
     private HierarchyMasterDto hierarchy;
     private LocationMasterDto location;
@@ -79,20 +77,28 @@ public class TenantDto {
         this.domain = domain;
     }
 
-    public Location getFacility() {
+    public String getFacility() {
         return facility;
     }
 
-    public void setFacility(Location facility) {
+    public void setFacility(String facility) {
         this.facility = facility;
     }
 
-    public UserDto getUserDto() {
-        return userDto;
+    public String getOrganization() {
+        return organization;
     }
 
-    public void setUserDto(UserDto userDto) {
-        this.userDto = userDto;
+    public void setOrganization(String organization) {
+        this.organization = organization;
+    }
+
+    public UserDto getUser() {
+        return user;
+    }
+
+    public void setUser(UserDto user) {
+        this.user = user;
     }
 
     public LanguageAddDto getLanguage() {
@@ -117,13 +123,5 @@ public class TenantDto {
 
     public void setLocation(LocationMasterDto location) {
         this.location = location;
-    }
-
-    public Organization getOrganization() {
-        return organization;
-    }
-
-    public void setOrganization(Organization organization) {
-        this.organization = organization;
     }
 }

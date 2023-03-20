@@ -43,7 +43,7 @@ public class LocationServiceImpl implements LocationService {
 
     @Override
     public ResponseEntity<Object> createHierarchyMaster(HierarchyMasterDto hierarchyMasterDto) {
-        return ResponseEntity.ok(hierarchyMasterDao.save(HierarchyMasterMapper.dtoToEntityForHierarchyMasterCreate(hierarchyMasterDto)));
+        return ResponseEntity.ok(hierarchyMasterDao.saveAndFlush(HierarchyMasterMapper.dtoToEntityForHierarchyMasterCreate(hierarchyMasterDto)));
     }
 
     @Override
@@ -76,10 +76,10 @@ public class LocationServiceImpl implements LocationService {
     public ResponseEntity<Object> createOrUpdate(LocationMasterDto locationMasterDto) {
         List<LocationMaster> locations = locationMasterDao.findAll();
         if (locations.isEmpty()) {
-            return ResponseEntity.ok(locationMasterDao.save(LocationMasterMapper.firstEntity(locationMasterDto)));
+            return ResponseEntity.ok(locationMasterDao.saveAndFlush(LocationMasterMapper.firstEntity(locationMasterDto)));
         }
         LocationMaster locationMaster = LocationMasterMapper.dtoToEntityForLocationMasterCreate(locationMasterDto);
-        LocationMaster lm = locationMasterDao.save(locationMaster);
+        LocationMaster lm = locationMasterDao.saveAndFlush(locationMaster);
         return ResponseEntity.ok(lm);
     }
 

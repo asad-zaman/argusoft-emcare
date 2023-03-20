@@ -82,7 +82,7 @@ public class LocationResourceServiceImpl implements LocationResourceService {
         locationResource.setType(CommonConstant.LOCATION_TYPE_STRING);
         locationResource.setResourceId(locationId);
 
-        locationResource = locationResourceRepository.save(locationResource);
+        locationResource = locationResourceRepository.saveAndFlush(locationResource);
 
         return locationResource;
     }
