@@ -165,7 +165,7 @@ public class PatientResourceProvider implements IResourceProvider {
      * Reference for sort: https://hapifhir.io/hapi-fhir/docs/server_plain/rest_operations_search.html#sorting-sort
      * Reference for param: https://hapifhir.io/hapi-fhir/docs/server_plain/rest_operations_search.html#combining-multiple-parameters
      */
-    @Search()
+    @Search(queryName="bundle")
     public List<Patient> getAllPatients(
             @OptionalParam(name = CommonConstant.RESOURCE_LAST_UPDATED_AT) DateParam theDate,
             @OptionalParam(name = IAnyResource.SP_RES_ID) IdType theId) {
