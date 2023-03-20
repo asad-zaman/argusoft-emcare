@@ -6,6 +6,8 @@ import com.argusoft.who.emcare.web.config.tenant.TenantContext;
 import com.argusoft.who.emcare.web.fhir.model.LocationResource;
 import com.argusoft.who.emcare.web.fhir.resourceprovider.OrganizationResourceProvider;
 import com.argusoft.who.emcare.web.fhir.service.LocationResourceService;
+import com.argusoft.who.emcare.web.language.dto.LanguageAddDto;
+import com.argusoft.who.emcare.web.language.service.LanguageService;
 import com.argusoft.who.emcare.web.location.dto.HierarchyMasterDto;
 import com.argusoft.who.emcare.web.location.dto.LocationMasterDto;
 import com.argusoft.who.emcare.web.location.model.HierarchyMaster;
@@ -16,6 +18,7 @@ import com.argusoft.who.emcare.web.tenant.entity.TenantConfig;
 import com.argusoft.who.emcare.web.tenant.mapper.TenantMapper;
 import com.argusoft.who.emcare.web.tenant.repository.TenantConfigRepository;
 import com.argusoft.who.emcare.web.tenant.service.TenantService;
+import com.argusoft.who.emcare.web.user.dto.UserDto;
 import com.argusoft.who.emcare.web.user.service.UserService;
 import org.hl7.fhir.r4.model.Location;
 import org.hl7.fhir.r4.model.Organization;
@@ -70,6 +73,9 @@ public class TenantServiceImpl implements TenantService {
     @Autowired
     UserService userService;
 
+    @Autowired
+    LanguageService languageService;
+
 
     @Override
     public ResponseEntity addNewTenant(TenantDto tenantDto) {
@@ -114,6 +120,10 @@ public class TenantServiceImpl implements TenantService {
         String orgId;
         Location facility;
         LocationResource locationResource;
+        UserDto userDto;
+        LanguageAddDto languageAddDto;
+
+
         try {
             HierarchyMasterDto hierarchyMasterDto = tenantDto.getHierarchy();
             if (Objects.isNull(hierarchyMasterDto)) {
@@ -169,6 +179,39 @@ public class TenantServiceImpl implements TenantService {
             reference.setResource(organization);
             facility.setManagingOrganization(reference);
             locationResource = locationResourceService.saveResource(facility);
+        } catch (Exception ex) {
+            return ResponseEntity.badRequest().body(
+                    new Response(
+                            "Facility not saved properly! Please Contact Administrative Department.",
+                            HttpStatus.BAD_REQUEST.value()
+                    )
+            );
+        }
+
+        try {
+            userDto = tenantDto.getUserDto();
+            if (Objects.isNull(userDto)) {
+                throw new RuntimeException("Please Enter User Details");
+            }
+            List<String> facilityIds = new ArrayList<String>();
+            facilityIds.add(locationResource.getResourceId());
+            userDto.setFacilityIds(facilityIds);
+            userService.addUser(userDto);
+        } catch (Exception ex) {
+            return ResponseEntity.badRequest().body(
+                    new Response(
+                            "Facility not saved properly! Please Contact Administrative Department.",
+                            HttpStatus.BAD_REQUEST.value()
+                    )
+            );
+        }
+
+        try {
+            languageAddDto = tenantDto.getLanguage();
+            if (Objects.isNull(languageAddDto)) {
+                throw new RuntimeException("Please Enter Language Details");
+            }
+            languageService.createNewLanguageTranslation(languageAddDto);
         } catch (Exception ex) {
             return ResponseEntity.badRequest().body(
                     new Response(
