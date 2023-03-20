@@ -580,14 +580,14 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
         }
         Long count = 0l;
         if (summaryType.equalsIgnoreCase(CommonConstant.SUMMARY_TYPE_COUNT)) {
-            if (theDate.isEmpty()) {
+            if (Objects.isNull(theDate)) {
                 if (theId.isEmpty()) {
                     count = repository.getCount();
                 } else {
                     count = repository.getCountWithFacilityId(facilityIds);
                 }
             } else {
-                if (theId.isEmpty()) {
+                if (Objects.isNull(theId)) {
                     count = repository.getCountBasedOnDate(theDate.getValue());
                 } else {
                     count = repository.getCountBasedOnDateWithFacilityId(theDate.getValue(), facilityIds);
