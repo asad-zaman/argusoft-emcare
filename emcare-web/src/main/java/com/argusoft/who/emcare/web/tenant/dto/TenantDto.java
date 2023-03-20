@@ -1,5 +1,12 @@
 package com.argusoft.who.emcare.web.tenant.dto;
 
+import com.argusoft.who.emcare.web.language.dto.LanguageAddDto;
+import com.argusoft.who.emcare.web.location.dto.HierarchyMasterDto;
+import com.argusoft.who.emcare.web.location.dto.LocationMasterDto;
+import com.argusoft.who.emcare.web.user.dto.UserDto;
+import org.hl7.fhir.r4.model.Location;
+import org.hl7.fhir.r4.model.Organization;
+
 /**
  * <h1> Add heading here </h1>
  * <p>
@@ -17,6 +24,12 @@ public class TenantDto {
     private String tenantId;
     private String username;
     private String domain;
+    private Location facility;
+    private Organization organization;
+    private UserDto userDto;
+    private LanguageAddDto language;
+    private HierarchyMasterDto hierarchy;
+    private LocationMasterDto location;
 
     public Integer getId() {
         return id;
@@ -64,5 +77,53 @@ public class TenantDto {
 
     public void setDomain(String domain) {
         this.domain = domain;
+    }
+
+    public Location getFacility() {
+        return facility;
+    }
+
+    public void setFacility(Location facility) {
+        this.facility = facility;
+    }
+
+    public UserDto getUserDto() {
+        return userDto;
+    }
+
+    public void setUserDto(UserDto userDto) {
+        this.userDto = userDto;
+    }
+
+    public LanguageAddDto getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(LanguageAddDto language) {
+        this.language = language;
+    }
+
+    public HierarchyMasterDto getHierarchy() {
+        return hierarchy;
+    }
+
+    public void setHierarchy(HierarchyMasterDto hierarchy) {
+        this.hierarchy = hierarchy;
+    }
+
+    public LocationMasterDto getLocation() {
+        return location;
+    }
+
+    public void setLocation(LocationMasterDto location) {
+        this.location = location;
+    }
+
+    public Organization getOrganization() {
+        return organization;
+    }
+
+    public void setOrganization(Organization organization) {
+        this.organization = organization;
     }
 }

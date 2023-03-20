@@ -14,6 +14,8 @@ public class TenantContext {
     private static final ThreadLocal<String> CURRENT_TENANT = new ThreadLocal<>();
 
     public static String getCurrentTenant() {
+
+        System.out.println("CURRENT_TENANT     "+CURRENT_TENANT.get());
         return CURRENT_TENANT.get();
     }
 
