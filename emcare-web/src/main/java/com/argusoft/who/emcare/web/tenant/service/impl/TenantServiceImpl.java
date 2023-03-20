@@ -1,5 +1,7 @@
 package com.argusoft.who.emcare.web.tenant.service.impl;
 
+import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.parser.IParser;
 import com.argusoft.who.emcare.web.common.response.Response;
 import com.argusoft.who.emcare.web.config.tenant.MultitenantDataSourceConfiguration;
 import com.argusoft.who.emcare.web.config.tenant.TenantContext;
@@ -52,6 +54,8 @@ import java.util.Optional;
 @Service
 public class TenantServiceImpl implements TenantService {
 
+    private final FhirContext fhirCtx = FhirContext.forR4();
+    private final IParser parser = fhirCtx.newJsonParser().setPrettyPrint(false);
     @Autowired
     TenantConfigRepository tenantConfigRepository;
 
@@ -76,12 +80,11 @@ public class TenantServiceImpl implements TenantService {
     @Autowired
     LanguageService languageService;
 
-
     @Override
     public ResponseEntity addNewTenant(TenantDto tenantDto) {
         Optional<TenantConfig> tConfig = tenantConfigRepository.findByTenantId(tenantDto.getTenantId());
         if (tConfig.isPresent()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response("Tenant Id Already Exist", HttpStatus.BAD_REQUEST.value()));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response("Country Already Exist", HttpStatus.BAD_REQUEST.value()));
         }
         tConfig = tenantConfigRepository.findByUrl(tenantDto.getUrl());
         if (tConfig.isPresent()) {
@@ -97,6 +100,7 @@ public class TenantServiceImpl implements TenantService {
 
         multitenantDataSourceConfiguration.addDataSourceDynamic();
 
+        TenantContext.clearTenant();
         TenantContext.setCurrentTenant(tenantConfig.getTenantId());
 
         try {
@@ -123,7 +127,7 @@ public class TenantServiceImpl implements TenantService {
         UserDto userDto;
         LanguageAddDto languageAddDto;
 
-
+        TenantContext.setCurrentTenant(tenantConfig.getTenantId());
         try {
             HierarchyMasterDto hierarchyMasterDto = tenantDto.getHierarchy();
             if (Objects.isNull(hierarchyMasterDto)) {
@@ -131,6 +135,7 @@ public class TenantServiceImpl implements TenantService {
             }
             hierarchyMaster = (HierarchyMaster) locationService.createHierarchyMaster(hierarchyMasterDto).getBody();
         } catch (Exception ex) {
+            tenantConfigRepository.delete(tenantConfig);
             return ResponseEntity.badRequest().body(
                     new Response(
                             "Hierarchy not saved properly! Please Contact Administrative Department.",
@@ -146,6 +151,7 @@ public class TenantServiceImpl implements TenantService {
             }
             locationMaster = (LocationMaster) locationService.createOrUpdate(locationMasterDto).getBody();
         } catch (Exception ex) {
+            tenantConfigRepository.delete(tenantConfig);
             return ResponseEntity.badRequest().body(
                     new Response(
                             "Location not saved properly! Please Contact Administrative Department.",
@@ -155,11 +161,11 @@ public class TenantServiceImpl implements TenantService {
         }
 
         try {
-            organization = tenantDto.getOrganization();
+            organization = parser.parseResource(Organization.class, tenantDto.getOrganization());
             if (Objects.isNull(organization)) {
                 throw new RuntimeException("Please Enter Organization Details");
             }
-            orgId = organizationResourceProvider.createOrganization(organization).getId().getValue();
+            orgId = organizationResourceProvider.createOrganization(organization).getId().getIdPart();
             organization.setId(orgId);
         } catch (Exception ex) {
             return ResponseEntity.badRequest().body(
@@ -171,15 +177,17 @@ public class TenantServiceImpl implements TenantService {
         }
 
         try {
-            facility = tenantDto.getFacility();
+            facility = parser.parseResource(Location.class, tenantDto.getFacility());
             if (Objects.isNull(facility)) {
                 throw new RuntimeException("Please Enter Facility Details");
             }
             Reference reference = new Reference();
             reference.setResource(organization);
+            reference.setId(orgId);
             facility.setManagingOrganization(reference);
             locationResource = locationResourceService.saveResource(facility);
         } catch (Exception ex) {
+            tenantConfigRepository.delete(tenantConfig);
             return ResponseEntity.badRequest().body(
                     new Response(
                             "Facility not saved properly! Please Contact Administrative Department.",
@@ -189,7 +197,7 @@ public class TenantServiceImpl implements TenantService {
         }
 
         try {
-            userDto = tenantDto.getUserDto();
+            userDto = tenantDto.getUser();
             if (Objects.isNull(userDto)) {
                 throw new RuntimeException("Please Enter User Details");
             }
