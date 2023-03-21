@@ -985,6 +985,9 @@ INSERT INTO public.settings (id, key, name, value) VALUES (2, 'WELCOME_EMAIL', '
 INSERT INTO public.settings (id, key, name, value) VALUES (3, 'SEND_CONFIRMATION_EMAIL', 'Send confirmation email', 'Active');
 
 
+INSERT INTO public.language_translation (id, created_by, created_on, modified_by, modified_on, language_code, language_data, language_name) VALUES (201, '34e85fd5-e155-4243-ab5e-a95ba4d60647', '2022-02-01 16:27:04.499', '34e85fd5-e155-4243-ab5e-a95ba4d60647', '2023-03-16 14:37:01.672', 'en', '170714', 'English');
+
+
 
 SELECT pg_catalog.setval('public.hibernate_sequence', 1, true);
 

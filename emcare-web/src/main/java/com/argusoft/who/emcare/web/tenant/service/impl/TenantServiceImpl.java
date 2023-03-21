@@ -8,6 +8,7 @@ import com.argusoft.who.emcare.web.config.tenant.TenantContext;
 import com.argusoft.who.emcare.web.fhir.model.LocationResource;
 import com.argusoft.who.emcare.web.fhir.resourceprovider.OrganizationResourceProvider;
 import com.argusoft.who.emcare.web.fhir.service.LocationResourceService;
+import com.argusoft.who.emcare.web.fhir.service.OrganizationResourceService;
 import com.argusoft.who.emcare.web.language.dto.LanguageAddDto;
 import com.argusoft.who.emcare.web.language.service.LanguageService;
 import com.argusoft.who.emcare.web.location.dto.HierarchyMasterDto;
@@ -22,10 +23,9 @@ import com.argusoft.who.emcare.web.tenant.repository.TenantConfigRepository;
 import com.argusoft.who.emcare.web.tenant.service.TenantService;
 import com.argusoft.who.emcare.web.user.dto.UserDto;
 import com.argusoft.who.emcare.web.user.service.UserService;
-import org.hl7.fhir.r4.model.Location;
-import org.hl7.fhir.r4.model.Organization;
-import org.hl7.fhir.r4.model.Reference;
+import org.hl7.fhir.r4.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
@@ -75,10 +75,16 @@ public class TenantServiceImpl implements TenantService {
     OrganizationResourceProvider organizationResourceProvider;
 
     @Autowired
+    OrganizationResourceService organizationResourceService;
+
+    @Autowired
     UserService userService;
 
     @Autowired
     LanguageService languageService;
+
+    @Value("${defaultTenant}")
+    private String defaultTenant;
 
     @Override
     public ResponseEntity addNewTenant(TenantDto tenantDto) {
@@ -118,115 +124,125 @@ public class TenantServiceImpl implements TenantService {
             );
         }
 
-        HierarchyMaster hierarchyMaster;
-        LocationMaster locationMaster;
-        Organization organization;
-        String orgId;
-        Location facility;
-        LocationResource locationResource;
-        UserDto userDto;
-        LanguageAddDto languageAddDto;
+        HierarchyMaster hierarchyMaster = new HierarchyMaster();
+        LocationMaster locationMaster = new LocationMaster();
+        Organization organization = new Organization();
+        String orgId = null;
+        Location facility = new Location();
+        LocationResource locationResource = new LocationResource();
+        UserDto userDto = new UserDto();
+        LanguageAddDto languageAddDto = new LanguageAddDto();
 
         TenantContext.setCurrentTenant(tenantConfig.getTenantId());
+        Response response = new Response("Dose Not Work", HttpStatus.BAD_REQUEST.value());
         try {
-            HierarchyMasterDto hierarchyMasterDto = tenantDto.getHierarchy();
-            if (Objects.isNull(hierarchyMasterDto)) {
-                throw new RuntimeException("Hierarchy not saved!");
-            }
-            hierarchyMaster = (HierarchyMaster) locationService.createHierarchyMaster(hierarchyMasterDto).getBody();
-        } catch (Exception ex) {
-            tenantConfigRepository.delete(tenantConfig);
-            return ResponseEntity.badRequest().body(
-                    new Response(
-                            "Hierarchy not saved properly! Please Contact Administrative Department.",
-                            HttpStatus.BAD_REQUEST.value()
-                    )
-            );
-        }
 
-        try {
-            LocationMasterDto locationMasterDto = tenantDto.getLocation();
-            if (Objects.isNull(locationMasterDto)) {
-                throw new RuntimeException("Hierarchy not saved!");
+            try {
+                HierarchyMasterDto hierarchyMasterDto = tenantDto.getHierarchy();
+                if (Objects.isNull(hierarchyMasterDto)) {
+                    throw new RuntimeException("Hierarchy not saved!");
+                }
+                hierarchyMaster = (HierarchyMaster) locationService.createHierarchyMaster(hierarchyMasterDto).getBody();
+            } catch (Exception ex) {
+                afterExceptionProcess(tenantConfig);
+                response = new Response(
+                        "Hierarchy not saved properly! Please Contact Administrative Department.",
+                        HttpStatus.BAD_REQUEST.value()
+                );
             }
-            locationMaster = (LocationMaster) locationService.createOrUpdate(locationMasterDto).getBody();
-        } catch (Exception ex) {
-            tenantConfigRepository.delete(tenantConfig);
-            return ResponseEntity.badRequest().body(
-                    new Response(
-                            "Location not saved properly! Please Contact Administrative Department.",
-                            HttpStatus.BAD_REQUEST.value()
-                    )
-            );
-        }
 
-        try {
-            organization = parser.parseResource(Organization.class, tenantDto.getOrganization());
-            if (Objects.isNull(organization)) {
-                throw new RuntimeException("Please Enter Organization Details");
+            try {
+                LocationMasterDto locationMasterDto = tenantDto.getLocation();
+                if (Objects.isNull(locationMasterDto)) {
+                    throw new RuntimeException("Hierarchy not saved!");
+                }
+                locationMaster = (LocationMaster) locationService.createOrUpdate(locationMasterDto).getBody();
+            } catch (Exception ex) {
+                locationService.deleteHierarchyMaster(hierarchyMaster.getHierarchyType());
+                afterExceptionProcess(tenantConfig);
+                response = new Response(
+                        "Location not saved properly! Please Contact Administrative Department.",
+                        HttpStatus.BAD_REQUEST.value()
+                );
             }
-            orgId = organizationResourceProvider.createOrganization(organization).getId().getIdPart();
-            organization.setId(orgId);
-        } catch (Exception ex) {
-            return ResponseEntity.badRequest().body(
-                    new Response(
-                            "Organization not saved properly! Please Contact Administrative Department.",
-                            HttpStatus.BAD_REQUEST.value()
-                    )
-            );
-        }
 
-        try {
-            facility = parser.parseResource(Location.class, tenantDto.getFacility());
-            if (Objects.isNull(facility)) {
-                throw new RuntimeException("Please Enter Facility Details");
+            try {
+                organization = parser.parseResource(Organization.class, tenantDto.getOrganization());
+                if (Objects.isNull(organization)) {
+                    throw new RuntimeException("Please Enter Organization Details");
+                }
+                orgId = organizationResourceProvider.createOrganization(organization).getId().getIdPart();
+                organization.setId(orgId);
+            } catch (Exception ex) {
+                locationService.deleteLocationById(locationMaster.getId());
+                locationService.deleteHierarchyMaster(hierarchyMaster.getHierarchyType());
+                afterExceptionProcess(tenantConfig);
+                response = new Response(
+                        "Organization not saved properly! Please Contact Administrative Department.",
+                        HttpStatus.BAD_REQUEST.value()
+                );
             }
-            Reference reference = new Reference();
-            reference.setResource(organization);
-            reference.setId(orgId);
-            facility.setManagingOrganization(reference);
-            locationResource = locationResourceService.saveResource(facility);
-        } catch (Exception ex) {
-            tenantConfigRepository.delete(tenantConfig);
-            return ResponseEntity.badRequest().body(
-                    new Response(
-                            "Facility not saved properly! Please Contact Administrative Department.",
-                            HttpStatus.BAD_REQUEST.value()
-                    )
-            );
-        }
 
-        try {
-            userDto = tenantDto.getUser();
-            if (Objects.isNull(userDto)) {
-                throw new RuntimeException("Please Enter User Details");
+            try {
+                facility = parser.parseResource(Location.class, tenantDto.getFacility());
+                if (Objects.isNull(facility)) {
+                    throw new RuntimeException("Please Enter Facility Details");
+                }
+                Reference reference = new Reference();
+                reference.setResource(organization);
+                reference.setId(orgId);
+                facility.setManagingOrganization(reference);
+                List<Extension> extensions = new ArrayList<>();
+                Extension extension = new Extension();
+                extension.setValue(new IntegerType(locationMaster.getId()));
+                extensions.add(extension);
+                facility.setExtension(extensions);
+                locationResource = locationResourceService.saveResource(facility);
+            } catch (Exception ex) {
+                organizationResourceService.deleteOrganizationResource(orgId);
+                locationService.deleteLocationById(locationMaster.getId());
+                locationService.deleteHierarchyMaster(hierarchyMaster.getHierarchyType());
+//            afterExceptionProcess(tenantConfig);
+                response = new Response(
+                        "Facility not saved properly! Please Contact Administrative Department.",
+                        HttpStatus.BAD_REQUEST.value()
+                );
             }
-            List<String> facilityIds = new ArrayList<String>();
-            facilityIds.add(locationResource.getResourceId());
-            userDto.setFacilityIds(facilityIds);
-            userService.addUser(userDto);
-        } catch (Exception ex) {
-            return ResponseEntity.badRequest().body(
-                    new Response(
-                            "Facility not saved properly! Please Contact Administrative Department.",
-                            HttpStatus.BAD_REQUEST.value()
-                    )
-            );
-        }
 
-        try {
-            languageAddDto = tenantDto.getLanguage();
-            if (Objects.isNull(languageAddDto)) {
-                throw new RuntimeException("Please Enter Language Details");
+            try {
+                userDto = tenantDto.getUser();
+                if (Objects.isNull(userDto)) {
+                    throw new RuntimeException("Please Enter User Details");
+                }
+                List<String> facilityIds = new ArrayList<>();
+                facilityIds.add(locationResource.getResourceId());
+                userDto.setFacilityIds(facilityIds);
+                userService.addUser(userDto);
+            } catch (Exception ex) {
+                locationResourceService.deleteLocationResource(locationResource.getResourceId());
+                organizationResourceService.deleteOrganizationResource(orgId);
+                locationService.deleteLocationById(locationMaster.getId());
+                locationService.deleteHierarchyMaster(hierarchyMaster.getHierarchyType());
+                afterExceptionProcess(tenantConfig);
+                response = new Response(
+                        "User not saved properly Or User Email Already Register In Other Country! Please Contact Administrative Department.",
+                        HttpStatus.BAD_REQUEST.value()
+                );
             }
-            languageService.createNewLanguageTranslation(languageAddDto);
+
+            try {
+                languageAddDto = tenantDto.getLanguage();
+                if (Objects.nonNull(languageAddDto)) {
+                    languageService.createNewLanguageTranslation(languageAddDto);
+                }
+            } catch (Exception ex) {
+                response = new Response(
+                        "Language not saved properly! Please Contact Administrative Department.",
+                        HttpStatus.BAD_REQUEST.value()
+                );
+            }
         } catch (Exception ex) {
-            return ResponseEntity.badRequest().body(
-                    new Response(
-                            "Facility not saved properly! Please Contact Administrative Department.",
-                            HttpStatus.BAD_REQUEST.value()
-                    )
-            );
+            return ResponseEntity.badRequest().body(response);
         }
 
 
@@ -264,6 +280,12 @@ public class TenantServiceImpl implements TenantService {
             return ResponseEntity.ok().body(new Response("This key doesn't exist", HttpStatus.OK.value()));
         }
         return ResponseEntity.ok().body(new Response("This key doesn't exist", HttpStatus.OK.value()));
+    }
+
+    private void afterExceptionProcess(TenantConfig tenantConfig) {
+        TenantContext.clearTenant();
+        TenantContext.setCurrentTenant(defaultTenant);
+        tenantConfigRepository.delete(tenantConfig);
     }
 
 }
