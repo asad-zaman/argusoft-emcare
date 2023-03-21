@@ -1,6 +1,7 @@
 package com.argusoft.who.emcare.ui.home.patient.profile
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -18,6 +19,7 @@ import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.math.roundToInt
 
 
 @AndroidEntryPoint
@@ -107,6 +109,22 @@ class PatientProfileFragment : BaseFragment<FragmentPatientProfileBinding>() {
 //                    duration = Snackbar.LENGTH_INDEFINITE,
 //                    isError = false
 //                )
+            }
+            apiResponse.whenInProgress {
+                if (it.first > 0) {
+                    val progress =
+                        it
+                            .let { it.second.toDouble().div(it.first) }
+                            .let { if (it.isNaN()) 0.0 else it }
+                            .times(100)
+                            .roundToInt()
+                    "Synced $progress%".also {
+                        binding.patientProfileLayout.showProgress(it)
+                        Log.d("Synced", "$progress%")
+                    }
+                } else {
+                    "Synced 0%".also { binding.patientProfileLayout.showProgress(it) }
+                }
             }
             apiResponse.handleListApiView(binding.patientProfileLayout) {
                 when (it) {

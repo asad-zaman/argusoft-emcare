@@ -53,7 +53,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(), EasyPermissions.Perm
         observeNotNull(loginViewModel.loginApiState) {
             it.handleApiView(binding.progressLayout) {
                 binding.progressLayout.updateProgressUi(true, false)
-                syncViewModel.syncPatients(false)
+                syncViewModel.syncPatients(true)
             }
         }
 
@@ -73,16 +73,6 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(), EasyPermissions.Perm
                 Log.d("it.completed.toDouble()", it.second.toDouble().toString())
                 Log.d("it.total.toDouble()", it.first.toDouble().toString())
                 if(it.first.toDouble() == it.second.toDouble()){
-                    binding.progressLayout.updateProgressUi(true, true)
-//                        requireContext().showSnackBar(
-//                            view = binding.progressLayout,
-//                            message = getString(R.string.msg_sync_successfully),
-//                            duration = Snackbar.LENGTH_SHORT,
-//                            isError = false
-//                        )
-                    preference.writeLastSyncTimestamp(
-                        OffsetDateTime.now().toLocalDateTime().format(
-                        DateTimeFormatter.ofPattern(formatString12)))
                     startActivity(Intent(requireContext(), HomeActivity::class.java))
                     requireActivity().finish()
                 }else if(it.first > 0) {

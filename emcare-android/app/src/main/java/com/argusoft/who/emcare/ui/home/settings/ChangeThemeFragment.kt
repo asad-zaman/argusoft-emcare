@@ -19,6 +19,7 @@ import com.argusoft.who.emcare.utils.extention.*
 import com.google.android.fhir.sync.SyncJobStatus
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlin.math.roundToInt
 
 
 @AndroidEntryPoint
@@ -87,25 +88,41 @@ class ChangeThemeFragment : BaseFragment<FragmentScreenResizeSettingsBinding>() 
 //                    isError = false
 //                )
             }
+            apiResponse.whenInProgress {
+                if (it.first > 0) {
+                    val progress =
+                        it
+                            .let { it.second.toDouble().div(it.first) }
+                            .let { if (it.isNaN()) 0.0 else it }
+                            .times(100)
+                            .roundToInt()
+                    "Synced $progress%".also {
+                        binding.rootLayout.showProgress(it)
+                        Log.d("Synced", "$progress%")
+                    }
+                } else {
+                    "Synced 0%".also { binding.rootLayout.showProgress(it) }
+                }
+            }
             apiResponse.handleListApiView(binding.rootLayout) {
                 when (it) {
 
-                    is SyncJobStatus.InProgress -> {
-                        Log.d("it.completed.toDouble()", it.completed.toDouble().toString())
-                        Log.d("it.total.toDouble()", it.total.toDouble().toString())
-                        if(it.total > 0) {
-                            val progress =
-                                it
-                                    .let { it.completed.toDouble().div(it.total) }
-                                    .let { if (it.isNaN()) 0.0 else it }
-                                    .times(100)
-                            "Synced $progress%".also { binding.rootLayout.showProgress(it) }
-                        }else{
-                            "Synced 0%".also { binding.rootLayout.showProgress(it) }
-                        }
-                        //Code to show text.
-                        //Reference: https://github.com/google/android-fhir/blob/master/demo/src/main/java/com/google/android/fhir/demo/PatientListFragment.kt
-                    }
+//                    is SyncJobStatus.InProgress -> {
+//                        Log.d("it.completed.toDouble()", it.completed.toDouble().toString())
+//                        Log.d("it.total.toDouble()", it.total.toDouble().toString())
+//                        if(it.total > 0) {
+//                            val progress =
+//                                it
+//                                    .let { it.completed.toDouble().div(it.total) }
+//                                    .let { if (it.isNaN()) 0.0 else it }
+//                                    .times(100)
+//                            "Synced $progress%".also { binding.rootLayout.showProgress(it) }
+//                        }else{
+//                            "Synced 0%".also { binding.rootLayout.showProgress(it) }
+//                        }
+//                        //Code to show text.
+//                        //Reference: https://github.com/google/android-fhir/blob/master/demo/src/main/java/com/google/android/fhir/demo/PatientListFragment.kt
+//                    }
 
                     is SyncJobStatus.Finished -> {
                         binding.rootLayout.updateProgressUi(true, true)

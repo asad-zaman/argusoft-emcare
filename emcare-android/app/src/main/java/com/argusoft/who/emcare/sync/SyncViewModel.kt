@@ -39,10 +39,15 @@ class SyncViewModel @Inject constructor(
     val syncState: LiveData<ApiResponse<SyncJobStatus>> = _syncState
 
     private val formatString12 = "dd/MM/yyyy hh:mm:ss a"
+    private lateinit var lastSyncTime: String
+    private var isFinished = false
 
     fun syncPatients(isRefresh: Boolean) {
+        isFinished = false
         _syncState.value = ApiResponse.Loading(isRefresh)
         viewModelScope.launch {
+            lastSyncTime = OffsetDateTime.now().toLocalDateTime().format(
+                DateTimeFormatter.ofPattern(formatString12))
             val emCareResult = EmCareSync.oneTimeSync(api, database, preference, listOf(SyncType.FACILITY, SyncType.CONSULTATION_FLOW_ITEM))
             Sync.oneTimeSync<com.argusoft.who.emcare.sync.FhirSyncWorker>(
                 applicationContext
@@ -55,10 +60,19 @@ class SyncViewModel @Inject constructor(
                 if (syncJobStatus is SyncJobStatus.Finished && emCareResult is SyncResult.Success) {
                     _syncState.value = (syncJobStatus is SyncJobStatus.Finished)?.let { ApiResponse.Success(syncJobStatus) }
                     _syncState.value = ApiResponse.Success(null)
-                    preference.writeLastSyncTimestamp(OffsetDateTime.now().toLocalDateTime().format(
-                        DateTimeFormatter.ofPattern(formatString12)))
+                    preference.writeLastSyncTimestamp(lastSyncTime)
                 } else if(syncJobStatus is SyncJobStatus.InProgress) {
-                    _syncState.value = ApiResponse.InProgress(total = syncJobStatus.total, completed = syncJobStatus.completed)
+                    if(!isFinished) {
+                        _syncState.value = ApiResponse.InProgress(
+                            total = syncJobStatus.total,
+                            completed = syncJobStatus.completed
+                        )
+                        if (syncJobStatus.total == syncJobStatus.completed) {
+                            isFinished = true
+                            _syncState.value = ApiResponse.Success(null)
+                            preference.writeLastSyncTimestamp(lastSyncTime)
+                        }
+                    }
 
                 } else {
                     _syncState.value = (syncJobStatus is SyncJobStatus.Failed)?.let { ApiResponse.ApiError(apiErrorMessageResId = R.string.msg_sync_failed) }

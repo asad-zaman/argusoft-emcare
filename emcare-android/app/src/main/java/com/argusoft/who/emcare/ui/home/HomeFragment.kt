@@ -94,7 +94,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(){
 //                )
             }
             apiResponse.whenInProgress {
-                Log.d("it.completed.toDouble()", it.second.toDouble().toString())
+                /*Log.d("it.completed.toDouble()", it.second.toDouble().toString())
                 Log.d("it.total.toDouble()", it.first.toDouble().toString())
                 if(it.first.toDouble() == it.second.toDouble()){
                     binding.rootLayout.updateProgressUi(true, true)
@@ -102,7 +102,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(){
                         OffsetDateTime.now().toLocalDateTime().format(
                             DateTimeFormatter.ofPattern(formatString12)))
                     startActivity(Intent(requireContext(), HomeActivity::class.java))
-                }else if(it.first > 0) {
+                }else*/ if(it.first > 0) {
                     val progress =
                         it
                             .let { it.second.toDouble().div(it.first) }
