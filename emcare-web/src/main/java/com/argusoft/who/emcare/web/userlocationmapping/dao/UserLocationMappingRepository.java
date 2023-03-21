@@ -93,4 +93,7 @@ public interface UserLocationMappingRepository extends JpaRepository<UserLocatio
             "ORDER BY weekly DESC limit 10;", nativeQuery = true)
     List<ScatterCharDto> getDashboardScatterChartData();
 
+    @Query(value = "select distinct(user_id) from user_location_mapping;", nativeQuery = true)
+    List<String> getDistinctUserId();
+
 }

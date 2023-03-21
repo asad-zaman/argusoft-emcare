@@ -66,5 +66,7 @@ public interface UserService {
 
     public Map<String,Object> checkEmailIdExist(String email);
 
+    public ResponseEntity<Object> addUserForCountry(UserDto user);
+
 
 }

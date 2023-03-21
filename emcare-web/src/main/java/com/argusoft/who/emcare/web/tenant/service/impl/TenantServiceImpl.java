@@ -217,7 +217,7 @@ public class TenantServiceImpl implements TenantService {
                 List<String> facilityIds = new ArrayList<>();
                 facilityIds.add(locationResource.getResourceId());
                 userDto.setFacilityIds(facilityIds);
-                userService.addUser(userDto);
+                userService.addUserForCountry(userDto);
             } catch (Exception ex) {
                 locationResourceService.deleteLocationResource(locationResource.getResourceId());
                 organizationResourceService.deleteOrganizationResource(orgId);
