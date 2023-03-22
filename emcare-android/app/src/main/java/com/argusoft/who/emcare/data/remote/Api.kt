@@ -22,5 +22,7 @@ interface Api {
 
     suspend fun getConsultationFlow(): ApiResponse<List<ConsultationFlowItem>>
 
+    suspend fun getConsultationFlowWithTimestamp(timestamp: String): ApiResponse<List<ConsultationFlowItem>>
+
     suspend fun saveConsultations(consultations: List<ConsultationFlowItem>): ApiResponse<Any>
 }

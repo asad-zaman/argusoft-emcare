@@ -12,6 +12,7 @@ import com.google.android.fhir.datacapture.DataCaptureConfig
 import com.google.android.fhir.datacapture.ExternalAnswerValueSetResolver
 import com.google.android.fhir.search.StringFilterModifier
 import com.google.android.fhir.search.search
+import com.google.android.fhir.sync.remote.HttpLogger
 import dagger.hilt.android.HiltAndroidApp
 import org.hl7.fhir.r4.model.Coding
 import org.hl7.fhir.r4.model.ValueSet
@@ -98,7 +99,13 @@ class EmCareApplication : Application(), Configuration.Provider, DataCaptureConf
                 DatabaseErrorStrategy.RECREATE_AT_OPEN,
                 ServerConfiguration(BuildConfig.FHIR_BASE_URL,
                     NetworkConfiguration(connectionTimeOut = 600, readTimeOut = 600, writeTimeOut = 600),
-                    EmcareAuthenticator(preference))
+                    EmcareAuthenticator(preference),
+                    httpLogger =
+                    HttpLogger(
+                        HttpLogger.Configuration(
+                            if (BuildConfig.DEBUG) HttpLogger.Level.BODY else HttpLogger.Level.BASIC
+                        )
+                    ) { Timber.tag("App-HttpLog").d(it) })
             )
         )
     }

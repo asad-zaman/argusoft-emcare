@@ -15,7 +15,7 @@ android {
         minSdkVersion 26
         targetSdkVersion 31
         versionCode 5
-        versionName "1.0.9_dev"
+        versionName "1.0.10"
         vectorDrawables.useSupportLibrary = true
         javaCompileOptions {
             annotationProcessorOptions {
@@ -31,25 +31,51 @@ android {
 
     buildTypes {
         debug {
-//            buildConfigField "String", "BASE_URL", "\"http://192.1.200.197:8080/api/\""
-//            buildConfigField "String", "FHIR_BASE_URL", "\"http://192.1.200.197:8080/fhir/\""
-//            buildConfigField "String", "KEYCLOAK_BASE_URL", "\"http://192.1.200.197:8180/auth/realms/emcare/protocol/openid-connect/\""
             buildConfigField "String", "BASE_URL", "\"https://emcare.argusoft.com/api/\""
             buildConfigField "String", "FHIR_BASE_URL", "\"https://emcare.argusoft.com/fhir/\""
             buildConfigField "String", "KEYCLOAK_BASE_URL", "\"https://emcare.argusoft.com/auth/realms/emcare/protocol/openid-connect/\""
             shrinkResources false
             minifyEnabled false
-            resValue "string", "app_version", "${defaultConfig.versionName}"
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            resValue "string", "app_version", "${defaultConfig.versionName}.debug"
+            resValue "string", "app_name", "EmCare debug"
+            applicationIdSuffix ".debug"
         }
-        release {
-            buildConfigField "String", "BASE_URL", "\"http://192.1.200.197:8080/api/\""
-            buildConfigField "String", "FHIR_BASE_URL", "\"http://192.1.200.197:8080/fhir/\""
-            buildConfigField "String", "KEYCLOAK_BASE_URL", "\"http://192.1.200.197:8180/auth/realms/emcare/protocol/openid-connect/\""
+        dev {
+            buildConfigField "String", "BASE_URL", "\"http://3.111.94.246:8080/api/\""
+            buildConfigField "String", "FHIR_BASE_URL", "\"http://3.111.94.246:8080/fhir/\""
+            buildConfigField "String", "KEYCLOAK_BASE_URL", "\"http://3.111.94.246:8180/auth/realms/emcare/protocol/openid-connect/\""
+            shrinkResources false
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            resValue "string", "app_version", "${defaultConfig.versionName}"
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            resValue "string", "app_version", "${defaultConfig.versionName}.dev"
+            resValue "string", "app_name", "EmCare dev"
+            applicationIdSuffix ".dev"
+        }
+        production {
+            buildConfigField "String", "BASE_URL", "\"http://13.126.141.238:8080/api/\""
+            buildConfigField "String", "FHIR_BASE_URL", "\"http://13.126.141.238:8080/fhir/\""
+            buildConfigField "String", "KEYCLOAK_BASE_URL", "\"http://13.126.141.238:8180/auth/realms/emcare/protocol/openid-connect/\""
+            minifyEnabled false
+            shrinkResources false
+//            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            resValue "string", "app_version", "${defaultConfig.versionName}.release"
+            resValue "string", "app_name", "EmCare"
+        }
+
+        staging {
+            buildConfigField "String", "BASE_URL", "\"http://65.0.190.33:8080/api/\""
+            buildConfigField "String", "FHIR_BASE_URL", "\"http://65.0.190.33:8080/fhir/\""
+            buildConfigField "String", "KEYCLOAK_BASE_URL", "\"http://65.0.190.33:8180/auth/realms/emcare/protocol/openid-connect/\""
+            minifyEnabled false
+            shrinkResources false
+//            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            resValue "string", "app_version", "${defaultConfig.versionName}.staging"
+            applicationIdSuffix ".staging"
+            resValue "string", "app_name", "EmCare Staging"
         }
     }
+
 
     bundle {
         language {
@@ -177,10 +203,10 @@ dependencies {
     implementation "androidx.work:work-runtime-ktx:2.7.1"
 
     //Fhir
-    //Local Build Link: https://github.com/ppanchal-argus/android-fhir/actions/runs/4233181391
-    implementation "com.google.android.fhir:engine:0.1.0-beta02-build_4233181391"
-    implementation "com.google.android.fhir:data-capture:0.1.0-beta06-build_4233181391"
-    implementation "com.google.android.fhir:workflow:0.1.0-alpha02-build_4233181391"
+    //Local Build Link: https://github.com/ppanchal-argus/android-fhir/actions/runs/4486277391
+    implementation "com.google.android.fhir:engine:0.1.0-beta02-build_4486277391"
+    implementation "com.google.android.fhir:data-capture:1.0.0-build_4486277391"
+    implementation "com.google.android.fhir:workflow:0.1.0-alpha02-build_4486277391"
 
     //EventBus
     implementation("org.greenrobot:eventbus:3.3.1")

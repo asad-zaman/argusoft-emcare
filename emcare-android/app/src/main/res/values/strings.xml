@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">EmCare</string>
     <string name="about_app_name_start">Em</string>
     <string name="about_app_name_end">Care</string>
     <string name="about_description">Em Care is a digital solution that initially aims\n to improve health outcomes for mothers &amp; children\n in emergency settings.\nIt will provide decision-support to frontline health workers\n in emergencies, preserving the fidelity of,\n and increasing access to WHO clinical guidelines.</string>
@@ -222,5 +221,6 @@
     <string name="label_save">Save</string>
     <string name="text_enlarged">Enlarged</string>
     <string name="change_theme">Change Theme</string>
+    <string name="text_syncing">Syncing</string>
 
 </resources>

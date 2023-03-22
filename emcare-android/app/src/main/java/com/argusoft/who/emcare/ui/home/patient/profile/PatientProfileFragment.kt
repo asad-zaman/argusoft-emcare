@@ -1,6 +1,7 @@
 package com.argusoft.who.emcare.ui.home.patient.profile
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -13,10 +14,12 @@ import com.argusoft.who.emcare.ui.common.*
 import com.argusoft.who.emcare.ui.common.base.BaseFragment
 import com.argusoft.who.emcare.ui.home.HomeActivity
 import com.argusoft.who.emcare.utils.extention.*
+import com.google.android.fhir.sync.SyncJobStatus
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.math.roundToInt
 
 
 @AndroidEntryPoint
@@ -86,7 +89,7 @@ class PatientProfileFragment : BaseFragment<FragmentPatientProfileBinding>() {
         binding.headerLayout.toolbar.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.action_sync -> {
-                    syncViewModel.syncPatients()
+                    syncViewModel.syncPatients(true)
                 }
                 R.id.action_more -> {
                     (activity as HomeActivity).openDrawer()
@@ -99,32 +102,65 @@ class PatientProfileFragment : BaseFragment<FragmentPatientProfileBinding>() {
     override fun initObserver() {
         observeNotNull(syncViewModel.syncState) { apiResponse ->
             apiResponse.whenLoading {
-                binding.patientProfileLayout.showHorizontalProgress()
-                requireContext().showSnackBar(
-                    view = binding.patientProfileLayout,
-                    message = getString(R.string.msg_sync_started),
-                    duration = Snackbar.LENGTH_INDEFINITE,
-                    isError = false
-                )
+                binding.patientProfileLayout.showHorizontalProgress(true)
+//                requireContext().showSnackBar(
+//                    view = binding.patientProfileLayout,
+//                    message = getString(R.string.msg_sync_started),
+//                    duration = Snackbar.LENGTH_INDEFINITE,
+//                    isError = false
+//                )
+            }
+            apiResponse.whenInProgress {
+                if (it.first > 0) {
+                    val progress =
+                        it
+                            .let { it.second.toDouble().div(it.first) }
+                            .let { if (it.isNaN()) 0.0 else it }
+                            .times(100)
+                            .roundToInt()
+                    "Synced $progress%".also {
+                        binding.patientProfileLayout.showProgress(it)
+                        Log.d("Synced", "$progress%")
+                    }
+                } else {
+                    "Synced 0%".also { binding.patientProfileLayout.showProgress(it) }
+                }
             }
             apiResponse.handleListApiView(binding.patientProfileLayout) {
                 when (it) {
-                    is SyncState.Finished -> {
-                        requireContext().showSnackBar(
-                            view = binding.patientProfileLayout,
-                            message = getString(R.string.msg_sync_successfully),
-                            duration = Snackbar.LENGTH_SHORT,
-                            isError = false
-                        )
+                    is SyncJobStatus.InProgress -> {
+                        if(it.total > 0) {
+                            val progress =
+                                it
+                                    .let { it.completed.toDouble().div(it.total) }
+                                    .let { if (it.isNaN()) 0.0 else it }
+                                    .times(100)
+                            "Synced $progress%".also { binding.patientProfileLayout.showProgress(it) }
+                        }else{
+                            "Synced 0%".also { binding.patientProfileLayout.showProgress(it) }
+                        }
+                        //Code to show text.
+                        //Reference: https://github.com/google/android-fhir/blob/master/demo/src/main/java/com/google/android/fhir/demo/PatientListFragment.kt
                     }
-                    is SyncState.Failed -> {
+
+                    is SyncJobStatus.Finished -> {
+                        binding.patientProfileLayout.updateProgressUi(true, true)
+//                        requireContext().showSnackBar(
+//                            view = binding.patientProfileLayout,
+//                            message = getString(R.string.msg_sync_successfully),
+//                            duration = Snackbar.LENGTH_SHORT,
+//                            isError = false
+//                        )
+                    }
+                    is SyncJobStatus.Failed -> {
                         binding.patientProfileLayout.showContent()
-                        requireContext().showSnackBar(
-                            view = binding.patientProfileLayout,
-                            message = getString(R.string.msg_sync_failed),
-                            duration = Snackbar.LENGTH_SHORT,
-                            isError = true
-                        )
+                        binding.patientProfileLayout.updateProgressUi(true, false)
+//                        requireContext().showSnackBar(
+//                            view = binding.patientProfileLayout,
+//                            message = getString(R.string.msg_sync_failed),
+//                            duration = Snackbar.LENGTH_SHORT,
+//                            isError = true
+//                        )
                     }
                 }
             }

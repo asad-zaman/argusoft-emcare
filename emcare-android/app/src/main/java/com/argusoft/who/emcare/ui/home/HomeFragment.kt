@@ -2,19 +2,27 @@ package com.argusoft.who.emcare.ui.home
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
+import android.view.View
+import android.view.animation.AnimationUtils
+import android.widget.TextView
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.databinding.FragmentHomeBinding
-import com.argusoft.who.emcare.sync.SyncState
 import com.argusoft.who.emcare.sync.SyncViewModel
 import com.argusoft.who.emcare.ui.common.base.BaseFragment
 import com.argusoft.who.emcare.utils.extention.*
 import com.argusoft.who.emcare.utils.glide.GlideApp
 import com.argusoft.who.emcare.utils.glide.GlideRequests
+import com.google.android.fhir.sync.ResourceSyncException
+import com.google.android.fhir.sync.SyncJobStatus
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import dagger.hilt.android.AndroidEntryPoint
+import java.time.OffsetDateTime
+import java.time.format.DateTimeFormatter
+import kotlin.math.roundToInt
 
 @AndroidEntryPoint
 class HomeFragment : BaseFragment<FragmentHomeBinding>(){
@@ -23,6 +31,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(){
     private val syncViewModel: SyncViewModel by viewModels()
     private val homeViewModel: HomeViewModel by activityViewModels()
     private lateinit var homePagerAdapter: HomePagerAdapter
+    private val formatString12 = "dd/MM/yyyy hh:mm:ss a"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,7 +49,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(){
         binding.headerLayout.toolbar.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.action_sync -> {
-                    syncViewModel.syncPatients()
+                    syncViewModel.syncPatients(true)
                 }
                 R.id.action_more -> {
                     (activity as HomeActivity).openDrawer()
@@ -76,26 +85,69 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(){
     override fun initObserver() {
         observeNotNull(syncViewModel.syncState) { apiResponse ->
             apiResponse.whenLoading {
-                binding.rootLayout.showHorizontalProgress()
-                requireContext().showSnackBar(
-                    view = binding.rootLayout,
-                    message = getString(R.string.msg_sync_started),
-                    duration = Snackbar.LENGTH_INDEFINITE,
-                    isError = false
-                )
+                binding.rootLayout.showHorizontalProgress(true)
+//                requireContext().showSnackBar(
+//                    view = binding.rootLayout,
+//                    message = getString(R.string.msg_sync_started),
+//                    duration = Snackbar.LENGTH_INDEFINITE,
+//                    isError = false
+//                )
+            }
+            apiResponse.whenInProgress {
+                /*Log.d("it.completed.toDouble()", it.second.toDouble().toString())
+                Log.d("it.total.toDouble()", it.first.toDouble().toString())
+                if(it.first.toDouble() == it.second.toDouble()){
+                    binding.rootLayout.updateProgressUi(true, true)
+                    preference.writeLastSyncTimestamp(
+                        OffsetDateTime.now().toLocalDateTime().format(
+                            DateTimeFormatter.ofPattern(formatString12)))
+                    startActivity(Intent(requireContext(), HomeActivity::class.java))
+                }else*/ if(it.first > 0) {
+                    val progress =
+                        it
+                            .let { it.second.toDouble().div(it.first) }
+                            .let { if (it.isNaN()) 0.0 else it }
+                            .times(100)
+                            .roundToInt()
+                    "Synced $progress%".also { binding.rootLayout.showProgress(it)
+                        Log.d("Synced", "$progress%")
+                    }
+                }else{
+                    "Synced 0%".also { binding.rootLayout.showProgress(it) }
+                }
             }
             apiResponse.handleListApiView(binding.rootLayout) {
-                when (it) {
-                    is SyncState.Finished -> {
-                        requireContext().showSnackBar(
-                            view = binding.rootLayout,
-                            message = getString(R.string.msg_sync_successfully),
-                            duration = Snackbar.LENGTH_SHORT,
-                            isError = false
-                        )
+                when(it) {
+                    is SyncJobStatus.InProgress -> {
+                        //Code to show text.
+                        Log.d("it.completed.toDouble()", it.completed.toDouble().toString())
+                        Log.d("it.total.toDouble()", it.total.toDouble().toString())
+                        if(it.total > 0) {
+                            val progress =
+                                it
+                                    .let { it.completed.toDouble().div(it.total) }
+                                    .let { if (it.isNaN()) 0.0 else it }
+                                    .times(100)
+                                    .roundToInt()
+                            "Synced $progress%".also { binding.rootLayout.showProgress(it) }
+                            Log.d("Synced ", "$progress%")
+                        }else{
+                            "Synced 0%".also { binding.rootLayout.showProgress(it) }
+                        }
                     }
-                    is SyncState.Failed -> {
+
+                    is SyncJobStatus.Finished -> {
+                        binding.rootLayout.updateProgressUi(true, true)
+//                        requireContext().showSnackBar(
+//                            view = binding.rootLayout,
+//                            message = getString(R.string.msg_sync_successfully),
+//                            duration = Snackbar.LENGTH_SHORT,
+//                            isError = false
+//                        )
+                    }
+                    is SyncJobStatus.Failed -> {
                         binding.rootLayout.showContent()
+                        binding.rootLayout.updateProgressUi(true, false)
                         requireContext().showSnackBar(
                             view = binding.rootLayout,
                             message = getString(R.string.msg_sync_failed),
