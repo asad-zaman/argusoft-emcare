@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Nullable;
 import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
 
 /**
  * @author jay
@@ -65,8 +64,8 @@ public class UserController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<Object> addUser(@RequestBody UserDto user) {
-        return userService.signUp(user);
+    public ResponseEntity<Object> addUser(@RequestBody UserDto user, HttpServletRequest request) {
+        return userService.signUp(user, request);
     }
 
     @PostMapping("/auth/login")
@@ -75,8 +74,8 @@ public class UserController {
     }
 
     @PostMapping("/user/add")
-    public ResponseEntity<Object> addUserFromWeb(@RequestBody UserDto user) {
-        return userService.addUser(user);
+    public ResponseEntity<Object> addUserFromWeb(@RequestBody UserDto user, HttpServletRequest request) {
+        return userService.addUser(user, request);
     }
 
     @PostMapping("/role/add")
@@ -96,8 +95,11 @@ public class UserController {
     }
 
     @PutMapping("/user/update/{userId}")
-    public ResponseEntity<Object> updateUser(@RequestBody UserDto userDto, @PathVariable(value = "userId") String userId) {
-        return userService.updateUser(userDto, userId);
+    public ResponseEntity<Object> updateUser(
+            @RequestBody UserDto userDto,
+            @PathVariable(value = "userId") String userId,
+            HttpServletRequest request) {
+        return userService.updateUser(userDto, userId, request);
     }
 
     @PutMapping("/user/update/password/{userId}")

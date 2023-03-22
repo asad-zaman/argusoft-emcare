@@ -12,4 +12,6 @@ package com.argusoft.who.emcare.web.common.service;
 public interface CommonService {
 
     public String getDomainFormUrl(String url, String uri);
+
+    public String getTenantIdFromURL(String url, String uri);
 }

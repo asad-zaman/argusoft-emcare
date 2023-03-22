@@ -48,16 +48,27 @@ class TenantFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response,
                          FilterChain chain) throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) request;
+        System.out.println(req.getRequestURL() + "====" + req.getRequestURI());
         if (TENANT_ID_MAP.isEmpty()) {
             addTenantDetailsInMap();
         }
-        String domain = commonService.getDomainFormUrl(req.getRequestURL().toString(), req.getRequestURI());
-        String tenantId = TENANT_ID_MAP.get(domain.trim());
+        String domain = null;
+        String tenantId = null;
+//        if (req.getHeader("User-Agent").contains("okhttp")) {
+//            if (!req.getRequestURI().contains("api/auth/login")) {
+//                KeycloakAuthenticationToken token = (KeycloakAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+//
+//            }
+//        } else {
+        domain = commonService.getDomainFormUrl(req.getRequestURL().toString(), req.getRequestURI());
+        tenantId = TENANT_ID_MAP.get(domain.trim());
         if (Objects.isNull(tenantId)) {
             addTenantDetailsInMap();
             domain = commonService.getDomainFormUrl(req.getRequestURL().toString(), req.getRequestURI());
             tenantId = TENANT_ID_MAP.get(domain.trim());
         }
+//        }
+
         System.out.println(tenantId + "    Domain Name");
         if (Objects.isNull(tenantId)) {
             throw new DataSourceLookupFailureException(

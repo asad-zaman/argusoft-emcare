@@ -217,7 +217,7 @@ public class TenantServiceImpl implements TenantService {
                 List<String> facilityIds = new ArrayList<>();
                 facilityIds.add(locationResource.getResourceId());
                 userDto.setFacilityIds(facilityIds);
-                userService.addUserForCountry(userDto);
+                userService.addUserForCountry(userDto, tenantConfig.getTenantId());
             } catch (Exception ex) {
                 locationResourceService.deleteLocationResource(locationResource.getResourceId());
                 organizationResourceService.deleteOrganizationResource(orgId);
@@ -242,10 +242,9 @@ public class TenantServiceImpl implements TenantService {
                 );
             }
         } catch (Exception ex) {
+            afterExceptionProcess(tenantConfig);
             return ResponseEntity.badRequest().body(response);
         }
-
-
         return ResponseEntity.ok().body(tenantConfig);
     }
 
