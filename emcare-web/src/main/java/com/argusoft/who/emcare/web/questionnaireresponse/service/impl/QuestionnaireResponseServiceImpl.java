@@ -100,6 +100,14 @@ public class QuestionnaireResponseServiceImpl implements QuestionnaireResponseSe
         List<String> patientIds = responseList.stream().map(MiniPatient::getPatientId).collect(Collectors.toList());
         totalCount = questionnaireResponseRepository.findDistinctByPatientIdIn(resourceIds).size();
         List<PatientDto> patientList = emcareResourceService.getPatientDtoByIds(patientIds);
+        for (PatientDto patientDto : patientList) {
+            for (MiniPatient miniPatient : responseList) {
+                if (patientDto.getId().equalsIgnoreCase(miniPatient.getPatientId())) {
+                    patientDto.setConsultationDate(miniPatient.getConsultationDate());
+                }
+            }
+        }
+        Collections.reverse(patientList);
         PageDto pageDto = new PageDto();
         pageDto.setList(patientList);
         pageDto.setTotalCount(totalCount.longValue());
