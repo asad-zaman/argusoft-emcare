@@ -59,19 +59,19 @@ export class AuthenticationService {
     }
 
     login(username: string, password: string) {
-        // const url = `http://localhost:8080/api/auth/login`;
-        const url = `${this.backendURL}/auth/realms/emcare/protocol/openid-connect/token`;
-        const body = new HttpParams()
-            .set('username', username)
-            .set('password', password)
-            .set('grant_type', 'password')
-            .set('client_id', 'emcare')
-            .set('client_secret', 'b5a37bde-8d54-4837-a8dc-12e1f808e26e');
-        // const body = {
-        //     username: username, password: password
-        // }
+        const url = `http://localhost:8080/api/auth/login`;
+        // const url = `${this.backendURL}/auth/realms/emcare/protocol/openid-connect/token`;
+        // const body = new HttpParams()
+        //     .set('username', username)
+        //     .set('password', password)
+        //     .set('grant_type', 'password')
+        //     .set('client_id', 'emcare')
+        //     .set('client_secret', 'b5a37bde-8d54-4837-a8dc-12e1f808e26e');
+        const body = {
+            username: username, password: password
+        }
         // return this.http.post<any>(`http:localhost:4200/users/authenticate`, { username, password }, { withCredentials: true })
-        return this.http.post<any>(url, body.toString(), this.getHeaders());
+        return this.http.post<any>(url, body);
     }
 
     getLoggedInUser() {
