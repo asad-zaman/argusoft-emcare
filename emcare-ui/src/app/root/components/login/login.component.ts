@@ -27,6 +27,7 @@ export class LoginComponent implements OnInit {
   ngOnInit() {
     //  only for developement purpose
     const url = environment.testUrl;
+    console.log(window.location.href, url)
     this.loginForm = this.formBuilder.group({
       username: [window.location.href == url ? environment.testUsername : '', [Validators.required, 
         Validators.pattern(appConstants.emailPattern)]],

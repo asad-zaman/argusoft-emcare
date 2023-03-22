@@ -309,4 +309,8 @@ export class AppComponent implements OnInit {
       this.isSidebarOpen = true;
     }
   }
+
+  navigateToTenantConfig() {
+    this.router.navigate(['/tenantList']);
+  }
 }

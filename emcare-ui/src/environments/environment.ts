@@ -4,10 +4,10 @@
 
 export const environment = {
   production: false,
-  // apiUrl: 'http://localhost:8080',
-  apiUrl: 'https://emcare.argusoft.com',
+  apiUrl: 'http://localhost:8080',
+  // apiUrl: 'https://emcare.argusoft.com',
   questionnaireBuilderUrl: 'https://emcare.argusoft.com/questionnaireBuilder',
-  testUrl: 'http://localhost:4200/login',
+  testUrl: 'http://localhost:4200/#/login',
   testUsername: 'emcare@gmail.com',
   testPassword: 'argusadmin'
 };
