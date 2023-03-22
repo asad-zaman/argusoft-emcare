@@ -3,6 +3,7 @@ package com.argusoft.who.emcare.web.tenant.service;
 import com.argusoft.who.emcare.web.tenant.dto.TenantDto;
 import org.springframework.http.ResponseEntity;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**

@@ -305,7 +305,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseEntity<Object> signUp(UserDto user) {
+    public ResponseEntity<Object> signUp(UserDto user, HttpServletRequest request) {
         Keycloak keycloakInstance = keyCloakConfig.getKeyCloakInstance();
 
 //        Get Realm Resource
@@ -329,10 +329,14 @@ public class UserServiceImpl implements UserService {
         kcUser.setEmail(user.getEmail());
         kcUser.setEnabled(Boolean.FALSE);
         kcUser.setEmailVerified(false);
+
+
+        String tenantId = commonService.getTenantIdFromURL(request.getRequestURL().toString(), request.getRequestURI());
         Map<String, List<String>> attribute = new HashMap<>();
         attribute.put(CommonConstant.LANGUAGE_KEY, Arrays.asList(CommonConstant.ENGLISH));
         attribute.put(CommonConstant.PHONE_KEY, Arrays.asList(user.getPhone()));
         attribute.put(CommonConstant.COUNTRY_CODE, Arrays.asList(user.getCountryCode()));
+        attribute.put(CommonConstant.TENANT_ID, Arrays.asList(tenantId));
         kcUser.setAttributes(attribute);
 
         Map<String, Long> locationMap = new HashMap<>();
@@ -412,7 +416,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseEntity<Object> addUser(UserDto user) {
+    public ResponseEntity<Object> addUser(UserDto user, HttpServletRequest request) {
         Keycloak keycloak = keyCloakConfig.getInstance();
 //        Get Realm Resource
         RealmResource realmResource = keycloak.realm(realm);
@@ -435,10 +439,12 @@ public class UserServiceImpl implements UserService {
         kcUser.setEmail(user.getEmail());
         kcUser.setEnabled(true);
         kcUser.setEmailVerified(false);
+        String tenantId = commonService.getTenantIdFromURL(request.getRequestURL().toString(), request.getRequestURI());
         Map<String, List<String>> attribute = new HashMap<>();
         attribute.put(CommonConstant.LANGUAGE_KEY, Arrays.asList(CommonConstant.ENGLISH));
         attribute.put(CommonConstant.PHONE_KEY, Arrays.asList(user.getPhone()));
         attribute.put(CommonConstant.COUNTRY_CODE, Arrays.asList(user.getCountryCode()));
+        attribute.put(CommonConstant.TENANT_ID, Arrays.asList(tenantId));
         kcUser.setAttributes(attribute);
 
         try {
@@ -684,7 +690,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseEntity<Object> addUserForCountry(UserDto user) {
+    public ResponseEntity<Object> addUserForCountry(UserDto user, String tenantId) {
         Keycloak keycloak = keyCloakConfig.getInstance();
 //        Get Realm Resource
         RealmResource realmResource = keycloak.realm(realm);
@@ -711,6 +717,7 @@ public class UserServiceImpl implements UserService {
         attribute.put(CommonConstant.LANGUAGE_KEY, Arrays.asList(CommonConstant.ENGLISH));
         attribute.put(CommonConstant.PHONE_KEY, Arrays.asList(user.getPhone()));
         attribute.put(CommonConstant.COUNTRY_CODE, Arrays.asList(user.getCountryCode()));
+        attribute.put(CommonConstant.COUNTRY_CODE, Arrays.asList(tenantId));
         kcUser.setAttributes(attribute);
 
         try {
@@ -791,7 +798,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseEntity<Object> updateUser(UserDto userDto, String userId) {
+    public ResponseEntity<Object> updateUser(UserDto userDto, String userId, HttpServletRequest request) {
         Keycloak keycloak = keyCloakConfig.getInstance();
         RealmResource realmResource = keycloak.realm(realm);
         UserResource userResource = keycloak.realm(realm).users().get(userId);
@@ -818,11 +825,12 @@ public class UserServiceImpl implements UserService {
                 userLocationMappingRepository.save(ulm);
             }
         }
-
+        String tenantId = commonService.getTenantIdFromURL(request.getRequestURL().toString(), request.getRequestURI());
         Map<String, List<String>> attribute = new HashMap<>();
         attribute.put(CommonConstant.LANGUAGE_KEY, Arrays.asList(userDto.getLanguage()));
         attribute.put(CommonConstant.PHONE_KEY, Arrays.asList(userDto.getPhone()));
         attribute.put(CommonConstant.COUNTRY_CODE, Arrays.asList(userDto.getCountryCode()));
+        attribute.put(CommonConstant.TENANT_ID, Arrays.asList(tenantId));
 
         newUser.setAttributes(attribute);
         newUser.setEnabled(newUser.isEnabled());
