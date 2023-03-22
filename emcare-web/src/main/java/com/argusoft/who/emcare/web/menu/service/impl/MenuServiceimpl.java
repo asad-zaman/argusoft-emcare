@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -30,7 +31,11 @@ public class MenuServiceimpl implements MenuService {
 
     @Override
     public List<MenuConfig> getAllMenus() {
-        return menuConfigRepository.findAll();
+        List<MenuConfig> menuConfigs = menuConfigRepository.findAll();
+        Collections.sort(menuConfigs, (a, b) -> {
+            return a.getMenuName().compareTo(b.getMenuName());
+        });
+        return menuConfigs;
     }
 
     @Override

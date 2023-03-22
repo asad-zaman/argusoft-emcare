@@ -49,7 +49,7 @@ public interface UserLocationMappingRepository extends JpaRepository<UserLocatio
 
     List<UserLocationMapping> findByRegRequestFromAndIsFirst(String regRequestFrom, boolean isFirst);
 
-    List<UserLocationMapping> findByIsFirst(boolean isFirst);
+    List<UserLocationMapping> findByIsFirstOrderByCreateDateDesc(boolean isFirst);
 
     UserLocationMapping findByUserIdAndLocationId(String userId, Integer locationId);
 
