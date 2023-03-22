@@ -282,9 +282,9 @@
   "URL Repeat Message": "Please enter different URL!!",
   "Domain Repeat Message": "Please enter different Country Domain!!",
   "Ig Version": "Ig Version",
-  "Domain": "Country",
+  "Domain": "Country Domain",
   "Language Required Message": "*Language is Required",
   "Administrative Location Type": "Administrative Location Type",
   "Facility Name": "Facility Name",
-  "Tenant Id": "Country Id"
+  "Tenant Id": "Country"
 }

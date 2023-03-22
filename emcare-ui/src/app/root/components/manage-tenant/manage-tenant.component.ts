@@ -187,7 +187,7 @@ export class ManageTenantComponent implements OnInit {
         tenantId: this.tenantForm.get('tenantId').value,
         url: this.tenantForm.get('url').value,
         username: this.tenantForm.get('username').value,
-        tenantPassword: this.tenantForm.get('tenantPassword').value,
+        password: this.tenantForm.get('tenantPassword').value,
         domain: this.tenantForm.get('domain').value,
         hierarchy: {
           hierarchyType: 'Country',
@@ -214,14 +214,18 @@ export class ManageTenantComponent implements OnInit {
           language: 'en',
           facilityIds: null
         },
-        languageCode: this.tenantForm.get('newSelectedLanguage').value['id'],
-        languageName: this.tenantForm.get('newSelectedLanguage').value['lanName']
+        language: {
+          languageCode: this.tenantForm.get('newSelectedLanguage').value['id'],
+          languageName: this.tenantForm.get('newSelectedLanguage').value['lanName']
+        }
       };
       this.fhirService.addTenant(data).subscribe(() => {
         this.toasterService.showToast('success', 'Tenant added successfully!!', 'EM CARE!');
         this.router.navigate(['/tenantList']);
-      }, () => {
-        this.toasterService.showToast('error', 'API issue!!', 'EM CARE!');
+      }, (e) => {
+        if (e && e.errorMessage) {
+          this.toasterService.showToast('error', e.errorMessage, 'EM CARE!');
+        }
       });
     }
   }
@@ -359,17 +363,17 @@ export class ManageTenantComponent implements OnInit {
         ]
       },
       "status": facilityObj.facilityStatus && facilityObj.facilityStatus.id,
-      "managingOrganization": {
-        "id": facilityObj.organization.id
-      },
+      // "managingOrganization": {
+      //   "id": facilityObj.organization.id
+      // },
       "position": {
         "longitude": facilityObj.longitude,
         "latitude": facilityObj.latitude
       },
-      "extension": [{
-        "url": null,
-        "valueInteger": facilityObj.location.id
-      }],
+      // "extension": [{
+      //   "url": null,
+      //   "valueInteger": facilityObj.location.id
+      // }],
       "telecom": [
         {
           "system": "phone",
