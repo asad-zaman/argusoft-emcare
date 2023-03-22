@@ -17,9 +17,9 @@ import com.argusoft.who.emcare.ui.common.model.SidepaneItem
 import com.argusoft.who.emcare.ui.home.patient.PatientRepository
 import com.argusoft.who.emcare.utils.extention.orEmpty
 import com.argusoft.who.emcare.utils.listener.SingleLiveEvent
-import com.google.android.fhir.datacapture.allItems
-import com.google.android.fhir.datacapture.common.datatype.asStringValue
-import com.google.android.fhir.datacapture.createQuestionnaireResponseItem
+import com.google.android.fhir.datacapture.extensions.allItems
+import com.google.android.fhir.datacapture.extensions.asStringValue
+import com.google.android.fhir.datacapture.extensions.createQuestionnaireResponseItem
 import com.google.android.fhir.workflow.FhirOperator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
@@ -302,9 +302,14 @@ class HomeViewModel @Inject constructor(
         val finalQuestionnaireResponseItemsList = mutableListOf<QuestionnaireResponse.QuestionnaireResponseItemComponent>()
 
         questionnaireLinkIdList.forEachIndexed { index, linkId ->
-            if(questionnaireResponseItemsList[index].linkId.equals(linkId)){
-                finalQuestionnaireResponseItemsList.add(questionnaireResponseItemsList[index])
-            } else {
+            try{
+                if(questionnaireResponseItemsList[index].linkId.equals(linkId)){
+                    finalQuestionnaireResponseItemsList.add(questionnaireResponseItemsList[index])
+                } else {
+                    questionnaireResponseItemsList.add(index, QuestionnaireResponse.QuestionnaireResponseItemComponent(StringType(linkId)))
+                    finalQuestionnaireResponseItemsList.add(QuestionnaireResponse.QuestionnaireResponseItemComponent(StringType(linkId)))
+                }
+            }catch (e: java.lang.IndexOutOfBoundsException){
                 questionnaireResponseItemsList.add(index, QuestionnaireResponse.QuestionnaireResponseItemComponent(StringType(linkId)))
                 finalQuestionnaireResponseItemsList.add(QuestionnaireResponse.QuestionnaireResponseItemComponent(StringType(linkId)))
             }
