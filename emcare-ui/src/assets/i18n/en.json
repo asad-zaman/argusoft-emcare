@@ -281,10 +281,10 @@
   "URL": "Database URL",
   "Tenant Id Repeat Message": "Please enter different Country!!",
   "URL Repeat Message": "Please enter different URL!!",
-  "Domain Repeat Message": "Please enter different Domain!!",
-  "Domain": "Country",
+  "Domain Repeat Message": "Please enter different Country Domain!!",
+  "Domain": "Country Domain",
   "Language Required Message": "*Language is Required",
   "Administrative Location Type": "Administrative Location Type",
   "Facility Name": "Facility Name",
-  "Tenant Id": "Country Id"
+  "Tenant Id": "Country"
 }
