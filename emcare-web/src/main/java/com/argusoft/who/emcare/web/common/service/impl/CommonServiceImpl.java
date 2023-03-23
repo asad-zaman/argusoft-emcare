@@ -5,6 +5,7 @@ import com.argusoft.who.emcare.web.common.service.CommonService;
 import com.argusoft.who.emcare.web.tenant.entity.TenantConfig;
 import com.argusoft.who.emcare.web.tenant.repository.TenantConfigRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -24,6 +25,12 @@ public class CommonServiceImpl implements CommonService {
     @Autowired
     TenantConfigRepository tenantConfigRepository;
 
+    @Value("${defaultTenant}")
+    private String defaultTenant;
+
+    @Value("${defaultTenantDomain}")
+    private String defaultTenantDomain;
+
 
     @Override
     public String getDomainFormUrl(String url, String uri) {
@@ -41,7 +48,12 @@ public class CommonServiceImpl implements CommonService {
         Optional<TenantConfig> tenantConfig = tenantConfigRepository.findByDomain(domain);
         if (tenantConfig.isPresent()) {
             return tenantConfig.get().getTenantId();
+        } else {
+            if (domain.equalsIgnoreCase(defaultTenant)) {
+                return defaultTenant;
+            } else {
+                return CommonConstant.DEFAULT_TENANT_ID;
+            }
         }
-        return CommonConstant.DEFAULT_TENANT_ID;
     }
 }
