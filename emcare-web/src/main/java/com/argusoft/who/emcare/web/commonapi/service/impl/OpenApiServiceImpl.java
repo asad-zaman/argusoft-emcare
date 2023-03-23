@@ -2,21 +2,27 @@ package com.argusoft.who.emcare.web.commonapi.service.impl;
 
 import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.common.response.Response;
+import com.argusoft.who.emcare.web.common.service.CommonService;
 import com.argusoft.who.emcare.web.commonapi.dao.OTPRepository;
 import com.argusoft.who.emcare.web.commonapi.dto.UserPasswordDto;
 import com.argusoft.who.emcare.web.commonapi.model.OTP;
 import com.argusoft.who.emcare.web.commonapi.service.OpenApiService;
+import com.argusoft.who.emcare.web.config.tenant.TenantContext;
 import com.argusoft.who.emcare.web.mail.MailService;
 import com.argusoft.who.emcare.web.mail.dto.MailDto;
 import com.argusoft.who.emcare.web.mail.impl.MailDataSetterService;
+import com.argusoft.who.emcare.web.tenant.dto.TenantDto;
+import com.argusoft.who.emcare.web.tenant.repository.TenantConfigRepository;
 import com.argusoft.who.emcare.web.twilio.service.TwilioService;
 import com.argusoft.who.emcare.web.user.service.UserService;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -41,7 +47,16 @@ public class OpenApiServiceImpl implements OpenApiService {
     MailDataSetterService mailDataSetterService;
 
     @Autowired
+    CommonService commonService;
+
+    @Autowired
+    TenantConfigRepository tenantConfigRepository;
+
+    @Autowired
     TwilioService twilioService;
+
+    @Value("${defaultTenant}")
+    private String defaultTenant;
 
     @Override
     public ResponseEntity<Object> generateOTP(String emailId) throws NoSuchAlgorithmException {
@@ -92,7 +107,7 @@ public class OpenApiServiceImpl implements OpenApiService {
     private String generateNewOTP() throws NoSuchAlgorithmException {
         Random rand = SecureRandom.getInstanceStrong();
         int otp = rand.nextInt(10000);
-        return String.format("%04d",otp);
+        return String.format("%04d", otp);
     }
 
     @Override
@@ -116,5 +131,14 @@ public class OpenApiServiceImpl implements OpenApiService {
         } else {
             return ResponseEntity.badRequest().body(new Response("OTP Validation Failed, Retry", HttpStatus.BAD_REQUEST.value()));
         }
+    }
+
+    @Override
+    public Map<String, String> getCurrentCountry(HttpServletRequest request) {
+        TenantContext.setCurrentTenant(defaultTenant);
+        String tenantId = commonService.getTenantIdFromURL(request.getRequestURL().toString(), request.getRequestURI());
+        Map<String, String> countryConfig = new HashMap<>();
+        countryConfig.put("country", tenantId);
+        return countryConfig;
     }
 }

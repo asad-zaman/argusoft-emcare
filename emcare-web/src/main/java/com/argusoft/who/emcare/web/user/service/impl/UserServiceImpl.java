@@ -41,6 +41,7 @@ import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Scope;
 import org.springframework.core.env.Environment;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -792,6 +793,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Scope("request")
     public UserRepresentation getUserById(String userId) {
         Keycloak keycloak = keyCloakConfig.getInstance();
         return keycloak.realm(realm).users().get(userId).toRepresentation();

@@ -9,8 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @CrossOrigin(origins = "**")
@@ -45,5 +47,10 @@ public class OpenApiController {
     @GetMapping("/active/facility")
     public List<FacilityDto> getActiveFacility() {
         return locationResourceService.getActiveFacility();
+    }
+
+    @GetMapping("/current/country")
+    public Map<String, String> getCurrentCountry(HttpServletRequest request) {
+        return openApiService.getCurrentCountry(request);
     }
 }
