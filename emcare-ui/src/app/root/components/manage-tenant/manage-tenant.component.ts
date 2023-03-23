@@ -37,9 +37,7 @@ export class ManageTenantComponent implements OnInit {
   roles: any = [];
   lanArray: Array<any> = [];
   availableLanguages = [];
-  locationTypeArr: any = [];
   orgArr = [];
-  locationArr = [];
   statusArr = [
     { id: 'active', name: 'Active' },
     { id: 'inactive', name: 'Inactive' }
@@ -127,15 +125,8 @@ export class ManageTenantComponent implements OnInit {
       username: ['', [Validators.required]],
       tenantPassword: ['', [Validators.required]],
       domain: ['', [Validators.required]],
-      // Administrative Location Type
-      type: ['', [Validators.required]],
-      name: ['', [Validators.required]],
-      // Administrative Levels
-      locationType: ['', [Validators.required]],
-      locationName: ['', [Validators.required]],
       // Organization
       organizationName: ['', [Validators.required]],
-      alias: ['', [Validators.required]],
       addressStreet: ['', [Validators.required]],
       telecom: ['', [Validators.required]],
       status: [this.statusArr[0], [Validators.required]],
@@ -191,12 +182,12 @@ export class ManageTenantComponent implements OnInit {
         domain: this.tenantForm.get('domain').value,
         hierarchy: {
           hierarchyType: 'Country',
-          name: this.tenantForm.get('name').value,
-          code: this.tenantForm.get('type').value,
+          name: 'Country',
+          code: 'country',
         },
         location: {
-          name: this.tenantForm.get('locationName').value,
-          type: this.tenantForm.get('locationType').value ? this.tenantForm.get('locationType').value.id : '',
+          name: this.tenantForm.get('tenantId').value,
+          type: 'country',
           parent: 0
         },
         organization: JSON.stringify(this.getOrganizationData(this.tenantForm.value)),
@@ -288,24 +279,10 @@ export class ManageTenantComponent implements OnInit {
     }
   }
 
-  setLocationTypeArr(event) {
-    this.locationTypeArr = [];
-    if (event && event.target.value) {
-      this.locationTypeArr.push({ id: event.target.value.toLowerCase(), name: event.target.value });
-    }
-  }
-
   setOrganizationName(event) {
     this.orgArr = [];
     if (event && event.target.value) {
       this.orgArr.push({ id: event.target.value.toLowerCase(), name: event.target.value });
-    }
-  }
-
-  setLocationArr(event) {
-    this.locationArr = [];
-    if (event && event.target.value) {
-      this.locationArr.push({ id: event.target.value.toLowerCase(), name: event.target.value });
     }
   }
 
@@ -333,7 +310,7 @@ export class ManageTenantComponent implements OnInit {
       "resourceType": "Organization",
       "name": orgObj.organizationName,
       "alias": [
-        orgObj.alias
+        orgObj.organizationName
       ],
       "telecom": [
         {
@@ -363,17 +340,10 @@ export class ManageTenantComponent implements OnInit {
         ]
       },
       "status": facilityObj.facilityStatus && facilityObj.facilityStatus.id,
-      // "managingOrganization": {
-      //   "id": facilityObj.organization.id
-      // },
       "position": {
         "longitude": facilityObj.longitude,
         "latitude": facilityObj.latitude
       },
-      // "extension": [{
-      //   "url": null,
-      //   "valueInteger": facilityObj.location.id
-      // }],
       "telecom": [
         {
           "system": "phone",

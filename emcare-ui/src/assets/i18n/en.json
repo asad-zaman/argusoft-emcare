@@ -270,7 +270,7 @@
   "Equation": "Equation",
   "Add Tenant": "Add Country",
   "Update Tenant": "Update Country",
-  "Tenant Id Placeholder": "Enter Country Id",
+  "Tenant Id Placeholder": "Enter Country Namw",
   "Tenant Id Required Message": "*Country is Required",
   "URL Placeholder": "Ex. 127.0.0.1:5432/{database_name}",
   "URL Required Message": "*URL is Required",
@@ -286,5 +286,7 @@
   "Language Required Message": "*Language is Required",
   "Administrative Location Type": "Administrative Location Type",
   "Facility Name": "Facility Name",
-  "Tenant Id": "Country"
+  "Tenant Id": "Country",
+  "Managing Organization": "Managing Organization",
+  "Country Language": "Country Language"
 }

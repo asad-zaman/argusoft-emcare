@@ -81,79 +81,11 @@
           </div>
         </div>
       </div>
-      <!-- Administrative Location Type -->
-      <hr>
-      <div class="my-4">
-        <h1 class="heading">
-          {{'Administrative Location Type' | translate}}
-        </h1>
-      </div>
-      <div class="row">
-        <div class="col-12 col-sm-6">
-          <div class="mb-3">
-            <label class="form-label">{{'Location Type' | translate}}</label>
-            <input class="form-control custom-input" formControlName="type" type="text" id="type"
-              (input)="setLocationTypeArr($event)" placeholder="{{'Location Type Placeholder' | translate}}"
-              [ngClass]="{ 'is-invalid': submitted && getFormConfrols.type.errors }">
-            <div *ngIf="submitted && getFormConfrols.type.errors" class="invalid-feedback">
-              <div class="cst-error-style" *ngIf="getFormConfrols.type.errors.required">
-                {{'Location Type Required Message' | translate}}</div>
-            </div>
-          </div>
-        </div>
-        <div class="col-12 col-sm-6">
-          <div class="mb-3">
-            <label class="form-label">{{'Name' | translate}}</label>
-            <input class="form-control custom-input" formControlName="name" type="text" id="name"
-              placeholder="{{'Name Placeholder' | translate}}"
-              [ngClass]="{ 'is-invalid': submitted && getFormConfrols.name.errors }">
-            <div *ngIf="submitted && getFormConfrols.name.errors" class="invalid-feedback">
-              <div class="cst-error-style" *ngIf="getFormConfrols.name.errors.required">
-                {{'Name Required Message' | translate}}</div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- Administrative Levels -->
-      <hr>
-      <div class="my-4">
-        <h1 class="heading">
-          {{'Administrative Levels' | translate}}
-        </h1>
-      </div>
-      <div class="row">
-        <div class="col-12 col-sm-6">
-          <div class="mb-3">
-            <label class="form-label">{{'Location Type' | translate}}</label>
-            <p-dropdown
-              [ngStyle]="{'border': submitted && this.tenantForm.controls.locationType.value == '' ? '1px solid red' : ''}"
-              [options]="locationTypeArr" placeholder="Select a locationType" formControlName="locationType"
-              optionLabel="name" [filter]=true>
-            </p-dropdown>
-            <div *ngIf="submitted && this.tenantForm.controls.locationType.value == ''" style="color: #dc3545">
-              <div *ngIf="getFormConfrols.locationType.errors.required">{{'Location Type Required Message' | translate}}
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-12 col-sm-6">
-          <div class="mb-3">
-            <label class="form-label">{{'Location Name' | translate}}</label>
-            <input formControlName="locationName" type="text" class="form-control custom-input" id="locationName"
-              (input)="setLocationArr($event)" placeholder="{{'Location Name Placeholder' | translate}}"
-              [ngClass]="{ 'is-invalid': submitted && getFormConfrols.locationName.errors }">
-            <div *ngIf="submitted && getFormConfrols.locationName.errors" class="invalid-feedback">
-              <div class="cst-error-style" *ngIf="getFormConfrols.locationName.errors.required">
-                {{'Location Name Required Message' | translate}}</div>
-            </div>
-          </div>
-        </div>
-      </div>
       <!-- Organization -->
       <hr>
       <div class="my-4">
         <h1 class="heading">
-          {{'Organization' | translate}}
+          {{'Managing Organization' | translate}}
         </h1>
       </div>
       <div class="row">
@@ -171,17 +103,6 @@
         </div>
         <div class="col-12 col-sm-6">
           <div class="mb-3">
-            <label class="form-label">{{'Alias Name' | translate}}</label>
-            <input formControlName="alias" type="text" class="form-control custom-input" id="alias"
-              placeholder="Enter alias name" [ngClass]="{ 'is-invalid': submitted && getFormConfrols.alias.errors }">
-            <div *ngIf="submitted && getFormConfrols.alias.errors" class="invalid-feedback">
-              <div class="cst-error-style" *ngIf="getFormConfrols.alias.errors.required">
-                *{{'Alias is required' | translate}}</div>
-            </div>
-          </div>
-        </div>
-        <div class="col-12 col-sm-4">
-          <div class="mb-3">
             <label class="form-label">{{'Address Street' | translate}}</label>
             <input formControlName="addressStreet" type="text" class="form-control custom-input" id="addressStreet1"
               placeholder="Enter address street"
@@ -192,7 +113,7 @@
             </div>
           </div>
         </div>
-        <div class="col-12 col-sm-4">
+        <div class="col-12 col-sm-6">
           <div class="mb-3">
             <label class="form-label">{{'Telecom' | translate}}</label>
             <input formControlName="telecom" type="number" class="form-control custom-input" id="telecom"
@@ -203,7 +124,7 @@
             </div>
           </div>
         </div>
-        <div class="col-12 col-sm-4">
+        <div class="col-12 col-sm-6">
           <div class="mb-3">
             <label class="form-label">{{'Status' | translate}}</label>
             <p-dropdown formControlName="status" [options]="statusArr" optionLabel="name"
@@ -250,19 +171,6 @@
             <div *ngIf="submitted && this.tenantForm.controls.organization.value == ''" style="color: #dc3545">
               <div class="cst-error-style" *ngIf="getFormConfrols.organization.errors.required">
                 *{{'Organization is required' | translate}}</div>
-            </div>
-          </div>
-        </div>
-        <div class="col-12 col-sm-4">
-          <div class="mb-3 d-grid">
-            <label class="form-label">{{'Administrative Location' | translate}}</label>
-            <p-dropdown [filter]="true" formControlName="location" placeholder="Select an location"
-              [options]="this.locationArr"
-              [ngStyle]="{'border': submitted && this.tenantForm.controls.location.value == '' ? '1px solid red' : ''}"
-              optionLabel="name" [ngClass]="{ 'is-invalid': submitted && getFormConfrols.location.errors }">
-            </p-dropdown>
-            <div class="mt-3" *ngIf="submitted && getFormConfrols.location.value == ''" style="color: #dc3545">
-              *{{'Location is required' | translate}}
             </div>
           </div>
         </div>
@@ -405,7 +313,7 @@
       <hr>
       <div class="my-4">
         <h1 class="heading">
-          {{'Language' | translate}}
+          {{'Country Language' | translate}}
         </h1>
       </div>
       <div class="row">
