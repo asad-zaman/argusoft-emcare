@@ -286,5 +286,7 @@
   "Language Required Message": "*Language is Required",
   "Administrative Location Type": "Administrative Location Type",
   "Facility Name": "Facility Name",
-  "Tenant Id": "Country"
+  "Tenant Id": "Country",
+  "Managing Organization": "Managing Organization",
+  "Country Language": "Country Language"
 }
