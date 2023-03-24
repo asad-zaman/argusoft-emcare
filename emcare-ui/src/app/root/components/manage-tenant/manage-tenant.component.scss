@@ -139,11 +139,11 @@ img {
 .inner {
     display: flex;
     background: #fff;
-    box-shadow: 0 0 5px 0 rgba(0, 0, 0, .2);
-    -webkit-box-shadow: 0 0 5px 0 rgba(0, 0, 0, .2);
-    -moz-box-shadow: 0 0 5px 0 rgba(0, 0, 0, .2);
-    -ms-box-shadow: 0 0 5px 0 rgba(0, 0, 0, .2);
-    -o-box-shadow: 0 0 5px 0 rgba(0, 0, 0, .2)
+    // box-shadow: 0 0 5px 0 rgba(0, 0, 0, .2);
+    // -webkit-box-shadow: 0 0 5px 0 rgba(0, 0, 0, .2);
+    // -moz-box-shadow: 0 0 5px 0 rgba(0, 0, 0, .2);
+    // -ms-box-shadow: 0 0 5px 0 rgba(0, 0, 0, .2);
+    // -o-box-shadow: 0 0 5px 0 rgba(0, 0, 0, .2);
 }
 
 .image-holder {
@@ -266,7 +266,6 @@ p {
 
 .form-control:focus {
     border-color: #e9e0cf;
-    border: none;
     box-shadow: none;
 }
 
