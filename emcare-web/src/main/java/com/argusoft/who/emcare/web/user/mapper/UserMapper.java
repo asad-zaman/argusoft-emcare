@@ -144,4 +144,19 @@ public class UserMapper {
 
         return users;
     }
+
+    public static List<UserLocationMapping> getUserMappingEntityPerLocationForTenant(UserDto userDto, String userId, Map<String, Long> locationId) {
+        List<UserLocationMapping> users = new ArrayList<>();
+        for (String facilityId : userDto.getFacilityIds()) {
+            UserLocationMapping user = new UserLocationMapping();
+            user.setUserId(userId);
+            user.setLocationId(locationId.get(facilityId).intValue());
+            user.setFacilityId(facilityId);
+            user.setIsFirst(false);
+            user.setRegRequestFrom(UserConst.WEB);
+            user.setState(true);
+            users.add(user);
+        }
+        return users;
+    }
 }

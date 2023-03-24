@@ -7,11 +7,9 @@ import com.argusoft.who.emcare.web.commonapi.dao.OTPRepository;
 import com.argusoft.who.emcare.web.commonapi.dto.UserPasswordDto;
 import com.argusoft.who.emcare.web.commonapi.model.OTP;
 import com.argusoft.who.emcare.web.commonapi.service.OpenApiService;
-import com.argusoft.who.emcare.web.config.tenant.TenantContext;
 import com.argusoft.who.emcare.web.mail.MailService;
 import com.argusoft.who.emcare.web.mail.dto.MailDto;
 import com.argusoft.who.emcare.web.mail.impl.MailDataSetterService;
-import com.argusoft.who.emcare.web.tenant.dto.TenantDto;
 import com.argusoft.who.emcare.web.tenant.repository.TenantConfigRepository;
 import com.argusoft.who.emcare.web.twilio.service.TwilioService;
 import com.argusoft.who.emcare.web.user.service.UserService;
@@ -135,7 +133,6 @@ public class OpenApiServiceImpl implements OpenApiService {
 
     @Override
     public Map<String, String> getCurrentCountry(HttpServletRequest request) {
-        TenantContext.setCurrentTenant(defaultTenant);
         String tenantId = commonService.getTenantIdFromURL(request.getRequestURL().toString(), request.getRequestURI());
         Map<String, String> countryConfig = new HashMap<>();
         countryConfig.put("country", tenantId);
