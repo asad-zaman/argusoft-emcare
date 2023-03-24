@@ -37,6 +37,8 @@ import org.springframework.util.FileCopyUtils;
 import javax.sql.DataSource;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -108,6 +110,23 @@ public class TenantServiceImpl implements TenantService {
 
         TenantContext.clearTenant();
         TenantContext.setCurrentTenant(tenantConfig.getTenantId());
+
+        try {
+            Connection connection = dataSource.getConnection();
+            Boolean isDatabaseConnected = connection.isValid(20);
+            if (!isDatabaseConnected) {
+                throw new SQLException();
+            }
+        } catch (SQLException sqlException) {
+            afterExceptionProcess(tenantConfig);
+            return ResponseEntity.badRequest().body(
+                    new Response(
+                            "Database connection doesn't establish please add proper details",
+                            HttpStatus.BAD_REQUEST.value()
+                    )
+            );
+        }
+
 
         try {
             Resource resource = new ClassPathResource("New_Database.sql");
@@ -233,6 +252,7 @@ public class TenantServiceImpl implements TenantService {
             try {
                 languageAddDto = tenantDto.getLanguage();
                 if (Objects.nonNull(languageAddDto)) {
+                    TenantContext.setCurrentTenant(tenantConfig.getTenantId());
                     languageService.createNewLanguageTranslation(languageAddDto);
                 }
             } catch (Exception ex) {
