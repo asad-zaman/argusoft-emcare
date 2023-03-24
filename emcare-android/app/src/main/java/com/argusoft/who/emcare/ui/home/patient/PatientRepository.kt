@@ -67,7 +67,22 @@ class PatientRepository @Inject constructor(
             }
         }.filter {
             (it.getExtensionByUrl(LOCATION_EXTENSION_URL)?.value as? Identifier)?.value == facilityId
-        }.mapIndexed { index, fhirPatient ->
+        }.sortedWith(kotlin.Comparator { o1, o2 ->
+            if(o1.hasMeta() && !o2.hasMeta()){
+                return@Comparator 1
+            } else  if(!o1.hasMeta() && o2.hasMeta()){
+                return@Comparator -1
+            } else if(o1.hasMeta() && o2.hasMeta()){
+                if(o1.meta.lastUpdated!! < o2.meta.lastUpdated){
+                    return@Comparator 1
+                } else {
+                    return@Comparator -1
+                }
+            } else {
+                return@Comparator -1
+            }
+
+        }).mapIndexed { index, fhirPatient ->
             fhirPatient.toPatientItem(index + 1)
         }
         emit(ApiResponse.Success(data = list))

@@ -209,11 +209,10 @@ class PatientProfileFragment : BaseFragment<FragmentPatientProfileBinding>() {
                         INTENT_EXTRA_STRUCTUREMAP_ID,
                         stageToStructureMapId[consultationFlowStageList[1]]
                     )
-//                    putString(INTENT_EXTRA_QUESTIONNAIRE_HEADER, stageToBadgeMap[consultationFlowStageList[1]])
                     putString(
                         INTENT_EXTRA_QUESTIONNAIRE_HEADER,
                         stageToBadgeMap[consultationFlowStageList[1]]
-                    ) //For testing only replace it with badgeText
+                    )
                     putString(
                         INTENT_EXTRA_PATIENT_ID,
                         requireArguments().getString(INTENT_EXTRA_PATIENT_ID)

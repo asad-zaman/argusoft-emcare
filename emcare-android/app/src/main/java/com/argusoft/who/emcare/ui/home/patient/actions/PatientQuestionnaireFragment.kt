@@ -38,7 +38,6 @@ class PatientQuestionnaireFragment : BaseFragment<FragmentPatientQuestionnaireBi
     override fun initView() {
         (activity as? HomeActivity)?.closeSidepane()
         consultationFlowId = requireArguments().getString(INTENT_EXTRA_CONSULTATION_FLOW_ITEM_ID)
-//        binding.headerLayout.toolbar.setTitleSidepane(getString(R.string.patient) + " " + requireArguments().getString(INTENT_EXTRA_QUESTIONNAIRE_HEADER))
         binding.headerLayout.toolbar.setTitleSidepane(
             requireArguments().getString(
                 INTENT_EXTRA_QUESTIONNAIRE_HEADER
@@ -214,7 +213,7 @@ class PatientQuestionnaireFragment : BaseFragment<FragmentPatientQuestionnaireBi
                     navigate(R.id.action_patientQuestionnaireFragment_to_patientQuestionnaireFragment) {
                         putString(INTENT_EXTRA_QUESTIONNAIRE_ID, it.questionnaireId)
                         putString(INTENT_EXTRA_STRUCTUREMAP_ID, it.structureMapId)
-                        putString(INTENT_EXTRA_QUESTIONNAIRE_HEADER, it.questionnaireId)
+                        putString(INTENT_EXTRA_QUESTIONNAIRE_HEADER, stageToBadgeMap[it.consultationStage])
                         putString(INTENT_EXTRA_CONSULTATION_FLOW_ITEM_ID, it.id)
                         putString(INTENT_EXTRA_PATIENT_ID, it.patientId)
                         putString(INTENT_EXTRA_ENCOUNTER_ID, it.encounterId)
@@ -233,7 +232,7 @@ class PatientQuestionnaireFragment : BaseFragment<FragmentPatientQuestionnaireBi
                     navigate(R.id.action_patientQuestionnaireFragment_to_patientQuestionnaireFragment) {
                         putString(INTENT_EXTRA_QUESTIONNAIRE_ID, it.questionnaireId)
                         putString(INTENT_EXTRA_STRUCTUREMAP_ID, it.structureMapId)
-                        putString(INTENT_EXTRA_QUESTIONNAIRE_HEADER, it.questionnaireId)
+                        putString(INTENT_EXTRA_QUESTIONNAIRE_HEADER, stageToBadgeMap[it.consultationStage])
                         putString(INTENT_EXTRA_CONSULTATION_FLOW_ITEM_ID, it.id)
                         putString(INTENT_EXTRA_PATIENT_ID, it.patientId)
                         putString(INTENT_EXTRA_ENCOUNTER_ID, it.encounterId)
