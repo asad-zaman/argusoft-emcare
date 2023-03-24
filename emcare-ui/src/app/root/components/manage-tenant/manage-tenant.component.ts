@@ -43,6 +43,7 @@ export class ManageTenantComponent implements OnInit {
     { id: 'inactive', name: 'Inactive' }
   ];
   emailTermChanged: Subject<string> = new Subject<string>();
+  count = 1;
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -136,7 +137,6 @@ export class ManageTenantComponent implements OnInit {
       facilityAddressStreet: ['', [Validators.required]],
       facilityStatus: [this.statusArr[0], [Validators.required]],
       facilityTelecom: ['', [Validators.required]],
-      location: ['', [Validators.required]],
       latitude: ['', [Validators.required]],
       longitude: ['', [Validators.required]],
       // Administrative User
@@ -173,7 +173,6 @@ export class ManageTenantComponent implements OnInit {
       !this.isDomainRepeat &&
       !this.isTenantIdRepeat &&
       !this.isURLRepeat) {
-      //  toDo
       const data = {
         tenantId: this.tenantForm.get('tenantId').value,
         url: this.tenantForm.get('url').value,
@@ -352,5 +351,13 @@ export class ManageTenantComponent implements OnInit {
         }
       ]
     };
+  }
+
+  onBackward() {
+    this.count -= 1;
+  }
+
+  onForward() {
+    this.count += 1;
   }
 }

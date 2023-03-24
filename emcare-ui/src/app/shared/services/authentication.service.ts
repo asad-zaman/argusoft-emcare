@@ -152,4 +152,9 @@ export class AuthenticationService {
         const url = `${this.backendURL}/api/open/resetpassword`;
         return this.http.put<any>(url, body);
     }
+
+    getCurrentCountry() {
+        const url = `${this.backendURL}/api/open/current/country`;
+        return this.http.get<any>(url);
+    }
 }
