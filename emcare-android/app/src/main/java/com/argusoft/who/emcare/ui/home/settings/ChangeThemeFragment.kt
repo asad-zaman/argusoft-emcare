@@ -5,10 +5,12 @@ import android.util.Log
 import android.view.View
 import android.widget.CompoundButton
 import androidx.fragment.app.viewModels
+import com.argusoft.who.emcare.BuildConfig
 import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.databinding.FragmentScreenResizeSettingsBinding
 import com.argusoft.who.emcare.sync.SyncState
 import com.argusoft.who.emcare.sync.SyncViewModel
+import com.argusoft.who.emcare.ui.auth.login.LoginViewModel
 import com.argusoft.who.emcare.ui.common.APP_THEME_COMFORTABLE
 import com.argusoft.who.emcare.ui.common.APP_THEME_COMPACT
 import com.argusoft.who.emcare.ui.common.APP_THEME_ENLARGED
@@ -26,6 +28,7 @@ import kotlin.math.roundToInt
 class ChangeThemeFragment : BaseFragment<FragmentScreenResizeSettingsBinding>() {
 
     private val syncViewModel: SyncViewModel by viewModels()
+    private val loginViewModel: LoginViewModel by viewModels()
 
     override fun initView() {
         binding.headerLayout.toolbar.setTitleDashboard(id = getString(R.string.title_change_theme))
@@ -89,7 +92,15 @@ class ChangeThemeFragment : BaseFragment<FragmentScreenResizeSettingsBinding>() 
 //                )
             }
             apiResponse.whenInProgress {
-                if (it.first > 0) {
+                if(it.first.toDouble() == it.second.toDouble()){
+                    loginViewModel.addDevice(
+                        getDeviceName(),
+                        getDeviceOS(),
+                        getDeviceModel(),
+                        requireContext().getDeviceUUID().toString(),
+                        BuildConfig.VERSION_NAME
+                    )
+                }else if (it.first > 0) {
                     val progress =
                         it
                             .let { it.second.toDouble().div(it.first) }
@@ -126,6 +137,13 @@ class ChangeThemeFragment : BaseFragment<FragmentScreenResizeSettingsBinding>() 
 
                     is SyncJobStatus.Finished -> {
                         binding.rootLayout.updateProgressUi(true, true)
+                        loginViewModel.addDevice(
+                            getDeviceName(),
+                            getDeviceOS(),
+                            getDeviceModel(),
+                            requireContext().getDeviceUUID().toString(),
+                            BuildConfig.VERSION_NAME
+                        )
                     }
                     is SyncJobStatus.Failed -> {
                         binding.rootLayout.showContent()

@@ -8,9 +8,11 @@ import android.view.animation.AnimationUtils
 import android.widget.TextView
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import com.argusoft.who.emcare.BuildConfig
 import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.databinding.FragmentHomeBinding
 import com.argusoft.who.emcare.sync.SyncViewModel
+import com.argusoft.who.emcare.ui.auth.login.LoginViewModel
 import com.argusoft.who.emcare.ui.common.base.BaseFragment
 import com.argusoft.who.emcare.utils.extention.*
 import com.argusoft.who.emcare.utils.glide.GlideApp
@@ -28,6 +30,7 @@ import kotlin.math.roundToInt
 class HomeFragment : BaseFragment<FragmentHomeBinding>(){
 
     private lateinit var glideRequests: GlideRequests
+    private val loginViewModel: LoginViewModel by viewModels()
     private val syncViewModel: SyncViewModel by viewModels()
     private val homeViewModel: HomeViewModel by activityViewModels()
     private lateinit var homePagerAdapter: HomePagerAdapter
@@ -94,15 +97,17 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(){
 //                )
             }
             apiResponse.whenInProgress {
-                /*Log.d("it.completed.toDouble()", it.second.toDouble().toString())
+                Log.d("it.completed.toDouble()", it.second.toDouble().toString())
                 Log.d("it.total.toDouble()", it.first.toDouble().toString())
                 if(it.first.toDouble() == it.second.toDouble()){
-                    binding.rootLayout.updateProgressUi(true, true)
-                    preference.writeLastSyncTimestamp(
-                        OffsetDateTime.now().toLocalDateTime().format(
-                            DateTimeFormatter.ofPattern(formatString12)))
-                    startActivity(Intent(requireContext(), HomeActivity::class.java))
-                }else*/ if(it.first > 0) {
+                    loginViewModel.addDevice(
+                        getDeviceName(),
+                        getDeviceOS(),
+                        getDeviceModel(),
+                        requireContext().getDeviceUUID().toString(),
+                        BuildConfig.VERSION_NAME
+                    )
+                }else if(it.first > 0) {
                     val progress =
                         it
                             .let { it.second.toDouble().div(it.first) }
@@ -144,6 +149,13 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(){
 //                            duration = Snackbar.LENGTH_SHORT,
 //                            isError = false
 //                        )
+                        loginViewModel.addDevice(
+                            getDeviceName(),
+                            getDeviceOS(),
+                            getDeviceModel(),
+                            requireContext().getDeviceUUID().toString(),
+                            BuildConfig.VERSION_NAME
+                        )
                     }
                     is SyncJobStatus.Failed -> {
                         binding.rootLayout.showContent()

@@ -6,10 +6,12 @@ import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.argusoft.who.emcare.BuildConfig
 import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.databinding.FragmentPatientProfileBinding
 import com.argusoft.who.emcare.sync.SyncState
 import com.argusoft.who.emcare.sync.SyncViewModel
+import com.argusoft.who.emcare.ui.auth.login.LoginViewModel
 import com.argusoft.who.emcare.ui.common.*
 import com.argusoft.who.emcare.ui.common.base.BaseFragment
 import com.argusoft.who.emcare.ui.home.HomeActivity
@@ -26,6 +28,7 @@ import kotlin.math.roundToInt
 class PatientProfileFragment : BaseFragment<FragmentPatientProfileBinding>() {
 
     private val patientProfileViewModel: PatientProfileViewModel by viewModels()
+    private val loginViewModel: LoginViewModel by viewModels()
     private val syncViewModel: SyncViewModel by viewModels()
     private lateinit var activeConsultationsAdapter: PatientProfileActiveConsultationsAdapter
     private lateinit var previousConsultationsAdapter: PatientProfilePreviousConsultationsAdapter
@@ -111,7 +114,15 @@ class PatientProfileFragment : BaseFragment<FragmentPatientProfileBinding>() {
 //                )
             }
             apiResponse.whenInProgress {
-                if (it.first > 0) {
+                if(it.first.toDouble() == it.second.toDouble()){
+                    loginViewModel.addDevice(
+                        getDeviceName(),
+                        getDeviceOS(),
+                        getDeviceModel(),
+                        requireContext().getDeviceUUID().toString(),
+                        BuildConfig.VERSION_NAME
+                    )
+                }else if (it.first > 0) {
                     val progress =
                         it
                             .let { it.second.toDouble().div(it.first) }
@@ -151,6 +162,13 @@ class PatientProfileFragment : BaseFragment<FragmentPatientProfileBinding>() {
 //                            duration = Snackbar.LENGTH_SHORT,
 //                            isError = false
 //                        )
+                        loginViewModel.addDevice(
+                            getDeviceName(),
+                            getDeviceOS(),
+                            getDeviceModel(),
+                            requireContext().getDeviceUUID().toString(),
+                            BuildConfig.VERSION_NAME
+                        )
                     }
                     is SyncJobStatus.Failed -> {
                         binding.patientProfileLayout.showContent()

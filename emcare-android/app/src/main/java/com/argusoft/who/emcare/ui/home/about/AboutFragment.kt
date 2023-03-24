@@ -2,10 +2,12 @@ package com.argusoft.who.emcare.ui.home.about
 
 import android.util.Log
 import androidx.fragment.app.viewModels
+import com.argusoft.who.emcare.BuildConfig
 import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.databinding.FragmentAboutBinding
 import com.argusoft.who.emcare.sync.SyncState
 import com.argusoft.who.emcare.sync.SyncViewModel
+import com.argusoft.who.emcare.ui.auth.login.LoginViewModel
 import com.argusoft.who.emcare.ui.common.base.BaseFragment
 import com.argusoft.who.emcare.ui.home.HomeActivity
 import com.argusoft.who.emcare.utils.extention.*
@@ -19,6 +21,7 @@ class AboutFragment : BaseFragment<FragmentAboutBinding>() {
 
     private val syncViewModel: SyncViewModel by viewModels()
     private val aboutViewModel: AboutViewModel by viewModels()
+    private val loginViewModel: LoginViewModel by viewModels()
 
     override fun initView() {
         aboutViewModel.getBundleVersionNumber()
@@ -59,7 +62,15 @@ class AboutFragment : BaseFragment<FragmentAboutBinding>() {
 //                )
             }
             apiResponse.whenInProgress {
-                if (it.first > 0) {
+                if(it.first.toDouble() == it.second.toDouble()){
+                    loginViewModel.addDevice(
+                        getDeviceName(),
+                        getDeviceOS(),
+                        getDeviceModel(),
+                        requireContext().getDeviceUUID().toString(),
+                        BuildConfig.VERSION_NAME
+                    )
+                }else if (it.first > 0) {
                     val progress =
                         it
                             .let { it.second.toDouble().div(it.first) }
@@ -93,6 +104,13 @@ class AboutFragment : BaseFragment<FragmentAboutBinding>() {
 
                     is SyncJobStatus.Finished -> {
                         binding.progressLayout.updateProgressUi(true, true)
+                        loginViewModel.addDevice(
+                            getDeviceName(),
+                            getDeviceOS(),
+                            getDeviceModel(),
+                            requireContext().getDeviceUUID().toString(),
+                            BuildConfig.VERSION_NAME
+                        )
                     }
                     is SyncJobStatus.Failed -> {
                         binding.progressLayout.showContent()
