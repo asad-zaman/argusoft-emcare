@@ -3,12 +3,10 @@
     <span class="dashboard-title">{{'Key Performance Indicators' | translate}}</span>
     <span class="date-title"> | {{getDateData()}}</span>
     <span class="sync-title" (click)="getLastSyncDate()">{{'Last sync' | translate}}: {{lastScDate}}</span>
-    <ng-container *ngIf="!isEmpty(dashboardData) && this.indicatorArr.length>0">
+    <ng-container *ngIf="!isEmpty(dashboardData)">
       <div class="row mt-3">
         <div class="col-lg-3 col-md-4 col-sm-6 col-12 mb-3">
-          <p-card
-            [style]="{'height': '80px', 'cursor': 'pointer'}"
-            (click)="redirectToRoute('/showPatients')">
+          <p-card [style]="{'height': '80px', 'cursor': 'pointer'}" (click)="redirectToRoute('/showPatients')">
             <div class="row">
               <h3 class="col-5 w-700 ctype ctype-1">{{dashboardData.totalPatient}}</h3>
               <div class="col-7 c-style">
@@ -18,9 +16,7 @@
           </p-card>
         </div>
         <div class="col-lg-3 col-md-4 col-sm-6 col-12 mb-3">
-          <p-card
-            [style]="{'height': '80px', 'cursor': 'pointer'}"
-            (click)="redirectToRoute('/showUsers')">
+          <p-card [style]="{'height': '80px', 'cursor': 'pointer'}" (click)="redirectToRoute('/showUsers')">
             <div class="row">
               <h3 class="col-5 w-700 ctype ctype-2">{{dashboardData.totalUser}}</h3>
               <div class="col-7 c-style">
@@ -30,9 +26,7 @@
           </p-card>
         </div>
         <div class="col-lg-3 col-md-4 col-sm-6 col-12 mb-3">
-          <p-card
-            [style]="{'height': '80px', 'cursor': 'pointer'}"
-            (click)="redirectToRoute('/confirmUsers')">
+          <p-card [style]="{'height': '80px', 'cursor': 'pointer'}" (click)="redirectToRoute('/confirmUsers')">
             <div class="row">
               <h3 class="col-5 w-700 ctype ctype-3">{{dashboardData.pendingRequest}}</h3>
               <div class="col-7 c-style">
@@ -41,21 +35,22 @@
             </div>
           </p-card>
         </div>
-        <ng-container *ngFor="let indicator of this.indicatorArr">
-          <div class="col-lg-3 col-md-4 col-sm-6 col-12 mb-3">
-            <p-card 
-              [style]="{'height': '80px', 'cursor': 'pointer'}">
-              <div class="row">
-                <h3 class="col-5 w-700 indicatorType" [ngClass]="{'indicatorType-1': indicator.indicatorValue > 75,
+        <ng-container *ngIf="this.indicatorArr.length>0">
+          <ng-container *ngFor="let indicator of this.indicatorArr">
+            <div class="col-lg-3 col-md-4 col-sm-6 col-12 mb-3">
+              <p-card [style]="{'height': '80px', 'cursor': 'pointer'}">
+                <div class="row">
+                  <h3 class="col-5 w-700 indicatorType" [ngClass]="{'indicatorType-1': indicator.indicatorValue > 75,
                   'indicatorType-2': indicator.indicatorValue > 50 && indicator.indicatorValue < 75,
                   'indicatorType-3': indicator.indicatorValue > 25 && indicator.indicatorValue < 50,
                   'indicatorType-4': indicator.indicatorValue < 25}">{{indicator.indicatorValue}}</h3>
-                <div class="col-7 c-style" title="{{indicator.indicatorName}}">
-                  <h6 class="cst-elipsis">{{indicator.indicatorName}}</h6>
+                  <div class="col-7 c-style" title="{{indicator.indicatorName}}">
+                    <h6 class="cst-elipsis">{{indicator.indicatorName}}</h6>
+                  </div>
                 </div>
-              </div>
-            </p-card>
-          </div>
+              </p-card>
+            </div>
+          </ng-container>
         </ng-container>
       </div>
     </ng-container>

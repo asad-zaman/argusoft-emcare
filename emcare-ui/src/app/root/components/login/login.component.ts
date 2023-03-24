@@ -16,6 +16,7 @@ export class LoginComponent implements OnInit {
   submitted = false;
   returnUrl: string | undefined;
   error = '';
+  country;
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -25,13 +26,29 @@ export class LoginComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.prerequisite();
+  }
+
+  prerequisite() {
+    this.initLoginForm();
+    this.getCurrentCountry();
+  }
+
+  initLoginForm() {
     //  only for developement purpose
     const url = environment.testUrl;
-    console.log(window.location.href, url)
     this.loginForm = this.formBuilder.group({
-      username: [window.location.href == url ? environment.testUsername : '', [Validators.required, 
-        Validators.pattern(appConstants.emailPattern)]],
+      username: [window.location.href == url ? environment.testUsername : '', [Validators.required,
+      Validators.pattern(appConstants.emailPattern)]],
       password: [window.location.href == url ? environment.testPassword : '', Validators.required]
+    });
+  }
+
+  getCurrentCountry() {
+    this.authService.getCurrentCountry().subscribe(res => {
+      if (res) {
+        this.country = res.country;
+      }
     });
   }
 
