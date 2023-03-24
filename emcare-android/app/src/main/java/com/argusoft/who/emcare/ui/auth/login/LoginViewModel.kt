@@ -65,4 +65,27 @@ class LoginViewModel @Inject constructor(
             }
         }
     }
+
+    fun addDevice(
+        deviceName: String,
+        deviceOS: String,
+        deviceModel: String,
+        deviceUUID: String,
+        androidVersion: String
+    ) {
+        val deviceDetails = DeviceDetails(
+            androidVersion = androidVersion,
+            deviceName = deviceName,
+            deviceOs = deviceOS,
+            deviceModel = deviceModel,
+            deviceUUID = deviceUUID,
+            isBlocked = false,
+            imeiNumber = "",
+            macAddress = "",
+            lastLoggedInUser = ""
+        )
+        viewModelScope.launch {
+            loginRepository.addDevice(deviceDetails)
+        }
+    }
 }

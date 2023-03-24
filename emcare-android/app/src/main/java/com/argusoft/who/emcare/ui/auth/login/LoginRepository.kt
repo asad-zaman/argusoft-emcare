@@ -11,10 +11,13 @@ import com.argusoft.who.emcare.utils.common.NetworkHelper
 import com.argusoft.who.emcare.utils.extention.whenResult
 import com.argusoft.who.emcare.utils.extention.whenSuccess
 import com.google.android.fhir.FhirEngine
+import com.google.android.fhir.search.Order
+import com.google.android.fhir.search.search
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
+import org.hl7.fhir.r4.model.PlanDefinition
 import javax.inject.Inject
 
 class LoginRepository @Inject constructor(
@@ -54,14 +57,29 @@ class LoginRepository @Inject constructor(
                 val getDevice = deviceDetails.deviceUUID?.let { api.getDevice(it) }
                 getDevice?.whenResult(onSuccess = {
                     deviceDetails.isBlocked = it.isBlocked
-                    api.addDevice(deviceDetails)
+                    CoroutineScope(Dispatchers.IO).launch  {
+                        val planDefinitions = fhirEngine.search<PlanDefinition> {
+                            sort(PlanDefinition.DATE, Order.ASCENDING)
+                        }
+                        if(planDefinitions.isNotEmpty())
+                            deviceDetails.igVersion = planDefinitions.last().version
+                        api.addDevice(deviceDetails)
+                    }
+
                     if (it.isBlocked == true) {
                         emit(ApiResponse.ApiError(apiErrorMessageResId = R.string.blocked_device_message))
                     } else {
                         emit(loginResponse)
                     }
                 }, onFailed = {
-                    api.addDevice(deviceDetails)
+                    CoroutineScope(Dispatchers.IO).launch  {
+                        val planDefinitions = fhirEngine.search<PlanDefinition> {
+                            sort(PlanDefinition.DATE, Order.ASCENDING)
+                        }
+                        if(planDefinitions.isNotEmpty())
+                            deviceDetails.igVersion = planDefinitions.last().version
+                        api.addDevice(deviceDetails)
+                    }
                     emit(loginResponse)
                 })
             }, onFailed = {
@@ -80,6 +98,20 @@ class LoginRepository @Inject constructor(
 
             } ?: emit(ApiResponse.ApiError(apiErrorMessageResId = R.string.error_msg_not_find_user))
         }
+    }
+
+    fun addDevice(deviceDetails: DeviceDetails) {
+        if (networkHelper.isInternetAvailable()) {
+            CoroutineScope(Dispatchers.IO).launch {
+                val planDefinitions = fhirEngine.search<PlanDefinition> {
+                    sort(PlanDefinition.DATE, Order.ASCENDING)
+                }
+                if (planDefinitions.isNotEmpty())
+                    deviceDetails.igVersion = planDefinitions.last().version
+                api.addDevice(deviceDetails)
+            }
+        }
+
     }
 
 }

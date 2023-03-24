@@ -23,5 +23,7 @@ data class DeviceDetails(
     @Json(name = "lastLoggedInUser")
     var lastLoggedInUser: String? = null,
     @Json(name = "macAddress")
-    var macAddress: String? = null
+    var macAddress: String? = null,
+    @Json(name = "igVersion")
+    var igVersion: String? = null
 )
