@@ -1,10 +1,10 @@
 @font-face {
-    font-family: muli-regular;
+    // font-family: muli-regular;
     // src: url(../fonts/muli/Muli-Regular.ttf)
 }
 
 @font-face {
-    font-family: muli-semibold;
+    // font-family: muli-semibold;
     // src: url(../fonts/muli/Muli-SemiBold.ttf)
 }
 
@@ -15,7 +15,7 @@
 }
 
 body {
-    font-family: muli-regular;
+    // font-family: muli-regular;
     font-size: 15px;
     color: #999;
     margin: 0
@@ -33,7 +33,7 @@ input,
 textarea,
 select,
 button {
-    font-family: muli-regular;
+    // font-family: muli-regular;
     font-size: 15px
 }
 
@@ -83,9 +83,9 @@ img {
 .wizard>.steps {
     position: absolute;
     top: 25%;
-    left: 28%;
+    left: 50%;
     // right: 30%;
-    transform: translateX(50%);
+    transform: translate(-50%, 0);
     z-index: 9
 }
 
@@ -163,7 +163,7 @@ img {
 }
 
 h3 {
-    font-family: muli-semibold;
+    // font-family: muli-semibold;
     font-size: 22px;
     color: #453e79;
     text-transform: uppercase;
@@ -175,7 +175,7 @@ h3 {
 }
 
 p {
-    font-family: muli-semibold;
+    // font-family: muli-semibold;
     font-size: 20px;
     color: #6d7f52;
     text-align: center;
@@ -319,7 +319,7 @@ textarea.form-control {
     width: 135px;
     align-items: center;
     background: #e9e0cf;
-    font-family: muli-semibold;
+    // font-family: muli-semibold;
     color: #666;
     cursor: pointer;
     position: relative;
@@ -350,14 +350,6 @@ textarea.form-control {
 
 .actions li:last-child a:hover {
     background: #849963
-}
-
-.actions li:last-child a:before {
-    content: '\f26b';
-    position: absolute;
-    top: 13px;
-    right: 28px;
-    font-family: Material-Design-Iconic-Font
 }
 
 .actions li[aria-disabled=true] a {
@@ -438,35 +430,5 @@ textarea.form-control {
         right: 50%;
         transform: translateX(50%);
         bottom: 3%
-    }
-}
-
-@media(max-width:2500px) {
-    .wizard>.steps {
-        position: absolute;
-        top: 25%;
-        left: 33%;
-        transform: translateX(50%);
-        z-index: 9
-    }
-}
-
-@media(max-width:1800px) {
-    .wizard>.steps {
-        position: absolute;
-        top: 25%;
-        left: 15%;
-        transform: translateX(50%);
-        z-index: 9
-    }
-}
-
-@media(max-width:1201px) {
-    .wizard>.steps {
-        position: absolute;
-        top: 25%;
-        left: 18%;
-        transform: translateX(50%);
-        z-index: 9
     }
 }
