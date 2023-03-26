@@ -228,7 +228,10 @@ export class ManageTenantComponent implements OnInit {
           distinctUntilChanged()
         ).subscribe(_term => {
           if (this.getFormConfrols.tenantId.valid) {
-            this.fhirService.checkTenantField('tenantId', this.getFormConfrols.tenantId.value).subscribe(() => {
+            this.fhirService.checkTenantField('tenantId', this.getFormConfrols.tenantId.value).subscribe((res) => {
+              if (res && res['statusCode'] === 200) {
+                this.isTenantIdRepeat = false;
+              }
             }, (error) => {
               if (error['status'] === 400) {
                 this.isTenantIdRepeat = true;
@@ -246,7 +249,10 @@ export class ManageTenantComponent implements OnInit {
           distinctUntilChanged()
         ).subscribe(_term => {
           if (this.getFormConfrols.url.valid) {
-            this.fhirService.checkTenantField('url', this.getFormConfrols.url.value).subscribe(() => {
+            this.fhirService.checkTenantField('url', this.getFormConfrols.url.value).subscribe((res) => {
+              if (res && res['statusCode'] === 200) {
+                this.isURLRepeat = false;
+              }
             }, (error) => {
               if (error['status'] === 400) {
                 this.isURLRepeat = true;
@@ -265,6 +271,9 @@ export class ManageTenantComponent implements OnInit {
         ).subscribe(_term => {
           if (this.getFormConfrols.domain.valid) {
             this.fhirService.checkTenantField('domain', this.getFormConfrols.domain.value).subscribe(res => {
+              if (res && res['statusCode'] === 200) {
+                this.isDomainRepeat = false;
+              }
             }, (error) => {
               if (error['status'] === 400) {
                 this.isDomainRepeat = true;
