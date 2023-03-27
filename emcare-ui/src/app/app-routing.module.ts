@@ -5,6 +5,7 @@ import { AdminPanelComponent } from './root/components/admin-panel/admin-panel.c
 import { DuplicatePatientsComponent } from './root/components/duplicate-patients/duplicate-patients.component';
 import { HomeComponent } from './root/components/home/home.component';
 import { IndicatorListComponent } from './root/components/indicator-list/indicator-list.component';
+import { TermsConditionsComponent } from './root/components/terms-conditions/terms-conditions.component';
 import {
   LoginComponent,
   SignupComponent,
@@ -85,6 +86,7 @@ const routes: Routes = [
   { path: 'addIndicator', component: IndicatorComponent, canActivate: [AuthGuard] },
   { path: 'indicator-list', component: IndicatorListComponent, canActivate: [AuthGuard] },
   { path: 'editIndicator/:id', component: IndicatorComponent },
+  { path: 'termsAndConditions', component: TermsConditionsComponent },
   { path: '**', redirectTo: 'dashboard' }
 ];
 @NgModule({

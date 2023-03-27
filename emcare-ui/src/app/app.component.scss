@@ -35,3 +35,12 @@
     overflow-x: scroll;
     height: 96%;
 }
+
+.cst-footer {
+    display: block;
+    background-color: #e1dbdb;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    z-index: 100;
+}

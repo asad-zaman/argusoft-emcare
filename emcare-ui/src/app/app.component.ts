@@ -44,6 +44,7 @@ export class AppComponent implements OnInit {
     'Organizations': 'bi bi-border-outer nav-link_icon',
     'Indicators': 'bi bi-app-indicator nav-link_icon'
   }
+  footerShow = true;
 
   constructor(
     private readonly router: Router,
@@ -236,9 +237,10 @@ export class AppComponent implements OnInit {
   }
 
   checkCurrentUrlAndShowHeaderBar() {
-    const arr = ['/', '/login', '/signup', '/forgotPassword'];
+    const arr = ['/', '/login', '/signup', '/forgotPassword', '/termsAndConditions'];
     this.sidebarShow = !arr.includes(this.currentUrl);
-
+    this.footerShow = !(this.currentUrl === '/termsAndConditions');
+  
     //  if we hit the url and user is logged in then we should show the sidebar
     //  otherwise we should not as person is not logged in
     if (this.currentUrl === '/') {
@@ -302,5 +304,9 @@ export class AppComponent implements OnInit {
     } else {
       this.isSidebarOpen = true;
     }
+  }
+
+  navigateToTermsAndConditionsPage() {
+    this.router.navigate(['/termsAndConditions']);
   }
 }
