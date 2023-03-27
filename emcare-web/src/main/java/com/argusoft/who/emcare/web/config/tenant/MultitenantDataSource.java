@@ -15,7 +15,6 @@ public class MultitenantDataSource extends AbstractRoutingDataSource {
 
     @Override
     protected String determineCurrentLookupKey() {
-        System.out.println(TenantContext.getCurrentTenant() + "---------> TenantId");
         return TenantContext.getCurrentTenant();
     }
 }

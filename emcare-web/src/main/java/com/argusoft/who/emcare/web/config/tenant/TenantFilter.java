@@ -56,7 +56,6 @@ class TenantFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response,
                          FilterChain chain) throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) request;
-        System.out.println(req.getRequestURL() + "====" + req.getRequestURI());
         if (TENANT_ID_MAP.isEmpty()) {
             addTenantDetailsInMap();
         }
@@ -65,7 +64,6 @@ class TenantFilter implements Filter {
         if (req.getHeader("Application-Agent") != null && req.getHeader("Application-Agent").contains("Mobile")) {
             if (!req.getRequestURI().contains("api/auth/login")) {
                 String userId = req.getRemoteUser();
-                System.out.println(userId);
                 tenantId = getTenantDetailsFromUser(userId);
             }
         } else {
@@ -77,13 +75,16 @@ class TenantFilter implements Filter {
                 tenantId = TENANT_ID_MAP.get(domain.trim());
             }
         }
-
-        System.out.println(tenantId + "    Domain Name");
         if (Objects.isNull(tenantId)) {
             throw new DataSourceLookupFailureException(
                     "No DataSource with name '" + domain + "' registered");
         }
-        TenantContext.setCurrentTenant(tenantId);
+        if (req.getRequestURI().contains("current/country")) {
+            TenantContext.setCurrentTenant(defaultTenant);
+        } else {
+            TenantContext.setCurrentTenant(tenantId);
+
+        }
         try {
             chain.doFilter(request, response);
         } catch (Exception ex) {

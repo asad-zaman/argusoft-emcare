@@ -390,7 +390,12 @@ public class UserServiceImpl implements UserService {
         map.add(CommonConstant.CLIENT_ID, clientId);
         map.add(CommonConstant.CLIENT_SECRET, clientSecret);
         HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(map, headers);
-        ResponseEntity data = restTemplate.exchange(keycloakLoginURL, HttpMethod.POST, entity, Map.class);
+        ResponseEntity data = null;
+        try {
+            data = restTemplate.exchange(keycloakLoginURL, HttpMethod.POST, entity, Map.class);
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response("Invalid Credentials", HttpStatus.BAD_REQUEST.value()));
+        }
         if (!data.getStatusCode().equals(HttpStatus.OK)) {
             return data;
         } else {
@@ -731,7 +736,7 @@ public class UserServiceImpl implements UserService {
 
             javax.ws.rs.core.Response response = usersResource.create(kcUser);
             String userId = CreatedResponseUtil.getCreatedId(response);
-            userLocationMappingRepository.saveAll(UserMapper.getUserMappingEntityPerLocation(user, userId, locationMap));
+            userLocationMappingRepository.saveAll(UserMapper.getUserMappingEntityPerLocationForTenant(user, userId, locationMap));
             UserResource userResource = usersResource.get(userId);
 
 //        Set Realm Role
