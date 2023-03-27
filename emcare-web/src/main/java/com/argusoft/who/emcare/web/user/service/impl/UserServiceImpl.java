@@ -25,7 +25,9 @@ import com.argusoft.who.emcare.web.menu.model.MenuConfig;
 import com.argusoft.who.emcare.web.menu.model.UserMenuConfig;
 import com.argusoft.who.emcare.web.secuirty.EmCareSecurityUser;
 import com.argusoft.who.emcare.web.user.cons.UserConst;
+import com.argusoft.who.emcare.web.user.dao.RoleEntityRepository;
 import com.argusoft.who.emcare.web.user.dto.*;
+import com.argusoft.who.emcare.web.user.entity.RoleEntity;
 import com.argusoft.who.emcare.web.user.mapper.UserMapper;
 import com.argusoft.who.emcare.web.user.service.UserService;
 import com.argusoft.who.emcare.web.userlocationmapping.dao.UserLocationMappingRepository;
@@ -98,6 +100,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     LocationResourceService locationResourceService;
+
+    @Autowired
+    RoleEntityRepository roleEntityRepository;
 
     @Autowired
     CommonService commonService;
@@ -291,12 +296,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<RoleRepresentation> getAllRoles(HttpServletRequest request) {
         Keycloak keycloakInstance = keyCloakConfig.getInstanceByAuth();
-        return keycloakInstance.realm(realm).roles().list();
+        List<RoleRepresentation> roleRepresentationList = keycloakInstance.realm(realm).roles().list();
+        List<String> countryRoleId = roleEntityRepository.findAll().stream().map(RoleEntity::getRoleId).collect(Collectors.toList());
+        roleRepresentationList = roleRepresentationList.stream().filter(roleRepresentation -> countryRoleId.contains(roleRepresentation.getId())).collect(Collectors.toList());
+        return roleRepresentationList;
     }
 
     @Override
     public RoleRepresentation getRoleByName(String roleId, HttpServletRequest request) {
-        Keycloak keycloakInstance = keyCloakConfig.getInstanceByAuth();
+        Keycloak keycloakInstance = keyCloakConfig.getKeyCloakInstance();
         return keycloakInstance.realm(realm).rolesById().getRole(roleId);
     }
 
@@ -523,6 +531,11 @@ public class UserServiceImpl implements UserService {
                 userMenuConfigRepository.save(userMenuConfig);
             }
         }
+
+        RoleEntity roleEntity = new RoleEntity();
+        roleEntity.setRoleId(roleRepresentation.getId());
+        roleEntity.setRoleName(role.getRoleName());
+        roleEntityRepository.saveAndFlush(roleEntity);
     }
 
     @Override
@@ -583,6 +596,10 @@ public class UserServiceImpl implements UserService {
         roleRep.setDescription(roleUpdateDto.getDescription());
         RoleResource roleResource = keycloak.realm(realm).roles().get(roleUpdateDto.getOldRoleName());
         roleResource.update(roleRep);
+
+        RoleEntity roleEntity = roleEntityRepository.findByRoleName(roleUpdateDto.getOldRoleName());
+        roleEntity.setRoleName(roleUpdateDto.getName());
+        roleEntityRepository.saveAndFlush(roleEntity);
         return ResponseEntity.ok(roleUpdateDto);
     }
 
@@ -723,16 +740,16 @@ public class UserServiceImpl implements UserService {
         attribute.put(CommonConstant.LANGUAGE_KEY, Arrays.asList(CommonConstant.ENGLISH));
         attribute.put(CommonConstant.PHONE_KEY, Arrays.asList(user.getPhone()));
         attribute.put(CommonConstant.COUNTRY_CODE, Arrays.asList(user.getCountryCode()));
-        attribute.put(CommonConstant.COUNTRY_CODE, Arrays.asList(tenantId));
+        attribute.put(CommonConstant.TENANT_ID, Arrays.asList(tenantId));
         kcUser.setAttributes(attribute);
 
         try {
 
             Map<String, Long> locationMap = new HashMap<>();
-            for (String facilityId : user.getFacilityIds()) {
-                FacilityDto facilityDto = locationResourceService.getFacilityDto(facilityId);
-                locationMap.put(facilityId, facilityDto.getLocationId());
-            }
+//            for (String facilityId : user.getFacilityIds()) {
+//                FacilityDto facilityDto = locationResourceService.getFacilityDto(facilityId);
+//                locationMap.put(facilityId, facilityDto.getLocationId());
+//            }
 
             javax.ws.rs.core.Response response = usersResource.create(kcUser);
             String userId = CreatedResponseUtil.getCreatedId(response);

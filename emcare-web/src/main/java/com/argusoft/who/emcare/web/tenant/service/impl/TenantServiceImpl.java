@@ -2,6 +2,7 @@ package com.argusoft.who.emcare.web.tenant.service.impl;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.IParser;
+import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.common.response.Response;
 import com.argusoft.who.emcare.web.config.tenant.MultitenantDataSourceConfiguration;
 import com.argusoft.who.emcare.web.config.tenant.TenantContext;
@@ -10,6 +11,7 @@ import com.argusoft.who.emcare.web.fhir.resourceprovider.OrganizationResourcePro
 import com.argusoft.who.emcare.web.fhir.service.LocationResourceService;
 import com.argusoft.who.emcare.web.fhir.service.OrganizationResourceService;
 import com.argusoft.who.emcare.web.language.dto.LanguageAddDto;
+import com.argusoft.who.emcare.web.language.dto.LanguageDto;
 import com.argusoft.who.emcare.web.language.service.LanguageService;
 import com.argusoft.who.emcare.web.location.dto.HierarchyMasterDto;
 import com.argusoft.who.emcare.web.location.dto.LocationMasterDto;
@@ -21,9 +23,11 @@ import com.argusoft.who.emcare.web.tenant.entity.TenantConfig;
 import com.argusoft.who.emcare.web.tenant.mapper.TenantMapper;
 import com.argusoft.who.emcare.web.tenant.repository.TenantConfigRepository;
 import com.argusoft.who.emcare.web.tenant.service.TenantService;
+import com.argusoft.who.emcare.web.user.dto.RoleDto;
 import com.argusoft.who.emcare.web.user.dto.UserDto;
 import com.argusoft.who.emcare.web.user.service.UserService;
-import org.hl7.fhir.r4.model.*;
+import org.hl7.fhir.r4.model.Location;
+import org.hl7.fhir.r4.model.Organization;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
@@ -110,6 +114,7 @@ public class TenantServiceImpl implements TenantService {
 
         TenantContext.clearTenant();
         TenantContext.setCurrentTenant(tenantConfig.getTenantId());
+        Response response = new Response("Dose Not Work", HttpStatus.BAD_REQUEST.value());
 
         try {
             Connection connection = dataSource.getConnection();
@@ -119,12 +124,11 @@ public class TenantServiceImpl implements TenantService {
             }
         } catch (SQLException sqlException) {
             afterExceptionProcess(tenantConfig);
-            return ResponseEntity.badRequest().body(
-                    new Response(
-                            "Database connection doesn't establish please add proper details",
-                            HttpStatus.BAD_REQUEST.value()
-                    )
+            response = new Response(
+                    "Database connection doesn't establish please add proper details",
+                    HttpStatus.BAD_REQUEST.value()
             );
+            throw new RuntimeException("Something went wrong!");
         }
 
 
@@ -135,12 +139,11 @@ public class TenantServiceImpl implements TenantService {
         } catch (Exception ex) {
             tenantConfigRepository.delete(tenantConfig);
             TenantContext.clearTenant();
-            return ResponseEntity.badRequest().body(
-                    new Response(
-                            "Database not setup properly! Please Contact Administrative Department.",
-                            HttpStatus.BAD_REQUEST.value()
-                    )
+            response = new Response(
+                    "Database not setup properly! Please Contact Administrative Department.",
+                    HttpStatus.BAD_REQUEST.value()
             );
+            throw new RuntimeException("Something went wrong!");
         }
 
         HierarchyMaster hierarchyMaster = new HierarchyMaster();
@@ -153,7 +156,6 @@ public class TenantServiceImpl implements TenantService {
         LanguageAddDto languageAddDto = new LanguageAddDto();
 
         TenantContext.setCurrentTenant(tenantConfig.getTenantId());
-        Response response = new Response("Dose Not Work", HttpStatus.BAD_REQUEST.value());
         try {
 
             try {
@@ -168,6 +170,7 @@ public class TenantServiceImpl implements TenantService {
                         "Hierarchy not saved properly! Please Contact Administrative Department.",
                         HttpStatus.BAD_REQUEST.value()
                 );
+                throw new RuntimeException("Something went wrong!");
             }
 
             try {
@@ -183,6 +186,7 @@ public class TenantServiceImpl implements TenantService {
                         "Location not saved properly! Please Contact Administrative Department.",
                         HttpStatus.BAD_REQUEST.value()
                 );
+                throw new RuntimeException("Something went wrong!");
             }
 
             try {
@@ -200,32 +204,55 @@ public class TenantServiceImpl implements TenantService {
                         "Organization not saved properly! Please Contact Administrative Department.",
                         HttpStatus.BAD_REQUEST.value()
                 );
+                throw new RuntimeException("Something went wrong!");
             }
 
+//            try {
+//                facility = parser.parseResource(Location.class, tenantDto.getFacility());
+//                if (Objects.isNull(facility)) {
+//                    throw new RuntimeException("Please Enter Facility Details");
+//                }
+//                Reference reference = new Reference();
+//                reference.setResource(organization);
+//                reference.setId(orgId);
+//                facility.setManagingOrganization(reference);
+//                List<Extension> extensions = new ArrayList<>();
+//                Extension extension = new Extension();
+//                extension.setValue(new IntegerType(locationMaster.getId()));
+//                extensions.add(extension);
+//                facility.setExtension(extensions);
+//                locationResource = locationResourceService.saveResource(facility);
+//            } catch (Exception ex) {
+//                organizationResourceService.deleteOrganizationResource(orgId);
+//                locationService.deleteLocationById(locationMaster.getId());
+//                locationService.deleteHierarchyMaster(hierarchyMaster.getHierarchyType());
+////            afterExceptionProcess(tenantConfig);
+//                response = new Response(
+//                        "Facility not saved properly! Please Contact Administrative Department.",
+//                        HttpStatus.BAD_REQUEST.value()
+//                );
+//            }
+
             try {
-                facility = parser.parseResource(Location.class, tenantDto.getFacility());
-                if (Objects.isNull(facility)) {
-                    throw new RuntimeException("Please Enter Facility Details");
+                userDto = tenantDto.getUser();
+                if (Objects.isNull(userDto)) {
+                    throw new RuntimeException("Please Enter User Details");
                 }
-                Reference reference = new Reference();
-                reference.setResource(organization);
-                reference.setId(orgId);
-                facility.setManagingOrganization(reference);
-                List<Extension> extensions = new ArrayList<>();
-                Extension extension = new Extension();
-                extension.setValue(new IntegerType(locationMaster.getId()));
-                extensions.add(extension);
-                facility.setExtension(extensions);
-                locationResource = locationResourceService.saveResource(facility);
+
+                RoleDto roleDto = new RoleDto();
+                roleDto.setRoleName(userDto.getRoleName());
+                roleDto.setRoleDescription(CommonConstant.ADMIN_ROLE_DESCRIPTION);
+                userService.addRealmRole(roleDto);
             } catch (Exception ex) {
                 organizationResourceService.deleteOrganizationResource(orgId);
                 locationService.deleteLocationById(locationMaster.getId());
                 locationService.deleteHierarchyMaster(hierarchyMaster.getHierarchyType());
-//            afterExceptionProcess(tenantConfig);
+                afterExceptionProcess(tenantConfig);
                 response = new Response(
-                        "Facility not saved properly! Please Contact Administrative Department.",
+                        "Role Doesn't Save Properly! Please Contact Administrative Department.",
                         HttpStatus.BAD_REQUEST.value()
                 );
+                throw new RuntimeException("Something went wrong!");
             }
 
             try {
@@ -238,7 +265,6 @@ public class TenantServiceImpl implements TenantService {
                 userDto.setFacilityIds(facilityIds);
                 userService.addUserForCountry(userDto, tenantConfig.getTenantId());
             } catch (Exception ex) {
-                locationResourceService.deleteLocationResource(locationResource.getResourceId());
                 organizationResourceService.deleteOrganizationResource(orgId);
                 locationService.deleteLocationById(locationMaster.getId());
                 locationService.deleteHierarchyMaster(hierarchyMaster.getHierarchyType());
@@ -247,19 +273,27 @@ public class TenantServiceImpl implements TenantService {
                         "User not saved properly Or User Email Already Register In Other Country! Please Contact Administrative Department.",
                         HttpStatus.BAD_REQUEST.value()
                 );
+                throw new RuntimeException("Something went wrong!");
             }
 
             try {
-                languageAddDto = tenantDto.getLanguage();
-                if (Objects.nonNull(languageAddDto)) {
-                    TenantContext.setCurrentTenant(tenantConfig.getTenantId());
-                    languageService.createNewLanguageTranslation(languageAddDto);
-                }
+                LanguageDto languageDto = new LanguageDto();
+                languageDto.setLanguageCode(CommonConstant.ENGLISH);
+                languageDto.setLanguageName("English");
+                languageDto.setLanguageTranslation(tenantDto.getDefaultLanguage());
+                languageService.addOrUpdateLanguageTranslation(languageDto);
+
+//                languageAddDto = tenantDto.getLanguage();
+//                if (Objects.nonNull(languageAddDto)) {
+//                    TenantContext.setCurrentTenant(tenantConfig.getTenantId());
+//                    languageService.createNewLanguageTranslation(languageAddDto);
+//                }
             } catch (Exception ex) {
                 response = new Response(
                         "Language not saved properly! Please Contact Administrative Department.",
                         HttpStatus.BAD_REQUEST.value()
                 );
+                throw new RuntimeException("Something went wrong!");
             }
         } catch (Exception ex) {
             afterExceptionProcess(tenantConfig);
