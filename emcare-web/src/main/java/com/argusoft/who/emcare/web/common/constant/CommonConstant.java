@@ -6,6 +6,7 @@ public class CommonConstant {
     public static final String UPDATE_SUCCESS = "Successfully Update";
     public static final String USER_NOT_FOUND = "User Not Found";
     public static final String DEFAULT_ROLE_EMCARE = "default-roles-emcare";
+    public static final String ADMIN_ROLE_DESCRIPTION = "Admin Role";
     public static final String DESC = "DESC";
     public static final String ASC = "ASC";
     public static final Integer PAGE_SIZE = 10;

@@ -89,7 +89,7 @@ public class LanguageServiceImpl implements LanguageService {
 
     @Override
     public LanguageTranslation addOrUpdateLanguageTranslation(LanguageDto language) {
-        return languageRepository.save(LanguageMapper.getLanguageTranslation(language));
+        return languageRepository.saveAndFlush(LanguageMapper.getLanguageTranslation(language));
     }
 
     @Transactional

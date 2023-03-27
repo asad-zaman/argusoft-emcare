@@ -28,6 +28,7 @@ public class TenantDto {
     private LanguageAddDto language;
     private HierarchyMasterDto hierarchy;
     private LocationMasterDto location;
+    private String defaultLanguage;
 
     public Integer getId() {
         return id;
@@ -123,5 +124,13 @@ public class TenantDto {
 
     public void setLocation(LocationMasterDto location) {
         this.location = location;
+    }
+
+    public String getDefaultLanguage() {
+        return defaultLanguage;
+    }
+
+    public void setDefaultLanguage(String defaultLanguage) {
+        this.defaultLanguage = defaultLanguage;
     }
 }
