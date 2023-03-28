@@ -66,6 +66,7 @@ import { ChartModule } from 'angular-highcharts';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { NgxIntlTelInputModule } from 'ngx-intl-tel-input';
+import { TermsConditionsComponent } from './root/components/terms-conditions/terms-conditions.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -106,7 +107,8 @@ import { NgxIntlTelInputModule } from 'ngx-intl-tel-input';
     ManageCodeComponent,
     CodeListComponent,
     IndicatorComponent,
-    IndicatorListComponent
+    IndicatorListComponent,
+    TermsConditionsComponent
   ],
   imports: [
     BrowserModule,
