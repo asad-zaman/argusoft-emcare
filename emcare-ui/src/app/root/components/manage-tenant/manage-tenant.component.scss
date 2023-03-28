@@ -1,13 +1,3 @@
-@font-face {
-    // font-family: muli-regular;
-    // src: url(../fonts/muli/Muli-Regular.ttf)
-}
-
-@font-face {
-    // font-family: muli-semibold;
-    // src: url(../fonts/muli/Muli-SemiBold.ttf)
-}
-
 * {
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
@@ -15,7 +5,6 @@
 }
 
 body {
-    // font-family: muli-regular;
     font-size: 15px;
     color: #999;
     margin: 0
@@ -68,15 +57,9 @@ img {
 
 .wrapper {
     padding-left: 210px;
-    // height: 100vh;
-    // background: #f9f6f1;
-    // display: flex;
-    // align-items: center;
-    // justify-content: center
 }
 
 .wizard {
-    // width: 1080px;
     position: relative
 }
 
@@ -84,7 +67,6 @@ img {
     position: absolute;
     top: 25%;
     left: 50%;
-    // right: 30%;
     transform: translate(-50%, 0);
     z-index: 9
 }
@@ -120,7 +102,7 @@ img {
 }
 
 .wizard>.steps li.first a {
-    background: #6d7f52
+    background: #4D4D4D;
 }
 
 .wizard>.steps li:last-child a {
@@ -139,11 +121,6 @@ img {
 .inner {
     display: flex;
     background: #fff;
-    // box-shadow: 0 0 5px 0 rgba(0, 0, 0, .2);
-    // -webkit-box-shadow: 0 0 5px 0 rgba(0, 0, 0, .2);
-    // -moz-box-shadow: 0 0 5px 0 rgba(0, 0, 0, .2);
-    // -ms-box-shadow: 0 0 5px 0 rgba(0, 0, 0, .2);
-    // -o-box-shadow: 0 0 5px 0 rgba(0, 0, 0, .2);
 }
 
 .image-holder {
@@ -163,7 +140,6 @@ img {
 }
 
 h3 {
-    // font-family: muli-semibold;
     font-size: 22px;
     color: #453e79;
     text-transform: uppercase;
@@ -172,14 +148,6 @@ h3 {
     display: inline-block;
     border: 1px solid #dad8e4;
     margin-bottom: 75px
-}
-
-p {
-    // font-family: muli-semibold;
-    font-size: 20px;
-    color: #6d7f52;
-    text-align: center;
-    margin-bottom: 26px
 }
 
 .form-row {
@@ -298,7 +266,6 @@ select.form-control option[value=""][disabled] {
 
 textarea.form-control {
     padding: 8px 0;
-    // background: url(../images/textarea-bg.png) no-repeat right bottom 3px
 }
 
 .actions {
@@ -319,13 +286,11 @@ textarea.form-control {
     width: 135px;
     align-items: center;
     background: #e9e0cf;
-    // font-family: muli-semibold;
     color: #666;
     cursor: pointer;
     position: relative;
     padding-left: 28px
 }
-
 
 .actions li a:hover {
     background: #cfc7b8
@@ -334,8 +299,6 @@ textarea.form-control {
 .actions li:first-child a {
     width: 144px;
 }
-
-
 
 .actions li:nth-child(2) a,
 .actions li:last-child a {
@@ -431,4 +394,9 @@ textarea.form-control {
         transform: translateX(50%);
         bottom: 3%
     }
+}
+
+.cst-icon-text-align {
+    display: inline-flex;
+    align-items: center;
 }
