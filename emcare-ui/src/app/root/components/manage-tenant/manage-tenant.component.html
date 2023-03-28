@@ -1,4 +1,4 @@
-<div class="wrapper">
+<div *ngIf="isAllowed" class="wrapper">
   <form id="wizard" class="wizard clearfix">
     <div class="steps clearfix">
       <ul role="tablist">
@@ -16,9 +16,6 @@
         </li>
         <li [ngClass]="{'first current': count >= 4}" role="tab" aria-disabled="false" class="last">
           <a id="wizard-t-2" aria-controls="wizard-p-2"><span class="number">4.</span> </a>
-        </li>
-        <li [ngClass]="{'first current': count >= 5}" role="tab" aria-disaRegistrationbled="false" class="last">
-          <a id="wizard-t-2" aria-controls="wizard-p-2"><span class="number">5.</span> </a>
         </li>
       </ul>
     </div>
@@ -167,104 +164,8 @@
                   </div>
                 </div>
               </ng-container>
-              <!-- Facility -->
-              <ng-container *ngIf="count === 3">
-                <div class="my-4">
-                  <h1 class="heading">
-                    {{'Facility' | translate}}
-                  </h1>
-                </div>
-                <div class="row">
-                  <div class="col-12 col-sm-4">
-                    <div class="mb-3">
-                      <label class="form-label">{{'Facility Name' | translate}}</label>
-                      <input formControlName="facilityName" type="text" class="form-control custom-input" id="name"
-                        placeholder="Enter facility name" onkeyup="this.value = this.value.toUpperCase();">
-                    </div>
-                  </div>
-                  <div class="col-12 col-sm-4">
-                    <div class="mb-3">
-                      <label class="form-label">{{'Address Street' | translate}}</label>
-                      <input formControlName="facilityAddressStreet" type="text" class="form-control custom-input"
-                        id="facilityAddressStreet1" placeholder="Enter address street"
-                        [ngClass]="{ 'is-invalid': submitted && getFormConfrols.facilityAddressStreet.errors }">
-                      <div *ngIf="submitted && getFormConfrols.facilityAddressStreet.errors" class="invalid-feedback">
-                        <div class="cst-error-style" *ngIf="getFormConfrols.facilityAddressStreet.errors.required">
-                          *{{'Address street is required' | translate}}</div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-12 col-sm-4">
-                    <div class="mb-3">
-                      <label class="form-label">{{'Organization' | translate}}</label>
-                      <p-dropdown [filter]="true" formControlName="organization" placeholder="Select an organization"
-                        [options]="this.orgArr"
-                        [ngStyle]="{'border': submitted && this.tenantForm.controls.organization.value == '' ? '1px solid red' : ''}"
-                        optionLabel="name"
-                        [ngClass]="{ 'is-invalid': submitted && getFormConfrols.organization.errors }">
-                      </p-dropdown>
-                      <div *ngIf="submitted && this.tenantForm.controls.organization.value == ''"
-                        style="color: #dc3545">
-                        <div class="cst-error-style" *ngIf="getFormConfrols.organization.errors.required">
-                          *{{'Organization is required' | translate}}</div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-12 col-sm-4">
-                    <div class="mb-3">
-                      <label class="form-label">{{'Status' | translate}}</label>
-                      <p-dropdown formControlName="facilityStatus" [options]="statusArr"
-                        [ngStyle]="{'border': submitted && this.tenantForm.controls.facilityStatus.value == '' ? '1px solid red' : ''}"
-                        optionLabel="name"
-                        [ngClass]="{ 'is-invalid': submitted && getFormConfrols.facilityStatus.errors }">
-                      </p-dropdown>
-                      <div *ngIf="submitted && this.tenantForm.controls.facilityStatus.value == ''"
-                        style="color: #dc3545">
-                        <div class="cst-error-style" *ngIf="getFormConfrols.facilityStatus.errors.required">
-                          *{{'Status is required' | translate}}</div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-12 col-sm-4">
-                    <div class="mb-3">
-                      <label class="form-label">{{'Telecom' | translate}}</label>
-                      <input formControlName="facilityTelecom" type="number" class="form-control custom-input"
-                        id="telecom" placeholder="Enter telecom"
-                        [ngClass]="{ 'is-invalid': submitted && getFormConfrols.facilityTelecom.errors }">
-                      <div *ngIf="submitted && getFormConfrols.facilityTelecom.errors" class="invalid-feedback">
-                        <div class="cst-error-style" *ngIf="getFormConfrols.facilityTelecom.errors.required">
-                          *{{'Telecom is required' | translate}}</div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-12 col-sm-4">
-                    <div class="mb-3">
-                      <label class="form-label">{{'Latitude' | translate}}</label>
-                      <input formControlName="latitude" type="number" class="form-control custom-input" id="latitude"
-                        placeholder="Enter latitude"
-                        [ngClass]="{ 'is-invalid': submitted && getFormConfrols.latitude.errors }">
-                      <div *ngIf="submitted && getFormConfrols.latitude.errors" class="invalid-feedback">
-                        <div class="cst-error-style" *ngIf="getFormConfrols.latitude.errors.required">
-                          *{{'Latitude is required' | translate}}</div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-12 col-sm-4">
-                    <div class="mb-3">
-                      <label class="form-label">{{'Longitude' | translate}}</label>
-                      <input formControlName="longitude" type="number" class="form-control custom-input" id="longitude"
-                        placeholder="Enter longitude"
-                        [ngClass]="{ 'is-invalid': submitted && getFormConfrols.longitude.errors }">
-                      <div *ngIf="submitted && getFormConfrols.longitude.errors" class="invalid-feedback">
-                        <div class="cst-error-style" *ngIf="getFormConfrols.longitude.errors.required">
-                          *{{'Longitude is required' | translate}}</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </ng-container>
               <!-- Administrative User -->
-              <ng-container *ngIf="count === 4">
+              <ng-container *ngIf="count === 3">
                 <div class="my-4">
                   <h1 class="heading">
                     {{'Administrative User' | translate}}
@@ -337,22 +238,10 @@
                       </div>
                     </div>
                   </div>
-                  <div class="col-12 col-sm-6">
-                    <div *ngIf="roles.length>0" class="mb-3">
-                      <label class="form-label">{{'Role' | translate}}</label>
-                      <p-dropdown
-                        [ngStyle]="{'border': submitted && this.tenantForm.controls.role.value == '' ? '1px solid red' : ''}"
-                        [options]="roles" placeholder="Select a role" formControlName="role" optionLabel="name">
-                      </p-dropdown>
-                      <div *ngIf="submitted && this.tenantForm.controls.role.value == ''" style="color: #dc3545">
-                        <div *ngIf="getFormConfrols.role.errors.required">Role is required</div>
-                      </div>
-                    </div>
-                  </div>
                 </div>
               </ng-container>
               <!-- Language -->
-              <ng-container *ngIf="count === 5">
+              <ng-container *ngIf="count === 4">
                 <div class="my-4">
                   <h1 class="heading">
                     {{'Country Language' | translate}}
@@ -388,43 +277,18 @@
       </section>
     </div>
     <div class="actions clearfix">
-      <ul role="menu" aria-label="Pagination">
-        <li *ngIf="count > 1" (click)="onBackward()" class="disabled" aria-disabled="false">
-          <a role="menuitem">
-            <i class="bi bi-arrow-left" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Back
-          </a>
-        </li>
-        <li *ngIf="count < 5" (click)="onForward()" aria-hidden="false" aria-disabled="false">
-          <a role="menuitem">Next&nbsp;&nbsp;&nbsp;
-            <i class="bi bi-arrow-right" aria-hidden="true"></i>
-          </a>
-        </li>
-        <li *ngIf="count === 5" (click)="saveData()" aria-hidden="false" aria-disabled="false">
-          <a role="menuitem">
-            Save&nbsp;&nbsp;&nbsp;
-            <i class="bi bi-arrow-right" aria-hidden="true"></i>
-          </a>
-        </li>
-      </ul>
+      <button *ngIf="count > 1" (click)="onBackward()" class="btn-black btn ms-3">
+        <i class="bi bi-chevron-left" aria-hidden="true"></i> {{'Back' | translate}}
+      </button>
+      <button *ngIf="count < 4" (click)="onForward()" class="btn-blue btn cst-icon-text-align">
+        Next <i class="bi bi-arrow-right" aria-hidden="true"></i>
+      </button>
+      <button *ngIf="count === 4" (click)="saveData()" class="btn-blue btn">
+        Save
+      </button>
     </div>
   </form>
 </div>
-
-<!-- <div *ngIf="isAllowed" class="main-wrapper">
-  <div class="form-wrapper-broad">
-    <form [formGroup]="tenantForm" name="tenantForm" novalidate>
-      <div class="text-end mt-5">
-        <hr>
-        <button routerLink="/tenantList" class="btn-black btn ms-3">
-          <i class="bi bi-chevron-left" aria-hidden="true"></i> {{'Back' | translate}}
-        </button>
-        <button (click)="saveData()" class="btn-blue btn">
-          {{'Save' | translate}}
-        </button>
-      </div>
-    </form>
-  </div>
-</div> -->
 <div *ngIf="!isAllowed" class="main-wrapper-nodata">
   {{'NoAccess' | translate}}
 </div>

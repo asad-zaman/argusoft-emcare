@@ -8,7 +8,7 @@ import { AuthGuard } from 'src/app/auth/auth.guard';
 import { FhirService, ToasterService } from 'src/app/shared';
 import { RoleManagementService } from '../../services/role-management.service';
 import * as _ from 'lodash';
-
+import enTrans from '../../../../assets/i18n/en.json';
 @Component({
   selector: 'app-manage-tenant',
   templateUrl: './manage-tenant.component.html',
@@ -146,7 +146,6 @@ export class ManageTenantComponent implements OnInit {
       countryCode: [CountryISO.Iraq],
       phone: ['', [Validators.required]],  // 10 digit number
       password: ['', Validators.required],
-      role: ['', [Validators.required]],
       // Language
       newSelectedLanguage: ['', [Validators.required]]
     });
@@ -190,14 +189,13 @@ export class ManageTenantComponent implements OnInit {
           parent: 0
         },
         organization: JSON.stringify(this.getOrganizationData(this.tenantForm.value)),
-        facility: JSON.stringify(this.getFacilityData(this.tenantForm.value)),
         user: {
           firstName: this.tenantForm.get('firstName').value,
           lastName: this.tenantForm.get('lastName').value,
           email: this.tenantForm.get('email').value,
           username: this.tenantForm.get('email').value,
           password: this.tenantForm.get('password').value,
-          roleName: this.tenantForm.get('role').value ? this.tenantForm.get('role').value.name : '',
+          roleName: `${this.tenantForm.get('tenantId').value}_Admin`,
           countryCode: this.tenantForm.get('phone').value.countryCode,
           phone: this.tenantForm.get('phone').value.number,
           regRequestFrom: 'web',
@@ -207,7 +205,8 @@ export class ManageTenantComponent implements OnInit {
         language: {
           languageCode: this.tenantForm.get('newSelectedLanguage').value['id'],
           languageName: this.tenantForm.get('newSelectedLanguage').value['lanName']
-        }
+        },
+        defaultLanguage: JSON.stringify(enTrans)
       };
       this.fhirService.addTenant(data).subscribe(() => {
         this.toasterService.showToast('success', 'Tenant added successfully!!', 'EM CARE!');
@@ -334,31 +333,6 @@ export class ManageTenantComponent implements OnInit {
         }
       ],
       "active": orgObj.status.id === 'active' ? true : false
-    };
-  }
-
-  getFacilityData(facilityObj) {
-    return {
-      "resourceType": "Location",
-      "name": facilityObj.facilityName ? facilityObj.facilityName : '',
-      "address": {
-        "use": "work",
-        "line": [
-          facilityObj.facilityAddressStreet
-        ]
-      },
-      "status": facilityObj.facilityStatus && facilityObj.facilityStatus.id,
-      "position": {
-        "longitude": facilityObj.longitude,
-        "latitude": facilityObj.latitude
-      },
-      "telecom": [
-        {
-          "system": "phone",
-          "value": facilityObj.facilityTelecom,
-          "use": "work"
-        }
-      ]
     };
   }
 
