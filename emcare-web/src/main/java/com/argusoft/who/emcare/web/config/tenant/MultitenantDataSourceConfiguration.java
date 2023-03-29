@@ -6,7 +6,6 @@ import com.argusoft.who.emcare.web.tenant.repository.TenantConfigRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.jdbc.DataSourceBuilder;
-import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.annotation.Bean;
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 import org.springframework.stereotype.Component;
@@ -47,7 +46,6 @@ public class MultitenantDataSourceConfiguration {
     private String databaseUrl;
 
     @Bean
-    @RefreshScope
     public DataSource addDataSourceDynamic() {
         List<TenantConfig> tenantConfigList = tenantConfigRepository.findAll();
         Map<Object, Object> resolvedDataSources = new HashMap<>();
