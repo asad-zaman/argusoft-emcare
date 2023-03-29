@@ -8,6 +8,7 @@ import com.argusoft.who.emcare.web.common.dto.PageDto;
 import com.argusoft.who.emcare.web.common.response.Response;
 import com.argusoft.who.emcare.web.common.service.CommonService;
 import com.argusoft.who.emcare.web.config.KeyCloakConfig;
+import com.argusoft.who.emcare.web.config.tenant.TenantContext;
 import com.argusoft.who.emcare.web.fhir.dto.FacilityDto;
 import com.argusoft.who.emcare.web.fhir.service.LocationResourceService;
 import com.argusoft.who.emcare.web.location.dao.LocationMasterDao;
@@ -24,6 +25,7 @@ import com.argusoft.who.emcare.web.menu.mapper.MenuConfigMapper;
 import com.argusoft.who.emcare.web.menu.model.MenuConfig;
 import com.argusoft.who.emcare.web.menu.model.UserMenuConfig;
 import com.argusoft.who.emcare.web.secuirty.EmCareSecurityUser;
+import com.argusoft.who.emcare.web.tenant.repository.TenantConfigRepository;
 import com.argusoft.who.emcare.web.user.cons.UserConst;
 import com.argusoft.who.emcare.web.user.dao.RoleEntityRepository;
 import com.argusoft.who.emcare.web.user.dto.*;
@@ -122,8 +124,14 @@ public class UserServiceImpl implements UserService {
     @Value("${config.keycloak.login-server-url}")
     String keycloakLoginURL;
 
+    @Value("${defaultTenant}")
+    private String defaultTenant;
+
     @Autowired
     private DataSource dataSource;
+
+    @Autowired
+    private TenantConfigRepository tenantConfigRepository;
 
     private static CredentialRepresentation createPasswordCredentials(String password) {
         CredentialRepresentation passwordCredentials = new CredentialRepresentation();
@@ -407,18 +415,29 @@ public class UserServiceImpl implements UserService {
         if (!data.getStatusCode().equals(HttpStatus.OK)) {
             return data;
         } else {
-            String domain = commonService.getDomainFormUrl(request.getRequestURL().toString(), request.getRequestURI());
+//            List<TenantConfig> tenantConfigList = tenantConfigRepository.findAll();
+//            String domain = commonService.getDomainFormUrl(request.getRequestURL().toString(), request.getRequestURI());
             Map<String, Object> loginResponse = (Map<String, Object>) data.getBody();
             try {
+
                 AccessToken accessToken = TokenVerifier.create(loginResponse.get(CommonConstant.ACCESS_TOKEN).toString(), AccessToken.class).getToken();
                 String userId = accessToken.getSubject();
+                UserRepresentation userRepresentation = getUserByEmailId(loginCred.getUsername());
+                String tenantId = Objects.nonNull(userRepresentation.getAttributes().get(CommonConstant.TENANT_ID))
+                        ? userRepresentation.getAttributes().get(CommonConstant.TENANT_ID).get(0)
+                        : defaultTenant;
                 Set<String> roles = accessToken.getRealmAccess().getRoles();
+                TenantContext.clearTenant();
+                TenantContext.setCurrentTenant(tenantId);
                 List<UserLocationMapping> userLocationMappings = userLocationMappingRepository.findByUserId(userId);
+                loginResponse.put("Application-Agent", tenantId);
                 if (userLocationMappings.size() > 0) {
-                    return data;
+                    return ResponseEntity.ok().body(loginResponse);
                 } else {
                     if (roles.contains(CommonConstant.SUPER_ADMIN_ROLE)) {
-                        return data;
+                        return ResponseEntity.ok().body(loginResponse);
+                    } else if (roles.contains(tenantId + "_Admin")) {
+                        return ResponseEntity.ok().body(loginResponse);
                     }
                     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response("You don't have access for this domain", HttpStatus.BAD_REQUEST.value()));
                 }
