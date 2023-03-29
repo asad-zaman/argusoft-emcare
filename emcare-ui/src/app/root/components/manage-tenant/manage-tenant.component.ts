@@ -131,14 +131,6 @@ export class ManageTenantComponent implements OnInit {
       addressStreet: ['', [Validators.required]],
       telecom: ['', [Validators.required]],
       status: [this.statusArr[0], [Validators.required]],
-      // Facility
-      facilityName: ['', []],
-      organization: ['', [Validators.required]],
-      facilityAddressStreet: ['', [Validators.required]],
-      facilityStatus: [this.statusArr[0], [Validators.required]],
-      facilityTelecom: ['', [Validators.required]],
-      latitude: ['', [Validators.required]],
-      longitude: ['', [Validators.required]],
       // Administrative User
       firstName: ['', [Validators.required]],
       lastName: ['', [Validators.required]],
