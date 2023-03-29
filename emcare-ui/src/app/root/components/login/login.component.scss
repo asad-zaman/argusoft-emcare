@@ -11,3 +11,14 @@
 .people-img-fluid {
     max-width: 60%;
 }
+
+.cst-footer-line {
+    font-size: 15px;
+    text-align: center;
+    display: block;
+    color: #CCC;
+    position: fixed;
+    left: 70%;
+    transform: translate(-50%, 0);
+    bottom: 50px;
+}
