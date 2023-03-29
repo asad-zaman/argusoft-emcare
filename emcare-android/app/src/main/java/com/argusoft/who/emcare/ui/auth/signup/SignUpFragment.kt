@@ -1,8 +1,18 @@
 package com.argusoft.who.emcare.ui.auth.signup
 
+import android.content.Intent
+import android.graphics.Color
+import android.net.Uri
+import android.text.Spannable
+import android.text.SpannableStringBuilder
+import android.text.method.LinkMovementMethod
+import android.text.style.BackgroundColorSpan
+import android.text.style.ClickableSpan
+import android.text.style.ForegroundColorSpan
 import android.view.View
 import android.widget.ArrayAdapter
 import androidx.fragment.app.viewModels
+import com.argusoft.who.emcare.BuildConfig.BASE_URL_TERMS
 import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.databinding.FragmentSignupBinding
 import com.argusoft.who.emcare.ui.common.base.BaseFragment
@@ -16,7 +26,23 @@ class SignUpFragment : BaseFragment<FragmentSignupBinding>() {
     private val signUpViewModel: SignUpViewModel by viewModels()
 
     override fun initView() {
-        //No Initialization Required
+        val termsMsg:String = getString(R.string.text_terms_and_policy_msg)
+        val termsText: String = getString(R.string.text_terms_and_policy)
+        val builder = SpannableStringBuilder(termsMsg)
+        builder.append(" ")
+        builder.append(termsText)
+
+        builder.setSpan(ForegroundColorSpan(Color.BLUE), termsMsg.length + 1, builder.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        builder.setSpan(object : ClickableSpan() {
+            override fun onClick(view: View) {
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(BASE_URL_TERMS + "#/termsAndConditions"))
+                startActivity(intent)
+            }
+        }, termsMsg.length + 1, builder.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+        binding.termsAndPolicyTextView.text = builder
+        binding.termsAndPolicyTextView.movementMethod = LinkMovementMethod.getInstance()
+
     }
 
     private fun setupFacilityAutoComplete(facilityList: List<Facility>) {

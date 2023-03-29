@@ -31,6 +31,7 @@ android {
 
     buildTypes {
         debug {
+            buildConfigField "String", "BASE_URL_TERMS", "\"https://emcare.argusoft.com/\""
             buildConfigField "String", "BASE_URL", "\"https://emcare.argusoft.com/api/\""
             buildConfigField "String", "FHIR_BASE_URL", "\"https://emcare.argusoft.com/fhir/\""
             buildConfigField "String", "KEYCLOAK_BASE_URL", "\"https://emcare.argusoft.com/auth/realms/emcare/protocol/openid-connect/\""
@@ -42,6 +43,7 @@ android {
             applicationIdSuffix ".debug"
         }
         dev {
+            buildConfigField "String", "BASE_URL_TERMS", "\"http://3.111.94.246:8080/\""
             buildConfigField "String", "BASE_URL", "\"http://3.111.94.246:8080/api/\""
             buildConfigField "String", "FHIR_BASE_URL", "\"http://3.111.94.246:8080/fhir/\""
             buildConfigField "String", "KEYCLOAK_BASE_URL", "\"http://3.111.94.246:8180/auth/realms/emcare/protocol/openid-connect/\""
@@ -53,6 +55,7 @@ android {
             applicationIdSuffix ".dev"
         }
         production {
+            buildConfigField "String", "BASE_URL_TERMS", "\"http://13.126.141.238:8080/\""
             buildConfigField "String", "BASE_URL", "\"http://13.126.141.238:8080/api/\""
             buildConfigField "String", "FHIR_BASE_URL", "\"http://13.126.141.238:8080/fhir/\""
             buildConfigField "String", "KEYCLOAK_BASE_URL", "\"http://13.126.141.238:8180/auth/realms/emcare/protocol/openid-connect/\""
@@ -64,6 +67,7 @@ android {
         }
 
         staging {
+            buildConfigField "String", "BASE_URL_TERMS", "\"http://65.0.190.33:8080/\""
             buildConfigField "String", "BASE_URL", "\"http://65.0.190.33:8080/api/\""
             buildConfigField "String", "FHIR_BASE_URL", "\"http://65.0.190.33:8080/fhir/\""
             buildConfigField "String", "KEYCLOAK_BASE_URL", "\"http://65.0.190.33:8180/auth/realms/emcare/protocol/openid-connect/\""
