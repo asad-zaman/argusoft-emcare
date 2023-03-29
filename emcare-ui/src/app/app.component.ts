@@ -239,8 +239,10 @@ export class AppComponent implements OnInit {
   checkCurrentUrlAndShowHeaderBar() {
     const arr = ['/', '/login', '/signup', '/forgotPassword', '/termsAndConditions'];
     this.sidebarShow = !arr.includes(this.currentUrl);
-    this.footerShow = !(this.currentUrl === '/termsAndConditions');
-  
+    this.footerShow = !(this.currentUrl === '/termsAndConditions'
+      || this.currentUrl === '/login'
+      || this.currentUrl === '/signup');
+
     //  if we hit the url and user is logged in then we should show the sidebar
     //  otherwise we should not as person is not logged in
     if (this.currentUrl === '/') {
