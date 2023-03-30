@@ -276,6 +276,21 @@ export class FhirService {
         return this.http.get(url, this.getHeaders());
     }
 
+    getAllTenants() {
+        let url = `${environment.apiUrl}/api/tenant/all`;
+        return this.http.get(url, this.getHeaders());
+    }
+
+    addTenant(data) {
+        const url = `${environment.apiUrl}/api/tenant/add`;
+        return this.http.post(url, data, this.getHeaders());
+    }
+
+    checkTenantField(field, fieldValue) {
+        let url = `${environment.apiUrl}/api/tenant/check?key=${field}&value=${fieldValue}`;
+        return this.http.get(url, this.getHeaders());
+    }
+
     checkEmail(email) {
         let url = `${environment.apiUrl}/api/user/check/email?emailId=${email}`;
     }
