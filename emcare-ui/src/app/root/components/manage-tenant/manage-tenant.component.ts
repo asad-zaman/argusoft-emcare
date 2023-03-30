@@ -9,6 +9,7 @@ import { FhirService, ToasterService } from 'src/app/shared';
 import { RoleManagementService } from '../../services/role-management.service';
 import * as _ from 'lodash';
 import enTrans from '../../../../assets/i18n/en.json';
+
 @Component({
   selector: 'app-manage-tenant',
   templateUrl: './manage-tenant.component.html',
@@ -143,7 +144,6 @@ export class ManageTenantComponent implements OnInit {
     });
   }
 
-
   getRoles() {
     this.roleService.getAllRoles().subscribe(res => {
       if (res) {
@@ -187,7 +187,7 @@ export class ManageTenantComponent implements OnInit {
           email: this.tenantForm.get('email').value,
           username: this.tenantForm.get('email').value,
           password: this.tenantForm.get('password').value,
-          roleName: `${this.tenantForm.get('tenantId').value}_Admin`,
+          roleName: `${this.tenantForm.get('tenantId').value.replace(/ /g, "-")}_Admin`,
           countryCode: this.tenantForm.get('phone').value.countryCode,
           phone: this.tenantForm.get('phone').value.number,
           regRequestFrom: 'web',
@@ -208,6 +208,38 @@ export class ManageTenantComponent implements OnInit {
           this.toasterService.showToast('error', e.errorMessage, 'EM CARE!');
         }
       });
+    } else if (
+      this.isDomainRepeat ||
+      this.isTenantIdRepeat ||
+      this.isURLRepeat
+    ) {
+      const message = 'Please enter different Country, Database URL or Domain!!';
+      this.count = 1;
+      this.toasterService.showToast('error', message, 'EM CARE!!');
+    } else {
+      // Form is invalid
+      if (!this.tenantForm.get('organizationName').valid ||
+        !this.tenantForm.get('addressStreet').valid ||
+        !this.tenantForm.get('telecom').valid
+      ) {
+        const message = 'Please enter valid value!!';
+        this.count = 2;
+        this.toasterService.showToast('error', message, 'EM CARE!!');
+      } if (!this.tenantForm.get('firstName').valid ||
+        !this.tenantForm.get('lastName').valid ||
+        !this.tenantForm.get('email').valid ||
+        !this.tenantForm.get('countryCode').valid ||
+        !this.tenantForm.get('phone').valid ||
+        !this.tenantForm.get('password').valid
+      ) {
+        const message = 'Please enter valid value!!';
+        this.count = 3;
+        this.toasterService.showToast('error', message, 'EM CARE!!');
+      } if (!this.tenantForm.get('newSelectedLanguage').valid) {
+        const message = 'Please select value for Language!!';
+        this.count = 4;
+        this.toasterService.showToast('error', message, 'EM CARE!!');
+      }
     }
   }
 

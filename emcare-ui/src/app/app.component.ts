@@ -6,6 +6,7 @@ import { FhirService } from './shared';
 import { AuthenticationService } from './shared/services/authentication.service';
 import * as _ from 'lodash';
 import { AuthGuard } from './auth/auth.guard';
+import { appConstants } from './app.config';
 
 @Component({
   selector: 'app-root',
@@ -312,5 +313,9 @@ export class AppComponent implements OnInit {
 
   navigateToTenantConfig() {
     this.router.navigate(['/tenantList']);
+  }
+
+  getApplicationAgent() {
+    return localStorage.getItem(appConstants.localStorageKeys.ApplicationAgent);
   }
 }

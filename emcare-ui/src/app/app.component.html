@@ -5,8 +5,11 @@
 <ng-container *ngIf="sidebarShow">
   <!--header-->
   <header>
-    <div class="logo cursor-pointer" (click)="navigateToDashboard()">
-      <img src="assets/images/emcare-logo.svg" alt="EMCARE">
+    <div class="logo cursor-pointer d-flex" (click)="navigateToDashboard()">
+      <img src="assets/images/emcare-logo.svg" alt="EMCARE"> 
+      <h5 class="cst-agent">
+        {{getApplicationAgent()}}
+      </h5>
     </div>
     <i (click)="changeSidebarVar()" class="bi bi-card-list sideBarBtn" aria-hidden="true"></i>
     <ul class="navigation">

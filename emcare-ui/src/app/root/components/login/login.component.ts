@@ -66,6 +66,7 @@ export class LoginComponent implements OnInit {
       .subscribe(
         data => {
           if (data) {
+            localStorage.setItem(appConstants.localStorageKeys.ApplicationAgent, data['Application-Agent']);
             const tokenexpiration: Date = new Date();
             tokenexpiration.setSeconds(new Date().getSeconds() + data.expires_in);
             localStorage.setItem(appConstants.localStorageKeys.accessToken, JSON.stringify(data.access_token));
