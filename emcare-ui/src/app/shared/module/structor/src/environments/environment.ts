@@ -1,3 +1,3 @@
 export const environment = {
-    apiUrl: 'https://emcare.argusoft.com',
+    apiUrl: 'http://3.111.94.246:8080',
 };

@@ -59,7 +59,7 @@ export class AuthenticationService {
     }
 
     login(username: string, password: string) {
-        const url = `http://localhost:8080/api/auth/login`;
+        const url = `http://3.111.94.246:8080/api/auth/login`;
         const body = {
             username: username, password: password
         }
