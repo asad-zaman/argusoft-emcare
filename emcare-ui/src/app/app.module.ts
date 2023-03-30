@@ -66,7 +66,6 @@ import { ChartModule } from 'angular-highcharts';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { NgxIntlTelInputModule } from 'ngx-intl-tel-input';
-import { IndicatorListComponent } from './root/components/indicator-list/indicator-list.component';
 import { TenantListComponent } from './root/components/tenant-list/tenant-list.component';
 import { ManageTenantComponent } from './root/components/manage-tenant/manage-tenant.component';
 import { MessagesModule } from 'primeng/messages';
