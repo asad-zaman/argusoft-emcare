@@ -348,12 +348,12 @@ public class UserServiceImpl implements UserService {
         kcUser.setEmailVerified(false);
 
 
-        String tenantId = commonService.getTenantIdFromURL(request.getRequestURL().toString(), request.getRequestURI());
+//        String tenantId = commonService.getTenantIdFromURL(request.getRequestURL().toString(), request.getRequestURI());
         Map<String, List<String>> attribute = new HashMap<>();
         attribute.put(CommonConstant.LANGUAGE_KEY, Arrays.asList(CommonConstant.ENGLISH));
         attribute.put(CommonConstant.PHONE_KEY, Arrays.asList(user.getPhone()));
         attribute.put(CommonConstant.COUNTRY_CODE, Arrays.asList(user.getCountryCode()));
-        attribute.put(CommonConstant.TENANT_ID, Arrays.asList(tenantId));
+        attribute.put(CommonConstant.TENANT_ID, Arrays.asList(TenantContext.getCurrentTenant()));
         kcUser.setAttributes(attribute);
 
         Map<String, Long> locationMap = new HashMap<>();
@@ -868,12 +868,12 @@ public class UserServiceImpl implements UserService {
                 userLocationMappingRepository.save(ulm);
             }
         }
-        String tenantId = commonService.getTenantIdFromURL(request.getRequestURL().toString(), request.getRequestURI());
+//        String tenantId = commonService.getTenantIdFromURL(request.getRequestURL().toString(), request.getRequestURI());
         Map<String, List<String>> attribute = new HashMap<>();
         attribute.put(CommonConstant.LANGUAGE_KEY, Arrays.asList(userDto.getLanguage()));
         attribute.put(CommonConstant.PHONE_KEY, Arrays.asList(userDto.getPhone()));
         attribute.put(CommonConstant.COUNTRY_CODE, Arrays.asList(userDto.getCountryCode()));
-        attribute.put(CommonConstant.TENANT_ID, Arrays.asList(tenantId));
+        attribute.put(CommonConstant.TENANT_ID, Arrays.asList(TenantContext.getCurrentTenant()));
 
         newUser.setAttributes(attribute);
         newUser.setEnabled(newUser.isEnabled());
