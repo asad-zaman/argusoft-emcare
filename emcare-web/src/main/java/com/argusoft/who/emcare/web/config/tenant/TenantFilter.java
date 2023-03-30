@@ -64,12 +64,17 @@ class TenantFilter implements Filter {
         if (req.getHeader("Application-Agent") != null) {
             tenantId = req.getHeader("Application-Agent");
         } else {
-            domain = commonService.getDomainFormUrl(req.getRequestURL().toString(), req.getRequestURI());
-            tenantId = TENANT_ID_MAP.get(domain.trim());
-            if (Objects.isNull(tenantId)) {
-                addTenantDetailsInMap();
+            String userId = req.getRemoteUser();
+            if (userId != null) {
+                tenantId = getTenantDetailsFromUser(userId);
+            } else {
                 domain = commonService.getDomainFormUrl(req.getRequestURL().toString(), req.getRequestURI());
                 tenantId = TENANT_ID_MAP.get(domain.trim());
+                if (Objects.isNull(tenantId)) {
+                    addTenantDetailsInMap();
+                    domain = commonService.getDomainFormUrl(req.getRequestURL().toString(), req.getRequestURI());
+                    tenantId = TENANT_ID_MAP.get(domain.trim());
+                }
             }
         }
         if (Objects.isNull(tenantId)) {
@@ -102,7 +107,11 @@ class TenantFilter implements Filter {
     public String getTenantDetailsFromUser(String userId) {
         UserRepresentation userRepresentation = userService.getUserById(userId);
         Map<String, List<String>> stringListMap = userRepresentation.getAttributes();
-        return stringListMap.get(CommonConstant.TENANT_ID).get(0);
+        if (stringListMap.get(CommonConstant.TENANT_ID).size() < 1) {
+            return defaultTenant;
+        } else {
+            return stringListMap.get(CommonConstant.TENANT_ID).get(0);
+        }
     }
 
     @Bean
