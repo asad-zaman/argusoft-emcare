@@ -128,6 +128,7 @@ public class IndicatorServiceImpl implements IndicatorService {
     }
 
     @Override
+    @Transactional
     public ResponseEntity<Object> getIndicatorsCompileValue(List<Long> indicatorIds) {
         List<Indicator> indicators = indicatorRepository.findAll();
 
