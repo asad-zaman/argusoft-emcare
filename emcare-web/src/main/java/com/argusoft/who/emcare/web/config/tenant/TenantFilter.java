@@ -61,11 +61,8 @@ class TenantFilter implements Filter {
         }
         String domain = null;
         String tenantId = null;
-        if (req.getHeader("Application-Agent") != null && req.getHeader("Application-Agent").contains("Mobile")) {
-            if (!req.getRequestURI().contains("api/auth/login")) {
-                String userId = req.getRemoteUser();
-                tenantId = getTenantDetailsFromUser(userId);
-            }
+        if (req.getHeader("Application-Agent") != null) {
+            tenantId = req.getHeader("Application-Agent");
         } else {
             domain = commonService.getDomainFormUrl(req.getRequestURL().toString(), req.getRequestURI());
             tenantId = TENANT_ID_MAP.get(domain.trim());
