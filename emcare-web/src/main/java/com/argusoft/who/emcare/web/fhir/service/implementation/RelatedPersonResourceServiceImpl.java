@@ -145,6 +145,10 @@ public class RelatedPersonResourceServiceImpl implements RelatedPersonResourceSe
         List<RelatedPerson> relatedPeople = new ArrayList<>();
         List<RelatedPersonResource> relatedPersonResources;
 
+        if(patientIds.isEmpty()){
+            return null;
+        }
+
         if (theDate == null) {
             relatedPersonResources = relatedPersonResourceRepository.findByFacilityId(patientIds);
         } else {
