@@ -66,6 +66,10 @@ import { ChartModule } from 'angular-highcharts';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { NgxIntlTelInputModule } from 'ngx-intl-tel-input';
+import { TenantListComponent } from './root/components/tenant-list/tenant-list.component';
+import { ManageTenantComponent } from './root/components/manage-tenant/manage-tenant.component';
+import { MessagesModule } from 'primeng/messages';
+import { MessageModule } from 'primeng/message';
 import { TermsConditionsComponent } from './root/components/terms-conditions/terms-conditions.component';
 @NgModule({
   declarations: [
@@ -108,6 +112,8 @@ import { TermsConditionsComponent } from './root/components/terms-conditions/ter
     CodeListComponent,
     IndicatorComponent,
     IndicatorListComponent,
+    TenantListComponent,
+    ManageTenantComponent,
     TermsConditionsComponent
   ],
   imports: [
@@ -131,7 +137,9 @@ import { TermsConditionsComponent } from './root/components/terms-conditions/ter
     CardModule,
     ChartModule,
     ToastModule,
-    NgxIntlTelInputModule
+    NgxIntlTelInputModule,
+    MessagesModule,
+    MessageModule
   ],
   providers: [
     AuthenticationService,

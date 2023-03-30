@@ -3,6 +3,7 @@ import { HttpRequest, HttpHandler, HttpEvent, HttpInterceptor } from '@angular/c
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { catchError, finalize } from 'rxjs/operators';
 import { Router } from '@angular/router';
+import { appConstants } from '../app.config';
 @Injectable()
 export class LaunguageSubjects {
 
@@ -65,6 +66,11 @@ export class TokenInterceptor implements HttpInterceptor {
     ) { }
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+        if (!request.url.includes('login')) {
+            request = request.clone({
+                setHeaders: { 'Application-Agent': localStorage.getItem(appConstants.localStorageKeys.ApplicationAgent) }
+            });
+        }
         this.status.setHttpStatus(true);
         return next.handle(request).pipe(
             catchError((error: any) => {

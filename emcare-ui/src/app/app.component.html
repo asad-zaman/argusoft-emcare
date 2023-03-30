@@ -5,8 +5,11 @@
 <ng-container *ngIf="sidebarShow">
   <!--header-->
   <header>
-    <div class="logo cursor-pointer" (click)="navigateToDashboard()">
-      <img src="assets/images/emcare-logo.svg" alt="EMCARE">
+    <div class="logo cursor-pointer d-flex" (click)="navigateToDashboard()">
+      <img src="assets/images/emcare-logo.svg" alt="EMCARE"> 
+      <h5 class="cst-agent">
+        {{getApplicationAgent()}}
+      </h5>
     </div>
     <i (click)="changeSidebarVar()" class="bi bi-card-list sideBarBtn" aria-hidden="true"></i>
     <ul class="navigation">
@@ -28,7 +31,7 @@
   <!--Sidenav-->
   <ng-container *ngIf="isSidebarOpen">
     <div class="sidenav cst-overflow" *ngIf="featureList.length !== 0">
-      <ul class="nav-link">
+      <ul *ngIf="!isSuperAdmin" class="nav-link">
         <ng-container *ngFor="let feature of featureArr">
           <li *ngIf="hasAccess(feature.menuName) && feature.menuName !== 'Organizations'">
             <a class="mouse-pointer"
@@ -60,6 +63,14 @@
             </ng-container>
           </li>
         </ng-container>
+      </ul>
+      <ul *ngIf="isSuperAdmin" class="nav-link">
+        <li>
+          <a (click)="navigateToTenantConfig()" class="active mouse-pointer">
+            <i class="bi bi-shop mr-3" aria-hidden="true"></i>
+            Conuntry Config
+          </a>
+        </li>
       </ul>
     </div>
   </ng-container>

@@ -16,6 +16,7 @@ export class LoginComponent implements OnInit {
   submitted = false;
   returnUrl: string | undefined;
   error = '';
+  country;
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -25,12 +26,29 @@ export class LoginComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.prerequisite();
+  }
+
+  prerequisite() {
+    this.initLoginForm();
+    this.getCurrentCountry();
+  }
+
+  initLoginForm() {
     //  only for developement purpose
     const url = environment.testUrl;
     this.loginForm = this.formBuilder.group({
-      username: [window.location.href == url ? environment.testUsername : '', [Validators.required, 
-        Validators.pattern(appConstants.emailPattern)]],
+      username: [window.location.href == url ? environment.testUsername : '', [Validators.required,
+      Validators.pattern(appConstants.emailPattern)]],
       password: [window.location.href == url ? environment.testPassword : '', Validators.required]
+    });
+  }
+
+  getCurrentCountry() {
+    this.authService.getCurrentCountry().subscribe(res => {
+      if (res) {
+        this.country = res.country;
+      }
     });
   }
 
@@ -44,10 +62,12 @@ export class LoginComponent implements OnInit {
     if (this.loginForm.invalid) {
       return;
     }
+    console.log(this.loginForm.value.username, this.loginForm.value.password);
     this.authService.login(this.loginForm.value.username, this.loginForm.value.password)
       .subscribe(
         data => {
           if (data) {
+            localStorage.setItem(appConstants.localStorageKeys.ApplicationAgent, data['Application-Agent']);
             const tokenexpiration: Date = new Date();
             tokenexpiration.setSeconds(new Date().getSeconds() + data.expires_in);
             localStorage.setItem(appConstants.localStorageKeys.accessToken, JSON.stringify(data.access_token));
@@ -84,8 +104,13 @@ export class LoginComponent implements OnInit {
         localStorage.setItem(appConstants.localStorageKeys.userFeatures, JSON.stringify(featureObj));
         localStorage.setItem(appConstants.localStorageKeys.language, res['language']);
         localStorage.setItem(appConstants.localStorageKeys.Username, res.userName);
+        localStorage.setItem('userFeatures', JSON.stringify(featureObj));
+        localStorage.setItem('language', res['language']);
+        localStorage.setItem('Username', res.userName);
+        const isSuperAdmin = res['roles'].findIndex(el => el === 'SUPER_ADMIN') > -1;
+        localStorage.setItem('isSuperAdmin', `${isSuperAdmin}`);
         this.authService.setFeatures(res['feature']);
-        this.router.navigate(["/dashboard"]);
+        isSuperAdmin ? this.router.navigate(["/tenantList"]) : this.router.navigate(["/dashboard"]);
         this.toasterService.showToast('success', 'Welcome to EmCare!', 'EMCARE');
         this.authService.setIsLoggedIn(true);
       }
