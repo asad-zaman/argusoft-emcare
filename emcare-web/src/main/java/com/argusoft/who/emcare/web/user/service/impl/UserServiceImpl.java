@@ -436,7 +436,7 @@ public class UserServiceImpl implements UserService {
                 } else {
                     if (roles.contains(CommonConstant.SUPER_ADMIN_ROLE)) {
                         return ResponseEntity.ok().body(loginResponse);
-                    } else if (roles.contains(tenantId + "_Admin")) {
+                    } else if (roles.contains(tenantId + "_Admin") || roles.contains("admin_user")) {
                         return ResponseEntity.ok().body(loginResponse);
                     }
                     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response("You don't have access for this domain", HttpStatus.BAD_REQUEST.value()));
