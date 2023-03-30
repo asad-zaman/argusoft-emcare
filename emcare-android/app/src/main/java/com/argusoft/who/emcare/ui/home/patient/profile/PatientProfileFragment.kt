@@ -53,8 +53,8 @@ class PatientProfileFragment : BaseFragment<FragmentPatientProfileBinding>() {
         binding.nameTextView.setText(requireArguments().getString(INTENT_EXTRA_PATIENT_NAME))
         val dateOfBirth = requireArguments().getString(INTENT_EXTRA_PATIENT_DOB)
         if(dateOfBirth != null && !dateOfBirth.equals("Not Provided", true) && dateOfBirth.isNotBlank()){
-            val oldFormatDate = SimpleDateFormat("YYYY-MM-DD").parse(dateOfBirth)
-            binding.dobTextView.text = SimpleDateFormat(DATE_FORMAT).format(oldFormatDate!!)
+            val oldFormatDate = SimpleDateFormat("yyyy-MM-dd").parse(dateOfBirth)
+            binding.dobTextView.text = SimpleDateFormat(DATE_FORMAT_2).format(oldFormatDate!!)
         } else {
             binding.dobTextView.text = "Not Provided"
         }

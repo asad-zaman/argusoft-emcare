@@ -178,7 +178,7 @@ class PatientQuestionnaireFragment : BaseFragment<FragmentPatientQuestionnaireBi
                 val dateOfBirth = patientItem.birthDateElement.valueAsString
                 if(dateOfBirth != null && dateOfBirth.isNotBlank()){
                     val oldFormatDate = SimpleDateFormat("yyyy-MM-dd").parse(dateOfBirth)
-                    binding.dobTextView.text = SimpleDateFormat(DATE_FORMAT).format(oldFormatDate!!)
+                    binding.dobTextView.text = SimpleDateFormat(DATE_FORMAT_2).format(oldFormatDate!!)
                 } else {
                     binding.dobTextView.text = "Not Provided"
                 }
