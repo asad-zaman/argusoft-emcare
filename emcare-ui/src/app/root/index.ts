@@ -40,3 +40,6 @@ export { IndicatorComponent } from './components/indicator/indicator.component';
 export { TenantListComponent } from './components/tenant-list/tenant-list.component';
 export { ManageTenantComponent } from './components/manage-tenant/manage-tenant.component';
 export { IndicatorListComponent } from './components/indicator-list/indicator-list.component';
+export { TenantListComponent } from './components/tenant-list/tenant-list.component';
+export { ManageTenantComponent } from './components/manage-tenant/manage-tenant.component';
+

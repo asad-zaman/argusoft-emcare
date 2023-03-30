@@ -135,14 +135,15 @@ public class RelatedPersonResourceServiceImpl implements RelatedPersonResourceSe
     }
 
     @Override
-    public List<RelatedPerson> getAllRelatedPerson(DateParam theDate) {
+    public List<RelatedPerson> getAllRelatedPerson(DateParam theDate, String theId) {
+        List<String> patientIds = emcareResourceService.getPatientIdsUnderFacility(theId);
         List<RelatedPerson> relatedPeople = new ArrayList<>();
         List<RelatedPersonResource> relatedPersonResources;
 
         if (theDate == null) {
-            relatedPersonResources = relatedPersonResourceRepository.findAll();
+            relatedPersonResources = relatedPersonResourceRepository.findByFacilityId(patientIds);
         } else {
-            relatedPersonResources = relatedPersonResourceRepository.findByModifiedOnGreaterThanOrCreatedOnGreaterThan(theDate.getValue(), theDate.getValue());
+            relatedPersonResources = relatedPersonResourceRepository.findByFacilityIdAndDate(theDate.getValue(), patientIds);
         }
 
         for (RelatedPersonResource personResource : relatedPersonResources) {

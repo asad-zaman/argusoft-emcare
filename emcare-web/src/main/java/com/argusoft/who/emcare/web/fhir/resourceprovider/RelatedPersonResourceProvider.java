@@ -48,8 +48,10 @@ public class RelatedPersonResourceProvider implements IResourceProvider {
     }
 
     @Search()
-    public List<RelatedPerson> getAllRelatedPerson(@OptionalParam(name = CommonConstant.RESOURCE_LAST_UPDATED_AT) DateParam theDate) {
-        return relatedPersonResourceService.getAllRelatedPerson(theDate);
+    public List<RelatedPerson> getAllRelatedPerson(
+            @OptionalParam(name = CommonConstant.RESOURCE_LAST_UPDATED_AT) DateParam theDate,
+            @RequiredParam(name = CommonConstant.RESOURCE_FACILITY_ID) String theId) {
+        return relatedPersonResourceService.getAllRelatedPerson(theDate, theId);
     }
 
     @Search(queryName = "patient")

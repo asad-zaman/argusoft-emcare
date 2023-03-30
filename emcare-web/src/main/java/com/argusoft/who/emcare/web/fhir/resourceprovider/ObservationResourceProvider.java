@@ -54,8 +54,9 @@ public class ObservationResourceProvider implements IResourceProvider {
     @Search()
     public List<Observation> getAllObservation(
             @OptionalParam(name = CommonConstant.RESOURCE_LAST_UPDATED_AT) DateParam theDate,
-            @OptionalParam(name = CommonConstant.RESOURCE_CONTENT) String searchText) {
-        return observationResourceService.getAllObservation(theDate, searchText);
+            @OptionalParam(name = CommonConstant.RESOURCE_CONTENT) String searchText,
+            @RequiredParam(name = CommonConstant.RESOURCE_FACILITY_ID) String theId) {
+        return observationResourceService.getAllObservation(theDate, searchText, theId);
     }
 
     @Search(queryName = "summary")

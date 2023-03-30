@@ -16,7 +16,7 @@ public interface EncounterResourceService {
 
     public MethodOutcome updateEncounterResource(IdType idType, Encounter encounter);
 
-    public List<Encounter> getAllEncounter(DateParam theDate, String searchText);
+    public List<Encounter> getAllEncounter(DateParam theDate, String searchText, String theId);
 
     public Bundle getEncounterCountBasedOnDate(String summaryType, DateParam theDate, String theId);
 

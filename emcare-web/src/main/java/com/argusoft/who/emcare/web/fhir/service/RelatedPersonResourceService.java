@@ -16,7 +16,7 @@ public interface RelatedPersonResourceService {
 
     public MethodOutcome updateRelatedPersonResource(IdType idType, RelatedPerson relatedPerson);
 
-    public List<RelatedPerson> getAllRelatedPerson(DateParam theDate);
+    public List<RelatedPerson> getAllRelatedPerson(DateParam theDate, String theId);
 
     public List<RelatedPerson> getAllRelatedPersonByPatientId(IdType theId);
 
