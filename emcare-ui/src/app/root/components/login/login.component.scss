@@ -22,3 +22,14 @@
     font-size: 40px;
     font-weight: normal;
 }
+
+.cst-footer-line {
+    font-size: 15px;
+    text-align: center;
+    display: block;
+    color: #CCC;
+    position: fixed;
+    left: 20%;
+    transform: translate(-50%, 0);
+    bottom: 20px;
+}
