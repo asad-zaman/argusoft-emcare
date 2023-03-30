@@ -46,6 +46,7 @@ export class AppComponent implements OnInit {
     'Indicators': 'bi bi-app-indicator nav-link_icon'
   }
   isSuperAdmin = false;
+  footerShow = true;
 
   constructor(
     private readonly router: Router,
@@ -243,9 +244,10 @@ export class AppComponent implements OnInit {
   }
 
   checkCurrentUrlAndShowHeaderBar() {
-    const arr = ['/', '/login', '/signup', '/forgotPassword'];
+    const arr = ['/', '/login', '/signup', '/forgotPassword', '/termsAndConditions'];
     this.sidebarShow = !arr.includes(this.currentUrl);
-
+    this.footerShow = !(this.currentUrl === '/termsAndConditions');
+  
     //  if we hit the url and user is logged in then we should show the sidebar
     //  otherwise we should not as person is not logged in
     if (this.currentUrl === '/') {

@@ -70,6 +70,7 @@ import { TenantListComponent } from './root/components/tenant-list/tenant-list.c
 import { ManageTenantComponent } from './root/components/manage-tenant/manage-tenant.component';
 import { MessagesModule } from 'primeng/messages';
 import { MessageModule } from 'primeng/message';
+import { TermsConditionsComponent } from './root/components/terms-conditions/terms-conditions.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -112,7 +113,8 @@ import { MessageModule } from 'primeng/message';
     IndicatorComponent,
     IndicatorListComponent,
     TenantListComponent,
-    ManageTenantComponent
+    ManageTenantComponent,
+    TermsConditionsComponent
   ],
   imports: [
     BrowserModule,

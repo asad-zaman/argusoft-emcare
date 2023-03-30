@@ -293,7 +293,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserListDto> getAllSignedUpUser(HttpServletRequest request) {
         List<UserListDto> users = new ArrayList<>();
-        List<UserLocationMapping> newSignedUpUser = userLocationMappingRepository.findByIsFirst(true);
+        List<UserLocationMapping> newSignedUpUser = userLocationMappingRepository.findByIsFirstOrderByCreateDateDesc(true);
         for (UserLocationMapping userLocationMapping : newSignedUpUser) {
             UserListDto user = getUserDtoByIdAndLocation(userLocationMapping.getUserId(), userLocationMapping.getFacilityId());
             users.add(user);
