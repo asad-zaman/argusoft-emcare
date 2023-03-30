@@ -3,6 +3,8 @@ import { Router } from '@angular/router';
 import * as Highcharts from 'highcharts';
 import { AuthGuard } from 'src/app/auth/auth.guard';
 import { FhirService } from 'src/app/shared';
+import { default as NoData } from 'highcharts/modules/no-data-to-display';
+NoData(Highcharts);
 
 @Component({
   selector: 'app-home',
@@ -279,7 +281,7 @@ export class HomeComponent implements OnInit {
       data.marker.addListener('mouseout', function () {
         data.infowindow.close();
       });
-    })
+    });    
   }
 
   redirectToRoute(route: string) {
@@ -299,7 +301,6 @@ export class HomeComponent implements OnInit {
   }
 
   getIndicatorCompileValue() {
-    //  toDo
     const codeArr = [3843];
     this.fhirService.getIndicatorCompileValue(codeArr).subscribe((res: any) => {
       if (res && res.length > 0) {

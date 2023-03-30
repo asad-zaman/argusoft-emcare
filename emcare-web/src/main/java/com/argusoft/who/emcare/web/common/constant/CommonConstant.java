@@ -51,7 +51,10 @@ public class CommonConstant {
     public static final String RESOURCE_LAST_UPDATED_AT = "_lastUpdated";
     public static final String RESOURCE_TEXT = "_text";
     public static final String RESOURCE_ID = "_id";
+    public static final String RESOURCE_FACILITY_ID = "_facilityId";
+    public static final String SUMMARY = "_summary";
     public static final String RESOURCE_CONTENT = "_content";
+    public static final String SUMMARY_TYPE_COUNT = "count";
     public static final String FIRST_NAME = "firstName";
     public static final String LAST_NAME = "lastName";
     public static final String INDICATOR_DISPLAY_TYPE_COUNT = "Count";
@@ -66,7 +69,7 @@ public class CommonConstant {
     public static final String FHIR_SERVLET = "FhirServlet";
     public static final String FHIR_SERVLET_URL_MAPPING = "/fhir/*";
 
-    public static final String KEYCLOAK_REALM="keycloak.realm";
+    public static final String KEYCLOAK_REALM = "keycloak.realm";
 
     private CommonConstant() {
     }

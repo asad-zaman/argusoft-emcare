@@ -7,17 +7,16 @@ import ca.uhn.fhir.rest.param.DateParam;
 import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.fhir.dao.ObservationResourceRepository;
 import com.argusoft.who.emcare.web.fhir.model.ObservationResource;
+import com.argusoft.who.emcare.web.fhir.service.EmcareResourceService;
 import com.argusoft.who.emcare.web.fhir.service.ObservationResourceService;
+import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.Meta;
 import org.hl7.fhir.r4.model.Observation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class ObservationResourceServiceImpl implements ObservationResourceService {
@@ -27,6 +26,9 @@ public class ObservationResourceServiceImpl implements ObservationResourceServic
 
     @Autowired
     ObservationResourceRepository observationResourceRepository;
+
+    @Autowired
+    EmcareResourceService emcareResourceService;
 
     @Override
     public Observation saveResource(Observation observation) {
@@ -93,9 +95,11 @@ public class ObservationResourceServiceImpl implements ObservationResourceServic
     }
 
     @Override
-    public List<Observation> getAllObservation(DateParam theDate, String searchText) {
+    public List<Observation> getAllObservation(DateParam theDate, String searchText, String theId) {
         List<Observation> observations = new ArrayList<>();
         List<ObservationResource> observationResources;
+
+        List<String> patientIds = emcareResourceService.getPatientIdsUnderFacility(theId);
 
         if (theDate == null) {
             if (searchText == null) {
@@ -113,9 +117,40 @@ public class ObservationResourceServiceImpl implements ObservationResourceServic
 
 
         for (ObservationResource observationResource : observationResources) {
-            Observation observation = parser.parseResource(Observation.class, observationResource.getText());
-            observations.add(observation);
+            if (patientIds.contains(observationResource.getSubjectId())) {
+                Observation observation = parser.parseResource(Observation.class, observationResource.getText());
+                observations.add(observation);
+            }
         }
         return observations;
+    }
+
+    @Override
+    public Bundle getObservationCountBasedOnDate(String summaryType, DateParam theDate, String theId) {
+        List<String> patientId = new ArrayList<>();
+        if (theId != null) {
+            patientId = emcareResourceService.getPatientIdsUnderFacility(theId);
+        }
+        Long count = 0l;
+        if (summaryType.equalsIgnoreCase(CommonConstant.SUMMARY_TYPE_COUNT)) {
+            if (Objects.isNull(theDate)) {
+                if (Objects.isNull(theId)) {
+                    count = observationResourceRepository.count();
+                } else {
+                    count = observationResourceRepository.getCountWithFacilityId(patientId);
+                }
+            } else {
+                if (Objects.isNull(theId)) {
+                    count = observationResourceRepository.getCountBasedOnDate(theDate.getValue());
+                } else {
+                    count = observationResourceRepository.getCountBasedOnDateWithFacilityId(theDate.getValue(), patientId);
+                }
+            }
+        } else {
+            return null;
+        }
+        Bundle bundle = new Bundle();
+        bundle.setTotal(count.intValue());
+        return bundle;
     }
 }

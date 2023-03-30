@@ -11,6 +11,7 @@ import com.argusoft.who.emcare.web.fhir.dto.StructureDefinitionDto;
 import com.argusoft.who.emcare.web.fhir.mapper.EmcareResourceMapper;
 import com.argusoft.who.emcare.web.fhir.model.StructureDefinitionResource;
 import com.argusoft.who.emcare.web.fhir.service.StructureDefinitionService;
+import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.Meta;
 import org.hl7.fhir.r4.model.StructureDefinition;
@@ -135,5 +136,22 @@ public class StructureDefinitionServiceImpl implements StructureDefinitionServic
         pageDto.setTotalCount(count);
 
         return pageDto;
+    }
+
+    @Override
+    public Bundle getStructureDefinitionCountBasedOnDate(String summaryType, DateParam theDate) {
+        Long count = 0l;
+        if (summaryType.equalsIgnoreCase(CommonConstant.SUMMARY_TYPE_COUNT)) {
+            if (theDate.isEmpty()) {
+                count = structureDefinitionRepository.getCount();
+            } else {
+                count = structureDefinitionRepository.getCountBasedOnDate(theDate.getValue());
+            }
+        } else {
+            return null;
+        }
+        Bundle bundle = new Bundle();
+        bundle.setTotal(count.intValue());
+        return bundle;
     }
 }

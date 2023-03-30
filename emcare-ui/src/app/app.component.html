@@ -67,4 +67,10 @@
 <div>
   <div id="map"></div>
   <router-outlet></router-outlet>
+  <div *ngIf="this.footerShow" class="cst-footer">
+    &nbsp;&nbsp;Terms and Conditions
+    <a class="cursor-pointer ml-3 font-12" (click)="navigateToTermsAndConditionsPage()">
+      "T & C"
+    </a>
+  </div>
 </div>
