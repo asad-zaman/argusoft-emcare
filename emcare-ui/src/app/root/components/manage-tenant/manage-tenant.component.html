@@ -70,7 +70,7 @@
                     <div class="mb-3">
                       <label class="form-label">{{'Username' | translate}}</label>
                       <input class="form-control custom-input" formControlName="username" type="text" id="username"
-                        placeholder="{{'Username Placeholder' | translate}}"
+                        placeholder="{{'Username Placeholder' | translate}}" autocomplete="false"
                         [ngClass]="{ 'is-invalid': submitted && getFormConfrols.username.errors }">
                       <div *ngIf="submitted && getFormConfrols.username.errors" class="invalid-feedback">
                         <div class="cst-error-style" *ngIf="getFormConfrols.username.errors.required">
@@ -173,7 +173,7 @@
                 <div class="row">
                   <div class="col-12 col-sm-6">
                     <div class="mb-3">
-                      <label class="form-label">{{'First Name' | translate}}'</label>
+                      <label class="form-label">{{'First Name' | translate}}</label>
                       <input class="form-control custom-input" formControlName="firstName" type="text" id="firstName"
                         placeholder="{{'FirstName Placeholder' | translate}}"
                         [ngClass]="{ 'is-invalid': submitted && getFormConfrols.firstName.errors }">
