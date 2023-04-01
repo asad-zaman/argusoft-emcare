@@ -81,6 +81,7 @@ public class CommonConstant {
     public static final String ACCESS_TOKEN = "access_token";
     public static final String POSTGRESQL_DRIVER = "org.postgresql.Driver";
     public static final String URL_PREFIX = "jdbc:postgresql://";
+    public static final String POSTGRESQL_DEFAULT_DATABASE = "postgres";
     public static final String SUPER_ADMIN_ROLE = "SUPER_ADMIN";
     public static final String DEFAULT_TENANT_ID = "Global";
     public static final String TENANT_ID = "tenantID";

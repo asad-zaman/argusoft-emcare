@@ -25,6 +25,8 @@ public class TenantMapper {
         tenantConfig.setPassword(tenantDto.getPassword());
         tenantConfig.setTenantId(tenantDto.getTenantId());
         tenantConfig.setUrl(tenantDto.getUrl());
+        tenantConfig.setDatabaseName(tenantDto.getDatabaseName());
+        tenantConfig.setDatabasePort(tenantDto.getDatabasePort());
         return tenantConfig;
     }
 
@@ -36,6 +38,8 @@ public class TenantMapper {
         tenantDto.setPassword(tenantConfig.getPassword());
         tenantDto.setTenantId(tenantConfig.getTenantId());
         tenantDto.setUrl(tenantConfig.getUrl());
+        tenantDto.setDatabaseName(tenantConfig.getDatabaseName());
+        tenantDto.setDatabasePort(tenantConfig.getDatabasePort());
         return tenantDto;
     }
 }
