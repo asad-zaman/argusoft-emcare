@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { appConstants } from 'src/app/app.config';
 import { AuthGuard } from 'src/app/auth/auth.guard';
 import { RoleManagementService } from 'src/app/root/services/role-management.service';
 import { ToasterService } from 'src/app/shared';
@@ -86,13 +87,14 @@ export class ManageRoleComponent implements OnInit {
   }
 
   saveData() {
+    const con = localStorage.getItem(appConstants.localStorageKeys.ApplicationAgent);
     this.submitted = true;
     if (this.roleForm.valid) {
       if (this.isEdit) {
         const data = {
           "id": this.editId,
-          "name": this.roleForm.get('name').value,
-          "oldRoleName": this.oldRoleName,
+          "name": `${con}_${this.roleForm.get('name').value}`,
+          "oldRoleName": `${con}_${this.oldRoleName}`,
           "description": this.roleForm.get('description').value
         };
         this.roleService.updateRole(data).subscribe(() => {
@@ -101,7 +103,7 @@ export class ManageRoleComponent implements OnInit {
         });
       } else {
         const data = {
-          "roleName": this.roleForm.get('name').value,
+          "roleName": `${con}_${this.roleForm.get('name').value}`,
           "roleDescription": this.roleForm.get('description').value
         };
         this.roleService.createRole(data).subscribe((_res) => {

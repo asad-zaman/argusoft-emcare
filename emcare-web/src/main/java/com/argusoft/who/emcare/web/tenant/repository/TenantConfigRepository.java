@@ -18,7 +18,7 @@ import java.util.Optional;
 @Repository
 public interface TenantConfigRepository extends JpaRepository<TenantConfig, Integer> {
 
-    public Optional<TenantConfig> findByUrl(String url);
+    public Optional<TenantConfig> findByUrlAndDatabaseName(String url, String Name);
 
     public Optional<TenantConfig> findByTenantId(String tenantid);
 

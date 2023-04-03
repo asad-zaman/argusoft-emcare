@@ -805,6 +805,29 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void removeRole(String roleName) throws Exception {
+        try {
+            Keycloak keycloak = keyCloakConfig.getInstance();
+            RealmResource realmResource = keycloak.realm(realm);
+            keycloak.realm(realm).roles().deleteRole(roleName);
+        } catch (Exception ex) {
+            throw new Exception();
+        }
+    }
+
+    @Override
+    public void removeUser(String email) throws Exception {
+        try {
+            Keycloak keycloak = keyCloakConfig.getInstance();
+            RealmResource realmResource = keycloak.realm(realm);
+            UserRepresentation userRepresentation = getUserByEmailId(email);
+            keycloak.realm(realm).users().delete(userRepresentation.getId());
+        } catch (Exception ex) {
+            throw new Exception();
+        }
+    }
+
+    @Override
     public MultiLocationUserListDto getUserDtoById(String userId) {
         Keycloak keycloak = keyCloakConfig.getInstanceByAuth();
         MultiLocationUserListDto user;

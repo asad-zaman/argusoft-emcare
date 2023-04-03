@@ -5,7 +5,7 @@
 <ng-container *ngIf="sidebarShow">
   <!--header-->
   <header>
-    <div class="logo cursor-pointer d-flex" (click)="navigateToDashboard()">
+    <div class="logo d-flex">
       <img src="assets/images/emcare-logo.svg" alt="EMCARE"> 
       <h5 class="cst-agent">
         {{getApplicationAgent()}}
@@ -68,7 +68,7 @@
         <li>
           <a (click)="navigateToTenantConfig()" class="active mouse-pointer">
             <i class="bi bi-shop mr-3" aria-hidden="true"></i>
-            Conuntry Config
+            {{'Country Config' | translate}}
           </a>
         </li>
       </ul>

@@ -62,7 +62,7 @@ public class MultitenantDataSourceConfiguration {
             dataSourceBuilder1.driverClassName(CommonConstant.POSTGRESQL_DRIVER);
             dataSourceBuilder1.username(tenantConfig.getUsername());
             dataSourceBuilder1.password(tenantConfig.getPassword());
-            dataSourceBuilder1.url(CommonConstant.URL_PREFIX + tenantConfig.getUrl());
+            dataSourceBuilder1.url(CommonConstant.URL_PREFIX + tenantConfig.getUrl() + ":" + tenantConfig.getDatabasePort() + "/" + tenantConfig.getDatabaseName());
             resolvedDataSources.put(tenantConfig.getTenantId(), dataSourceBuilder1.build());
         }
         AbstractRoutingDataSource dataSource1 = (AbstractRoutingDataSource) dataSource;

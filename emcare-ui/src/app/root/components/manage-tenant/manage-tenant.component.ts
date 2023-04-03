@@ -25,10 +25,8 @@ export class ManageTenantComponent implements OnInit {
   isEditFeature = true;
   isAllowed = true;
   isTenantIdRepeat = false;
-  isURLRepeat = false;
   isDomainRepeat = false;
   domainTermChanged: Subject<string> = new Subject<string>();
-  urlTermChanged: Subject<string> = new Subject<string>();
   tenantIdTermChanged: Subject<string> = new Subject<string>();
   separateDialCode = true;
   SearchCountryField = SearchCountryField;
@@ -127,9 +125,12 @@ export class ManageTenantComponent implements OnInit {
       username: ['', [Validators.required]],
       tenantPassword: ['', [Validators.required]],
       domain: ['', [Validators.required]],
+      dbName: ['', [Validators.required]],
+      dbPort: ['', [Validators.required]],
       // Organization
       organizationName: ['', [Validators.required]],
       addressStreet: ['', [Validators.required]],
+      countryCodeForOrg: [CountryISO.Iraq],
       telecom: ['', [Validators.required]],
       status: [this.statusArr[0], [Validators.required]],
       // Administrative User
@@ -162,14 +163,15 @@ export class ManageTenantComponent implements OnInit {
     this.submitted = true;
     if (this.tenantForm.valid &&
       !this.isDomainRepeat &&
-      !this.isTenantIdRepeat &&
-      !this.isURLRepeat) {
+      !this.isTenantIdRepeat) {
       const data = {
         tenantId: this.tenantForm.get('tenantId').value,
         url: this.tenantForm.get('url').value,
         username: this.tenantForm.get('username').value,
         password: this.tenantForm.get('tenantPassword').value,
         domain: this.tenantForm.get('domain').value,
+        databaseName: this.tenantForm.get('dbName').value,
+        databasePort: this.tenantForm.get('dbPort').value,
         hierarchy: {
           hierarchyType: 'Country',
           name: 'Country',
@@ -208,36 +210,9 @@ export class ManageTenantComponent implements OnInit {
           this.toasterService.showToast('error', e.errorMessage, 'EM CARE!');
         }
       });
-    } else if (
-      this.isDomainRepeat ||
-      this.isTenantIdRepeat ||
-      this.isURLRepeat
-    ) {
-      const message = 'Please enter different Country, Database URL or Domain!!';
-      this.count = 1;
-      this.toasterService.showToast('error', message, 'EM CARE!!');
     } else {
-      // Form is invalid
-      if (!this.tenantForm.get('organizationName').valid ||
-        !this.tenantForm.get('addressStreet').valid ||
-        !this.tenantForm.get('telecom').valid
-      ) {
-        const message = 'Please enter valid value!!';
-        this.count = 2;
-        this.toasterService.showToast('error', message, 'EM CARE!!');
-      } if (!this.tenantForm.get('firstName').valid ||
-        !this.tenantForm.get('lastName').valid ||
-        !this.tenantForm.get('email').valid ||
-        !this.tenantForm.get('countryCode').valid ||
-        !this.tenantForm.get('phone').valid ||
-        !this.tenantForm.get('password').valid
-      ) {
-        const message = 'Please enter valid value!!';
-        this.count = 3;
-        this.toasterService.showToast('error', message, 'EM CARE!!');
-      } if (!this.tenantForm.get('newSelectedLanguage').valid) {
+      if (!this.tenantForm.get('newSelectedLanguage').valid) {
         const message = 'Please select value for Language!!';
-        this.count = 4;
         this.toasterService.showToast('error', message, 'EM CARE!!');
       }
     }
@@ -266,27 +241,6 @@ export class ManageTenantComponent implements OnInit {
       }
       this.tenantIdTermChanged.next(this.getFormConfrols.tenantId.value);
     } else if (field === 2) {
-      if (this.urlTermChanged.observers.length === 0) {
-        this.urlTermChanged.pipe(
-          debounceTime(1000),
-          distinctUntilChanged()
-        ).subscribe(_term => {
-          if (this.getFormConfrols.url.valid) {
-            this.fhirService.checkTenantField('url', this.getFormConfrols.url.value).subscribe((res) => {
-              if (res && res['statusCode'] === 200) {
-                this.isURLRepeat = false;
-              }
-            }, (error) => {
-              if (error['status'] === 400) {
-                this.isURLRepeat = true;
-                this.toasterService.showToast('error', 'Field is already exists!!', 'EMCARE!');
-              }
-            });
-          } else { }
-        });
-      }
-      this.urlTermChanged.next(this.getFormConfrols.url.value);
-    } else if (field === 3) {
       if (this.domainTermChanged.observers.length === 0) {
         this.domainTermChanged.pipe(
           debounceTime(1000),
@@ -346,7 +300,7 @@ export class ManageTenantComponent implements OnInit {
       "telecom": [
         {
           "system": "phone",
-          "value": orgObj.telecom
+          "value": `${orgObj.telecom.number}`
         }
       ],
       "address": [
@@ -365,6 +319,48 @@ export class ManageTenantComponent implements OnInit {
   }
 
   onForward() {
-    this.count += 1;
+    if (this.count === 1) {
+      if (
+        !this.tenantForm.get('tenantId').valid ||
+        !this.tenantForm.get('url').valid ||
+        !this.tenantForm.get('username').valid ||
+        !this.tenantForm.get('tenantPassword').valid ||
+        !this.tenantForm.get('domain').valid ||
+        !this.tenantForm.get('dbName').valid ||
+        !this.tenantForm.get('dbPort').valid
+      ) {
+        const message = 'Please enter valid value!!';
+        this.toasterService.showToast('error', message, 'EM CARE!!');
+      } else if (
+        this.isDomainRepeat ||
+        this.isTenantIdRepeat
+      ) {
+        const message = 'Please enter different Country, Database URL or Domain!!';
+        this.toasterService.showToast('error', message, 'EM CARE!!');
+      } else {
+        this.count += 1;
+      }
+    } else if (this.count === 2 &&
+      (
+        !this.tenantForm.get('organizationName').valid ||
+        !this.tenantForm.get('addressStreet').valid ||
+        !this.tenantForm.get('telecom').valid
+      )) {
+      const message = 'Please enter valid value!!';
+      this.toasterService.showToast('error', message, 'EM CARE!!');
+    } else if (this.count === 3 &&
+      (
+        !this.tenantForm.get('firstName').valid ||
+        !this.tenantForm.get('lastName').valid ||
+        !this.tenantForm.get('email').valid ||
+        !this.tenantForm.get('countryCode').valid ||
+        !this.tenantForm.get('phone').valid ||
+        !this.tenantForm.get('password').valid
+      )) {
+      const message = 'Please enter valid value!!';
+      this.toasterService.showToast('error', message, 'EM CARE!!');
+    } else {
+      this.count += 1;
+    }
   }
 }

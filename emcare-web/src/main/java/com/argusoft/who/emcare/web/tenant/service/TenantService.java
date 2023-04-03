@@ -3,7 +3,6 @@ package com.argusoft.who.emcare.web.tenant.service;
 import com.argusoft.who.emcare.web.tenant.dto.TenantDto;
 import org.springframework.http.ResponseEntity;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -17,7 +16,7 @@ import java.util.List;
  */
 public interface TenantService {
 
-    public ResponseEntity addNewTenant(TenantDto tenantDto);
+    public ResponseEntity addNewTenant(TenantDto tenantDto) throws Exception;
 
     public List<TenantDto> getAllTenantDetails();
 
