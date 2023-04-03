@@ -273,7 +273,7 @@
   "Update Tenant": "Update Country",
   "Tenant Id Placeholder": "Enter Country Name",
   "Tenant Id Required Message": "Country Name is Required",
-  "URL Placeholder": "Ex. 127.0.0.1:5432/{database_name}",
+  "URL Placeholder": "Enter Database URL",
   "URL Required Message": "*URL is Required",
   "Domain Placeholder": "Enter Country Domain",
   "Domain Required Message": "*Country Domain in Required",
