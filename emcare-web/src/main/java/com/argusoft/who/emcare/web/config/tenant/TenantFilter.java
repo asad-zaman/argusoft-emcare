@@ -81,7 +81,7 @@ class TenantFilter implements Filter {
             throw new DataSourceLookupFailureException(
                     "No DataSource with name '" + domain + "' registered");
         }
-        if (req.getRequestURI().contains("current/country")) {
+        if (req.getRequestURI().contains("/country")) {
             TenantContext.setCurrentTenant(defaultTenant);
         } else {
             TenantContext.setCurrentTenant(tenantId);

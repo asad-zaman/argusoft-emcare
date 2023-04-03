@@ -68,5 +68,9 @@ public interface UserService {
 
     public ResponseEntity<Object> addUserForCountry(UserDto user, String tenantId);
 
+    public void removeRole(String roleName) throws Exception;
+
+    public void removeUser(String email) throws Exception;
+
 
 }

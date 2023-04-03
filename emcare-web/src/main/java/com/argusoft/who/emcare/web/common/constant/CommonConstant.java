@@ -85,6 +85,7 @@ public class CommonConstant {
     public static final String SUPER_ADMIN_ROLE = "SUPER_ADMIN";
     public static final String DEFAULT_TENANT_ID = "Global";
     public static final String TENANT_ID = "tenantID";
+    public static final String TENANT_ADMIN_ROLE_POSTFIX = "_Admin";
 
 
     private CommonConstant() {
