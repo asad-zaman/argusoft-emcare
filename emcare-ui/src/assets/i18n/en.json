@@ -269,10 +269,10 @@
   "Data Fields": "Data Fields",
   "Equation": "Equation",
   "Ig Version": "Ig Version",
-  "Add Tenant": "Add Tenant",
-  "Update Tenant": "Update Tenant",
-  "Tenant Id Placeholder": "Enter Tenant Id",
-  "Tenant Id Required Message": "Tenant Id is Required",
+  "Add Tenant": "Add Country",
+  "Update Tenant": "Update Country",
+  "Tenant Id Placeholder": "Enter Country Name",
+  "Tenant Id Required Message": "Country Name is Required",
   "URL Placeholder": "Ex. 127.0.0.1:5432/{database_name}",
   "URL Required Message": "*URL is Required",
   "Domain Placeholder": "Enter Country Domain",
@@ -289,5 +289,12 @@
   "Tenant Id": "Country",
   "Managing Organization": "Managing Organization",
   "Country Language": "Country Language",
-  "Consultation Date": "Consultation Date"
+  "Consultation Date": "Consultation Date",
+  "Country Config": "Country Config",
+  "Database Name": "Database Name",
+  "Database Name Placeholder": "Enter Database Name",
+  "Database Port": "Database Port",
+  "Database Port Placeholder": "Enter Database Port",
+  "Database Name Required Message": "Please enter Database Name",
+  "Database Port Required Message": "Please enter Database Port"
 }
