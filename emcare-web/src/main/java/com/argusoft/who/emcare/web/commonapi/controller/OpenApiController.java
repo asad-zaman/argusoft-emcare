@@ -53,4 +53,9 @@ public class OpenApiController {
     public Map<String, String> getCurrentCountry(HttpServletRequest request) {
         return openApiService.getCurrentCountry(request);
     }
+
+    @GetMapping("/country/list")
+    public List<String> getCountryList() {
+        return openApiService.getCountryList();
+    }
 }

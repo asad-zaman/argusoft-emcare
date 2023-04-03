@@ -10,7 +10,9 @@ import com.argusoft.who.emcare.web.commonapi.service.OpenApiService;
 import com.argusoft.who.emcare.web.mail.MailService;
 import com.argusoft.who.emcare.web.mail.dto.MailDto;
 import com.argusoft.who.emcare.web.mail.impl.MailDataSetterService;
+import com.argusoft.who.emcare.web.tenant.dto.TenantDto;
 import com.argusoft.who.emcare.web.tenant.repository.TenantConfigRepository;
+import com.argusoft.who.emcare.web.tenant.service.TenantService;
 import com.argusoft.who.emcare.web.twilio.service.TwilioService;
 import com.argusoft.who.emcare.web.user.service.UserService;
 import org.keycloak.representations.idm.UserRepresentation;
@@ -27,6 +29,7 @@ import java.security.SecureRandom;
 import java.sql.Timestamp;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Transactional
 @Service
@@ -52,6 +55,9 @@ public class OpenApiServiceImpl implements OpenApiService {
 
     @Autowired
     TwilioService twilioService;
+
+    @Autowired
+    TenantService tenantService;
 
     @Value("${defaultTenant}")
     private String defaultTenant;
@@ -137,5 +143,13 @@ public class OpenApiServiceImpl implements OpenApiService {
         Map<String, String> countryConfig = new HashMap<>();
         countryConfig.put("country", tenantId);
         return countryConfig;
+    }
+
+    @Override
+    public List<String> getCountryList() {
+        List<TenantDto> tenantConfigList = tenantService.getAllTenantDetails();
+        List<String> countryName = tenantConfigList.stream().map(TenantDto::getTenantId).collect(Collectors.toList());
+        countryName.add(defaultTenant);
+        return countryName;
     }
 }
