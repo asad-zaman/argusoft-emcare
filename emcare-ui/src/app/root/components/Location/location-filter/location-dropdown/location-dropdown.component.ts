@@ -56,7 +56,6 @@ export class LocationDropdownComponent implements OnInit {
     if (changes['idArr']) {
       this.insertDataFromIdArr(changes['idArr'].currentValue);
     }
-    console.log('sd', changes['isClearFilter']);
     if (changes['isClearFilter']) {
       if (changes['isClearFilter'].currentValue) {
         this.resetData();
@@ -136,19 +135,11 @@ export class LocationDropdownComponent implements OnInit {
     this.locationService.getAllLocations().subscribe((res: Array<Object>) => {
       if (res) {
         this.locationArr = res;
-        const data = res.find(el => el['parent'] === 0);
-        this.getAllLocationsByType(data['type'], true);
+        const data = res.find(el => (el['parent'] === null) || (el['parent'] === 0));
+        // getting conuntries
+        this.countryArr = res.filter(el => el['type'] === data['type']);
       }
     })
-  }
-
-  getAllLocationsByType(type, isFirstDropdown) {
-    // getting locations by type
-    this.locationService.getAllLocationByType(type).subscribe((res: Array<Object>) => {
-      if (isFirstDropdown) {
-        this.countryArr = this.countryArr.concat(res);
-      }
-    });
   }
 
   getChildLocations(id, arr) {
