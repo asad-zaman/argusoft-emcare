@@ -19,6 +19,8 @@ public class TenantDto {
     private Integer id;
     private String password;
     private String url;
+    private String databaseName;
+    private String databasePort;
     private String tenantId;
     private String username;
     private String domain;
@@ -132,5 +134,21 @@ public class TenantDto {
 
     public void setDefaultLanguage(String defaultLanguage) {
         this.defaultLanguage = defaultLanguage;
+    }
+
+    public String getDatabaseName() {
+        return databaseName;
+    }
+
+    public void setDatabaseName(String databaseName) {
+        this.databaseName = databaseName;
+    }
+
+    public String getDatabasePort() {
+        return databasePort;
+    }
+
+    public void setDatabasePort(String databasePort) {
+        this.databasePort = databasePort;
     }
 }
