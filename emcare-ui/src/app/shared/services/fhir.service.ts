@@ -280,4 +280,9 @@ export class FhirService {
         let url = `${environment.apiUrl}/api/user/check/email?emailId=${email}`;
         return this.http.get(url, this.getHeaders());
     }
+
+    addNewLog(formData) {
+        let url = `${environment.apiUrl}/api/application/log/add`;
+        return this.http.post(url, formData, this.getHeaders());
+    }
 }

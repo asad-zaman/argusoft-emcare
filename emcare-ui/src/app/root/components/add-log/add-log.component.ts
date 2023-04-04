@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FhirService } from 'src/app/shared';
 
 @Component({
   selector: 'app-add-log',
@@ -13,6 +14,7 @@ export class AddLogComponent implements OnInit {
 
   constructor(
     private readonly formBuilder: FormBuilder,
+    private readonly fhirService: FhirService
   ) { }
 
   ngOnInit(): void {
@@ -28,8 +30,9 @@ export class AddLogComponent implements OnInit {
       applicationName: ['', [Validators.required]],
       applicationVersion: ['', [Validators.required]],
       logFile: ['', [Validators.required]],
-      log: ['', [Validators.required]],
-      logs: [[], [Validators.required]]
+      log: ['', []],
+      logs: [[], [Validators.required]],
+      file: ['', [Validators.required]]
     });
   }
 
@@ -37,8 +40,26 @@ export class AddLogComponent implements OnInit {
     return this.addLogForm.controls;
   }
 
+  onFileUploaded(event) {
+    let file = event.target.files[0];
+    this.addLogForm.get('file').setValue(file);
+  }
+
   saveData() {
     this.submitted = true;
+    if (this.addLogForm.valid) {
+      const log = {
+        applicationName: this.addLogForm.get('applicationName').value,
+        applicationVersion: this.addLogForm.get('applicationVersion').value,
+        logs: this.addLogForm.get('logs').value
+      }
+      let formData = new FormData();
+      formData.append('avatar', this.addLogForm.get('file').value);
+      formData.append('log', JSON.stringify(log));
+      this.fhirService.addNewLog(formData).subscribe(res => {
+        console.log(res);
+      })
+    }
   }
 
   addLog() {
