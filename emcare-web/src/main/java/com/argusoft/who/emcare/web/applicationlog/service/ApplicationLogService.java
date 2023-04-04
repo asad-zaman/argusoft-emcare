@@ -1,6 +1,7 @@
 package com.argusoft.who.emcare.web.applicationlog.service;
 
 import com.argusoft.who.emcare.web.applicationlog.entity.ApplicationLog;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -17,7 +18,7 @@ import java.util.Map;
  */
 public interface ApplicationLogService {
 
-    public Map<String, String> addApplicationLog(MultipartFile multipartFile, String logData) throws Exception;
+    public ResponseEntity<Object> addApplicationLog(MultipartFile multipartFile, String logData) throws Exception;
 
     public List<ApplicationLog> getAllApplicationLogs();
 }

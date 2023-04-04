@@ -26,7 +26,7 @@ public class ApplicationLogController {
     @PostMapping("/add")
     public ResponseEntity<Object> addNewApplication(@RequestParam("file") MultipartFile multipartFile,
                                                     @RequestParam("log") String logData) throws Exception {
-        return ResponseEntity.ok().body(applicationLogService.addApplicationLog(multipartFile, logData));
+        return applicationLogService.addApplicationLog(multipartFile, logData);
     }
 
     @GetMapping("/all")

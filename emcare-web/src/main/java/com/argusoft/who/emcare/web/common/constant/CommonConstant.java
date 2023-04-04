@@ -4,6 +4,7 @@ public class CommonConstant {
     public static final String EMAIL_ALREADY_EXISTS = "This Email Or Username Already Register With Em-Care";
     public static final String REGISTER_SUCCESS = "Successfully Register";
     public static final String UPDATE_SUCCESS = "Successfully Update";
+    public static final String DOC_DOWNLOAD_PATH = "doc/resources/";
     public static final String USER_NOT_FOUND = "User Not Found";
     public static final String DEFAULT_ROLE_EMCARE = "default-roles-emcare";
     public static final String DESC = "DESC";
