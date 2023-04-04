@@ -16,9 +16,9 @@
       <thead>
         <tr>
           <th>{{'Sr. No' | translate}}.</th>
-          <th>{{'URL' | translate}}</th>
+          <th>{{'Country' | translate}}.</th>
           <th>{{'Username' | translate}}</th>
-          <th>{{'Password' | translate}}</th>
+          <th>{{'Organization' | translate}}.</th>
           <th>{{'Domain' | translate}}</th>
         </tr>
       </thead>
@@ -28,9 +28,9 @@
           paginate : { itemsPerPage: tableSize, currentPage: currentPage, totalItems: totalCount }; let i=index">
             <tr>
               <td>{{currentPage == 0 ? ((currentPage)*10 + i + 1) : ((currentPage-1)*10 + i + 1)}}</td>
-              <td>{{tenant.url}}</td>
+              <td>{{tenant.tenantId}}</td>
               <td>{{tenant.username}}</td>
-              <td>{{hashPassword(tenant.password)}}</td>
+              <td>{{tenant.organization}}</td>
               <td>{{tenant.domain}}</td>
             </tr>
           </ng-container>

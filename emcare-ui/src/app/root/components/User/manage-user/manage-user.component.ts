@@ -257,7 +257,7 @@ export class ManageUserComponent implements OnInit {
         if (this.getFormConfrols.email.valid) {
           this.fhirService.checkEmail(this.getFormConfrols.email.value).subscribe(res => {
             if (res['status'] === 400) {
-              this.toasterService.showToast('error', 'Email is already exists!!', 'EMCARE!');
+              this.toasterService.showToast('error', 'Email is already exists!', 'EMCARE!');
               this.getFormConfrols.email.reset();
             }
           });

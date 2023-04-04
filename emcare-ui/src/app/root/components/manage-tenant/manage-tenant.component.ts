@@ -20,7 +20,7 @@ export class ManageTenantComponent implements OnInit {
   tenantForm: FormGroup;
   isEdit: boolean = false;
   editId: string;
-  submitted: boolean = false;
+  submitted = [false, false, false, false];
   isAddFeature = true;
   isEditFeature = true;
   isAllowed = true;
@@ -32,7 +32,6 @@ export class ManageTenantComponent implements OnInit {
   SearchCountryField = SearchCountryField;
   CountryISO = CountryISO;
   PhoneNumberFormat = PhoneNumberFormat;
-  preferredCountries: CountryISO[] = [CountryISO.Iraq, CountryISO.UnitedStates];
   roles: any = [];
   lanArray: Array<any> = [];
   availableLanguages = [];
@@ -130,14 +129,14 @@ export class ManageTenantComponent implements OnInit {
       // Organization
       organizationName: ['', [Validators.required]],
       addressStreet: ['', [Validators.required]],
-      countryCodeForOrg: [CountryISO.Iraq],
+      countryCodeForOrg: [CountryISO.UnitedStates],
       telecom: ['', [Validators.required]],
       status: [this.statusArr[0], [Validators.required]],
       // Administrative User
       firstName: ['', [Validators.required]],
       lastName: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-]+$')]],
-      countryCode: [CountryISO.Iraq],
+      countryCode: [CountryISO.UnitedStates],
       phone: ['', [Validators.required]],  // 10 digit number
       password: ['', Validators.required],
       // Language
@@ -160,7 +159,7 @@ export class ManageTenantComponent implements OnInit {
   }
 
   saveData() {
-    this.submitted = true;
+    this.submitted = [true, true, true, true];
     if (this.tenantForm.valid &&
       !this.isDomainRepeat &&
       !this.isTenantIdRepeat) {
@@ -203,7 +202,7 @@ export class ManageTenantComponent implements OnInit {
         defaultLanguage: JSON.stringify(enTrans)
       };
       this.fhirService.addTenant(data).subscribe(() => {
-        this.toasterService.showToast('success', 'Tenant added successfully!!', 'EM CARE!');
+        this.toasterService.showToast('success', 'Tenant added successfully!', 'EM CARE!');
         this.router.navigate(['/tenantList']);
       }, (e) => {
         if (e && e.errorMessage) {
@@ -212,8 +211,8 @@ export class ManageTenantComponent implements OnInit {
       });
     } else {
       if (!this.tenantForm.get('newSelectedLanguage').valid) {
-        const message = 'Please select value for Language!!';
-        this.toasterService.showToast('error', message, 'EM CARE!!');
+        const message = 'Please select value for Language!';
+        this.toasterService.showToast('error', message, 'EM CARE!');
       }
     }
   }
@@ -233,7 +232,7 @@ export class ManageTenantComponent implements OnInit {
             }, (error) => {
               if (error['status'] === 400) {
                 this.isTenantIdRepeat = true;
-                this.toasterService.showToast('error', 'Field is already exists!!', 'EMCARE!');
+                this.toasterService.showToast('error', 'Field is already exists!', 'EMCARE!');
               }
             });
           } else { }
@@ -254,7 +253,7 @@ export class ManageTenantComponent implements OnInit {
             }, (error) => {
               if (error['status'] === 400) {
                 this.isDomainRepeat = true;
-                this.toasterService.showToast('error', 'Field is already exists!!', 'EMCARE!');
+                this.toasterService.showToast('error', 'Field is already exists!', 'EMCARE!');
               }
             });
           } else { }
@@ -280,7 +279,7 @@ export class ManageTenantComponent implements OnInit {
         if (this.getFormConfrols.email.valid) {
           this.fhirService.checkEmail(this.getFormConfrols.email.value).subscribe(res => {
             if (res['status'] === 400) {
-              this.toasterService.showToast('error', 'Email is already exists!!', 'EMCARE!');
+              this.toasterService.showToast('error', 'Email is already exists!', 'EMCARE!');
               this.getFormConfrols.email.reset();
             }
           });
@@ -320,6 +319,7 @@ export class ManageTenantComponent implements OnInit {
 
   onForward() {
     if (this.count === 1) {
+      this.submitted[0] = true;
       if (
         !this.tenantForm.get('tenantId').valid ||
         !this.tenantForm.get('url').valid ||
@@ -329,14 +329,14 @@ export class ManageTenantComponent implements OnInit {
         !this.tenantForm.get('dbName').valid ||
         !this.tenantForm.get('dbPort').valid
       ) {
-        const message = 'Please enter valid value!!';
-        this.toasterService.showToast('error', message, 'EM CARE!!');
+        const message = 'Please enter required value!';
+        this.toasterService.showToast('error', message, 'EM CARE!');
       } else if (
         this.isDomainRepeat ||
         this.isTenantIdRepeat
       ) {
-        const message = 'Please enter different Country, Database URL or Domain!!';
-        this.toasterService.showToast('error', message, 'EM CARE!!');
+        const message = 'Please enter different Country, Database URL or Domain!';
+        this.toasterService.showToast('error', message, 'EM CARE!');
       } else {
         this.count += 1;
       }
@@ -346,8 +346,9 @@ export class ManageTenantComponent implements OnInit {
         !this.tenantForm.get('addressStreet').valid ||
         !this.tenantForm.get('telecom').valid
       )) {
-      const message = 'Please enter valid value!!';
-      this.toasterService.showToast('error', message, 'EM CARE!!');
+      this.submitted[1] = true;
+      const message = 'Please enter required value!';
+      this.toasterService.showToast('error', message, 'EM CARE!');
     } else if (this.count === 3 &&
       (
         !this.tenantForm.get('firstName').valid ||
@@ -357,8 +358,9 @@ export class ManageTenantComponent implements OnInit {
         !this.tenantForm.get('phone').valid ||
         !this.tenantForm.get('password').valid
       )) {
-      const message = 'Please enter valid value!!';
-      this.toasterService.showToast('error', message, 'EM CARE!!');
+      this.submitted[2] = true;
+      const message = 'Please enter required value!';
+      this.toasterService.showToast('error', message, 'EM CARE!');
     } else {
       this.count += 1;
     }
