@@ -97,7 +97,8 @@ public class TenantServiceImpl implements TenantService {
         if (tConfig.isPresent()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response("Domain Already Exist", HttpStatus.BAD_REQUEST.value()));
         }
-        TenantConfig tenantConfig = TenantMapper.getTenantConfig(tenantDto);
+        Organization organization = parser.parseResource(Organization.class, tenantDto.getOrganization());
+        TenantConfig tenantConfig = TenantMapper.getTenantConfig(tenantDto, organization.getName());
         try {
             //    Create Database
             createDatabase(tenantConfig);

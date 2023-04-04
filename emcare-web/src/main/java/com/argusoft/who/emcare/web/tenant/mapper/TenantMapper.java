@@ -17,7 +17,7 @@ public class TenantMapper {
     private TenantMapper() {
     }
 
-    public static TenantConfig getTenantConfig(TenantDto tenantDto) {
+    public static TenantConfig getTenantConfig(TenantDto tenantDto, String orgName) {
         TenantConfig tenantConfig = new TenantConfig();
         tenantConfig.setId(tenantDto.getId());
         tenantConfig.setDomain(tenantDto.getDomain());
@@ -27,6 +27,8 @@ public class TenantMapper {
         tenantConfig.setUrl(tenantDto.getUrl());
         tenantConfig.setDatabaseName(tenantDto.getDatabaseName());
         tenantConfig.setDatabasePort(tenantDto.getDatabasePort());
+        tenantConfig.setAdminUser(tenantDto.getUser().getEmail());
+        tenantConfig.setOrganization(orgName);
         return tenantConfig;
     }
 
@@ -34,12 +36,9 @@ public class TenantMapper {
         TenantDto tenantDto = new TenantDto();
         tenantDto.setId(tenantConfig.getId());
         tenantDto.setDomain(tenantConfig.getDomain());
-        tenantDto.setUsername(tenantConfig.getUsername());
-        tenantDto.setPassword(tenantConfig.getPassword());
         tenantDto.setTenantId(tenantConfig.getTenantId());
-        tenantDto.setUrl(tenantConfig.getUrl());
-        tenantDto.setDatabaseName(tenantConfig.getDatabaseName());
-        tenantDto.setDatabasePort(tenantConfig.getDatabasePort());
+        tenantDto.setOrganization(tenantConfig.getOrganization());
+        tenantDto.setUsername(tenantConfig.getAdminUser());
         return tenantDto;
     }
 }
