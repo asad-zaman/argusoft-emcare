@@ -1,5 +1,6 @@
 package com.argusoft.who.emcare.web.applicationlog.controller;
 
+import com.argusoft.who.emcare.web.applicationlog.entity.ApplicationLog;
 import com.argusoft.who.emcare.web.applicationlog.service.ApplicationLogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -32,5 +33,10 @@ public class ApplicationLogController {
     @GetMapping("/all")
     public ResponseEntity<Object> getAllApplicationLog() throws Exception {
         return ResponseEntity.ok().body(applicationLogService.getAllApplicationLogs());
+    }
+
+    @GetMapping("/latest")
+    public ResponseEntity<ApplicationLog> getLatestApplicationLog() throws Exception {
+        return ResponseEntity.ok().body(applicationLogService.getLatestApplicationLogs());
     }
 }
