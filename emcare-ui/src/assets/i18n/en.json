@@ -269,5 +269,16 @@
   "Data Fields": "Data Fields",
   "Equation": "Equation",
   "Ig Version": "Ig Version",
-  "Consultation Date": "Consultation Date"
+  "Consultation Date": "Consultation Date",
+  "Add Log": "Add Log",
+  "Application Name": "Application Name",
+  "Application Version": "Application Version",
+  "Application Name Placeholder": "Enter Application Name",
+  "Application Name Required Message": "Please enter Application Name",
+  "Application Version Placeholder": "Enter Application Version",
+  "Application Version Required Message": "Please enter Application Version",
+  "Log File Placeholder": "Select .apk file",
+  "Log File Required Message": "Please select file",
+  "Log Placeholder": "Enter Log",
+  "Log Required Message": "Please enter Log"
 }

@@ -37,7 +37,9 @@ import {
   ViewConsultationComponent,
   ManageCodeComponent,
   CodeListComponent,
-  IndicatorComponent
+  IndicatorComponent,
+  AddLogComponent,
+  LogListComponent
 } from './root/index';
 
 const routes: Routes = [
@@ -87,6 +89,8 @@ const routes: Routes = [
   { path: 'indicator-list', component: IndicatorListComponent, canActivate: [AuthGuard] },
   { path: 'editIndicator/:id', component: IndicatorComponent },
   { path: 'termsAndConditions', component: TermsConditionsComponent },
+  { path: 'addLog', component: AddLogComponent },
+  { path: 'logList', component: LogListComponent },
   { path: '**', redirectTo: 'dashboard' }
 ];
 @NgModule({

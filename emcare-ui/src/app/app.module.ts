@@ -67,6 +67,8 @@ import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { NgxIntlTelInputModule } from 'ngx-intl-tel-input';
 import { TermsConditionsComponent } from './root/components/terms-conditions/terms-conditions.component';
+import { AddLogComponent } from './root/components/add-log/add-log.component';
+import { LogListComponent } from './root/components/log-list/log-list.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -108,7 +110,9 @@ import { TermsConditionsComponent } from './root/components/terms-conditions/ter
     CodeListComponent,
     IndicatorComponent,
     IndicatorListComponent,
-    TermsConditionsComponent
+    TermsConditionsComponent,
+    AddLogComponent,
+    LogListComponent
   ],
   imports: [
     BrowserModule,
