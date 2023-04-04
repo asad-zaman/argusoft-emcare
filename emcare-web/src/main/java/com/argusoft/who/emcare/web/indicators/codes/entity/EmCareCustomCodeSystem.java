@@ -34,10 +34,10 @@ public class EmCareCustomCodeSystem extends EntityAuditInfo implements Serializa
     private String valueType;
 
     @Column(name = "condition")
-    private String [] condition;
+    private String[] condition;
 
     @Column(name = "value")
-    private String value;
+    private String[] value;
 
     public Long getCodeId() {
         return codeId;
@@ -63,23 +63,29 @@ public class EmCareCustomCodeSystem extends EntityAuditInfo implements Serializa
         this.codeDescription = codeDescription;
     }
 
-    public String getValueType() { return valueType; }
+    public String getValueType() {
+        return valueType;
+    }
 
     public void setValueType(String valueType) {
         this.valueType = valueType;
     }
 
-    public String [] getCondition() {
+    public String[] getCondition() {
         return condition;
     }
 
-    public void setCondition(String [] condition) {
+    public void setCondition(String[] condition) {
         this.condition = condition;
     }
 
-    public String getValue() { return value; }
+    public String[] getValue() {
+        return value;
+    }
 
-    public void setValue(String value) { this.value = value; }
+    public void setValue(String[] value) {
+        this.value = value;
+    }
 
     @Override
     public boolean equals(Object o) {
