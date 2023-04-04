@@ -15,7 +15,6 @@ import java.io.Serializable;
  * @author - jaykalariya
  * @since - 06/02/23  12:05 pm
  */
-@Data
 @Entity
 @Table(name = "tenant_config")
 public class TenantConfig extends EntityAuditInfo implements Serializable {
@@ -45,6 +44,13 @@ public class TenantConfig extends EntityAuditInfo implements Serializable {
 
     @Column(name = "domain", nullable = false)
     private String domain;
+
+    @Column(name = "admin_user")
+    private String adminUser;
+
+    @Column(name = "organization")
+    private String organization;
+
 
     public Integer getId() {
         return id;
@@ -100,6 +106,22 @@ public class TenantConfig extends EntityAuditInfo implements Serializable {
 
     public void setDatabaseName(String databaseName) {
         this.databaseName = databaseName;
+    }
+
+    public String getAdminUser() {
+        return adminUser;
+    }
+
+    public void setAdminUser(String adminUser) {
+        this.adminUser = adminUser;
+    }
+
+    public String getOrganization() {
+        return organization;
+    }
+
+    public void setOrganization(String organization) {
+        this.organization = organization;
     }
 
     public String getDatabasePort() {
