@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { FhirService } from 'src/app/shared';
+import { FhirService, ToasterService } from 'src/app/shared';
 
 @Component({
   selector: 'app-add-log',
@@ -14,7 +14,8 @@ export class AddLogComponent implements OnInit {
 
   constructor(
     private readonly formBuilder: FormBuilder,
-    private readonly fhirService: FhirService
+    private readonly fhirService: FhirService,
+    private readonly toasterService: ToasterService
   ) { }
 
   ngOnInit(): void {
@@ -48,17 +49,19 @@ export class AddLogComponent implements OnInit {
   saveData() {
     this.submitted = true;
     if (this.addLogForm.valid) {
+      const formData = new FormData();
       const log = {
         applicationName: this.addLogForm.get('applicationName').value,
         applicationVersion: this.addLogForm.get('applicationVersion').value,
         logs: this.addLogForm.get('logs').value
       }
-      let formData = new FormData();
-      formData.append('avatar', this.addLogForm.get('file').value);
+      formData.append('file', this.addLogForm.get('file').value);
       formData.append('log', JSON.stringify(log));
       this.fhirService.addNewLog(formData).subscribe(res => {
-        console.log(res);
-      })
+        this.toasterService.showToast('success', 'Logs added successfully!', 'EMCARE!');
+      }, (e) => {
+        this.toasterService.showToast('error', e.errorMessage, 'EMCARE!');
+      });
     }
   }
 
