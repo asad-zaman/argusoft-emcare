@@ -7,7 +7,6 @@ import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.common.response.Response;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -36,9 +35,6 @@ public class ApplicationLogServiceImpl implements ApplicationLogService {
     @Autowired
     ApplicationLogRepository applicationLogRepository;
 
-    @Value("${server.url}")
-    String serverURL;
-
     @Override
     public ResponseEntity<Object> addApplicationLog(MultipartFile multipartFile, String logData) throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -61,5 +57,11 @@ public class ApplicationLogServiceImpl implements ApplicationLogService {
     @Override
     public List<ApplicationLog> getAllApplicationLogs() {
         return applicationLogRepository.findAllByOrderByCreatedOnDesc();
+    }
+
+    @Override
+    public ApplicationLog getLatestApplicationLogs() {
+        ApplicationLog applicationLog = applicationLogRepository.getLatestOne();
+        return applicationLog;
     }
 }

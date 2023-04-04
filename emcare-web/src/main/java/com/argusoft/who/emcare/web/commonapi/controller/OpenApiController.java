@@ -1,5 +1,7 @@
 package com.argusoft.who.emcare.web.commonapi.controller;
 
+import com.argusoft.who.emcare.web.applicationlog.entity.ApplicationLog;
+import com.argusoft.who.emcare.web.applicationlog.service.ApplicationLogService;
 import com.argusoft.who.emcare.web.commonapi.dto.UserPasswordDto;
 import com.argusoft.who.emcare.web.commonapi.service.OpenApiService;
 import com.argusoft.who.emcare.web.exception.EmCareException;
@@ -22,6 +24,9 @@ public class OpenApiController {
 
     @Autowired
     LocationResourceService locationResourceService;
+
+    @Autowired
+    ApplicationLogService applicationLogService;
 
     @PostMapping("/forgotpassword/generateotp")
     public ResponseEntity<Object> generateOtp(@RequestBody UserPasswordDto userPasswordDto) {
@@ -46,4 +51,10 @@ public class OpenApiController {
     public List<FacilityDto> getActiveFacility() {
         return locationResourceService.getActiveFacility();
     }
+
+    @GetMapping("/country/global/app")
+    public ResponseEntity<ApplicationLog> getLatestApplication() {
+        return ResponseEntity.ok().body(applicationLogService.getLatestApplicationLogs());
+    }
+
 }

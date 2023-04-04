@@ -5,7 +5,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * <h1> Add heading here </h1>
@@ -21,4 +20,6 @@ public interface ApplicationLogService {
     public ResponseEntity<Object> addApplicationLog(MultipartFile multipartFile, String logData) throws Exception;
 
     public List<ApplicationLog> getAllApplicationLogs();
+
+    public ApplicationLog getLatestApplicationLogs();
 }
