@@ -279,7 +279,7 @@
   "Domain Required Message": "Country Domain in Required",
   "Tenants": "Countries",
   "URL": "Database URL",
-  "Tenant Id Repeat Message": "The country already exists!!",
+  "Tenant Id Repeat Message": "The country already exists!",
   "Domain Repeat Message": "Country Domain already exists!",
   "Domain": "Country Domain",
   "Language Required Message": "Language is Required",
