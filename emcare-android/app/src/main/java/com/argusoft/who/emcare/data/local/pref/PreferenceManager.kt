@@ -8,13 +8,13 @@ import com.argusoft.who.emcare.utils.extention.fromJson
 import com.argusoft.who.emcare.utils.extention.orEmpty
 import com.argusoft.who.emcare.utils.extention.toJson
 import org.hl7.fhir.r4.model.Bundle
-import org.hl7.fhir.r4.model.ResourceType
 
 class PreferenceManager(private val sharedPreferences: EncPref) : Preference {
 
     companion object {
         private const val IS_LOGIN = "pref_is_login"
         private const val USER = "USER"
+        private const val SELECTED_COUNTRY = "SELECTED_COUNTRY"
         private const val TOKEN = "TOKEN"
         private const val FACILITY_ID = "FACILITY_ID"
         private const val LOGGED_IN_USER = "LOGGED_IN_USER"
@@ -47,6 +47,14 @@ class PreferenceManager(private val sharedPreferences: EncPref) : Preference {
 
     override fun getUser(): User? {
         return sharedPreferences.getString(USER).orEmpty { "{}" }.fromJson<User>()
+    }
+
+    override fun setSelectedCountry(selectedCountry: String) {
+        sharedPreferences.putString(SELECTED_COUNTRY, selectedCountry)
+    }
+
+    override fun getSelectedCountry(): String {
+        return sharedPreferences.getString(SELECTED_COUNTRY, "")
     }
 
     override fun setFacilityId(facilityId: String) {
@@ -109,6 +117,6 @@ class PreferenceManager(private val sharedPreferences: EncPref) : Preference {
         val lastSyncTimeStamp = sharedPreferences.getString(EMCARE_LAST_SYNC_TIME_STAMP,"")
         sharedPreferences.clear()
         setFacilityId(facilityId)
-        writeLastSyncTimestamp(lastSyncTimeStamp)
+//        writeLastSyncTimestamp(lastSyncTimeStamp)
     }
 }

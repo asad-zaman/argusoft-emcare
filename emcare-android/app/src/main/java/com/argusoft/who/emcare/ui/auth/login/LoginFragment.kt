@@ -156,6 +156,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(), EasyPermissions.Perm
         super.onClick(view)
         when (view?.id) {
             R.id.loginButton -> {
+                preference.setSelectedCountry("")
                 deviceInfo()
             }
             R.id.signupTextView -> {

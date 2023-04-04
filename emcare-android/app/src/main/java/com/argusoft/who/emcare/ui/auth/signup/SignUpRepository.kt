@@ -24,6 +24,10 @@ class SignUpRepository @Inject constructor(
         })
     }
 
+    fun getCountries() = flow{
+        emit(api.getCountries())
+    }
+
     fun signUp(signupRequest: SignupRequest) = flow {
         emit(api.signup(signupRequest))
     }

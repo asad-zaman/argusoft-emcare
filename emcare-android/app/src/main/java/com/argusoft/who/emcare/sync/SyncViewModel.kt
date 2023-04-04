@@ -70,7 +70,8 @@ class SyncViewModel @Inject constructor(
                         if (syncJobStatus.total == syncJobStatus.completed) {
                             isFinished = true
                             _syncState.value = ApiResponse.Success(null)
-                            preference.writeLastSyncTimestamp(lastSyncTime)
+                            if(syncJobStatus.total != 0)
+                                preference.writeLastSyncTimestamp(lastSyncTime)
                         }
                     }
 

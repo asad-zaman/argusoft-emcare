@@ -22,6 +22,10 @@ interface Preference {
 
     fun getUser(): User?
 
+    fun setSelectedCountry(selectedCountry: String)
+
+    fun getSelectedCountry(): String
+
     fun setLoggedInUser(loggedInUser: LoggedInUser)
 
     fun getLoggedInUser() : LoggedInUser?

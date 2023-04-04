@@ -222,6 +222,9 @@
     <string name="text_enlarged">Enlarged</string>
     <string name="change_theme">Change Theme</string>
     <string name="text_syncing">Syncing</string>
-    <string name="text_terms_and_policy_msg">by signing up, you\'re agreed to our</string>
+    <string name="text_terms_and_policy_msg">By signing up, you agree to the</string>
     <string name="text_terms_and_policy">Terms &amp; Conditions</string>
+    <string name="error_msg_country">Please select country</string>
+    <string name="error_msg_terms">To sign up you need to agree on Terms &amp; Conditions</string>
+
 </resources>

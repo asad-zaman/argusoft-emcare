@@ -1,5 +1,6 @@
 package com.argusoft.who.emcare.data.remote
 
+import android.text.TextUtils
 import com.argusoft.who.emcare.BuildConfig
 import com.argusoft.who.emcare.data.local.pref.Preference
 import com.argusoft.who.emcare.ui.common.model.*
@@ -24,6 +25,17 @@ class ApiManager(private val preference: Preference) : Api {
                         "Authorization",
                         "Bearer ${preference.getToken()}"
                     )
+                if(!preference.isLogin() && !TextUtils.isEmpty(preference.getSelectedCountry()))
+                    request.addHeader(
+                        "Application-Agent",
+                        preference.getSelectedCountry()
+                    )
+                else if (preference.getUser() != null && preference.getUser()!!.applicationAgent?.isNotEmpty() == true)
+                    request.addHeader(
+                        "Application-Agent",
+                        "${preference.getUser()!!.applicationAgent}"
+                    )
+
                 return@addInterceptor chain.proceed(request.build())
             }
         if (BuildConfig.DEBUG) {
@@ -54,7 +66,8 @@ class ApiManager(private val preference: Preference) : Api {
 
     override suspend fun login(requestMap: Map<String, String>): ApiResponse<User> {
         return executeApiHelper {
-            keyCloakApiService.getAccessToken(requestMap)
+            apiService.login(requestMap)
+//            keyCloakApiService.getAccessToken(requestMap)
         }
     }
 
@@ -77,6 +90,10 @@ class ApiManager(private val preference: Preference) : Api {
 
     override suspend fun getFacilities(): ApiResponse<List<Facility>> {
         return executeApiHelper { apiService.getFacilities() }
+    }
+
+    override suspend fun getCountries(): ApiResponse<List<String>> {
+        return executeApiHelper { apiService.getCountries() }
     }
 
     override suspend fun getLanguages(): ApiResponse<List<Language>> {

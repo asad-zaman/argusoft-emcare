@@ -6,6 +6,11 @@ import retrofit2.http.*
 
 interface ApiService {
 
+    @POST("auth/login")
+    suspend fun login(
+        @Body filedMap: Map<String, String>
+    ): Response<User>
+
     @POST("device/add")
     suspend fun addDevice(
         @Body deviceInfo: DeviceDetails
@@ -26,6 +31,9 @@ interface ApiService {
 
     @GET("open/active/facility")
     suspend fun getFacilities(): Response<List<Facility>>
+
+    @GET("open/country/list")
+    suspend fun getCountries(): Response<List<String>>
 
     @GET("language/all")
     suspend fun getLanguages(): Response<List<Language>>

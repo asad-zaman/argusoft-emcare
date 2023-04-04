@@ -55,6 +55,17 @@ class SignUpFragment : BaseFragment<FragmentSignupBinding>() {
         )
     }
 
+    private fun setupCountryAutoComplete(countryList: List<String>) {
+        binding.countryTextInputLayout.tag = countryList
+        binding.countryEditText.setAdapter(
+            ArrayAdapter(
+                requireContext(), android.R.layout.select_dialog_item,
+                countryList.map { it }
+            )
+        )
+    }
+
+
 //    private fun setupRoleAutoComplete(roleList: List<Role>) {
 //        binding.roleTextInputLayout.tag = roleList
 //        binding.roleEditText.setAdapter(
@@ -71,6 +82,12 @@ class SignUpFragment : BaseFragment<FragmentSignupBinding>() {
         binding.facilityEditText.setOnItemClickListener { _, _, position, _ ->
             binding.facilityEditText.tag = (binding.facilityTextInputLayout.tag as? List<Facility>)?.getOrNull(position)?.facilityId
         }
+        binding.countryEditText.setOnItemClickListener { _, _, position, _ ->
+            binding.countryEditText.tag = (binding.countryTextInputLayout.tag as? List<String>)?.getOrNull(position)
+            preference.setSelectedCountry(binding.countryEditText.tag as String)
+            signUpViewModel.getFacilities()
+            binding.facilityEditText.text.clear()
+        }
 //        binding.roleEditText.setOnItemClickListener { parent, view, position, id ->
 //            binding.roleEditText.tag = (binding.roleTextInputLayout.tag as? List<Role>)?.getOrNull(position)?.name
 //        }
@@ -79,6 +96,7 @@ class SignUpFragment : BaseFragment<FragmentSignupBinding>() {
     override fun initObserver() {
         observeNotNull(signUpViewModel.errorMessageState) {
             if (it == 0) {
+                preference.setSelectedCountry("")
                 signUpViewModel.signup(
                     binding.passwordEditText.getEnterText(),
                     binding.confirmPasswordEditText.getEnterText(),
@@ -101,6 +119,11 @@ class SignUpFragment : BaseFragment<FragmentSignupBinding>() {
                 it?.let { list -> setupFacilityAutoComplete(list) }
             }
         }
+        observeNotNull(signUpViewModel.countryApiState) { it ->
+            it.handleApiView(binding.progressLayout) {
+                it?.let { list -> setupCountryAutoComplete(list) }
+            }
+        }
 //        observeNotNull(signUpViewModel.facilityAndRolesApiState) { pair ->
 //            pair.first.handleApiView(binding.progressLayout) {
 //                it?.let { list -> setupFacilityAutoComplete(list) }
@@ -119,8 +142,10 @@ class SignUpFragment : BaseFragment<FragmentSignupBinding>() {
                     binding.firstNameEditText.getEnterText(),
                     binding.lastNameEditText.getEnterText(),
                     binding.emailEditText.getEnterText(),
+                    if (binding.countryEditText.tag!= null) binding.countryEditText.tag as String else "",
                     if (binding.facilityEditText.tag!= null) binding.facilityEditText.tag as String else "",
-                    binding.phoneEditText.getEnterText())
+                    binding.phoneEditText.getEnterText(),
+                    binding.termsAndPolicyTextView.isChecked)
             }
             else -> {
                 requireActivity().onBackPressed()

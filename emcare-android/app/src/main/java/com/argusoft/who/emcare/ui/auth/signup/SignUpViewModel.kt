@@ -33,9 +33,13 @@ class SignUpViewModel @Inject constructor(
     private val _facilityApiState = MutableLiveData<ApiResponse<List<Facility>>>()
     val facilityApiState: LiveData<ApiResponse<List<Facility>>> = _facilityApiState
 
+    private val _countryApiState = MutableLiveData<ApiResponse<List<String>>>()
+    val countryApiState: LiveData<ApiResponse<List<String>>> = _countryApiState
+
     init {
 //        getFacilitiesAndRoles()
-        getFacilities()
+        getCountries()
+//        getFacilities()
     }
 
 //    private fun getFacilitiesAndRoles() {
@@ -47,7 +51,7 @@ class SignUpViewModel @Inject constructor(
 //        }
 //    }
 
-    private fun getFacilities() {
+    public fun getFacilities() {
         _facilityAndRolesApiState.value = Pair(ApiResponse.Loading(), ApiResponse.Loading())
         viewModelScope.launch {
             signUpRepository.getFacilities().collect {
@@ -56,12 +60,23 @@ class SignUpViewModel @Inject constructor(
         }
     }
 
+    private fun getCountries() {
+        viewModelScope.launch {
+            signUpRepository.getCountries().collect {
+                _countryApiState.value = it
+            }
+        }
+    }
+
+
     fun validateSignup(
         firstname: String,
         lastname: String,
         email: String,
+        country: String,
         facilityId: String,
         phone: String,
+        isTermsChecked: Boolean,
 //        roleName: String?,
     ) {
         when {
@@ -69,8 +84,10 @@ class SignUpViewModel @Inject constructor(
             lastname.isEmpty() -> _errorMessageState.value = R.string.error_msg_lastname
             email.isEmpty() -> _errorMessageState.value = R.string.error_msg_email
             email.isNotEmpty() && !email.isValidEmail() -> _errorMessageState.value = R.string.error_msg_valid_email
+            country.isEmpty() -> _errorMessageState.value = R.string.error_msg_country
             facilityId.isEmpty() -> _errorMessageState.value = R.string.error_msg_location
             phone.isEmpty() -> _errorMessageState.value = R.string.error_msg_phone_number
+            !isTermsChecked -> _errorMessageState.value = R.string.error_msg_terms
 //            roleName.isNullOrEmpty() -> _errorMessageState.value = R.string.error_msg_role
             else -> {
                 signupRequest.firstName = firstname
