@@ -36,9 +36,6 @@ public class ApplicationLogServiceImpl implements ApplicationLogService {
     @Autowired
     ApplicationLogRepository applicationLogRepository;
 
-    @Value("${server.url}")
-    String serverURL;
-
     @Override
     public ResponseEntity<Object> addApplicationLog(MultipartFile multipartFile, String logData) throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
