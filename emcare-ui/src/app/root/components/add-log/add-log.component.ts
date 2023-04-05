@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { FhirService, ToasterService } from 'src/app/shared';
 
 @Component({
@@ -15,7 +16,8 @@ export class AddLogComponent implements OnInit {
   constructor(
     private readonly formBuilder: FormBuilder,
     private readonly fhirService: FhirService,
-    private readonly toasterService: ToasterService
+    private readonly toasterService: ToasterService,
+    private readonly router: Router
   ) { }
 
   ngOnInit(): void {
@@ -58,6 +60,7 @@ export class AddLogComponent implements OnInit {
       formData.append('file', this.addLogForm.get('file').value);
       formData.append('log', JSON.stringify(log));
       this.fhirService.addNewLog(formData).subscribe(res => {
+        this.router.navigate([`logList`]);
         this.toasterService.showToast('success', 'Logs added successfully!', 'EMCARE!');
       }, (e) => {
         this.toasterService.showToast('error', e.errorMessage, 'EMCARE!');

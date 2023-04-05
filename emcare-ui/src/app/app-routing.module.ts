@@ -87,14 +87,20 @@ const routes: Routes = [
   { path: 'code-list', component: CodeListComponent, canActivate: [AuthGuard] },
   { path: 'addIndicator', component: IndicatorComponent, canActivate: [AuthGuard] },
   { path: 'indicator-list', component: IndicatorListComponent, canActivate: [AuthGuard] },
-  { path: 'editIndicator/:id', component: IndicatorComponent },
+  { path: 'editIndicator/:id', component: IndicatorComponent, canActivate: [AuthGuard] },
   { path: 'termsAndConditions', component: TermsConditionsComponent },
-  { path: 'addLog', component: AddLogComponent },
-  { path: 'logList', component: LogListComponent },
+  { path: 'addLog', component: AddLogComponent, canActivate: [AuthGuard] },
+  { path: 'logList', component: LogListComponent, canActivate: [AuthGuard] },
   { path: '**', redirectTo: 'dashboard' }
 ];
 @NgModule({
-  imports: [RouterModule.forRoot(routes, { useHash: true })],
+  imports: [RouterModule.forRoot(routes, {
+    useHash: true,
+    scrollPositionRestoration: 'enabled',
+    anchorScrolling: 'enabled',
+    onSameUrlNavigation: 'reload',
+    scrollOffset: [0, 75]
+  })],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }

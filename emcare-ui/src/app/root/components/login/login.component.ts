@@ -104,7 +104,6 @@ export class LoginComponent implements OnInit {
   }
 
   getDownloadURL() {
-    console.log(`${window.origin}/${this.countryData.url}`);
     return `${window.origin}/${this.countryData.url}`;
   }
 }

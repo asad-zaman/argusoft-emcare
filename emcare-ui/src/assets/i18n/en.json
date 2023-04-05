@@ -280,5 +280,6 @@
   "Log File Placeholder": "Select .apk file",
   "Log File Required Message": "Please select file",
   "Log Placeholder": "Enter Log",
-  "Log Required Message": "Please enter Log"
+  "Log Required Message": "Please enter Log",
+  "Logs": "Logs"
 }

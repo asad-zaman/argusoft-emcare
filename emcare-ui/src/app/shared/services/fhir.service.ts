@@ -9,20 +9,19 @@ export class FhirService {
     fhirBaseURL = `${environment.apiUrl}/api/emcare`;
     deduplicationBaseURL = `${environment.apiUrl}/api/deduplication`;
     fhirResourceBaseURL = `${environment.apiUrl}/fhir`;
-    authToken = localStorage.getItem("access_token");
 
-    constructor(private readonly http: HttpClient) {
-        this.authToken = this.authToken && this.authToken.substring(1, this.authToken.length - 1);
-    }
+    constructor(private readonly http: HttpClient) {}
 
     getHeaders() {
+        let authToken = localStorage.getItem("access_token");
+        authToken = authToken && authToken.substring(1, authToken.length - 1);
         const headerObj = {
             headers: new HttpHeaders({
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Origin': '*',
                 'Access-Control-Allow-Headers': 'Content-Type',
                 'Access-Control-Allow-Methods': 'GET,POST,OPTIONS,DELETE,PUT',
-                'Authorization': `Bearer ${this.authToken}`
+                'Authorization': `Bearer ${authToken}`
             })
         };
         return headerObj;
@@ -283,20 +282,27 @@ export class FhirService {
     }
 
     addNewLog(formData) {
+        let authToken = localStorage.getItem("access_token");
+        authToken = authToken && authToken.substring(1, authToken.length - 1);
         const headerObj = {
             headers: new HttpHeaders({
                 'Access-Control-Allow-Origin': '*',
                 'Access-Control-Allow-Headers': 'Content-Type',
                 'Access-Control-Allow-Methods': 'GET,POST,OPTIONS,DELETE,PUT',
-                'Authorization': `Bearer ${this.authToken}`
+                'Authorization': `Bearer ${authToken}`
             })
         };
         let url = `${environment.apiUrl}/api/application/log/add`;
         return this.http.post(url, formData, headerObj);
     }
-    
+
     getCountry() {
         let url = `${environment.apiUrl}/api/open/country/global/app`;
         return this.http.get(url);
+    }
+
+    getAllLogs() {
+        let url = `${environment.apiUrl}/api/application/log/all`;
+        return this.http.get(url, this.getHeaders());
     }
 }
