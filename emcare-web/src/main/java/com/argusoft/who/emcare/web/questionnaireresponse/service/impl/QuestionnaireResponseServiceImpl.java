@@ -126,4 +126,20 @@ public class QuestionnaireResponseServiceImpl implements QuestionnaireResponseSe
         }
         return responsesWithEncounter;
     }
+
+    @Override
+    public Map<String, List<QuestionnaireResponse>> getDataForExport() {
+        List<QuestionnaireResponse> questionnaireResponses = questionnaireResponseRepository.findAll();
+        Map<String, List<QuestionnaireResponse>> stringListMap = new HashMap<>();
+        for (QuestionnaireResponse response : questionnaireResponses) {
+            if (Objects.nonNull(stringListMap.get(response.getPatientId()))) {
+                stringListMap.get(response.getPatientId()).add(response);
+            } else {
+                List<QuestionnaireResponse> list = new ArrayList<>();
+                list.add(response);
+                stringListMap.put(response.getPatientId(), list);
+            }
+        }
+        return stringListMap;
+    }
 }

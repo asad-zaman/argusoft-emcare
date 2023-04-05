@@ -17,4 +17,6 @@ public interface QuestionnaireResponseService {
     public PageDto getQuestionnaireResponsePage(Integer pageNo, String searchString);
 
     public Map<String, Object> getQuestionnaireResponseByPatientId(String patientId);
+
+    public Map<String, List<QuestionnaireResponse>> getDataForExport();
 }
