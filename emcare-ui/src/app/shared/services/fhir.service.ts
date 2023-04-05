@@ -294,4 +294,9 @@ export class FhirService {
         let url = `${environment.apiUrl}/api/application/log/add`;
         return this.http.post(url, formData, headerObj);
     }
+    
+    getCountry() {
+        let url = `${environment.apiUrl}/api/open/country/global/app`;
+        return this.http.get(url);
+    }
 }
