@@ -7,6 +7,7 @@ import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.common.response.Response;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -34,12 +35,15 @@ public class ApplicationLogServiceImpl implements ApplicationLogService {
     @Autowired
     ApplicationLogRepository applicationLogRepository;
 
+    @Value("${root}")
+    String root;
+
     @Override
     public ResponseEntity<Object> addApplicationLog(MultipartFile multipartFile, String logData) throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
         ApplicationLog applicationLog;
         try {
-            String path = System.getProperty("user.dir") + File.separator + "resources" + File.separator + multipartFile.getOriginalFilename();
+            String path = root + File.separator + "resources" + File.separator + multipartFile.getOriginalFilename();
             System.out.println("======"+path);
             Files.copy(multipartFile.getInputStream(), Paths.get(path));
             applicationLog = objectMapper.readValue(logData, ApplicationLog.class);
