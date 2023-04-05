@@ -43,7 +43,7 @@ public class ApplicationLogServiceImpl implements ApplicationLogService {
         ObjectMapper objectMapper = new ObjectMapper();
         ApplicationLog applicationLog;
         try {
-            String path = root + File.separator + "resources" + File.separator + multipartFile.getOriginalFilename();
+            String path = root + "resources" + File.separator + multipartFile.getOriginalFilename();
             System.out.println("======"+path);
             Files.copy(multipartFile.getInputStream(), Paths.get(path));
             applicationLog = objectMapper.readValue(logData, ApplicationLog.class);
