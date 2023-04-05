@@ -46,6 +46,7 @@ public class ApplicationLogServiceImpl implements ApplicationLogService {
             applicationLog.setUrl(CommonConstant.DOC_DOWNLOAD_PATH + multipartFile.getOriginalFilename());
             applicationLogRepository.save(applicationLog);
         } catch (Exception ex) {
+            ex.printStackTrace();
             return ResponseEntity.badRequest().body(new Response("File already exist!", HttpStatus.BAD_REQUEST.value()));
         }
         return ResponseEntity.ok().body(Map.of(
