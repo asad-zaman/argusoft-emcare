@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -30,8 +31,6 @@ import java.util.Map;
 @Service
 public class ApplicationLogServiceImpl implements ApplicationLogService {
 
-    private final Path root = Paths.get("resources");
-
     @Autowired
     ApplicationLogRepository applicationLogRepository;
 
@@ -40,7 +39,9 @@ public class ApplicationLogServiceImpl implements ApplicationLogService {
         ObjectMapper objectMapper = new ObjectMapper();
         ApplicationLog applicationLog;
         try {
-            Files.copy(multipartFile.getInputStream(), this.root.resolve(multipartFile.getOriginalFilename()));
+            String path = System.getProperty("user.dir") + File.separator + "resources" + File.separator + multipartFile.getOriginalFilename();
+            System.out.println("======"+path);
+            Files.copy(multipartFile.getInputStream(), Paths.get(path));
             applicationLog = objectMapper.readValue(logData, ApplicationLog.class);
             applicationLog.setApplicationName(multipartFile.getOriginalFilename());
             applicationLog.setUrl(CommonConstant.DOC_DOWNLOAD_PATH + multipartFile.getOriginalFilename());
