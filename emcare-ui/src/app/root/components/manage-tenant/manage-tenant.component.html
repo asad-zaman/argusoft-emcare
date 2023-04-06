@@ -61,7 +61,7 @@
                         [ngClass]="{ 'is-invalid': submitted[0] && getFormConfrols.username.errors }">
                       <div *ngIf="submitted[0] && getFormConfrols.username.errors" class="invalid-feedback">
                         <div class="cst-error-style" *ngIf="getFormConfrols.username.errors.required">
-                          {{' Database Username Required Message' | translate}}</div>
+                          {{'Database Username Required Message' | translate}}</div>
                       </div>
                     </div>
                   </div>
@@ -152,7 +152,7 @@
                         [ngClass]="{ 'is-invalid': submitted[1] && getFormConfrols.organizationName.errors }">
                       <div *ngIf="submitted[1] && getFormConfrols.organizationName.errors" class="invalid-feedback">
                         <div class="cst-error-style" *ngIf="getFormConfrols.organizationName.errors.required">
-                          *{{'Name is required' | translate}}</div>
+                          {{'Name is required' | translate}}</div>
                       </div>
                     </div>
                   </div>
@@ -165,7 +165,7 @@
                         [ngClass]="{ 'is-invalid': submitted[1] && getFormConfrols.addressStreet.errors }">
                       <div *ngIf="submitted[1] && getFormConfrols.addressStreet.errors" class="invalid-feedback">
                         <div class="cst-error-style" *ngIf="getFormConfrols.addressStreet.errors.required">
-                          *{{'Address street is required' | translate}}</div>
+                          {{'Address street is required' | translate}}</div>
                       </div>
                     </div>
                   </div>
