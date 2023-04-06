@@ -301,5 +301,17 @@
   "Database Username Required Message": "Please enter Database Username",
   "Database Password": "Database Password",
   "Database Password Placeholder": "Enter Database Password",
-  "Database Password Required Message": "Please enter Database Password"
+  "Database Password Required Message": "Please enter Database Password",
+  "Add Log": "Add Log",
+  "Application Name": "Application Name",
+  "Application Version": "Application Version",
+  "Application Name Placeholder": "Enter Application Name",
+  "Application Name Required Message": "Please enter Application Name",
+  "Application Version Placeholder": "Enter Application Version",
+  "Application Version Required Message": "Please enter Application Version",
+  "Log File Placeholder": "Select .apk file",
+  "Log File Required Message": "Please select file",
+  "Log Placeholder": "Enter Log",
+  "Log Required Message": "Please enter Log",
+  "Logs": "Logs"
 }
