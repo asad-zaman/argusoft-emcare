@@ -254,8 +254,8 @@ public class UserServiceImpl implements UserService {
             List<UserRepresentation> representations = keycloak.realm(realm).users().list();
             userRepresentations = representations.stream().filter(userRepresentation -> countryUsers.contains(userRepresentation.getId())).collect(Collectors.toList());
 
-            Collections.sort(representations, (rp1, rp2) -> rp2.getCreatedTimestamp().compareTo(rp1.getCreatedTimestamp()));
-            userRepresentations = representations.subList(startIndex, endIndex);
+            Collections.sort(userRepresentations, (rp1, rp2) -> rp2.getCreatedTimestamp().compareTo(rp1.getCreatedTimestamp()));
+            userRepresentations = userRepresentations.subList(startIndex, endIndex);
         }
 
         for (UserRepresentation representation : userRepresentations) {
