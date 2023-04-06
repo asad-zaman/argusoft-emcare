@@ -20,7 +20,7 @@ import java.util.List;
  */
 @CrossOrigin(origins = "**")
 @RestController
-@RequestMapping("/api/tenant")
+@RequestMapping("/api/country/tenant")
 public class TenantController {
 
     @Autowired
