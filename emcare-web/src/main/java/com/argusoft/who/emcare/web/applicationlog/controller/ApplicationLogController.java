@@ -18,7 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
  */
 @CrossOrigin(origins = "**")
 @RestController
-@RequestMapping("/api/application/log")
+@RequestMapping("/api/country/application/log")
 public class ApplicationLogController {
 
     @Autowired

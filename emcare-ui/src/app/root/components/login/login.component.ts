@@ -46,6 +46,7 @@ export class LoginComponent implements OnInit {
       password: [window.location.href == url ? environment.testPassword : '', Validators.required]
     });
     this.getCountry();
+    this.getCurrentCountry();
   }
 
   getCountry() {

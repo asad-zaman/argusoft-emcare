@@ -307,7 +307,7 @@ export class FhirService {
                 'Authorization': `Bearer ${authToken}`
             })
         };
-        let url = `${environment.apiUrl}/api/application/log/add`;
+        let url = `${environment.apiUrl}/api/country/application/log/add`;
         return this.http.post(url, formData, headerObj);
     }
 
@@ -317,7 +317,7 @@ export class FhirService {
     }
 
     getAllLogs() {
-        let url = `${environment.apiUrl}/api/application/log/all`;
+        let url = `${environment.apiUrl}/api/country/application/log/all`;
         return this.http.get(url, this.getHeaders());
     }
 }
