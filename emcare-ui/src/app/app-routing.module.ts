@@ -39,7 +39,9 @@ import {
   CodeListComponent,
   IndicatorComponent,
   TenantListComponent,
-  ManageTenantComponent
+  ManageTenantComponent,
+  AddLogComponent,
+  LogListComponent
 } from './root/index';
 
 const routes: Routes = [
@@ -91,10 +93,18 @@ const routes: Routes = [
   { path: 'tenantList', component: TenantListComponent, canActivate: [AuthGuard] },
   { path: 'manageTenant', component: ManageTenantComponent, canActivate: [AuthGuard] },
   { path: 'termsAndConditions', component: TermsConditionsComponent },
+  { path: 'addLog', component: AddLogComponent, canActivate: [AuthGuard] },
+  { path: 'logList', component: LogListComponent, canActivate: [AuthGuard] },
   { path: '**', redirectTo: 'dashboard' }
 ];
 @NgModule({
-  imports: [RouterModule.forRoot(routes, { useHash: true })],
+  imports: [RouterModule.forRoot(routes, {
+    useHash: true,
+    scrollPositionRestoration: 'enabled',
+    anchorScrolling: 'enabled',
+    onSameUrlNavigation: 'reload',
+    scrollOffset: [0, 75]
+  })],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }

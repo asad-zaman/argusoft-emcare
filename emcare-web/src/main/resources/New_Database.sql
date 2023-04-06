@@ -537,6 +537,23 @@ CREATE TABLE IF NOT EXISTS public.role_entity
 
 ALTER TABLE IF EXISTS public.role_entity OWNER to postgres;
 
+CREATE TABLE IF NOT EXISTS public.application_log
+(
+    id integer NOT NULL,
+    created_by character varying(255) COLLATE pg_catalog."default" NOT NULL,
+    created_on timestamp without time zone NOT NULL,
+    modified_by character varying(255) COLLATE pg_catalog."default",
+    modified_on timestamp without time zone,
+    application_name character varying(255) COLLATE pg_catalog."default" NOT NULL,
+    application_version character varying(255) COLLATE pg_catalog."default" NOT NULL,
+    logs bytea,
+    url character varying(255) COLLATE pg_catalog."default",
+    CONSTRAINT application_log_pkey PRIMARY KEY (id)
+);
+
+ALTER TABLE IF EXISTS public.application_log
+    OWNER to postgres;
+
 
 INSERT INTO public.email_content (id, code, content, created_at, subject, var_list) VALUES (3, 'CONFIRMATION_EMAIL_APPROVED', '<!DOCTYPE html>
 <html>
@@ -1207,6 +1224,10 @@ ALTER TABLE ONLY public.user_menu_config
 
 ALTER TABLE ONLY public.value_set_resources
     ADD CONSTRAINT value_set_resources_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY public.application_log
+    ADD CONSTRAINT application_log_pkey PRIMARY KEY (id);
+
 
 
 ALTER TABLE ONLY public.indicator_denominator_equation
