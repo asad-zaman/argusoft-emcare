@@ -74,7 +74,7 @@ public class QuestionnaireResponseServiceImpl implements QuestionnaireResponseSe
         List<String> facilityIds = userMasterDto.getFacilities().stream().map(FacilityDto::getFacilityId).collect(Collectors.toList());
         List<EmcareResource> patientList = emcareResourceRepository.findByFacilityIdIn(facilityIds);
         List<String> patientIds = patientList.stream().map(EmcareResource::getResourceId).collect(Collectors.toList());
-        List<QuestionnaireResponse> questionnaireResponses = new ArrayList<>();
+        List<QuestionnaireResponse> questionnaireResponses;
         if (Objects.nonNull(theDate)) {
             questionnaireResponses = questionnaireResponseRepository.findByPatientIdInAndConsultationDateGreaterThan(patientIds, theDate);
         } else {
@@ -128,18 +128,8 @@ public class QuestionnaireResponseServiceImpl implements QuestionnaireResponseSe
     }
 
     @Override
-    public Map<String, List<QuestionnaireResponse>> getDataForExport() {
-        List<QuestionnaireResponse> questionnaireResponses = questionnaireResponseRepository.findAll();
-        Map<String, List<QuestionnaireResponse>> stringListMap = new HashMap<>();
-        for (QuestionnaireResponse response : questionnaireResponses) {
-            if (Objects.nonNull(stringListMap.get(response.getPatientId()))) {
-                stringListMap.get(response.getPatientId()).add(response);
-            } else {
-                List<QuestionnaireResponse> list = new ArrayList<>();
-                list.add(response);
-                stringListMap.put(response.getPatientId(), list);
-            }
-        }
-        return stringListMap;
+    public List<String> getDataForExport(String patientId) {
+        List<QuestionnaireResponse> questionnaireResponses = questionnaireResponseRepository.findByPatientId(patientId);
+        return questionnaireResponses.stream().map(QuestionnaireResponse::getQuestionnaireResponseText).collect(Collectors.toList());
     }
 }

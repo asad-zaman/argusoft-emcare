@@ -18,5 +18,5 @@ public interface QuestionnaireResponseService {
 
     public Map<String, Object> getQuestionnaireResponseByPatientId(String patientId);
 
-    public Map<String, List<QuestionnaireResponse>> getDataForExport();
+    public  List<String>  getDataForExport(String patientId);
 }
