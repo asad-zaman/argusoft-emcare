@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { AuthenticationService, ToasterService } from 'src/app/shared';
+import { AuthenticationService, FhirService, ToasterService } from 'src/app/shared';
 import { Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
 import { appConstants } from 'src/app/app.config';
@@ -17,12 +17,15 @@ export class LoginComponent implements OnInit {
   returnUrl: string | undefined;
   error = '';
   country;
+  countryData;
+  downloadURL;
 
   constructor(
     private readonly formBuilder: FormBuilder,
     private readonly authService: AuthenticationService,
     private readonly router: Router,
-    private readonly toasterService: ToasterService
+    private readonly toasterService: ToasterService,
+    private readonly fhirService: FhirService
   ) { }
 
   ngOnInit() {
@@ -41,6 +44,14 @@ export class LoginComponent implements OnInit {
       username: [window.location.href == url ? environment.testUsername : '', [Validators.required,
       Validators.pattern(appConstants.emailPattern)]],
       password: [window.location.href == url ? environment.testPassword : '', Validators.required]
+    });
+    this.getCountry();
+  }
+
+  getCountry() {
+    this.fhirService.getCountry().subscribe(res => {
+      this.countryData = res;
+      this.downloadURL = `${window.origin}/${this.countryData.url}`;
     });
   }
 
@@ -115,5 +126,9 @@ export class LoginComponent implements OnInit {
         this.authService.setIsLoggedIn(true);
       }
     });
+  }
+
+  getDownloadURL() {
+    return `${window.origin}/${this.countryData.url}`;
   }
 }

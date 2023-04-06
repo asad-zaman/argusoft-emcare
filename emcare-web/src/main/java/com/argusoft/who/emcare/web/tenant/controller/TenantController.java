@@ -27,7 +27,7 @@ public class TenantController {
     TenantService tenantService;
 
     @PostMapping("/add")
-    public ResponseEntity<Object> addNewTenant(@RequestBody TenantDto tenantDto) {
+    public ResponseEntity<Object> addNewTenant(@RequestBody TenantDto tenantDto) throws Exception {
         return tenantService.addNewTenant(tenantDto);
     }
 

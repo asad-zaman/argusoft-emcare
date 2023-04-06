@@ -71,6 +71,8 @@ import { ManageTenantComponent } from './root/components/manage-tenant/manage-te
 import { MessagesModule } from 'primeng/messages';
 import { MessageModule } from 'primeng/message';
 import { TermsConditionsComponent } from './root/components/terms-conditions/terms-conditions.component';
+import { AddLogComponent } from './root/components/add-log/add-log.component';
+import { LogListComponent } from './root/components/log-list/log-list.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -114,7 +116,9 @@ import { TermsConditionsComponent } from './root/components/terms-conditions/ter
     IndicatorListComponent,
     TenantListComponent,
     ManageTenantComponent,
-    TermsConditionsComponent
+    TermsConditionsComponent,
+    AddLogComponent,
+    LogListComponent
   ],
   imports: [
     BrowserModule,

@@ -304,7 +304,8 @@ export class AppComponent implements OnInit {
   }
 
   changeSidebarVar() {
-    this.isSidebarOpen = !this.isSidebarOpen;
+    if (screen.width <= 992)
+      this.isSidebarOpen = !this.isSidebarOpen;
   }
 
   applySidebarChange() {
@@ -321,5 +322,9 @@ export class AppComponent implements OnInit {
 
   getApplicationAgent() {
     return localStorage.getItem(appConstants.localStorageKeys.ApplicationAgent);
+  }
+
+  navigateToTermsAndConditionsPage() {
+    this.router.navigate(['/termsAndConditions']);
   }
 }

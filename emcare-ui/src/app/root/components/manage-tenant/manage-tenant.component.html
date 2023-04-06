@@ -34,13 +34,15 @@
                   {{'Add Tenant' | translate}}
                 </h1>
                 <div class="row">
-                  <div class="col-12 col-sm-6">
+                  <div class="col-12 col-sm-4">
                     <div class="mb-3">
-                      <label class="form-label">{{'Tenant Id' | translate}}</label>
+                      <label class="form-label">{{'Tenant Id' | translate}}&nbsp;<span class="cst-req">&nbsp;<span
+                            class="cst-req">*</span></span>
+                      </label>
                       <input class="form-control custom-input" formControlName="tenantId" type="text" id="tenantId"
                         (input)="checkField(1)" placeholder="{{'Tenant Id Placeholder' | translate}}"
-                        [ngClass]="{ 'is-invalid': (submitted && getFormConfrols.tenantId.errors) || isTenantIdRepeat }">
-                      <div *ngIf="submitted && getFormConfrols.tenantId.errors" class="invalid-feedback">
+                        [ngClass]="{ 'is-invalid': (submitted[0] && getFormConfrols.tenantId.errors) || isTenantIdRepeat }">
+                      <div *ngIf="submitted[0] && getFormConfrols.tenantId.errors" class="invalid-feedback">
                         <div class="cst-error-style" *ngIf="getFormConfrols.tenantId.errors.required">
                           {{'Tenant Id Required Message' | translate}}</div>
                       </div>
@@ -50,53 +52,78 @@
                       </div>
                     </div>
                   </div>
-                  <div class="col-12 col-sm-6">
+                  <div class="col-12 col-sm-4">
                     <div class="mb-3">
-                      <label class="form-label">{{'URL' | translate}}</label>
+                      <label class="form-label">{{'Database Username' | translate}}&nbsp;<span
+                          class="cst-req">*</span></label>
+                      <input class="form-control custom-input" formControlName="username" type="text" id="username"
+                        placeholder="{{'Database Username Placeholder' | translate}}"
+                        [ngClass]="{ 'is-invalid': submitted[0] && getFormConfrols.username.errors }">
+                      <div *ngIf="submitted[0] && getFormConfrols.username.errors" class="invalid-feedback">
+                        <div class="cst-error-style" *ngIf="getFormConfrols.username.errors.required">
+                          {{'Database Username Required Message' | translate}}</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-12 col-sm-4">
+                    <div class="mb-3">
+                      <label class="form-label">{{'Database Password' | translate}}&nbsp;<span
+                          class="cst-req">*</span></label>
+                      <input class="form-control custom-input" formControlName="tenantPassword" type="password"
+                        id="tenantPassword" placeholder="{{'Database Password Placeholder' | translate}}"
+                        autocomplete="new-password"
+                        [ngClass]="{ 'is-invalid': submitted[0] && getFormConfrols.tenantPassword.errors }">
+                      <div *ngIf="submitted[0] && getFormConfrols.tenantPassword.errors" class="invalid-feedback">
+                        <div class="cst-error-style" *ngIf="getFormConfrols.tenantPassword.errors.required">
+                          {{'Database Password Required Message' | translate}}</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-12 col-sm-4">
+                    <div class="mb-3">
+                      <label class="form-label">{{'URL' | translate}}&nbsp;<span class="cst-req">*</span></label>
                       <input class="form-control custom-input" formControlName="url" type="text" id="url"
-                        (input)="checkField(2)" placeholder="{{'URL Placeholder' | translate}}"
-                        [ngClass]="{ 'is-invalid': (submitted && getFormConfrols.url.errors) || isURLRepeat }">
-                      <div *ngIf="submitted && getFormConfrols.url.errors" class="invalid-feedback">
+                        placeholder="{{'URL Placeholder' | translate}}"
+                        [ngClass]="{ 'is-invalid': (submitted[0] && getFormConfrols.url.errors) }">
+                      <div *ngIf="submitted[0] && getFormConfrols.url.errors" class="invalid-feedback">
                         <div class="cst-error-style" *ngIf="getFormConfrols.url.errors.required">
                           {{'URL Required Message' | translate}}</div>
                       </div>
-                      <div *ngIf="isURLRepeat" class="invalid-feedback">
-                        <div class="cst-error-style">
-                          {{'URL Repeat Message' | translate}}</div>
+                    </div>
+                  </div>
+                  <div class="col-12 col-sm-4">
+                    <div class="mb-3">
+                      <label class="form-label">{{'Database Name' | translate}}&nbsp;<span
+                          class="cst-req">*</span></label>
+                      <input class="form-control custom-input" formControlName="dbName" type="text" id="dbName"
+                        placeholder="{{'Database Name Placeholder' | translate}}"
+                        [ngClass]="{ 'is-invalid': (submitted[0] && getFormConfrols.dbName.errors) }">
+                      <div *ngIf="submitted[0] && getFormConfrols.dbName.errors" class="invalid-feedback">
+                        <div class="cst-error-style" *ngIf="getFormConfrols.dbName.errors.required">
+                          {{'Database Name Required Message' | translate}}</div>
                       </div>
                     </div>
                   </div>
-                  <div class="col-12 col-sm-6">
+                  <div class="col-12 col-sm-4">
                     <div class="mb-3">
-                      <label class="form-label">{{'Username' | translate}}</label>
-                      <input class="form-control custom-input" formControlName="username" type="text" id="username"
-                        placeholder="{{'Username Placeholder' | translate}}" autocomplete="false"
-                        [ngClass]="{ 'is-invalid': submitted && getFormConfrols.username.errors }">
-                      <div *ngIf="submitted && getFormConfrols.username.errors" class="invalid-feedback">
-                        <div class="cst-error-style" *ngIf="getFormConfrols.username.errors.required">
-                          {{'Username Required Message' | translate}}</div>
+                      <label class="form-label">{{'Database Port' | translate}}&nbsp;<span
+                          class="cst-req">*</span></label>
+                      <input class="form-control custom-input" formControlName="dbPort" type="number" id="dbPort"
+                        placeholder="{{'Database Port Placeholder' | translate}}"
+                        [ngClass]="{ 'is-invalid': (submitted[0] && getFormConfrols.dbPort.errors) }">
+                      <div *ngIf="submitted[0] && getFormConfrols.dbPort.errors" class="invalid-feedback">
+                        <div class="cst-error-style" *ngIf="getFormConfrols.dbPort.errors.required">
+                          {{'Database Port Required Message' | translate}}</div>
                       </div>
                     </div>
                   </div>
-                  <div class="col-12 col-sm-6">
+                  <div class="col-12 col-sm-4">
                     <div class="mb-3">
-                      <label class="form-label">{{'Password' | translate}}</label>
-                      <input class="form-control custom-input" formControlName="tenantPassword" type="password"
-                        id="tenantPassword" placeholder="{{'Password Placeholder' | translate}}"
-                        [ngClass]="{ 'is-invalid': submitted && getFormConfrols.tenantPassword.errors }">
-                      <div *ngIf="submitted && getFormConfrols.tenantPassword.errors" class="invalid-feedback">
-                        <div class="cst-error-style" *ngIf="getFormConfrols.tenantPassword.errors.required">
-                          {{'Password Required Message' | translate}}</div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-12 col-sm-6">
-                    <div class="mb-3">
-                      <label class="form-label">{{'Domain' | translate}}</label>
+                      <label class="form-label">{{'Domain' | translate}}&nbsp;<span class="cst-req">*</span></label>
                       <input class="form-control custom-input" formControlName="domain" type="text" id="domain"
-                        (input)="checkField(3)" placeholder="{{'Domain Placeholder' | translate}}"
-                        [ngClass]="{ 'is-invalid': (submitted && getFormConfrols.domain.errors) || isDomainRepeat }">
-                      <div *ngIf="submitted && getFormConfrols.domain.errors" class="invalid-feedback">
+                        (input)="checkField(2)" placeholder="{{'Domain Placeholder' | translate}}"
+                        [ngClass]="{ 'is-invalid': (submitted[0] && getFormConfrols.domain.errors) || isDomainRepeat }">
+                      <div *ngIf="submitted[0] && getFormConfrols.domain.errors" class="invalid-feedback">
                         <div class="cst-error-style" *ngIf="getFormConfrols.domain.errors.required">
                           {{'Domain Required Message' | translate}}</div>
                       </div>
@@ -118,46 +145,51 @@
                 <div class="row">
                   <div class="col-12 col-sm-6">
                     <div class="mb-3">
-                      <label class="form-label">{{'Name' | translate}}</label>
+                      <label class="form-label">{{'Name' | translate}}&nbsp;<span class="cst-req">*</span></label>
                       <input formControlName="organizationName" type="text" class="form-control custom-input"
                         (input)="setOrganizationName($event)" id="organizationName"
                         placeholder="Enter organization name"
-                        [ngClass]="{ 'is-invalid': submitted && getFormConfrols.organizationName.errors }">
-                      <div *ngIf="submitted && getFormConfrols.organizationName.errors" class="invalid-feedback">
+                        [ngClass]="{ 'is-invalid': submitted[1] && getFormConfrols.organizationName.errors }">
+                      <div *ngIf="submitted[1] && getFormConfrols.organizationName.errors" class="invalid-feedback">
                         <div class="cst-error-style" *ngIf="getFormConfrols.organizationName.errors.required">
-                          *{{'Name is required' | translate}}</div>
+                          {{'Name is required' | translate}}</div>
                       </div>
                     </div>
                   </div>
                   <div class="col-12 col-sm-6">
                     <div class="mb-3">
-                      <label class="form-label">{{'Address Street' | translate}}</label>
+                      <label class="form-label">{{'Address Street' | translate}}&nbsp;<span
+                          class="cst-req">*</span></label>
                       <input formControlName="addressStreet" type="text" class="form-control custom-input"
                         id="addressStreet1" placeholder="Enter address street"
-                        [ngClass]="{ 'is-invalid': submitted && getFormConfrols.addressStreet.errors }">
-                      <div *ngIf="submitted && getFormConfrols.addressStreet.errors" class="invalid-feedback">
+                        [ngClass]="{ 'is-invalid': submitted[1] && getFormConfrols.addressStreet.errors }">
+                      <div *ngIf="submitted[1] && getFormConfrols.addressStreet.errors" class="invalid-feedback">
                         <div class="cst-error-style" *ngIf="getFormConfrols.addressStreet.errors.required">
-                          *{{'Address street is required' | translate}}</div>
+                          {{'Address street is required' | translate}}</div>
                       </div>
                     </div>
                   </div>
                   <div class="col-12 col-sm-6">
                     <div class="mb-3">
-                      <label class="form-label">{{'Telecom' | translate}}</label>
-                      <input formControlName="telecom" type="number" class="form-control custom-input" id="telecom"
-                        placeholder="Enter telecom"
-                        [ngClass]="{ 'is-invalid': submitted && getFormConfrols.telecom.errors }">
-                      <div *ngIf="submitted && getFormConfrols.telecom.errors" class="invalid-feedback">
-                        <div class="cst-error-style" *ngIf="getFormConfrols.telecom.errors.required">
-                          *{{'Telecom is required' | translate}}</div>
+                      <label class="form-label">{{'Telecom' | translate}}&nbsp;<span class="cst-req">*</span></label>
+                      <ngx-intl-tel-input [cssClass]="'custom'" [enableAutoCountrySelect]="false"
+                        [enablePlaceholder]="true" [searchCountryFlag]="true"
+                        [searchCountryField]="[SearchCountryField.Iso2, SearchCountryField.Name]"
+                        [selectFirstCountry]="false"
+                        [selectedCountryISO]="this.tenantForm.get('countryCodeForOrg').value" [maxLength]="15"
+                        [separateDialCode]="separateDialCode" [phoneValidation]="true"
+                        [numberFormat]="PhoneNumberFormat.National" name="phone" formControlName="telecom">
+                      </ngx-intl-tel-input>
+                      <div *ngIf="submitted[1] && this.tenantForm.controls.telecom.value == null" class="error">
+                        {{'Phone Required Message' | translate}}
                       </div>
                     </div>
                   </div>
                   <div class="col-12 col-sm-6">
                     <div class="mb-3">
-                      <label class="form-label">{{'Status' | translate}}</label>
+                      <label class="form-label">{{'Status' | translate}}&nbsp;<span class="cst-req">*</span></label>
                       <p-dropdown formControlName="status" [options]="statusArr" optionLabel="name"
-                        [ngClass]="{ 'is-invalid': submitted && getFormConfrols.status.errors }">
+                        [ngClass]="{ 'is-invalid': submitted[1] && getFormConfrols.status.errors }">
                       </p-dropdown>
                     </div>
                   </div>
@@ -173,11 +205,11 @@
                 <div class="row">
                   <div class="col-12 col-sm-6">
                     <div class="mb-3">
-                      <label class="form-label">{{'First Name' | translate}}</label>
+                      <label class="form-label">{{'First Name' | translate}}&nbsp;<span class="cst-req">*</span></label>
                       <input class="form-control custom-input" formControlName="firstName" type="text" id="firstName"
                         placeholder="{{'FirstName Placeholder' | translate}}"
-                        [ngClass]="{ 'is-invalid': submitted && getFormConfrols.firstName.errors }">
-                      <div *ngIf="submitted && getFormConfrols.firstName.errors" class="invalid-feedback">
+                        [ngClass]="{ 'is-invalid': submitted[2] && getFormConfrols.firstName.errors }">
+                      <div *ngIf="submitted[2] && getFormConfrols.firstName.errors" class="invalid-feedback">
                         <div class="cst-error-style" *ngIf="getFormConfrols.firstName.errors.required">
                           {{'FirstName Required Message' | translate}}
                         </div>
@@ -186,11 +218,11 @@
                   </div>
                   <div class="col-12 col-sm-6">
                     <div class="mb-3">
-                      <label class="form-label">{{'Last Name' | translate}}</label>
+                      <label class="form-label">{{'Last Name' | translate}}&nbsp;<span class="cst-req">*</span></label>
                       <input class="form-control custom-input" formControlName="lastName" type="text" id="lastName"
                         placeholder="{{'LastName Placeholder' | translate}}"
-                        [ngClass]="{ 'is-invalid': submitted && getFormConfrols.lastName.errors }">
-                      <div *ngIf="submitted && getFormConfrols.lastName.errors" class="invalid-feedback">
+                        [ngClass]="{ 'is-invalid': submitted[2] && getFormConfrols.lastName.errors }">
+                      <div *ngIf="submitted[2] && getFormConfrols.lastName.errors" class="invalid-feedback">
                         <div class="cst-error-style" *ngIf="getFormConfrols.lastName.errors.required">
                           {{'LastName Required Message' | translate}}</div>
                       </div>
@@ -198,11 +230,11 @@
                   </div>
                   <div class="col-12 col-sm-6">
                     <div class="mb-3">
-                      <label class="form-label">{{'Email' | translate}}</label>
+                      <label class="form-label">{{'Email' | translate}}&nbsp;<span class="cst-req">*</span></label>
                       <input formControlName="email" id="email" placeholder="{{'Email Placeholder' | translate}}"
                         type="email" (input)="checkEmail()" class="form-control custom-input"
-                        [ngClass]="{ 'is-invalid': submitted && getFormConfrols.email.errors }">
-                      <div *ngIf="submitted && getFormConfrols.email.errors" class="invalid-feedback">
+                        [ngClass]="{ 'is-invalid': submitted[2] && getFormConfrols.email.errors }">
+                      <div *ngIf="submitted[2] && getFormConfrols.email.errors" class="invalid-feedback">
                         <div class="cst-error-style" *ngIf="getFormConfrols.email.errors.required">
                           {{'Email Required Message' | translate}}</div>
                         <div class="cst-error-style" *ngIf="getFormConfrols.email.errors.pattern">
@@ -212,11 +244,11 @@
                   </div>
                   <div class="col-12 col-sm-6">
                     <div class="mb-3">
-                      <label class="form-label">{{'Password' | translate}}</label>
+                      <label class="form-label">{{'Password' | translate}}&nbsp;<span class="cst-req">*</span></label>
                       <input type="password" formControlName="password" class="form-control custom-input"
-                        placeholder="{{'Password Placeholder' | translate}}"
-                        [ngClass]="{ 'is-invalid': submitted && getFormConfrols.password.errors }" />
-                      <div *ngIf="submitted && getFormConfrols.password.errors" class="invalid-feedback">
+                        placeholder="{{'Password Placeholder' | translate}}" autocomplete="new-password"
+                        [ngClass]="{ 'is-invalid': submitted[2] && getFormConfrols.password.errors }" />
+                      <div *ngIf="submitted[2] && getFormConfrols.password.errors" class="invalid-feedback">
                         <div class="cst-error-style" *ngIf="getFormConfrols.password.errors.required">
                           {{'Password Required Message' | translate}}</div>
                       </div>
@@ -224,15 +256,16 @@
                   </div>
                   <div class="col-12 col-sm-6">
                     <div class="mb-3">
-                      <label class="form-label">{{'PhoneNumber' | translate}}</label>
-                      <ngx-intl-tel-input [cssClass]="'custom'" [preferredCountries]="preferredCountries"
-                        [enableAutoCountrySelect]="false" [enablePlaceholder]="true" [searchCountryFlag]="true"
+                      <label class="form-label">{{'PhoneNumber' | translate}}&nbsp;<span
+                          class="cst-req">*</span></label>
+                      <ngx-intl-tel-input [cssClass]="'custom'" [enableAutoCountrySelect]="false"
+                        [enablePlaceholder]="true" [searchCountryFlag]="true"
                         [searchCountryField]="[SearchCountryField.Iso2, SearchCountryField.Name]"
                         [selectFirstCountry]="false" [selectedCountryISO]="this.tenantForm.get('countryCode').value"
                         [maxLength]="15" [separateDialCode]="separateDialCode" [phoneValidation]="true"
                         [numberFormat]="PhoneNumberFormat.National" name="phone" formControlName="phone">
                       </ngx-intl-tel-input>
-                      <div *ngIf="submitted && this.tenantForm.controls.phone.value == null" class="error">
+                      <div *ngIf="submitted[2] && this.tenantForm.controls.phone.value == null" class="error">
                         {{'Phone Required Message' | translate}}
                       </div>
                     </div>
@@ -249,14 +282,14 @@
                 <div class="row">
                   <div *ngIf="availableLanguages.length>0; else loading" class="col-12 col-sm-6">
                     <div class="mb-3">
-                      <label class="form-label">{{'Launguage' | translate}}</label>
+                      <label class="form-label">{{'Launguage' | translate}}&nbsp;<span class="cst-req">*</span></label>
                       <p-dropdown
-                        [ngStyle]="{'border': submitted && this.tenantForm.controls.newSelectedLanguage.value == '' ? '1px solid red' : ''}"
+                        [ngStyle]="{'border': submitted[3] && this.tenantForm.controls.newSelectedLanguage.value == '' ? '1px solid red' : ''}"
                         [options]="availableLanguages" formControlName="newSelectedLanguage" optionLabel="name"
                         placeholder="{{'Select Launguage' | translate}}" [filter]="true" filterBy="name"
-                        [showClear]="true">
+                        [showClear]="tenantForm.get('newSelectedLanguage').value ? true : false">
                       </p-dropdown>
-                      <div *ngIf="submitted && this.tenantForm.controls.newSelectedLanguage.value == ''"
+                      <div *ngIf="submitted[3] && this.tenantForm.controls.newSelectedLanguage.value == ''"
                         style="color: #dc3545">
                         <div *ngIf="getFormConfrols.newSelectedLanguage.errors.required">
                           {{'Language Required Message' | translate}}</div>
@@ -280,7 +313,7 @@
         <i class="bi bi-chevron-left" aria-hidden="true"></i> {{'Back' | translate}}
       </button>
       <button *ngIf="count < 4" (click)="onForward()" class="btn-blue btn cst-icon-text-align">
-        Next <i class="bi bi-arrow-right" aria-hidden="true"></i>
+        Next <i class="bi bi-chevron-right" aria-hidden="true"></i>
       </button>
       <button *ngIf="count === 4" (click)="saveData()" class="btn-blue btn">
         Save

@@ -6,11 +6,8 @@ import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.common.response.Response;
 import com.argusoft.who.emcare.web.config.tenant.MultitenantDataSourceConfiguration;
 import com.argusoft.who.emcare.web.config.tenant.TenantContext;
-import com.argusoft.who.emcare.web.fhir.model.LocationResource;
+import com.argusoft.who.emcare.web.exception.EmCareException;
 import com.argusoft.who.emcare.web.fhir.resourceprovider.OrganizationResourceProvider;
-import com.argusoft.who.emcare.web.fhir.service.LocationResourceService;
-import com.argusoft.who.emcare.web.fhir.service.OrganizationResourceService;
-import com.argusoft.who.emcare.web.language.dto.LanguageAddDto;
 import com.argusoft.who.emcare.web.language.dto.LanguageDto;
 import com.argusoft.who.emcare.web.language.service.LanguageService;
 import com.argusoft.who.emcare.web.location.dto.HierarchyMasterDto;
@@ -26,7 +23,6 @@ import com.argusoft.who.emcare.web.tenant.service.TenantService;
 import com.argusoft.who.emcare.web.user.dto.RoleDto;
 import com.argusoft.who.emcare.web.user.dto.UserDto;
 import com.argusoft.who.emcare.web.user.service.UserService;
-import org.hl7.fhir.r4.model.Location;
 import org.hl7.fhir.r4.model.Organization;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,8 +37,8 @@ import org.springframework.util.FileCopyUtils;
 import javax.sql.DataSource;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.sql.Connection;
-import java.sql.SQLException;
+import java.security.KeyStoreException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -62,6 +58,7 @@ public class TenantServiceImpl implements TenantService {
 
     private final FhirContext fhirCtx = FhirContext.forR4();
     private final IParser parser = fhirCtx.newJsonParser().setPrettyPrint(false);
+
     @Autowired
     TenantConfigRepository tenantConfigRepository;
 
@@ -75,13 +72,7 @@ public class TenantServiceImpl implements TenantService {
     LocationService locationService;
 
     @Autowired
-    LocationResourceService locationResourceService;
-
-    @Autowired
     OrganizationResourceProvider organizationResourceProvider;
-
-    @Autowired
-    OrganizationResourceService organizationResourceService;
 
     @Autowired
     UserService userService;
@@ -90,214 +81,63 @@ public class TenantServiceImpl implements TenantService {
     LanguageService languageService;
 
     @Value("${defaultTenant}")
-    private String defaultTenant;
+    String defaultTenant;
 
     @Override
-    public ResponseEntity addNewTenant(TenantDto tenantDto) {
+    public ResponseEntity addNewTenant(TenantDto tenantDto) throws Exception {
         Optional<TenantConfig> tConfig = tenantConfigRepository.findByTenantId(tenantDto.getTenantId());
         if (tConfig.isPresent()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response("Country Already Exist", HttpStatus.BAD_REQUEST.value()));
         }
-        tConfig = tenantConfigRepository.findByUrl(tenantDto.getUrl());
+        tConfig = tenantConfigRepository.findByUrlAndDatabaseName(tenantDto.getUrl(), tenantDto.getDatabaseName());
         if (tConfig.isPresent()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response("URL Already Exist", HttpStatus.BAD_REQUEST.value()));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response(tenantDto.getUrl() + "and " + tenantDto.getDatabaseName() + "URL Already Exist", HttpStatus.BAD_REQUEST.value()));
         }
         tConfig = tenantConfigRepository.findByDomain(tenantDto.getDomain());
         if (tConfig.isPresent()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response("Domain Already Exist", HttpStatus.BAD_REQUEST.value()));
         }
-
-        TenantConfig tenantConfig = TenantMapper.getTenantConfig(tenantDto);
-        tenantConfig = tenantConfigRepository.save(tenantConfig);
-
-        multitenantDataSourceConfiguration.addDataSourceDynamic();
-
-        TenantContext.clearTenant();
-        TenantContext.setCurrentTenant(tenantConfig.getTenantId());
-        Response response = new Response("Dose Not Work", HttpStatus.BAD_REQUEST.value());
-
+        Organization organization = parser.parseResource(Organization.class, tenantDto.getOrganization());
+        TenantConfig tenantConfig = TenantMapper.getTenantConfig(tenantDto, organization.getName());
         try {
-            Connection connection = dataSource.getConnection();
-            Boolean isDatabaseConnected = connection.isValid(20);
-            if (!isDatabaseConnected) {
-                throw new SQLException();
-            }
-        } catch (SQLException sqlException) {
-            afterExceptionProcess(tenantConfig);
-            response = new Response(
-                    "Database connection doesn't establish please add proper details",
-                    HttpStatus.BAD_REQUEST.value()
-            );
-            throw new RuntimeException("Something went wrong!");
-        }
+            //    Create Database
+            createDatabase(tenantConfig);
 
+            //    Check Database Connection
+            checkDatabaseConnection(tenantConfig);
 
-        try {
-            Resource resource = new ClassPathResource("New_Database.sql");
-            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-            jdbcTemplate.execute(FileCopyUtils.copyToString(new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8)));
-        } catch (Exception ex) {
-            tenantConfigRepository.delete(tenantConfig);
+            //    Select Database If create
+            tenantConfig = tenantConfigRepository.save(tenantConfig);
+            multitenantDataSourceConfiguration.addDataSourceDynamic();
             TenantContext.clearTenant();
-            response = new Response(
-                    "Database not setup properly! Please Contact Administrative Department.",
-                    HttpStatus.BAD_REQUEST.value()
-            );
-            throw new RuntimeException("Something went wrong!");
-        }
+            TenantContext.setCurrentTenant(tenantConfig.getTenantId());
 
-        HierarchyMaster hierarchyMaster = new HierarchyMaster();
-        LocationMaster locationMaster = new LocationMaster();
-        Organization organization = new Organization();
-        String orgId = null;
-        Location facility = new Location();
-        LocationResource locationResource = new LocationResource();
-        UserDto userDto = new UserDto();
-        LanguageAddDto languageAddDto = new LanguageAddDto();
+            //    Add Default Data In Database
+            addDefaultDataSourceInDatabase();
 
-        TenantContext.setCurrentTenant(tenantConfig.getTenantId());
-        try {
+            //    Add HierarchyMaster in DB
+            addHierarchyMasterForNewDatabase(tenantDto);
 
-            try {
-                HierarchyMasterDto hierarchyMasterDto = tenantDto.getHierarchy();
-                if (Objects.isNull(hierarchyMasterDto)) {
-                    throw new RuntimeException("Hierarchy not saved!");
-                }
-                hierarchyMaster = (HierarchyMaster) locationService.createHierarchyMaster(hierarchyMasterDto).getBody();
-            } catch (Exception ex) {
-                afterExceptionProcess(tenantConfig);
-                response = new Response(
-                        "Hierarchy not saved properly! Please Contact Administrative Department.",
-                        HttpStatus.BAD_REQUEST.value()
-                );
-                throw new RuntimeException("Something went wrong!");
-            }
+            //    Add Location Master in DB
+            addLocationMasterInDatabase(tenantDto);
 
-            try {
-                LocationMasterDto locationMasterDto = tenantDto.getLocation();
-                if (Objects.isNull(locationMasterDto)) {
-                    throw new RuntimeException("Hierarchy not saved!");
-                }
-                locationMaster = (LocationMaster) locationService.createOrUpdate(locationMasterDto).getBody();
-            } catch (Exception ex) {
-                locationService.deleteHierarchyMaster(hierarchyMaster.getHierarchyType());
-                afterExceptionProcess(tenantConfig);
-                response = new Response(
-                        "Location not saved properly! Please Contact Administrative Department.",
-                        HttpStatus.BAD_REQUEST.value()
-                );
-                throw new RuntimeException("Something went wrong!");
-            }
+            //    Add Organization Resource in DB
+            addOrganizationInDatabase(tenantDto);
 
-            try {
-                organization = parser.parseResource(Organization.class, tenantDto.getOrganization());
-                if (Objects.isNull(organization)) {
-                    throw new RuntimeException("Please Enter Organization Details");
-                }
-                orgId = organizationResourceProvider.createOrganization(organization).getId().getIdPart();
-                organization.setId(orgId);
-            } catch (Exception ex) {
-                locationService.deleteLocationById(locationMaster.getId());
-                locationService.deleteHierarchyMaster(hierarchyMaster.getHierarchyType());
-                afterExceptionProcess(tenantConfig);
-                response = new Response(
-                        "Organization not saved properly! Please Contact Administrative Department.",
-                        HttpStatus.BAD_REQUEST.value()
-                );
-                throw new RuntimeException("Something went wrong!");
-            }
+            //    Add Role in DB
+            addRoleForTenant(tenantDto);
 
-//            try {
-//                facility = parser.parseResource(Location.class, tenantDto.getFacility());
-//                if (Objects.isNull(facility)) {
-//                    throw new RuntimeException("Please Enter Facility Details");
-//                }
-//                Reference reference = new Reference();
-//                reference.setResource(organization);
-//                reference.setId(orgId);
-//                facility.setManagingOrganization(reference);
-//                List<Extension> extensions = new ArrayList<>();
-//                Extension extension = new Extension();
-//                extension.setValue(new IntegerType(locationMaster.getId()));
-//                extensions.add(extension);
-//                facility.setExtension(extensions);
-//                locationResource = locationResourceService.saveResource(facility);
-//            } catch (Exception ex) {
-//                organizationResourceService.deleteOrganizationResource(orgId);
-//                locationService.deleteLocationById(locationMaster.getId());
-//                locationService.deleteHierarchyMaster(hierarchyMaster.getHierarchyType());
-////            afterExceptionProcess(tenantConfig);
-//                response = new Response(
-//                        "Facility not saved properly! Please Contact Administrative Department.",
-//                        HttpStatus.BAD_REQUEST.value()
-//                );
-//            }
+            //    Add User in DB
+            addUserForTenant(tenantDto, tenantConfig);
 
-            try {
-                userDto = tenantDto.getUser();
-                if (Objects.isNull(userDto)) {
-                    throw new RuntimeException("Please Enter User Details");
-                }
+            //    Add Language in DB
+            addLanguageInTenant(tenantDto);
 
-                RoleDto roleDto = new RoleDto();
-                roleDto.setRoleName(userDto.getRoleName());
-                roleDto.setRoleDescription(CommonConstant.ADMIN_ROLE_DESCRIPTION);
-                userService.addRealmRole(roleDto);
-            } catch (Exception ex) {
-                organizationResourceService.deleteOrganizationResource(orgId);
-                locationService.deleteLocationById(locationMaster.getId());
-                locationService.deleteHierarchyMaster(hierarchyMaster.getHierarchyType());
-                afterExceptionProcess(tenantConfig);
-                response = new Response(
-                        "Role Doesn't Save Properly! Please Contact Administrative Department.",
-                        HttpStatus.BAD_REQUEST.value()
-                );
-                throw new RuntimeException("Something went wrong!");
-            }
-
-            try {
-                userDto = tenantDto.getUser();
-                if (Objects.isNull(userDto)) {
-                    throw new RuntimeException("Please Enter User Details");
-                }
-                List<String> facilityIds = new ArrayList<>();
-                facilityIds.add(locationResource.getResourceId());
-                userDto.setFacilityIds(facilityIds);
-                userService.addUserForCountry(userDto, tenantConfig.getTenantId());
-            } catch (Exception ex) {
-                organizationResourceService.deleteOrganizationResource(orgId);
-                locationService.deleteLocationById(locationMaster.getId());
-                locationService.deleteHierarchyMaster(hierarchyMaster.getHierarchyType());
-                afterExceptionProcess(tenantConfig);
-                response = new Response(
-                        "User not saved properly Or User Email Already Register In Other Country! Please Contact Administrative Department.",
-                        HttpStatus.BAD_REQUEST.value()
-                );
-                throw new RuntimeException("Something went wrong!");
-            }
-
-            try {
-                LanguageDto languageDto = new LanguageDto();
-                languageDto.setLanguageCode(CommonConstant.ENGLISH);
-                languageDto.setLanguageName("English");
-                languageDto.setLanguageTranslation(tenantDto.getDefaultLanguage());
-                languageService.addOrUpdateLanguageTranslation(languageDto);
-
-//                languageAddDto = tenantDto.getLanguage();
-//                if (Objects.nonNull(languageAddDto)) {
-//                    TenantContext.setCurrentTenant(tenantConfig.getTenantId());
-//                    languageService.createNewLanguageTranslation(languageAddDto);
-//                }
-            } catch (Exception ex) {
-                response = new Response(
-                        "Language not saved properly! Please Contact Administrative Department.",
-                        HttpStatus.BAD_REQUEST.value()
-                );
-                throw new RuntimeException("Something went wrong!");
-            }
         } catch (Exception ex) {
-            afterExceptionProcess(tenantConfig);
-            return ResponseEntity.badRequest().body(response);
+            //    Remove All The Data Which Added in Database
+            afterExceptionProcess(tenantConfig, tenantDto);
+            ex.printStackTrace();
+            throw new Exception(ex.getMessage());
         }
         return ResponseEntity.ok().body(tenantConfig);
     }
@@ -324,21 +164,215 @@ public class TenantServiceImpl implements TenantService {
             if (tConfig.isPresent()) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response("Domain is Already Exist", HttpStatus.BAD_REQUEST.value()));
             }
-        } else if (key.equalsIgnoreCase(TenantConfig.Fields.URL)) {
-            Optional<TenantConfig> tConfig = tenantConfigRepository.findByUrl(value);
-            if (tConfig.isPresent()) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response("URL is Already Exist", HttpStatus.BAD_REQUEST.value()));
-            }
         } else {
             return ResponseEntity.ok().body(new Response("This key doesn't exist", HttpStatus.OK.value()));
         }
         return ResponseEntity.ok().body(new Response("This key doesn't exist", HttpStatus.OK.value()));
     }
 
-    private void afterExceptionProcess(TenantConfig tenantConfig) {
+    private void afterExceptionProcess(TenantConfig tenantConfig, TenantDto tenantDto) throws Exception {
         TenantContext.clearTenant();
         TenantContext.setCurrentTenant(defaultTenant);
         tenantConfigRepository.delete(tenantConfig);
+        multitenantDataSourceConfiguration.addDataSourceDynamic();
+        dropDatabase(tenantConfig);
+        removeUser(tenantDto);
+        removeUser(tenantDto);
     }
 
+    private void createDatabase(TenantConfig tenantConfig) {
+        Connection connection = null;
+        Statement statement = null;
+
+        try {
+            String databaseConnectionURL = CommonConstant.URL_PREFIX + tenantConfig.getUrl() + ":" + tenantConfig.getDatabasePort() + "/";
+            connection = DriverManager.getConnection(
+                    databaseConnectionURL,
+                    CommonConstant.POSTGRESQL_DEFAULT_DATABASE,
+                    tenantConfig.getPassword());
+            statement = connection.createStatement();
+            statement.executeQuery("SELECT count(*) FROM pg_database WHERE datname = '" + tenantConfig.getDatabaseName() + "'");
+            ResultSet resultSet = statement.getResultSet();
+            resultSet.next();
+            int count = resultSet.getInt(1);
+
+            if (count <= 0) {
+                statement.executeUpdate("CREATE DATABASE " + tenantConfig.getDatabaseName());
+            } else {
+                throw new EmCareException("Database Already Exist with this name", new SQLException());
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        } finally {
+            try {
+                if (statement != null) {
+                    statement.close();
+                }
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void checkDatabaseConnection(TenantConfig tenantConfig) throws SQLException {
+        Connection connection = null;
+        try {
+            connection = dataSource.getConnection();
+            boolean isDatabaseConnected = connection.isValid(20);
+            if (!isDatabaseConnected) {
+                throw new SQLException();
+            }
+        } catch (SQLException sqlException) {
+            throw new SQLException();
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
+    private void dropDatabase(TenantConfig tenantConfig) throws SQLException {
+        Connection connection = null;
+        Statement statement = null;
+
+        try {
+            String databaseConnectionURL = CommonConstant.URL_PREFIX + tenantConfig.getUrl() + ":" + tenantConfig.getDatabasePort() + "/";
+            connection = DriverManager.getConnection(
+                    databaseConnectionURL,
+                    CommonConstant.POSTGRESQL_DEFAULT_DATABASE,
+                    tenantConfig.getPassword());
+
+            statement.executeUpdate("DROP DATABASE " + tenantConfig.getDatabaseName());
+        } catch (Exception ex) {
+            System.out.println("Database Doesn't drop Properly Because ==========>");
+            ex.printStackTrace();
+            throw new SQLException();
+        } finally {
+            try {
+                if (statement != null) {
+                    statement.close();
+                }
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void addDefaultDataSourceInDatabase() throws SQLException {
+        try {
+            Resource resource = new ClassPathResource("New_Database.sql");
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+            jdbcTemplate.execute(FileCopyUtils.copyToString(new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8)));
+        } catch (Exception ex) {
+            throw new SQLException();
+        }
+    }
+
+    private HierarchyMaster addHierarchyMasterForNewDatabase(TenantDto tenantDto) {
+        HierarchyMaster hierarchyMaster = new HierarchyMaster();
+        try {
+            HierarchyMasterDto hierarchyMasterDto = tenantDto.getHierarchy();
+            if (Objects.isNull(hierarchyMasterDto)) {
+                throw new NullPointerException("Hierarchy not Present In Data!");
+            }
+            return (HierarchyMaster) locationService.createHierarchyMaster(hierarchyMasterDto).getBody();
+        } catch (Exception ex) {
+            throw new NullPointerException();
+        }
+    }
+
+    private LocationMaster addLocationMasterInDatabase(TenantDto tenantDto) {
+        try {
+            LocationMasterDto locationMasterDto = tenantDto.getLocation();
+            if (Objects.isNull(locationMasterDto)) {
+                throw new NullPointerException("Location not Present In Data!");
+            }
+            return (LocationMaster) locationService.createOrUpdate(locationMasterDto).getBody();
+        } catch (Exception ex) {
+            throw new NullPointerException();
+        }
+    }
+
+    private void addOrganizationInDatabase(TenantDto tenantDto) {
+        Organization organization;
+        try {
+            organization = parser.parseResource(Organization.class, tenantDto.getOrganization());
+            if (Objects.isNull(organization)) {
+                throw new NullPointerException("Organization Data Not Present!");
+            }
+            organizationResourceProvider.createOrganization(organization).getId().getIdPart();
+        } catch (Exception ex) {
+            throw new NullPointerException();
+        }
+    }
+
+    private void addRoleForTenant(TenantDto tenantDto) throws KeyStoreException {
+        try {
+            UserDto userDto = tenantDto.getUser();
+            if (Objects.isNull(userDto)) {
+                throw new NullPointerException("Role Data Not Present!");
+            }
+            RoleDto roleDto = new RoleDto();
+            roleDto.setRoleName(userDto.getRoleName());
+            roleDto.setRoleDescription(CommonConstant.ADMIN_ROLE_DESCRIPTION);
+            userService.addRealmRole(roleDto);
+        } catch (Exception ex) {
+            throw new KeyStoreException();
+        }
+    }
+
+    private void addUserForTenant(TenantDto tenantDto, TenantConfig tenantConfig) {
+        try {
+            UserDto userDto = tenantDto.getUser();
+            if (Objects.isNull(userDto)) {
+                throw new NullPointerException("User Data Not Present!");
+            }
+            userDto.setFacilityIds(new ArrayList<>());
+            userService.addUserForCountry(userDto, tenantConfig.getTenantId());
+        } catch (Exception ex) {
+            throw new NullPointerException();
+        }
+    }
+
+    private void addLanguageInTenant(TenantDto tenantDto) {
+        try {
+            LanguageDto languageDto = new LanguageDto();
+            languageDto.setLanguageCode(CommonConstant.ENGLISH);
+            languageDto.setLanguageName("English");
+            languageDto.setLanguageTranslation(tenantDto.getDefaultLanguage());
+            languageService.addOrUpdateLanguageTranslation(languageDto);
+
+//                languageAddDto = tenantDto.getLanguage();
+//                if (Objects.nonNull(languageAddDto)) {
+//                    TenantContext.setCurrentTenant(tenantConfig.getTenantId());
+//                    languageService.createNewLanguageTranslation(languageAddDto);
+//                }
+        } catch (Exception ex) {
+            throw new NullPointerException();
+        }
+    }
+
+    private void removeUser(TenantDto tenantDto) throws Exception {
+        try {
+            userService.removeUser(tenantDto.getUser().getEmail());
+        } catch (Exception ex) {
+            throw new Exception();
+        }
+    }
+
+    private void removeRole(TenantDto tenantDto) throws Exception {
+        try {
+            userService.removeRole(tenantDto.getUser().getRoleName());
+        } catch (Exception ex) {
+            throw new Exception();
+        }
+    }
 }

@@ -15,7 +15,6 @@ import java.io.Serializable;
  * @author - jaykalariya
  * @since - 06/02/23  12:05 pm
  */
-@Data
 @Entity
 @Table(name = "tenant_config")
 public class TenantConfig extends EntityAuditInfo implements Serializable {
@@ -34,11 +33,24 @@ public class TenantConfig extends EntityAuditInfo implements Serializable {
     @Column(name = "url", nullable = false)
     private String url;
 
+    @Column(name = "database_name", nullable = false)
+    private String databaseName;
+
+    @Column(name = "database_port", nullable = false)
+    private String databasePort;
+
     @Column(name = "tenant_id", nullable = false)
     private String tenantId;
 
     @Column(name = "domain", nullable = false)
     private String domain;
+
+    @Column(name = "admin_user")
+    private String adminUser;
+
+    @Column(name = "organization")
+    private String organization;
+
 
     public Integer getId() {
         return id;
@@ -88,11 +100,44 @@ public class TenantConfig extends EntityAuditInfo implements Serializable {
         this.domain = domain;
     }
 
+    public String getDatabaseName() {
+        return databaseName;
+    }
+
+    public void setDatabaseName(String databaseName) {
+        this.databaseName = databaseName;
+    }
+
+    public String getAdminUser() {
+        return adminUser;
+    }
+
+    public void setAdminUser(String adminUser) {
+        this.adminUser = adminUser;
+    }
+
+    public String getOrganization() {
+        return organization;
+    }
+
+    public void setOrganization(String organization) {
+        this.organization = organization;
+    }
+
+    public String getDatabasePort() {
+        return databasePort;
+    }
+
+    public void setDatabasePort(String databasePort) {
+        this.databasePort = databasePort;
+    }
+
     public static class Fields {
 
         public static final String DOMAIN = "domain";
         public static final String TENANT_ID = "tenantId";
         public static final String URL = "url";
+
         private Fields() {
         }
 

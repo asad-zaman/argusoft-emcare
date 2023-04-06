@@ -431,16 +431,18 @@ public class UserServiceImpl implements UserService {
                 TenantContext.setCurrentTenant(tenantId);
                 List<UserLocationMapping> userLocationMappings = userLocationMappingRepository.findByUserId(userId);
                 loginResponse.put("Application-Agent", tenantId);
-                if (userLocationMappings.size() > 0) {
-                    return ResponseEntity.ok().body(loginResponse);
-                } else {
-                    if (roles.contains(CommonConstant.SUPER_ADMIN_ROLE)) {
-                        return ResponseEntity.ok().body(loginResponse);
-                    } else if (roles.contains(tenantId + "_Admin") || roles.contains("admin_user")) {
-                        return ResponseEntity.ok().body(loginResponse);
-                    }
-                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response("You don't have access for this domain", HttpStatus.BAD_REQUEST.value()));
-                }
+                return ResponseEntity.ok().body(loginResponse);
+//                if (userLocationMappings.size() > 0) {
+//                    return ResponseEntity.ok().body(loginResponse);
+//                } else {
+//                    return ResponseEntity.ok().body(loginResponse);
+//                    if (roles.contains(CommonConstant.SUPER_ADMIN_ROLE)) {
+//                        return ResponseEntity.ok().body(loginResponse);
+//                    } else (roles.contains(tenantId + "_Admin") || roles.contains("admin_user")) {
+//                        return ResponseEntity.ok().body(loginResponse);
+//                    }
+//                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response("You don't have access for this domain", HttpStatus.BAD_REQUEST.value()));
+//                }
             } catch (Exception ex) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response("You don't have access for this domain", HttpStatus.BAD_REQUEST.value()));
             }
@@ -802,6 +804,29 @@ public class UserServiceImpl implements UserService {
         });
 
         return ResponseEntity.ok(new Response(CommonConstant.REGISTER_SUCCESS, HttpStatus.OK.value()));
+    }
+
+    @Override
+    public void removeRole(String roleName) throws Exception {
+        try {
+            Keycloak keycloak = keyCloakConfig.getInstance();
+            RealmResource realmResource = keycloak.realm(realm);
+            keycloak.realm(realm).roles().deleteRole(roleName);
+        } catch (Exception ex) {
+            throw new Exception();
+        }
+    }
+
+    @Override
+    public void removeUser(String email) throws Exception {
+        try {
+            Keycloak keycloak = keyCloakConfig.getInstance();
+            RealmResource realmResource = keycloak.realm(realm);
+            UserRepresentation userRepresentation = getUserByEmailId(email);
+            keycloak.realm(realm).users().delete(userRepresentation.getId());
+        } catch (Exception ex) {
+            throw new Exception();
+        }
     }
 
     @Override
