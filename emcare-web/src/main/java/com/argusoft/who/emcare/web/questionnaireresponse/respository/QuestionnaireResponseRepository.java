@@ -20,19 +20,23 @@ public interface QuestionnaireResponseRepository extends JpaRepository<Questionn
 
     public List<MiniPatient> findDistinctByPatientIdIn(List<String> resourceId, Pageable pageable);
 
-    @Query(value = "SELECT DISTINCT(PATIENT_ID) as \"patientId\"," +
-            "MAX(CONSULTATION_DATE) as \"consultationDate\"" +
-            "FROM QUESTIONNAIRE_RESPONSE where patient_id in :resourceId " +
-            "GROUP BY PATIENT_ID " +
-            "ORDER BY MAX(CONSULTATION_DATE) DESC, PATIENT_ID", nativeQuery = true)
+    @Query(value = "SELECT DISTINCT(QSR.PATIENT_ID) AS \"patientId\",\n" +
+            "\tMAX(QSR.CONSULTATION_DATE) AS \"consultationDate\" \n" +
+            "FROM ENCOUNTER_RESOURCE ENR \n" +
+            "LEFT JOIN QUESTIONNAIRE_RESPONSE AS QSR ON ENR.RESOURCE_ID = QSR.ENCOUNTER_ID \n" +
+            "WHERE ENR.PATIENT_ID IS NOT NULL and QSR.CONSULTATION_DATE IS NOT NULL AND ENR.PATIENT_ID in :resourceId \n" +
+            "GROUP BY QSR.PATIENT_ID \n" +
+            "ORDER BY MAX(QSR.CONSULTATION_DATE) DESC, QSR.PATIENT_ID", nativeQuery = true)
     List<MiniPatient> getDistinctPatientIdInAndConsultationDate(@Param("resourceId") List<String> resourceId, Pageable pageable);
 
-    @Query(value = "SELECT DISTINCT(PATIENT_ID) as \"patientId\"," +
-            "MAX(CONSULTATION_DATE) as \"consultationDate\"" +
-            "FROM QUESTIONNAIRE_RESPONSE where patient_id in :resourceId " +
-            "GROUP BY PATIENT_ID " +
-            "ORDER BY MAX(CONSULTATION_DATE) DESC, PATIENT_ID", nativeQuery = true)
-    public List<MiniPatient> findDistinctByPatientIdIn(List<String> resourceId);
+    @Query(value = "SELECT DISTINCT(QSR.PATIENT_ID) AS \"patientId\",\n" +
+            "\tMAX(QSR.CONSULTATION_DATE) AS \"consultationDate\" \n" +
+            "FROM ENCOUNTER_RESOURCE ENR \n" +
+            "LEFT JOIN QUESTIONNAIRE_RESPONSE AS QSR ON ENR.RESOURCE_ID = QSR.ENCOUNTER_ID \n" +
+            "WHERE ENR.PATIENT_ID IS NOT NULL and QSR.CONSULTATION_DATE IS NOT NULL AND ENR.PATIENT_ID in :resourceId \n" +
+            "GROUP BY QSR.PATIENT_ID \n" +
+            "ORDER BY MAX(QSR.CONSULTATION_DATE) DESC, QSR.PATIENT_ID", nativeQuery = true)
+    public List<MiniPatient> findDistinctByPatientIdIn(@Param("resourceId") List<String> resourceId);
 
     public List<QuestionnaireResponse> findByPatientId(String patientId);
 }
