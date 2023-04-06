@@ -1,5 +1,3 @@
-ALTER DATABASE emcare OWNER TO postgres;
-
 CREATE SCHEMA IF NOT EXISTS public;
 
 ALTER SCHEMA public OWNER TO postgres;
@@ -551,8 +549,7 @@ CREATE TABLE IF NOT EXISTS public.application_log
     CONSTRAINT application_log_pkey PRIMARY KEY (id)
 );
 
-ALTER TABLE IF EXISTS public.application_log
-    OWNER to postgres;
+ALTER TABLE IF EXISTS public.application_log OWNER to postgres;
 
 
 INSERT INTO public.email_content (id, code, content, created_at, subject, var_list) VALUES (3, 'CONFIRMATION_EMAIL_APPROVED', '<!DOCTYPE html>
@@ -1224,10 +1221,6 @@ ALTER TABLE ONLY public.user_menu_config
 
 ALTER TABLE ONLY public.value_set_resources
     ADD CONSTRAINT value_set_resources_pkey PRIMARY KEY (id);
-
-ALTER TABLE ONLY public.application_log
-    ADD CONSTRAINT application_log_pkey PRIMARY KEY (id);
-
 
 
 ALTER TABLE ONLY public.indicator_denominator_equation

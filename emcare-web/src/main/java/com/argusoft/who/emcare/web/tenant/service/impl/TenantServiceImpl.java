@@ -150,9 +150,14 @@ public class TenantServiceImpl implements TenantService {
 
         } catch (Exception ex) {
             //    Remove All The Data Which Added in Database
-            afterExceptionProcess(tenantConfig, tenantDto);
-            ex.printStackTrace();
-            throw new Exception(ex.getMessage());
+            try {
+                afterExceptionProcess(tenantConfig, tenantDto);
+                ex.printStackTrace();
+                throw new Exception(ex.getMessage());
+            }catch (Exception e){
+                throw new Exception(e.getMessage());
+            }
+
         }
         return ResponseEntity.ok().body(tenantConfig);
     }
@@ -287,6 +292,7 @@ public class TenantServiceImpl implements TenantService {
             JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             jdbcTemplate.execute(FileCopyUtils.copyToString(new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8)));
         } catch (Exception ex) {
+            ex.printStackTrace();
             throw new SQLException();
         }
     }
