@@ -1039,6 +1039,7 @@ INSERT INTO public.menu_config (id, created_by, created_on, modified_by, modifie
 INSERT INTO public.menu_config (id, created_by, created_on, modified_by, modified_on, feature_json, is_active, menu_name, parent, order_number) VALUES (24, 'EM CARE SYSTEM', '2021-12-30 09:00:17.219', 'EM CARE SYSTEM', '2021-12-30 09:00:17.219', '{"canAdd":true,"canEdit":true,"canView":true,"canDelete":true}', 'true', 'All Indicators', '23', 17);
 INSERT INTO public.menu_config (id, created_by, created_on, modified_by, modified_on, feature_json, is_active, menu_name, parent, order_number) VALUES (25, 'EM CARE SYSTEM', '2021-12-30 09:00:17.219', 'EM CARE SYSTEM', '2021-12-30 09:00:17.219', '{"canAdd":true,"canEdit":true,"canView":true,"canDelete":true}', 'true', 'Custom Codes', '23', 18);
 INSERT INTO public.menu_config (id, created_by, created_on, modified_by, modified_on, feature_json, is_active, menu_name, parent, order_number) VALUES (22, 'EM CARE SYSTEM', '2022-03-14 05:33:56.439836', NULL, NULL, '{"canAdd":true,"canEdit":true,"canView":true,"canDelete":true}', 'true', 'Consultations', '3', 4);
+INSERT INTO public.menu_config (id, created_by, created_on, modified_by, modified_on, feature_json, is_active, menu_name, parent, order_number) VALUES (26, 'EM CARE SYSTEM', '2021-12-30 09:00:17.219', 'EM CARE SYSTEM', '2021-12-30 09:00:17.219', '{"canAdd":true,"canEdit":true,"canView":true,"canDelete":true}', 'true', 'Application Logs', '21', 25);
 
 
 
