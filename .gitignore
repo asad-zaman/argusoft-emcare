@@ -3,3 +3,4 @@ emcare-ui/node_modules
 emcare-web/.idea
 emcare-ui/.angular/cache/
 emcare-ui/src/app/shared/module/structor/node_modules
+.idea
