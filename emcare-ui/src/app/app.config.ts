@@ -7,6 +7,7 @@ export const appConstants = {
         refreshToken: 'refresh_token',
         refreshTokenExpiryTime: 'refresh_token_expiry_time',
         language: 'language',
-        Username: 'Username'
+        Username: 'Username',
+        ApplicationAgent: 'ApplicationAgent'
     }
 };

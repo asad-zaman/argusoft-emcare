@@ -109,6 +109,11 @@ public class RelatedPersonResourceServiceImpl implements RelatedPersonResourceSe
         if (theId != null) {
             patientId = emcareResourceService.getPatientIdsUnderFacility(theId);
         }
+        if(patientId.isEmpty()){
+            Bundle bundle = new Bundle();
+            bundle.setTotal(0);
+            return bundle;
+        }
         Long count = 0l;
         if (summaryType.equalsIgnoreCase(CommonConstant.SUMMARY_TYPE_COUNT)) {
             if (Objects.isNull(theDate)) {
@@ -139,6 +144,10 @@ public class RelatedPersonResourceServiceImpl implements RelatedPersonResourceSe
         List<String> patientIds = emcareResourceService.getPatientIdsUnderFacility(theId);
         List<RelatedPerson> relatedPeople = new ArrayList<>();
         List<RelatedPersonResource> relatedPersonResources;
+
+        if(patientIds.isEmpty()){
+            return null;
+        }
 
         if (theDate == null) {
             relatedPersonResources = relatedPersonResourceRepository.findByFacilityId(patientIds);

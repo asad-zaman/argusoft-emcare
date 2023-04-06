@@ -4,6 +4,7 @@ import { Subject } from "rxjs";
 import { debounceTime, distinctUntilChanged } from "rxjs/operators";
 import { AuthGuard } from "src/app/auth/auth.guard";
 import { FhirService } from "src/app/shared/services/fhir.service";
+import * as _ from 'lodash';
 
 @Component({
   selector: 'app-consultation-list',
@@ -49,6 +50,7 @@ export class ConsultationListComponent implements OnInit {
     if (res && res['list']) {
       this.consultations = res['list'];
       this.filteredConsultations = this.consultations;
+      this.filteredConsultations = _.sortBy(this.filteredConsultations, 'consultationDate').reverse();
       this.totalCount = res['totalCount'];
       this.isAPIBusy = false;
     }

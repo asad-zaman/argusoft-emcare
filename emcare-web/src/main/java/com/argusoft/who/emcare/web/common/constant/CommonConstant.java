@@ -4,8 +4,10 @@ public class CommonConstant {
     public static final String EMAIL_ALREADY_EXISTS = "This Email Or Username Already Register With Em-Care";
     public static final String REGISTER_SUCCESS = "Successfully Register";
     public static final String UPDATE_SUCCESS = "Successfully Update";
+    public static final String DOC_DOWNLOAD_PATH = "doc/resources/";
     public static final String USER_NOT_FOUND = "User Not Found";
     public static final String DEFAULT_ROLE_EMCARE = "default-roles-emcare";
+    public static final String ADMIN_ROLE_DESCRIPTION = "Admin Role";
     public static final String DESC = "DESC";
     public static final String ASC = "ASC";
     public static final Integer PAGE_SIZE = 10;
@@ -70,6 +72,22 @@ public class CommonConstant {
     public static final String FHIR_SERVLET_URL_MAPPING = "/fhir/*";
 
     public static final String KEYCLOAK_REALM = "keycloak.realm";
+    public static final String HTTPS = "https://";
+    public static final String HTTP = "http://";
+    public static final String USERNAME = "username";
+    public static final String PASSWORD = "password";
+    public static final String GRANT_TYPE = "grant_type";
+    public static final String CLIENT_SECRET = "client_secret";
+    public static final String CLIENT_ID = "client_id";
+    public static final String ACCESS_TOKEN = "access_token";
+    public static final String POSTGRESQL_DRIVER = "org.postgresql.Driver";
+    public static final String URL_PREFIX = "jdbc:postgresql://";
+    public static final String POSTGRESQL_DEFAULT_DATABASE = "postgres";
+    public static final String SUPER_ADMIN_ROLE = "SUPER_ADMIN";
+    public static final String DEFAULT_TENANT_ID = "Global";
+    public static final String TENANT_ID = "tenantID";
+    public static final String TENANT_ADMIN_ROLE_POSTFIX = "_Admin";
+
 
     private CommonConstant() {
     }

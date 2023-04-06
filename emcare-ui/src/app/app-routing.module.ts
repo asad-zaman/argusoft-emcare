@@ -37,7 +37,11 @@ import {
   ViewConsultationComponent,
   ManageCodeComponent,
   CodeListComponent,
-  IndicatorComponent
+  IndicatorComponent,
+  TenantListComponent,
+  ManageTenantComponent,
+  AddLogComponent,
+  LogListComponent
 } from './root/index';
 
 const routes: Routes = [
@@ -85,12 +89,22 @@ const routes: Routes = [
   { path: 'code-list', component: CodeListComponent, canActivate: [AuthGuard] },
   { path: 'addIndicator', component: IndicatorComponent, canActivate: [AuthGuard] },
   { path: 'indicator-list', component: IndicatorListComponent, canActivate: [AuthGuard] },
-  { path: 'editIndicator/:id', component: IndicatorComponent },
+  { path: 'editIndicator/:id', component: IndicatorComponent, canActivate: [AuthGuard] },
+  { path: 'tenantList', component: TenantListComponent, canActivate: [AuthGuard] },
+  { path: 'manageTenant', component: ManageTenantComponent, canActivate: [AuthGuard] },
   { path: 'termsAndConditions', component: TermsConditionsComponent },
+  { path: 'addLog', component: AddLogComponent, canActivate: [AuthGuard] },
+  { path: 'logList', component: LogListComponent, canActivate: [AuthGuard] },
   { path: '**', redirectTo: 'dashboard' }
 ];
 @NgModule({
-  imports: [RouterModule.forRoot(routes, { useHash: true })],
+  imports: [RouterModule.forRoot(routes, {
+    useHash: true,
+    scrollPositionRestoration: 'enabled',
+    anchorScrolling: 'enabled',
+    onSameUrlNavigation: 'reload',
+    scrollOffset: [0, 75]
+  })],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }

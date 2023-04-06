@@ -32,9 +32,11 @@ public interface UserService {
 
     public RolesResource getAllRolesForSignUp(HttpServletRequest request);
 
-    public ResponseEntity<Object> signUp(UserDto user);
+    public ResponseEntity<Object> signUp(UserDto user, HttpServletRequest request);
 
-    public ResponseEntity<Object> addUser(UserDto user);
+    public ResponseEntity<Object> userLogin(LoginRequestDto loginCred, HttpServletRequest request);
+
+    public ResponseEntity<Object> addUser(UserDto user, HttpServletRequest request);
 
     public void addRealmRole(RoleDto role);
 
@@ -46,7 +48,7 @@ public interface UserService {
 
     public ResponseEntity<Object> getUserRolesById(String userId);
 
-    public ResponseEntity<Object> updateUser(UserDto userDto, String userId);
+    public ResponseEntity<Object> updateUser(UserDto userDto, String userId, HttpServletRequest request);
 
     public ResponseEntity<Object> updatePassword(UserDto userDto, String userId);
 
@@ -62,7 +64,13 @@ public interface UserService {
 
     public UserRepresentation resetPassword(String emailId, String password);
 
-    public Map<String,Object> checkEmailIdExist(String email);
+    public Map<String, Object> checkEmailIdExist(String email);
+
+    public ResponseEntity<Object> addUserForCountry(UserDto user, String tenantId);
+
+    public void removeRole(String roleName) throws Exception;
+
+    public void removeUser(String email) throws Exception;
 
 
 }

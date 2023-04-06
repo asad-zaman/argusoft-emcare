@@ -6,6 +6,7 @@ import { FhirService } from './shared';
 import { AuthenticationService } from './shared/services/authentication.service';
 import * as _ from 'lodash';
 import { AuthGuard } from './auth/auth.guard';
+import { appConstants } from './app.config';
 
 @Component({
   selector: 'app-root',
@@ -44,6 +45,7 @@ export class AppComponent implements OnInit {
     'Organizations': 'bi bi-border-outer nav-link_icon',
     'Indicators': 'bi bi-app-indicator nav-link_icon'
   }
+  isSuperAdmin = false;
   footerShow = true;
 
   constructor(
@@ -71,6 +73,7 @@ export class AppComponent implements OnInit {
   }
 
   ngAfterViewChecked() {
+    this.checkSuperAdmin();
     this.checkCurrentUrlAndShowHeaderBar();
     this.cdr.detectChanges();
   }
@@ -97,6 +100,10 @@ export class AppComponent implements OnInit {
       }
     });
     this.detectLanChange();
+  }
+
+  checkSuperAdmin() {
+    this.isSuperAdmin = localStorage.getItem('isSuperAdmin') === 'true';
   }
 
   detectLanChange() {
@@ -297,7 +304,8 @@ export class AppComponent implements OnInit {
   }
 
   changeSidebarVar() {
-    this.isSidebarOpen = !this.isSidebarOpen;
+    if (screen.width <= 992)
+      this.isSidebarOpen = !this.isSidebarOpen;
   }
 
   applySidebarChange() {
@@ -306,6 +314,14 @@ export class AppComponent implements OnInit {
     } else {
       this.isSidebarOpen = true;
     }
+  }
+
+  navigateToTenantConfig() {
+    this.router.navigate(['/tenantList']);
+  }
+
+  getApplicationAgent() {
+    return localStorage.getItem(appConstants.localStorageKeys.ApplicationAgent);
   }
 
   navigateToTermsAndConditionsPage() {

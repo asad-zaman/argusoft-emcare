@@ -17,7 +17,7 @@
           <div class="row">
             <div class="col-12 col-sm-12">
               <div class="mb-3">
-                <label class="form-label">{{'First Name' | translate}}'</label>
+                <label class="form-label">{{'First Name' | translate}}</label>
                 <input class="form-control custom-input" formControlName="firstName" type="text" id="firstName"
                   placeholder="{{'FirstName Placeholder' | translate}}"
                   [ngClass]="{ 'is-invalid': submitted && getFormConfrols.firstName.errors }">
@@ -136,7 +136,7 @@
               </div>
             </div>
             <div class="col-4 offset-8">
-              <button [disabled]="!userForm.get('selectedFacility').value" type="button" class=" btn btn-blue"
+              <button [disabled]="!userForm.get('selectedFacility').value" type="button" class="btn btn-blue"
                 (click)="saveFacility()" data-bs-dismiss="modal">{{'Save' | translate}}</button>
             </div>
             <div class="col-12">

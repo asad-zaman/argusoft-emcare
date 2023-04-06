@@ -5,23 +5,32 @@
       <div class="signup_left-col">
         <div class="signup_left-col_inner">
           <div><img src="../../../../assets/images/emcare-icon.png" alt="EMCARE icon"></div>
-          <div class="mt-3"> <img src="../../../../assets/images/img-01.png" class="people-img-fluid" alt="person-logo"> </div>
+          <div class="mt-3"> <img src="../../../../assets/images/img-01.png" class="people-img-fluid" alt="person-logo">
+          </div>
           <p class="font-size-13 mt-3">The WHO Em Care application is an executable reference software, which accurately
             represents the intentions, operational, and functional requirements of the WHO recommendations for emergency
             settings.
           </p>
-          <div class="mt-3"> <img src="../../../../assets/images/whologo.jpg" class="who-img-fluid" alt="person-logo"> </div>
+          <div class="mt-3"> <img src="../../../../assets/images/whologo.jpg" class="who-img-fluid" alt="person-logo">
+          </div>
         </div>
       </div>
     </div>
     <!--signup_left-col-END-->
-
     <!--signup_form_wrapper-->
     <div class="col-12 col-sm-12 col-md-7">
-      <div class="signup_form_wrapper">
+      <div class="name-div" style="width: fit-content; margin: auto; position: relative;">
+        <div class="country-name" style="position: absolute;">
+          <span style="font-size: 24px;">{{country}}</span>
+        </div>
+        <div class="message">
+          <h1 style="line-height: 100px;">Welcome to EM care</h1>
+        </div>
+      </div>
+      <div class="mt-3 signup_form_wrapper">
         <form [formGroup]="loginForm">
-          <div class="mb-5 text-center">
-            <h1 class="heading">Sign In</h1>
+          <div class="mb-5">
+            <h1 class="heading text-center">Sign In</h1>
           </div>
           <div class="row">
             <div class="col-12">
@@ -59,9 +68,18 @@
             <button (click)="userLogin()" class="btn-blue btn p-l-70 p-r-70">Sign In</button>
           </div>
           <div class="text-center mt-3">
-            <a class="cst-link-style" href="https://emcare.argusoft.com/doc/resources/emcare_1.0.0.apk" target="_blank">
+            <span style="color: red;">
+              (New)&nbsp;
+            </span>
+            <a class="cst-link-style cursor-pointer" href="{{downloadURL}}" target="_blank">
               <i class="cst-icon-style bi bi-download" aria-hidden="true"></i>
               Download Mobile application</a>
+            <span *ngIf="countryData" class="cst-link-style">
+              ({{countryData.applicationVersion}})
+            </span>
+          </div>
+          <div *ngIf="countryData" class="text-center mt-2">
+            <spam class="cst-link-style">Release Data: {{(countryData.createdOn | date:'mediumDate')}}</spam>
           </div>
         </form>
       </div>
