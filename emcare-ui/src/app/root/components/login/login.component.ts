@@ -46,12 +46,13 @@ export class LoginComponent implements OnInit {
       password: [window.location.href == url ? environment.testPassword : '', Validators.required]
     });
     this.getCountry();
+    this.getCurrentCountry();
   }
 
   getCountry() {
     this.fhirService.getCountry().subscribe(res => {
       this.countryData = res;
-      this.downloadURL = `${window.origin}/${this.countryData.url}`;
+      this.downloadURL = `${environment.apiUrl}/${this.countryData.url}`;
     });
   }
 
@@ -73,7 +74,6 @@ export class LoginComponent implements OnInit {
     if (this.loginForm.invalid) {
       return;
     }
-    console.log(this.loginForm.value.username, this.loginForm.value.password);
     this.authService.login(this.loginForm.value.username, this.loginForm.value.password)
       .subscribe(
         data => {
@@ -120,15 +120,12 @@ export class LoginComponent implements OnInit {
         localStorage.setItem('Username', res.userName);
         const isSuperAdmin = res['roles'].findIndex(el => el === 'SUPER_ADMIN') > -1;
         localStorage.setItem('isSuperAdmin', `${isSuperAdmin}`);
-        this.authService.setFeatures(res['feature']);
+        this.authService.setIsLoggedIn(true);
+        if (!isSuperAdmin)
+          this.authService.setFeatures(res['feature']);
         isSuperAdmin ? this.router.navigate(["/tenantList"]) : this.router.navigate(["/dashboard"]);
         this.toasterService.showToast('success', 'Welcome to EmCare!', 'EMCARE');
-        this.authService.setIsLoggedIn(true);
       }
     });
-  }
-
-  getDownloadURL() {
-    return `${window.origin}/${this.countryData.url}`;
   }
 }

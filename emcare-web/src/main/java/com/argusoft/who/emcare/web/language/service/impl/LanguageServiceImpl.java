@@ -35,11 +35,13 @@ public class LanguageServiceImpl implements LanguageService {
     IBMConfig ibmConfig;
 
     @Override
+    @Transactional
     public List<LanguageTranslation> getAllLanguageTranslation() {
         return languageRepository.findAll();
     }
 
     @Override
+    @Transactional
     public Languages getAvailableLanguageList() {
         LanguageTranslator languageTranslator = ibmConfig.getLanguageTranslatorInstance();
         try {
@@ -53,6 +55,7 @@ public class LanguageServiceImpl implements LanguageService {
     }
 
     @Override
+    @Transactional
     public LanguageTranslation createNewLanguageTranslation(LanguageAddDto languageAddDto) {
         JSONObject jsonObject = new JSONObject();
         Iterator<String> keys = null;
@@ -95,6 +98,7 @@ public class LanguageServiceImpl implements LanguageService {
 
 
     @Override
+    @Transactional
     public LanguageTranslation addOrUpdateLanguageTranslation(LanguageDto language) {
         return languageRepository.saveAndFlush(LanguageMapper.getLanguageTranslation(language));
     }

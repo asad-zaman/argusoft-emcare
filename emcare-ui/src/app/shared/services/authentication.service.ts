@@ -93,7 +93,7 @@ export class AuthenticationService {
         return this.features;
     }
 
-    setFeatures(featuresRes: any): void {
+    setFeatures(featuresRes: any) {
         let features = [];
         featuresRes.forEach(f => {
             features.push(f.menuName);

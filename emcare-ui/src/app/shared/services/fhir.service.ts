@@ -277,7 +277,7 @@ export class FhirService {
     }
 
     checkTenantField(field, fieldValue) {
-        let url = `${environment.apiUrl}/api/tenant/check?key=${field}&value=${fieldValue}`;
+        let url = `${environment.apiUrl}/api/country/tenant/check?key=${field}&value=${fieldValue}`;
         return this.http.get(url, this.getHeaders());
     }
 
@@ -287,12 +287,12 @@ export class FhirService {
     }
     
     getAllTenants() {
-        let url = `${environment.apiUrl}/api/tenant/all`;
+        let url = `${environment.apiUrl}/api/country/tenant/all`;
         return this.http.get(url, this.getHeaders());
     }
 
     addTenant(data) {
-        const url = `${environment.apiUrl}/api/tenant/add`;
+        const url = `${environment.apiUrl}/api/country/tenant/add`;
         return this.http.post(url, data, this.getHeaders());
     }
 
@@ -307,7 +307,7 @@ export class FhirService {
                 'Authorization': `Bearer ${authToken}`
             })
         };
-        let url = `${environment.apiUrl}/api/application/log/add`;
+        let url = `${environment.apiUrl}/api/country/application/log/add`;
         return this.http.post(url, formData, headerObj);
     }
 
@@ -317,7 +317,7 @@ export class FhirService {
     }
 
     getAllLogs() {
-        let url = `${environment.apiUrl}/api/application/log/all`;
+        let url = `${environment.apiUrl}/api/country/application/log/all`;
         return this.http.get(url);
     }
 

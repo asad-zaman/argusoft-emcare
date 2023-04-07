@@ -66,7 +66,7 @@ export class TokenInterceptor implements HttpInterceptor {
     ) { }
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-        if (!request.url.includes('login')) {
+        if (localStorage.getItem(appConstants.localStorageKeys.ApplicationAgent)) {
             request = request.clone({
                 setHeaders: { 'Application-Agent': localStorage.getItem(appConstants.localStorageKeys.ApplicationAgent) }
             });

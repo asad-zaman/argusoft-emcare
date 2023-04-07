@@ -101,10 +101,14 @@ public class TenantServiceImpl implements TenantService {
         TenantConfig tenantConfig = TenantMapper.getTenantConfig(tenantDto, organization.getName());
         try {
             //    Create Database
+            System.out.println("=======================================================================");
             createDatabase(tenantConfig);
+            System.out.println("DataBase created Successfully+++++++++++++++++++++++++++++++++++++++++");
 
             //    Check Database Connection
+            System.out.println("=======================================================================");
             checkDatabaseConnection(tenantConfig);
+            System.out.println("Database Connection Checked +++++++++++++++++++++++++++++++++++++++++++");
 
             //    Select Database If create
             tenantConfig = tenantConfigRepository.save(tenantConfig);
@@ -113,31 +117,47 @@ public class TenantServiceImpl implements TenantService {
             TenantContext.setCurrentTenant(tenantConfig.getTenantId());
 
             //    Add Default Data In Database
+            System.out.println("=======================================================================");
             addDefaultDataSourceInDatabase();
+            System.out.println("Data Added Successfully +++++++++++++++++++++++++++++++++++++++++++++++");
 
             //    Add HierarchyMaster in DB
+            System.out.println("=======================================================================");
             addHierarchyMasterForNewDatabase(tenantDto);
+            System.out.println("Hierachy Added ++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
 
             //    Add Location Master in DB
+            System.out.println("=======================================================================");
             addLocationMasterInDatabase(tenantDto);
+            System.out.println("Location Added ++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
 
             //    Add Organization Resource in DB
+            System.out.println("=======================================================================");
             addOrganizationInDatabase(tenantDto);
-
+            System.out.println("Organization added ++++++++++++++++++++++++++++++++++++++++++++++++++++");
             //    Add Role in DB
+            System.out.println("=======================================================================");
             addRoleForTenant(tenantDto);
-
+            System.out.println("Role Added ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
             //    Add User in DB
+            System.out.println("=======================================================================");
             addUserForTenant(tenantDto, tenantConfig);
-
+            System.out.println("User Added ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
             //    Add Language in DB
+            System.out.println("=======================================================================");
             addLanguageInTenant(tenantDto);
+            System.out.println("Language added ++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
 
         } catch (Exception ex) {
             //    Remove All The Data Which Added in Database
-            afterExceptionProcess(tenantConfig, tenantDto);
-            ex.printStackTrace();
-            throw new Exception(ex.getMessage());
+            try {
+                afterExceptionProcess(tenantConfig, tenantDto);
+                ex.printStackTrace();
+                throw new Exception(ex.getMessage());
+            }catch (Exception e){
+                throw new Exception(e.getMessage());
+            }
+
         }
         return ResponseEntity.ok().body(tenantConfig);
     }
@@ -272,6 +292,7 @@ public class TenantServiceImpl implements TenantService {
             JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             jdbcTemplate.execute(FileCopyUtils.copyToString(new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8)));
         } catch (Exception ex) {
+            ex.printStackTrace();
             throw new SQLException();
         }
     }

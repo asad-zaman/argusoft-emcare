@@ -82,6 +82,7 @@ export class AppComponent implements OnInit {
     this.getCurrentPage();
     this.checkTOkenExpiresOrNot();
     this.checkAPIStatus();
+    this.checkSuperAdmin();
     this.authenticationService.getIsLoggedIn().subscribe(result => {
       if (result) {
         this.setLoggedInUserData();
@@ -91,11 +92,14 @@ export class AppComponent implements OnInit {
       if (result && result.length > 0) {
         this.featureList = result;
       } else {
-        /*  on refreshing the page behaviour subject will be lost
-          so resetting the feature array to behaviour subject to render the sidebar again */
-        let userFeatures = localStorage.getItem('userFeatures');
-        if (userFeatures) {
-          this.authenticationService.setFeatures(this.featureArr);
+        //  as there are no features for superadmin so no need to call the service for behaviour subject
+        if (!this.isSuperAdmin) {
+          /*  on refreshing the page behaviour subject will be lost
+            so resetting the feature array to behaviour subject to render the sidebar again */
+          let userFeatures = localStorage.getItem('userFeatures');
+          if (userFeatures) {
+            this.authenticationService.setFeatures(this.featureArr);
+          }
         }
       }
     });

@@ -1,5 +1,3 @@
-ALTER DATABASE emcare OWNER TO postgres;
-
 CREATE SCHEMA IF NOT EXISTS public;
 
 ALTER SCHEMA public OWNER TO postgres;
@@ -551,8 +549,7 @@ CREATE TABLE IF NOT EXISTS public.application_log
     CONSTRAINT application_log_pkey PRIMARY KEY (id)
 );
 
-ALTER TABLE IF EXISTS public.application_log
-    OWNER to postgres;
+ALTER TABLE IF EXISTS public.application_log OWNER to postgres;
 
 
 INSERT INTO public.email_content (id, code, content, created_at, subject, var_list) VALUES (3, 'CONFIRMATION_EMAIL_APPROVED', '<!DOCTYPE html>
@@ -1042,6 +1039,7 @@ INSERT INTO public.menu_config (id, created_by, created_on, modified_by, modifie
 INSERT INTO public.menu_config (id, created_by, created_on, modified_by, modified_on, feature_json, is_active, menu_name, parent, order_number) VALUES (24, 'EM CARE SYSTEM', '2021-12-30 09:00:17.219', 'EM CARE SYSTEM', '2021-12-30 09:00:17.219', '{"canAdd":true,"canEdit":true,"canView":true,"canDelete":true}', 'true', 'All Indicators', '23', 17);
 INSERT INTO public.menu_config (id, created_by, created_on, modified_by, modified_on, feature_json, is_active, menu_name, parent, order_number) VALUES (25, 'EM CARE SYSTEM', '2021-12-30 09:00:17.219', 'EM CARE SYSTEM', '2021-12-30 09:00:17.219', '{"canAdd":true,"canEdit":true,"canView":true,"canDelete":true}', 'true', 'Custom Codes', '23', 18);
 INSERT INTO public.menu_config (id, created_by, created_on, modified_by, modified_on, feature_json, is_active, menu_name, parent, order_number) VALUES (22, 'EM CARE SYSTEM', '2022-03-14 05:33:56.439836', NULL, NULL, '{"canAdd":true,"canEdit":true,"canView":true,"canDelete":true}', 'true', 'Consultations', '3', 4);
+INSERT INTO public.menu_config (id, created_by, created_on, modified_by, modified_on, feature_json, is_active, menu_name, parent, order_number) VALUES (26, 'EM CARE SYSTEM', '2021-12-30 09:00:17.219', 'EM CARE SYSTEM', '2021-12-30 09:00:17.219', '{"canAdd":true,"canEdit":true,"canView":true,"canDelete":true}', 'true', 'Application Logs', '21', 25);
 
 
 
@@ -1224,10 +1222,6 @@ ALTER TABLE ONLY public.user_menu_config
 
 ALTER TABLE ONLY public.value_set_resources
     ADD CONSTRAINT value_set_resources_pkey PRIMARY KEY (id);
-
-ALTER TABLE ONLY public.application_log
-    ADD CONSTRAINT application_log_pkey PRIMARY KEY (id);
-
 
 
 ALTER TABLE ONLY public.indicator_denominator_equation
