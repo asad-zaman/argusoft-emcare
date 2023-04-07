@@ -30,8 +30,8 @@
   <!--header-END-->
   <!--Sidenav-->
   <ng-container *ngIf="isSidebarOpen">
-    <div class="sidenav cst-overflow" *ngIf="featureList.length !== 0">
-      <ul *ngIf="!isSuperAdmin" class="nav-link">
+    <div class="sidenav cst-overflow">
+      <ul *ngIf="!isSuperAdmin && featureArr.length !== 0" class="nav-link">
         <ng-container *ngFor="let feature of featureArr">
           <li *ngIf="hasAccess(feature.menuName) && feature.menuName !== 'Organizations'">
             <a class="mouse-pointer"

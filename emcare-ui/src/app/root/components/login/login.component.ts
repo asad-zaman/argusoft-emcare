@@ -52,7 +52,7 @@ export class LoginComponent implements OnInit {
   getCountry() {
     this.fhirService.getCountry().subscribe(res => {
       this.countryData = res;
-      this.downloadURL = `${window.origin}/${this.countryData.url}`;
+      this.downloadURL = `${environment.apiUrl}/${this.countryData.url}`;
     });
   }
 
@@ -74,7 +74,6 @@ export class LoginComponent implements OnInit {
     if (this.loginForm.invalid) {
       return;
     }
-    console.log(this.loginForm.value.username, this.loginForm.value.password);
     this.authService.login(this.loginForm.value.username, this.loginForm.value.password)
       .subscribe(
         data => {
@@ -127,9 +126,5 @@ export class LoginComponent implements OnInit {
         this.authService.setIsLoggedIn(true);
       }
     });
-  }
-
-  getDownloadURL() {
-    return `${window.origin}/${this.countryData.url}`;
   }
 }
