@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FhirService } from 'src/app/shared';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-log-list',
@@ -35,7 +36,7 @@ export class LogListComponent implements OnInit {
             appVersion: el.applicationVersion,
             date: el.createdOn,
             logs: el.logs,
-            downloadUrl: `${window.origin}/${el.url}`
+            downloadUrl: `${environment.apiUrl}/${el.url}`
           });
         });
       }
