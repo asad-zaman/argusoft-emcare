@@ -313,5 +313,6 @@
   "Log File Required Message": "Please select file",
   "Log Placeholder": "Enter Log",
   "Log Required Message": "Please enter Log",
-  "Logs": "Logs"
+  "Logs": "Logs",
+  "Export as PDF": "Export as PDF"
 }

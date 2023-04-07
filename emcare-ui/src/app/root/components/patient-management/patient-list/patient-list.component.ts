@@ -4,6 +4,9 @@ import { debounceTime, distinctUntilChanged } from "rxjs/operators";
 import { AuthGuard } from "src/app/auth/auth.guard";
 import { ToasterService } from "src/app/shared";
 import { FhirService } from "src/app/shared/services/fhir.service";
+import pdfMake from "pdfmake/build/pdfmake";
+import pdfFonts from "pdfmake/build/vfs_fonts";
+pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 @Component({
     selector: 'app-patient-list',
@@ -151,5 +154,34 @@ export class PatientListComponent implements OnInit {
             this.resetPageIndex();
             this.getPatientsByPageIndex(this.currentPage);
         }
+    }
+
+    exportPDF(patient) {
+        this.fhirService.getPatientById(patient.id).subscribe((res: any) => {
+            let data = [];
+            data.push({ text: '                            ' });
+            for (const key in res) {
+                let str = key + ' =>   ' + res[key]
+                let obj = { text: str };
+                data.push(obj);
+                data.push({ text: '                            ' });
+            }
+
+            let docDefinition = {
+                content: [
+                    {
+                        text: `${patient.givenName} ${patient.familyName}'s data`,
+                        fontSize: 16,
+                        alignment: 'center',
+                        color: '#047886'
+                    },
+                    {
+                        columns: [data]
+                    }
+                ]
+            }
+            pdfMake.createPdf(docDefinition).open();
+            // pdfMake.createPdf(docDefinition).download(`${patient.givenName} ${patient.familyName}.pdf`);
+        });
     }
 }

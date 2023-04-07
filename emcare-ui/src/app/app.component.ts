@@ -307,11 +307,6 @@ export class AppComponent implements OnInit {
     return routeArr.includes(this.currentUrl);
   }
 
-  changeSidebarVar() {
-    if (screen.width <= 992)
-      this.isSidebarOpen = !this.isSidebarOpen;
-  }
-
   applySidebarChange() {
     if (window.screen.width < 992) {
       this.isSidebarOpen = false;

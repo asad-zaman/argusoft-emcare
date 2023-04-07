@@ -318,6 +318,11 @@ export class FhirService {
 
     getAllLogs() {
         let url = `${environment.apiUrl}/api/country/application/log/all`;
+        return this.http.get(url);
+    }
+
+    getConsultationExportData(id) {
+        let url = `${environment.apiUrl}/api/questionnaire_response/export/${id}`;
         return this.http.get(url, this.getHeaders());
     }
 }
