@@ -14,6 +14,8 @@ import com.argusoft.who.emcare.web.indicators.indicator.repository.IndicatorDeno
 import com.argusoft.who.emcare.web.indicators.indicator.repository.IndicatorNumeratorEquationRepository;
 import com.argusoft.who.emcare.web.indicators.indicator.repository.IndicatorRepository;
 import com.argusoft.who.emcare.web.indicators.indicator.service.IndicatorService;
+import net.objecthunter.exp4j.Expression;
+import net.objecthunter.exp4j.ExpressionBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -187,10 +189,13 @@ public class IndicatorServiceImpl implements IndicatorService {
     public Integer resolveEquation(String equation) {
         Integer result = 0;
         try {
-            ScriptEngineManager mgr = new ScriptEngineManager();
-            ScriptEngine engine = mgr.getEngineByName("JavaScript");
-            result = (Integer) engine.eval(equation);
+//            ScriptEngineManager mgr = new ScriptEngineManager();
+//            ScriptEngine engine = mgr.getEngineByName("JavaScript");
+            Expression expression = new ExpressionBuilder(equation).build();
+            result = (int) expression.evaluate();
+//            result = (Integer) engine.eval(equation);
         } catch (Exception ex) {
+            ex.printStackTrace();
             logger.error(ex.getLocalizedMessage());
         }
         return result;
