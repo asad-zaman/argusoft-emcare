@@ -84,11 +84,13 @@ public class IndicatorServiceImpl implements IndicatorService {
      * @return All Indicator
      */
     @Override
+    @Transactional
     public ResponseEntity<Object> getAllIndicatorData() {
         return ResponseEntity.status(HttpStatus.OK).body(indicatorRepository.findAll());
     }
 
     @Override
+    @Transactional
     public ResponseEntity<Object> getIndicatorById(Long indicatorId) {
         return ResponseEntity.status(HttpStatus.OK).body(indicatorRepository.findById(indicatorId));
     }
@@ -99,6 +101,7 @@ public class IndicatorServiceImpl implements IndicatorService {
      * @return PageDto Model
      */
     @Override
+    @Transactional
     public PageDto getIndicatorDataPage(Integer pageNo, String searchText) {
         Sort sort = Sort.by("createdOn").descending();
         Pageable page = PageRequest.of(pageNo, CommonConstant.PAGE_SIZE, sort);

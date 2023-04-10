@@ -1,6 +1,7 @@
 package com.argusoft.who.emcare.web.indicators.indicator.entity;
 
 import com.argusoft.who.emcare.web.common.model.EntityAuditInfo;
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -53,9 +54,11 @@ public class Indicator extends EntityAuditInfo implements Serializable {
     private String displayType;
 
     @OneToMany(mappedBy = "numeratorIndicator", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<IndicatorNumeratorEquation> numeratorEquation;
 
     @OneToMany(mappedBy = "denominatorIndicator", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<IndicatorDenominatorEquation> denominatorEquation;
 
     public Long getIndicatorId() {
