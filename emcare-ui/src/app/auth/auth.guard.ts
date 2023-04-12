@@ -19,7 +19,7 @@ export class AuthGuard implements CanActivate {
         this.handleFeature = new BehaviorSubject({});
         this.featureRouteArr = {
             'Users': ['/showUsers', '/addUser', '/updateUser', '/showRoles', '/addRole', '/editRole', '/confirmUsers'],
-            'Indicators': ['/code-list', '/manageCode', 'indicator-list', '/addIndicator'],
+            'Indicators': ['/code-list', '/manageCode', 'indicator-list', '/addIndicator', '/editIndicator'],
             'Custom Codes': ['/code-list', '/manageCode'],
             'All Indicators': ['/indicator-list'],
             'Locations': ['/showFacility', '/addFacility', '/editFacility', '/showLocation', '/addLocation', '/editLocation', '/showLocationType', '/addLocationType', '/editLocationType'],
@@ -83,6 +83,7 @@ export class AuthGuard implements CanActivate {
             'code-list': { f: 'Indicators', reqFeature: ['canView'] },
             'manageCode': { f: 'Indicators', reqFeature: ['canAdd', 'canEdit'] },
             'addIndicator': { f: 'Indicators', reqFeature: ['canAdd'] },
+            'editIndicator': { f: 'Indicators', reqFeature: ['canEdit'] },
             'indicator-list': { f: 'Indicators', reqFeature: ['canView', 'canAdd'] }
         }
     }
@@ -248,6 +249,7 @@ export class AuthGuard implements CanActivate {
             || route.routeConfig.path === 'code-list'
             || route.routeConfig.path === 'indicator-list'
             || route.routeConfig.path.includes('manageCode')
+            || route.routeConfig.path.includes('editIndicator')
         ) {
             return this.user.feature.find(f => f.menuName === 'Indicators');
         } else {

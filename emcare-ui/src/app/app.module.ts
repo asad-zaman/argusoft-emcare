@@ -73,6 +73,7 @@ import { MessageModule } from 'primeng/message';
 import { TermsConditionsComponent } from './root/components/terms-conditions/terms-conditions.component';
 import { AddLogComponent } from './root/components/add-log/add-log.component';
 import { LogListComponent } from './root/components/log-list/log-list.component';
+import { LocationSubjects } from './root/components/Location/location-filter/LocationSubject';
 @NgModule({
   declarations: [
     AppComponent,
@@ -160,6 +161,7 @@ import { LogListComponent } from './root/components/log-list/log-list.component'
     ToasterService,
     LaunguageSubjects,
     MessageService,
+    LocationSubjects
   ],
   bootstrap: [AppComponent]
 })
