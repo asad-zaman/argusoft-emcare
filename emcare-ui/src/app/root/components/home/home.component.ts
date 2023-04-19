@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import * as Highcharts from 'highcharts';
 import { AuthGuard } from 'src/app/auth/auth.guard';
@@ -27,11 +27,16 @@ export class HomeComponent implements OnInit {
   constructor(
     private readonly fhirService: FhirService,
     private readonly routeService: Router,
-    private readonly authGuard: AuthGuard
+    private readonly authGuard: AuthGuard,
+    private readonly cdr: ChangeDetectorRef
   ) { }
 
   ngOnInit(): void {
     this.prerequisite();
+  }
+
+  ngAfterViewInit() {
+    this.cdr.detectChanges();
   }
 
   prerequisite() {
@@ -140,7 +145,7 @@ export class HomeComponent implements OnInit {
         }
       ]
     }
-    Highcharts.chart('container', options);
+    Highcharts.chart('scatter-chart-container', options);
   }
 
   getChartData() {
