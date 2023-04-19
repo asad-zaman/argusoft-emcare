@@ -1,4 +1,5 @@
 import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
+import { LocationSubjects } from './LocationSubject';
 @Component({
   selector: 'app-location-filter',
   templateUrl: './location-filter.component.html',
@@ -14,9 +15,9 @@ export class LocationFilterComponent implements OnInit {
   dropdownActiveArr = [];
   @Input() isOtherPage?: boolean;
   @Output() isClear = new EventEmitter<any>();
-  @Input() isClearFilter;
 
   constructor(
+    private readonly locSubjects: LocationSubjects
   ) { }
 
   ngOnInit(): void {
@@ -27,6 +28,7 @@ export class LocationFilterComponent implements OnInit {
     const urlArr = location.href.split('/');
     this.currentUrl = urlArr[urlArr.length - 1];
     this.getAndSetCurrentLanguage();
+    this.locSubjects.setClearLocation(false);
   }
 
   getAndSetCurrentLanguage() {
@@ -49,6 +51,7 @@ export class LocationFilterComponent implements OnInit {
       }
     }
     this.locationId.emit(selectedId);
+    this.locSubjects.setClearLocation(false);
     this.sideMenu = false;
   }
 
@@ -58,11 +61,8 @@ export class LocationFilterComponent implements OnInit {
   }
 
   clearFilter() {
-    this.isClearFilter = true;
     this.isClear.emit(true);
-  }
-
-  getValue() {
-    return this.isClearFilter;
+    this.locSubjects.setClearLocation(true);
+    this.sideMenu = false;
   }
 }

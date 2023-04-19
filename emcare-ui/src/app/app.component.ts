@@ -326,4 +326,8 @@ export class AppComponent implements OnInit {
   navigateToTermsAndConditionsPage() {
     this.router.navigate(['/termsAndConditions']);
   }
+
+  onClickSidebarBtn() {
+    this.isSidebarOpen = !this.isSidebarOpen; 
+  }
 }

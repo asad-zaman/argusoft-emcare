@@ -93,7 +93,7 @@ export class LoginComponent implements OnInit {
           }
         },
         error => {
-          this.error = error.error['error_description'];
+          this.error = error.error.errorMessage;
           this.loading = false;
           this.toasterService.showToast('error', this.error, 'EmCare');
           this.authService.setIsLoggedIn(false);
