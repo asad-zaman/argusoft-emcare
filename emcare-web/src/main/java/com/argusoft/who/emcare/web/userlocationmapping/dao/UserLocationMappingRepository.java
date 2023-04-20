@@ -89,10 +89,12 @@ public interface UserLocationMappingRepository extends JpaRepository<UserLocatio
     @Query(value = "SELECT date_part('week', created_on) AS \"weekly\",\n" +
             "       COUNT(resource_id) as \"count\"           \n" +
             "FROM emcare_resources\n" +
-            "where type = 'PATIENT' and date_part('year', created_on) = '2023'\n" +
+            "where type = 'PATIENT' and date_part('year', created_on) = date_part('year', CURRENT_DATE)\n" +
             "GROUP BY  weekly\n" +
-            "ORDER BY weekly DESC limit 10;", nativeQuery = true)
-    List<ScatterCharDto> getDashboardScatterChartData();
+            "ORDER BY weekly ASC limit :currentWeekNumber", nativeQuery = true)
+    List<ScatterCharDto> getDashboardScatterChartData(
+            @Param("currentWeekNumber") Integer currentWeekNumber
+    );
 
     @Query(value = "select distinct(user_id) from user_location_mapping;", nativeQuery = true)
     List<String> getDistinctUserId();
