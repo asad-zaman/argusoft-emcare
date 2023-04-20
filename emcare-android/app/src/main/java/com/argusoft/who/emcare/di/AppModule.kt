@@ -83,14 +83,14 @@ class AppModule {
         return FhirOperatorBuilder(context)
             .withFhirContext(FhirContext.forCached(FhirVersionEnum.R4))
             .withFhirEngine(fhirEngine)
-            .withIgManager(IgManager.createInMemory(context))
+            .withIgManager(igManager)
             .build()
     }
 
     @Singleton
     @Provides
     fun provideAppIgManager(@ApplicationContext context: Context): IgManager {
-        return IgManager.createInMemory(context)
+        return IgManager.create(context)
     }
 
     @Singleton

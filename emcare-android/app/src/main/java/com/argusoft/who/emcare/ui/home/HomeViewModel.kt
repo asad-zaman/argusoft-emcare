@@ -44,6 +44,7 @@ class HomeViewModel @Inject constructor(
     private val fhirOperator: FhirOperator,
     private val libraryRepository: LibraryRepository,
     private val igManager: IgManager,
+    @ApplicationContext private val context: Context,
     @AppModule.IoDispatcher private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : ViewModel() {
 
@@ -98,7 +99,7 @@ class HomeViewModel @Inject constructor(
                 val librariesList = it.data
                 librariesList?.forEach { library ->
                     if(library.name != null){
-                        igManager.install(writeToFile(context, library))
+                        igManager.loadResources(ResourceType.Library.name, url = library.url, id = library.id, name = library.name, version = library.version)
                     } else {
                         print(library.url)
                     }
@@ -108,11 +109,6 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun writeToFile(context: Context, library: Library): File {
-        return File(context.filesDir, library.name).apply {
-            writeText(FhirContext.forCached(FhirVersionEnum.R4).newJsonParser().encodeResourceToString(library))
-        }
-    }
 
     fun getPatient(patientId: String) {
         viewModelScope.launch {
@@ -266,6 +262,7 @@ class HomeViewModel @Inject constructor(
     }
 
     fun saveQuestionnaire(questionnaireResponse: QuestionnaireResponse, questionnaire: String, facilityId: String, structureMapId: String, consultationFlowItemId: String? = null, consultationStage: String? = null) {
+        loadLibraries(context)
         viewModelScope.launch {
             patientRepository.saveQuestionnaire(questionnaireResponse, questionnaire,facilityId, structureMapId, consultationFlowItemId ,consultationStage).collect {
                 _saveQuestionnaire.value = it
@@ -339,6 +336,7 @@ class HomeViewModel @Inject constructor(
     private suspend fun preProcessQuestionnaire(questionnaire: Questionnaire, patientId: String, encounterId: String, isPreviouslySavedConsultation: Boolean) : Questionnaire? {
         var ansQuestionnaire: Questionnaire? = injectUuid(questionnaire)
         ansQuestionnaire = addEmptySpaceToScroll(ansQuestionnaire!!)
+        loadLibraries(context)
         if(questionnaire.hasExtension(URL_CQF_LIBRARY) && !isPreviouslySavedConsultation){
             ansQuestionnaire = injectInitialExpressionCqlValues(ansQuestionnaire!!, patientId, encounterId)
         }
