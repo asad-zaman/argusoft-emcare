@@ -39,6 +39,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(){
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         glideRequests = GlideApp.with(this)
+        homeViewModel.loadLibraries(context!!)
     }
 
     override fun initView() {

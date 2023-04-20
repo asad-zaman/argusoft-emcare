@@ -17,8 +17,8 @@
 package com.argusoft.who.emcare.sync
 
 import com.argusoft.who.emcare.data.local.pref.Preference
-import com.google.android.fhir.SyncDownloadContext
 import com.google.android.fhir.sync.DownloadWorkManager
+import com.google.android.fhir.sync.Request
 import com.google.android.fhir.sync.SyncDataParams
 import org.hl7.fhir.exceptions.FHIRException
 import org.hl7.fhir.r4.model.*
@@ -38,7 +38,7 @@ class DownloadWorkManagerImpl constructor(
   var formatString1: SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
   var formatString2: SimpleDateFormat = SimpleDateFormat("dd/MM/yyyy hh:mm:ss a")
 
-  override suspend fun getNextRequestUrl(context: SyncDownloadContext): String? {
+  override suspend fun getNextRequest(): Request? {
     var url = urls.poll() ?: return null
     if(url.contains("Patient", true)){
       url = url.plus("?_id=${preference.getFacilityId()}&_query=bundle")
@@ -54,12 +54,10 @@ class DownloadWorkManagerImpl constructor(
 //      }
     }
 
-    return url
+    return com.google.android.fhir.sync.Request.of(url)
   }
 
-  override suspend fun getSummaryRequestUrls(
-    context: SyncDownloadContext
-  ): Map<ResourceType, String> {
+  override suspend fun getSummaryRequestUrls(): Map<ResourceType, String> {
 
     return urls.associate { urlString ->
       val stringWithCount = urlString.plus("?${SyncDataParams.SUMMARY_KEY}=${SyncDataParams.SUMMARY_COUNT_VALUE}")
