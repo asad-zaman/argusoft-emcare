@@ -1,7 +1,10 @@
 package com.argusoft.who.emcare.web.indicators.indicator.entity;
 
 import com.argusoft.who.emcare.web.common.model.EntityAuditInfo;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -19,6 +22,7 @@ import java.util.Objects;
  */
 @Entity
 @Table(name = "indicator")
+@JsonIgnoreProperties
 public class Indicator extends EntityAuditInfo implements Serializable {
 
     @Id
@@ -53,10 +57,12 @@ public class Indicator extends EntityAuditInfo implements Serializable {
     @Column(name = "display_type")
     private String displayType;
 
+    @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(mappedBy = "numeratorIndicator", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JsonIgnore
     private List<IndicatorNumeratorEquation> numeratorEquation;
 
+    @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(mappedBy = "denominatorIndicator", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JsonIgnore
     private List<IndicatorDenominatorEquation> denominatorEquation;
