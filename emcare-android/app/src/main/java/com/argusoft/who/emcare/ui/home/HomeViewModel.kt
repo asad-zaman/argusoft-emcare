@@ -98,17 +98,18 @@ class HomeViewModel @Inject constructor(
             libraryRepository.getLibraries().collect {
                 val librariesList = it.data
                 librariesList?.forEach { library ->
-                    if(library.name != null){
-                        igManager.loadResources(ResourceType.Library.name, url = library.url, id = library.id, name = library.name, version = library.version)
-                    } else {
-                        print(library.url)
-                    }
+                    igManager.install(writeToFile(library))
                 }
                 _librariesLoaded.value = ApiResponse.Success(1)
             }
         }
     }
 
+    private fun writeToFile(library: Library): File {
+        return File(context.filesDir, if (library.name == null)  library.title else library.name).apply {
+            writeText(FhirContext.forR4Cached().newJsonParser().encodeResourceToString(library))
+        }
+    }
 
     fun getPatient(patientId: String) {
         viewModelScope.launch {
