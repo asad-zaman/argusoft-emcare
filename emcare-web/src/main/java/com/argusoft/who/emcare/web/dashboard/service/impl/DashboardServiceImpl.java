@@ -53,7 +53,7 @@ public class DashboardServiceImpl implements DashboardService {
         }
         List<List<Object>> scatterPoints = new ArrayList<>();
         for (ScatterCharDto scatterCharDto : scatterCharDtos) {
-            LocalDate week = LocalDate.now().with(ChronoField.ALIGNED_WEEK_OF_YEAR,scatterCharDto.getWeekly());
+            LocalDate week = LocalDate.now().with(ChronoField.ALIGNED_WEEK_OF_YEAR, scatterCharDto.getWeekly());
             LocalDate weekStartDate = week.with(DayOfWeek.MONDAY);
             List<Object> tuple = new ArrayList<>();
             tuple.add(scatterCharDto.getWeekly());
@@ -62,14 +62,17 @@ public class DashboardServiceImpl implements DashboardService {
             scatterPoints.add(tuple);
         }
         List<Long> absentWeekNumber = new ArrayList<>();
-        for(int i = 1; i < currentWeekNumber; i++) {
-            for (List<Object> p : scatterPoints) {
-                if (((Long) (p.get(0))).intValue() != i) {
-                    absentWeekNumber.add((long) i);
-                }
+        List<Long> presentWeeks = new ArrayList<>();
+
+        for (List<Object> objects : scatterPoints) {
+            presentWeeks.add(((Long) (objects.get(0))));
+        }
+        for (int i = 1; i < currentWeekNumber; i++) {
+            if (!presentWeeks.contains(Long.valueOf(i))) {
+                absentWeekNumber.add(Long.valueOf(i));
             }
         }
-            for(long w: absentWeekNumber) {
+            for (long w : absentWeekNumber) {
                 LocalDate week = LocalDate.now().with(ChronoField.ALIGNED_WEEK_OF_YEAR, w);
                 LocalDate weekStartDate = week.with(DayOfWeek.MONDAY);
                 List<Object> tuple = new ArrayList<>();
