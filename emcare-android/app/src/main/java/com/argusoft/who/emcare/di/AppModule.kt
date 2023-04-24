@@ -16,7 +16,7 @@ import com.argusoft.who.emcare.data.remote.ApiManager
 import com.argusoft.who.emcare.utils.common.NetworkHelper
 import com.google.android.fhir.FhirEngine
 import com.google.android.fhir.FhirEngineProvider
-import com.google.android.fhir.implementationguide.IgManager
+import com.google.android.fhir.knowledge.KnowledgeManager
 import com.google.android.fhir.workflow.FhirOperator
 import com.google.android.fhir.workflow.FhirOperatorBuilder
 import dagger.Module
@@ -79,18 +79,18 @@ class AppModule {
 
     @Singleton
     @Provides
-    fun provideAppFhirOperator(@ApplicationContext context: Context, fhirEngine: FhirEngine, igManager: IgManager): FhirOperator {
+    fun provideAppFhirOperator(@ApplicationContext context: Context, fhirEngine: FhirEngine, knowledgeManager: KnowledgeManager): FhirOperator {
         return FhirOperatorBuilder(context)
             .withFhirContext(FhirContext.forCached(FhirVersionEnum.R4))
             .withFhirEngine(fhirEngine)
-            .withIgManager(igManager)
+            .withIgManager(knowledgeManager)
             .build()
     }
 
     @Singleton
     @Provides
-    fun provideAppIgManager(@ApplicationContext context: Context): IgManager {
-        return IgManager.create(context)
+    fun provideAppIgManager(@ApplicationContext context: Context): KnowledgeManager {
+        return KnowledgeManager.create(context)
     }
 
     @Singleton

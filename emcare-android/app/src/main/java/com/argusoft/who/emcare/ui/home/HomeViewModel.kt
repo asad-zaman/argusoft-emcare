@@ -23,7 +23,7 @@ import com.argusoft.who.emcare.utils.listener.SingleLiveEvent
 import com.google.android.fhir.datacapture.extensions.allItems
 import com.google.android.fhir.datacapture.extensions.asStringValue
 import com.google.android.fhir.datacapture.extensions.createQuestionnaireResponseItem
-import com.google.android.fhir.implementationguide.IgManager
+import com.google.android.fhir.knowledge.KnowledgeManager
 import com.google.android.fhir.workflow.FhirOperator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -43,7 +43,7 @@ class HomeViewModel @Inject constructor(
     private val consultationFlowRepository: ConsultationFlowRepository,
     private val fhirOperator: FhirOperator,
     private val libraryRepository: LibraryRepository,
-    private val igManager: IgManager,
+    private val knowledgeManager: KnowledgeManager,
     @ApplicationContext private val context: Context,
     @AppModule.IoDispatcher private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : ViewModel() {
@@ -98,7 +98,7 @@ class HomeViewModel @Inject constructor(
             libraryRepository.getLibraries().collect {
                 val librariesList = it.data
                 librariesList?.forEach { library ->
-                    igManager.install(writeToFile(library))
+                    knowledgeManager.install(writeToFile(library))
                 }
                 _librariesLoaded.value = ApiResponse.Success(1)
             }
