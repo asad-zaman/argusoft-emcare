@@ -24,6 +24,7 @@ import com.google.android.material.tabs.TabLayout
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
+import java.util.*
 import kotlin.math.roundToInt
 
 @AndroidEntryPoint
@@ -43,7 +44,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(){
     }
 
     override fun initView() {
-        binding.headerLayout.toolbar.setTitleDashboard(id = getString(R.string.title_home))
+        binding.headerLayout.toolbar.setTitleDashboard(id = getString(R.string.title_home) + (if(preference.getLoggedInUser() != null) " " + Locale("",preference.getLoggedInUser()?.countryCode).displayCountry else ""))
         homePagerAdapter = HomePagerAdapter(this, PatientListFragment(), ConsultationListFragment())
         binding.viewPager2.adapter = homePagerAdapter
         binding.viewPager2.isUserInputEnabled = false
