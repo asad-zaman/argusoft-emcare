@@ -239,14 +239,12 @@ class HomeViewModel @Inject constructor(
                     _questionnaireWithQR.value = ApiResponse.ApiError(apiErrorMessageResId = R.string.initial_expression_error)
                 } else {
                     var questionnaireResponse: QuestionnaireResponse = QuestionnaireResponse()
-                    questionnaireResponse = if(isPreviouslySavedConsultation) {
-                        addHiddenQuestionnaireItems(previousQuestionnaireResponse!!, questionnaireJsonWithQR)
-                    } else
-                        generateQuestionnaireResponseWithPatientIdAndEncounterId(questionnaireJsonWithQR, patientId!!, encounterId!!)
 
+                    if(!isPreviouslySavedConsultation)
+                        questionnaireResponse = generateQuestionnaireResponseWithPatientIdAndEncounterId(questionnaireJsonWithQR, patientId!!, encounterId!!)
 
                     val questionnaireString = parser.encodeResourceToString(questionnaireJsonWithQR)
-                    val questionnaireResponseString = parser.encodeResourceToString(questionnaireResponse)
+                    val questionnaireResponseString = if(!isPreviouslySavedConsultation) parser.encodeResourceToString(questionnaireResponse) else previousQuestionnaireResponse!!
                     _questionnaireWithQR.value = ApiResponse.Success(data=questionnaireString to questionnaireResponseString)
                 }
             }
@@ -263,7 +261,6 @@ class HomeViewModel @Inject constructor(
     }
 
     fun saveQuestionnaire(questionnaireResponse: QuestionnaireResponse, questionnaire: String, facilityId: String, structureMapId: String, consultationFlowItemId: String? = null, consultationStage: String? = null) {
-        loadLibraries(context)
         viewModelScope.launch {
             patientRepository.saveQuestionnaire(questionnaireResponse, questionnaire,facilityId, structureMapId, consultationFlowItemId ,consultationStage).collect {
                 _saveQuestionnaire.value = it
@@ -337,7 +334,6 @@ class HomeViewModel @Inject constructor(
     private suspend fun preProcessQuestionnaire(questionnaire: Questionnaire, patientId: String, encounterId: String, isPreviouslySavedConsultation: Boolean) : Questionnaire? {
         var ansQuestionnaire: Questionnaire? = injectUuid(questionnaire)
         ansQuestionnaire = addEmptySpaceToScroll(ansQuestionnaire!!)
-        loadLibraries(context)
         if(questionnaire.hasExtension(URL_CQF_LIBRARY) && !isPreviouslySavedConsultation){
             ansQuestionnaire = injectInitialExpressionCqlValues(ansQuestionnaire!!, patientId, encounterId)
         }
@@ -346,7 +342,7 @@ class HomeViewModel @Inject constructor(
 
     private fun addEmptySpaceToScroll(questionnaire: Questionnaire): Questionnaire {
         questionnaire.item.add(Questionnaire.QuestionnaireItemComponent().apply {
-            linkId = UUID.randomUUID().toString()
+            linkId = EMPTY_SPACE_TO_SCROLL_LINK_ID
             type = Questionnaire.QuestionnaireItemType.DISPLAY
             text = "<br><br><br><br><br><br><br>"
         })
@@ -407,6 +403,7 @@ class HomeViewModel @Inject constructor(
             }
             return@withContext questionnaire
         } catch (e: Exception) {
+            e.printStackTrace()
             return@withContext null
         }
     }

@@ -40,7 +40,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(){
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         glideRequests = GlideApp.with(this)
-        homeViewModel.loadLibraries(context!!)
     }
 
     override fun initView() {
@@ -151,6 +150,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(){
 //                            duration = Snackbar.LENGTH_SHORT,
 //                            isError = false
 //                        )
+                        homeViewModel.loadLibraries(context!!)
                         loginViewModel.addDevice(
                             getDeviceName(),
                             getDeviceOS(),

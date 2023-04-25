@@ -15,6 +15,7 @@ import com.argusoft.who.emcare.ui.auth.login.LoginViewModel
 import com.argusoft.who.emcare.ui.common.*
 import com.argusoft.who.emcare.ui.common.base.BaseFragment
 import com.argusoft.who.emcare.ui.home.HomeActivity
+import com.argusoft.who.emcare.ui.home.HomeViewModel
 import com.argusoft.who.emcare.utils.extention.*
 import com.google.android.fhir.sync.SyncJobStatus
 import com.google.android.material.snackbar.Snackbar
@@ -29,6 +30,7 @@ class PatientProfileFragment : BaseFragment<FragmentPatientProfileBinding>() {
 
     private val patientProfileViewModel: PatientProfileViewModel by viewModels()
     private val loginViewModel: LoginViewModel by viewModels()
+    private val homeViewModel: HomeViewModel by viewModels()
     private val syncViewModel: SyncViewModel by viewModels()
     private lateinit var activeConsultationsAdapter: PatientProfileActiveConsultationsAdapter
     private lateinit var previousConsultationsAdapter: PatientProfilePreviousConsultationsAdapter
@@ -162,6 +164,7 @@ class PatientProfileFragment : BaseFragment<FragmentPatientProfileBinding>() {
 //                            duration = Snackbar.LENGTH_SHORT,
 //                            isError = false
 //                        )
+                        homeViewModel.loadLibraries(context!!)
                         loginViewModel.addDevice(
                             getDeviceName(),
                             getDeviceOS(),
