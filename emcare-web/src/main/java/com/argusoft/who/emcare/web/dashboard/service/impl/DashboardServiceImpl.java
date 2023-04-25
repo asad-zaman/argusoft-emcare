@@ -61,27 +61,6 @@ public class DashboardServiceImpl implements DashboardService {
             tuple.add(Date.valueOf(weekStartDate));
             scatterPoints.add(tuple);
         }
-        List<Long> absentWeekNumber = new ArrayList<>();
-        List<Long> presentWeeks = new ArrayList<>();
-
-        for (List<Object> objects : scatterPoints) {
-            presentWeeks.add(((Long) (objects.get(0))));
-        }
-        for (int i = 1; i < currentWeekNumber; i++) {
-            if (!presentWeeks.contains(Long.valueOf(i))) {
-                absentWeekNumber.add(Long.valueOf(i));
-            }
-        }
-            for (long w : absentWeekNumber) {
-                LocalDate week = LocalDate.now().with(ChronoField.ALIGNED_WEEK_OF_YEAR, w);
-                LocalDate weekStartDate = week.with(DayOfWeek.MONDAY);
-                List<Object> tuple = new ArrayList<>();
-                tuple.add(w);
-                tuple.add(0);
-                tuple.add(Date.valueOf(weekStartDate));
-                scatterPoints.add(tuple);
-            }
-
         listMap.put("consultationPerFacility", pieD);
         listMap.put("consultationByAgeGroup", ageData);
         listMap.put("scatterChart", scatterPoints);
