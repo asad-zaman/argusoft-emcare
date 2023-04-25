@@ -318,8 +318,6 @@ export class IndicatorComponent implements OnInit {
     this.submitted = true;
     if (this.indicatorForm.valid) {
       const body = this.getRequestBody(this.indicatorForm.value);
-      console.log(body);
-      return;
       if (this.isEdit) {
         body['indicatorId'] = this.editId;
       }
