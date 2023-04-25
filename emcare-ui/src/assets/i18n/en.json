@@ -345,4 +345,10 @@
   "Active": "Active",
   "In Active": "In Active",
   "Log Description": "Log Description"
+  "Consultation Date": "Consultation Date",
+  "Custom Value Type": "Custom Value Type",
+  "Custom Value Type Required Message": "Custom value type is required",
+  "Code Condition": "Code Condition",
+  "Custom Code Condition Required Message": "Custom code condition is required",
+  "Custom Value Required Message": "Custom value is required"
 }

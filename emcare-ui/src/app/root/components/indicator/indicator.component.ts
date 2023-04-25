@@ -60,6 +60,19 @@ export class IndicatorComponent implements OnInit {
   denEqCOnditionArr = [];
   numeratorEquationStringArr = [];
   denominatorEquationStringArr = [];
+  color = '#fff';
+  genderArr = [
+    { id: 'male', name: 'Male' },
+    { id: 'female', name: 'Female' },
+    { id: 'other', name: 'Other' }
+  ];
+  mumericDropdown = [];
+  colorConditionArr = [
+    { id: '<', name: '< (less than)' },
+    { id: '>', name: '> (greater than)' },
+    { id: '<=', name: '<= (less than equal to)' },
+    { id: '>=', name: '>= (greater than equal to)' }
+  ];
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -89,6 +102,7 @@ export class IndicatorComponent implements OnInit {
         const routeParams = this.route.snapshot.paramMap;
         this.editId = routeParams.get('id');
         this.initIndicatorForm();
+        this.createNumericDropdown();
       }
     }, (_e) => {
       this.toasterService.showToast('error', 'Server issue!', 'EM CARE !!');
@@ -235,7 +249,12 @@ export class IndicatorComponent implements OnInit {
       denominators: this.editId ?
         this.formBuilder.array([]) : this.formBuilder.array([this.newDenominatorAddition()]),
       numeratorEquation: [''],
-      denominatorEquation: ['']
+      denominatorEquation: [''],
+      colorArr: this.editId ?
+        this.formBuilder.array([]) : this.formBuilder.array([this.newColorSectionAddition()]),
+      gender: [''],
+      ageCondition: [''],
+      ageValue: ['']
     });
     this.checkEditParam();
   }
@@ -257,8 +276,10 @@ export class IndicatorComponent implements OnInit {
       valueType: null,
       eqIdentifier: null,
       appendOtherNumeratorDropdown: false,
-      isShow: true
-    })
+      isShow: true,
+      isValueDropdown: false,
+      valueDropdownArr: []
+    });
   }
 
   newDenominatorAddition(): FormGroup {
@@ -270,8 +291,10 @@ export class IndicatorComponent implements OnInit {
       valueType: null,
       eqIdentifier: null,
       appendOtherDenominatorDropdown: false,
-      isShow: true
-    })
+      isShow: true,
+      isValueDropdown: false,
+      valueDropdownArr: []
+    });
   }
 
   addNumerator() {
@@ -377,6 +400,9 @@ export class IndicatorComponent implements OnInit {
       "denominatorEquations": this.getDenominatorsBody(),
       "numeratorEquationString": JSON.stringify(this.numeratorEquationStringArr),
       "denominatorEquationString": JSON.stringify(this.denominatorEquationStringArr),
+      "colourSchema": JSON.stringify(this.getColorSchemaObj()),
+      "gender": formValue.gender.id,
+      "age": `${formValue.ageCondition.id} ${formValue.ageValue}`
     }
   }
 
@@ -388,7 +414,8 @@ export class IndicatorComponent implements OnInit {
         codeId: element.value.code ? element.value.code.codeId : null,
         code: element.value.code ? element.value.code.code : null,
         condition: element.value.condition ? element.value.condition.id : null,
-        value: element.value.value,
+        value: typeof element.value.value === 'object' && element.value.value !== null ?
+          element.value.value.id : element.value.value,
         valueType: element.value.valueType ? element.value.valueType.id : null,
         eqIdentifier: element.value.eqIdentifier
       });
@@ -404,7 +431,8 @@ export class IndicatorComponent implements OnInit {
         codeId: element.value.code ? element.value.code.codeId : null,
         code: element.value.code ? element.value.code.code : null,
         condition: element.value.condition ? element.value.condition.id : null,
-        value: element.value.value,
+        value: typeof element.value.value === 'object' && element.value.value !== null ?
+          element.value.value.id : element.value.value,
         valueType: element.value.valueType ? element.value.valueType.id : null,
         eqIdentifier: element.value.eqIdentifier
       });
@@ -441,7 +469,27 @@ export class IndicatorComponent implements OnInit {
             code: null,
             appendOtherNumeratorDropdown: false
           });
-          this.toasterService.showToast('error', 'Same code can not be selected again !', 'EMCARE !!');
+          this.toasterService.showToast('error', 'Same code can not be selected again !!', 'EMCARE !!');
+        } else {
+          this.getNumerators().controls[index].patchValue({
+            condition: event.value.condition ?
+              this.conditionArr.find(el => el.id === event.value.condition[0].charAt(0)) : null,
+            valueType: event.value.valueType ?
+              this.valueTypeArr.find(el => el.name === event.value.valueType) : null,
+          });
+          if (event.value.value && event.value.value.length > 0) {
+            let dArr = [];
+            event.value.value.forEach(el => {
+              dArr.push({ id: el, name: el });
+            });
+            this.getNumerators().controls[index].patchValue({
+              isValueDropdown: true, valueDropdownArr: dArr
+            });
+          } else {
+            this.getNumerators().controls[index].patchValue({
+              isValueDropdown: false, valueDropdownArr: []
+            });
+          }
         }
       } else {
         const isCodeAlreadySelected = this.selectedDenominatorArr.indexOf(event.value.codeId) > -1 ? true : false;
@@ -452,7 +500,27 @@ export class IndicatorComponent implements OnInit {
             code: null,
             appendOtherDenominatorDropdown: false
           });
-          this.toasterService.showToast('error', 'Same code can not be selected again !', 'EMCARE !!');
+          this.toasterService.showToast('error', 'Same code can not be selected again !!', 'EMCARE !!');
+        } else {
+          this.getDenominators().controls[index].patchValue({
+            condition: event.value.condition ?
+              this.conditionArr.find(el => el.id === event.value.condition[0].charAt(0)) : null,
+            valueType: event.value.valueType ?
+              this.valueTypeArr.find(el => el.name === event.value.valueType) : null,
+          });
+          if (event.value.value && event.value.value.length > 0) {
+            let dArr = [];
+            event.value.value.forEach(el => {
+              dArr.push({ id: el, name: el });
+            });
+            this.getDenominators().controls[index].patchValue({
+              isValueDropdown: true, valueDropdownArr: dArr
+            });
+          } else {
+            this.getDenominators().controls[index].patchValue({
+              isValueDropdown: false, valueDropdownArr: []
+            });
+          }
         }
       }
     }
@@ -540,5 +608,45 @@ export class IndicatorComponent implements OnInit {
     this.getDenominators().controls[i].patchValue({
       isShow: !currValue
     });
+  }
+
+  createNumericDropdown() {
+    for (let index = 1; index <= 100; index++) {
+      this.mumericDropdown.push({ id: index, name: index });
+    }
+  }
+
+  newColorSectionAddition(): FormGroup {
+    return this.formBuilder.group({
+      minValue: null,
+      condition: null,
+      maxValue: null,
+      color: '#ffffff'
+    });
+  }
+
+  addColorSection() {
+    this.getColorSections().push(this.newColorSectionAddition());
+  }
+
+  removeColorSection(i: number) {
+    this.getColorSections().removeAt(i);
+  }
+
+  getColorSections(): FormArray {
+    return this.indicatorForm.get("colorArr") as FormArray;
+  }
+
+  getColorSchemaObj() {
+    const tempArr = [];
+    this.getColorSections().controls.forEach(element => {
+      tempArr.push({
+        minValue: element.value.minValue.id,
+        condition: element.value.condition.id,
+        maxValue: element.value.maxValue.id,
+        color: element.value.color
+      });
+    });
+    return tempArr;
   }
 }
