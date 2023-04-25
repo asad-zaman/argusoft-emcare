@@ -256,8 +256,10 @@ export class IndicatorComponent implements OnInit {
       value: null,
       valueType: null,
       eqIdentifier: null,
-      appendOtherNumeratorDropdown: false
-    })
+      appendOtherNumeratorDropdown: false,
+      isValueDropdown: false,
+      valueDropdownArr: []
+    });
   }
 
   newDenominatorAddition(): FormGroup {
@@ -268,8 +270,10 @@ export class IndicatorComponent implements OnInit {
       value: null,
       valueType: null,
       eqIdentifier: null,
-      appendOtherDenominatorDropdown: false
-    })
+      appendOtherDenominatorDropdown: false,
+      isValueDropdown: false,
+      valueDropdownArr: []
+    });
   }
 
   addNumerator() {
@@ -314,6 +318,8 @@ export class IndicatorComponent implements OnInit {
     this.submitted = true;
     if (this.indicatorForm.valid) {
       const body = this.getRequestBody(this.indicatorForm.value);
+      console.log(body);
+      return;
       if (this.isEdit) {
         body['indicatorId'] = this.editId;
       }
@@ -386,7 +392,8 @@ export class IndicatorComponent implements OnInit {
         codeId: element.value.code ? element.value.code.codeId : null,
         code: element.value.code ? element.value.code.code : null,
         condition: element.value.condition ? element.value.condition.id : null,
-        value: element.value.value,
+        value: typeof element.value.value === 'object' && element.value.value !== null ?
+          element.value.value.id : element.value.value,
         valueType: element.value.valueType ? element.value.valueType.id : null,
         eqIdentifier: element.value.eqIdentifier
       });
@@ -402,7 +409,8 @@ export class IndicatorComponent implements OnInit {
         codeId: element.value.code ? element.value.code.codeId : null,
         code: element.value.code ? element.value.code.code : null,
         condition: element.value.condition ? element.value.condition.id : null,
-        value: element.value.value,
+        value: typeof element.value.value === 'object' && element.value.value !== null ?
+          element.value.value.id : element.value.value,
         valueType: element.value.valueType ? element.value.valueType.id : null,
         eqIdentifier: element.value.eqIdentifier
       });
@@ -440,6 +448,26 @@ export class IndicatorComponent implements OnInit {
             appendOtherNumeratorDropdown: false
           });
           this.toasterService.showToast('error', 'Same code can not be selected again !!', 'EMCARE !!');
+        } else {
+          this.getNumerators().controls[index].patchValue({
+            condition: event.value.condition ?
+              this.conditionArr.find(el => el.id === event.value.condition[0].charAt(0)) : null,
+            valueType: event.value.valueType ?
+              this.valueTypeArr.find(el => el.name === event.value.valueType) : null,
+          });
+          if (event.value.value && event.value.value.length > 0) {
+            let dArr = [];
+            event.value.value.forEach(el => {
+              dArr.push({ id: el, name: el });
+            });
+            this.getNumerators().controls[index].patchValue({
+              isValueDropdown: true, valueDropdownArr: dArr
+            });
+          } else {
+            this.getNumerators().controls[index].patchValue({
+              isValueDropdown: false, valueDropdownArr: []
+            });
+          }
         }
       } else {
         const isCodeAlreadySelected = this.selectedDenominatorArr.indexOf(event.value.codeId) > -1 ? true : false;
@@ -451,6 +479,26 @@ export class IndicatorComponent implements OnInit {
             appendOtherDenominatorDropdown: false
           });
           this.toasterService.showToast('error', 'Same code can not be selected again !!', 'EMCARE !!');
+        } else {
+          this.getDenominators().controls[index].patchValue({
+            condition: event.value.condition ?
+              this.conditionArr.find(el => el.id === event.value.condition[0].charAt(0)) : null,
+            valueType: event.value.valueType ?
+              this.valueTypeArr.find(el => el.name === event.value.valueType) : null,
+          });
+          if (event.value.value && event.value.value.length > 0) {
+            let dArr = [];
+            event.value.value.forEach(el => {
+              dArr.push({ id: el, name: el });
+            });
+            this.getDenominators().controls[index].patchValue({
+              isValueDropdown: true, valueDropdownArr: dArr
+            });
+          } else {
+            this.getDenominators().controls[index].patchValue({
+              isValueDropdown: false, valueDropdownArr: []
+            });
+          }
         }
       }
     }
