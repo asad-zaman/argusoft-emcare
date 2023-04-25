@@ -551,6 +551,19 @@ CREATE TABLE IF NOT EXISTS public.application_log
 
 ALTER TABLE IF EXISTS public.application_log OWNER to postgres;
 
+CREATE TABLE IF NOT EXISTS public.binary_resource
+(
+    id bigint NOT NULL,
+    created_by character varying(255) COLLATE pg_catalog."default" NOT NULL,
+    created_on timestamp without time zone NOT NULL,
+    modified_by character varying(255) COLLATE pg_catalog."default",
+    modified_on timestamp without time zone,
+    resource_id character varying(255) COLLATE pg_catalog."default",
+    text text COLLATE pg_catalog."default",
+    CONSTRAINT binary_resource_pkey PRIMARY KEY (id)
+);
+
+ALTER TABLE IF EXISTS public.binary_resource OWNER to postgres;
 
 INSERT INTO public.email_content (id, code, content, created_at, subject, var_list) VALUES (3, 'CONFIRMATION_EMAIL_APPROVED', '<!DOCTYPE html>
 <html>
