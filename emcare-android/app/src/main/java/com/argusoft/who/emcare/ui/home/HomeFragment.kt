@@ -44,7 +44,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(){
     }
 
     override fun initView() {
-        binding.headerLayout.toolbar.setTitleDashboard(id = getString(R.string.title_home) + (if(preference.getLoggedInUser() != null) " " + Locale("",preference.getLoggedInUser()?.countryCode).displayCountry else ""))
+        binding.headerLayout.toolbar.setTitleDashboard(id = getString(R.string.title_home) + " " + preference.getCountry())
         homePagerAdapter = HomePagerAdapter(this, PatientListFragment(), ConsultationListFragment())
         binding.viewPager2.adapter = homePagerAdapter
         binding.viewPager2.isUserInputEnabled = false

@@ -18,6 +18,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import org.hl7.fhir.r4.model.PlanDefinition
+import java.util.*
 import javax.inject.Inject
 
 class LoginRepository @Inject constructor(
@@ -45,9 +46,11 @@ class LoginRepository @Inject constructor(
                         CoroutineScope(Dispatchers.IO).launch {
                             fhirEngine.clearDatabase()
                         }
+                        preference.writeLastSyncTimestamp("") //Since its a new user and database is cleared it will require complete sync.
                     }
                     preference.setFacilityId(loggedInUser.facility!![0].facilityId)
                     preference.setLoggedInUser(loggedInUser)
+                    preference.setCountry(Locale("",loggedInUser.countryCode).displayCountry)
                     database.saveLoginUser(loggedInUser.apply {
                         this.password = requestMap["password"]?.let { EncPref.encrypt(it) }
                     })

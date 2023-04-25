@@ -21,6 +21,8 @@ class PreferenceManager(private val sharedPreferences: EncPref) : Preference {
         private const val EMCARE_LAST_SYNC_TIME_STAMP = "EMCARE_LAST_SYNC_TIME_STAMP"
         private const val SUBMITTED_RESOURCE = "SUBMITTED_RESOURCE"
         private const val THEME = "THEME"
+        private const val COUNTRY = "COUNTRY"
+
     }
 
     val parser = FhirContext.forCached(FhirVersionEnum.R4).newJsonParser()
@@ -103,12 +105,22 @@ class PreferenceManager(private val sharedPreferences: EncPref) : Preference {
         return sharedPreferences.getInt(THEME, 0)
     }
 
+    override fun setCountry(country: String) {
+        sharedPreferences.putString(COUNTRY, country)
+    }
+
+    override fun getCountry(): String {
+        return sharedPreferences.getString(COUNTRY, "")
+    }
+
     override fun clear() {
-        //Tweaked to persist facilityId
+        //Tweaked to persist facilityId & country
         val facilityId = sharedPreferences.getString(FACILITY_ID, "")
+        val country = sharedPreferences.getString(COUNTRY, "")
         val lastSyncTimeStamp = sharedPreferences.getString(EMCARE_LAST_SYNC_TIME_STAMP,"")
         sharedPreferences.clear()
         setFacilityId(facilityId)
+        setCountry(country)
         writeLastSyncTimestamp(lastSyncTimeStamp)
     }
 }

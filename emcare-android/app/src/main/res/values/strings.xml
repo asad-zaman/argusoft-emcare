@@ -115,6 +115,7 @@
     <string name="label_don_t_have_an_account">Don\'t have an account?</string>
     <string name="label_app_version">APP VERSION:</string>
     <string name="label_signup">New User? Signup</string>
+    <string name="label_app_name">EM Care</string>
     <string name="label_sign_up">Sign Up</string>
     <string name="hint_first_name">First Name</string>
     <string name="hint_last_name">Last Name</string>
