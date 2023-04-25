@@ -18,6 +18,7 @@ public class CommonConstant {
     public static final String HINDI = "hin";
     public static final String ENGLISH = "en";
     public static final String LOCATION_TYPE_STRING = "LOCATION";
+    public static final String BINARY_TYPE_STRING = "BINARY";
     public static final String OPERATION_DEFINITION = "OPERATIONDEFINITION";
     public static final String CODE_SYSTEM = "CODESYSTEM";
     public static final String QUESTIONNAIRE = "QUESTIONNAIRE";
