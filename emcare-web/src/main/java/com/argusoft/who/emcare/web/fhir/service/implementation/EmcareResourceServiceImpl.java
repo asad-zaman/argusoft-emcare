@@ -613,30 +613,7 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
             patientsList.add(patient);
         }
 
-        String loggedInUserId = emCareSecurityUser.getLoggedInUserId();
-        userLocationMappingRepository.findByUserId(loggedInUserId);
         patientDtosList = EmcareResourceMapper.patientEntitiesToDtoMapper(patientsList);
-
-        //Converting caregiverId and locationid to name
-        for (PatientDto patientDto : patientDtosList) {
-
-            if (patientDto.getCaregiver() != null) {
-                RelatedPerson caregiver = relatedPersonResourceService.getResourceById(patientDto.getCaregiver());
-                if (caregiver != null) {
-                    patientDto.setCaregiver(caregiver.getNameFirstRep().getGiven().get(0) + " " + caregiver.getNameFirstRep().getFamily());
-                } else {
-                    patientDto.setCaregiver(null);
-                }
-            }
-
-            if (patientDto.getFacility() != null) {
-                FacilityDto facilityDto = locationResourceService.getFacilityDto(patientDto.getFacility());
-                patientDto.setFacility(facilityDto.getFacilityName());
-                patientDto.setOrganizationName(facilityDto.getOrganizationName());
-                patientDto.setLocationName(facilityDto.getLocationName());
-            }
-        }
-
         return patientDtosList;
     }
 
