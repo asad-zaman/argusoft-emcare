@@ -4,8 +4,7 @@ import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.common.service.CommonService;
 import com.argusoft.who.emcare.web.tenant.entity.TenantConfig;
 import com.argusoft.who.emcare.web.tenant.repository.TenantConfigRepository;
-import com.argusoft.who.emcare.web.user.service.UserService;
-import org.keycloak.representations.idm.UserRepresentation;
+import com.argusoft.who.emcare.web.userlocationmapping.dao.UserLocationMappingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -42,7 +41,7 @@ class TenantFilter implements Filter {
     TenantConfigRepository tenantConfigRepository;
 
     @Autowired
-    UserService userService;
+    UserLocationMappingRepository userLocationMappingRepository;
 
     @Value("${defaultTenant}")
     private String defaultTenant;
@@ -105,12 +104,11 @@ class TenantFilter implements Filter {
     }
 
     public String getTenantDetailsFromUser(String userId) {
-        UserRepresentation userRepresentation = userService.getUserById(userId);
-        Map<String, List<String>> stringListMap = userRepresentation.getAttributes();
-        if (stringListMap.get(CommonConstant.TENANT_ID).size() < 1) {
+        Map<String, Object> map = userLocationMappingRepository.getUserTenantNameFromKeyCloak(userId);
+        if (Objects.isNull(map.get(CommonConstant.VALUE))) {
             return defaultTenant;
         } else {
-            return stringListMap.get(CommonConstant.TENANT_ID).get(0);
+            return map.get(CommonConstant.VALUE).toString();
         }
     }
 

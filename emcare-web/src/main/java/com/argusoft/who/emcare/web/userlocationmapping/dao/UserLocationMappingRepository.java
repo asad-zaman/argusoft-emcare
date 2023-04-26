@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Map;
 
 public interface UserLocationMappingRepository extends JpaRepository<UserLocationMapping, Integer> {
 
@@ -95,5 +96,8 @@ public interface UserLocationMappingRepository extends JpaRepository<UserLocatio
 
     @Query(value = "select distinct(user_id) from user_location_mapping;", nativeQuery = true)
     List<String> getDistinctUserId();
+
+    @Query(value = "select * from keycloak.user_attribute where user_id= :userId and name = 'tenantID' ;", nativeQuery = true)
+    Map<String, Object> getUserTenantNameFromKeyCloak(@Param("userId") String userId);
 
 }
