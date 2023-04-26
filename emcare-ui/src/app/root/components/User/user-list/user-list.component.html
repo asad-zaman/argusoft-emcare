@@ -70,10 +70,10 @@
               <td class="text-center">
                 <span [ngClass]="(!!user.enabled) ? 'badges-red bg-green' : 'badges-red'">
                   <ng-container *ngIf="!!user.enabled; else NotVerified">
-                    Active
+                    {{'Active' | translate}}
                   </ng-container>
                   <ng-template #NotVerified>
-                    In Active
+                    {{'In Active' | translate}}
                   </ng-template>
                 </span>
               </td>

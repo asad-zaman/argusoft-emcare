@@ -20,15 +20,15 @@
       </span>
       <div class="ml-1">
         <div class="">
-          <span class="cst-detail">Patient Name: </span>
+          <span class="cst-detail">{{'Patient Name' | translate}}: </span>
           <span class="">{{patientData['name']}}</span>
         </div>
         <div class="">
-          <span class="cst-detail">Patient Age: </span>
+          <span class="cst-detail">{{'Patient Age' | translate}}: </span>
           <span class="">{{patientData['age']}}</span>
         </div>
         <div class="">
-          <span class="cst-detail">Patient Gender: </span>
+          <span class="cst-detail">{{'Patient Gender' | translate}}: </span>
           <span class="">{{patientData['gender']}}</span>
         </div>
       </div>
@@ -39,43 +39,47 @@
           <div class="d-grid">
             <img (click)="selectEncounter(0)" class="cst-img-icon" [ngClass]="{'selected': selectedEncounterIcon === 0}"
               src="assets/images/Registration.svg" alt="EMCARE">
-            <h3 (click)="selectEncounter(0)" class="mx-2 icon-text cursor-pointer">Registration</h3>
+            <h3 (click)="selectEncounter(0)" class="mx-2 icon-text cursor-pointer">{{'Registration' | translate}}</h3>
           </div>
 
           <div class="d-grid">
             <img (click)="selectEncounter(1)" class="cst-img-icon" [ngClass]="{'selected': selectedEncounterIcon === 1}"
               src="assets/images/danger_signs.svg" alt="EMCARE">
-            <span (click)="selectEncounter(0)" class="mx-2 icon-text cursor-pointer">Danger Sign</span>
+            <span (click)="selectEncounter(0)"
+              class="mx-2 icon-text cursor-pointer">{{"Danger Sign" | translate}}</span>
           </div>
 
           <div class="d-grid">
             <img (click)="selectEncounter(2)" class="cst-img-icon" [ngClass]="{'selected': selectedEncounterIcon === 2}"
               src="assets/images/Measurements.svg" alt="EMCARE">
-            <span (click)="selectEncounter(0)" class="mx-2 icon-text cursor-pointer">Measurements</span>
+            <span (click)="selectEncounter(0)"
+              class="mx-2 icon-text cursor-pointer">{{'Measurements' | translate}}</span>
           </div>
 
           <div class="d-grid">
             <img (click)="selectEncounter(3)" class="cst-img-icon" [ngClass]="{'selected': selectedEncounterIcon === 3}"
               src="assets/images/Symptoms.svg" alt="EMCARE">
-            <span (click)="selectEncounter(0)" class="mx-2 icon-text cursor-pointer">Symptoms</span>
+            <span (click)="selectEncounter(0)" class="mx-2 icon-text cursor-pointer">{{'Symptoms' | translate}}</span>
           </div>
 
           <div class="d-grid">
             <img (click)="selectEncounter(4)" class="cst-img-icon" [ngClass]="{'selected': selectedEncounterIcon === 4}"
               src="assets/images/Signs.svg" alt="EMCARE">
-            <span (click)="selectEncounter(0)" class="mx-2 icon-text cursor-pointer">Signs</span>
+            <span (click)="selectEncounter(0)" class="mx-2 icon-text cursor-pointer">{{"Signs" | translate}}</span>
           </div>
 
           <div class="d-grid">
             <img (click)="selectEncounter(5)" class="cst-img-icon" [ngClass]="{'selected': selectedEncounterIcon === 5}"
               src="assets/images/assessments.svg" alt="EMCARE">
-            <span (click)="selectEncounter(0)" class="mx-2 icon-text cursor-pointer">Assessments</span>
+            <span (click)="selectEncounter(0)"
+              class="mx-2 icon-text cursor-pointer">{{'Assessments' | translate}}</span>
           </div>
 
           <div class="d-grid">
             <img (click)="selectEncounter(6)" class="cst-img-icon" [ngClass]="{'selected': selectedEncounterIcon === 6}"
               src="assets/images/classifications.svg" alt="EMCARE">
-            <span (click)="selectEncounter(0)" class="mx-2 icon-text cursor-pointer">Classifications</span>
+            <span (click)="selectEncounter(0)"
+              class="mx-2 icon-text cursor-pointer">{{'Classifications' | translate}}</span>
           </div>
         </div>
       </div>
@@ -93,7 +97,7 @@
           </div>
           <div class="row py-4" *ngIf="!currentObj || currentObj['queAnsObj'].length == 0">
             <div class="col-12 mt-2">
-              <h5 class="no-label">There are not enought consultations!!!</h5>
+              <h5 class="no-label">{{'NoConsultations' | translate}}!</h5>
             </div>
           </div>
         </div>

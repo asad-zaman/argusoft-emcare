@@ -37,7 +37,8 @@
             <div class="mb-3">
               <label class="form-label">{{'File' | translate}}</label>
               <input class="form-control" formControlName="logFile" type="file" id="logFile"
-                placeholder="{{'Log File Placeholder' | translate}}" accept=".apk, .xapk" (change)="onFileUploaded($event)"
+                placeholder="{{'Log File Placeholder' | translate}}" accept=".apk, .xapk"
+                (change)="onFileUploaded($event)"
                 [ngClass]="{ 'is-invalid': submitted && getFormConfrols.logFile.errors }">
               <div *ngIf="submitted && getFormConfrols.logFile.errors" class="invalid-feedback">
                 <div class="cst-error-style" *ngIf="getFormConfrols.logFile.errors.required">
@@ -67,7 +68,7 @@
           </div>
           <div class="col-12">
             <div class="mb-3 customd-div">
-              <label class="form-label f-16">Log List</label>
+              <label class="form-label f-16">{{'Log List' | translate}}</label>
               <ul>
                 <ng-container *ngFor="let log of addLogForm.get('logs').value">
                   <li>

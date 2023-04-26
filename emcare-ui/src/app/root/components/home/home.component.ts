@@ -5,7 +5,7 @@ import { AuthGuard } from 'src/app/auth/auth.guard';
 import { FhirService } from 'src/app/shared';
 import { default as NoData } from 'highcharts/modules/no-data-to-display';
 NoData(Highcharts);
-
+import L from "leaflet";
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -44,6 +44,14 @@ export class HomeComponent implements OnInit {
     this.getDashboardData();
     this.getChartData();
     this.getIndicatorCompileValue();
+    // var map_init = L.map('lMap', {
+    //   center: [9.0820, 8.6753],
+    //   zoom: 3
+    // });
+    // var osm = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', {
+    //   crossOrigin: true,
+    // }).addTo(map_init);
+    // console.log(map_init);
   }
 
   getDashboardData() {
@@ -94,9 +102,12 @@ export class HomeComponent implements OnInit {
       tooltip: {
         enabled: true,
         headerFormat: undefined,
-        pointFormat: '<b>Week No. = {point.x}</b>, <b>Consultations = {point.y}</b>',
+        pointFormat: `<b>Date = {point.d}</b>, <b>Week = {point.week}</b>, <b>Consultations = {point.y}</b>`,
       },
       xAxis: {
+        labels: {
+          format: '{value:%e-%b-%Y}'
+        },
         title: {
           text: undefined,
         },
@@ -152,7 +163,14 @@ export class HomeComponent implements OnInit {
     this.fhirService.getChartData().subscribe((res: Array<any>) => {
       if (res) {
         //  for scatter plot
-        this.scatterData = res['scatterChart'];
+        res['scatterChart'].forEach((el, index) => {
+          this.scatterData.push({
+            x: new Date(el[2]),
+            y: el[1],
+            week: el[0],
+            d: new Date(el[2]).toLocaleDateString()
+          });
+        });
         //  for first pie chart
         this.consultationPerFacility = res['consultationPerFacility'];
         this.consultationPerFacility.forEach(el => {
@@ -204,7 +222,7 @@ export class HomeComponent implements OnInit {
           allowPointSelect: true,
           cursor: 'pointer',
           dataLabels: {
-            enabled: false,
+            enabled: true,
             format: '<b>{point.name}</b>: {point.percentage:.1f} %'
           }
         }
@@ -237,7 +255,7 @@ export class HomeComponent implements OnInit {
           allowPointSelect: true,
           cursor: 'pointer',
           dataLabels: {
-            enabled: false,
+            enabled: true,
             format: '<b>{point.name}</b>: {point.percentage:.1f} %'
           }
         }
@@ -286,7 +304,7 @@ export class HomeComponent implements OnInit {
       data.marker.addListener('mouseout', function () {
         data.infowindow.close();
       });
-    });    
+    });
   }
 
   redirectToRoute(route: string) {
