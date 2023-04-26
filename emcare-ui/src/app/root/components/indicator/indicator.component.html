@@ -232,7 +232,7 @@
             </div>
           </div>
           <ng-container *ngIf="getDenominators().controls.length == 0">
-            <h6>Please enter denominator !!</h6>
+            <h6>{{'Please enter denominator' | translate}} !!</h6>
           </ng-container>
         </div>
         <div *ngIf="getDenominators().controls.length !== 0" class="row">

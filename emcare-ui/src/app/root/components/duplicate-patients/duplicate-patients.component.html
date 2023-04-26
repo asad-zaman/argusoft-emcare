@@ -10,17 +10,17 @@
           <div class="accordion-header" id="heading{{i+1}}">
             <button class="accordion-button" type="button" data-bs-toggle="collapse" attr.data-bs-target="#col_{{i+1}}"
               aria-expanded="true" attr.aria-controls="col_{{i+1}}">
-              <span class="badge-duplicate">Duplicate</span>
+              <span class="badge-duplicate">{{'Duplicate' | translate}}</span>
               <span><strong>{{getPatientName(i)}}</strong></span>
             </button>
             <div class="dropdown pos">
               <!-- toDO currently disabled -->
               <button disabled="true" class="btn cst-card-btn mr-3" type="button" (click)="openModal(i)"
                 data-bs-toggle="modal" data-bs-target="#patientModal">
-                Merge
+                {{'Merge' | translate}}
               </button>
               <button disabled="true" class="btn cst-card-btn" type="button" (click)="deletePatient(i)">
-                Delete
+                {{'Delete' | translate}}
               </button>
             </div>
           </div>
@@ -30,7 +30,7 @@
               <div class="accordion-body" [ngClass]="{'cst-border': i!==dPatient.length-1}">
                 <div class="row">
                   <div class="col-sm-2">
-                    <span>Name</span>
+                    <span>{{'Name' | translate}}</span>
                     <ng-container *ngIf="patient.givenName && patient.familyName; else noName">
                       <p>{{patient.givenName}} {{patient.familyName}}</p>
                     </ng-container>
@@ -39,23 +39,23 @@
                     </ng-template>
                   </div>
                   <div class="col-sm-2">
-                    <span>Caregiver Name</span>
+                    <span>{{'Caregiver Name' | translate}}</span>
                     <p>{{patient.caregiver ? patient.caregiver : 'NA'}}</p>
                   </div>
                   <div class="col-sm-2">
-                    <span>Gender</span>
+                    <span>{{'Gender' | translate}}</span>
                     <p>{{patient.gender}}</p>
                   </div>
                   <div class="col-sm-2">
-                    <span>DOB</span>
+                    <span>{{'DOB' | translate}}</span>
                     <p>{{patient.dob | date: 'dd.MM.YYYY'}}</p>
                   </div>
                   <div class="col-sm-2">
-                    <span>Facility</span>
+                    <span>{{'Facility' | translate}}</span>
                     <p>{{patient.facility}}</p>
                   </div>
                   <div class="col-sm-2">
-                    <span>Location Name</span>
+                    <span>{{'Location Name' | translate}}</span>
                     <p>{{patient.locationName}}</p>
                   </div>
                 </div>
@@ -67,7 +67,7 @@
     </div>
   </div>
   <ng-template #noData>
-    Oops, No Duplicates are there!!
+    {{'NoDuplicatesMsg' | translate}}
   </ng-template>
 </div>
 <div class="modal fade" id="patientModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -83,7 +83,7 @@
             [ngClass]="{'cst-border': i!==tempararyPatientData.length-1, 'cst-patient-border': selectedPatientIndex === i}">
             <div class="row">
               <div class="col-sm-2">
-                <span>Name</span>
+                <span>{{'Name' | translate}}</span>
                 <ng-container *ngIf="patient.givenName && patient.familyName; else noName">
                   <p>{{patient.givenName}} {{patient.familyName}}</p>
                 </ng-container>
@@ -92,23 +92,23 @@
                 </ng-template>
               </div>
               <div class="col-sm-2">
-                <span>Caregiver Name</span>
+                <span>{{'Caregiver Name' | translate}}</span>
                 <p>{{patient.caregiver}}</p>
               </div>
               <div class="col-sm-2">
-                <span>Gender</span>
+                <span>{{'Gender' | translate}}</span>
                 <p>{{patient.gender}}</p>
               </div>
               <div class="col-sm-2">
-                <span>DOB</span>
+                <span>{{'DOB' | translate}}</span>
                 <p>{{patient.dob | date: 'dd.MM.YYYY'}}</p>
               </div>
               <div class="col-sm-2">
-                <span>Facility</span>
+                <span>{{'Facility' | translate}}</span>
                 <p>{{patient.facility}}</p>
               </div>
               <div class="col-sm-2">
-                <span>Location Name</span>
+                <span>{{'Location Name' | translate}}</span>
                 <p>{{patient.locationName}}</p>
               </div>
             </div>
