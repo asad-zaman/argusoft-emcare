@@ -67,6 +67,9 @@ public class Indicator extends EntityAuditInfo implements Serializable {
     @JsonIgnore
     private List<IndicatorDenominatorEquation> denominatorEquation;
 
+    @Column(name = "colour_schema")
+    private String colourSchema;
+
     public Long getIndicatorId() {
         return indicatorId;
     }
@@ -161,6 +164,14 @@ public class Indicator extends EntityAuditInfo implements Serializable {
 
     public void setDenominatorEquationString(String denominatorEquationString) {
         this.denominatorEquationString = denominatorEquationString;
+    }
+
+    public String getColourSchema() {
+        return colourSchema;
+    }
+
+    public void setColourSchema(String colourSchema) {
+        this.colourSchema = colourSchema;
     }
 
     @Override

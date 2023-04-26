@@ -22,6 +22,7 @@ public class IndicatorDto {
     private String numeratorEquationString;
     private String denominatorEquationString;
     private String denominatorIndicatorEquation;
+    private String colourSchema;
 
     private String displayType;
     private List<IndicatorNumeratorEquationDto> numeratorEquations;
@@ -121,5 +122,13 @@ public class IndicatorDto {
 
     public void setDenominatorEquationString(String denominatorEquationString) {
         this.denominatorEquationString = denominatorEquationString;
+    }
+
+    public String getColourSchema() {
+        return colourSchema;
+    }
+
+    public void setColourSchema(String colourSchema) {
+        this.colourSchema = colourSchema;
     }
 }
