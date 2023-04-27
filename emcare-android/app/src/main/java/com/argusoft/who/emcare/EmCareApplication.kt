@@ -1,8 +1,10 @@
 package com.argusoft.who.emcare
 
 import android.app.Application
+import android.content.Context
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
+import com.argusoft.who.emcare.data.local.ReferenceUrlResolver
 import com.argusoft.who.emcare.data.local.database.Database
 import com.argusoft.who.emcare.data.local.pref.Preference
 import com.argusoft.who.emcare.data.remote.Api
@@ -10,6 +12,7 @@ import com.argusoft.who.emcare.sync.EmcareAuthenticator
 import com.google.android.fhir.*
 import com.google.android.fhir.datacapture.DataCaptureConfig
 import com.google.android.fhir.datacapture.ExternalAnswerValueSetResolver
+import com.google.android.fhir.datacapture.XFhirQueryResolver
 import com.google.android.fhir.search.StringFilterModifier
 import com.google.android.fhir.search.search
 import com.google.android.fhir.sync.remote.HttpLogger
@@ -46,7 +49,9 @@ class EmCareApplication : Application(), Configuration.Provider, DataCaptureConf
                 override suspend fun resolve(uri: String): List<Coding> {
                     return lookupCodesFromDb(uri)
                 }
-            }
+            },
+            xFhirQueryResolver = { FhirEngineProvider.getInstance(this).search(it) },
+            urlResolver = ReferenceUrlResolver(this@EmCareApplication as Context)
         )
     }
 

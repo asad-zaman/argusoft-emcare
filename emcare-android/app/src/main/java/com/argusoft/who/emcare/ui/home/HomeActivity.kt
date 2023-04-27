@@ -50,7 +50,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
                                                                                         binding.navView.menu.getItem(4).title = "Logout"
         sidepaneAdapter = SidepaneAdapter(onClickListener = this, navHostFragment = navHostFragment)
         setupSidepane()
-        homeViewModel.loadLibraries()
+        homeViewModel.loadLibraries(applicationContext)
     }
 
     fun openDrawer() {

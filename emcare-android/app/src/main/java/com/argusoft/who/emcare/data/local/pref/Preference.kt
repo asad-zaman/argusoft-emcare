@@ -44,5 +44,9 @@ interface Preference {
 
     fun getTheme(): Int
 
+    fun setCountry(country: String)
+
+    fun getCountry(): String
+
     fun clear()
 }

@@ -103,6 +103,8 @@ class PatientRepository @Inject constructor(
     fun saveQuestionnaire(questionnaireResponse: QuestionnaireResponse, questionnaire: String, facilityId: String, structureMapId: String = "", consultationFlowItemId: String? = null,consultationStage: String? = null) = flow {
         val parser = FhirContext.forCached(FhirVersionEnum.R4).newJsonParser()
         val questionnaireResource: Questionnaire = parser.parseResource(questionnaire) as Questionnaire
+        val questionnaireResponseItems = questionnaireResponse.item //Removing the empty blank space item from QR.
+        questionnaireResponse.item = questionnaireResponseItems.dropLast(1)
         try {
             if (QuestionnaireResponseValidator.validateQuestionnaireResponse(
                     questionnaireResource,

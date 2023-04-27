@@ -1,11 +1,14 @@
 package com.argusoft.who.emcare.ui.home
 
+import android.app.Application
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.uhn.fhir.context.FhirContext
 import ca.uhn.fhir.context.FhirVersionEnum
+import com.argusoft.who.emcare.EmCareApplication
 import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.data.remote.ApiResponse
 import com.argusoft.who.emcare.di.AppModule
@@ -20,12 +23,15 @@ import com.argusoft.who.emcare.utils.listener.SingleLiveEvent
 import com.google.android.fhir.datacapture.extensions.allItems
 import com.google.android.fhir.datacapture.extensions.asStringValue
 import com.google.android.fhir.datacapture.extensions.createQuestionnaireResponseItem
+import com.google.android.fhir.knowledge.KnowledgeManager
 import com.google.android.fhir.workflow.FhirOperator
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import org.hl7.fhir.r4.model.*
 import org.hl7.fhir.r4.model.QuestionnaireResponse.QuestionnaireResponseItemComponent
+import java.io.File
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -37,6 +43,8 @@ class HomeViewModel @Inject constructor(
     private val consultationFlowRepository: ConsultationFlowRepository,
     private val fhirOperator: FhirOperator,
     private val libraryRepository: LibraryRepository,
+    private val knowledgeManager: KnowledgeManager,
+    @ApplicationContext private val context: Context,
     @AppModule.IoDispatcher private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : ViewModel() {
 
@@ -85,15 +93,21 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun loadLibraries() {
+    fun loadLibraries(context: Context) {
         viewModelScope.launch {
             libraryRepository.getLibraries().collect {
                 val librariesList = it.data
                 librariesList?.forEach { library ->
-                    fhirOperator.loadLib(library)
+                    knowledgeManager.install(writeToFile(library))
                 }
                 _librariesLoaded.value = ApiResponse.Success(1)
             }
+        }
+    }
+
+    private fun writeToFile(library: Library): File {
+        return File(context.filesDir, if (library.name == null)  library.title else library.name).apply {
+            writeText(FhirContext.forR4Cached().newJsonParser().encodeResourceToString(library))
         }
     }
 
@@ -239,6 +253,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+
     fun moveToNextQuestionnaire(consultationFlowItemId: String, encounterId: String){
         _questionnaireWithQR.value = ApiResponse.Loading()
         viewModelScope.launch {
@@ -286,7 +301,7 @@ class HomeViewModel @Inject constructor(
         return questionnaireResponse
     }
 
-    private fun addHiddenQuestionnaireItems(previousQuestionnaireResponse: String, questionnaire: Questionnaire): QuestionnaireResponse {
+     private fun addHiddenQuestionnaireItems(previousQuestionnaireResponse: String, questionnaire: Questionnaire): QuestionnaireResponse {
         val previousQuestionnaireResponseObject = FhirContext.forCached(FhirVersionEnum.R4).newJsonParser().parseResource(QuestionnaireResponse::class.java, previousQuestionnaireResponse)
         val questionnaireLinkIdList = mutableListOf<String>()
 
@@ -324,19 +339,19 @@ class HomeViewModel @Inject constructor(
         return previousQuestionnaireResponseObject
     }
 
+
     private suspend fun preProcessQuestionnaire(questionnaire: Questionnaire, patientId: String, encounterId: String, isPreviouslySavedConsultation: Boolean) : Questionnaire? {
         var ansQuestionnaire: Questionnaire? = injectUuid(questionnaire)
+        ansQuestionnaire = addEmptySpaceToScroll(ansQuestionnaire!!)
         if(questionnaire.hasExtension(URL_CQF_LIBRARY) && !isPreviouslySavedConsultation){
-            loadLibraries()
-            ansQuestionnaire = injectInitialExpressionCqlValues(questionnaire, patientId, encounterId)
+            ansQuestionnaire = injectInitialExpressionCqlValues(ansQuestionnaire!!, patientId, encounterId)
         }
-        ansQuestionnaire = addEmptySpaceToScroll(questionnaire)
         return ansQuestionnaire
     }
 
     private fun addEmptySpaceToScroll(questionnaire: Questionnaire): Questionnaire {
         questionnaire.item.add(Questionnaire.QuestionnaireItemComponent().apply {
-            linkId = UUID.randomUUID().toString()
+            linkId = EMPTY_SPACE_TO_SCROLL_LINK_ID
             type = Questionnaire.QuestionnaireItemType.DISPLAY
             text = "<br><br><br><br><br><br><br>"
         })
@@ -397,6 +412,7 @@ class HomeViewModel @Inject constructor(
             }
             return@withContext questionnaire
         } catch (e: Exception) {
+            e.printStackTrace()
             return@withContext null
         }
     }

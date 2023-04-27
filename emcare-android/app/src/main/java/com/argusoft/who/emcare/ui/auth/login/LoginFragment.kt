@@ -30,7 +30,9 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(), EasyPermissions.Perm
     private val formatString12 = "dd/MM/yyyy hh:mm:ss a"
 
     override fun initView() {
-        //No initialization required
+        if(preference.getCountry().isNotBlank()){
+            binding.emcareTitleTextView.text = binding.emcareTitleTextView.text.toString() + " " + preference.getCountry()
+        }
     }
 
     override fun initListener() {
