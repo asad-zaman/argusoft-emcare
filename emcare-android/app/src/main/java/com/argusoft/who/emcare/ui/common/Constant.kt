@@ -129,7 +129,7 @@ val stageToQuestionnaireIdUnderTwoMonths = mapOf(
     CONSULTATION_STAGE_SYMPTOMS to "emcare.b18-21.symptoms.2m.m",
     CONSULTATION_STAGE_SIGNS to "emcare.b18-21.signs.2m.m",
     CONSULTATION_STAGE_ASSESSMENTS to "emcare.b22.assessmentstests",
-    CONSULTATION_STAGE_CLASSIFICATIONS to "emcare.b23.classification.m",
+    CONSULTATION_STAGE_CLASSIFICATIONS to "emcare.b23.classification.2m",
     CONSULTATION_STAGE_TREATMENTS to "emcare.treatment",
 )
 
