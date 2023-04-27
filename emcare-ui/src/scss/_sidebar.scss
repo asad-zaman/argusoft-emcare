@@ -1,12 +1,12 @@
 .sidenav {
     z-index: 10;
-    border-right: 1px solid $color-gray-50;
+    // border: 0px;
     position: fixed;
     left: 0px;
     top: 53px;
     width: 210px;
     height: 100%;
-    background: $color-light-gray;
+    background: #FFFFFF;
     .nav-link {
         margin: 0px;
         padding: 0px;
