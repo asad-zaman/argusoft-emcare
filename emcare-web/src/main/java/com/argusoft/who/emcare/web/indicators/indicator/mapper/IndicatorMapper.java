@@ -38,7 +38,9 @@ public class IndicatorMapper {
         indicator.setDisplayType(indicatorDto.getDisplayType());
         indicator.setNumeratorEquation(getIndicatorEquationList(indicatorDto.getNumeratorEquations(), indicator));
         indicator.setDenominatorEquation(getDenominatorIndicatorEquationList(indicatorDto.getDenominatorEquations(), indicator));
-        indicator.setColourSchema(indicator.getColourSchema());
+        indicator.setColourSchema(indicatorDto.getColourSchema());
+        indicator.setAge(indicatorDto.getAge());
+        indicator.setGender(indicatorDto.getGender());
         return indicator;
     }
 

@@ -27,8 +27,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
 import javax.transaction.Transactional;
 import java.util.*;
 
@@ -150,14 +148,13 @@ public class IndicatorServiceImpl implements IndicatorService {
 
     private void getCountIndicatorValue(Indicator indicator, final Map<String, Long> numerator, final Map<String, Long> denominator, final List<Map<String, Object>> responseList) {
         for (IndicatorNumeratorEquation indicatorNumeratorEquation : indicator.getNumeratorEquation()) {
-
-            String query = indicatorQueryBuilder.getQueryForIndicatorNumeratorEquation(indicatorNumeratorEquation, indicator.getFacilityId());
+            String query = indicatorQueryBuilder.getQueryForIndicatorNumeratorEquation(indicatorNumeratorEquation, indicator.getFacilityId(), indicator);
             List<Map<String, Object>> observationResources = observationCustomResourceRepository.findByPublished(query);
             numerator.put(indicatorNumeratorEquation.getEqIdentifier(), (long) observationResources.size());
         }
 
         for (IndicatorDenominatorEquation indicatorDenominatorEquation : indicator.getDenominatorEquation()) {
-            String query = indicatorQueryBuilder.getQueryForIndicatorDenominatorEquation(indicatorDenominatorEquation, indicator.getFacilityId());
+            String query = indicatorQueryBuilder.getQueryForIndicatorDenominatorEquation(indicatorDenominatorEquation, indicator.getFacilityId(), indicator);
             List<Map<String, Object>> observationResources = observationCustomResourceRepository.findByPublished(query);
             denominator.put(indicatorDenominatorEquation.getEqIdentifier(), (long) observationResources.size());
         }
@@ -170,10 +167,10 @@ public class IndicatorServiceImpl implements IndicatorService {
             finalValue = 0D;
         }
         Map<String, Object> stringObjectMap = new HashMap<>();
-
         stringObjectMap.put("indicatorCode", indicator.getIndicatorCode());
         stringObjectMap.put("indicatorName", indicator.getIndicatorName());
         stringObjectMap.put("IndicatorType", indicator.getDisplayType());
+        stringObjectMap.put("ColorSchema", indicator.getColourSchema());
         stringObjectMap.put("indicatorValue", finalValue.intValue());
         responseList.add(stringObjectMap);
     }
@@ -189,11 +186,8 @@ public class IndicatorServiceImpl implements IndicatorService {
     public Integer resolveEquation(String equation) {
         Integer result = 0;
         try {
-//            ScriptEngineManager mgr = new ScriptEngineManager();
-//            ScriptEngine engine = mgr.getEngineByName("JavaScript");
             Expression expression = new ExpressionBuilder(equation).build();
             result = (int) expression.evaluate();
-//            result = (Integer) engine.eval(equation);
         } catch (Exception ex) {
             ex.printStackTrace();
             logger.error(ex.getLocalizedMessage());
