@@ -296,22 +296,27 @@ class HomeViewModel @Inject constructor(
         }
 
         //Fetching list of all questionnaire items
-        val questionnaireResponseItemsList = mutableListOf<QuestionnaireResponse.QuestionnaireResponseItemComponent>()
+        val questionnaireResponseItemsList = mutableListOf<QuestionnaireResponseItemComponent>()
         questionnaireResponseItemsList.addAll(previousQuestionnaireResponseObject.allItems)
 
-        val finalQuestionnaireResponseItemsList = mutableListOf<QuestionnaireResponse.QuestionnaireResponseItemComponent>()
+        val finalQuestionnaireResponseItemsList = mutableListOf<QuestionnaireResponseItemComponent>()
+        var matchingQuestionnaireResponseItem: QuestionnaireResponseItemComponent?
 
+        //Setting items with previously answered questions through link id
         questionnaireLinkIdList.forEachIndexed { index, linkId ->
             try{
-                if(questionnaireResponseItemsList[index].linkId.equals(linkId)){
-                    finalQuestionnaireResponseItemsList.add(questionnaireResponseItemsList[index])
+                matchingQuestionnaireResponseItem = questionnaireResponseItemsList.firstOrNull { questionnaireResponseItem ->
+                    linkId == questionnaireResponseItem.linkId
+                }
+                if (matchingQuestionnaireResponseItem != null) {
+                    finalQuestionnaireResponseItemsList.add(matchingQuestionnaireResponseItem!!)
                 } else {
-                    questionnaireResponseItemsList.add(index, QuestionnaireResponse.QuestionnaireResponseItemComponent(StringType(linkId)))
-                    finalQuestionnaireResponseItemsList.add(QuestionnaireResponse.QuestionnaireResponseItemComponent(StringType(linkId)))
+                    questionnaireResponseItemsList.add(index, QuestionnaireResponseItemComponent(StringType(linkId)))
+                    finalQuestionnaireResponseItemsList.add(QuestionnaireResponseItemComponent(StringType(linkId)))
                 }
             }catch (e: java.lang.IndexOutOfBoundsException){
-                questionnaireResponseItemsList.add(index, QuestionnaireResponse.QuestionnaireResponseItemComponent(StringType(linkId)))
-                finalQuestionnaireResponseItemsList.add(QuestionnaireResponse.QuestionnaireResponseItemComponent(StringType(linkId)))
+                questionnaireResponseItemsList.add(index, QuestionnaireResponseItemComponent(StringType(linkId)))
+                finalQuestionnaireResponseItemsList.add(QuestionnaireResponseItemComponent(StringType(linkId)))
             }
         }
 
