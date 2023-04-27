@@ -104,6 +104,10 @@ body {
   }
 }
 
+body {
+  background: #F6F9FB;
+}
+
 .ms-3 {
   margin-right: 1rem !important;
 }
@@ -538,4 +542,16 @@ ngx-intl-tel-input input[disabled] {
 .cst-icon-style {
   font-size: 17px;
   color: #007bff;
+}
+
+.p-accordion .p-accordion-header:not(.p-disabled).p-highlight .p-accordion-header-link {
+  background: white;
+}
+
+.p-accordion .p-accordion-header .p-accordion-header-link {
+  background: white;
+}
+
+.p-accordion.cst-indicator-accordion .p-accordion-content {
+  background: white;
 }
