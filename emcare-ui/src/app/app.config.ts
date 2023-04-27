@@ -9,5 +9,6 @@ export const appConstants = {
         language: 'language',
         Username: 'Username',
         ApplicationAgent: 'ApplicationAgent'
-    }
+    },
+    leafletURL: 'https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png'
 };
