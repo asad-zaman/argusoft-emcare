@@ -173,6 +173,7 @@ public class IndicatorServiceImpl implements IndicatorService {
         stringObjectMap.put("ColorSchema", indicator.getColourSchema());
         stringObjectMap.put("indicatorValue", finalValue.intValue());
         responseList.add(stringObjectMap);
+        Collections.sort(responseList, (ind1,ind2)-> ind2.get("indicatorValue").toString() .compareTo(ind1.get("indicatorValue").toString()));
     }
 
     private Integer replaceValueToEquationAndResolve(String equation, Map<String, Long> data) {
