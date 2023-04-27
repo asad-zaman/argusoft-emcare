@@ -6,6 +6,8 @@ import { FhirService } from 'src/app/shared';
 import { default as NoData } from 'highcharts/modules/no-data-to-display';
 NoData(Highcharts);
 import L from "leaflet";
+import { appConstants } from 'src/app/app.config';
+
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -44,14 +46,6 @@ export class HomeComponent implements OnInit {
     this.getDashboardData();
     this.getChartData();
     this.getIndicatorCompileValue();
-    // var map_init = L.map('lMap', {
-    //   center: [9.0820, 8.6753],
-    //   zoom: 3
-    // });
-    // var osm = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', {
-    //   crossOrigin: true,
-    // }).addTo(map_init);
-    // console.log(map_init);
   }
 
   getDashboardData() {
@@ -270,40 +264,17 @@ export class HomeComponent implements OnInit {
   }
 
   loadMap = () => {
-    let markers = [];
-    const centerPosition = { lat: 33.2232, lng: 43.6793 };
-    const map = new window['google'].maps.Map(this.mapElement.nativeElement, {
-      center: centerPosition, zoom: 5
-    });
-
+    // initialization
+    let lMap = L.map('lMap', { center: [33.2232, 43.6793], zoom: 5 });
+    
+    // adding layer
+    L.tileLayer(appConstants.leafletURL, { crossOrigin: true }).addTo(lMap);
+    
+    // adding markers
     this.facilityArr.forEach(data => {
-      const marker = new window['google'].maps.Marker({
-        position: new window['google'].maps.LatLng(data['positions'].lat, data['positions'].lng),
-        map: map,
-        title: 'Map!',
-        draggable: true,
-        animation: window['google'].maps.Animation.DROP
-      });
-      const contentString = '<div id="content">' +
-        '<div id="siteNotice">' +
-        '</div>' +
-        `<h3 id="thirdHeading" class="thirdHeading">${data['name']}</h3>` +
-        '<div id="bodyContent">' +
-        '</div>' +
-        '</div>';
-      const infowindow = new window['google'].maps.InfoWindow({
-        content: contentString
-      });
-      markers.push({ marker: marker, infowindow: infowindow });
-    });
-
-    markers.forEach(data => {
-      data.marker.addListener('mouseover', function () {
-        data.infowindow.open(map, data.marker);
-      });
-      data.marker.addListener('mouseout', function () {
-        data.infowindow.close();
-      });
+      new L.marker([data['positions'].lat, data['positions'].lng])
+        .bindPopup(data['name'])
+        .addTo(lMap);
     });
   }
 
