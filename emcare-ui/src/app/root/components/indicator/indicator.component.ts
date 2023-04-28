@@ -60,6 +60,7 @@ export class IndicatorComponent implements OnInit {
   denEqCOnditionArr = [];
   numeratorEquationStringArr = [];
   denominatorEquationStringArr = [];
+  color = '#fff';
 
   constructor(
     private readonly formBuilder: FormBuilder,

@@ -266,6 +266,33 @@
       <div class="row">
         <div class="col-12 col-sm-4">
           <div class="mb-3">
+            <label class="form-label">Color</label>
+            <div class="">
+              <input [value]="color" [style.background]="color" [(colorPicker)]="color" />
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-sm-4">
+          <div class="mb-3">
+            <label class="form-label">{{'Facility' | translate}}</label>
+            <p-dropdown [filter]="true" placeholder="Select" [options]="facilityArr" formControlName="facility"
+              optionLabel="name" dataKey="id" [showClear]="indicatorForm.get('facility').value ? true : false">
+            </p-dropdown>
+          </div>
+        </div>
+        <div class="col-12 col-sm-4">
+          <div class="mb-3">
+            <label class="form-label">{{'DST' | translate}}</label>
+            <p-dropdown [filter]="true" placeholder="Select" [options]="displayTypeArr" formControlName="displayType"
+              optionLabel="name" dataKey="id" [showClear]="indicatorForm.get('displayType').value ? true : false">
+            </p-dropdown>
+          </div>
+        </div>
+      </div>
+      <hr>
+      <div class="row">
+        <div class="col-12 col-sm-4">
+          <div class="mb-3">
             <label class="form-label">{{'Facility' | translate}}</label>
             <p-dropdown [filter]="true" placeholder="Select" [options]="facilityArr" formControlName="facility"
               optionLabel="name" dataKey="id" [showClear]="indicatorForm.get('facility').value ? true : false">
