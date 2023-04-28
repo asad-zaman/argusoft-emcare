@@ -162,7 +162,7 @@ export class ViewConsultationComponent implements OnInit {
         let year: string = ageYear == 1 ? "Year" : "Years";
         let month: string = ageMonth < 2 ? "Month" : "Months";
         let day: string = ageDay < 2 ? "Day" : "Days";
-        this.patientData['age'] = ageYear === 0 ? ageMonth.toString()+" "+month+" "+ageDay.toString()+" "+day : ageYear.toString()+" "+year+" "+ageMonth.toString()+" "+month+" "+ageDay.toString()+" "+day;
+        this.patientData['age'] = ageYear === 0 && ageMonth === 0 ? ageDay.toString()+" "+day : ageYear === 0 ? ageMonth.toString()+" "+month+" "+ageDay.toString()+" "+day : ageYear.toString()+" "+year+" "+ageMonth.toString()+" "+month+" "+ageDay.toString()+" "+day;
      }  
     });
   }
