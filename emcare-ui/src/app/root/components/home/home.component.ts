@@ -270,9 +270,17 @@ export class HomeComponent implements OnInit {
     // adding layer
     L.tileLayer(appConstants.leafletURL, { crossOrigin: true }).addTo(lMap);
     
-    // adding markers
     this.facilityArr.forEach(data => {
-      new L.marker([data['positions'].lat, data['positions'].lng])
+      let icon = {
+        icon: L.icon({
+          iconSize: [ 25, 41 ],
+          iconAnchor: [ 13, 0 ],
+          // specify the path here
+          iconUrl: '../../../../assets/images/marker-icon.png',
+          shadowUrl: '../../../../assets/images/marker-shadow.png'
+       })
+    };
+      new L.marker([data['positions'].lat, data['positions'].lng], icon)
         .bindPopup(data['name'])
         .addTo(lMap);
     });
