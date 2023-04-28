@@ -1,83 +1,89 @@
-<div class="main-wrapper">
-  <!-- <div *ngIf="isView"> -->
-  <div class="container-fluid">
-    <h3 class="page-title mt-3 mb-4">Key Performance Indicators | March 2023</h3>
-    <div class="row">
-      <div class="col-md-7">
-        <div class="card bg-white mb-4 custom-card">
-          <div class="card-body">
-            <h4 class="mt-2">Map</h4>
-            <div #mapRef style="width:100%;height:800px"></div>
-          </div>
-        </div>
-        <div class="card bg-white mb-4 custom-card">
-          <div class="card-body">
-            <h4 class="mt-2">{{'Analysis' | translate}} | {{getDateData()}}</h4>
-            <div class="graph-div">
-              <div class="row">
-                <div class="col-12 mb-3">
-                  <div id="scatter-chart-container"
-                    style="min-width: 310px; max-width: 800px; height: 400px; margin: 0 auto"></div>
-                  <h5 class="card-title text-center">Number of consultations per week
-                  </h5>
-                </div>
-                <div class="col-6">
-                  <div id="consultationPerFacility" style="width:100%; height:400px;"></div>
-                </div>
-                <div class="col-6">
-                  <div id="consultationByAgeGroup" style="width:100%; height:400px;"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-5">
-        <ng-container *ngIf="!isEmpty(dashboardData)">
-          <div class="card bg-white custom-card mb-4">
-            <div class="card-body">
-              <div class="row align-items-end">
-                <div class="col text-center indicator-block">
-                  <h6>{{'Total Patients' | translate}}</h6>
-                  <p class="indicator-value text-danger">{{dashboardData.totalPatient}}</p>
-                </div>
-                <div class="col text-center indicator-block">
-                  <h6>{{'Total Users' | translate}}</h6>
-                  <p class="indicator-value text-success">{{dashboardData.totalUser}}</p>
-                </div>
-                <div class="col text-center indicator-block">
-                  <h6>{{'Pending User Requests' | translate}}</h6>
-                  <p class="indicator-value text-danger">{{dashboardData.pendingRequest}}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="card bg-white custom-card mb-4">
-            <div class="card-body">
-              <h5 class="card-title mb-3">Indicators | March 2023</h5>
-              <div class="row">
-                <ng-container *ngIf="this.indicatorArr.length>0">
-                  <ng-container *ngFor="let indicator of this.indicatorArr">
-                    <div class="col-6 mb-3">
-                      <div class="card bg-white custom-card sub-card  border-green">
-                        <div class="card-body">
-                          <div class="card-title" title="{{indicator.indicatorName}}">
-                            {{indicator.indicatorName}}
-                          </div>
-                          <p class="percent-value">{{indicator.indicatorValue}}%</p>
-                        </div>
-                      </div>
-                    </div>
-                  </ng-container>
-                </ng-container>
-              </div>
-            </div>
-          </div>
-        </ng-container>
-      </div>
+<div *ngIf="isView" class="main-wrapper">
+  <!--small-card-->
+  <div class="dashboard_patients_card-wrapper">
+    <div class="dashboard_patients_card">
+      <div class="icon-patients"><i class="bi bi-heart-pulse " aria-hidden="true"></i></div>
+      <div class="number">{{dashboardData.totalPatient}} <span>{{'Total Patients' | translate}}</span></div>
+    </div>
+    <div class="dashboard_patients_card">
+      <div class="icon-users"><i class="bi bi-people" aria-hidden="true"></i></div>
+      <div class="number">{{dashboardData.totalUser}} <span>{{'Total Users' | translate}}</span></div>
+    </div>
+    <div class="dashboard_patients_card">
+      <div class="icon-pending"><i class="bi bi-clock-history" aria-hidden="true"></i></div>
+      <div class="number">{{dashboardData.pendingRequest}} <span>{{'Pending User Requests' | translate}}</span></div>
     </div>
   </div>
-  <!-- </div> -->
+  <!--small-card-END-->
+  <div class="row">
+    <!--left-grid-->
+    <div class="col-12 col-md-12 col-lg-12 col-xl-6">
+      <div class="dashboard-card">
+        <div class="dashboard-card-heading">
+          <h3>{{'Analysis' | translate}} | {{getDateData()}}</h3>
+          <p>{{'Number of consultations per date' | translate}}</p>
+        </div>
+        <div class="dashboard-card-body">
+          <div id="scatter-chart-container" style="min-width: 310px; max-width: 800px; height: 400px; margin: 0 auto">
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12 col-md-6">
+          <div class="dashboard-card pt-3">
+            <div class="dashboard-card-body">
+              <div class="text-center">
+                <div id="consultationPerFacility" style="width:100%; height:400px;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-md-6">
+          <div class="dashboard-card pt-3">
+            <div class="dashboard-card-body">
+              <div class="text-center">
+                <div id="consultationByAgeGroup" style="width:100%; height:400px;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="dashboard-card">
+        <div class="dashboard-card-heading">
+          <h3>{{'Map' | translate}}</h3>
+        </div>
+        <div class="dashboard-card-body">
+          <div style="width:100%; height:500px; z-index: 1;" id="lMap"></div>
+        </div>
+      </div>
+    </div>
+    <!--left-grid-END-->
+    <!--right-grid-->
+    <div class="col-12 col-md-12 col-lg-12 col-xl-6">
+      <div class="dashboard-card">
+        <div class="dashboard-card-heading">
+          <h3>{{'Indicators' | translate}} | March 2023</h3>
+        </div>
+        <div class="dashboard-card-body indicators_scroll">
+          <div class="table-responsive">
+            <table class="data-table">
+              <ng-container *ngIf="this.indicatorArr.length>0">
+                <ng-container *ngFor="let indicator of this.indicatorArr">
+                  <tr>
+                    <td class="cst-table-style percentage-text text-green">{{indicator.indicatorValue}}%</td>
+                    <td class="cst-table-style">
+                      {{indicator.indicatorName}}</td>
+                    <td><i class="bi bi-graph-up-arrow chart-icon" aria-hidden="true"></i></td>
+                  </tr>
+                </ng-container>
+              </ng-container>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--right-grid-END-->
+  </div>
 </div>
 <div *ngIf="!isView" class="main-wrapper-nodata">
   {{'NoAccess' | translate}}

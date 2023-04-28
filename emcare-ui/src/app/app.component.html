@@ -41,7 +41,7 @@
               {{feature.menuName | translate}}
               <ng-container *ngIf="feature.subMenu.length>0">
                 <ng-container *ngIf="feature.dropdownValue; else upIcon">
-                  <i class="bi bi-chevron-up drop-icon" aria-hidden="true"></i>
+                  <i class="bi bi-chevron-down drop-icon" aria-hidden="true"></i>
                 </ng-container>
                 <ng-template #upIcon>
                   <i class="bi bi-chevron-down drop-icon" aria-hidden="true"></i>
@@ -79,9 +79,9 @@
   <div id="map"></div>
   <router-outlet></router-outlet>
   <div *ngIf="this.footerShow" class="cst-footer">
-    &nbsp;&nbsp;Terms and Conditions
+    &nbsp;&nbsp;{{'Terms and Conditions' | translate}}
     <a class="cursor-pointer ml-3 font-12" (click)="navigateToTermsAndConditionsPage()">
-      "T & C"
+      "{{'TC' | translate}}"
     </a>
   </div>
 </div>

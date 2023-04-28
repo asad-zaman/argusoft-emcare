@@ -32,6 +32,7 @@
     "bootstrap-icons": "^1.7.2",
     "google-libphonenumber": "3.2.25",
     "highcharts": "^9.0.0",
+    "leaflet": "^1.9.3",
     "lodash": "^4.17.21",
     "ngx-bootstrap": "6.2.0",
     "ngx-intl-tel-input": "3.2.0",
