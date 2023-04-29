@@ -32,6 +32,7 @@ import kotlinx.coroutines.flow.collect
 import org.hl7.fhir.r4.model.*
 import org.hl7.fhir.r4.model.QuestionnaireResponse.QuestionnaireResponseItemComponent
 import java.io.File
+import java.time.Instant
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -125,7 +126,27 @@ class HomeViewModel @Inject constructor(
             consultationFlowRepository.getAllConsultationsByEncounterId(encounterId).collect{
                 patientRepository.getPatientById(patientId).collect { patientResponse ->
                     val patientItem = patientResponse.data!!
-                    consultationFlowStageList.forEach { stage ->
+
+                    var currentConsultationFLowList = consultationFlowStageList
+                    val encounterConsultationItem = it.data?.filter {consultationFlowItem -> consultationFlowItem.consultationStage.equals(
+                        CONSULTATION_STAGE_REGISTRATION_ENCOUNTER)  }
+                    if(patientItem.hasBirthDate()){
+                        var isAgeUnderTwoMonths = patientItem.birthDate.toInstant().isAfter(Instant.now().minusSeconds(3600*24*60))
+                        //Taking care of case when consultation has started for under two months and on reopenin the child is now over two months.
+                        if(encounterConsultationItem?.isNotEmpty() == true){
+                            isAgeUnderTwoMonths =
+                                patientItem.birthDate.toInstant()
+                                    .plusMillis(
+                                    (ZonedDateTime.parse(encounterConsultationItem[0].consultationDate?.substringBefore("+").plus("Z[UTC]")).toInstant().toEpochMilli()
+                                    - Instant.now().toEpochMilli()) * 1000)
+                                .isAfter(Instant.now().minusSeconds(3600*24*60))
+                        }
+                        if(isAgeUnderTwoMonths){
+                            currentConsultationFLowList = consultationFlowStageListUnderTwoMonths
+                        }
+                    }
+
+                    currentConsultationFLowList.forEach { stage ->
                         val consultationFlowItems = it.data?.filter { consultationFlowItem -> consultationFlowItem.consultationStage.equals(stage) }
                         val consultationFlowItem = consultationFlowItems?.firstOrNull()
                         if(!stage.equals(CONSULTATION_STAGE_REGISTRATION_PATIENT)){
@@ -243,8 +264,6 @@ class HomeViewModel @Inject constructor(
                         addHiddenQuestionnaireItems(previousQuestionnaireResponse!!, questionnaireJsonWithQR)
                     } else
                         generateQuestionnaireResponseWithPatientIdAndEncounterId(questionnaireJsonWithQR, patientId!!, encounterId!!)
-
-
                     val questionnaireString = parser.encodeResourceToString(questionnaireJsonWithQR)
                     val questionnaireResponseString = parser.encodeResourceToString(questionnaireResponse)
                     _questionnaireWithQR.value = ApiResponse.Success(data=questionnaireString to questionnaireResponseString)

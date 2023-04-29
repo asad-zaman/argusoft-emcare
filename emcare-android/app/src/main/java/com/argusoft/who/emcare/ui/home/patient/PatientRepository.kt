@@ -173,7 +173,7 @@ class PatientRepository @Inject constructor(
                             emit(ApiResponse.Success(null))
                         }
                     } else {
-                        val nextConsultationStage = consultationFlowStageList[consultationStageIndex + 1]
+                        var nextConsultationStage = consultationFlowStageList[consultationStageIndex + 1]
 
                         val patient = fhirEngine.get<Patient>(patientId)
                         var questionnaireId = stageToQuestionnaireId[nextConsultationStage]
@@ -181,6 +181,7 @@ class PatientRepository @Inject constructor(
                         if(patient.hasBirthDate()) {
                             val isAgeUnderTwoMonths = patient.birthDate.toInstant().isAfter(Instant.now().minusSeconds(3600*24*60))
                             if(isAgeUnderTwoMonths) {
+                                nextConsultationStage = consultationFlowStageListUnderTwoMonths[consultationStageIndex + 1]
                                 questionnaireId = stageToQuestionnaireIdUnderTwoMonths[nextConsultationStage]
                                 structureMapId = stageToStructureMapIdUnderTwoMonths[nextConsultationStage]
                             }
