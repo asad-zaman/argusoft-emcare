@@ -256,7 +256,8 @@ export class IndicatorComponent implements OnInit {
       value: null,
       valueType: null,
       eqIdentifier: null,
-      appendOtherNumeratorDropdown: false
+      appendOtherNumeratorDropdown: false,
+      isShow: true
     })
   }
 
@@ -268,7 +269,8 @@ export class IndicatorComponent implements OnInit {
       value: null,
       valueType: null,
       eqIdentifier: null,
-      appendOtherDenominatorDropdown: false
+      appendOtherDenominatorDropdown: false,
+      isShow: true
     })
   }
 
@@ -523,6 +525,20 @@ export class IndicatorComponent implements OnInit {
     this.finalDenEqs.forEach(element => {
       if (element)
         this.selectedDenEqs.push(element.id);
+    });
+  }
+
+  showHideCurrentEquation(i) {
+    const currValue = this.getNumerators().controls[i].value.isShow;
+    this.getNumerators().controls[i].patchValue({
+      isShow: !currValue
+    });
+  }
+
+  showHideCurrentDenominatorEquation(i) {
+    const currValue = this.getDenominators().controls[i].value.isShow;
+    this.getDenominators().controls[i].patchValue({
+      isShow: !currValue
     });
   }
 }
