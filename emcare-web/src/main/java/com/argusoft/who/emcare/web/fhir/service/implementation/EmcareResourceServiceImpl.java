@@ -82,6 +82,8 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
     @Autowired
     ObservationResourceRepository observationResourceRepository;
     @Autowired
+    BinaryResourceService binaryResourceService;
+    @Autowired
     private LocationService locationService;
     @Autowired
     private LocationResourceService locationResourceService;
@@ -243,6 +245,14 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
                     structureMapResourceService.updateStructureMapResource(resource.getIdElement(), parser.parseResource(StructureMap.class, resourceString));
                 } else {
                     structureMapResourceService.saveResource(parser.parseResource(StructureMap.class, resourceString));
+                }
+                break;
+            case CommonConstant.BINARY_TYPE_STRING:
+                Binary binary = binaryResourceService.getResourceById(resourceId);
+                if (binary != null) {
+                    binaryResourceService.updateBinaryResource(resource.getIdElement(), binary);
+                } else {
+                    binaryResourceService.saveResource(binary);
                 }
                 break;
             default:
@@ -613,30 +623,7 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
             patientsList.add(patient);
         }
 
-        String loggedInUserId = emCareSecurityUser.getLoggedInUserId();
-        userLocationMappingRepository.findByUserId(loggedInUserId);
         patientDtosList = EmcareResourceMapper.patientEntitiesToDtoMapper(patientsList);
-
-        //Converting caregiverId and locationid to name
-        for (PatientDto patientDto : patientDtosList) {
-
-            if (patientDto.getCaregiver() != null) {
-                RelatedPerson caregiver = relatedPersonResourceService.getResourceById(patientDto.getCaregiver());
-                if (caregiver != null) {
-                    patientDto.setCaregiver(caregiver.getNameFirstRep().getGiven().get(0) + " " + caregiver.getNameFirstRep().getFamily());
-                } else {
-                    patientDto.setCaregiver(null);
-                }
-            }
-
-            if (patientDto.getFacility() != null) {
-                FacilityDto facilityDto = locationResourceService.getFacilityDto(patientDto.getFacility());
-                patientDto.setFacility(facilityDto.getFacilityName());
-                patientDto.setOrganizationName(facilityDto.getOrganizationName());
-                patientDto.setLocationName(facilityDto.getLocationName());
-            }
-        }
-
         return patientDtosList;
     }
 

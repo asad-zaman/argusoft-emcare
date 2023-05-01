@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import * as Highcharts from 'highcharts';
 import { AuthGuard } from 'src/app/auth/auth.guard';
@@ -27,11 +27,16 @@ export class HomeComponent implements OnInit {
   constructor(
     private readonly fhirService: FhirService,
     private readonly routeService: Router,
-    private readonly authGuard: AuthGuard
+    private readonly authGuard: AuthGuard,
+    private readonly cdr: ChangeDetectorRef
   ) { }
 
   ngOnInit(): void {
     this.prerequisite();
+  }
+
+  ngAfterViewInit() {
+    this.cdr.detectChanges();
   }
 
   prerequisite() {
@@ -89,9 +94,12 @@ export class HomeComponent implements OnInit {
       tooltip: {
         enabled: true,
         headerFormat: undefined,
-        pointFormat: '<b>Week No. = {point.x}</b>, <b>Consultations = {point.y}</b>',
+        pointFormat: `<b>Date = {point.d}</b>, <b>Week = {point.week}</b>, <b>Consultations = {point.y}</b>`,
       },
       xAxis: {
+        labels: {
+          format: '{value:%e-%b-%Y}'
+        },
         title: {
           text: undefined,
         },
@@ -140,14 +148,21 @@ export class HomeComponent implements OnInit {
         }
       ]
     }
-    Highcharts.chart('container', options);
+    Highcharts.chart('scatter-chart-container', options);
   }
 
   getChartData() {
     this.fhirService.getChartData().subscribe((res: Array<any>) => {
       if (res) {
         //  for scatter plot
-        this.scatterData = res['scatterChart'];
+        res['scatterChart'].forEach((el, index) => {
+          this.scatterData.push({
+            x: new Date(el[2]),
+            y: el[1],
+            week: el[0],
+            d: new Date(el[2]).toLocaleDateString()
+          });
+        });
         //  for first pie chart
         this.consultationPerFacility = res['consultationPerFacility'];
         this.consultationPerFacility.forEach(el => {
@@ -281,7 +296,7 @@ export class HomeComponent implements OnInit {
       data.marker.addListener('mouseout', function () {
         data.infowindow.close();
       });
-    });    
+    });
   }
 
   redirectToRoute(route: string) {
@@ -308,4 +323,5 @@ export class HomeComponent implements OnInit {
       }
     });
   }
+
 }

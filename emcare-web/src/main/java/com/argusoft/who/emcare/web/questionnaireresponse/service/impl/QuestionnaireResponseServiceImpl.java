@@ -74,7 +74,7 @@ public class QuestionnaireResponseServiceImpl implements QuestionnaireResponseSe
         List<String> facilityIds = userMasterDto.getFacilities().stream().map(FacilityDto::getFacilityId).collect(Collectors.toList());
         List<EmcareResource> patientList = emcareResourceRepository.findByFacilityIdIn(facilityIds);
         List<String> patientIds = patientList.stream().map(EmcareResource::getResourceId).collect(Collectors.toList());
-        List<QuestionnaireResponse> questionnaireResponses = new ArrayList<>();
+        List<QuestionnaireResponse> questionnaireResponses;
         if (Objects.nonNull(theDate)) {
             questionnaireResponses = questionnaireResponseRepository.findByPatientIdInAndConsultationDateGreaterThan(patientIds, theDate);
         } else {
@@ -125,5 +125,11 @@ public class QuestionnaireResponseServiceImpl implements QuestionnaireResponseSe
             responsesWithEncounter.put(encounterResource.getCreatedOn().toString(), responses.get(key.getKey()));
         }
         return responsesWithEncounter;
+    }
+
+    @Override
+    public List<String> getDataForExport(String patientId) {
+        List<QuestionnaireResponse> questionnaireResponses = questionnaireResponseRepository.findByPatientId(patientId);
+        return questionnaireResponses.stream().map(QuestionnaireResponse::getQuestionnaireResponseText).collect(Collectors.toList());
     }
 }

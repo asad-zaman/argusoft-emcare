@@ -2,6 +2,7 @@ package com.argusoft.who.emcare.web.indicators.indicator.service;
 
 import com.argusoft.who.emcare.web.common.dto.PageDto;
 import com.argusoft.who.emcare.web.indicators.indicator.dto.IndicatorDto;
+import com.argusoft.who.emcare.web.indicators.indicator.dto.IndicatorFilterDto;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -26,4 +27,6 @@ public interface IndicatorService {
     public PageDto getIndicatorDataPage(Integer pageNo, String searchText);
 
     public ResponseEntity<Object> getIndicatorsCompileValue(List<Long> indicatorIds);
+    public ResponseEntity<Object> getIndicatorFilteredCompileValue(IndicatorFilterDto indicatorFilterDto);
+
 }

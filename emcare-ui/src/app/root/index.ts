@@ -38,3 +38,7 @@ export { ManageCodeComponent } from './components/code/manage-code/manage-code.c
 export { CodeListComponent } from './components/code/code-list/code-list.component';
 export { IndicatorComponent } from './components/indicator/indicator.component';
 export { IndicatorListComponent } from './components/indicator-list/indicator-list.component';
+export { TenantListComponent } from './components/tenant-list/tenant-list.component';
+export { ManageTenantComponent } from './components/manage-tenant/manage-tenant.component';
+export { AddLogComponent } from './components/add-log/add-log.component';
+export { LogListComponent } from './components/log-list/log-list.component';

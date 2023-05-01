@@ -4,6 +4,10 @@ import { Subject } from "rxjs";
 import { debounceTime, distinctUntilChanged } from "rxjs/operators";
 import { AuthGuard } from "src/app/auth/auth.guard";
 import { FhirService } from "src/app/shared/services/fhir.service";
+import * as _ from 'lodash';
+import pdfMake from "pdfmake/build/pdfmake";
+import pdfFonts from "pdfmake/build/vfs_fonts";
+pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 @Component({
   selector: 'app-consultation-list',
@@ -49,6 +53,7 @@ export class ConsultationListComponent implements OnInit {
     if (res && res['list']) {
       this.consultations = res['list'];
       this.filteredConsultations = this.consultations;
+      this.filteredConsultations = _.sortBy(this.filteredConsultations, 'consultationDate').reverse();
       this.totalCount = res['totalCount'];
       this.isAPIBusy = false;
     }
@@ -100,4 +105,64 @@ export class ConsultationListComponent implements OnInit {
   viewConsultation(index) {
     this.router.navigate([`view-consultation/${this.filteredConsultations[index]['id']}`]);
   }
+
+  exportPDF(patient) {
+    this.fhirService.getConsultationExportData(patient.id).subscribe((res: any) => {
+      let data = [];
+      data.push({ text: '                            ' });
+      res.forEach(el => {
+        if (el) {
+          const currData = JSON.parse(el);
+          for (const key in currData) {
+            if (key == 'subject' || key == 'encounter') {
+              const innerObj = currData[key];
+              data.push({ text: key })
+              for (const k in innerObj) {
+                let str = k + ' =>   ' + JSON.stringify(innerObj[k])
+                let obj = { text: str };
+                data.push(obj);
+              }
+              data.push({ text: '                            ' });
+            } else if (key == 'item') {
+              const items = currData[key];
+              console.log(items);
+              data.push({ text: key })
+              items.forEach(item => {
+                for (const k in item) {
+                  let str = k + ' =>   ' + JSON.stringify(item[k])
+                  let obj = { text: str };
+                  data.push(obj);
+                }
+                data.push({ text: '                            ' });
+              });
+            } else {
+              let str = key + ' =>   ' + JSON.stringify(currData[key])
+              let obj = { text: str };
+              data.push(obj);
+              data.push({ text: '                            ' });
+            }
+          }
+          data.push({ text: '----------------------------------------------------------------------------------------' });
+          data.push({ text: '                            ' });
+        }
+      });
+
+      let docDefinition = {
+        content: [
+          {
+            text: `${patient.givenName} ${patient.familyName}'s consultation data`,
+            fontSize: 16,
+            alignment: 'center',
+            color: '#047886'
+          },
+          {
+            columns: [data]
+          }
+        ]
+      }
+      pdfMake.createPdf(docDefinition).open();
+      // pdfMake.createPdf(docDefinition).download(`${patient.givenName} ${patient.familyName}.pdf`);
+    });
+  }
 }
+

@@ -6,6 +6,7 @@ import { FhirService } from './shared';
 import { AuthenticationService } from './shared/services/authentication.service';
 import * as _ from 'lodash';
 import { AuthGuard } from './auth/auth.guard';
+import { appConstants } from './app.config';
 
 @Component({
   selector: 'app-root',
@@ -44,6 +45,7 @@ export class AppComponent implements OnInit {
     'Organizations': 'bi bi-border-outer nav-link_icon',
     'Indicators': 'bi bi-app-indicator nav-link_icon'
   }
+  isSuperAdmin = false;
   footerShow = true;
 
   constructor(
@@ -71,6 +73,7 @@ export class AppComponent implements OnInit {
   }
 
   ngAfterViewChecked() {
+    this.checkSuperAdmin();
     this.checkCurrentUrlAndShowHeaderBar();
     this.cdr.detectChanges();
   }
@@ -79,6 +82,7 @@ export class AppComponent implements OnInit {
     this.getCurrentPage();
     this.checkTOkenExpiresOrNot();
     this.checkAPIStatus();
+    this.checkSuperAdmin();
     this.authenticationService.getIsLoggedIn().subscribe(result => {
       if (result) {
         this.setLoggedInUserData();
@@ -88,15 +92,22 @@ export class AppComponent implements OnInit {
       if (result && result.length > 0) {
         this.featureList = result;
       } else {
-        /*  on refreshing the page behaviour subject will be lost
-          so resetting the feature array to behaviour subject to render the sidebar again */
-        let userFeatures = localStorage.getItem('userFeatures');
-        if (userFeatures) {
-          this.authenticationService.setFeatures(this.featureArr);
+        //  as there are no features for superadmin so no need to call the service for behaviour subject
+        if (!this.isSuperAdmin) {
+          /*  on refreshing the page behaviour subject will be lost
+            so resetting the feature array to behaviour subject to render the sidebar again */
+          let userFeatures = localStorage.getItem('userFeatures');
+          if (userFeatures) {
+            this.authenticationService.setFeatures(this.featureArr);
+          }
         }
       }
     });
     this.detectLanChange();
+  }
+
+  checkSuperAdmin() {
+    this.isSuperAdmin = localStorage.getItem('isSuperAdmin') === 'true';
   }
 
   detectLanChange() {
@@ -296,10 +307,6 @@ export class AppComponent implements OnInit {
     return routeArr.includes(this.currentUrl);
   }
 
-  changeSidebarVar() {
-    this.isSidebarOpen = !this.isSidebarOpen;
-  }
-
   applySidebarChange() {
     if (window.screen.width < 992) {
       this.isSidebarOpen = false;
@@ -308,7 +315,19 @@ export class AppComponent implements OnInit {
     }
   }
 
+  navigateToTenantConfig() {
+    this.router.navigate(['/tenantList']);
+  }
+
+  getApplicationAgent() {
+    return localStorage.getItem(appConstants.localStorageKeys.ApplicationAgent);
+  }
+
   navigateToTermsAndConditionsPage() {
     this.router.navigate(['/termsAndConditions']);
+  }
+
+  onClickSidebarBtn() {
+    this.isSidebarOpen = !this.isSidebarOpen; 
   }
 }

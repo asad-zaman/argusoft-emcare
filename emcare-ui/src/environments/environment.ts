@@ -4,8 +4,8 @@
 
 export const environment = {
   production: false,
-  // apiUrl: 'http://localhost:8080',
-  apiUrl: 'https://emcare.argusoft.com',
+  // apiUrl: 'https://emcare.argusoft.com',
+  apiUrl: 'http://3.111.94.246:8080',
   questionnaireBuilderUrl: 'https://emcare.argusoft.com/questionnaireBuilder',
   testUrl: 'http://localhost:4200/login',
   testUsername: 'emcare@gmail.com',

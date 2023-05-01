@@ -2,6 +2,7 @@ package com.argusoft.who.emcare.web.indicators.indicator.entity;
 
 import com.argusoft.who.emcare.web.common.model.EntityAuditInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -18,6 +19,7 @@ import java.util.Objects;
  */
 @Entity
 @Table(name = "indicator_denominator_equation")
+@JsonIgnoreProperties
 public class IndicatorDenominatorEquation extends EntityAuditInfo implements Serializable {
 
     @Id

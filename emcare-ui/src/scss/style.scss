@@ -104,6 +104,13 @@ body {
   }
 }
 
+body {
+  background: #FFFFFF;
+}
+
+hr:not([size]) {
+  height: 0px;
+}
 .ms-3 {
   margin-right: 1rem !important;
 }
@@ -384,7 +391,7 @@ input[type="number"]::-webkit-outer-spin-button {
 
 .sideBarBtn {
   position: absolute;
-  left: 70px;
+  left: 150px;
   color: white;
   font-size: 30px;
   opacity: 0;
@@ -524,4 +531,36 @@ ngx-intl-tel-input input[disabled] {
   padding: 10px;
   border: 1px solid #c7c8c9;
   margin-top: 20px;
+}
+
+.error {
+    color: #dc3545;
+    font-weight: 500;
+}
+
+.cst-req {
+  color: #D43E39;
+}
+
+.cst-link-style {
+  font-size: 14px;
+  font-weight: 500;
+  color: #007bff;
+}
+
+.cst-icon-style {
+  font-size: 17px;
+  color: #007bff;
+}
+
+.p-accordion .p-accordion-header:not(.p-disabled).p-highlight .p-accordion-header-link {
+  background: white;
+}
+
+.p-accordion .p-accordion-header .p-accordion-header-link {
+  background: white;
+}
+
+.p-accordion.cst-indicator-accordion .p-accordion-content {
+  background: white;
 }

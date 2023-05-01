@@ -1,67 +1,162 @@
-.cursor-pointer {
+.cst-table-style {
+    padding: 12px;
+    border-bottom: 1px solid #ECF4FF;
+}
+
+.dashboard_patients_card-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.dashboard_patients_card {
+    width: 240px;
+    margin-right: 20px;
+    margin-bottom: 20px;
+    color: #000;
+    display: flex;
+    align-items: center;
+    padding: 14px;
+    background: #fff;
+    box-shadow: 2px 2px 15px #e1ecf6;
+    border-radius: 5px;
+}
+
+.dashboard_patients_card .icon-patients {
+    width: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 60px;
+    border-radius: 5px;
+    background: rgba(30, 136, 229, 0.2);
+}
+
+.dashboard_patients_card .icon-patients i {
+    font-size: 30px;
+    color: #1e88e5;
+}
+
+.dashboard_patients_card .icon-users {
+    width: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 60px;
+    border-radius: 5px;
+    background: rgba(116, 96, 238, 0.2);
+}
+
+.dashboard_patients_card .icon-users i {
+    font-size: 30px;
+    color: #7460ee;
+}
+
+.dashboard_patients_card .icon-pending {
+    width: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 60px;
+    border-radius: 5px;
+    background: rgba(38, 198, 218, 0.2);
+}
+
+.dashboard_patients_card .icon-pending i {
+    font-size: 30px;
+    color: #26c6da;
+}
+
+.dashboard_patients_card .number {
+    margin-left: 10px;
+    font-weight: bold;
+    line-height: 28px;
+    font-size: 28px;
+}
+
+.dashboard_patients_card .number span {
+    font-size: 14px;
+    color: #57686f;
+    display: block;
+    font-weight: normal;
+    line-height: 18px;
+}
+
+.dashboard-card {
+    margin-bottom: 20px;
+    background: #fff;
+    border-radius: 5px;
+    box-shadow: 2px 2px 15px #e1ecf6;
+}
+
+.dashboard-card .dashboard-card-heading {
+    padding: 15px;
+    padding-top: 25px;
+}
+
+.dashboard-card .dashboard-card-heading h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 2px;
+}
+
+.dashboard-card .dashboard-card-heading h4 {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 2px;
+}
+
+.dashboard-card .dashboard-card-heading p {
+    margin: 0px;
+}
+
+.dashboard-card .dashboard-card-body {
+    padding: 15px;
+    padding-top: 0px;
+}
+
+.percentage-text {
+    font-size: 22px !important;
+    font-weight: 700;
+    padding-right: 10px;
+}
+
+.chart-icon {
+    font-size: 20px;
     cursor: pointer;
+    color: #1e88e5;
 }
 
-.ctype {
-    text-align: center;
-    padding: 23px 0px;
-    align-self: center;
-
-    &-1 {
-        background-color: #f90047;
-    }
-
-    &-2 {
-        background-color: #198a27;
-    }
-
-    &-3 {
-        background-color: #f50231;
-    }
+.text-green {
+    color: #4bca61;
 }
 
-.indicatorType {
-    text-align: center;
-    padding: 23px 0px;
-    align-self: center;
-
-    &-1 {
-        background-color: #ff0048;
-    }
-
-    &-2 {
-        background-color: #df5846;
-    }
-
-    &-3 {
-        background-color: #f0ed3c;
-    }
-
-    &-4 {
-        background-color: #56a30e;
-    }
+.graph-content {
+    border-radius: 5px;
+    padding: 15px;
+    padding-top: 0px;
+    margin-top: -10px;
+    background: #fff;
 }
 
-.dashboard-title {
-    font-size: 25px;
-    padding-bottom: 20px;
-    font-weight: 500;
+.graph-content h3 {
+    margin-bottom: 10px;
+    font-size: 18px;
 }
 
-.date-title {
-    font-size: 22px;
-}
-
-.sync-title {
-    font-size: 17px;
+.graph-content-close-icon {
+    font-size: 20px;
     cursor: pointer;
-    float: right;
+    color: #4d4d4d;
 }
 
-.cst-elipsis {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
+.indicators_scroll {
+    // height: 800px;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+@media (max-width: 1400px) {
+    .indicators_scroll {
+        // height: 767px;
+    }
 }

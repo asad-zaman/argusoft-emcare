@@ -59,16 +59,11 @@ export class AuthenticationService {
     }
 
     login(username: string, password: string) {
-        const url = `https://emcare.argusoft.com/auth/realms/emcare/protocol/openid-connect/token`;
-        // const url = `${this.backendURL}/auth/realms/emcare/protocol/openid-connect/token`;
-        const body = new HttpParams()
-            .set('username', username)
-            .set('password', password)
-            .set('grant_type', 'password')
-            .set('client_id', 'emcare')
-            .set('client_secret', 'b5a37bde-8d54-4837-a8dc-12e1f808e26e');
-        // return this.http.post<any>(`http:localhost:4200/users/authenticate`, { username, password }, { withCredentials: true })
-        return this.http.post<any>(url, body.toString(), this.getHeaders());
+        const url = `http://3.111.94.246:8080/api/auth/login`;
+        const body = {
+            username: username, password: password
+        }
+        return this.http.post<any>(url, body);
     }
 
     getLoggedInUser() {
@@ -98,7 +93,7 @@ export class AuthenticationService {
         return this.features;
     }
 
-    setFeatures(featuresRes: any): void {
+    setFeatures(featuresRes: any) {
         let features = [];
         featuresRes.forEach(f => {
             features.push(f.menuName);
@@ -148,5 +143,10 @@ export class AuthenticationService {
     resetPassword(body) {
         const url = `${this.backendURL}/api/open/resetpassword`;
         return this.http.put<any>(url, body);
+    }
+
+    getCurrentCountry() {
+        const url = `${this.backendURL}/api/open/current/country`;
+        return this.http.get<any>(url);
     }
 }

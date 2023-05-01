@@ -5,10 +5,13 @@
 <ng-container *ngIf="sidebarShow">
   <!--header-->
   <header>
-    <div class="logo cursor-pointer" (click)="navigateToDashboard()">
-      <img src="assets/images/emcare-logo.svg" alt="EMCARE">
+    <div class="logo d-flex">
+      <img src="assets/images/emcare-logo.svg" alt="EMCARE"> 
+      <h5 class="cst-agent">
+        {{getApplicationAgent()}}
+      </h5>
     </div>
-    <i (click)="changeSidebarVar()" class="bi bi-card-list sideBarBtn" aria-hidden="true"></i>
+    <i (click)="onClickSidebarBtn()" class="bi bi-card-list sideBarBtn" aria-hidden="true"></i>
     <ul class="navigation">
       <li class="dropdown">
         <div class="d-flex align-items-center" data-bs-toggle="dropdown">
@@ -27,8 +30,8 @@
   <!--header-END-->
   <!--Sidenav-->
   <ng-container *ngIf="isSidebarOpen">
-    <div class="sidenav cst-overflow" *ngIf="featureList.length !== 0">
-      <ul class="nav-link">
+    <div class="sidenav cst-overflow">
+      <ul *ngIf="!isSuperAdmin && featureArr.length !== 0" class="nav-link">
         <ng-container *ngFor="let feature of featureArr">
           <li *ngIf="hasAccess(feature.menuName) && feature.menuName !== 'Organizations'">
             <a class="mouse-pointer"
@@ -38,7 +41,7 @@
               {{feature.menuName | translate}}
               <ng-container *ngIf="feature.subMenu.length>0">
                 <ng-container *ngIf="feature.dropdownValue; else upIcon">
-                  <i class="bi bi-chevron-up drop-icon" aria-hidden="true"></i>
+                  <i class="bi bi-chevron-down drop-icon" aria-hidden="true"></i>
                 </ng-container>
                 <ng-template #upIcon>
                   <i class="bi bi-chevron-down drop-icon" aria-hidden="true"></i>
@@ -61,6 +64,14 @@
           </li>
         </ng-container>
       </ul>
+      <ul *ngIf="isSuperAdmin" class="nav-link">
+        <li>
+          <a (click)="navigateToTenantConfig()" class="active mouse-pointer">
+            <i class="bi bi-shop mr-3" aria-hidden="true"></i>
+            {{'Country Config' | translate}}
+          </a>
+        </li>
+      </ul>
     </div>
   </ng-container>
 </ng-container>
@@ -68,9 +79,9 @@
   <div id="map"></div>
   <router-outlet></router-outlet>
   <div *ngIf="this.footerShow" class="cst-footer">
-    &nbsp;&nbsp;Terms and Conditions
+    &nbsp;&nbsp;{{'Terms and Conditions' | translate}}
     <a class="cursor-pointer ml-3 font-12" (click)="navigateToTermsAndConditionsPage()">
-      "T & C"
+      "{{'TC' | translate}}"
     </a>
   </div>
 </div>

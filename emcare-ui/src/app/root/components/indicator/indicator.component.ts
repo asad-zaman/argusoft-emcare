@@ -323,13 +323,13 @@ export class IndicatorComponent implements OnInit {
       }
       this.fhirService.addIndicator(body).subscribe(() => {
         if (this.isEdit) {
-          this.toasterService.showToast('success', 'Indicator updated successfully!', 'EMCARE !!');
+          this.toasterService.showToast('success', 'Indicator updated successfully!', 'EMCARE!');
         } else {
-          this.toasterService.showToast('success', 'Indicator added successfully!', 'EMCARE !!');
+          this.toasterService.showToast('success', 'Indicator added successfully!', 'EMCARE!');
         }
         this.router.navigate(['/indicator-list']);
       }, () => {
-        this.toasterService.showToast('error', 'Server issue!', 'EMCARE !!');
+        this.toasterService.showToast('error', 'Server issue!', 'EMCARE!');
       });
     }
   }
@@ -531,7 +531,7 @@ export class IndicatorComponent implements OnInit {
           if (this.finalNumEqs.length < this.selectedNumEqs.length) {
             this.setSelectedNumEqsArr();
           } else if (this.selectedNumEqs.indexOf(event.value.id) >= 0) {
-            this.toasterService.showToast('error', 'Please Select other Equation!', 'EM CARE !!')
+            this.toasterService.showToast('error', 'Please Select other Equation!', 'EM CARE!')
             this.finalNumEqs[index] = null;
             this.setSelectedNumEqsArr();
           } else {
