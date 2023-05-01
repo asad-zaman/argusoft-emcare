@@ -12,6 +12,7 @@ export class LogListComponent implements OnInit {
 
   applicationData = [];
   logs = [];
+  currentActive = 0;
 
   constructor(
     private readonly fhirService: FhirService,
@@ -43,7 +44,8 @@ export class LogListComponent implements OnInit {
     });
   }
 
-  navigateToSection(id) {
+  navigateToSection(id, index) {
+    this.currentActive = index;
     this.router.navigate([], { fragment: id });
   }
 

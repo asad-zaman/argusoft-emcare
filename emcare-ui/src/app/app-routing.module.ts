@@ -103,7 +103,7 @@ const routes: Routes = [
     scrollPositionRestoration: 'enabled',
     anchorScrolling: 'enabled',
     onSameUrlNavigation: 'reload',
-    scrollOffset: [0, 75]
+    scrollOffset: [0, 130]
   })],
   exports: [RouterModule]
 })
