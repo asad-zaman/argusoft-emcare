@@ -17,7 +17,8 @@
           <div class="mb-3">
             <label class="form-label">{{'Code Name' | translate}}</label>
             <input class="form-control custom-input" formControlName="code" type="text" id="name"
-              placeholder="{{'CodePlaceholder' | translate}}" [ngClass]="{ 'is-invalid': submitted && getFormConfrols.code.errors }">
+              placeholder="{{'CodePlaceholder' | translate}}"
+              [ngClass]="{ 'is-invalid': submitted && getFormConfrols.code.errors }">
             <div *ngIf="submitted && getFormConfrols.code.errors" class="invalid-feedback">
               <div class="cst-error-style" *ngIf="getFormConfrols.code.errors.required">
                 {{'Code Required Message' | translate}}</div>
@@ -36,8 +37,65 @@
             </div>
           </div>
         </div>
+        <ng-container *ngIf="!this.isEdit">
+          <div class="col-12 col-sm-6">
+            <div class="mb-3">
+              <label class="form-label">{{'Custom Value Type' | translate}}</label>
+              <p-dropdown
+                [ngStyle]="{'border': submitted && getFormConfrols.customValueType.value == '' ? '1px solid red' : ''}"
+                placeholder="Select" [options]="valueTypeArr" formControlName="customValueType" optionLabel="name"
+                dataKey="id">
+              </p-dropdown>
+              <div *ngIf="submitted && getFormConfrols.customValueType.value == ''" style="color: #dc3545">
+                <div class="cst-error-style">
+                  {{'Custom Value Type Required Message' | translate}}</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-sm-6">
+            <div class="mb-3">
+              <label class="form-label">{{'Code Condition' | translate}}</label>
+              <p-multiSelect
+                [ngStyle]="{'border': submitted && getFormConfrols.customCodeCondition.value == '' ? '1px solid red' : ''}"
+                placeholder="Select" [options]="conditionArr" formControlName="customCodeCondition" optionLabel="name"
+                dataKey="id">
+              </p-multiSelect>
+              <div *ngIf="submitted && getFormConfrols.customCodeCondition.value == ''" style="color: #dc3545">
+                <div class="cst-error-style">
+                  {{'Custom Code Condition Required Message' | translate}}</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-sm-6">
+            <div class="mb-3">
+              <label class="form-label">{{'Value' | translate}}</label>
+              <input class="form-control custom-input" formControlName="value" type="text" id="value"
+                placeholder="{{'Value Placeholder' | translate}}"
+                [ngClass]="{ 'is-invalid': submitted && getFormConfrols.value.errors }">
+            </div>
+          </div>
+          <div class="col-12 col-sm-4 mt-3 align-self-center">
+            <button [disabled]="!getFormConfrols.value.value" type="button" class=" btn btn-blue" (click)="addValue()"
+              data-bs-dismiss="modal">{{'Add' | translate}}</button>
+          </div>
+          <div class="col-6">
+            <div class="mb-3 customd-div">
+              <label class="form-label f-16">Selected Facilities</label>
+              <ul>
+                <ng-container *ngFor="let val of codeForm.get('valueArr').value">
+                  <li>
+                    <div class="chip">
+                      {{val}}
+                      <i class="bi bi-x f-18 cursor-pointer" (click)="removeValue(val)" aria-hidden="true"></i>
+                    </div>
+                  </li>
+                </ng-container>
+              </ul>
+            </div>
+          </div>
+        </ng-container>
       </div>
-      <div class="text-end mt-5">
+      <div class="text-end my-5">
         <hr>
         <button routerLink="/code-list" class="btn-black btn ms-3">
           <i class="bi bi-chevron-left" aria-hidden="true"></i> {{'Back' | translate}}
