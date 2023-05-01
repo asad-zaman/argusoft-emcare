@@ -82,6 +82,8 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
     @Autowired
     ObservationResourceRepository observationResourceRepository;
     @Autowired
+    BinaryResourceService binaryResourceService;
+    @Autowired
     private LocationService locationService;
     @Autowired
     private LocationResourceService locationResourceService;
@@ -243,6 +245,14 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
                     structureMapResourceService.updateStructureMapResource(resource.getIdElement(), parser.parseResource(StructureMap.class, resourceString));
                 } else {
                     structureMapResourceService.saveResource(parser.parseResource(StructureMap.class, resourceString));
+                }
+                break;
+            case CommonConstant.BINARY_TYPE_STRING:
+                Binary binary = binaryResourceService.getResourceById(resourceId);
+                if (binary != null) {
+                    binaryResourceService.updateBinaryResource(resource.getIdElement(), binary);
+                } else {
+                    binaryResourceService.saveResource(binary);
                 }
                 break;
             default:
