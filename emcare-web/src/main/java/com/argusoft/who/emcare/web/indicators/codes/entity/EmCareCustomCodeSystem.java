@@ -30,6 +30,15 @@ public class EmCareCustomCodeSystem extends EntityAuditInfo implements Serializa
     @Column(name = "code_description")
     private String codeDescription;
 
+    @Column(name = "value_type")
+    private String valueType;
+
+    @Column(name = "condition")
+    private String[] condition;
+
+    @Column(name = "value")
+    private String[] value;
+
     public Long getCodeId() {
         return codeId;
     }
@@ -52,6 +61,30 @@ public class EmCareCustomCodeSystem extends EntityAuditInfo implements Serializa
 
     public void setCodeDescription(String codeDescription) {
         this.codeDescription = codeDescription;
+    }
+
+    public String getValueType() {
+        return valueType;
+    }
+
+    public void setValueType(String valueType) {
+        this.valueType = valueType;
+    }
+
+    public String[] getCondition() {
+        return condition;
+    }
+
+    public void setCondition(String[] condition) {
+        this.condition = condition;
+    }
+
+    public String[] getValue() {
+        return value;
+    }
+
+    public void setValue(String[] value) {
+        this.value = value;
     }
 
     @Override

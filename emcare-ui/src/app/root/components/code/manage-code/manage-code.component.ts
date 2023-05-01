@@ -18,6 +18,20 @@ export class ManageCodeComponent implements OnInit {
   isAddFeature = true;
   isEditFeature = true;
   isAllowed = true;
+  conditionArr = [
+    { id: '=', name: '= (equal)' },
+    { id: '<', name: '< (less than)' },
+    { id: '>', name: '> (greater than)' },
+    { id: '<=', name: '<= (less than equal to)' },
+    { id: '>=', name: '>= (greater than equal to)' }
+  ];
+  valueTypeArr = [
+    { id: 'any', name: 'Any' },
+    { id: 'boolean', name: 'Boolean' },
+    { id: 'text', name: 'String' },
+    { id: 'date', name: 'Date' },
+    { id: 'number', name: 'Number' }
+  ];
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -65,7 +79,7 @@ export class ManageCodeComponent implements OnInit {
             code: res['code'],
             codeDescription: res['codeDescription']
           }
-          this.codeForm.setValue(obj);
+          this.codeForm.patchValue(obj);
         }
       });
     }
@@ -74,12 +88,20 @@ export class ManageCodeComponent implements OnInit {
   initCodeForm() {
     this.codeForm = this.formBuilder.group({
       code: ['', [Validators.required]],
-      codeDescription: ['', [Validators.required]]
+      codeDescription: ['', [Validators.required]],
+      customValueType: [''],
+      customCodeCondition: [''],
+      value: [''],
+      valueArr: ['']
     });
   }
 
   get getFormConfrols() {
     return this.codeForm.controls;
+  }
+
+  getNameField(arr) {
+    return arr.map(el => el.name);
   }
 
   saveData() {
@@ -98,7 +120,10 @@ export class ManageCodeComponent implements OnInit {
       } else {
         const data = {
           "code": this.codeForm.get('code').value,
-          "codeDescription": this.codeForm.get('codeDescription').value
+          "codeDescription": this.codeForm.get('codeDescription').value,
+          "valueType": this.getNameField([this.codeForm.get('customValueType').value])[0],
+          "condition": this.getNameField(this.codeForm.get('customCodeCondition').value),
+          "value": this.codeForm.get('valueArr').value
         };
         this.fhirService.addCustomCode(data).subscribe(() => {
           this.toasterService.showToast('success', 'Custom code added successfully!', 'EM CARE');
@@ -110,5 +135,29 @@ export class ManageCodeComponent implements OnInit {
 
   showCodeList() {
     this.router.navigate([`code-list`]);
+  }
+
+  addValue() {
+    const selValue = this.codeForm.get('value').value;
+    const currValue = this.codeForm.get('valueArr').value;
+    let valueArr = [];
+    if (currValue) {
+      valueArr = currValue;
+      //  If value is selected already then no need to push it again
+      if (!valueArr.includes(selValue)) {
+        valueArr.push(selValue);
+        this.codeForm.get('valueArr').setValue(valueArr);
+      }
+    } else {
+      valueArr.push(selValue);
+      this.codeForm.get('valueArr').setValue(valueArr);
+    }
+    this.codeForm.get('value').setValue(null);
+  }
+
+  removeValue(val) {
+    let valueArr = this.codeForm.get('valueArr').value;
+    valueArr = valueArr.filter(v => v !== val);
+    this.codeForm.get('valueArr').setValue(valueArr);
   }
 }
