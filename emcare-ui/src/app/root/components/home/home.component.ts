@@ -324,7 +324,4 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  getIndicatorValue(indicator) {
-    return (indicator.indicatorValue)/100;
-  }
 }
