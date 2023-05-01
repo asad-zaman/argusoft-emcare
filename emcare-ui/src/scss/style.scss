@@ -105,9 +105,12 @@ body {
 }
 
 body {
-  background: #F6F9FB;
+  background: #FFFFFF;
 }
 
+hr:not([size]) {
+  height: 0px;
+}
 .ms-3 {
   margin-right: 1rem !important;
 }
