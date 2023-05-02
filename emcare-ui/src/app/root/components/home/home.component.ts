@@ -204,7 +204,7 @@ export class HomeComponent implements OnInit {
         type: 'pie'
       },
       title: {
-        text: 'Number of consultations per facility'
+        text: ''
       },
       tooltip: {
         pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
@@ -237,7 +237,7 @@ export class HomeComponent implements OnInit {
         type: 'pie'
       },
       title: {
-        text: 'Number of consultations by age group'
+        text: ''
       },
       tooltip: {
         pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
