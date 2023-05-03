@@ -1,6 +1,6 @@
 .cst-table-style {
     padding: 12px;
-    border-bottom: 1px solid #ECF4FF;
+    border-bottom: 1px solid #ecf4ff;
     font-size: 12px;
 }
 
@@ -153,7 +153,7 @@
 }
 
 .indicators_scroll {
-    height: 606px;
+    height: 706px;
     overflow-x: hidden;
     overflow-y: auto;
 }
@@ -161,30 +161,33 @@
 .height___350 {
     height: 350px;
     overflow: hidden;
- }
-  
-  .height___300 {
-    height: 300px;
-    overflow: hidden;
- }
-  
-  .pl___7 {
-    padding-left: 7px; }
-    @media (max-width: 1199px) {
-      .pl___7 {
-        padding-left: 15px; } }
+}
 
-#scatter-chart-container{
+.height___400 {
+    height: 400px;
+    overflow: hidden;
+}
+
+.pl___7 {
+    padding-left: 7px;
+}
+@media (max-width: 1199px) {
+    .pl___7 {
+        padding-left: 15px;
+    }
+}
+
+#scatter-chart-container {
     position: relative;
     top: -50px;
 }
 
-#consultationPerFacility{
+#consultationPerFacility {
     position: relative;
     top: -40px;
 }
 
-#consultationByAgeGroup{
+#consultationByAgeGroup {
     position: relative;
-    top: -40px;  
+    top: -40px;
 }
