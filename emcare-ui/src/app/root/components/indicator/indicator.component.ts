@@ -336,6 +336,7 @@ export class IndicatorComponent implements OnInit {
   }
 
   saveData() {
+    console.log(this.color, this.indicatorForm.value);
     this.submitted = true;
     if (this.indicatorForm.valid) {
       const body = this.getRequestBody(this.indicatorForm.value);
@@ -400,9 +401,9 @@ export class IndicatorComponent implements OnInit {
       "denominatorEquations": this.getDenominatorsBody(),
       "numeratorEquationString": JSON.stringify(this.numeratorEquationStringArr),
       "denominatorEquationString": JSON.stringify(this.denominatorEquationStringArr),
-      "colourSchema": JSON.stringify(this.getColorSchemaObj()),
+      "colourSchema": this.getColorSchemaObj(),
       "gender": formValue.gender.id,
-      "age": `${formValue.ageCondition.id} ${formValue.ageValue}`
+      "age": `${formValue.ageCondition.id} ${formValue.ageCondition.ageValue}`
     }
   }
 
@@ -641,9 +642,9 @@ export class IndicatorComponent implements OnInit {
     const tempArr = [];
     this.getColorSections().controls.forEach(element => {
       tempArr.push({
-        minValue: element.value.minValue.id,
-        condition: element.value.condition.id,
-        maxValue: element.value.maxValue.id,
+        minValue: element.value.minValue,
+        condition: element.value.condition,
+        maxValue: element.value.maxValue,
         color: element.value.color
       });
     });

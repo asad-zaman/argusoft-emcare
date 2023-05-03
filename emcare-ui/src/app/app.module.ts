@@ -74,6 +74,8 @@ import { TermsConditionsComponent } from './root/components/terms-conditions/ter
 import { AddLogComponent } from './root/components/add-log/add-log.component';
 import { LogListComponent } from './root/components/log-list/log-list.component';
 import { LocationSubjects } from './root/components/Location/location-filter/LocationSubject';
+import { ColorPickerModule } from 'primeng/colorpicker';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -144,7 +146,8 @@ import { LocationSubjects } from './root/components/Location/location-filter/Loc
     ToastModule,
     NgxIntlTelInputModule,
     MessagesModule,
-    MessageModule
+    MessageModule,
+    ColorPickerModule
   ],
   providers: [
     AuthenticationService,

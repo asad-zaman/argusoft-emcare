@@ -397,6 +397,10 @@
                   </div>
                   <div class="col-3">
                     <p-dropdown (onChange)="minValueSelection($event, i)" formControlName="minValue" [filter]="true" placeholder="Select Number"
+                    <span>{{this.getColorSections().controls[i].value.color}}</span>
+                  </div>
+                  <div class="col-3">
+                    <p-dropdown formControlName="minValue" [filter]="true" placeholder="Select Number"
                       [options]="mumericDropdown" optionLabel="name" dataKey="id">
                     </p-dropdown>
                   </div>
@@ -441,6 +445,7 @@
               </div>
               <div class="col-6">
                 <input class="form-control custom-input" formControlName="ageValue" type="number" id="value"
+                <input class="form-control custom-input" formControlName="ageValue" type="text" id="value"
                   placeholder="{{'Value Placeholder' | translate}}">
               </div>
             </div>
