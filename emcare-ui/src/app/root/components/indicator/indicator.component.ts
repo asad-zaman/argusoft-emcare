@@ -336,7 +336,6 @@ export class IndicatorComponent implements OnInit {
   }
 
   saveData() {
-    console.log(this.getRequestBody(this.indicatorForm.value));
     this.submitted = true;
     if (this.indicatorForm.valid) {
       const body = this.getRequestBody(this.indicatorForm.value);
@@ -401,7 +400,7 @@ export class IndicatorComponent implements OnInit {
       "denominatorEquations": this.getDenominatorsBody(),
       "numeratorEquationString": JSON.stringify(this.numeratorEquationStringArr),
       "denominatorEquationString": JSON.stringify(this.denominatorEquationStringArr),
-      "colourSchema": this.getColorSchemaObj(),
+      "colourSchema": JSON.stringify(this.getColorSchemaObj()),
       "gender": formValue.gender.id,
       "age": `${formValue.ageCondition.id} ${formValue.ageValue}`
     }
