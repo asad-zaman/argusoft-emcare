@@ -1,6 +1,7 @@
 .cst-table-style {
     padding: 12px;
     border-bottom: 1px solid #ECF4FF;
+    font-size: 12px;
 }
 
 .dashboard_patients_card-wrapper {
@@ -91,6 +92,8 @@
 .dashboard-card .dashboard-card-heading {
     padding: 15px;
     padding-top: 25px;
+    position: relative;
+    z-index: 100;
 }
 
 .dashboard-card .dashboard-card-heading h3 {
@@ -100,7 +103,7 @@
 }
 
 .dashboard-card .dashboard-card-heading h4 {
-    font-size: 14px;
+    font-size: 12px;
     font-weight: 600;
     margin-bottom: 2px;
 }
@@ -115,7 +118,7 @@
 }
 
 .percentage-text {
-    font-size: 22px !important;
+    font-size: 18px !important;
     font-weight: 700;
     padding-right: 10px;
 }
@@ -150,13 +153,38 @@
 }
 
 .indicators_scroll {
-    // height: 800px;
+    height: 606px;
     overflow-x: hidden;
     overflow-y: auto;
 }
 
-@media (max-width: 1400px) {
-    .indicators_scroll {
-        // height: 767px;
-    }
+.height___350 {
+    height: 350px;
+    overflow: hidden;
+ }
+  
+  .height___300 {
+    height: 300px;
+    overflow: hidden;
+ }
+  
+  .pl___7 {
+    padding-left: 7px; }
+    @media (max-width: 1199px) {
+      .pl___7 {
+        padding-left: 15px; } }
+
+#scatter-chart-container{
+    position: relative;
+    top: -50px;
+}
+
+#consultationPerFacility{
+    position: relative;
+    top: -40px;
+}
+
+#consultationByAgeGroup{
+    position: relative;
+    top: -40px;  
 }
