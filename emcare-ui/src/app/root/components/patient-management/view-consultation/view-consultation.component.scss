@@ -241,12 +241,12 @@
     }
 }
 
-.consultation-tab-content .tab-content-border-left {
-    border-left: 1px solid #e6edf3;
+.consultation-tab-content .tab-content-border {
+    border: 1px solid #e6edf3;
 }
 
 @media (max-width: 991px) {
-    .consultation-tab-content .tab-content-border-left {
+    .consultation-tab-content .tab-content-border {
         border: 0px;
     }
 }
