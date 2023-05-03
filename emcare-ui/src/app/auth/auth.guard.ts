@@ -19,7 +19,7 @@ export class AuthGuard implements CanActivate {
         this.handleFeature = new BehaviorSubject({});
         this.featureRouteArr = {
             'Users': ['/showUsers', '/addUser', '/updateUser', '/showRoles', '/addRole', '/editRole', '/confirmUsers'],
-            'Indicators': ['/code-list', '/manageCode', 'indicator-list', '/addIndicator', '/editIndicator'],
+            'Indicators': ['/code-list', '/manageCode', '/indicator-list', '/addIndicator', '/editIndicator'],
             'Custom Codes': ['/code-list', '/manageCode'],
             'All Indicators': ['/indicator-list'],
             'Locations': ['/showFacility', '/addFacility', '/editFacility', '/showLocation', '/addLocation', '/editLocation', '/showLocationType', '/addLocationType', '/editLocationType'],

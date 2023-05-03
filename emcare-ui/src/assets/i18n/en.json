@@ -349,5 +349,7 @@
   "Selected Facilities": "Selected Facilities",
   "Active": "Active",
   "In Active": "In Active",
-  "Log Description": "Log Description"
+  "Log Description": "Log Description",
+  "Color": "Color",
+  "Age": "Age (in months)"
 }
