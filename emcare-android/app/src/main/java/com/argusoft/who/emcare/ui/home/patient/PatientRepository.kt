@@ -147,7 +147,7 @@ class PatientRepository @Inject constructor(
                 ))
             }.collect {
                 //Current implementation of stage order by questionnaire list
-                val consultationStageIndex = consultationFlowStageList.indexOf(consultationStage)
+                var consultationStageIndex = consultationFlowStageList.indexOf(consultationStage)
                 if(consultationFlowStageList.last().equals(consultationStage, true)){
                     //End of consultation
                     consultationFlowRepository.updateConsultationFlowInactiveByEncounterId(encounterId).collect {
@@ -181,6 +181,7 @@ class PatientRepository @Inject constructor(
                         if(patient.hasBirthDate()) {
                             val isAgeUnderTwoMonths = patient.birthDate.toInstant().isAfter(Instant.now().minusSeconds(3600*24*60))
                             if(isAgeUnderTwoMonths) {
+                                consultationStageIndex = consultationFlowStageListUnderTwoMonths.indexOf(consultationStage)
                                 nextConsultationStage = consultationFlowStageListUnderTwoMonths[consultationStageIndex + 1]
                                 questionnaireId = stageToQuestionnaireIdUnderTwoMonths[nextConsultationStage]
                                 structureMapId = stageToStructureMapIdUnderTwoMonths[nextConsultationStage]

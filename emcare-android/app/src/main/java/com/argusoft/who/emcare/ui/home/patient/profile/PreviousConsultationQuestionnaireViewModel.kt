@@ -84,8 +84,6 @@ class PreviousConsultationQuestionnaireViewModel @Inject constructor(
                                     )
                                     )
                                 )
-                            } else {
-                                sidepaneList.add(SidepaneItem(stageToIconMap[stage], stageToBadgeMap[stage]))
                             }
                         }
                     }
