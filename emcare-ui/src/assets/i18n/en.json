@@ -348,5 +348,8 @@
   "NoConsultations": "There are not enought consultations",
   "Selected Facilities": "Selected Facilities",
   "Active": "Active",
-  "In Active": "In Active"
+  "In Active": "In Active",
+  "Log Description": "Log Description",
+  "Color": "Color",
+  "Age": "Age (in months)"
 }

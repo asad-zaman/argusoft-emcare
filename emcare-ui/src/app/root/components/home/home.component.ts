@@ -211,6 +211,7 @@ export class HomeComponent implements OnInit {
       },
       plotOptions: {
         pie: {
+          size: '90%',
           allowPointSelect: true,
           cursor: 'pointer',
           dataLabels: {
@@ -244,6 +245,7 @@ export class HomeComponent implements OnInit {
       },
       plotOptions: {
         pie: {
+          size: '90%',
           allowPointSelect: true,
           cursor: 'pointer',
           dataLabels: {

@@ -60,6 +60,19 @@ export class IndicatorComponent implements OnInit {
   denEqCOnditionArr = [];
   numeratorEquationStringArr = [];
   denominatorEquationStringArr = [];
+  color = '#fff';
+  genderArr = [
+    { id: 'male', name: 'Male' },
+    { id: 'female', name: 'Female' },
+    { id: 'other', name: 'Other' }
+  ];
+  mumericDropdown = [];
+  colorConditionArr = [
+    { id: '<', name: '< (less than)' },
+    { id: '>', name: '> (greater than)' },
+    { id: '<=', name: '<= (less than equal to)' },
+    { id: '>=', name: '>= (greater than equal to)' }
+  ];
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -89,6 +102,7 @@ export class IndicatorComponent implements OnInit {
         const routeParams = this.route.snapshot.paramMap;
         this.editId = routeParams.get('id');
         this.initIndicatorForm();
+        this.createNumericDropdown();
       }
     }, (_e) => {
       this.toasterService.showToast('error', 'Server issue!', 'EM CARE !!');
@@ -235,7 +249,12 @@ export class IndicatorComponent implements OnInit {
       denominators: this.editId ?
         this.formBuilder.array([]) : this.formBuilder.array([this.newDenominatorAddition()]),
       numeratorEquation: [''],
-      denominatorEquation: ['']
+      denominatorEquation: [''],
+      colorArr: this.editId ?
+        this.formBuilder.array([]) : this.formBuilder.array([this.newColorSectionAddition()]),
+      gender: [''],
+      ageCondition: [''],
+      ageValue: ['']
     });
     this.checkEditParam();
   }
@@ -257,6 +276,7 @@ export class IndicatorComponent implements OnInit {
       valueType: null,
       eqIdentifier: null,
       appendOtherNumeratorDropdown: false,
+      isShow: true,
       isValueDropdown: false,
       valueDropdownArr: []
     });
@@ -271,6 +291,7 @@ export class IndicatorComponent implements OnInit {
       valueType: null,
       eqIdentifier: null,
       appendOtherDenominatorDropdown: false,
+      isShow: true,
       isValueDropdown: false,
       valueDropdownArr: []
     });
@@ -379,6 +400,9 @@ export class IndicatorComponent implements OnInit {
       "denominatorEquations": this.getDenominatorsBody(),
       "numeratorEquationString": JSON.stringify(this.numeratorEquationStringArr),
       "denominatorEquationString": JSON.stringify(this.denominatorEquationStringArr),
+      "colourSchema": JSON.stringify(this.getColorSchemaObj()),
+      "gender": formValue.gender.id,
+      "age": `${formValue.ageCondition.id} ${formValue.ageValue}`
     }
   }
 
@@ -570,5 +594,59 @@ export class IndicatorComponent implements OnInit {
       if (element)
         this.selectedDenEqs.push(element.id);
     });
+  }
+
+  showHideCurrentEquation(i) {
+    const currValue = this.getNumerators().controls[i].value.isShow;
+    this.getNumerators().controls[i].patchValue({
+      isShow: !currValue
+    });
+  }
+
+  showHideCurrentDenominatorEquation(i) {
+    const currValue = this.getDenominators().controls[i].value.isShow;
+    this.getDenominators().controls[i].patchValue({
+      isShow: !currValue
+    });
+  }
+
+  createNumericDropdown() {
+    for (let index = 1; index <= 100; index++) {
+      this.mumericDropdown.push({ id: index, name: index });
+    }
+  }
+
+  newColorSectionAddition(): FormGroup {
+    return this.formBuilder.group({
+      minValue: null,
+      condition: null,
+      maxValue: null,
+      color: '#ffffff'
+    });
+  }
+
+  addColorSection() {
+    this.getColorSections().push(this.newColorSectionAddition());
+  }
+
+  removeColorSection(i: number) {
+    this.getColorSections().removeAt(i);
+  }
+
+  getColorSections(): FormArray {
+    return this.indicatorForm.get("colorArr") as FormArray;
+  }
+
+  getColorSchemaObj() {
+    const tempArr = [];
+    this.getColorSections().controls.forEach(element => {
+      tempArr.push({
+        minValue: element.value.minValue.id,
+        condition: element.value.condition.id,
+        maxValue: element.value.maxValue.id,
+        color: element.value.color
+      });
+    });
+    return tempArr;
   }
 }

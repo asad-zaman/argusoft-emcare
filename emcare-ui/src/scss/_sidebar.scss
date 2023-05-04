@@ -29,11 +29,11 @@
                     transform: translateY(-50%);
                     font-size: 16px;
                 }
-                &:hover {
-                    background: $color-red;
-                    color: $color-white;
+                &:hover:not(.active) {
+                    background: $color-white !important;
+                    color: $color-gray-80 !important;
                     i {
-                        color: $color-white;
+                        color: $color-gray-80 !important;
                     }
                 }
                 .drop-icon {
