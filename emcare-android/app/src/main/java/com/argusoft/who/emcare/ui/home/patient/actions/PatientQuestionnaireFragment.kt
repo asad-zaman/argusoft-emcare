@@ -62,8 +62,16 @@ class PatientQuestionnaireFragment : BaseFragment<FragmentPatientQuestionnaireBi
         ) { _, _ ->
             if(requireArguments().getBoolean(INTENT_EXTRA_IS_DELETE_NEXT_CONSULTATIONS)){
                 //Logic to avoid saving questionnaire if no changes are done
+                val latestQuestionnaireResponseObject = questionnaireFragment.getQuestionnaireResponse()
+
+                //Removing the empty blank space item from QR.
+                val questionnaireResponseItems = latestQuestionnaireResponseObject.item
+                latestQuestionnaireResponseObject.item = questionnaireResponseItems.dropLast(1)
+
                 val latestQuestionnaireResponse = FhirContext.forCached(FhirVersionEnum.R4).newJsonParser()
-                    .encodeResourceToString(questionnaireFragment.getQuestionnaireResponse())
+                    .encodeResourceToString(latestQuestionnaireResponseObject)
+
+                //If New QR And previously saved QR are equal then move to next questionnaire else delete next QR & resources and save questionnaire.
                 if(latestQuestionnaireResponse.equals(
                         requireArguments().getString(INTENT_EXTRA_QUESTIONNAIRE_RESPONSE))){
                     moveToNextQuestionnaire(
