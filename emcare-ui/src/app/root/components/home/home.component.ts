@@ -21,6 +21,7 @@ export class HomeComponent implements OnInit {
   scatterData = [];
   consultationPerFacility = [];
   consultationByAgeGroup = [];
+  indicatorApiBusy = true;
 
   @ViewChild('mapRef', { static: true }) mapElement: ElementRef;
 
@@ -122,6 +123,9 @@ export class HomeComponent implements OnInit {
         }]
       },
       legend: {
+        enabled: false
+      },
+      credits: {
         enabled: false
       },
       exporting: {
@@ -322,8 +326,10 @@ export class HomeComponent implements OnInit {
     this.fhirService.getIndicatorCompileValue(codeArr).subscribe((res: any) => {
       if (res && res.length > 0) {
         this.indicatorArr = res;
+        this.indicatorApiBusy = false;
       }
+    }, () => {
+      this.indicatorApiBusy = false;
     });
   }
-
 }

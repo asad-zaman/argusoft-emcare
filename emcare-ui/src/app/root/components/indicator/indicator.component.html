@@ -291,7 +291,7 @@
                     <p-colorPicker formControlName="color"></p-colorPicker>
                   </div>
                   <div class="col-3">
-                    <p-dropdown formControlName="minValue" [filter]="true" placeholder="Select Number"
+                    <p-dropdown (onChange)="minValueSelection($event, i)" formControlName="minValue" [filter]="true" placeholder="Select Number"
                       [options]="mumericDropdown" optionLabel="name" dataKey="id">
                     </p-dropdown>
                   </div>

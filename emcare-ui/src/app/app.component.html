@@ -6,7 +6,7 @@
   <!--header-->
   <header>
     <div class="logo d-flex">
-      <img src="assets/images/navbar.png" alt="EMCARE"> 
+      <img class="cursor-pointer" src="assets/images/navbar.png" routerLink="/home" alt="EMCARE">
       <h5 class="cst-agent">
         {{getApplicationAgent()}}
       </h5>
@@ -34,8 +34,7 @@
       <ul *ngIf="!isSuperAdmin && featureArr.length !== 0" class="nav-link">
         <ng-container *ngFor="let feature of featureArr">
           <li *ngIf="hasAccess(feature.menuName) && feature.menuName !== 'Organizations'">
-            <a class="mouse-pointer"
-              [ngClass]="{'active': checkIsActiveOrNot(feature, feature.menuName)}"
+            <a class="mouse-pointer" [ngClass]="{'active': checkIsActiveOrNot(feature, feature.menuName)}"
               (click)="changeDropdownValueOrRoute(feature)">
               <i class="{{getIconClassFromFeatureName(feature.menuName)}}" aria-hidden="true"></i>
               {{feature.menuName | translate}}

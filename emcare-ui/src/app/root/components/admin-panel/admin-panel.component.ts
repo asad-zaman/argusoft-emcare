@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AuthGuard } from 'src/app/auth/auth.guard';
 import { FhirService, ToasterService } from 'src/app/shared';
 import * as _ from 'lodash';
+import { appConstants } from 'src/app/app.config';
 @Component({
   selector: 'app-admin-panel',
   templateUrl: './admin-panel.component.html',

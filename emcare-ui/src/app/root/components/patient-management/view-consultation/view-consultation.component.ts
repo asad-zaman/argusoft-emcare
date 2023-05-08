@@ -148,22 +148,23 @@ export class ViewConsultationComponent implements OnInit {
   getPatientDetails() {
     this.fhirService.getPatientById(this.editId).subscribe(res => {
       if (res) {
+        console.log(res);
         this.patientData['fLetter'] = res['givenName'] ? res['givenName'].substr(0, 1) : null;
-        this.patientData['name'] = `${res['givenName']} ${res['familyName']}`;
+        this.patientData['name'] = res['givenName'] || res['familyName'] ? `${res['givenName']} ${res['familyName']}` : 'NA';
         this.patientData['gender'] = res['gender'];
-        let diff:number = (new Date().getTime()) - res['dob']; 
+        let diff: number = (new Date().getTime()) - res['dob'];
         //millisecond in a day
-        let msDay:number = 24*60*60*1000;
+        let msDay: number = 24 * 60 * 60 * 1000;
         //ml per year
-        let msYear:number= msDay * 365;   
-        let ageYear:number = Math.floor(diff/msYear);
-        let ageMonth:number = Math.floor(diff%msYear/(msDay*30));
-        let ageDay:number  = Math.floor(((diff%msYear)%(msDay*30))/msDay);
+        let msYear: number = msDay * 365;
+        let ageYear: number = Math.floor(diff / msYear);
+        let ageMonth: number = Math.floor(diff % msYear / (msDay * 30));
+        let ageDay: number = Math.floor(((diff % msYear) % (msDay * 30)) / msDay);
         let year: string = ageYear == 1 ? "Year" : "Years";
         let month: string = ageMonth < 2 ? "Month" : "Months";
         let day: string = ageDay < 2 ? "Day" : "Days";
-        this.patientData['age'] = ageYear === 0 && ageMonth === 0 ? ageDay.toString()+" "+day : ageYear === 0 ? ageMonth.toString()+" "+month+" "+ageDay.toString()+" "+day : ageYear.toString()+" "+year+" "+ageMonth.toString()+" "+month+" "+ageDay.toString()+" "+day;
-     }  
+        this.patientData['age'] = ageYear === 0 && ageMonth === 0 ? ageDay.toString() + " " + day : ageYear === 0 ? ageMonth.toString() + " " + month + " " + ageDay.toString() + " " + day : ageYear.toString() + " " + year + " " + ageMonth.toString() + " " + month + " " + ageDay.toString() + " " + day;
+      }
     });
   }
 }

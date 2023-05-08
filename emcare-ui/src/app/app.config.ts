@@ -9,5 +9,6 @@ export const appConstants = {
         language: 'language',
         Username: 'Username',
         ApplicationAgent: 'ApplicationAgent'
-    }
+    },
+    EMailAsUsername: "REGISTRATION_EMAIL_AS_USERNAME"
 };
