@@ -424,8 +424,8 @@ public class UserServiceImpl implements UserService {
                 String userId = accessToken.getSubject();
                 UserRepresentation userRepresentation = getUserByEmailId(loginCred.getUsername());
                 String tenantId = Objects.nonNull(userRepresentation.getAttributes().get(CommonConstant.TENANT_ID))
-                        ? userRepresentation.getAttributes().get(CommonConstant.TENANT_ID).get(0)
-                        : defaultTenant;
+                    ? userRepresentation.getAttributes().get(CommonConstant.TENANT_ID).get(0)
+                    : defaultTenant;
                 Set<String> roles = accessToken.getRealmAccess().getRoles();
                 TenantContext.clearTenant();
                 TenantContext.setCurrentTenant(tenantId);
@@ -827,6 +827,13 @@ public class UserServiceImpl implements UserService {
         } catch (Exception ex) {
             throw new Exception();
         }
+    }
+
+    @Override
+    public List<String> getCurrentUserFacility() {
+        String userId = emCareSecurityUser.getLoggedInUser().getSubject();
+        List<UserLocationMapping> locationMappings = userLocationMappingRepository.findByUserId(userId);
+        return locationMappings.stream().map(UserLocationMapping::getFacilityId).collect(Collectors.toList());
     }
 
     @Override
