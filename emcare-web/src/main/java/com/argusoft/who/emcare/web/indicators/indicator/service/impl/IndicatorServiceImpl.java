@@ -150,7 +150,7 @@ public class IndicatorServiceImpl implements IndicatorService {
             indicatorFilterDto.setAge(indicator.getAge());
             indicatorFilterDto.setGender(indicator.getGender());
             if (indicator.getDisplayType().equalsIgnoreCase(CommonConstant.INDICATOR_DISPLAY_TYPE_COUNT)) {
-                getCountIndicatorValue(indicator, numerator, denominator, responseList, indicatorFilterDto,false);
+                getCountIndicatorValue(indicator, numerator, denominator, responseList, indicatorFilterDto, false);
             }
         }
         return ResponseEntity.status(HttpStatus.OK).body(responseList);
@@ -167,7 +167,7 @@ public class IndicatorServiceImpl implements IndicatorService {
         Map<String, Long> numerator = new HashMap<>();
         Map<String, Long> denominator = new HashMap<>();
         if (indicator.getDisplayType().equalsIgnoreCase(CommonConstant.INDICATOR_DISPLAY_TYPE_COUNT)) {
-            getCountIndicatorValue(indicator, numerator, denominator, responseList, indicatorFilterDto,true);
+            getCountIndicatorValue(indicator, numerator, denominator, responseList, indicatorFilterDto, true);
         }
         return ResponseEntity.status(HttpStatus.OK).body(responseList);
     }
@@ -255,7 +255,7 @@ public class IndicatorServiceImpl implements IndicatorService {
     }
 
     public String getCommaSepratedFacilityIds(List<String> facilityIds) {
-        if (facilityIds.isEmpty()) {
+        if (facilityIds == null || facilityIds.isEmpty()) {
             return null;
         } else {
             return String.join("','", facilityIds);

@@ -46,7 +46,7 @@ public class IndicatorQueryBuilder {
             query = query.append(" ,emr.gender as gender");
         }
         query = query.append(" from observation_resource as obr left join emcare_resources as emr on obr.subject_id = emr.resource_id ");
-        if (facilityId != null || !facilityId.isEmpty()) {
+        if (facilityId != null && !facilityId.isEmpty()) {
             query = query.append(" where emr.facility_id in ('" + facilityId + "')");
         }
         query = query.append(") select * from custom_code ");
@@ -111,7 +111,7 @@ public class IndicatorQueryBuilder {
             query = query.append(" ,emr.gender as gender");
         }
         query = query.append(" from observation_resource as obr left join emcare_resources as emr on obr.subject_id = emr.resource_id ");
-        if (facilityId != null || !facilityId.isEmpty()) {
+        if (facilityId != null && !facilityId.isEmpty()) {
             query = query.append(" where emr.facility_id in ('" + facilityId + "')");
         }
         query = query.append(") select * from custom_code where 1=1");
