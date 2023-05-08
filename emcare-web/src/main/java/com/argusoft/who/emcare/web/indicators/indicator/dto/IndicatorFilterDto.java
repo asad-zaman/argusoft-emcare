@@ -1,6 +1,7 @@
 package com.argusoft.who.emcare.web.indicators.indicator.dto;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * <h1> Add heading here </h1>
@@ -18,6 +19,7 @@ public class IndicatorFilterDto {
     private Date endDate;
     private String age;
     private String gender;
+    private List<String> facilityIds;
 
     public Long getIndicatorId() {
         return indicatorId;
@@ -57,5 +59,13 @@ public class IndicatorFilterDto {
 
     public void setGender(String gender) {
         this.gender = gender;
+    }
+
+    public List<String> getFacilityIds() {
+        return facilityIds;
+    }
+
+    public void setFacilityIds(List<String> facilityIds) {
+        this.facilityIds = facilityIds;
     }
 }

@@ -72,5 +72,7 @@ public interface UserService {
 
     public void removeUser(String email) throws Exception;
 
+    public List<String> getCurrentUserFacility();
+
 
 }
