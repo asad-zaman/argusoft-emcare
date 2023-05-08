@@ -1,15 +1,15 @@
 <div class="main-wrapper">
   <!--small-card-->
   <div class="dashboard_patients_card-wrapper">
-    <div class="dashboard_patients_card">
+    <div routerLink="/showPatients" class="dashboard_patients_card cursor-pointer">
       <div class="icon-patients"><i class="bi bi-heart-pulse " aria-hidden="true"></i></div>
       <div class="number">{{dashboardData.totalPatient}} <span>{{'Total Patients' | translate}}</span></div>
     </div>
-    <div class="dashboard_patients_card">
+    <div routerLink="/showUsers" class="dashboard_patients_card cursor-pointer">
       <div class="icon-users"><i class="bi bi-people" aria-hidden="true"></i></div>
       <div class="number">{{dashboardData.totalUser}} <span>{{'Total Users' | translate}}</span></div>
     </div>
-    <div class="dashboard_patients_card">
+    <div routerLink="/confirmUsers" class="dashboard_patients_card cursor-pointer">
       <div class="icon-pending"><i class="bi bi-clock-history" aria-hidden="true"></i></div>
       <div class="number">{{dashboardData.pendingRequest}} <span>{{'Pending User Requests' | translate}}</span></div>
     </div>
@@ -20,11 +20,12 @@
     <div class="col-12 col-md-12 col-lg-12 col-xl-6">
       <div class="dashboard-card height___350">
         <div class="dashboard-card-heading">
-          <h3>{{'Analysis' | translate}} | {{getDateData()}}</h3>
+          <h3>{{'Analysis' | translate}}</h3>
           <p>{{'Number of consultations per date' | translate}}</p>
         </div>
         <div class="dashboard-card-body">
-          <div id="scatter-chart-container" style="min-width: 310px; max-width: 800px; height: 300px; margin: 0 auto; top: -50px;">
+          <div id="scatter-chart-container"
+            style="min-width: 310px; max-width: 800px; height: 300px; margin: 0 auto; top: -50px;">
           </div>
         </div>
       </div>
@@ -58,14 +59,14 @@
     <!--left-grid-END-->
     <!--right-grid-->
     <div class="col-12 col-md-12 col-lg-12 col-xl-6 pl___7">
-      <div class="dashboard-card">
-        <div class="dashboard-card-heading">
-          <h3>{{'Indicators' | translate}} | March 2023</h3>
-        </div>
-        <div class="dashboard-card-body indicators_scroll">
-          <div class="table-responsive">
-            <table class="data-table">
-              <ng-container *ngIf="this.indicatorArr.length>0">
+      <ng-container *ngIf="!this.indicatorApiBusy; else showSpinner">
+        <div class="dashboard-card">
+          <div class="dashboard-card-heading">
+            <h3>{{'Indicators' | translate}}</h3>
+          </div>
+          <div class="dashboard-card-body indicators_scroll">
+            <div class="table-responsive">
+              <table class="data-table">
                 <ng-container *ngFor="let indicator of this.indicatorArr">
                   <tr>
                     <td class="cst-table-style percentage-text text-green">{{indicator.indicatorValue}}%</td>
@@ -74,11 +75,16 @@
                     <td><i class="bi bi-graph-up-arrow chart-icon" aria-hidden="true"></i></td>
                   </tr>
                 </ng-container>
-              </ng-container>
-            </table>
+              </table>
+            </div>
           </div>
         </div>
-      </div>
+      </ng-container>
+      <ng-template #showSpinner>
+        <div class="spinner-border">
+          <span class="sr-only" id="loadbar"></span>
+        </div>
+      </ng-template>
     </div>
     <!--right-grid-END-->
   </div>
