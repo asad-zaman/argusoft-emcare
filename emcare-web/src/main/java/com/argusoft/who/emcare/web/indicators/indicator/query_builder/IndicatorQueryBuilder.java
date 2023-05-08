@@ -29,8 +29,14 @@ public class IndicatorQueryBuilder {
         query = query.append("(select obr.code as code,");
         query = query.append(" obr.modified_on ");
         if (Objects.nonNull(indicatorNumeratorEquation.getValueType())) {
-            query = query.append(", cast(cast(cast(obr.text AS json)->>'" + getTypeValue(indicatorNumeratorEquation.getValueType()) + "' as text) AS "
-                + getTypeKey(indicatorNumeratorEquation.getValueType()) + ") as valueText");
+            if(indicatorNumeratorEquation.getValueType().equalsIgnoreCase("Boolean")) {
+                query = query.append(", cast(cast(cast(obr.text AS json)->>'" + getTypeValue(indicatorNumeratorEquation.getValueType()) + "' as text) AS "
+                        + getTypeKey(indicatorNumeratorEquation.getValueType()) + ") as valueText");
+            }
+            if(indicatorNumeratorEquation.getValueType().equalsIgnoreCase("Number")) {
+                query = query.append(", cast(cast(cast(obr.text AS json)->>'" + getTypeValue(indicatorNumeratorEquation.getValueType()) + "' as INTEGER) AS "
+                        + getTypeKey(indicatorNumeratorEquation.getValueType()) + ") as valueText");
+            }
         }
         if (Objects.nonNull(indicatorFilterDto.getAge())) {
             query = query.append(" , cast(EXTRACT('year' from age(now(), TO_DATE(cast(cast(emr.text AS json)->>'birthDate' as text),'YYYY-MM-DD'))) * 12 as INTEGER) +\n" +
@@ -67,7 +73,12 @@ public class IndicatorQueryBuilder {
 
         if (Objects.nonNull(indicatorNumeratorEquation.getCondition()) || Objects.nonNull(indicatorNumeratorEquation.getValue())) {
             if (!indicatorNumeratorEquation.getCode().equalsIgnoreCase(CommonConstant.ALL_CODE)) {
-                query = query.append(" and valueText" + indicatorNumeratorEquation.getCondition() + " '" + indicatorNumeratorEquation.getValue() + "'");
+                if(indicatorNumeratorEquation.getValueType().equalsIgnoreCase("Boolean")) {
+                    query = query.append(" and valueText" + indicatorNumeratorEquation.getCondition() + " '" + indicatorNumeratorEquation.getValue() + "'");
+                }
+                if(indicatorNumeratorEquation.getValueType().equalsIgnoreCase("Number")) {
+                    query = query.append(" and valueText" + indicatorNumeratorEquation.getCondition() + " " + indicatorNumeratorEquation.getValue());
+                }
             } else {
                 query = query.append(" where valueText" + indicatorNumeratorEquation.getCondition() + " '" + indicatorNumeratorEquation.getValue() + "'");
             }
@@ -83,8 +94,14 @@ public class IndicatorQueryBuilder {
         query = query.append("(select obr.code as code,");
         query = query.append(" obr.modified_on ");
         if (Objects.nonNull(indicatorDenominatorEquation.getValueType())) {
-            query = query.append(", cast(cast(cast(obr.text AS json)->>'" + getTypeValue(indicatorDenominatorEquation.getValueType()) + "' as text) AS "
-                + getTypeKey(indicatorDenominatorEquation.getValueType()) + ") as valueText");
+            if(indicatorDenominatorEquation.getValueType().equalsIgnoreCase("Boolean")) {
+                query = query.append(", cast(cast(cast(obr.text AS json)->>'" + getTypeValue(indicatorDenominatorEquation.getValueType()) + "' as text) AS "
+                        + getTypeKey(indicatorDenominatorEquation.getValueType()) + ") as valueText");
+            }
+            if(indicatorDenominatorEquation.getValueType().equalsIgnoreCase("Number")) {
+                query = query.append(", cast(cast(cast(obr.text AS json)->>'" + getTypeValue(indicatorDenominatorEquation.getValueType()) + "' as INTEGER) AS "
+                        + getTypeKey(indicatorDenominatorEquation.getValueType()) + ") as valueText");
+            }
         }
         if (Objects.nonNull(indicatorFilterDto.getAge())) {
             query = query.append(" , cast(EXTRACT('year' from age(now(), TO_DATE(cast(cast(emr.text AS json)->>'birthDate' as text),'YYYY-MM-DD'))) * 12 as INTEGER) +\n" +
@@ -118,7 +135,12 @@ public class IndicatorQueryBuilder {
         }
         if (Objects.nonNull(indicatorDenominatorEquation.getCondition()) || Objects.nonNull(indicatorDenominatorEquation.getValue())) {
             if (!indicatorDenominatorEquation.getCode().equalsIgnoreCase(CommonConstant.ALL_CODE)) {
-                query = query.append(" and valueText" + indicatorDenominatorEquation.getCondition() + " '" + indicatorDenominatorEquation.getValue() + "'");
+                if(indicatorDenominatorEquation.getValueType().equalsIgnoreCase("Boolean")) {
+                    query = query.append(" and valueText" + indicatorDenominatorEquation.getCondition() + " '" + indicatorDenominatorEquation.getValue() + "'");
+                }
+                if(indicatorDenominatorEquation.getValueType().equalsIgnoreCase("Number")) {
+                    query = query.append(" and valueText" + indicatorDenominatorEquation.getCondition() + " " + indicatorDenominatorEquation.getValue());
+                }
             } else {
                 query = query.append(" and valueText" + indicatorDenominatorEquation.getCondition() + " '" + indicatorDenominatorEquation.getValue() + "'");
             }
@@ -131,6 +153,9 @@ public class IndicatorQueryBuilder {
         if (valueType.equals(CommonConstant.FHIR_TYPE_BOOLEAN_CONDITION)) {
             type = CommonConstant.FHIR_TYPE_BOOLEAN_KEY;
         }
+        else if (valueType.equals(CommonConstant.FHIR_TYPE_INTEGER_CONDITION)) {
+            type = CommonConstant.FHIR_TYPE_INTEGER_KEY;
+        }
         return type;
     }
 
@@ -138,6 +163,9 @@ public class IndicatorQueryBuilder {
         String type = "TEXT";
         if (valueType.equalsIgnoreCase(CommonConstant.FHIR_TYPE_BOOLEAN_CONDITION)) {
             type = CommonConstant.FHIR_TYPE_BOOLEAN_VALUE;
+        }
+        else if (valueType.equalsIgnoreCase(CommonConstant.FHIR_TYPE_INTEGER_CONDITION)) {
+            type = CommonConstant.FHIR_TYPE_INTEGER_VALUE;
         }
         return type;
     }

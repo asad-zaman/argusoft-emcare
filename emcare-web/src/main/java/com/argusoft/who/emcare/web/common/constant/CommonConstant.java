@@ -62,8 +62,11 @@ public class CommonConstant {
     public static final String LAST_NAME = "lastName";
     public static final String INDICATOR_DISPLAY_TYPE_COUNT = "Count";
     public static final String FHIR_TYPE_BOOLEAN_CONDITION = "Boolean";
+    public static final String FHIR_TYPE_INTEGER_CONDITION = "Number";
     public static final String FHIR_TYPE_BOOLEAN_KEY = "BOOLEAN";
+    public static final String FHIR_TYPE_INTEGER_KEY = "INTEGER";
     public static final String FHIR_TYPE_BOOLEAN_VALUE = "valueBoolean";
+    public static final String FHIR_TYPE_INTEGER_VALUE = "valueInteger";
     public static final String ALL_CODE = "All";
 
     public static final String IBM_ACCESS_KEY = "ibm.access-key";
