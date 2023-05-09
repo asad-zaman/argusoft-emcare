@@ -2,8 +2,10 @@ import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@an
 import { Router } from '@angular/router';
 import * as Highcharts from 'highcharts';
 import { AuthGuard } from 'src/app/auth/auth.guard';
-import { FhirService } from 'src/app/shared';
+import { FhirService, ToasterService } from 'src/app/shared';
 import { default as NoData } from 'highcharts/modules/no-data-to-display';
+import { appConstants } from 'src/app/app.config';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 NoData(Highcharts);
 
 @Component({
@@ -22,6 +24,9 @@ export class HomeComponent implements OnInit {
   consultationPerFacility = [];
   consultationByAgeGroup = [];
   indicatorApiBusy = true;
+  genderArr = appConstants.genderArr;
+  conditionArrForAgeAndColor = appConstants.conditionArrForAgeAndColor;
+  indicatorFilterForm: FormGroup;
 
   @ViewChild('mapRef', { static: true }) mapElement: ElementRef;
 
@@ -29,7 +34,9 @@ export class HomeComponent implements OnInit {
     private readonly fhirService: FhirService,
     private readonly routeService: Router,
     private readonly authGuard: AuthGuard,
-    private readonly cdr: ChangeDetectorRef
+    private readonly cdr: ChangeDetectorRef,
+    private readonly formBuilder: FormBuilder,
+    private readonly toasterService: ToasterService
   ) { }
 
   ngOnInit(): void {
@@ -45,6 +52,7 @@ export class HomeComponent implements OnInit {
     this.getDashboardData();
     this.getChartData();
     this.getIndicatorCompileValue();
+    this.initIndicatorFilterForm();
   }
 
   getDashboardData() {
@@ -192,6 +200,8 @@ export class HomeComponent implements OnInit {
   manipulateMapView(data) {
     data.map(d => {
       this.facilityArr.push({
+        id: d.facilityId,
+        organizationName: d.organizationName,
         name: d.facilityName,
         positions: { lat: Number(d.latitude), lng: Number(d.longitude) }
       });
@@ -327,9 +337,69 @@ export class HomeComponent implements OnInit {
       if (res && res.length > 0) {
         this.indicatorArr = res;
         this.indicatorApiBusy = false;
+        this.indicatorArr.forEach(el => {
+          el['showFilter'] = false;
+        });
       }
     }, () => {
       this.indicatorApiBusy = false;
     });
+  }
+
+  initIndicatorFilterForm() {
+    this.indicatorFilterForm = this.formBuilder.group({
+      gender: ['', []],
+      ageCondition: ['', []],
+      ageValue: ['', []],
+      startDate: ['', []],
+      endDate: ['', []],
+      facility: ['', []]
+    });
+  }
+
+  get getFormConfrols() {
+    return this.indicatorFilterForm.controls;
+  }
+
+  enableFilter(index) {
+    this.indicatorFilterForm.reset();
+    this.indicatorArr.forEach((el, i) => {
+      if (i !== index) {
+        el['showFilter'] = false;
+      }
+    });
+    this.indicatorArr[index].showFilter = !this.indicatorArr[index].showFilter;
+  }
+
+  filterIndicator(indicator) {
+    if (this.getFormConfrols.gender.value ||
+      this.getFormConfrols.startDate.value ||
+      this.getFormConfrols.endDate.value ||
+      (this.getFormConfrols.ageCondition.value && this.getFormConfrols.ageValue.value)
+    ) {
+      const data = {
+        indicatorId: indicator.indicatorId,
+        gender: this.getFormConfrols.gender.value ? this.getFormConfrols.gender.value.id : null,
+        age: `${this.getFormConfrols.ageCondition.value.id} ${this.getFormConfrols.ageValue.value}`,
+        startDate: new Date(this.getFormConfrols.startDate.value).toISOString(),
+        endDate: this.getFormConfrols.endDate.value ? new Date(this.getFormConfrols.endDate.value).toISOString() : null,
+      }
+      this.fhirService.filterIndicatorValue(data).subscribe(res => {
+        console.log(res);
+      });
+    } else {
+      this.toasterService.showToast('warn', 'Please enter filter data!', 'EM CARE!');
+    }
+  }
+
+  onDateSelection(num) {
+    if (this.getFormConfrols.startDate.value && this.getFormConfrols.endDate.value) {
+      const startDate = new Date(this.getFormConfrols.startDate.value).getTime();
+      const endDate = new Date(this.getFormConfrols.endDate.value).getTime();
+      if (endDate < startDate) {
+        this.toasterService.showToast('error', 'End Date shoyld be greater than start date!', 'EM CARE!');
+        num === 1 ? this.getFormConfrols.startDate.setValue(null) : this.getFormConfrols.endDate.setValue(null);
+      }
+    }
   }
 }

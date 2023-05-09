@@ -148,7 +148,6 @@ export class ViewConsultationComponent implements OnInit {
   getPatientDetails() {
     this.fhirService.getPatientById(this.editId).subscribe(res => {
       if (res) {
-        console.log(res);
         this.patientData['fLetter'] = res['givenName'] ? res['givenName'].substr(0, 1) : null;
         this.patientData['name'] = res['givenName'] || res['familyName'] ? `${res['givenName']} ${res['familyName']}` : 'NA';
         this.patientData['gender'] = res['gender'];

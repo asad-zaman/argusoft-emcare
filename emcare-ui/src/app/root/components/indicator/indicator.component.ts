@@ -61,18 +61,7 @@ export class IndicatorComponent implements OnInit {
   numeratorEquationStringArr = [];
   denominatorEquationStringArr = [];
   color = '#fff';
-  genderArr = [
-    { id: 'male', name: 'Male' },
-    { id: 'female', name: 'Female' },
-    { id: 'other', name: 'Other' }
-  ];
   mumericDropdown = [];
-  colorConditionArr = [
-    { id: '<', name: '< (less than)' },
-    { id: '>', name: '> (greater than)' },
-    { id: '<=', name: '<= (less than equal to)' },
-    { id: '>=', name: '>= (greater than equal to)' }
-  ];
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -392,7 +381,7 @@ export class IndicatorComponent implements OnInit {
       "indicatorCode": formValue.codeName,
       "indicatorName": formValue.indicatorName,
       "description": formValue.indicatorDescription,
-      "facilityId": formValue.facility.id,
+      "facilityId": null,
       "numeratorIndicatorEquation": this.getNumEquation(),
       "denominatorIndicatorEquation": this.getDenEquation(),
       "displayType": formValue.displayType.id,
@@ -401,8 +390,8 @@ export class IndicatorComponent implements OnInit {
       "numeratorEquationString": JSON.stringify(this.numeratorEquationStringArr),
       "denominatorEquationString": JSON.stringify(this.denominatorEquationStringArr),
       "colourSchema": JSON.stringify(this.getColorSchemaObj()),
-      "gender": formValue.gender.id,
-      "age": `${formValue.ageCondition.id} ${formValue.ageValue}`
+      "gender": null,
+      "age": null
     }
   }
 

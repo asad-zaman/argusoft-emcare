@@ -325,4 +325,9 @@ export class FhirService {
         let url = `${environment.apiUrl}/api/questionnaire_response/export/${id}`;
         return this.http.get(url, this.getHeaders());
     }
+
+    filterIndicatorValue(data) {
+        let url = `${environment.apiUrl}/api/indicator/filter/value`;
+        return this.http.post(url, data, this.getHeaders());
+    }
 }

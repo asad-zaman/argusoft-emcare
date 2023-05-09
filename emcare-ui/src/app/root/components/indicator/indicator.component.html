@@ -260,14 +260,6 @@
       <div class="row">
         <div class="col-12 col-sm-4">
           <div class="mb-3">
-            <label class="form-label">{{'Facility' | translate}}</label>
-            <p-dropdown [filter]="true" placeholder="Select" [options]="facilityArr" formControlName="facility"
-              optionLabel="name" dataKey="id" [showClear]="indicatorForm.get('facility').value ? true : false">
-            </p-dropdown>
-          </div>
-        </div>
-        <div class="col-12 col-sm-4">
-          <div class="mb-3">
             <label class="form-label">{{'DST' | translate}}</label>
             <p-dropdown [filter]="true" placeholder="Select" [options]="displayTypeArr" formControlName="displayType"
               optionLabel="name" dataKey="id" [showClear]="indicatorForm.get('displayType').value ? true : false">
@@ -277,7 +269,7 @@
       </div>
       <div class="row">
         <div class="col-3">
-          <h1 class="heading mt-3">Color Section
+          <h1 class="heading mt-3">{{'Color Section' | translate}}
             <i class="bi bi-plus-circle-fill add-icon-circle" (click)="addColorSection()" aria-hidden="true"></i>
           </h1>
         </div>
@@ -296,7 +288,7 @@
                     </p-dropdown>
                   </div>
                   <div class="col-3">
-                    <p-dropdown formControlName="condition" placeholder="Select" [options]="colorConditionArr"
+                    <p-dropdown formControlName="condition" placeholder="Select" [options]="conditionArrForAgeAndColor"
                       optionLabel="name" dataKey="id">
                     </p-dropdown>
                   </div>
@@ -315,33 +307,6 @@
         </div>
       </div>
       <hr>
-      <div class="row">
-        <div class="col-12 col-sm-4">
-          <div class="mb-3">
-            <label class="form-label">{{'Gender' | translate}}</label>
-            <p-dropdown placeholder="Select" [options]="genderArr" formControlName="gender" optionLabel="name"
-              dataKey="id" [showClear]="indicatorForm.get('gender').value ? true : false">
-            </p-dropdown>
-          </div>
-        </div>
-        <div class="col-sm-8"></div>
-        <div class="col-12 col-sm-6">
-          <div class="mb-3">
-            <label class="form-label">{{'Age' | translate}}</label>
-            <div class="row">
-              <div class="col-6">
-                <p-dropdown placeholder="Select" [options]="conditionArr" formControlName="ageCondition"
-                  optionLabel="name" dataKey="id" [showClear]="indicatorForm.get('ageCondition').value ? true : false">
-                </p-dropdown>
-              </div>
-              <div class="col-6">
-                <input class="form-control custom-input" formControlName="ageValue" type="number" id="value"
-                  placeholder="{{'Value Placeholder' | translate}}">
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
       <div class="text-end mt-5">
         <hr>
         <button (click)="saveData()" class="btn-blue btn">

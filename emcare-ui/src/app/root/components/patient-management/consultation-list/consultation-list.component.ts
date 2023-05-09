@@ -125,7 +125,6 @@ export class ConsultationListComponent implements OnInit {
               data.push({ text: '                            ' });
             } else if (key == 'item') {
               const items = currData[key];
-              console.log(items);
               data.push({ text: key })
               items.forEach(item => {
                 for (const k in item) {
