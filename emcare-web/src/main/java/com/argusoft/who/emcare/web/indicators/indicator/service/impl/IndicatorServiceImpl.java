@@ -188,7 +188,6 @@ public class IndicatorServiceImpl implements IndicatorService {
                 indicator,
                 indicatorFilterDto
             );
-            System.out.println(query);
             List<Map<String, Object>> observationResources = observationCustomResourceRepository.findByPublished(query);
             numerator.put(indicatorNumeratorEquation.getEqIdentifier(), (long) observationResources.size());
         }
@@ -200,7 +199,6 @@ public class IndicatorServiceImpl implements IndicatorService {
                 indicator,
                 indicatorFilterDto
             );
-            System.out.println(query);
             List<Map<String, Object>> observationResources = observationCustomResourceRepository.findByPublished(query);
             denominator.put(indicatorDenominatorEquation.getEqIdentifier(), (long) observationResources.size());
         }
@@ -225,13 +223,13 @@ public class IndicatorServiceImpl implements IndicatorService {
         stringObjectMap.put("colorSchema", indicator.getColourSchema());
         stringObjectMap.put(CommonConstant.INDICATOR_VALUE, df.format(finalValue));
         responseList.add(stringObjectMap);
-//        responseList.sort(
-//            (ind1, ind2) ->
-//                ind2.get(CommonConstant.INDICATOR_VALUE).toString()
-//                    .compareTo(
-//                        ind1.get(CommonConstant.INDICATOR_VALUE).toString()
-//                    )
-//        );
+        responseList.sort(
+            (ind1, ind2) ->
+                ind2.get(CommonConstant.INDICATOR_VALUE).toString()
+                    .compareTo(
+                        ind1.get(CommonConstant.INDICATOR_VALUE).toString()
+                    )
+        );
     }
 
     private Integer replaceValueToEquationAndResolve(String equation, Map<String, Long> data) {
