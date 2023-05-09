@@ -215,6 +215,7 @@ public class IndicatorServiceImpl implements IndicatorService {
         stringObjectMap.put("indicatorCode", indicator.getIndicatorCode());
         stringObjectMap.put("indicatorId", indicator.getIndicatorId());
         stringObjectMap.put("age", indicatorFilterDto.getAge());
+        stringObjectMap.put("facilityIds", indicatorFilterDto.getFacilityIds());
         stringObjectMap.put("gender", indicatorFilterDto.getGender());
         stringObjectMap.put("startDate", indicatorFilterDto.getStartDate());
         stringObjectMap.put("endDate", indicatorFilterDto.getEndDate());
