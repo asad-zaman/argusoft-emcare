@@ -176,8 +176,8 @@ public class IndicatorServiceImpl implements IndicatorService {
                                         final Map<String, Long> denominator,
                                         final List<Map<String, Object>> responseList,
                                         IndicatorFilterDto indicatorFilterDto, Boolean isFilter) {
-        List<String> facilityIds = new ArrayList<>();
-        if (!isFilter) {
+        List<String> facilityIds;
+        if (Boolean.FALSE.equals(isFilter)) {
             facilityIds = userService.getCurrentUserFacility();
         } else {
             facilityIds = indicatorFilterDto.getFacilityIds();
