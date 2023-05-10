@@ -353,5 +353,7 @@
   "Color": "Color",
   "Age": "Age (in months)",
   "Date": "Date",
-  "Color Section": "Color Section"
+  "Color Section": "Color Section",
+  "Min Value": "Minimum Value",
+  "Max Value": "Maximum Value"
 }

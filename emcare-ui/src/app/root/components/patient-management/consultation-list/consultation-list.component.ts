@@ -111,6 +111,7 @@ export class ConsultationListComponent implements OnInit {
       let data = [];
       data.push({ text: '                            ' });
       res.forEach(el => {
+        console.log(JSON.parse(el));
         if (el) {
           const currData = JSON.parse(el);
           for (const key in currData) {

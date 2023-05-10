@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FhirService, ToasterService } from 'src/app/shared';
 import { forkJoin } from 'rxjs';
 import { AuthGuard } from 'src/app/auth/auth.guard';
+import { appConstants } from 'src/app/app.config';
 
 @Component({
   selector: 'app-indicator',
@@ -62,6 +63,7 @@ export class IndicatorComponent implements OnInit {
   denominatorEquationStringArr = [];
   color = '#fff';
   mumericDropdown = [];
+  conditionArrForAgeAndColor = appConstants.conditionArrForAgeAndColor;
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -91,7 +93,6 @@ export class IndicatorComponent implements OnInit {
         const routeParams = this.route.snapshot.paramMap;
         this.editId = routeParams.get('id');
         this.initIndicatorForm();
-        this.createNumericDropdown();
       }
     }, (_e) => {
       this.toasterService.showToast('error', 'Server issue!', 'EM CARE !!');
@@ -139,15 +140,16 @@ export class IndicatorComponent implements OnInit {
     let numeratorEquation = '';
     if (this.numeratorEquationStringArr && this.numeratorEquationStringArr.length > 0) {
       this.numeratorEquationStringArr.forEach(element => {
-        numeratorEquation += element
+        numeratorEquation += element;
       });
     }
     let denominatorEquation = '';
     if (this.denominatorEquationStringArr && this.denominatorEquationStringArr.length > 0) {
       this.denominatorEquationStringArr.forEach(element => {
-        denominatorEquation += element
+        denominatorEquation += element;
       });
     }
+    const colorSchema = JSON.parse(currentIndicator.colourSchema);
     this.indicatorForm.patchValue({
       codeName: currentIndicator.indicatorCode,
       indicatorName: currentIndicator.indicatorName,
@@ -159,7 +161,9 @@ export class IndicatorComponent implements OnInit {
       denominators: currentIndicator.denominatorEquation.length > 0 ?
         this.setDenominators(currentIndicator.denominatorEquation) : [],
       numeratorEquation: numeratorEquation,
-      denominatorEquation: denominatorEquation
+      denominatorEquation: denominatorEquation,
+      colorArr: colorSchema.length > 0 ?
+        this.setColorSchema(colorSchema) : [],
     });
     this.setNumeratorEquationArr();
     this.setDenominatorEquationArr();
@@ -179,6 +183,22 @@ export class IndicatorComponent implements OnInit {
         this.denEqCOnditionArr.push(this.eqConditionArr.find(el => el.id === element));
       }
     });
+  }
+
+  setColorSchema(colourSchema) {
+    const colorArr = [];
+    colourSchema.forEach(element => {
+      const obj = {
+        minValue: element.minValue,
+        condition: element.condition ? this.conditionArrForAgeAndColor.find(el => element.condition) : null,
+        maxValue: element.maxValue,
+        color: element.color
+      }
+      colorArr.push(obj);
+      this.addColorSection();
+    });
+    this.getColorSections().patchValue(colorArr);
+    return colorArr;
   }
 
   setNumerators(numeratorEquation) {
@@ -231,7 +251,7 @@ export class IndicatorComponent implements OnInit {
       codeName: ['', [Validators.required]],
       indicatorName: ['', [Validators.required]],
       indicatorDescription: ['', [Validators.required]],
-      facility: ['', [Validators.required]],
+      facility: ['', []],
       displayType: ['', [Validators.required]],
       numerators: this.editId ?
         this.formBuilder.array([]) : this.formBuilder.array([this.newNumeratorAddition()]),
@@ -326,6 +346,7 @@ export class IndicatorComponent implements OnInit {
 
   saveData() {
     this.submitted = true;
+    console.log(this.indicatorForm.controls);
     if (this.indicatorForm.valid) {
       const body = this.getRequestBody(this.indicatorForm.value);
       if (this.isEdit) {
@@ -599,12 +620,6 @@ export class IndicatorComponent implements OnInit {
     });
   }
 
-  createNumericDropdown() {
-    for (let index = 1; index <= 100; index++) {
-      this.mumericDropdown.push({ id: index, name: index });
-    }
-  }
-
   newColorSectionAddition(): FormGroup {
     return this.formBuilder.group({
       minValue: null,
@@ -630,12 +645,18 @@ export class IndicatorComponent implements OnInit {
     const tempArr = [];
     this.getColorSections().controls.forEach(element => {
       tempArr.push({
-        minValue: element.value.minValue.id,
+        minValue: element.value.minValue,
         condition: element.value.condition.id,
-        maxValue: element.value.maxValue.id,
+        maxValue: element.value.maxValue,
         color: element.value.color
       });
     });
     return tempArr;
+  }
+
+  checkValue(event) {
+    if (event.target.value > 100 || event.target.value < 0) {
+      this.toasterService.showToast('error', 'Please enter value between 0 to 100!', 'EM CARE!');
+    }
   }
 }
