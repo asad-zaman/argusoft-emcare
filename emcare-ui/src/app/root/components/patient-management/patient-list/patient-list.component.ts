@@ -159,12 +159,11 @@ export class PatientListComponent implements OnInit {
     exportPDF(patient) {
         this.fhirService.getPatientById(patient.id).subscribe((res: any) => {
             let data = [];
+            let tableArr = [];
             data.push({ text: '                            ' });
+
             for (const key in res) {
-                let str = key + ' =>   ' + res[key]
-                let obj = { text: str };
-                data.push(obj);
-                data.push({ text: '                            ' });
+                tableArr.push([key, res[key] ? res[key] : 'NA']);
             }
 
             let docDefinition = {
@@ -172,14 +171,20 @@ export class PatientListComponent implements OnInit {
                     {
                         text: `${patient.givenName} ${patient.familyName}'s data`,
                         fontSize: 16,
-                        alignment: 'center',
                         color: '#047886'
                     },
                     {
                         columns: [data]
+                    },
+                    {
+                        table: {
+                            widths: ['auto', 'auto'],
+                            body: tableArr
+                        }
                     }
                 ]
             }
+
             pdfMake.createPdf(docDefinition).open();
             // pdfMake.createPdf(docDefinition).download(`${patient.givenName} ${patient.familyName}.pdf`);
         });
