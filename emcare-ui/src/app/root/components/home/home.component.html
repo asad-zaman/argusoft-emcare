@@ -120,14 +120,15 @@
                                 </div>
                                 <div class="col-12 col-sm-12">
                                   <div class="mb-3">
-                                    <label class="form-label">{{'Date' | translate}}</label>
                                     <div class="row">
                                       <div class="col-6">
+                                        <label class="form-label">{{'Date From' | translate}}</label>
                                         <input class="form-control custom-input" type="date" formControlName="startDate"
                                           id="startDate" (change)="onDateSelection(1, i)"
                                           placeholder="{{'Value Placeholder' | translate}}">
                                       </div>
                                       <div class="col-6">
+                                        <label class="form-label">{{'Date To' | translate}}</label>
                                         <input class="form-control custom-input" type="date" formControlName="endDate"
                                           id="endDate" (change)="onDateSelection(2, i)"
                                           placeholder="{{'Value Placeholder' | translate}}">

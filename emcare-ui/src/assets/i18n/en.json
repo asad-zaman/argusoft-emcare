@@ -352,7 +352,8 @@
   "Log Description": "Log Description",
   "Color": "Color",
   "Age": "Age (in months)",
-  "Date": "Date",
+  "Date From": "Date (from)",
+  "Date To": "Date (to)",
   "Color Section": "Color Section",
   "Min Value": "Minimum Value",
   "Max Value": "Maximum Value"

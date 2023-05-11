@@ -6,6 +6,7 @@ import { FhirService, ToasterService } from 'src/app/shared';
 import { default as NoData } from 'highcharts/modules/no-data-to-display';
 import { appConstants } from 'src/app/app.config';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import countryJSON from '../../../../assets/country.json';
 NoData(Highcharts);
 
 @Component({
@@ -267,8 +268,18 @@ export class HomeComponent implements OnInit {
   }
 
   loadMap = () => {
+    // by default Iraq
+    let country = localStorage.getItem(appConstants.localStorageKeys.ApplicationAgent);
+    country = country === 'Global' ? 'Iraq' : country;
+
+    const currCountry = countryJSON.filter(c => c.CountryName === country);
+    const centerOfCountry = {
+      lat: parseFloat(currCountry[0].CapitalLatitude),
+      lng: parseFloat(currCountry[0].CapitalLongitude)
+    };
+
     let markers = [];
-    const centerPosition = { lat: 33.2232, lng: 43.6793 };
+    const centerPosition = { lat: centerOfCountry.lat, lng: centerOfCountry.lng };
     const map = new window['google'].maps.Map(this.mapElement.nativeElement, {
       center: centerPosition, zoom: 5
     });
