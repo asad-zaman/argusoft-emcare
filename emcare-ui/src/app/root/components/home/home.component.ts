@@ -289,7 +289,7 @@ export class HomeComponent implements OnInit {
         position: new window['google'].maps.LatLng(data['positions'].lat, data['positions'].lng),
         map: map,
         title: 'Map!',
-        draggable: true,
+        draggable: false,
         animation: window['google'].maps.Animation.DROP
       });
       const contentString = '<div id="content">' +
