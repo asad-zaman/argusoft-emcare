@@ -108,46 +108,49 @@ export class ConsultationListComponent implements OnInit {
 
   exportPDF(patient) {
     this.fhirService.getConsultationExportData(patient.id).subscribe((res: any) => {
+      let answerInnerData = [];
+      let answerOuterData = [];
       let data = [];
-      data.push({ text: '                            ' });
-      res.forEach(el => {
+      res.forEach((el, ind) => {
         if (el) {
           const currData = JSON.parse(el);
+          let str = `${ind + 1}) ` + currData['resourceType'] + ' => ' + currData['questionnaire'];
+          let obj = { text: str };
+          data.push(obj);
           for (const key in currData) {
-            if (key == 'subject' || key == 'encounter') {
-              const innerObj = currData[key];
-              data.push({ text: key })
-              for (const k in innerObj) {
-                let str = k + ' =>   ' + JSON.stringify(innerObj[k])
-                let obj = { text: str };
-                data.push(obj);
-              }
-              data.push({ text: '                            ' });
-            } else if (key == 'item') {
+            if (key == 'item') {
               const items = currData[key];
-              console.log(items);
-              data.push({ text: key })
+              answerInnerData = [];
               items.forEach(item => {
-                for (const k in item) {
-                  let str = k + ' =>   ' + JSON.stringify(item[k])
-                  let obj = { text: str };
-                  data.push(obj);
+                const answerObjForArr = {};
+                if (item.hasOwnProperty('text') && item.hasOwnProperty('answer')) {
+                  for (const k in item) {
+                    if (k === 'answer') {
+                      const answerObj = item['answer'][0];
+                      for (const a in answerObj) {
+                        if (a !== 'item' && a !== 'valueCoding' && a !== 'valueQuantity') {
+                          answerObjForArr[k] = answerObj[a];
+                        } else {
+                          if (a !== 'item') {
+                            const val = answerObj[a].display ? answerObj[a].display : answerObj[a].value;
+                            answerObjForArr[k] = val;
+                          }
+                        }
+                      }
+                    } else {
+                      answerObjForArr[k] = item[k];
+                    }
+                  }
+                  answerInnerData.push(answerObjForArr);
                 }
-                data.push({ text: '                            ' });
               });
-            } else {
-              let str = key + ' =>   ' + JSON.stringify(currData[key])
-              let obj = { text: str };
-              data.push(obj);
-              data.push({ text: '                            ' });
+              answerOuterData.push(answerInnerData);
             }
           }
-          data.push({ text: '----------------------------------------------------------------------------------------' });
-          data.push({ text: '                            ' });
         }
       });
 
-      let docDefinition = {
+      let docDefinition: any = {
         content: [
           {
             text: `${patient.givenName} ${patient.familyName}'s consultation data`,
@@ -155,11 +158,33 @@ export class ConsultationListComponent implements OnInit {
             alignment: 'center',
             color: '#047886'
           },
+          { columns: [{ text: '                            ' }] },
           {
-            columns: [data]
+            text: 'Consultation Details',
+            fontSize: 14,
+            alignment: 'center',
+            color: '#047886',
+            style: 'sectionHeader'
           }
         ]
       }
+      docDefinition.content.push({ columns: [{ text: '                            ' }] })
+
+      data.forEach((element, index) => {
+        let tableObj = {};
+        tableObj = {
+          widths: ['auto', 'auto', 'auto'],
+          body: [
+            ['Link Id', 'Text', 'Answer'],
+            ...answerOuterData[index].map(p => ([p.linkId, p.text, p.answer]))
+          ]
+        }
+        docDefinition.content.push({ columns: [element], color: '#047886' })
+        docDefinition.content.push({ columns: [{ text: '                            ' }] })
+        docDefinition.content.push({ table: tableObj })
+        docDefinition.content.push({ columns: [{ text: '                            ' }] })
+      });
+
       pdfMake.createPdf(docDefinition).open();
       // pdfMake.createPdf(docDefinition).download(`${patient.givenName} ${patient.familyName}.pdf`);
     });

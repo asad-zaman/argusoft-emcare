@@ -1,5 +1,6 @@
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
+import { appConstants } from "src/app/app.config";
 import { environment } from "src/environments/environment";
 @Injectable({
     providedIn: 'root'
@@ -10,7 +11,7 @@ export class FhirService {
     deduplicationBaseURL = `${environment.apiUrl}/api/deduplication`;
     fhirResourceBaseURL = `${environment.apiUrl}/fhir`;
 
-    constructor(private readonly http: HttpClient) {}
+    constructor(private readonly http: HttpClient) { }
 
     getHeaders() {
         let authToken = localStorage.getItem("access_token");
@@ -285,7 +286,7 @@ export class FhirService {
         let url = `${environment.apiUrl}/api/user/check/email?emailId=${email}`;
         return this.http.get(url, this.getHeaders());
     }
-    
+
     getAllTenants() {
         let url = `${environment.apiUrl}/api/country/tenant/all`;
         return this.http.get(url, this.getHeaders());
@@ -324,5 +325,25 @@ export class FhirService {
     getConsultationExportData(id) {
         let url = `${environment.apiUrl}/api/questionnaire_response/export/${id}`;
         return this.http.get(url, this.getHeaders());
+    }
+
+    filterIndicatorValue(data) {
+        let url = `${environment.apiUrl}/api/indicator/filter/value`;
+        return this.http.post(url, data, this.getHeaders());
+    }
+
+    getAgeConditionAndValue(age) {
+        const con = age.substring(0, 2);
+        if (con === '<=' || con === '>=') {
+            return {
+                condition: appConstants.conditionArrForAgeAndColor.find(el => el.id === con),
+                value: age.substring(3)
+            };
+        } else {
+            return {
+                condition: appConstants.conditionArrForAgeAndColor.find(el => el.id === age.charAt(0)),
+                value: age.substring(2)
+            };
+        }
     }
 }

@@ -75,6 +75,7 @@ import { AddLogComponent } from './root/components/add-log/add-log.component';
 import { LogListComponent } from './root/components/log-list/log-list.component';
 import { LocationSubjects } from './root/components/Location/location-filter/LocationSubject';
 import { ColorPickerModule } from 'primeng/colorpicker';
+import { CalendarModule } from 'primeng/calendar';
 
 @NgModule({
   declarations: [
@@ -147,7 +148,8 @@ import { ColorPickerModule } from 'primeng/colorpicker';
     NgxIntlTelInputModule,
     MessagesModule,
     MessageModule,
-    ColorPickerModule
+    ColorPickerModule,
+    CalendarModule
   ],
   providers: [
     AuthenticationService,

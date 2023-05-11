@@ -8,6 +8,9 @@ import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
+import { Workbook } from 'exceljs';
+import * as fs from 'file-saver';
+
 @Component({
     selector: 'app-patient-list',
     templateUrl: './patient-list.component.html',
@@ -28,6 +31,8 @@ export class PatientListComponent implements OnInit {
     selectedId: any;
     searchTermChanged: Subject<string> = new Subject<string>();
     isView: boolean = true;
+    showCheckboxes = false;
+    enableAll = false;
 
     constructor(
         private readonly fhirService: FhirService,
@@ -58,6 +63,9 @@ export class PatientListComponent implements OnInit {
             this.filteredPatients = this.patients;
             this.totalCount = res['totalCount'];
             this.isAPIBusy = false;
+            this.filteredPatients.forEach(element => {
+                element['isExcel'] = false;
+            });
         }
     }
 
@@ -157,31 +165,107 @@ export class PatientListComponent implements OnInit {
     }
 
     exportPDF(patient) {
-        this.fhirService.getPatientById(patient.id).subscribe((res: any) => {
-            let data = [];
-            data.push({ text: '                            ' });
-            for (const key in res) {
-                let str = key + ' =>   ' + res[key]
-                let obj = { text: str };
-                data.push(obj);
-                data.push({ text: '                            ' });
-            }
+        let data = [];
+        let tableArr = [];
+        data.push({ text: '                            ' });
 
-            let docDefinition = {
-                content: [
-                    {
-                        text: `${patient.givenName} ${patient.familyName}'s data`,
-                        fontSize: 16,
-                        alignment: 'center',
-                        color: '#047886'
-                    },
-                    {
-                        columns: [data]
+        for (const key in patient) {
+            tableArr.push([key, patient[key] ? patient[key] : 'NA']);
+        }
+
+        let docDefinition = {
+            content: [
+                {
+                    text: `${patient.givenName} ${patient.familyName}'s data`,
+                    fontSize: 16,
+                    color: '#047886'
+                },
+                {
+                    columns: [data]
+                },
+                {
+                    table: {
+                        widths: ['auto', 'auto'],
+                        body: tableArr
                     }
-                ]
-            }
-            pdfMake.createPdf(docDefinition).open();
-            // pdfMake.createPdf(docDefinition).download(`${patient.givenName} ${patient.familyName}.pdf`);
+                }
+            ]
+        }
+
+        pdfMake.createPdf(docDefinition).open();
+        // pdfMake.createPdf(docDefinition).download(`${patient.givenName} ${patient.familyName}.pdf`);
+    }
+
+    exportexcel(patient) {
+        const data = [];
+        const patientName = `${patient.givenName} ${patient.familyName}`;
+
+        for (const k in patient) {
+            data.push({ key: k, value: patient[k] ? patient[k] : 'NA' });
+        }
+
+        let workbook = new Workbook();
+        let worksheet = workbook.addWorksheet(patientName);
+
+        worksheet.columns = [
+            { header: 'Key', key: 'key', width: 20 },
+            { header: 'Value', key: 'value', width: 35 },
+        ];
+
+        worksheet.addRows(data, "n");
+
+        workbook.xlsx.writeBuffer().then((data) => {
+            let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+            fs.saveAs(blob, `${patientName}.xlsx`);
         });
+    }
+
+    convertToExcel() {
+        const selectedPatients = this.filteredPatients.filter(el => el.isExcel === true);
+        let workbook = new Workbook();
+        selectedPatients.forEach((patient, ind) => {
+            const data = [];
+            const patientName = `Paitent-${ind + 1}`;
+            for (const k in patient) {
+                data.push({ key: k, value: patient[k] ? patient[k] : 'NA' });
+            }
+            let worksheet = workbook.addWorksheet(patientName);
+            worksheet.columns = [
+                { header: 'Key', key: 'key', width: 20 },
+                { header: 'Value', key: 'value', width: 35 },
+            ];
+            worksheet.addRows(data, "n");
+        });
+
+        workbook.xlsx.writeBuffer().then((data) => {
+            let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+            fs.saveAs(blob, `PatientData.xlsx`);
+        });
+    }
+
+    onEnableSelectionClick() {
+        this.showCheckboxes = !this.showCheckboxes; 
+        if (!this.showCheckboxes) {
+            this.filteredPatients.forEach(element => { element['isExcel'] = false; });
+        }
+    }
+
+    enableAllBoxes() {
+        if (this.enableAll) {
+            this.filteredPatients.forEach(element => { element['isExcel'] = true; });
+        } else {
+            this.filteredPatients.forEach(element => { element['isExcel'] = false; });
+        }
+    }
+
+    enableEachBox(patient) {
+        if (!patient.isExcel) {
+            this.enableAll = false;
+        } else {
+            const checkLength = this.filteredPatients.filter(element => element['isExcel'] === true).length;
+            if (this.filteredPatients.length === checkLength) {
+                this.enableAll = true;
+            }
+        }
     }
 }

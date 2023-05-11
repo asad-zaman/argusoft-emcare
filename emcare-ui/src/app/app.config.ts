@@ -10,5 +10,16 @@ export const appConstants = {
         Username: 'Username',
         ApplicationAgent: 'ApplicationAgent'
     },
-    EMailAsUsername: "REGISTRATION_EMAIL_AS_USERNAME"
+    EMailAsUsername: "REGISTRATION_EMAIL_AS_USERNAME",
+    genderArr: [
+        { id: 'male', name: 'Male' },
+        { id: 'female', name: 'Female' },
+        { id: 'other', name: 'Other' }
+    ],
+    conditionArrForAgeAndColor: [
+        { id: '<', name: '< (less than)' },
+        { id: '>', name: '> (greater than)' },
+        { id: '<=', name: '<= (less than equal to)' },
+        { id: '>=', name: '>= (greater than equal to)' }
+    ]
 };
