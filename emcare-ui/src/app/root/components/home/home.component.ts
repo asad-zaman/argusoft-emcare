@@ -289,7 +289,7 @@ export class HomeComponent implements OnInit {
         position: new window['google'].maps.LatLng(data['positions'].lat, data['positions'].lng),
         map: map,
         title: 'Map!',
-        draggable: true,
+        draggable: false,
         animation: window['google'].maps.Animation.DROP
       });
       const contentString = '<div id="content">' +
@@ -322,10 +322,10 @@ export class HomeComponent implements OnInit {
   getIndicatorCompileValue() {
     const codeArr = [3843];
     this.fhirService.getIndicatorCompileValue(codeArr).subscribe((res: any) => {
+      this.indicatorApiBusy = false;
       this.initIndicatorFilterForm();
       if (res && res.length > 0) {
         this.indicatorArr = res;
-        this.indicatorApiBusy = false;
         this.indicatorArr.forEach(el => {
           const indicatorValue = el.indicatorValue;
           const colorSchema = el['colorSchema'] !== null ? JSON.parse(el['colorSchema']) : [];
