@@ -67,12 +67,85 @@
           <div class="dashboard-card-body indicators_scroll">
             <div class="table-responsive">
               <table class="data-table">
-                <ng-container *ngFor="let indicator of this.indicatorArr">
+                <ng-container *ngFor="let indicator of this.indicatorArr; let i=index">
                   <tr>
-                    <td class="cst-table-style percentage-text text-green">{{indicator.indicatorValue}}%</td>
+                    <td #iValues class="cst-table-style percentage-text">
+                      {{this.getIndicators().controls[i].value.indicatorValue}}%</td>
                     <td class="cst-table-style">
                       {{indicator.indicatorName}}</td>
-                    <td><i class="bi bi-graph-up-arrow chart-icon" aria-hidden="true"></i></td>
+                    <td><i (click)="enableFilter(i)" class="bi bi-filter-square chart-icon" aria-hidden="true"></i></td>
+                    <td><i *ngIf="indicator.indicatorType === 'filter'" class="bi bi-graph-up-arrow chart-icon"
+                        aria-hidden="true"></i></td>
+                  </tr>
+                  <tr *ngIf="indicator.showFilter">
+                    <td colspan="2">
+                      <div class="filter-content mt-3">
+                        <form [formGroup]="indicatorFilterForm" name="indicatorFilterForm" novalidate>
+                          <div formArrayName="indicators">
+                            <div [formGroupName]="i">
+                              <div class="row">
+                                <div class="col-12 col-sm-6">
+                                  <div class="mb-3">
+                                    <label class="form-label">{{'Facility' | translate}}</label>
+                                    <p-multiSelect placeholder="Select" [options]="facilityArr"
+                                      formControlName="facility" optionLabel="name" dataKey="id">
+                                    </p-multiSelect>
+                                  </div>
+                                </div>
+                                <div class="col-12 col-sm-6">
+                                  <div class="mb-3">
+                                    <label class="form-label">{{'Gender' | translate}}</label>
+                                    <p-dropdown placeholder="Select" [options]="genderArr" formControlName="gender"
+                                      optionLabel="name" dataKey="id"
+                                      [showClear]="this.getIndicators().controls[i].value.gender ? true : false">
+                                    </p-dropdown>
+                                  </div>
+                                </div>
+                                <div class="col-12 col-sm-12">
+                                  <div class="mb-3">
+                                    <label class="form-label">{{'Age' | translate}}</label>
+                                    <div class="row">
+                                      <div class="col-6">
+                                        <p-dropdown placeholder="Select" [options]="conditionArrForAgeAndColor"
+                                          formControlName="ageCondition" optionLabel="name" dataKey="id"
+                                          [showClear]="this.getIndicators().controls[i].value.ageCondition ? true : false">
+                                        </p-dropdown>
+                                      </div>
+                                      <div class="col-6">
+                                        <input class="form-control custom-input" formControlName="ageValue"
+                                          type="number" id="value" placeholder="{{'Value Placeholder' | translate}}">
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="col-12 col-sm-12">
+                                  <div class="mb-3">
+                                    <label class="form-label">{{'Date' | translate}}</label>
+                                    <div class="row">
+                                      <div class="col-6">
+                                        <input class="form-control custom-input" type="date" formControlName="startDate"
+                                          id="startDate" (change)="onDateSelection(1, i)"
+                                          placeholder="{{'Value Placeholder' | translate}}">
+                                      </div>
+                                      <div class="col-6">
+                                        <input class="form-control custom-input" type="date" formControlName="endDate"
+                                          id="endDate" (change)="onDateSelection(2, i)"
+                                          placeholder="{{'Value Placeholder' | translate}}">
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="col-12 col-sm-12">
+                                  <button (click)="filterIndicator(i)" class="btn-blue btn mt-3">
+                                    {{'Filter' | translate}}
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </form>
+                      </div>
+                    </td>
                   </tr>
                 </ng-container>
               </table>

@@ -1,9 +1,11 @@
-import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { Router } from '@angular/router';
 import * as Highcharts from 'highcharts';
 import { AuthGuard } from 'src/app/auth/auth.guard';
-import { FhirService } from 'src/app/shared';
+import { FhirService, ToasterService } from 'src/app/shared';
 import { default as NoData } from 'highcharts/modules/no-data-to-display';
+import { appConstants } from 'src/app/app.config';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 NoData(Highcharts);
 
 @Component({
@@ -22,14 +24,20 @@ export class HomeComponent implements OnInit {
   consultationPerFacility = [];
   consultationByAgeGroup = [];
   indicatorApiBusy = true;
+  genderArr = appConstants.genderArr;
+  conditionArrForAgeAndColor = appConstants.conditionArrForAgeAndColor;
+  indicatorFilterForm: FormGroup;
 
   @ViewChild('mapRef', { static: true }) mapElement: ElementRef;
+  @ViewChildren('iValues') iValues: QueryList<ElementRef>;
 
   constructor(
     private readonly fhirService: FhirService,
     private readonly routeService: Router,
     private readonly authGuard: AuthGuard,
-    private readonly cdr: ChangeDetectorRef
+    private readonly cdr: ChangeDetectorRef,
+    private readonly formBuilder: FormBuilder,
+    private readonly toasterService: ToasterService
   ) { }
 
   ngOnInit(): void {
@@ -51,17 +59,6 @@ export class HomeComponent implements OnInit {
     this.fhirService.getDashboardData().subscribe((res) => {
       this.dashboardData = res;
     });
-  }
-
-  syncApis() {
-    this.getDashboardData();
-    this.getChartData();
-  }
-
-  getLastSyncDate() {
-    this.lastScDate = `${new Date().toDateString()} ${new Date().toLocaleTimeString()}`;
-    this.syncApis();
-    return this.lastScDate;
   }
 
   checkFeatures() {
@@ -192,6 +189,8 @@ export class HomeComponent implements OnInit {
   manipulateMapView(data) {
     data.map(d => {
       this.facilityArr.push({
+        id: d.facilityId,
+        organizationName: d.organizationName,
         name: d.facilityName,
         positions: { lat: Number(d.latitude), lng: Number(d.longitude) }
       });
@@ -309,27 +308,110 @@ export class HomeComponent implements OnInit {
     this.routeService.navigate([route]);
   }
 
-  isEmpty(obj) {
-    return Object.keys(obj).length === 0;
-  }
-
-  getDateData() {
-    const monthArr = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-    const d = new Date();
-    let month = monthArr[d.getMonth()];
-    let year = d.getFullYear();
-    return `${month} ${year}`;
-  }
-
   getIndicatorCompileValue() {
     const codeArr = [3843];
     this.fhirService.getIndicatorCompileValue(codeArr).subscribe((res: any) => {
+      this.initIndicatorFilterForm();
       if (res && res.length > 0) {
         this.indicatorArr = res;
         this.indicatorApiBusy = false;
+        this.indicatorArr.forEach(el => {
+          const indicatorValue = el.indicatorValue;
+          const colorSchema = el['colorSchema'] !== null ? JSON.parse(el['colorSchema']) : [];
+          if (colorSchema.length === 0 || parseInt(indicatorValue) === 0) {
+            // default colot
+            el['color'] = "green";
+          } else {
+            colorSchema.forEach(cel => {
+              if (cel.minValue < indicatorValue && indicatorValue < cel.maxValue) {
+                el['color'] = cel.color;
+              } else {
+                if (!Object(el).hasOwnProperty('color')) {
+                  // when range is not applied in any color scheme
+                  el['color'] = 'black';
+                }
+              }
+            });
+          }
+          el['showFilter'] = false;
+          this.getIndicators().push(this.newIndicatorAddition(el));
+        });
+        this.iValues.changes.subscribe(c => {
+          c.toArray().forEach((item, i) => {
+            item.nativeElement.style.color = this.indicatorArr[i].color;
+          });
+        });
       }
     }, () => {
       this.indicatorApiBusy = false;
     });
+  }
+
+  initIndicatorFilterForm() {
+    this.indicatorFilterForm = this.formBuilder.group({
+      indicators: this.formBuilder.array([])
+    });
+  }
+
+  getIndicators(): FormArray {
+    return this.indicatorFilterForm.get("indicators") as FormArray;
+  }
+
+  newIndicatorAddition(data): FormGroup {
+    return this.formBuilder.group({
+      indicatorId: data.indicatorId,
+      indicatorName: data.indicatorName,
+      indicatorValue: data.indicatorValue,
+      gender: data.gender ? this.genderArr.find(el => el.id === data.gender) : null,
+      ageCondition: data.age ? this.fhirService.getAgeConditionAndValue(data.age).condition : null,
+      ageValue: data.age ? this.fhirService.getAgeConditionAndValue(data.age).value : null,
+      startDate: data.startDate,
+      endDate: data.endDate,
+      facility: []
+    });
+  }
+
+  enableFilter(index) {
+    this.indicatorArr.forEach((el, i) => {
+      if (i !== index) {
+        el['showFilter'] = false;
+      }
+    });
+    this.indicatorArr[index].showFilter = !this.indicatorArr[index].showFilter;
+  }
+
+  filterIndicator(index) {
+    const controls = this.getIndicators().controls[index];
+    if (controls.value.gender || controls.value.startDate ||
+      controls.value.endDate || (controls.value.ageCondition && controls.value.ageValue)
+    ) {
+      const data = {
+        indicatorId: controls.value.indicatorId,
+        gender: controls.value.gender ? controls.value.gender.id : null,
+        age: controls.value.ageCondition && controls.value.ageValue ?
+          `${controls.value.ageCondition.id} ${controls.value.ageValue}` : null,
+        startDate: new Date(controls.value.startDate).toISOString(),
+        endDate: controls.value.endDate ? new Date(controls.value.endDate).toISOString() : null,
+      }
+      this.fhirService.filterIndicatorValue(data).subscribe(res => {
+        if (res) {
+          controls.patchValue({ indicatorValue: res[0].indicatorValue });
+        }
+      });
+    } else {
+      this.toasterService.showToast('warn', 'Please enter filter data!', 'EM CARE!');
+    }
+  }
+
+  onDateSelection(num, index) {
+    const controls = this.getIndicators().controls[index];
+    if (controls.value.startDate && controls.value.endDate) {
+      const startDate = new Date(controls.value.startDate).getTime();
+      const endDate = new Date(controls.value.endDate).getTime();
+      if (endDate < startDate) {
+        this.toasterService.showToast('error', 'End Date shoyld be greater than start date!', 'EM CARE!');
+        num === 1 ? controls['controls'].startDate.setValue(null) : controls['controls'].endDate.setValue(null);
+      }
+    }
   }
 }
