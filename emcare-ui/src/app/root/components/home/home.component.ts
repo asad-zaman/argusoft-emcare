@@ -322,10 +322,10 @@ export class HomeComponent implements OnInit {
   getIndicatorCompileValue() {
     const codeArr = [3843];
     this.fhirService.getIndicatorCompileValue(codeArr).subscribe((res: any) => {
+      this.indicatorApiBusy = false;
       this.initIndicatorFilterForm();
       if (res && res.length > 0) {
         this.indicatorArr = res;
-        this.indicatorApiBusy = false;
         this.indicatorArr.forEach(el => {
           const indicatorValue = el.indicatorValue;
           const colorSchema = el['colorSchema'] !== null ? JSON.parse(el['colorSchema']) : [];
