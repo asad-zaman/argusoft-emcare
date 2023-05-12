@@ -60,7 +60,7 @@
     <!--right-grid-->
     <div class="col-12 col-md-12 col-lg-12 col-xl-6 pl___7">
       <ng-container *ngIf="!this.indicatorApiBusy; else showSpinner">
-        <div class="dashboard-card">
+        <div *ngIf="this.indicatorArr.length > 0; else noData" class="dashboard-card">
           <div class="dashboard-card-heading">
             <h3>{{'Indicators' | translate}}</h3>
           </div>
@@ -153,6 +153,11 @@
             </div>
           </div>
         </div>
+        <ng-template #noData>
+          <h5 class="p-20">
+            {{'NoIndicators' | translate}}
+          </h5>
+        </ng-template>
       </ng-container>
       <ng-template #showSpinner>
         <div class="spinner-border">
