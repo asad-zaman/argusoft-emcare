@@ -58,7 +58,7 @@
     </div>
     <h1 class="heading" style="margin-left: 160px;">{{iconObj[selectedEncounterIcon]}}</h1>
     <div class="consultation-tab-content">
-      <div *ngIf="currentObj && currentObj['queAnsObj'].length > 0">
+      <div *ngIf="currentObj && currentObj['queAnsObj'].length > 0; else noData">
         <div class="row">
           <ng-container *ngFor="let obj of currentObj['queAnsObj']">
             <div class="col-lg-4 tab-content-border-bottom tab-content-text tab-content-border p-4">
@@ -68,6 +68,11 @@
           </ng-container>
         </div>
       </div>
+      <ng-template #noData>
+        <h5 class="ml-2">
+          {{'NOConsultations' | translate}}
+        </h5>
+      </ng-template>
     </div>
   </ng-container>
 </div>
