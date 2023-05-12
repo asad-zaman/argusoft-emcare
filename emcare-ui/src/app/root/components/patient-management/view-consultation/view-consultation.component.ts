@@ -85,6 +85,7 @@ export class ViewConsultationComponent implements OnInit {
   selectEncounter(index) {
     this.selectedEncounterIcon = index;
     this.currentObj = this.data[this.selectedEncounterIcon];
+    console.log(this.currentObj);
   }
 
   manipulateResAsPerKey(tempkeyData) {
@@ -100,37 +101,21 @@ export class ViewConsultationComponent implements OnInit {
       if (el.resText) {
         el.resText.item.forEach(itemEl => {
           if (itemEl.text && itemEl.answer) {
-            if (itemEl.answer[0].valueCoding && itemEl.answer[0].valueCoding.display) {
-              queAnsObj.push({
-                label: itemEl.text,
-                value: itemEl.answer[0].valueCoding.display
-              });
-            } else if (itemEl.answer[0].valueBoolean && itemEl.answer[0].valueBoolean) {
-              queAnsObj.push({
-                label: itemEl.text,
-                value: itemEl.answer[0].valueBoolean
-              });
-            } else if (itemEl.answer[0].valueString && itemEl.answer[0].valueString) {
-              queAnsObj.push({
-                label: itemEl.text,
-                value: itemEl.answer[0].valueString
-              });
-            } else if (itemEl.answer[0].valueDate && itemEl.answer[0].valueDate) {
-              queAnsObj.push({
-                label: itemEl.text,
-                value: itemEl.answer[0].valueDate
-              });
-            } else if (itemEl.answer[0].valueQuantity && itemEl.answer[0].valueQuantity.value) {
-              queAnsObj.push({
-                label: itemEl.text,
-                value: itemEl.answer[0].valueQuantity.value
-              });
-            } else if (itemEl.answer[0].valueInteger && itemEl.answer[0].valueInteger) {
-              queAnsObj.push({
-                label: itemEl.text,
-                value: itemEl.answer[0].valueInteger
-              });
-            } else { }
+            for (const k in itemEl) {
+              if (k === 'answer') {
+                const answerObj = itemEl['answer'][0];
+                for (const a in answerObj) {
+                  if (a !== 'item' && a !== 'valueCoding' && a !== 'valueQuantity') {
+                    queAnsObj.push({ label: itemEl.text, value: answerObj[a] });
+                  } else {
+                    if (a !== 'item') {
+                      const val = answerObj[a].display ? answerObj[a].display : answerObj[a].value;
+                      queAnsObj.push({ label: itemEl.text, value: val });
+                    }
+                  }
+                }
+              }
+            }
           }
         });
       }
