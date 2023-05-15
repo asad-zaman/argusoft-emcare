@@ -252,7 +252,7 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
                 if (binary != null) {
                     binaryResourceService.updateBinaryResource(resource.getIdElement(), binary);
                 } else {
-                    binaryResourceService.saveResource(binary);
+                    binaryResourceService.saveResource(parser.parseResource(Binary.class, resourceString));
                 }
                 break;
             default:

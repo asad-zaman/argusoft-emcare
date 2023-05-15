@@ -242,7 +242,7 @@ public class IndicatorServiceImpl implements IndicatorService {
     }
 
     public Integer resolveEquation(String equation) {
-        Integer result = 0;
+        int result = 0;
         try {
             Expression expression = new ExpressionBuilder(equation).build();
             result = (int) expression.evaluate();
