@@ -1,13 +1,24 @@
-.cst-link-style {
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-}
-
-.cst-icon-style {
-    font-size: 14px;
-}
-
 .people-img-fluid {
     max-width: 60%;
+}
+
+.cst-login-icon-style {
+    font-size: 14px;
+}
+
+.cst-welcome-msg {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 40px;
+    font-weight: normal;
+}
+
+.cst-footer-line {
+    font-size: 15px;
+    text-align: center;
+    display: block;
+    color: #CCC;
+    position: fixed;
+    left: 20%;
+    transform: translate(-50%, 0);
+    bottom: 20px;
 }

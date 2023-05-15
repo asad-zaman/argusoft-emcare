@@ -16,6 +16,7 @@
           <th>{{'Device UUID' | translate}}</th>
           <th>{{'Android Version' | translate}}</th>
           <th>{{'Logged in User' | translate}}</th>
+          <th>{{'Ig Version' | translate}}</th>
           <th>{{'App Usage' | translate}}</th>
         </tr>
       </thead>
@@ -28,6 +29,7 @@
               <td>{{data.deviceUUID}}</td>
               <td>{{data.androidVersion}}</td>
               <td>{{data.usersResource ? data.usersResource.userName : 'NA'}}</td>
+              <td>{{data.igVersion ? data.igVersion : 'NA'}}</td>
               <td>
                 <label class="switch">
                   <input [(ngModel)]="data.appUsage" (click)="editDevice($event, data.deviceId)" id="isBlocked"

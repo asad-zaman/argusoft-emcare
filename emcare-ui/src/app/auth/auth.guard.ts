@@ -19,7 +19,7 @@ export class AuthGuard implements CanActivate {
         this.handleFeature = new BehaviorSubject({});
         this.featureRouteArr = {
             'Users': ['/showUsers', '/addUser', '/updateUser', '/showRoles', '/addRole', '/editRole', '/confirmUsers'],
-            'Indicators': ['/code-list', '/manageCode', 'indicator-list', '/addIndicator'],
+            'Indicators': ['/code-list', '/manageCode', '/indicator-list', '/addIndicator', '/editIndicator'],
             'Custom Codes': ['/code-list', '/manageCode'],
             'All Indicators': ['/indicator-list'],
             'Locations': ['/showFacility', '/addFacility', '/editFacility', '/showLocation', '/addLocation', '/editLocation', '/showLocationType', '/addLocationType', '/editLocationType'],
@@ -40,10 +40,13 @@ export class AuthGuard implements CanActivate {
             'Dashboard': ['/dashboard'],
             'Organizations': ['/showOrganizations', '/manage-organization'],
             'Duplicate Patients': ['/duplicatePatients'],
-            'Advanced settings': ['/language-list', '/manage-language', '/user-admin-settings', '/showFeatures', '/editFeature', '/showDevices'],
-            'Consultations': ['/consultation-list', '/view-consultation']
+            'Advanced settings': ['/language-list', '/manage-language', '/user-admin-settings', '/showFeatures', '/editFeature', '/showDevices', '/logList'],
+            'Consultations': ['/consultation-list', '/view-consultation'],
+            'Application Logs': ['/logList', '/addLog']
         }
         this.routeFeatureMapper = {
+            'logList': { f: 'Application Logs', reqFeature: ['canView'] },
+            'addLog': { f: 'Application Logs', reqFeature: ['canAdd', 'canView'] },
             'addLocationType': { f: 'Location Types', reqFeature: ['canAdd'] },
             'showLocationType': { f: 'Location Types', reqFeature: ['canView', 'canAdd', 'canEdit'] },
             'addLocation': { f: 'Administrative Levels', reqFeature: ['canAdd'] },
@@ -80,6 +83,7 @@ export class AuthGuard implements CanActivate {
             'code-list': { f: 'Indicators', reqFeature: ['canView'] },
             'manageCode': { f: 'Indicators', reqFeature: ['canAdd', 'canEdit'] },
             'addIndicator': { f: 'Indicators', reqFeature: ['canAdd'] },
+            'editIndicator': { f: 'Indicators', reqFeature: ['canEdit'] },
             'indicator-list': { f: 'Indicators', reqFeature: ['canView', 'canAdd'] }
         }
     }
@@ -98,11 +102,21 @@ export class AuthGuard implements CanActivate {
                 localStorage.clear();
                 return false;
             } else {
-                const userFeatures = localStorage.getItem('userFeatures');
-                if (userFeatures) {
-                    this.user = JSON.parse(userFeatures);
-                    this.getResultAndRedirect(route);
+                const isSuperAdmin = localStorage.getItem('isSuperAdmin') === 'true';
+                if (!isSuperAdmin && (route.routeConfig.path === 'tenantList'
+                    || route.routeConfig.path === 'manageTenant')) {
+                    this.router.navigate(['/dashboard']);
+                    return false;
+                } else if (isSuperAdmin && (route.routeConfig.path === 'tenantList'
+                    || route.routeConfig.path === 'manageTenant')) {
                     return true;
+                } else {
+                    const userFeatures = localStorage.getItem('userFeatures');
+                    if (userFeatures) {
+                        this.user = JSON.parse(userFeatures);
+                        this.getResultAndRedirect(route);
+                        return true;
+                    }
                 }
                 return true;
             }
@@ -217,6 +231,8 @@ export class AuthGuard implements CanActivate {
             || route.routeConfig.path.includes('manage-language')
             || route.routeConfig.path === 'language-list'
             || route.routeConfig.path === 'user-admin-settings'
+            || route.routeConfig.path === 'logList'
+            || route.routeConfig.path === 'addLog'
         ) {
             return this.user.feature.find(f => f.menuName === 'Advanced settings');
         } else if (
@@ -233,6 +249,7 @@ export class AuthGuard implements CanActivate {
             || route.routeConfig.path === 'code-list'
             || route.routeConfig.path === 'indicator-list'
             || route.routeConfig.path.includes('manageCode')
+            || route.routeConfig.path.includes('editIndicator')
         ) {
             return this.user.feature.find(f => f.menuName === 'Indicators');
         } else {

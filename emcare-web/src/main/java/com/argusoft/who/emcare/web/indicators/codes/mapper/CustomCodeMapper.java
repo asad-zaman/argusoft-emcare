@@ -22,6 +22,9 @@ public class CustomCodeMapper {
         emCareCustomCodeSystem.setCodeId(customCodeRequestDto.getCodeId());
         emCareCustomCodeSystem.setCodeDescription(customCodeRequestDto.getCodeDescription());
         emCareCustomCodeSystem.setCode(customCodeRequestDto.getCode());
+        emCareCustomCodeSystem.setValueType(customCodeRequestDto.getValueType());
+        emCareCustomCodeSystem.setCondition(customCodeRequestDto.getCondition());
+        emCareCustomCodeSystem.setValue(customCodeRequestDto.getValue());
         return emCareCustomCodeSystem;
     }
 }

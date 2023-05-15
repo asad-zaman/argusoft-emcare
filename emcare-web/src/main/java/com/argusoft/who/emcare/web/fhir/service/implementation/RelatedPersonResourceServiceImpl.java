@@ -9,17 +9,16 @@ import com.argusoft.who.emcare.web.fhir.dao.EmcareResourceRepository;
 import com.argusoft.who.emcare.web.fhir.dao.RelatedPersonResourceRepository;
 import com.argusoft.who.emcare.web.fhir.model.EmcareResource;
 import com.argusoft.who.emcare.web.fhir.model.RelatedPersonResource;
+import com.argusoft.who.emcare.web.fhir.service.EmcareResourceService;
 import com.argusoft.who.emcare.web.fhir.service.RelatedPersonResourceService;
+import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.Meta;
 import org.hl7.fhir.r4.model.RelatedPerson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class RelatedPersonResourceServiceImpl implements RelatedPersonResourceService {
@@ -32,6 +31,9 @@ public class RelatedPersonResourceServiceImpl implements RelatedPersonResourceSe
 
     @Autowired
     EmcareResourceRepository emcareResourceRepository;
+
+    @Autowired
+    EmcareResourceService emcareResourceService;
 
     @Override
     public RelatedPerson saveResource(RelatedPerson relatedPerson) {
@@ -102,16 +104,68 @@ public class RelatedPersonResourceServiceImpl implements RelatedPersonResourceSe
     }
 
     @Override
-    public List<RelatedPerson> getAllRelatedPerson(DateParam theDate) {
+    public Bundle getRelatedPersonCountBasedOnDate(String summaryType, DateParam theDate, String theId) {
+        List<String> patientId = new ArrayList<>();
+        if (theId != null) {
+            patientId = emcareResourceService.getPatientIdsUnderFacility(theId);
+        }
+        if(patientId.isEmpty()){
+            Bundle bundle = new Bundle();
+            bundle.setTotal(0);
+            return bundle;
+        }
+        Long count = 0l;
+        if (summaryType.equalsIgnoreCase(CommonConstant.SUMMARY_TYPE_COUNT)) {
+            if (Objects.isNull(theDate)) {
+                if (theId == null) {
+                    count = relatedPersonResourceRepository.count();
+                } else {
+                    count = relatedPersonResourceRepository.getCountWithFacilityId(patientId);
+                }
+
+            } else {
+                if (theId == null) {
+                    count = relatedPersonResourceRepository.getCountBasedOnDate(theDate.getValue());
+                } else {
+                    count = relatedPersonResourceRepository.getCountBasedOnDateWithFacilityId(theDate.getValue(), patientId);
+                }
+
+            }
+        } else {
+            return null;
+        }
+        Bundle bundle = new Bundle();
+        bundle.setTotal(count.intValue());
+        return bundle;
+    }
+
+    @Override
+    public List<RelatedPerson> getAllRelatedPerson(DateParam theDate, String theId) {
+        List<String> patientIds = emcareResourceService.getPatientIdsUnderFacility(theId);
         List<RelatedPerson> relatedPeople = new ArrayList<>();
         List<RelatedPersonResource> relatedPersonResources;
 
-        if (theDate == null) {
-            relatedPersonResources = relatedPersonResourceRepository.findAll();
-        } else {
-            relatedPersonResources = relatedPersonResourceRepository.findByModifiedOnGreaterThanOrCreatedOnGreaterThan(theDate.getValue(), theDate.getValue());
+        if(patientIds.isEmpty()){
+            return null;
         }
 
+        if (theDate == null) {
+            relatedPersonResources = relatedPersonResourceRepository.findByFacilityId(patientIds);
+        } else {
+            relatedPersonResources = relatedPersonResourceRepository.findByFacilityIdAndDate(theDate.getValue(), patientIds);
+        }
+
+        for (RelatedPersonResource personResource : relatedPersonResources) {
+            RelatedPerson person = parser.parseResource(RelatedPerson.class, personResource.getText());
+            relatedPeople.add(person);
+        }
+        return relatedPeople;
+    }
+
+    @Override
+    public List<RelatedPerson> getAllRelatedPersonByPatientId(IdType theId) {
+        List<RelatedPerson> relatedPeople = new ArrayList<>();
+        List<RelatedPersonResource> relatedPersonResources = relatedPersonResourceRepository.findByPatientId(theId.getValue());
         for (RelatedPersonResource personResource : relatedPersonResources) {
             RelatedPerson person = parser.parseResource(RelatedPerson.class, personResource.getText());
             relatedPeople.add(person);

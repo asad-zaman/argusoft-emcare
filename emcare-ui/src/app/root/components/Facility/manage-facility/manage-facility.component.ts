@@ -66,7 +66,7 @@ export class ManageFacilityComponent implements OnInit {
         this.initFacilityForm();
       }
     }, (_e) => {
-      this.toasterService.showToast('error', 'Server issue!', 'EM CARE !!');
+      this.toasterService.showToast('error', 'Server issue!', 'EM CARE !');
     });
   }
 
@@ -261,7 +261,7 @@ export class ManageFacilityComponent implements OnInit {
       });
     }
     else {
-      this.toasterService.showToast('info', 'Geolocation is not supported by this browser!!', 'EMCARE');
+      this.toasterService.showToast('info', 'Geolocation is not supported by this browser!', 'EMCARE');
     }
   }
 

@@ -66,6 +66,17 @@ import { ChartModule } from 'angular-highcharts';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { NgxIntlTelInputModule } from 'ngx-intl-tel-input';
+import { TenantListComponent } from './root/components/tenant-list/tenant-list.component';
+import { ManageTenantComponent } from './root/components/manage-tenant/manage-tenant.component';
+import { MessagesModule } from 'primeng/messages';
+import { MessageModule } from 'primeng/message';
+import { TermsConditionsComponent } from './root/components/terms-conditions/terms-conditions.component';
+import { AddLogComponent } from './root/components/add-log/add-log.component';
+import { LogListComponent } from './root/components/log-list/log-list.component';
+import { LocationSubjects } from './root/components/Location/location-filter/LocationSubject';
+import { ColorPickerModule } from 'primeng/colorpicker';
+import { CalendarModule } from 'primeng/calendar';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -106,7 +117,12 @@ import { NgxIntlTelInputModule } from 'ngx-intl-tel-input';
     ManageCodeComponent,
     CodeListComponent,
     IndicatorComponent,
-    IndicatorListComponent
+    IndicatorListComponent,
+    TenantListComponent,
+    ManageTenantComponent,
+    TermsConditionsComponent,
+    AddLogComponent,
+    LogListComponent
   ],
   imports: [
     BrowserModule,
@@ -129,7 +145,11 @@ import { NgxIntlTelInputModule } from 'ngx-intl-tel-input';
     CardModule,
     ChartModule,
     ToastModule,
-    NgxIntlTelInputModule
+    NgxIntlTelInputModule,
+    MessagesModule,
+    MessageModule,
+    ColorPickerModule,
+    CalendarModule
   ],
   providers: [
     AuthenticationService,
@@ -146,6 +166,7 @@ import { NgxIntlTelInputModule } from 'ngx-intl-tel-input';
     ToasterService,
     LaunguageSubjects,
     MessageService,
+    LocationSubjects
   ],
   bootstrap: [AppComponent]
 })

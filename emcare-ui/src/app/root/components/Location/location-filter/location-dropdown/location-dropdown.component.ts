@@ -1,15 +1,17 @@
-import { Component, OnInit, Output, EventEmitter, Input, SimpleChanges, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input, SimpleChanges, ChangeDetectorRef, ChangeDetectionStrategy, OnChanges } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Observable, Subscription } from 'rxjs';
 import { LocationService } from 'src/app/root/services/location.service';
 import { FhirService } from 'src/app/shared';
+import { LocationSubjects } from '../LocationSubject';
 
 @Component({
   selector: 'app-location-dropdown',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './location-dropdown.component.html',
   styleUrls: ['./location-dropdown.component.scss']
 })
-export class LocationDropdownComponent implements OnInit {
+export class LocationDropdownComponent implements OnInit, OnChanges {
 
   locationFilterForm: FormGroup;
   countryArr: Array<any> = [];
@@ -30,13 +32,12 @@ export class LocationDropdownComponent implements OnInit {
   @Input() events: Observable<boolean>;
   currentSelection: number;
 
-  @Input() isClearFilter?: boolean;
-
   constructor(
     private readonly formBuilder: FormBuilder,
     private readonly locationService: LocationService,
     private readonly fhirService: FhirService,
-    private readonly cdr: ChangeDetectorRef
+    private readonly cdr: ChangeDetectorRef,
+    private readonly locSubjects: LocationSubjects
   ) {
   }
 
@@ -56,13 +57,12 @@ export class LocationDropdownComponent implements OnInit {
     if (changes['idArr']) {
       this.insertDataFromIdArr(changes['idArr'].currentValue);
     }
-    console.log('sd', changes['isClearFilter']);
-    if (changes['isClearFilter']) {
-      if (changes['isClearFilter'].currentValue) {
+    this.locSubjects.getClearLocation().subscribe(res => {
+      if (res === true) {
         this.resetData();
         this.cdr.detectChanges();
       }
-    }
+    });
   }
 
   prerequisite() {
@@ -136,19 +136,11 @@ export class LocationDropdownComponent implements OnInit {
     this.locationService.getAllLocations().subscribe((res: Array<Object>) => {
       if (res) {
         this.locationArr = res;
-        const data = res.find(el => el['parent'] === 0);
-        this.getAllLocationsByType(data['type'], true);
+        const data = res.find(el => (el['parent'] === null) || (el['parent'] === 0));
+        // getting conuntries
+        this.countryArr = res.filter(el => el['type'] === data['type']);
       }
     })
-  }
-
-  getAllLocationsByType(type, isFirstDropdown) {
-    // getting locations by type
-    this.locationService.getAllLocationByType(type).subscribe((res: Array<Object>) => {
-      if (isFirstDropdown) {
-        this.countryArr = this.countryArr.concat(res);
-      }
-    });
   }
 
   getChildLocations(id, arr) {

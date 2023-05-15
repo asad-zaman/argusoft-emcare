@@ -4,8 +4,10 @@ public class CommonConstant {
     public static final String EMAIL_ALREADY_EXISTS = "This Email Or Username Already Register With Em-Care";
     public static final String REGISTER_SUCCESS = "Successfully Register";
     public static final String UPDATE_SUCCESS = "Successfully Update";
+    public static final String DOC_DOWNLOAD_PATH = "doc/resources/";
     public static final String USER_NOT_FOUND = "User Not Found";
     public static final String DEFAULT_ROLE_EMCARE = "default-roles-emcare";
+    public static final String ADMIN_ROLE_DESCRIPTION = "Admin Role";
     public static final String DESC = "DESC";
     public static final String ASC = "ASC";
     public static final Integer PAGE_SIZE = 10;
@@ -16,6 +18,7 @@ public class CommonConstant {
     public static final String HINDI = "hin";
     public static final String ENGLISH = "en";
     public static final String LOCATION_TYPE_STRING = "LOCATION";
+    public static final String BINARY_TYPE_STRING = "BINARY";
     public static final String OPERATION_DEFINITION = "OPERATIONDEFINITION";
     public static final String CODE_SYSTEM = "CODESYSTEM";
     public static final String QUESTIONNAIRE = "QUESTIONNAIRE";
@@ -51,13 +54,19 @@ public class CommonConstant {
     public static final String RESOURCE_LAST_UPDATED_AT = "_lastUpdated";
     public static final String RESOURCE_TEXT = "_text";
     public static final String RESOURCE_ID = "_id";
+    public static final String RESOURCE_FACILITY_ID = "_facilityId";
+    public static final String SUMMARY = "_summary";
     public static final String RESOURCE_CONTENT = "_content";
+    public static final String SUMMARY_TYPE_COUNT = "count";
     public static final String FIRST_NAME = "firstName";
     public static final String LAST_NAME = "lastName";
     public static final String INDICATOR_DISPLAY_TYPE_COUNT = "Count";
     public static final String FHIR_TYPE_BOOLEAN_CONDITION = "Boolean";
+    public static final String FHIR_TYPE_INTEGER_CONDITION = "Number";
     public static final String FHIR_TYPE_BOOLEAN_KEY = "BOOLEAN";
+    public static final String FHIR_TYPE_INTEGER_KEY = "INTEGER";
     public static final String FHIR_TYPE_BOOLEAN_VALUE = "valueBoolean";
+    public static final String FHIR_TYPE_INTEGER_VALUE = "valueInteger";
     public static final String ALL_CODE = "All";
 
     public static final String IBM_ACCESS_KEY = "ibm.access-key";
@@ -66,7 +75,25 @@ public class CommonConstant {
     public static final String FHIR_SERVLET = "FhirServlet";
     public static final String FHIR_SERVLET_URL_MAPPING = "/fhir/*";
 
-    public static final String KEYCLOAK_REALM="keycloak.realm";
+    public static final String KEYCLOAK_REALM = "keycloak.realm";
+    public static final String HTTPS = "https://";
+    public static final String HTTP = "http://";
+    public static final String USERNAME = "username";
+    public static final String PASSWORD = "password";
+    public static final String GRANT_TYPE = "grant_type";
+    public static final String CLIENT_SECRET = "client_secret";
+    public static final String CLIENT_ID = "client_id";
+    public static final String ACCESS_TOKEN = "access_token";
+    public static final String POSTGRESQL_DRIVER = "org.postgresql.Driver";
+    public static final String URL_PREFIX = "jdbc:postgresql://";
+    public static final String POSTGRESQL_DEFAULT_DATABASE = "postgres";
+    public static final String SUPER_ADMIN_ROLE = "SUPER_ADMIN";
+    public static final String DEFAULT_TENANT_ID = "Global";
+    public static final String TENANT_ID = "tenantID";
+    public static final String VALUE = "value";
+    public static final String TENANT_ADMIN_ROLE_POSTFIX = "_Admin";
+    public static final String INDICATOR_VALUE = "indicatorValue";
+
 
     private CommonConstant() {
     }

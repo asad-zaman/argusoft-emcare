@@ -1,0 +1,97 @@
+<div class="main-wrapper">
+  <div class="form-wrapper-broad">
+    <form [formGroup]="addLogForm" name="addLogForm" novalidate>
+      <div class="mb-5">
+        <h1 class="heading">
+          {{'Add Log' | translate}}
+        </h1>
+        <hr>
+      </div>
+      <div class="row">
+        <div class="col-6 cst-border-right">
+          <div class="col-12">
+            <div class="mb-3">
+              <label class="form-label">{{'Application Name' | translate}}*</label>
+              <input class="form-control custom-input" formControlName="applicationName" type="text"
+                id="applicationName" placeholder="{{'Application Name Placeholder' | translate}}"
+                [ngClass]="{ 'is-invalid': submitted && getFormConfrols.applicationName.errors }">
+              <div *ngIf="submitted && getFormConfrols.applicationName.errors" class="invalid-feedback">
+                <div class="cst-error-style" *ngIf="getFormConfrols.applicationName.errors.required">
+                  {{'Application Name Required Message' | translate}}</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-12">
+            <div class="mb-3">
+              <label class="form-label">{{'Application Version' | translate}}*</label>
+              <input class="form-control custom-input" formControlName="applicationVersion" type="text"
+                id="applicationVersion" placeholder="{{'Application Version Placeholder' | translate}}"
+                [ngClass]="{ 'is-invalid': submitted && getFormConfrols.applicationVersion.errors }">
+              <div *ngIf="submitted && getFormConfrols.applicationVersion.errors" class="invalid-feedback">
+                <div class="cst-error-style" *ngIf="getFormConfrols.applicationVersion.errors.required">
+                  {{'Application Version Required Message' | translate}}</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-12">
+            <div class="mb-3">
+              <label class="form-label">{{'File' | translate}}</label>
+              <input class="form-control" formControlName="logFile" type="file" id="logFile"
+                placeholder="{{'Log File Placeholder' | translate}}" accept=".apk, .xapk"
+                (change)="onFileUploaded($event)"
+                [ngClass]="{ 'is-invalid': submitted && getFormConfrols.logFile.errors }">
+              <div *ngIf="submitted && getFormConfrols.logFile.errors" class="invalid-feedback">
+                <div class="cst-error-style" *ngIf="getFormConfrols.logFile.errors.required">
+                  {{'Log File Required Message' | translate}}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="col-12">
+            <div class="mb-3">
+              <label class="form-label">{{'Logs' | translate}}</label>
+              <input class="form-control custom-input" formControlName="log" type="text" id="log"
+                placeholder="{{'Log Placeholder' | translate}}"
+                [ngClass]="{ 'is-invalid': submitted && getFormConfrols.log.errors }">
+              <div *ngIf="submitted && getFormConfrols.log.errors" class="invalid-feedback">
+                <div class="cst-error-style" *ngIf="getFormConfrols.log.errors.required">
+                  {{'Log Required Message' | translate}}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-4 offset-8 cst-log-btn">
+            <button [disabled]="!addLogForm.get('log').value" type="button" class="btn btn-blue" (click)="addLog()"
+              data-bs-dismiss="modal">{{'Add' | translate}}</button>
+          </div>
+          <div class="col-12">
+            <div class="mb-3 customd-div">
+              <label class="form-label f-16">{{'Log List' | translate}}</label>
+              <ul>
+                <ng-container *ngFor="let log of addLogForm.get('logs').value">
+                  <li>
+                    <div class="chip">
+                      {{log}}
+                      <i class="bi bi-x f-18 cursor-pointer" (click)="removeLog(log)" aria-hidden="true"></i>
+                    </div>
+                  </li>
+                </ng-container>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="text-end mt-3">
+          <hr>
+          <button routerLink="/logList" class="btn-black btn ms-3">
+            <i class="bi bi-chevron-left" aria-hidden="true"></i> {{'Back' | translate}}
+          </button>
+          <button (click)="saveData()" class="btn-blue btn">
+            {{'Save' | translate}}
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

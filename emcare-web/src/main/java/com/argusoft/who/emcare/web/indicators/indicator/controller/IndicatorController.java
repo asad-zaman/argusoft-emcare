@@ -2,6 +2,7 @@ package com.argusoft.who.emcare.web.indicators.indicator.controller;
 
 import com.argusoft.who.emcare.web.common.dto.PageDto;
 import com.argusoft.who.emcare.web.indicators.indicator.dto.IndicatorDto;
+import com.argusoft.who.emcare.web.indicators.indicator.dto.IndicatorFilterDto;
 import com.argusoft.who.emcare.web.indicators.indicator.service.IndicatorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -51,5 +52,10 @@ public class IndicatorController {
     @PostMapping("/compile/value")
     public ResponseEntity<Object> getIndicatorCompileValue(@RequestBody List<Long> indicatorIds) {
         return indicatorService.getIndicatorsCompileValue(indicatorIds);
+    }
+
+    @PostMapping("/filter/value")
+    public ResponseEntity<Object> getIndicatorFilteredCompileValue(@RequestBody IndicatorFilterDto indicatorFilterDto) {
+        return indicatorService.getIndicatorFilteredCompileValue(indicatorFilterDto);
     }
 }

@@ -17,6 +17,7 @@
           <th>{{'Name' | translate}}</th>
           <th>{{'Gender' | translate}}</th>
           <th>{{'Date of Birth' | translate}}</th>
+          <th>{{'Consultation Date' | translate}}</th>
           <th>{{'Caregiver Name' | translate}}</th>
           <th>{{'Facility' | translate}}</th>
           <th>{{'Action' | translate}}</th>
@@ -40,6 +41,7 @@
               </td>
               <td>{{patient.gender}}</td>
               <td>{{patient.dob ? (patient.dob | date:'mediumDate') : 'NA'}}</td>
+              <td>{{patient.consultationDate ? (patient.consultationDate | date:'mediumDate') : 'NA'}}</td>
               <td>{{patient.caregiver || "NOT PROVIDED"}}</td>
               <td>
                 <ng-container *ngIf="patient.facility">
@@ -50,8 +52,9 @@
                 </ng-container>
               </td>
               <td>
-                <i (click)="viewConsultation(i)" class="bi bi-eye cursor-pointer font-size-14"
+                <i (click)="viewConsultation(i)" class="bi bi-eye cursor-pointer font-size-14 mr-3"
                   aria-hidden="true"></i>
+                <i (click)="exportPDF(patient)" class="cst-icon-style bi bi-download cursor-pointer" aria-hidden="true"></i>
               </td>
             </tr>
           </ng-container>

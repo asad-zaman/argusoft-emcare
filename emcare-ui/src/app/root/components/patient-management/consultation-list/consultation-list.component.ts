@@ -4,6 +4,10 @@ import { Subject } from "rxjs";
 import { debounceTime, distinctUntilChanged } from "rxjs/operators";
 import { AuthGuard } from "src/app/auth/auth.guard";
 import { FhirService } from "src/app/shared/services/fhir.service";
+import * as _ from 'lodash';
+import pdfMake from "pdfmake/build/pdfmake";
+import pdfFonts from "pdfmake/build/vfs_fonts";
+pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 @Component({
   selector: 'app-consultation-list',
@@ -49,6 +53,7 @@ export class ConsultationListComponent implements OnInit {
     if (res && res['list']) {
       this.consultations = res['list'];
       this.filteredConsultations = this.consultations;
+      this.filteredConsultations = _.sortBy(this.filteredConsultations, 'consultationDate').reverse();
       this.totalCount = res['totalCount'];
       this.isAPIBusy = false;
     }
@@ -100,4 +105,89 @@ export class ConsultationListComponent implements OnInit {
   viewConsultation(index) {
     this.router.navigate([`view-consultation/${this.filteredConsultations[index]['id']}`]);
   }
+
+  exportPDF(patient) {
+    this.fhirService.getConsultationExportData(patient.id).subscribe((res: any) => {
+      let answerInnerData = [];
+      let answerOuterData = [];
+      let data = [];
+      res.forEach((el, ind) => {
+        if (el) {
+          const currData = JSON.parse(el);
+          let str = `${ind + 1}) ` + currData['resourceType'] + ' => ' + currData['questionnaire'];
+          let obj = { text: str };
+          data.push(obj);
+          for (const key in currData) {
+            if (key == 'item') {
+              const items = currData[key];
+              answerInnerData = [];
+              items.forEach(item => {
+                const answerObjForArr = {};
+                if (item.hasOwnProperty('text') && item.hasOwnProperty('answer')) {
+                  for (const k in item) {
+                    if (k === 'answer') {
+                      const answerObj = item['answer'][0];
+                      for (const a in answerObj) {
+                        if (a !== 'item' && a !== 'valueCoding' && a !== 'valueQuantity') {
+                          answerObjForArr[k] = answerObj[a];
+                        } else {
+                          if (a !== 'item') {
+                            const val = answerObj[a].display ? answerObj[a].display : answerObj[a].value;
+                            answerObjForArr[k] = val;
+                          }
+                        }
+                      }
+                    } else {
+                      answerObjForArr[k] = item[k];
+                    }
+                  }
+                  answerInnerData.push(answerObjForArr);
+                }
+              });
+              answerOuterData.push(answerInnerData);
+            }
+          }
+        }
+      });
+
+      let docDefinition: any = {
+        content: [
+          {
+            text: `${patient.givenName} ${patient.familyName}'s consultation data`,
+            fontSize: 16,
+            alignment: 'center',
+            color: '#047886'
+          },
+          { columns: [{ text: '                            ' }] },
+          {
+            text: 'Consultation Details',
+            fontSize: 14,
+            alignment: 'center',
+            color: '#047886',
+            style: 'sectionHeader'
+          }
+        ]
+      }
+      docDefinition.content.push({ columns: [{ text: '                            ' }] })
+
+      data.forEach((element, index) => {
+        let tableObj = {};
+        tableObj = {
+          widths: ['auto', 'auto', 'auto'],
+          body: [
+            ['Link Id', 'Text', 'Answer'],
+            ...answerOuterData[index].map(p => ([p.linkId, p.text, p.answer]))
+          ]
+        }
+        docDefinition.content.push({ columns: [element], color: '#047886' })
+        docDefinition.content.push({ columns: [{ text: '                            ' }] })
+        docDefinition.content.push({ table: tableObj })
+        docDefinition.content.push({ columns: [{ text: '                            ' }] })
+      });
+
+      pdfMake.createPdf(docDefinition).open();
+      // pdfMake.createPdf(docDefinition).download(`${patient.givenName} ${patient.familyName}.pdf`);
+    });
+  }
 }
+

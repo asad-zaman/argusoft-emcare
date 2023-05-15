@@ -4,34 +4,77 @@
     <div class="col-sm-12 col-md-5 col-12 p-0">
       <div class="signup_left-col">
         <div class="signup_left-col_inner">
-          <div><img src="../../../../assets/images/emcare-icon.png" alt="EMCARE icon"></div>
-          <div class="mt-3"> <img src="../../../../assets/images/img-01.png" class="people-img-fluid" alt="person-logo"> </div>
-          <p class="font-size-13 mt-3">The WHO Em Care application is an executable reference software, which accurately
-            represents the intentions, operational, and functional requirements of the WHO recommendations for emergency
+          <div>
+            <img
+              src="../../../../assets/images/logo1.png"
+              style="width: 80px"
+              alt="EMCARE icon"
+            />
+          </div>
+          <div class="mt-3">
+            <img
+              src="../../../../assets/images/img-01.png"
+              class="people-img-fluid"
+              alt="person-logo"
+            />
+          </div>
+          <p class="font-size-13 mt-3">
+            The WHO Em Care application is an executable reference software,
+            which accurately represents the intentions, operational, and
+            functional requirements of the WHO recommendations for emergency
             settings.
           </p>
-          <div class="mt-3"> <img src="../../../../assets/images/whologo.jpg" class="who-img-fluid" alt="person-logo"> </div>
+          <div class="mt-3">
+            <img
+              src="../../../../assets/images/whologo.jpg"
+              class="who-img-fluid"
+              alt="person-logo"
+            />
+          </div>
         </div>
       </div>
     </div>
     <!--signup_left-col-END-->
-
     <!--signup_form_wrapper-->
     <div class="col-12 col-sm-12 col-md-7">
-      <div class="signup_form_wrapper">
+      <div
+        class="name-div"
+        style="width: fit-content; margin: auto; position: relative"
+      >
+        <div class="country-name" style="position: absolute">
+          <span style="font-size: 24px">{{ country }}</span>
+        </div>
+        <div class="message">
+          <h1 style="line-height: 100px">Welcome to EM care</h1>
+        </div>
+      </div>
+      <div class="mt-3 signup_form_wrapper">
         <form [formGroup]="loginForm">
-          <div class="mb-5 text-center">
-            <h1 class="heading">Sign In</h1>
+          <div class="mb-5">
+            <h1 class="heading text-center">Sign In</h1>
           </div>
           <div class="row">
             <div class="col-12">
               <div class="mb-3">
                 <label class="form-label">Email</label>
-                <input type="email" formControlName="username" class="form-control custom-input"
-                  [ngClass]="{ 'is-invalid': submitted && getFormConfrols.username.errors }">
-                <div *ngIf="submitted && getFormConfrols.username.errors" class="invalid-feedback">
-                  <div *ngIf="getFormConfrols.username.errors.required">Username is required</div>
-                  <div *ngIf="getFormConfrols.username.errors.pattern">Invalid username</div>
+                <input
+                  type="email"
+                  formControlName="username"
+                  class="form-control custom-input"
+                  [ngClass]="{
+                    'is-invalid': submitted && getFormConfrols.username.errors
+                  }"
+                />
+                <div
+                  *ngIf="submitted && getFormConfrols.username.errors"
+                  class="invalid-feedback"
+                >
+                  <div *ngIf="getFormConfrols.username.errors.required">
+                    Username is required
+                  </div>
+                  <div *ngIf="getFormConfrols.username.errors.pattern">
+                    Invalid username
+                  </div>
                 </div>
               </div>
             </div>
@@ -40,30 +83,68 @@
             <div class="col-12 mt-3">
               <div class="mb-3">
                 <label class="form-label">Password</label>
-                <input type="password" class="form-control custom-input" formControlName="password"
-                  [ngClass]="{ 'is-invalid': submitted && getFormConfrols.password.errors }" />
-                <div *ngIf="submitted && getFormConfrols.password.errors" class="invalid-feedback">
-                  <div *ngIf="getFormConfrols.password.errors.required">Password is required</div>
+                <input
+                  type="password"
+                  class="form-control custom-input"
+                  formControlName="password"
+                  [ngClass]="{
+                    'is-invalid': submitted && getFormConfrols.password.errors
+                  }"
+                />
+                <div
+                  *ngIf="submitted && getFormConfrols.password.errors"
+                  class="invalid-feedback"
+                >
+                  <div *ngIf="getFormConfrols.password.errors.required">
+                    Password is required
+                  </div>
                 </div>
               </div>
               <div class="font-size-14">
-                Don't have an account?<a class="text-decoration-none mouse-pointer" (click)="navigateToSignup()">
-                  Signup</a>
-                <a class="text-decoration-none mouse-pointer float-right" (click)="navigateToForgotPassword()">
+                Don't have an account?<a
+                  class="text-decoration-none mouse-pointer"
+                  (click)="navigateToSignup()"
+                >
+                  Signup</a
+                >
+                <a
+                  class="text-decoration-none mouse-pointer float-right"
+                  (click)="navigateToForgotPassword()"
+                >
                   Forgot Password
                 </a>
               </div>
             </div>
           </div>
           <div class="text-center mt-3">
-            <button (click)="userLogin()" class="btn-blue btn p-l-70 p-r-70">Sign In</button>
+            <button (click)="userLogin()" class="btn-blue btn p-l-70 p-r-70">
+              Sign In
+            </button>
           </div>
           <div class="text-center mt-3">
-            <a class="cst-link-style" href="http://65.0.190.33:8180/doc/resources/emcare_1.0.0.apk" target="_blank">
+            <span style="color: red"> (New)&nbsp; </span>
+            <a
+              class="cst-link-style cursor-pointer"
+              href="{{ downloadURL }}"
+              target="_blank"
+            >
               <i class="cst-icon-style bi bi-download" aria-hidden="true"></i>
-              Download Mobile application</a>
+              Download Mobile application</a
+            >
+            <span *ngIf="countryData" class="cst-link-style">
+              ({{ countryData.applicationVersion }})
+            </span>
+          </div>
+          <div *ngIf="countryData" class="text-center mt-2">
+            <spam class="cst-link-style"
+              >Release Data:
+              {{ countryData.createdOn | date : "mediumDate" }}</spam
+            >
           </div>
         </form>
+      </div>
+      <div class="text-center cst-footer-line">
+        All Content Copyright © WHO 2023. All Rights Reserved.
       </div>
     </div>
     <!--signup_form_wrapper-END-->
