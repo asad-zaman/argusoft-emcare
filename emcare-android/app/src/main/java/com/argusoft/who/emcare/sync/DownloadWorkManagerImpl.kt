@@ -32,7 +32,7 @@ class DownloadWorkManagerImpl constructor(
   private val preference: Preference
 ): DownloadWorkManager {
   private val resourceTypeList = ResourceType.values().map { it.name }
-  private val urls = LinkedList(listOf("Patient", "Questionnaire", "Encounter", "StructureDefinition", "StructureMap", "ValueSet", "Library", "OperationDefinition", "Observation", "RelatedPerson", "PlanDefinition"))
+  private val urls = LinkedList(listOf("Patient", "Questionnaire", "Encounter", "StructureDefinition", "StructureMap", "ValueSet", "Library", "OperationDefinition", "Observation", "RelatedPerson", "PlanDefinition", "Binary"))
 
 //  private val formatString1: SimpleDateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
   var formatString1: SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
