@@ -203,7 +203,7 @@ class PatientQuestionnaireFragment : BaseFragment<FragmentPatientQuestionnaireBi
 
         observeNotNull(homeViewModel.sidepaneItems) { apiResponse ->
             apiResponse.whenSuccess {
-                (activity as? HomeActivity)?.setupSidepane()
+                (activity as? HomeActivity)?.setupSidepane(isPreviousConsultation = false)
                 (activity as? HomeActivity)?.sidepaneAdapter?.clearAllItems()
                 (activity as? HomeActivity)?.sidepaneAdapter?.addAll(it)
             }
