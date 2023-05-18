@@ -8,6 +8,8 @@ import * as _ from 'lodash';
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
+import { Workbook } from 'exceljs';
+import * as fs from 'file-saver';
 
 @Component({
   selector: 'app-consultation-list',
@@ -25,6 +27,8 @@ export class ConsultationListComponent implements OnInit {
   isAPIBusy: boolean = true;
   searchTermChanged: Subject<string> = new Subject<string>();
   isView: boolean = true;
+  showCheckboxes = false;
+  enableAll = false;
 
   constructor(
     private readonly fhirService: FhirService,
@@ -56,6 +60,9 @@ export class ConsultationListComponent implements OnInit {
       this.filteredConsultations = _.sortBy(this.filteredConsultations, 'consultationDate').reverse();
       this.totalCount = res['totalCount'];
       this.isAPIBusy = false;
+      this.filteredConsultations.forEach(element => {
+        element['isExcelPDF'] = false;
+      });
     }
   }
 
@@ -104,6 +111,158 @@ export class ConsultationListComponent implements OnInit {
 
   viewConsultation(index) {
     this.router.navigate([`view-consultation/${this.filteredConsultations[index]['id']}`]);
+  }
+
+  onEnableSelectionClick() {
+    this.showCheckboxes = !this.showCheckboxes;
+    this.enableAll = false;
+    if (!this.showCheckboxes) {
+      this.filteredConsultations.forEach(element => { element['isExcelPDF'] = false; });
+    }
+  }
+
+  enableAllBoxes() {
+    if (this.enableAll) {
+      this.filteredConsultations.forEach(element => { element['isExcelPDF'] = true; });
+    } else {
+      this.filteredConsultations.forEach(element => { element['isExcelPDF'] = false; });
+    }
+  }
+
+  enableEachBox(patient) {
+    if (!patient.isExcelPDF) {
+      this.enableAll = false;
+    } else {
+      const checkLength = this.filteredConsultations.filter(element => element['isExcelPDF'] === true).length;
+      if (this.filteredConsultations.length === checkLength) {
+        this.enableAll = true;
+      }
+    }
+  }
+
+  exportexcel(patient) {
+    const patientName = `${patient.givenName} ${patient.familyName}`;
+    let workbook = new Workbook();
+    let worksheet = workbook.addWorksheet(patientName);
+
+    worksheet.columns = [
+      { header: 'Consultation', key: 'Consultation', width: 25 },
+      { header: 'linkId', key: 'linkId', width: 20 },
+      { header: 'text', key: 'text', width: 35 },
+      { header: 'answer', key: 'answer', width: 35 },
+    ];
+
+    let answerData: any = [];
+    this.fhirService.getConsultationExportData(patient.id).subscribe((res: any) => {
+      answerData.push({
+        Consultation: `${patient.givenName} ${patient.familyName}'s consultation data`,
+        linkId: '-', text: '-', answer: '-'
+      });
+      res.forEach((el, ind) => {
+        if (el) {
+          const currData = JSON.parse(el);
+          for (const key in currData) {
+            if (key == 'item') {
+              const items = currData[key];
+              items.forEach(item => {
+                const answerObjForArr = {};
+                if (item.hasOwnProperty('text') && item.hasOwnProperty('answer')) {
+                  for (const k in item) {
+                    if (k === 'answer') {
+                      const answerObj = item['answer'][0];
+                      for (const a in answerObj) {
+                        if (a !== 'item' && a !== 'valueCoding' && a !== 'valueQuantity') {
+                          answerObjForArr[k] = answerObj[a];
+                        } else {
+                          if (a !== 'item') {
+                            const val = answerObj[a].display ? answerObj[a].display : answerObj[a].value;
+                            answerObjForArr[k] = val;
+                          }
+                        }
+                      }
+                    } else {
+                      answerObjForArr[k] = item[k];
+                    }
+                  }
+                  answerData.push(answerObjForArr);
+                }
+              });
+            }
+          }
+        }
+      });
+
+      worksheet.addRows(answerData, "n");
+      workbook.xlsx.writeBuffer().then((data) => {
+        let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        fs.saveAs(blob, `${patientName}.xlsx`);
+      });
+    });
+  }
+
+  convertToExcel() {
+    const selectedConsultations = this.filteredConsultations.filter(el => el.isExcelPDF === true);
+    let workbook = new Workbook();
+    let worksheet = workbook.addWorksheet('Consultation Data');
+    worksheet.columns = [
+      { header: 'Consultation', key: 'Consultation', width: 25 },
+      { header: 'linkId', key: 'linkId', width: 20 },
+      { header: 'text', key: 'text', width: 35 },
+      { header: 'answer', key: 'answer', width: 35 },
+    ];
+
+    let answerData: any = [];
+    selectedConsultations.forEach((patient, i) => {
+      this.fhirService.getConsultationExportData(patient.id).subscribe((res: any) => {
+        if (i >= 1) {
+          answerData.push({ Consultation: ``, linkId: '', text: '', answer: '' });
+        }
+        answerData.push({
+          Consultation: `${patient.givenName} ${patient.familyName}'s consultation data`,
+          linkId: '-', text: '-', answer: '-'
+        });
+        res.forEach((el, ind) => {
+          if (el) {
+            const currData = JSON.parse(el);
+            for (const key in currData) {
+              if (key == 'item') {
+                const items = currData[key];
+                items.forEach(item => {
+                  const answerObjForArr = {};
+                  if (item.hasOwnProperty('text') && item.hasOwnProperty('answer')) {
+                    for (const k in item) {
+                      if (k === 'answer') {
+                        const answerObj = item['answer'][0];
+                        for (const a in answerObj) {
+                          if (a !== 'item' && a !== 'valueCoding' && a !== 'valueQuantity') {
+                            answerObjForArr[k] = answerObj[a];
+                          } else {
+                            if (a !== 'item') {
+                              const val = answerObj[a].display ? answerObj[a].display : answerObj[a].value;
+                              answerObjForArr[k] = val;
+                            }
+                          }
+                        }
+                      } else {
+                        answerObjForArr[k] = item[k];
+                      }
+                    }
+                    answerData.push(answerObjForArr);
+                  }
+                });
+              }
+            }
+          }
+        });
+      });
+    });
+    setTimeout(() => {
+      worksheet.addRows(answerData, "n");
+      workbook.xlsx.writeBuffer().then((data) => {
+        let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        fs.saveAs(blob, `ConsultationData.xlsx`);
+      });
+    }, 1000);
   }
 
   exportPDF(patient) {
@@ -186,8 +345,97 @@ export class ConsultationListComponent implements OnInit {
       });
 
       pdfMake.createPdf(docDefinition).open();
-      // pdfMake.createPdf(docDefinition).download(`${patient.givenName} ${patient.familyName}.pdf`);
     });
+  }
+
+  convertToPDF() {
+    const selectedConsultations = this.filteredConsultations.filter(el => el.isExcelPDF === true);
+    let data = [];
+    data.push({ text: '                            ' });
+
+    let contentArr = [];
+    contentArr.push({
+      text: `Consultation's data`,
+      fontSize: 16,
+      alignment: 'center',
+      color: '#047886'
+    });
+    contentArr.push({ columns: [{ text: '                            ' }] })
+
+    selectedConsultations.forEach(consultation => {
+      this.fhirService.getConsultationExportData(consultation.id).subscribe((res: any) => {
+        let answerInnerData = [];
+        let answerOuterData = [];
+        let data = [];
+        res.forEach((el, ind) => {
+          if (el) {
+            const currData = JSON.parse(el);
+            let str = `${ind + 1}) ` + currData['resourceType'] + ' => ' + currData['questionnaire'];
+            let obj = { text: str };
+            data.push(obj);
+            for (const key in currData) {
+              if (key == 'item') {
+                const items = currData[key];
+                answerInnerData = [];
+                items.forEach(item => {
+                  const answerObjForArr = {};
+                  if (item.hasOwnProperty('text') && item.hasOwnProperty('answer')) {
+                    for (const k in item) {
+                      if (k === 'answer') {
+                        const answerObj = item['answer'][0];
+                        for (const a in answerObj) {
+                          if (a !== 'item' && a !== 'valueCoding' && a !== 'valueQuantity') {
+                            answerObjForArr[k] = answerObj[a];
+                          } else {
+                            if (a !== 'item') {
+                              const val = answerObj[a].display ? answerObj[a].display : answerObj[a].value;
+                              answerObjForArr[k] = val;
+                            }
+                          }
+                        }
+                      } else {
+                        answerObjForArr[k] = item[k];
+                      }
+                    }
+                    answerInnerData.push(answerObjForArr);
+                  }
+                });
+                answerOuterData.push(answerInnerData);
+              }
+            }
+          }
+        });
+
+        contentArr.push({
+          text: `${consultation.givenName} ${consultation.familyName}'s consultation data`,
+          alignment: 'center', fontSize: 16, color: 'red'
+        });
+        contentArr.push({ columns: [{ text: '                            ' }] })
+        contentArr.push({ columns: [{ text: '                            ' }] })
+
+        data.forEach((element, index) => {
+          let tableObj = {};
+          tableObj = {
+            widths: ['auto', 'auto', 'auto'],
+            body: [
+              ['Link Id', 'Text', 'Answer'],
+              ...answerOuterData[index].map(p => ([p.linkId, p.text, p.answer]))
+            ]
+          }
+          contentArr.push({ columns: [element], color: '#047886' })
+          contentArr.push({ columns: [{ text: '                            ' }] })
+          contentArr.push({ table: tableObj })
+          contentArr.push({ columns: [{ text: '                            ' }] })
+        });
+      });
+    });
+
+    setTimeout(() => {
+      let docDefinition = {
+        content: contentArr
+      }
+      pdfMake.createPdf(docDefinition).open();
+    }, 500);
   }
 }
 

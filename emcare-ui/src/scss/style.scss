@@ -105,7 +105,7 @@ body {
 }
 
 body {
-  background: #FFFFFF;
+  background: #ffffff;
 }
 
 hr:not([size]) {
@@ -534,12 +534,12 @@ ngx-intl-tel-input input[disabled] {
 }
 
 .error {
-    color: #dc3545;
-    font-weight: 500;
+  color: #dc3545;
+  font-weight: 500;
 }
 
 .cst-req {
-  color: #D43E39;
+  color: #d43e39;
 }
 
 .cst-link-style {
@@ -568,4 +568,14 @@ ngx-intl-tel-input input[disabled] {
 .p-colorpicker-preview {
   width: 60px;
   height: 43px;
+}
+
+.cst-export {
+  justify-content: right;
+  padding-right: 135px;
+
+  &-consultation {
+    justify-content: right;
+    padding-right: 15px;
+  }
 }

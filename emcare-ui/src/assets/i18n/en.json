@@ -178,7 +178,7 @@
   "Username": "Username",
   "Username Placeholder": "Enter Username",
   "Username Required Message": "Username is required",
-  "Manage Settings": "User Settings!",
+  "Manage Settings": "User Settings",
   "RegisterEmail": "Register email as username?",
   "WelcomeEmail": "Send Welcome email for user registration?",
   "Subject": "Subject",
@@ -329,7 +329,7 @@
   "Delete": "Delete",
   "DOB": "DOB",
   "NoDuplicatesMsg": "Oops, No Duplicates are there!!",
-  "Number of consultations per date": "Number of consultations per date",
+  "Number of consultations per date": "Number of consultations per 7 days",
   "Indicators": "Indicators",
   "Please enter denominator": "Please enter denominator",
   "Clear": "Clear",
@@ -358,5 +358,8 @@
   "Min Value": "Minimum Value",
   "Max Value": "Maximum Value",
   "NOConsultations": "There are no consultations!",
-  "NoIndicators": "There are no indicators!"
+  "NoIndicators": "There are no indicators!",
+  "Save As": "Save As",
+  "Save As Excel": "Save As Excel",
+  "Save As PDF": "Save As PDF"
 }
