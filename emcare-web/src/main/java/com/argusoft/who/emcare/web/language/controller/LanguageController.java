@@ -27,7 +27,7 @@ public class LanguageController {
     }
 
     @GetMapping("/availableLanguage")
-    public Languages getAvailableLanguageList() {
+    public Languages getAvailableLanguageList() throws Exception {
         return languageService.getAvailableLanguageList();
     }
 
