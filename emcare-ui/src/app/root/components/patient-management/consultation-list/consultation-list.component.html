@@ -2,9 +2,25 @@
   <h1 class="heading">{{'Consultations' | translate}}</h1>
   <hr>
   <div class="row align-items-center mb-3">
-    <div class=" col-lg-3 col-xxl-2 col-md-5 position-relative">
+    <div class="col-3 position-relative">
       <input class="form-control custom-input h-35" id="exampleFormControlInput1" [(ngModel)]="searchString"
         (input)="searchFilter()" placeholder="{{'Search Placeholder' | translate}}">
+    </div>
+    <div class="col-9 d-flex cst-export-consultation">
+      <button (click)="onEnableSelectionClick()" class="ml-3 btn btn-blue">
+        {{'Export' | translate}}
+      </button>
+      <ul *ngIf="this.showCheckboxes" class="navigation ml-3 btn btn-blue">
+        <li class="dropdown" style="list-style-type: none;">
+          <div class="d-flex align-items-center" data-bs-toggle="dropdown">
+            {{'Save As' | translate}}
+          </div>
+          <ul class="dropdown-menu cst-transform" aria-labelledby="dropdownMenuButton1">
+            <li><a class="dropdown-item" (click)="convertToExcel()">{{'Save As Excel' | translate}}</a></li>
+            <li><a class="dropdown-item" (click)="convertToPDF()">{{'Save As PDF' | translate}}</a></li>
+          </ul>
+        </li>
+      </ul>
     </div>
   </div>
   <!--Table-->
@@ -12,7 +28,16 @@
     <table class="data-table" aria-labelledby="consultations-list">
       <thead>
         <tr>
-          <th>{{'Sr. No' | translate}}.</th>
+          <th>
+            <ng-container *ngIf="showCheckboxes; else showSerialHeader">
+              <p-checkbox (click)="enableAllBoxes()" [binary]="true" inputId="binary" name="group1"
+                [(ngModel)]="enableAll">
+              </p-checkbox>
+            </ng-container>
+            <ng-template #showSerialHeader>
+              {{'Sr. No' | translate}}.
+            </ng-template>
+          </th>
           <th>{{'Identifier' | translate}}</th>
           <th>{{'Name' | translate}}</th>
           <th>{{'Gender' | translate}}</th>
@@ -28,7 +53,16 @@
           <ng-container *ngFor="let patient of filteredConsultations |
           paginate : { itemsPerPage: tableSize, currentPage: currentPage, totalItems: totalCount }; let i=index">
             <tr>
-              <td>{{currentPage == 0 ? ((currentPage)*10 + i + 1) : ((currentPage-1)*10 + i + 1)}}</td>
+              <td>
+                <ng-container *ngIf="showCheckboxes; else showSerialNumbers">
+                  <p-checkbox (click)="enableEachBox(patient)" [binary]="true" inputId="binary" name="group1"
+                    [(ngModel)]="patient.isExcelPDF">
+                  </p-checkbox>
+                </ng-container>
+                <ng-template #showSerialNumbers>
+                  {{currentPage == 0 ? ((currentPage)*10 + i + 1) : ((currentPage-1)*10 + i + 1)}}
+                </ng-template>
+              </td>
               <td>{{patient.identifier ? patient.identifier : 'NA'}}</td>
               <td>
                 <ng-container *ngIf="patient.givenName || patient.familyName; else blankName">
@@ -54,7 +88,12 @@
               <td>
                 <i (click)="viewConsultation(i)" class="bi bi-eye cursor-pointer font-size-14 mr-3"
                   aria-hidden="true"></i>
-                <i (click)="exportPDF(patient)" class="cst-icon-style bi bi-download cursor-pointer" aria-hidden="true"></i>
+                <ng-container *ngIf="this.showCheckboxes">
+                  <i (click)="exportPDF(patient)" class="cst-icon-style bi bi-download cursor-pointer mr-3"
+                    aria-hidden="true"></i>
+                  <i (click)="exportexcel(patient)" class="cst-icon-style bi bi-file-earmark-excel cursor-pointer"
+                    aria-hidden="true"></i>
+                </ng-container>
               </td>
             </tr>
           </ng-container>

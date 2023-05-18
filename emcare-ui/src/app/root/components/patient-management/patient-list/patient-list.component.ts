@@ -64,7 +64,7 @@ export class PatientListComponent implements OnInit {
             this.totalCount = res['totalCount'];
             this.isAPIBusy = false;
             this.filteredPatients.forEach(element => {
-                element['isExcel'] = false;
+                element['isExcelPDF'] = false;
             });
         }
     }
@@ -164,6 +164,67 @@ export class PatientListComponent implements OnInit {
         }
     }
 
+    exportexcel(patient) {
+        const data = [];
+        const patientName = `${patient.givenName} ${patient.familyName}`;
+
+        for (const k in patient) {
+            data.push({ key: k, value: patient[k] ? patient[k] : 'NA' });
+        }
+
+        let workbook = new Workbook();
+        let worksheet = workbook.addWorksheet(patientName);
+
+        worksheet.columns = [
+            { header: 'Key', key: 'key', width: 20 },
+            { header: 'Value', key: 'value', width: 35 },
+        ];
+
+        worksheet.addRows(data, "n");
+
+        workbook.xlsx.writeBuffer().then((data) => {
+            let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+            fs.saveAs(blob, `${patientName}.xlsx`);
+        });
+    }
+
+    convertToExcel() {
+        const selectedPatients = this.filteredPatients.filter(el => el.isExcelPDF === true);
+        let workbook = new Workbook();
+        let worksheet = workbook.addWorksheet(`Patient's Data`);
+        const data = [];
+
+        let columns = [{ header: 'Key', key: 'key', width: 20 }];
+        selectedPatients.forEach((patient, ind) => {
+            const patientName = `Paitent-${ind + 1}`;
+            let c = 0;
+
+            if (ind === 0) {
+                for (const k in patient) {
+                    let obj = { key: k };
+                    obj['Patient' + parseInt(ind + 1)] = patient[k] ? patient[k] : 'NA';
+                    data.push(obj);
+                }
+            } else {
+                let c = 0;
+                for (const k in patient) {
+                    let obj = data[c];
+                    obj['Patient' + parseInt(ind + 1)] = patient[k] ? patient[k] : 'NA';
+                    c++;
+                }
+            }
+
+            columns.push({ header: `Patient${ind + 1}`, key: `Patient${ind + 1}`, width: 35 })
+        });
+        worksheet.columns = columns;
+        worksheet.addRows(data, "n");
+
+        workbook.xlsx.writeBuffer().then((data) => {
+            let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+            fs.saveAs(blob, `PatientData.xlsx`);
+        });
+    }
+
     exportPDF(patient) {
         let data = [];
         let tableArr = [];
@@ -196,73 +257,65 @@ export class PatientListComponent implements OnInit {
         // pdfMake.createPdf(docDefinition).download(`${patient.givenName} ${patient.familyName}.pdf`);
     }
 
-    exportexcel(patient) {
-        const data = [];
-        const patientName = `${patient.givenName} ${patient.familyName}`;
+    convertToPDF() {
+        const selectedPatients = this.filteredPatients.filter(el => el.isExcelPDF === true);
+        let data = [];
+        data.push({ text: '                            ' });
 
-        for (const k in patient) {
-            data.push({ key: k, value: patient[k] ? patient[k] : 'NA' });
+        let docDefinition: any = {
+            content: [
+                {
+                    text: `Patients data`,
+                    fontSize: 16,
+                    alignment: 'center',
+                    color: '#047886'
+                },
+                { columns: [{ text: '                            ' }] },
+            ]
         }
 
-        let workbook = new Workbook();
-        let worksheet = workbook.addWorksheet(patientName);
-
-        worksheet.columns = [
-            { header: 'Key', key: 'key', width: 20 },
-            { header: 'Value', key: 'value', width: 35 },
-        ];
-
-        worksheet.addRows(data, "n");
-
-        workbook.xlsx.writeBuffer().then((data) => {
-            let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-            fs.saveAs(blob, `${patientName}.xlsx`);
-        });
-    }
-
-    convertToExcel() {
-        const selectedPatients = this.filteredPatients.filter(el => el.isExcel === true);
-        let workbook = new Workbook();
-        selectedPatients.forEach((patient, ind) => {
-            const data = [];
-            const patientName = `Paitent-${ind + 1}`;
-            for (const k in patient) {
-                data.push({ key: k, value: patient[k] ? patient[k] : 'NA' });
+        selectedPatients.forEach(patient => {
+            let tableArr = [];
+            for (const key in patient) {
+                tableArr.push([key, patient[key] ? patient[key] : 'NA']);
             }
-            let worksheet = workbook.addWorksheet(patientName);
-            worksheet.columns = [
-                { header: 'Key', key: 'key', width: 20 },
-                { header: 'Value', key: 'value', width: 35 },
-            ];
-            worksheet.addRows(data, "n");
+
+            let tableObj = {};
+            tableObj = {
+                widths: ['auto', 'auto'],
+                body: tableArr
+            }
+
+            docDefinition.content.push({ columns: [{ text: '                            ' }] })
+            docDefinition.content.push({ text: `${patient.givenName} ${patient.familyName}'s data`, fontSize: 16, color: '#047886' })
+            docDefinition.content.push({ columns: [{ text: '                            ' }] })
+            docDefinition.content.push({ table: tableObj })
         });
 
-        workbook.xlsx.writeBuffer().then((data) => {
-            let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-            fs.saveAs(blob, `PatientData.xlsx`);
-        });
+        pdfMake.createPdf(docDefinition).open();
     }
 
     onEnableSelectionClick() {
-        this.showCheckboxes = !this.showCheckboxes; 
+        this.showCheckboxes = !this.showCheckboxes;
+        this.enableAll = false;
         if (!this.showCheckboxes) {
-            this.filteredPatients.forEach(element => { element['isExcel'] = false; });
+            this.filteredPatients.forEach(element => { element['isExcelPDF'] = false; });
         }
     }
 
     enableAllBoxes() {
         if (this.enableAll) {
-            this.filteredPatients.forEach(element => { element['isExcel'] = true; });
+            this.filteredPatients.forEach(element => { element['isExcelPDF'] = true; });
         } else {
-            this.filteredPatients.forEach(element => { element['isExcel'] = false; });
+            this.filteredPatients.forEach(element => { element['isExcelPDF'] = false; });
         }
     }
 
     enableEachBox(patient) {
-        if (!patient.isExcel) {
+        if (!patient.isExcelPDF) {
             this.enableAll = false;
         } else {
-            const checkLength = this.filteredPatients.filter(element => element['isExcel'] === true).length;
+            const checkLength = this.filteredPatients.filter(element => element['isExcelPDF'] === true).length;
             if (this.filteredPatients.length === checkLength) {
                 this.enableAll = true;
             }
