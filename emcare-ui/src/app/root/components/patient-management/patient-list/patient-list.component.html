@@ -12,9 +12,17 @@
       <button (click)="onEnableSelectionClick()" class="ml-3 btn btn-blue">
         {{'Export' | translate}}
       </button>
-      <button *ngIf="this.showCheckboxes" (click)="convertToExcel()" class="ml-3 btn btn-blue">
-        {{'Save' | translate}}
-      </button>
+      <ul *ngIf="this.showCheckboxes" class="navigation ml-3 btn btn-blue">
+        <li class="dropdown" style="list-style-type: none;">
+          <div class="d-flex align-items-center" data-bs-toggle="dropdown">
+            {{'Save As' | translate}}
+          </div>
+          <ul class="dropdown-menu cst-transform" aria-labelledby="dropdownMenuButton1">
+            <li><a class="dropdown-item" (click)="convertToExcel()">{{'Save As Excel' | translate}}</a></li>
+            <li><a class="dropdown-item" (click)="convertToPDF()">{{'Save As PDF' | translate}}</a></li>
+          </ul>
+        </li>
+      </ul>
     </div>
   </div>
   <!--Table-->
@@ -50,7 +58,7 @@
               <td>
                 <ng-container *ngIf="showCheckboxes; else showSerialNumbers">
                   <p-checkbox (click)="enableEachBox(patient)" [binary]="true" inputId="binary" name="group1"
-                    [(ngModel)]="patient.isExcel">
+                    [(ngModel)]="patient.isExcelPDF">
                   </p-checkbox>
                 </ng-container>
                 <ng-template #showSerialNumbers>

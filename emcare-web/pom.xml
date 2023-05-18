@@ -28,7 +28,6 @@
         </dependencies>
     </dependencyManagement>
     <dependencies>
-        <!--SPRING BOOT & JPA DEPENDENCIES-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
@@ -95,32 +94,6 @@
             <version>5.7.0</version>
         </dependency>
 
-<!--        <dependency>-->
-<!--            <groupId>org.opencds.cqf.ruler</groupId>-->
-<!--            <artifactId>cqf-ruler-cql</artifactId>-->
-<!--            <version>0.5.0</version>-->
-<!--        </dependency>-->
-
-<!--        <dependency>-->
-<!--            <groupId>org.opencds.cqf.ruler</groupId>-->
-<!--            <artifactId>cqf-ruler-core</artifactId>-->
-<!--            <version>0.5.0</version>-->
-<!--        </dependency>-->
-
-<!--        <dependency>-->
-<!--            <groupId>org.opencds.cqf.ruler</groupId>-->
-<!--            <artifactId>cqf-ruler-cr</artifactId>-->
-<!--            <version>0.5.0</version>-->
-<!--        </dependency>-->
-<!--        &lt;!&ndash; https://mvnrepository.com/artifact/ca.uhn.hapi.fhir/hapi-fhir-jpaserver-base &ndash;&gt;-->
-<!--        <dependency>-->
-<!--            <groupId>ca.uhn.hapi.fhir</groupId>-->
-<!--            <artifactId>hapi-fhir-jpaserver-base</artifactId>-->
-<!--            <version>6.1.0</version>-->
-<!--        </dependency>-->
-
-        <!--**********************-->
-
         <!-- KEY CLOAK DEPENDANCIES  -->
 
         <dependency>
@@ -140,41 +113,10 @@
         </dependency>
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
-            <artifactId>resteasy-client</artifactId>
-            <version>3.1.3.Final</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.jboss.resteasy/resteasy-jackson2-provider -->
-        <dependency>
-            <groupId>org.jboss.resteasy</groupId>
-            <artifactId>resteasy-jackson2-provider</artifactId>
-            <version>3.13.2.Final</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.resteasy</groupId>
-            <artifactId>resteasy-core</artifactId>
-            <version>4.2.0.Final</version>
-            <type>jar</type>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-jackson-provider</artifactId>
             <version>3.15.2.Final</version>
         </dependency>
         <!--**********************-->
-
-        <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-            <version>2.8.9</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.modelmapper</groupId>
-            <artifactId>modelmapper</artifactId>
-            <version>2.3.5</version>
-        </dependency>
-
-        <!-- OpenAPI SwaggerUI dependency -->
         <dependency>
             <groupId>ca.uhn.hapi.fhir</groupId>
             <artifactId>hapi-fhir-server-openapi</artifactId>
@@ -186,22 +128,6 @@
             <version>7.0</version>
         </dependency>
         <dependency>
-            <groupId>org.opencds.cqf.cql</groupId>
-            <artifactId>engine</artifactId>
-            <version>1.5.4</version>
-        </dependency>
-        <dependency>
-            <groupId>info.cqframework</groupId>
-            <artifactId>cql-to-elm</artifactId>
-            <version>1.5.6</version>
-        </dependency>
-        <dependency>
-            <groupId>xmlpull</groupId>
-            <artifactId>xmlpull</artifactId>
-            <version>1.1.3.1</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/com.ibm.watson/ibm-watson -->
-        <dependency>
             <groupId>com.ibm.watson</groupId>
             <artifactId>ibm-watson</artifactId>
             <version>9.3.1</version>
@@ -211,19 +137,15 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-mail</artifactId>
         </dependency>
-
-        <!-- twilio -->
         <dependency>
             <groupId>com.twilio.sdk</groupId>
             <artifactId>twilio</artifactId>
             <version>8.31.0</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-context -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
-
         <dependency>
             <groupId>net.objecthunter</groupId>
             <artifactId>exp4j</artifactId>
