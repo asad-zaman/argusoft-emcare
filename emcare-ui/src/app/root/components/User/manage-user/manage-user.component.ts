@@ -145,6 +145,10 @@ export class ManageUserComponent implements OnInit {
   }
 
   initUserForm() {
+    const validationArr = [
+      Validators.required,
+      Validators.pattern('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-]+$')
+    ];
     if (this.isEdit) {
       this.userForm = this.formBuilder.group({
         firstName: ['', [Validators.required]],
@@ -155,20 +159,21 @@ export class ManageUserComponent implements OnInit {
         facility: ['', Validators.required],
         role: ['', [Validators.required]],
         username: [{ value: '', disabled: true }, [Validators.required]],
+        email: ['', validationArr],
       });
     } else {
       this.userForm = this.formBuilder.group({
         firstName: ['', [Validators.required]],
         lastName: ['', [Validators.required]],
-        email: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-]+$')]],
+        email: ['', validationArr],
         countryCode: [''],
         phone: ['', [Validators.required]],  // 10 digit number
-        password: ['', Validators.required],
-        confirmPassword: ['', Validators.required],
+        password: ['', [Validators.required]],
+        confirmPassword: ['', [Validators.required]],
         role: ['', [Validators.required]],
         selectedFacility: [''],
-        facility: ['', Validators.required],
-        username: ['', Validators.required]
+        facility: ['', [Validators.required]],
+        username: ['', [Validators.required]]
       }, {
         validator: MustMatch('password', 'confirmPassword')
       });

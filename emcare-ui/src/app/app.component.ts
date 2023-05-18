@@ -304,7 +304,7 @@ export class AppComponent implements OnInit {
       feature['subMenuActive'] = true;
     }
     const routeArr = this.authGuard.getFeatureAndRedirectUser(featureName);
-    return routeArr.includes(this.currentUrl);
+    return routeArr.includes(this.currentUrl.split('/').slice(0,2).join('/'));
   }
 
   applySidebarChange() {
