@@ -1,5 +1,7 @@
 package com.argusoft.who.emcare.web.commonapi.controller;
 
+import com.argusoft.who.emcare.web.applicationlog.entity.ApplicationLog;
+import com.argusoft.who.emcare.web.applicationlog.service.ApplicationLogService;
 import com.argusoft.who.emcare.web.commonapi.dto.UserPasswordDto;
 import com.argusoft.who.emcare.web.commonapi.service.OpenApiService;
 import com.argusoft.who.emcare.web.exception.EmCareException;
@@ -9,8 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @CrossOrigin(origins = "**")
@@ -22,6 +26,9 @@ public class OpenApiController {
 
     @Autowired
     LocationResourceService locationResourceService;
+
+    @Autowired
+    ApplicationLogService applicationLogService;
 
     @PostMapping("/forgotpassword/generateotp")
     public ResponseEntity<Object> generateOtp(@RequestBody UserPasswordDto userPasswordDto) {
@@ -45,5 +52,20 @@ public class OpenApiController {
     @GetMapping("/active/facility")
     public List<FacilityDto> getActiveFacility() {
         return locationResourceService.getActiveFacility();
+    }
+
+    @GetMapping("/current/country")
+    public Map<String, String> getCurrentCountry(HttpServletRequest request) {
+        return openApiService.getCurrentCountry(request);
+    }
+
+    @GetMapping("/country/list")
+    public List<String> getCountryList() {
+        return openApiService.getCountryList();
+    }
+
+    @GetMapping("/country/global/app")
+    public ResponseEntity<ApplicationLog> getLatestApplication() {
+        return ResponseEntity.ok().body(applicationLogService.getLatestApplicationLogs());
     }
 }

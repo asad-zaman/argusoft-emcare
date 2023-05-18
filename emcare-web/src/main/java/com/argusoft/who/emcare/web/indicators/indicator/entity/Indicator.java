@@ -1,6 +1,10 @@
 package com.argusoft.who.emcare.web.indicators.indicator.entity;
 
 import com.argusoft.who.emcare.web.common.model.EntityAuditInfo;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -18,6 +22,7 @@ import java.util.Objects;
  */
 @Entity
 @Table(name = "indicator")
+@JsonIgnoreProperties
 public class Indicator extends EntityAuditInfo implements Serializable {
 
     @Id
@@ -52,11 +57,24 @@ public class Indicator extends EntityAuditInfo implements Serializable {
     @Column(name = "display_type")
     private String displayType;
 
+    @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(mappedBy = "numeratorIndicator", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<IndicatorNumeratorEquation> numeratorEquation;
 
+    @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(mappedBy = "denominatorIndicator", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<IndicatorDenominatorEquation> denominatorEquation;
+
+    @Column(name = "colour_schema",columnDefinition = "TEXT")
+    private String colourSchema;
+
+    @Column(name = "age")
+    private String age;
+
+    @Column(name = "gender")
+    private String gender;
 
     public Long getIndicatorId() {
         return indicatorId;
@@ -152,6 +170,30 @@ public class Indicator extends EntityAuditInfo implements Serializable {
 
     public void setDenominatorEquationString(String denominatorEquationString) {
         this.denominatorEquationString = denominatorEquationString;
+    }
+
+    public String getColourSchema() {
+        return colourSchema;
+    }
+
+    public void setColourSchema(String colourSchema) {
+        this.colourSchema = colourSchema;
+    }
+
+    public String getAge() {
+        return age;
+    }
+
+    public void setAge(String age) {
+        this.age = age;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
     }
 
     @Override

@@ -9,6 +9,7 @@ import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.fhir.dao.PlanDefinitionResourceRepository;
 import com.argusoft.who.emcare.web.fhir.model.PlanDefinitionResource;
 import com.argusoft.who.emcare.web.fhir.service.PlanDefinitionResourceService;
+import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.Meta;
 import org.hl7.fhir.r4.model.PlanDefinition;
@@ -123,5 +124,22 @@ public class PlanDefinitionResourceServiceImpl implements PlanDefinitionResource
         retVal.setId(new IdType(CommonConstant.PLANDEFINITION_TYPE_STRING, planDefinition.getId(), "1"));
         retVal.setResource(planDefinition);
         return retVal;
+    }
+
+    @Override
+    public Bundle getPlanDefinitionCountBasedOnDate(String summaryType, DateParam theDate) {
+        Long count = 0l;
+        if (summaryType.equalsIgnoreCase(CommonConstant.SUMMARY_TYPE_COUNT)) {
+            if (theDate.isEmpty()) {
+                count = planDefinitionResourceRepository.count();
+            } else {
+                count = planDefinitionResourceRepository.getCountBasedOnDate(theDate.getValue());
+            }
+        } else {
+            return null;
+        }
+        Bundle bundle = new Bundle();
+        bundle.setTotal(count.intValue());
+        return bundle;
     }
 }

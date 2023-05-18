@@ -34,7 +34,7 @@
               <td>{{questionnaire.description ? questionnaire.description : 'NA'}}
               <td *ngIf="isEdit">
                 <ul class="navigation" style="list-style-type: none;">
-                  <li class="dropdown mt-3 cursor-pointer">
+                  <li class="dropdown cursor-pointer">
                     <div class="d-flex align-items-center" data-bs-toggle="dropdown">
                       <i class="bi bi-three-dots-vertical ps-2" aria-hidden="true"></i>
                     </div>
@@ -60,7 +60,7 @@
       </tbody>
     </table>
     <div *ngIf="filteredQuestionnaireList && filteredQuestionnaireList.length > 0"
-      class="d-flex justify-content-end mt-3">
+      class="d-flex justify-content-end">
       <pagination-controls responsive="true" previousLabel="Prev" nextLabel="Next" (pageChange)="onIndexChange($event)">
       </pagination-controls>
     </div>

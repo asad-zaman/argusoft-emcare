@@ -48,6 +48,9 @@ public class DeviceMaster extends EntityAuditInfo implements Serializable {
     @Column(name = "user_name")
     private String userName;
 
+    @Column(name = "ig_version")
+    private String igVersion;
+
     public Integer getDeviceId() {
         return deviceId;
     }
@@ -134,6 +137,14 @@ public class DeviceMaster extends EntityAuditInfo implements Serializable {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public String getIgVersion() {
+        return igVersion;
+    }
+
+    public void setIgVersion(String igVersion) {
+        this.igVersion = igVersion;
     }
 
     @Override

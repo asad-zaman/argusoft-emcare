@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { AuthenticationService, ToasterService } from 'src/app/shared';
+import { AuthenticationService, FhirService, ToasterService } from 'src/app/shared';
 import { Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
 import { appConstants } from 'src/app/app.config';
@@ -16,21 +16,50 @@ export class LoginComponent implements OnInit {
   submitted = false;
   returnUrl: string | undefined;
   error = '';
+  country;
+  countryData;
+  downloadURL;
 
   constructor(
     private readonly formBuilder: FormBuilder,
     private readonly authService: AuthenticationService,
     private readonly router: Router,
-    private readonly toasterService: ToasterService
+    private readonly toasterService: ToasterService,
+    private readonly fhirService: FhirService
   ) { }
 
   ngOnInit() {
+    this.prerequisite();
+  }
+
+  prerequisite() {
+    this.initLoginForm();
+    this.getCurrentCountry();
+  }
+
+  initLoginForm() {
     //  only for developement purpose
     const url = environment.testUrl;
     this.loginForm = this.formBuilder.group({
-      username: [window.location.href == url ? environment.testUsername : '', [Validators.required, 
-        Validators.pattern(appConstants.emailPattern)]],
+      username: [window.location.href == url ? environment.testUsername : '', [Validators.required,
+      Validators.pattern(appConstants.emailPattern)]],
       password: [window.location.href == url ? environment.testPassword : '', Validators.required]
+    });
+    this.getCountry();
+  }
+
+  getCountry() {
+    this.fhirService.getCountry().subscribe(res => {
+      this.countryData = res;
+      this.downloadURL = `${environment.apiUrl}/${this.countryData.url}`;
+    });
+  }
+
+  getCurrentCountry() {
+    this.authService.getCurrentCountry().subscribe(res => {
+      if (res) {
+        this.country = res.country;
+      }
     });
   }
 
@@ -48,6 +77,7 @@ export class LoginComponent implements OnInit {
       .subscribe(
         data => {
           if (data) {
+            localStorage.setItem(appConstants.localStorageKeys.ApplicationAgent, data['Application-Agent']);
             const tokenexpiration: Date = new Date();
             tokenexpiration.setSeconds(new Date().getSeconds() + data.expires_in);
             localStorage.setItem(appConstants.localStorageKeys.accessToken, JSON.stringify(data.access_token));
@@ -62,7 +92,7 @@ export class LoginComponent implements OnInit {
           }
         },
         error => {
-          this.error = error.error['error_description'];
+          this.error = error.error.errorMessage;
           this.loading = false;
           this.toasterService.showToast('error', this.error, 'EmCare');
           this.authService.setIsLoggedIn(false);
@@ -84,10 +114,16 @@ export class LoginComponent implements OnInit {
         localStorage.setItem(appConstants.localStorageKeys.userFeatures, JSON.stringify(featureObj));
         localStorage.setItem(appConstants.localStorageKeys.language, res['language']);
         localStorage.setItem(appConstants.localStorageKeys.Username, res.userName);
-        this.authService.setFeatures(res['feature']);
-        this.router.navigate(["/dashboard"]);
-        this.toasterService.showToast('success', 'Welcome to EmCare!', 'EMCARE');
+        localStorage.setItem('userFeatures', JSON.stringify(featureObj));
+        localStorage.setItem('language', res['language']);
+        localStorage.setItem('Username', res.userName);
+        const isSuperAdmin = res['roles'].findIndex(el => el === 'SUPER_ADMIN') > -1;
+        localStorage.setItem('isSuperAdmin', `${isSuperAdmin}`);
         this.authService.setIsLoggedIn(true);
+        if (!isSuperAdmin)
+          this.authService.setFeatures(res['feature']);
+        isSuperAdmin ? this.router.navigate(["/tenantList"]) : this.router.navigate(["/dashboard"]);
+        this.toasterService.showToast('success', 'Welcome to EmCare!', 'EMCARE');
       }
     });
   }

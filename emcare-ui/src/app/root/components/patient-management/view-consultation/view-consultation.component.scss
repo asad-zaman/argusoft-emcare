@@ -1,64 +1,252 @@
-.cst-border {
-    border: 2px solid #746c70;
-    width: 800px;
-}
-
-.cst-icons {
-    border-right: 2px solid #746c70;
-}
-
-.icon-text {
-    font-size: 11px;
-    justify-self: center;
-}
-
-.cst-img-icon {
-    opacity: 0.55;
-    cursor: pointer;
-    justify-self: center;
-
-    &.selected {
-        opacity: 1;
-    }
-
-    &:hover {
-        opacity: 1;
-    }
-}
-
 .cursor-pointer {
     cursor: pointer;
 }
 
-.cst-ques {
-    font-weight: 500;
-    color: #A5A5A5;
+.patient-data ul {
+    margin-top: 20px;
+    padding: 0px;
 }
 
-.cst-ans {
-    color: #898989;
+.patient-data ul li {
+    list-style-type: none;
+    display: inline-block;
+    margin-right: 30px;
+    margin-bottom: 5px;
+    color: #57686f;
 }
 
-.f-17 {
-    font-size: 17px;
-}
-
-.cst-detail {
+.patient-data ul li span {
     font-weight: 600;
+    color: #000;
+    margin-left: 8px;
 }
 
-.cst-letter {
-    font-size: 35px;
-    padding: 5px 20px;
-    background-color: #d9d9d9;
-    border-radius: 50%;
-    font-weight: 600;
-    color: white;
-    margin-left: 15px;
-    margin-right: 20px;
-    margin-bottom: 10px;
+.patient-page-top-text {
+    margin-left: -20px;
 }
 
-.no-label {
-    color: #A5A5A5;
+.consultation-tab-btn {
+    position: absolute;
+    border-right: 1px solid #d9d9d9;
+    left: 230px;
+    height: 100%;
+    top: 261px;
+    width: 130px;
+    background: #f4f4f4;
+}
+
+.consultation-tab-btn ul {
+    margin: 0px;
+    padding: 0px;
+}
+
+.consultation-tab-btn ul li {
+    text-align: center;
+    list-style-type: none;
+    font-size: 12px;
+    cursor: pointer;
+    color: #000;
+    padding: 15px;
+    border-bottom: 1px solid #d9d9d9;
+}
+
+.consultation-tab-btn ul li:last-child {
+    border-bottom: 0px;
+}
+
+.consultation-tab-btn .registration-icon {
+    background: url("../../../../../assets/images/Registration.svg");
+    background-size: 30px;
+    height: 35px;
+    margin-bottom: 3px;
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+
+.consultation-tab-btn .danger_sign-icon {
+    background: url("../../../../../assets/images/danger_signs.svg");
+    background-size: 30px;
+    height: 35px;
+    margin-bottom: 3px;
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+
+.consultation-tab-btn .measurements-icon {
+    background: url("../../../../../assets/images/Measurements.svg");
+    background-size: 30px;
+    height: 35px;
+    margin-bottom: 3px;
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+
+.consultation-tab-btn .symptoms-icon {
+    background: url("../../../../../assets/images/Symptoms.svg");
+    background-size: 30px;
+    height: 35px;
+    margin-bottom: 3px;
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+
+.consultation-tab-btn .signs-icon {
+    background: url("../../../../../assets/images/Signs.svg");
+    background-size: 30px;
+    height: 35px;
+    margin-bottom: 3px;
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+
+.consultation-tab-btn .assessments-icon {
+    background: url("../../../../../assets/images/assessments.svg");
+    background-size: 30px;
+    height: 35px;
+    margin-bottom: 3px;
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+
+.consultation-tab-btn .assessments-icon {
+    background: url("../../../../../assets/images/assessments.svg");
+    background-size: 30px;
+    height: 35px;
+    margin-bottom: 3px;
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+
+.consultation-tab-btn .classifications-icon {
+    background: url("../../../../../assets/images/classifications.svg");
+    background-size: 30px;
+    height: 35px;
+    margin-bottom: 3px;
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+
+@media (max-width: 991px) {
+    .consultation-tab-btn {
+        top: 290px;
+    }
+}
+
+.consultation-tab-active {
+    background: #e4203b;
+    position: relative;
+    color: #fff !important;
+}
+
+.consultation-tab-active:after {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-top: 20px solid transparent;
+    // border-left: 30px solid #e4203b;
+    border-bottom: 20px solid transparent;
+    top: 50%;
+    transform: translateY(-50%);
+    right: -20px;
+}
+
+.consultation-tab-active .registration-icon {
+    background: url("../../../../../assets/images/registration_icon_white.svg");
+    background-size: 30px;
+    height: 35px;
+    margin-bottom: 3px;
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+
+.consultation-tab-active .danger_sign-icon {
+    background: url("../../../../../assets/images/danger_signicon_white.svg");
+    background-size: 30px;
+    height: 35px;
+    margin-bottom: 3px;
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+
+.consultation-tab-active .measurements-icon {
+    background: url("../../../../../assets/images/measurements_icon_white.svg");
+    background-size: 30px;
+    height: 35px;
+    margin-bottom: 3px;
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+
+.consultation-tab-active .symptoms-icon {
+    background: url("../../../../../assets/images/symptoms-white.svg");
+    background-size: 30px;
+    height: 35px;
+    margin-bottom: 3px;
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+
+.consultation-tab-active .signs-icon {
+    background: url("../../../../../assets/images/signs-white.svg");
+    background-size: 30px;
+    height: 35px;
+    margin-bottom: 3px;
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+
+.consultation-tab-active .assessments-icon {
+    background: url("../../../../../assets/images/assessments_white.svg");
+    background-size: 30px;
+    height: 35px;
+    margin-bottom: 3px;
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+
+.consultation-tab-active .classifications-icon {
+    background: url("../../../../../assets/images/classifications-white.svg");
+    background-size: 30px;
+    height: 35px;
+    margin-bottom: 3px;
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+
+.consultation-tab-content {
+    width: calc(100% - 150px);
+    height: 500px;
+    padding: 30px 0px;
+    margin-left: 150px;
+}
+
+.consultation-tab-content .tab-content-text span {
+    color: #124b63;
+    font-size: 15px;
+}
+
+.consultation-tab-content .tab-content-text h4 {
+    color: #000000;
+    font-size: 16px;
+}
+
+.consultation-tab-content .tab-content-border-bottom {
+    border-bottom: 1px solid #e6edf3;
+}
+
+@media (max-width: 991px) {
+    .consultation-tab-content .tab-content-border-bottom {
+        border: 0px;
+    }
+}
+
+.consultation-tab-content .tab-content-border {
+    border: 1px solid #e6edf3;
+}
+
+@media (max-width: 991px) {
+    .consultation-tab-content .tab-content-border {
+        border: 0px;
+    }
 }

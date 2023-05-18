@@ -6,6 +6,7 @@ import ca.uhn.fhir.rest.param.DateParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.fhir.service.ValueSetResourceService;
+import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.IdType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -52,5 +53,10 @@ public class ValueSetResourceProvider implements IResourceProvider {
     @Update
     public MethodOutcome updateValueSetResource(@IdParam IdType theId, @ResourceParam ValueSet valueSet) {
         return valueSetResourceService.updateValueSetResource(theId, valueSet);
+    }
+
+    @Search()
+    public Bundle getValueSetCountBasedOnDate(@RequiredParam(name = CommonConstant.SUMMARY) String type, @OptionalParam(name = CommonConstant.RESOURCE_LAST_UPDATED_AT) DateParam theDate) {
+        return valueSetResourceService.getValueSetCountBasedOnDate(type, theDate);
     }
 }

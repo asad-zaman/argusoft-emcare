@@ -26,4 +26,13 @@ public interface EncounterResourceRepository extends JpaRepository<EncounterReso
     List<EncounterResource> fetchByDateAndText(@Param("searchText") String searchText, @Param("minDate") Date minDate);
 
     List<EncounterResource> findByPatientId(String patientId);
+
+    @Query(value = "SELECT COUNT(*) FROM encounter_resource WHERE (CREATED_ON > :date OR MODIFIED_ON > :date)", nativeQuery = true)
+    Long getCountBasedOnDate(@Param("date") Date date);
+
+    @Query(value = "SELECT COUNT(*) FROM encounter_resource WHERE (CREATED_ON > :date OR MODIFIED_ON > :date) AND patient_id in :ids", nativeQuery = true)
+    Long getCountBasedOnDateWithFacilityId(@Param("date") Date date, @Param("ids") List<String> ids);
+
+    @Query(value = "SELECT COUNT(*) FROM encounter_resource WHERE patient_id in :ids", nativeQuery = true)
+    Long getCountWithFacilityId(@Param("ids") List<String> ids);
 }

@@ -123,8 +123,6 @@ public class DeviceServiceImpl implements DeviceService {
         if (deviceUUID != null) {
             device = deviceRepository.getDeviceByDeviceUUID(deviceUUID).orElse(null);
         }
-
-
         return ResponseEntity.ok(device);
     }
 
