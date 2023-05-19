@@ -41,16 +41,9 @@ public class LanguageServiceImpl implements LanguageService {
     }
 
     @Override
-    @Transactional
-    public Languages getAvailableLanguageList() throws Exception {
+    public Languages getAvailableLanguageList() {
         LanguageTranslator languageTranslator = ibmConfig.getLanguageTranslatorInstance();
-        try {
-            return languageTranslator.listLanguages().execute().getResult();
-        }catch (Exception exception){
-            exception.printStackTrace();
-            throw new Exception("Not Found");
-        }
-
+        return languageTranslator.listLanguages().execute().getResult();
     }
 
     @Override
