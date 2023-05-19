@@ -11,7 +11,7 @@ public interface LanguageService {
 
     public List<LanguageTranslation> getAllLanguageTranslation();
 
-    public Languages getAvailableLanguageList() throws Exception;
+    public Languages getAvailableLanguageList();
 
     public LanguageTranslation createNewLanguageTranslation(LanguageAddDto languageAddDto);
 
