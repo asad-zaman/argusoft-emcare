@@ -1,27 +1,26 @@
 package com.argusoft.who.emcare.sync
 
 import android.app.Application
-import android.text.format.DateFormat
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.work.Constraints
 import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.data.local.database.Database
 import com.argusoft.who.emcare.data.local.pref.Preference
 import com.argusoft.who.emcare.data.remote.Api
 import com.argusoft.who.emcare.data.remote.ApiResponse
 import com.google.android.fhir.FhirEngine
-import com.google.android.fhir.sync.*
+import com.google.android.fhir.sync.Sync
+import com.google.android.fhir.sync.SyncJobStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.launch
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
-import java.util.*
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -40,7 +39,12 @@ class SyncViewModel @Inject constructor(
 
     private val formatString12 = "dd/MM/yyyy hh:mm:ss a"
     private lateinit var lastSyncTime: String
+    private var isProgressAlreadyStarted = false
     private var isFinished = false
+    private var lastProgress: Int = 0
+    private val timeDelay: Long = 1000
+    private var diff: Int = 5
+    private var progress: Int = 0
 
     fun syncPatients(isRefresh: Boolean) {
         isFinished = false
@@ -48,6 +52,8 @@ class SyncViewModel @Inject constructor(
         viewModelScope.launch {
             lastSyncTime = OffsetDateTime.now().toLocalDateTime().format(
                 DateTimeFormatter.ofPattern(formatString12))
+            progress = 0
+            lastProgress = 0
             val emCareResult = EmCareSync.oneTimeSync(api, database, preference, listOf(SyncType.FACILITY, SyncType.CONSULTATION_FLOW_ITEM))
             Sync.oneTimeSync<com.argusoft.who.emcare.sync.FhirSyncWorker>(
                 applicationContext
@@ -58,22 +64,68 @@ class SyncViewModel @Inject constructor(
                 }, 1, TimeUnit.SECONDS)
                     Log.d("syncJobStatus",syncJobStatus.toString())
                 if (syncJobStatus is SyncJobStatus.Finished && emCareResult is SyncResult.Success) {
-                    _syncState.value = (syncJobStatus is SyncJobStatus.Finished)?.let { ApiResponse.Success(syncJobStatus) }
-                    _syncState.value = ApiResponse.Success(null)
+//                    _syncState.value = (syncJobStatus is SyncJobStatus.Finished)?.let { ApiResponse.Success(syncJobStatus) }
+//                    _syncState.value = ApiResponse.Success(null)
                     preference.writeLastSyncTimestamp(lastSyncTime)
                 } else if(syncJobStatus is SyncJobStatus.InProgress) {
-                    if(!isFinished) {
+                    progress = syncJobStatus.completed.toDouble().div(syncJobStatus.total)
+                        .times(100).toInt()
+                    if(syncJobStatus.total == 0)
                         _syncState.value = ApiResponse.InProgress(
-                            total = syncJobStatus.total,
-                            completed = syncJobStatus.completed
+                            syncJobStatus.total,
+                            progressCount = 0
                         )
-                        if (syncJobStatus.total == syncJobStatus.completed) {
-                            isFinished = true
-                            _syncState.value = ApiResponse.Success(null)
-                            if(syncJobStatus.total != 0)
-                                preference.writeLastSyncTimestamp(lastSyncTime)
+                    if(!isProgressAlreadyStarted){
+                        viewModelScope.launch {
+                            while (lastProgress <= 100 && syncJobStatus.total > 0) {
+                                if (progress == 0) {
+                                    progress = 1
+                                    lastProgress = 1
+                                }
+//
+                                if(progress < lastProgress)
+                                    progress = lastProgress
+                                else if ((progress - lastProgress) > diff)
+                                    progress = lastProgress + (diff - (lastProgress % diff))
+                                else
+                                    progress += (diff - (progress % diff))
+
+                                if(progress == 100 && lastProgress < 99)
+                                    progress = 99
+
+                                lastProgress = progress
+
+                                _syncState.value = ApiResponse.InProgress(
+                                    syncJobStatus.total,
+                                    progressCount = progress
+                                )
+                                if (lastProgress == 100) {
+                                    preference.writeLastSyncTimestamp(lastSyncTime)
+                                    break
+                                }
+                                delay(timeDelay)
+
+                            }
                         }
+                        isProgressAlreadyStarted = true
                     }
+
+//                    if(!isFinished) {
+////                        val progress = syncJobStatus.completed.toDouble().div(syncJobStatus.total)
+////                            .times(100).roundToInt()
+////                        _syncState.value = ApiResponse.InProgress(
+////                            syncJobStatus.total,
+////                            syncJobStatus.completed,
+////                            progressCount = progress
+////                        )
+//                        if (syncJobStatus.total == syncJobStatus.completed && lastProgress == 100) {
+//                            isFinished = true
+//                            Log.d("it.progress", lastProgress.toString())
+//                            _syncState.value = ApiResponse.Success(null)
+//                            if(syncJobStatus.total != 0)
+//                                preference.writeLastSyncTimestamp(lastSyncTime)
+//                        }
+//                    }
 
                 } else {
                     _syncState.value = (syncJobStatus is SyncJobStatus.Failed)?.let { ApiResponse.ApiError(apiErrorMessageResId = R.string.msg_sync_failed) }

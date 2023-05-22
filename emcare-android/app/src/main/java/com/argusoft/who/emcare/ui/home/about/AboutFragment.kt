@@ -5,7 +5,6 @@ import androidx.fragment.app.viewModels
 import com.argusoft.who.emcare.BuildConfig
 import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.databinding.FragmentAboutBinding
-import com.argusoft.who.emcare.sync.SyncState
 import com.argusoft.who.emcare.sync.SyncViewModel
 import com.argusoft.who.emcare.ui.auth.login.LoginViewModel
 import com.argusoft.who.emcare.ui.common.base.BaseFragment
@@ -62,7 +61,10 @@ class AboutFragment : BaseFragment<FragmentAboutBinding>() {
 //                )
             }
             apiResponse.whenInProgress {
-                if(it.first.toDouble() == it.second.toDouble()){
+                Log.d("it.total.toDouble()", it.first.toDouble().toString())
+                Log.d("it.progress", it.second.toDouble().toString())
+                if(it.second == 100){
+                    binding.progressLayout.updateProgressUi(true, true)
                     loginViewModel.addDevice(
                         getDeviceName(),
                         getDeviceOS(),
@@ -71,50 +73,33 @@ class AboutFragment : BaseFragment<FragmentAboutBinding>() {
                         BuildConfig.VERSION_NAME
                     )
                 }else if (it.first > 0) {
-                    val progress =
-                        it
-                            .let { it.second.toDouble().div(it.first) }
-                            .let { if (it.isNaN()) 0.0 else it }
-                            .times(100)
-                            .roundToInt()
+                    val progress = it.second
                     "Synced $progress%".also {
                         binding.progressLayout.showProgress(it)
                         Log.d("Synced", "$progress%")
                     }
                 } else {
-                    "Synced 0%".also { binding.progressLayout.showProgress(it) }
+                    binding.progressLayout.hideProgressUi()
                 }
             }
+
             apiResponse.handleListApiView(binding.progressLayout) {
                 when (it) {
-//                    is SyncJobStatus.InProgress -> {
-//                        if (it.total > 0) {
-//                            val progress =
-//                                it
-//                                    .let { it.completed.toDouble().div(it.total) }
-//                                    .let { if (it.isNaN()) 0.0 else it }
-//                                    .times(100)
-//                            "Synced $progress%".also { binding.progressLayout.showProgress(it) }
-//                        } else {
-//                            "Synced 0%".also { binding.progressLayout.showProgress(it) }
-//                        }
-//                        //Code to show text.
-//                        //Reference: https://github.com/google/android-fhir/blob/master/demo/src/main/java/com/google/android/fhir/demo/PatientListFragment.kt
-//                    }
 
-                    is SyncJobStatus.Finished -> {
-                        binding.progressLayout.updateProgressUi(true, true)
-                        loginViewModel.addDevice(
-                            getDeviceName(),
-                            getDeviceOS(),
-                            getDeviceModel(),
-                            requireContext().getDeviceUUID().toString(),
-                            BuildConfig.VERSION_NAME
-                        )
-                    }
+//                    is SyncJobStatus.Finished -> {
+//                        binding.progressLayout.updateProgressUi(true, true)
+//                        loginViewModel.addDevice(
+//                            getDeviceName(),
+//                            getDeviceOS(),
+//                            getDeviceModel(),
+//                            requireContext().getDeviceUUID().toString(),
+//                            BuildConfig.VERSION_NAME
+//                        )
+//                    }
                     is SyncJobStatus.Failed -> {
                         binding.progressLayout.showContent()
-                        binding.progressLayout.updateProgressUi(true, false)
+                        binding.progressLayout.hideProgressUi()
+//                        binding.progressLayout.updateProgressUi(true, false)
                         requireContext().showSnackBar(
                             view = binding.progressLayout,
                             message = getString(R.string.msg_sync_failed),

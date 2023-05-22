@@ -9,9 +9,13 @@ import com.argusoft.who.emcare.data.local.database.Database
 import com.argusoft.who.emcare.data.local.pref.Preference
 import com.argusoft.who.emcare.data.remote.Api
 import com.argusoft.who.emcare.sync.EmcareAuthenticator
+import com.argusoft.who.emcare.widget.CustomBooleanChoiceViewHolderFactory
+import com.argusoft.who.emcare.widget.CustomDisplayViewHolderFactory
 import com.google.android.fhir.*
 import com.google.android.fhir.datacapture.DataCaptureConfig
 import com.google.android.fhir.datacapture.ExternalAnswerValueSetResolver
+import com.google.android.fhir.datacapture.QuestionnaireFragment
+import com.google.android.fhir.datacapture.QuestionnaireItemViewHolderFactoryMatchersProviderFactory
 import com.google.android.fhir.datacapture.XFhirQueryResolver
 import com.google.android.fhir.search.StringFilterModifier
 import com.google.android.fhir.search.search
@@ -51,10 +55,45 @@ class EmCareApplication : Application(), Configuration.Provider, DataCaptureConf
                 }
             },
             xFhirQueryResolver = { FhirEngineProvider.getInstance(this).search(it) },
-            urlResolver = ReferenceUrlResolver(this@EmCareApplication as Context)
+            urlResolver = ReferenceUrlResolver(this@EmCareApplication as Context),
+            questionnaireItemViewHolderFactoryMatchersProviderFactory = QuestionnaireItemViewHolderFactoryMatchersProviderFactoryImpl
         )
     }
 
+    object QuestionnaireItemViewHolderFactoryMatchersProviderFactoryImpl :
+        QuestionnaireItemViewHolderFactoryMatchersProviderFactory {
+        override fun get(provider: String): QuestionnaireFragment.QuestionnaireItemViewHolderFactoryMatchersProvider {
+            return when (provider) {
+                "CUSTOM" -> QuestionnaireItemViewHolderFactoryMatchersProviderImpl
+                else -> EmptyQuestionnaireItemViewHolderFactoryMatchersProviderImpl
+            }
+        }
+    }
+
+    private object EmptyQuestionnaireItemViewHolderFactoryMatchersProviderImpl :
+        QuestionnaireFragment.QuestionnaireItemViewHolderFactoryMatchersProvider() {
+        override fun get() = emptyList<QuestionnaireFragment.QuestionnaireItemViewHolderFactoryMatcher>()
+    }
+
+    private object QuestionnaireItemViewHolderFactoryMatchersProviderImpl :
+        QuestionnaireFragment.QuestionnaireItemViewHolderFactoryMatchersProvider() {
+        override fun get() = listOf(
+            QuestionnaireFragment.QuestionnaireItemViewHolderFactoryMatcher(
+                CustomBooleanChoiceViewHolderFactory
+            ) { questionnaireItem ->
+                questionnaireItem.getExtensionByUrl(CustomBooleanChoiceViewHolderFactory.WIDGET_EXTENSION).let {
+                    if(it == null) false else it?.value?.toString()?.contains(CustomBooleanChoiceViewHolderFactory.WIDGET_TYPE) == true
+                }
+            },
+            QuestionnaireFragment.QuestionnaireItemViewHolderFactoryMatcher(
+                CustomDisplayViewHolderFactory
+            ) { questionnaireItem ->
+                questionnaireItem.getExtensionByUrl(CustomDisplayViewHolderFactory.WIDGET_EXTENSION).let {
+                    it!= null
+                }
+            }
+        )
+    }
     private suspend fun lookupCodesFromDb(uri: String): List<Coding> {
         val valueSets: List<ValueSet> = FhirEngineProvider.getInstance(this).search {
             filter(

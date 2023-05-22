@@ -223,6 +223,10 @@ class ApiViewStateConstraintLayout : ConstraintLayout {
         }
     }
 
+    fun hideProgressUi(){
+        horizontalProgressView?.root?.isVisible = false
+    }
+
     fun updateProgressUi(isFinishing : Boolean, isShowCompleted : Boolean){
         horizontalProgressView?.tvProgress?.isVisible = true
         circularProgressView?.root?.isVisible = false
@@ -235,10 +239,11 @@ class ApiViewStateConstraintLayout : ConstraintLayout {
                     horizontalProgressView?.root?.isVisible = false
                 }, 3000)
             }else{
+                horizontalProgressView?.tvProgress?.text = context?.getString(R.string.text_syncing)
                 horizontalProgressView?.root?.isVisible = false
             }
         }else{
-//            horizontalProgressView?.tvProgress?.text = context?.getString(R.string.text_syncing)
+            horizontalProgressView?.tvProgress?.text = context?.getString(R.string.text_syncing)
             horizontalProgressView?.root?.isVisible = true
             horizontalProgressView?.ivCompleted?.isVisible = false
             horizontalProgressView?.horizontalProgressBar?.isVisible = true

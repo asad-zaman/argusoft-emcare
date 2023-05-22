@@ -139,6 +139,7 @@ class PatientQuestionnaireFragment : BaseFragment<FragmentPatientQuestionnaireBi
                 .setQuestionnaire(pair.first)
                 .setQuestionnaireResponse(pair.second)
                 .showReviewPageBeforeSubmit(false)
+                .setCustomQuestionnaireItemViewHolderFactoryMatchersProvider("CUSTOM")
                 .build()
             childFragmentManager.commit {
                 add(

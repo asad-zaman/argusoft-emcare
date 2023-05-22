@@ -2,7 +2,6 @@ package com.argusoft.who.emcare.ui.home.patient.profile
 
 import android.view.View
 import androidx.activity.addCallback
-import androidx.core.os.bundleOf
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
 import com.argusoft.who.emcare.R
@@ -59,6 +58,7 @@ class PreviousConsultationQuestionnaireFragment: BaseFragment<FragmentPreviousCo
             questionnaireFragment = QuestionnaireFragment.builder()
                 .setQuestionnaire(cleanedQuestionnairePair.first)
                 .setQuestionnaireResponse(cleanedQuestionnairePair.second)
+                .setCustomQuestionnaireItemViewHolderFactoryMatchersProvider("CUSTOM")
                 .setIsReadOnly(true)
                 .build()
             childFragmentManager.commit {
