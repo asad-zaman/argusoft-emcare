@@ -507,8 +507,12 @@ public class UserServiceImpl implements UserService {
         CompletableFuture.runAsync(() -> {
             Settings settings = adminSettingService.getAdminSettingByName(CommonConstant.SETTING_TYPE_WELCOME_EMAIL);
             if (settings.getValue().equals(CommonConstant.ACTIVE)) {
+
                 MailDto mailDto = mailDataSetterService.mailSubjectSetter(CommonConstant.MAIL_FOR_ADD_USER);
-                String mailBody = mailDto.getBody() + " " + user.getEmail();
+                Map<String, Object> mailData = new HashMap<>();
+                mailData.put("firstName", user.getFirstName());
+                mailData.put("lastName", user.getLastName());
+                String mailBody = mailDataSetterService.emailBodyCreator(mailData, mailDto.getBody(), mailDto);
                 mailService.sendBasicMail(user.getEmail(), mailDto.getSubject(), mailBody);
             }
         });
