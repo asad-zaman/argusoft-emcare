@@ -20,7 +20,6 @@ import com.google.android.fhir.delete
 import com.google.android.fhir.get
 import com.google.android.fhir.logicalId
 import com.google.android.fhir.search.Operation
-import com.google.android.fhir.search.Order
 import com.google.android.fhir.search.StringFilterModifier
 import com.google.android.fhir.search.search
 import kotlinx.coroutines.flow.flow
@@ -66,11 +65,24 @@ class PatientRepository @Inject constructor(
                 )
                 operation = Operation.OR
             }
-            count = 100
-            from = 0
         }.filter {
             (it.getExtensionByUrl(LOCATION_EXTENSION_URL)?.value as? Identifier)?.value == facilityId
-        }.mapIndexed { index, fhirPatient ->
+        }.sortedWith(kotlin.Comparator { o1, o2 ->
+            if(o1.hasMeta() && !o2.hasMeta()){
+                return@Comparator 1
+            } else  if(!o1.hasMeta() && o2.hasMeta()){
+                return@Comparator -1
+            } else if(o1.hasMeta() && o2.hasMeta()){
+                if(o1.meta.lastUpdated!! < o2.meta.lastUpdated){
+                    return@Comparator 1
+                } else {
+                    return@Comparator -1
+                }
+            } else {
+                return@Comparator -1
+            }
+
+        }).mapIndexed { index, fhirPatient ->
             fhirPatient.toPatientItem(index + 1)
         }
         emit(ApiResponse.Success(data = list))
@@ -91,6 +103,8 @@ class PatientRepository @Inject constructor(
     fun saveQuestionnaire(questionnaireResponse: QuestionnaireResponse, questionnaire: String, facilityId: String, structureMapId: String = "", consultationFlowItemId: String? = null,consultationStage: String? = null) = flow {
         val parser = FhirContext.forCached(FhirVersionEnum.R4).newJsonParser()
         val questionnaireResource: Questionnaire = parser.parseResource(questionnaire) as Questionnaire
+        val questionnaireResponseItems = questionnaireResponse.item //Removing the empty blank space item from QR.
+        questionnaireResponse.item = questionnaireResponseItems.dropLast(1)
         try {
             if (QuestionnaireResponseValidator.validateQuestionnaireResponse(
                     questionnaireResource,
@@ -115,8 +129,6 @@ class PatientRepository @Inject constructor(
                 StructureMapExtractionContext(context = application.applicationContext) { _, _ -> structureMap
                 }
             )
-            preference.setSubmittedResource(Bundle().setEntry(mutableListOf(Bundle.BundleEntryComponent()
-                .setResource(questionnaireResponse))))
             saveResourcesFromBundle(extractedBundle, patientId, encounterId, facilityId, consultationFlowItemId)
             //update QuestionnarieResponse in currentConsultation and createNext Consultation
             if(consultationFlowItemId != null) {
@@ -135,28 +147,61 @@ class PatientRepository @Inject constructor(
                 ))
             }.collect {
                 //Current implementation of stage order by questionnaire list
-                val consultationStageIndex = consultationFlowStageList.indexOf(consultationStage)
+                var consultationStageIndex = consultationFlowStageList.indexOf(consultationStage)
                 if(consultationFlowStageList.last().equals(consultationStage, true)){
                     //End of consultation
                     consultationFlowRepository.updateConsultationFlowInactiveByEncounterId(encounterId).collect {
                         emit(ApiResponse.Success(null))
                     }
                 } else {
-                    val nextConsultationStage = consultationFlowStageList[consultationStageIndex + 1]
+                    var exitConsultation = false
 
-                    //create nextConsultationItem
-                    val nextConsultationFlowItem = ConsultationFlowItem(
-                        consultationStage = nextConsultationStage,
-                        patientId = patientId,
-                        encounterId = encounterId,
-                        questionnaireId = stageToQuestionnaireId[nextConsultationStage],
-                        structureMapId = stageToStructureMapId[nextConsultationStage],
-                        questionnaireResponseText = "",
-                        isActive = true,
-                        consultationDate = ZonedDateTime.now(ZoneId.of("UTC")).toString().removeSuffix(Z_UTC),
-                    )
-                    consultationFlowRepository.saveConsultation(nextConsultationFlowItem).collect{
-                        emit(it)
+                    if(consultationStage.equals(CONSULTATION_STAGE_DANGER_SIGNS)) {
+                        if(questionnaireResponse.hasItem()){
+                            questionnaireResponse.item.forEach { item ->
+                                if(item.linkId.equals(ASSESS_SICK_CHILD_LINK_ID) && item.hasAnswer()
+                                    && item.answerFirstRep.valueCoding.code.equals(END_CONSULTATION_CODING_VALUE)) {
+                                    exitConsultation = true
+
+                                }
+                            }
+                        }
+                    }
+
+                    if(exitConsultation) {
+                        consultationFlowRepository.updateConsultationFlowInactiveByEncounterId(encounterId).collect {
+                            emit(ApiResponse.Success(null))
+                        }
+                    } else {
+                        var nextConsultationStage = consultationFlowStageList[consultationStageIndex + 1]
+
+                        val patient = fhirEngine.get<Patient>(patientId)
+                        var questionnaireId = stageToQuestionnaireId[nextConsultationStage]
+                        var structureMapId = stageToStructureMapId[nextConsultationStage]
+                        if(patient.hasBirthDate()) {
+                            val isAgeUnderTwoMonths = patient.birthDate.toInstant().isAfter(Instant.now().minusSeconds(3600*24*60))
+                            if(isAgeUnderTwoMonths) {
+                                consultationStageIndex = consultationFlowStageListUnderTwoMonths.indexOf(consultationStage)
+                                nextConsultationStage = consultationFlowStageListUnderTwoMonths[consultationStageIndex + 1]
+                                questionnaireId = stageToQuestionnaireIdUnderTwoMonths[nextConsultationStage]
+                                structureMapId = stageToStructureMapIdUnderTwoMonths[nextConsultationStage]
+                            }
+                        }
+
+                        //create nextConsultationItem
+                        val nextConsultationFlowItem = ConsultationFlowItem(
+                            consultationStage = nextConsultationStage,
+                            patientId = patientId,
+                            encounterId = encounterId,
+                            questionnaireId = questionnaireId,
+                            structureMapId = structureMapId,
+                            questionnaireResponseText = "",
+                            isActive = true,
+                            consultationDate = ZonedDateTime.now(ZoneId.of("UTC")).toString().removeSuffix(Z_UTC),
+                        )
+                        consultationFlowRepository.saveConsultation(nextConsultationFlowItem).collect{
+                            emit(it)
+                        }
                     }
                 }
             }
@@ -175,12 +220,23 @@ class PatientRepository @Inject constructor(
         val patientId = questionnaireResponse.subject.identifier.value
         val encounterId = questionnaireResponse.encounter.id
         val parser = FhirContext.forCached(FhirVersionEnum.R4).newJsonParser()
+
+        val patient = fhirEngine.get<Patient>(patientId)
+        var questionnaireId = stageToQuestionnaireId[consultationStage]
+        var structureMapId = stageToStructureMapId[consultationStage]
+        if(patient.hasBirthDate()) {
+            val isAgeUnderTwoMonths = patient.birthDate.toInstant().isAfter(Instant.now().minusSeconds(3600*24*60))
+            if(isAgeUnderTwoMonths) {
+                questionnaireId = stageToQuestionnaireIdUnderTwoMonths[consultationStage]
+                structureMapId = stageToStructureMapIdUnderTwoMonths[consultationStage]
+            }
+        }
         consultationFlowRepository.saveConsultation(ConsultationFlowItem(
             consultationStage = consultationStage,
             patientId = patientId,
             encounterId = encounterId,
-            questionnaireId = stageToQuestionnaireId[consultationStage],
-            structureMapId = stageToStructureMapId[consultationStage],
+            questionnaireId = questionnaireId,
+            structureMapId = structureMapId,
             questionnaireResponseText = parser.encodeResourceToString(questionnaireResponse),
             isActive = true,
             consultationDate = ZonedDateTime.now(ZoneId.of("UTC")).toString().removeSuffix(Z_UTC),

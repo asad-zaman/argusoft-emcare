@@ -36,8 +36,7 @@ class ConsultationAdapter(
                 it.navigate(R.id.action_homeFragment_to_patientQuestionnaireFragment){
                     putString(INTENT_EXTRA_QUESTIONNAIRE_ID, list[bindingAdapterPosition]?.questionnaireId)
                     putString(INTENT_EXTRA_STRUCTUREMAP_ID, list[bindingAdapterPosition]?.structureMapId)
-//                    putString(INTENT_EXTRA_QUESTIONNAIRE_HEADER, list[bindingAdapterPosition]?.badgeText)
-                    putString(INTENT_EXTRA_QUESTIONNAIRE_HEADER, list[bindingAdapterPosition]?.header) //For testing only replace it with badgeText
+                    putString(INTENT_EXTRA_QUESTIONNAIRE_HEADER, list[bindingAdapterPosition]?.header)
                     putString(INTENT_EXTRA_CONSULTATION_FLOW_ITEM_ID, list[bindingAdapterPosition]?.consultationFlowItemId)
                     putString(INTENT_EXTRA_PATIENT_ID,list[bindingAdapterPosition]?.patientId)
                     putString(INTENT_EXTRA_ENCOUNTER_ID,list[bindingAdapterPosition]?.encounterId)

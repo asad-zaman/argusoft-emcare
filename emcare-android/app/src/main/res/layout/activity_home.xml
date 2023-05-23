@@ -51,8 +51,8 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/nav_view"
-        android:layout_width="@dimen/_150sdp"
-        android:layout_height="@dimen/_160sdp"
+        android:layout_width="@dimen/_180sdp"
+        android:layout_height="@dimen/_220sdp"
         android:layout_gravity="end"
         app:drawerLayoutCornerSize="@dimen/_5sdp"
         android:layout_marginTop="@dimen/_45sdp"

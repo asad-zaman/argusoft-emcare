@@ -16,11 +16,15 @@ interface Api {
 
     suspend fun getFacilities(): ApiResponse<List<Facility>>
 
+    suspend fun getCountries(): ApiResponse<List<String>>
+
     suspend fun getLoggedInUser(): ApiResponse<LoggedInUser>
 
     suspend fun getLanguages(): ApiResponse<List<Language>>
 
     suspend fun getConsultationFlow(): ApiResponse<List<ConsultationFlowItem>>
+
+    suspend fun getConsultationFlowWithTimestamp(timestamp: String): ApiResponse<List<ConsultationFlowItem>>
 
     suspend fun saveConsultations(consultations: List<ConsultationFlowItem>): ApiResponse<Any>
 }

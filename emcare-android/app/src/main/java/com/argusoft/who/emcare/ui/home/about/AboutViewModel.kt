@@ -14,6 +14,7 @@ import com.argusoft.who.emcare.ui.home.ConsultationFlowRepository
 import com.argusoft.who.emcare.ui.home.patient.PatientRepository
 import com.argusoft.who.emcare.utils.listener.SingleLiveEvent
 import com.google.android.fhir.FhirEngine
+import com.google.android.fhir.search.Order
 import com.google.android.fhir.search.search
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -34,9 +35,11 @@ class AboutViewModel @Inject constructor(
 
     fun getBundleVersionNumber() {
         viewModelScope.launch {
-            val planDefinitions = fhirEngine.search<PlanDefinition> {}
+            val planDefinitions = fhirEngine.search<PlanDefinition> {
+                sort(PlanDefinition.DATE, Order.ASCENDING)
+            }
             if(planDefinitions.isNotEmpty())
-                _bundleVersion.value = ApiResponse.Success(planDefinitions.last().meta.versionId)
+                _bundleVersion.value = ApiResponse.Success(planDefinitions.last().version)
         }
     }
 }

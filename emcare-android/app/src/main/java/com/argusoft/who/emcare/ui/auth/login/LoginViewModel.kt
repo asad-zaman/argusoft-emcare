@@ -51,10 +51,6 @@ class LoginViewModel @Inject constructor(
             else -> {
                 _loginApiState.value = ApiResponse.Loading()
                 val requestMap = HashMap<String, String>()
-                requestMap["client_id"] = KEYCLOAK_CLIENT_ID
-                requestMap["grant_type"] = KEYCLOAK_GRANT_TYPE
-                requestMap["client_secret"] = KEYCLOAK_CLIENT_SECRET
-                requestMap["scope"] = KEYCLOAK_SCOPE
                 requestMap["username"] = username
                 requestMap["password"] = password
                 viewModelScope.launch {
@@ -63,6 +59,29 @@ class LoginViewModel @Inject constructor(
                     }
                 }
             }
+        }
+    }
+
+    fun addDevice(
+        deviceName: String,
+        deviceOS: String,
+        deviceModel: String,
+        deviceUUID: String,
+        androidVersion: String
+    ) {
+        val deviceDetails = DeviceDetails(
+            androidVersion = androidVersion,
+            deviceName = deviceName,
+            deviceOs = deviceOS,
+            deviceModel = deviceModel,
+            deviceUUID = deviceUUID,
+            isBlocked = false,
+            imeiNumber = "",
+            macAddress = "",
+            lastLoggedInUser = ""
+        )
+        viewModelScope.launch {
+            loginRepository.addDevice(deviceDetails)
         }
     }
 }

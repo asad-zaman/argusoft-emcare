@@ -8,18 +8,21 @@ import com.argusoft.who.emcare.utils.extention.fromJson
 import com.argusoft.who.emcare.utils.extention.orEmpty
 import com.argusoft.who.emcare.utils.extention.toJson
 import org.hl7.fhir.r4.model.Bundle
-import org.hl7.fhir.r4.model.ResourceType
 
 class PreferenceManager(private val sharedPreferences: EncPref) : Preference {
 
     companion object {
         private const val IS_LOGIN = "pref_is_login"
         private const val USER = "USER"
+        private const val SELECTED_COUNTRY = "SELECTED_COUNTRY"
         private const val TOKEN = "TOKEN"
         private const val FACILITY_ID = "FACILITY_ID"
         private const val LOGGED_IN_USER = "LOGGED_IN_USER"
         private const val EMCARE_LAST_SYNC_TIME_STAMP = "EMCARE_LAST_SYNC_TIME_STAMP"
         private const val SUBMITTED_RESOURCE = "SUBMITTED_RESOURCE"
+        private const val THEME = "THEME"
+        private const val COUNTRY = "COUNTRY"
+
     }
 
     val parser = FhirContext.forCached(FhirVersionEnum.R4).newJsonParser()
@@ -48,6 +51,14 @@ class PreferenceManager(private val sharedPreferences: EncPref) : Preference {
         return sharedPreferences.getString(USER).orEmpty { "{}" }.fromJson<User>()
     }
 
+    override fun setSelectedCountry(selectedCountry: String) {
+        sharedPreferences.putString(SELECTED_COUNTRY, selectedCountry)
+    }
+
+    override fun getSelectedCountry(): String {
+        return sharedPreferences.getString(SELECTED_COUNTRY, "")
+    }
+
     override fun setFacilityId(facilityId: String) {
         sharedPreferences.putString(FACILITY_ID, facilityId)
     }
@@ -65,7 +76,7 @@ class PreferenceManager(private val sharedPreferences: EncPref) : Preference {
     }
 
     override fun getLastSyncTimestamp(): String {
-        return sharedPreferences.getString(EMCARE_LAST_SYNC_TIME_STAMP)
+        return sharedPreferences.getString(EMCARE_LAST_SYNC_TIME_STAMP,"")
     }
 
     override fun writeLastSyncTimestamp(timestamp: String) {
@@ -94,10 +105,30 @@ class PreferenceManager(private val sharedPreferences: EncPref) : Preference {
         sharedPreferences.putString(SUBMITTED_RESOURCE, parser.encodeResourceToString(bundle))
     }
 
+    override fun setTheme(theme: Int) {
+        sharedPreferences.putInt(THEME, theme)
+    }
+
+    override fun getTheme(): Int {
+        return sharedPreferences.getInt(THEME, 0)
+    }
+
+    override fun setCountry(country: String) {
+        sharedPreferences.putString(COUNTRY, country)
+    }
+
+    override fun getCountry(): String {
+        return sharedPreferences.getString(COUNTRY, "")
+    }
+
     override fun clear() {
-        //Tweaked to persist facilityId
+        //Tweaked to persist facilityId & country
         val facilityId = sharedPreferences.getString(FACILITY_ID, "")
+        val country = sharedPreferences.getString(COUNTRY, "")
+        val lastSyncTimeStamp = sharedPreferences.getString(EMCARE_LAST_SYNC_TIME_STAMP,"")
         sharedPreferences.clear()
         setFacilityId(facilityId)
+        writeLastSyncTimestamp(lastSyncTimeStamp)
+        setCountry(country)
     }
 }

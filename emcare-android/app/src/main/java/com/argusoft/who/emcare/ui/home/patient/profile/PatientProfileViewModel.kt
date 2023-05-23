@@ -56,7 +56,7 @@ class PatientProfileViewModel @Inject constructor(
                                     consultationLabel = stageToBadgeMap[consultationFlowItem.consultationStage] + " Stage",
                                     dateOfConsultation = ZonedDateTime.parse(consultationFlowItem.consultationDate?.substringBefore("+").plus("Z[UTC]")).format(
                                         DateTimeFormatter.ofPattern(DATE_FORMAT)),
-                                    header = consultationFlowItem.questionnaireId, //TODO: For test only, replace it with appropriate header
+                                    header = stageToBadgeMap[consultationFlowItem.consultationStage],
                                     consultationIcon = stageToIconMap[consultationFlowItem.consultationStage],
                                     consultationFlowItemId = consultationFlowItem.id,
                                     patientId = consultationFlowItem.patientId,
@@ -89,7 +89,7 @@ class PatientProfileViewModel @Inject constructor(
                                     consultationLabel = stageToBadgeMap[consultationFlowItem.consultationStage] + " Stage",
                                     dateOfConsultation = ZonedDateTime.parse(consultationFlowItem.consultationDate?.substringBefore("+").plus("Z[UTC]")).format(
                                         DateTimeFormatter.ofPattern(DATE_FORMAT)),
-                                    header = consultationFlowItem.questionnaireId, //TODO: For test only, replace it with appropriate header
+                                    header = stageToBadgeMap[consultationFlowItem.consultationStage],
                                     consultationIcon = stageToIconMap[consultationFlowItem.consultationStage],
                                     consultationFlowItemId = consultationFlowItem.id,
                                     patientId = consultationFlowItem.patientId,

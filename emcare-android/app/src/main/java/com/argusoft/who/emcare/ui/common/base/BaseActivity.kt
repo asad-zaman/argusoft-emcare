@@ -1,12 +1,18 @@
 package com.argusoft.who.emcare.ui.common.base
 
+import android.app.Activity
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewbinding.ViewBinding
+import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.data.local.pref.Preference
 import com.argusoft.who.emcare.ui.auth.AuthenticationActivity
+import com.argusoft.who.emcare.ui.common.APP_THEME_COMFORTABLE
+import com.argusoft.who.emcare.ui.common.APP_THEME_COMPACT
+import com.argusoft.who.emcare.ui.common.APP_THEME_ENLARGED
 import com.argusoft.who.emcare.ui.common.MY_UPDATE_REQUEST_CODE
 import com.argusoft.who.emcare.ui.home.HomeActivity
 import com.argusoft.who.emcare.utils.extention.hideKeyboard
@@ -30,16 +36,30 @@ abstract class BaseActivity<B : ViewBinding> : AppCompatActivity(), View.OnClick
     abstract fun initListener()
     abstract fun initObserver()
 
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = onViewBinding()
         setContentView(binding.root)
+        onActivityCreateSetTheme()
         initView()
         initListener()
         initObserver()
     }
+
+     private fun onActivityCreateSetTheme() {
+        when (preference.getTheme()) {
+            APP_THEME_COMPACT -> {
+                setTheme(R.style.AppThemeCompact)
+            }
+            APP_THEME_COMFORTABLE -> {
+                setTheme(R.style.AppTheme)
+            }
+            APP_THEME_ENLARGED -> {
+                setTheme(R.style.AppThemeEnlarged)
+            }
+        }
+    }
+
 
     override fun onClick(view: View?) {
         hideKeyboard(view)
@@ -114,6 +134,7 @@ abstract class BaseActivity<B : ViewBinding> : AppCompatActivity(), View.OnClick
         finish()
         startActivity(intent)
     }
+
 
     fun logout() {
         preference.clear()

@@ -35,6 +35,19 @@
         app:layout_constraintStart_toStartOf="@id/leftGuidLine"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/emcareTitleTextView"
+        style="@style/TextView.Medium.Black"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_4sdp"
+        android:text="@string/label_app_name"
+        android:layout_marginTop="@dimen/_24sdp"
+        android:textColor="@color/textColorBlack80"
+        app:layout_constraintEnd_toEndOf="@id/rightGuidLine"
+        app:layout_constraintStart_toStartOf="@id/leftGuidLine"
+        app:layout_constraintTop_toBottomOf="@+id/logoImageView" />
+
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/loginIdEditText"
         style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense"
@@ -47,7 +60,7 @@
         android:textColorHint="@color/textColorGrey"
         app:layout_constraintEnd_toEndOf="@id/rightGuidLine"
         app:layout_constraintStart_toStartOf="@id/leftGuidLine"
-        app:layout_constraintTop_toBottomOf="@+id/logoImageView">
+        app:layout_constraintTop_toBottomOf="@+id/emcareTitleTextView">
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -18,6 +18,7 @@
     <color name="colorPurple">#0000CD</color>
     <color name="colorSecondary2">#57686F</color>
     <!--Questionnaire Colors-->
+    <color name="questionnaireBackground">#F8FAFD</color>
     <color name="questionnaireErrorTextColor">#E4203B</color>
     <color name="questionnaireRadioButtonStroke">#A6A6A6</color>
     <color name="questionnaireRadioButtonSelected">@color/colorAccent</color>
@@ -60,4 +61,11 @@
     <color name="textColorDarkGrey">#57686F</color>
     <color name="textColorLightBlue">#1385D7</color>
     <color name="colorLightGrey">#FFCCCCCC</color>
+
+    <!--classification colors-->
+    <color name="color_pink">#FFACAA</color>
+    <color name="color_green">#93F1B3</color>
+    <color name="color_yellow">#FAFAB1</color>
+    <color name="color_white">#FFFFFF</color>
+    <color name="color_grey">#A6A6A6</color>
 </resources>

@@ -1,28 +1,35 @@
 package com.argusoft.who.emcare.ui.home.patient.profile
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.argusoft.who.emcare.BuildConfig
 import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.databinding.FragmentPatientProfileBinding
 import com.argusoft.who.emcare.sync.SyncViewModel
+import com.argusoft.who.emcare.ui.auth.login.LoginViewModel
 import com.argusoft.who.emcare.ui.common.*
 import com.argusoft.who.emcare.ui.common.base.BaseFragment
 import com.argusoft.who.emcare.ui.home.HomeActivity
+import com.argusoft.who.emcare.ui.home.HomeViewModel
 import com.argusoft.who.emcare.utils.extention.*
-import com.google.android.fhir.sync.State
+import com.google.android.fhir.sync.SyncJobStatus
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.math.roundToInt
 
 
 @AndroidEntryPoint
 class PatientProfileFragment : BaseFragment<FragmentPatientProfileBinding>() {
 
     private val patientProfileViewModel: PatientProfileViewModel by viewModels()
+    private val loginViewModel: LoginViewModel by viewModels()
+    private val homeViewModel: HomeViewModel by viewModels()
     private val syncViewModel: SyncViewModel by viewModels()
     private lateinit var activeConsultationsAdapter: PatientProfileActiveConsultationsAdapter
     private lateinit var previousConsultationsAdapter: PatientProfilePreviousConsultationsAdapter
@@ -47,8 +54,8 @@ class PatientProfileFragment : BaseFragment<FragmentPatientProfileBinding>() {
         binding.nameTextView.setText(requireArguments().getString(INTENT_EXTRA_PATIENT_NAME))
         val dateOfBirth = requireArguments().getString(INTENT_EXTRA_PATIENT_DOB)
         if(dateOfBirth != null && !dateOfBirth.equals("Not Provided", true) && dateOfBirth.isNotBlank()){
-            val oldFormatDate = SimpleDateFormat("YYYY-MM-DD").parse(dateOfBirth)
-            binding.dobTextView.text = SimpleDateFormat(DATE_FORMAT).format(oldFormatDate!!)
+            val oldFormatDate = SimpleDateFormat("yyyy-MM-dd").parse(dateOfBirth)
+            binding.dobTextView.text = SimpleDateFormat(DATE_FORMAT_2).format(oldFormatDate!!)
         } else {
             binding.dobTextView.text = "Not Provided"
         }
@@ -86,7 +93,7 @@ class PatientProfileFragment : BaseFragment<FragmentPatientProfileBinding>() {
         binding.headerLayout.toolbar.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.action_sync -> {
-                    syncViewModel.syncPatients()
+                    syncViewModel.syncPatients(true)
                 }
                 R.id.action_more -> {
                     (activity as HomeActivity).openDrawer()
@@ -99,26 +106,47 @@ class PatientProfileFragment : BaseFragment<FragmentPatientProfileBinding>() {
     override fun initObserver() {
         observeNotNull(syncViewModel.syncState) { apiResponse ->
             apiResponse.whenLoading {
-                binding.patientProfileLayout.showHorizontalProgress()
+                binding.patientProfileLayout.showHorizontalProgress(true)
+            }
+            apiResponse.whenInProgress {
+                if(it.second == 100){
+                    binding.patientProfileLayout.updateProgressUi(true, true)
+                    homeViewModel.loadLibraries(context!!)
+                    loginViewModel.addDevice(
+                        getDeviceName(),
+                        getDeviceOS(),
+                        getDeviceModel(),
+                        requireContext().getDeviceUUID().toString(),
+                        BuildConfig.VERSION_NAME
+                    )
+                }else if (it.first > 0) {
+                    val progress = it.second
+                    "Synced $progress%".also {
+                        binding.patientProfileLayout.showProgress(it)
+                        Log.d("Synced", "$progress%")
+                    }
+                } else {
+                    binding.patientProfileLayout.hideProgressUi()
+                }
+            }
+            apiResponse.whenFailed {
+                binding.patientProfileLayout.showContent()
+                binding.patientProfileLayout.hideProgressUi()
                 requireContext().showSnackBar(
                     view = binding.patientProfileLayout,
-                    message = getString(R.string.msg_sync_started),
-                    duration = Snackbar.LENGTH_INDEFINITE,
-                    isError = false
+                    message = getString(R.string.msg_sync_failed),
+                    duration = Snackbar.LENGTH_SHORT,
+                    isError = true
                 )
-            }.whenResult(
-                onSuccess = {
-                    apiResponse.handleListApiView(binding.patientProfileLayout) {
-                        requireContext().showSnackBar(
-                            view = binding.patientProfileLayout,
-                            message = getString(R.string.msg_sync_successfully),
-                            duration = Snackbar.LENGTH_SHORT,
-                            isError = false
-                        )
-                    }
-                },
-                onFailed = {
-                    apiResponse.handleListApiView(binding.patientProfileLayout) {
+            }
+            apiResponse.handleListApiView(binding.patientProfileLayout) {
+                when (it) {
+
+
+                    is SyncJobStatus.Failed -> {
+                        binding.patientProfileLayout.showContent()
+                        binding.patientProfileLayout.hideProgressUi()
+//                        binding.patientProfileLayout.updateProgressUi(true, false)
                         requireContext().showSnackBar(
                             view = binding.patientProfileLayout,
                             message = getString(R.string.msg_sync_failed),
@@ -127,7 +155,7 @@ class PatientProfileFragment : BaseFragment<FragmentPatientProfileBinding>() {
                         )
                     }
                 }
-            )
+            }
         }
 
         observeNotNull(patientProfileViewModel.activeConsultations) { apiResponse ->
@@ -173,11 +201,10 @@ class PatientProfileFragment : BaseFragment<FragmentPatientProfileBinding>() {
                         INTENT_EXTRA_STRUCTUREMAP_ID,
                         stageToStructureMapId[consultationFlowStageList[1]]
                     )
-//                    putString(INTENT_EXTRA_QUESTIONNAIRE_HEADER, stageToBadgeMap[consultationFlowStageList[1]])
                     putString(
                         INTENT_EXTRA_QUESTIONNAIRE_HEADER,
                         stageToBadgeMap[consultationFlowStageList[1]]
-                    ) //For testing only replace it with badgeText
+                    )
                     putString(
                         INTENT_EXTRA_PATIENT_ID,
                         requireArguments().getString(INTENT_EXTRA_PATIENT_ID)

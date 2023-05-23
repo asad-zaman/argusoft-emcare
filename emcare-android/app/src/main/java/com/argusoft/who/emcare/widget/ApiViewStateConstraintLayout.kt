@@ -5,11 +5,14 @@ import android.content.Intent
 import android.content.res.TypedArray
 import android.graphics.PorterDuff
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
 import android.provider.Settings
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -26,6 +29,7 @@ import com.argusoft.who.emcare.databinding.ViewStateErrorViewBinding
 import com.argusoft.who.emcare.databinding.ViewStateHorizontalLoadingBinding
 import com.argusoft.who.emcare.ui.common.base.BaseAdapter
 import com.google.android.material.snackbar.Snackbar
+import timber.log.Timber
 import java.util.*
 
 class ApiViewStateConstraintLayout : ConstraintLayout {
@@ -142,7 +146,6 @@ class ApiViewStateConstraintLayout : ConstraintLayout {
     fun showContent(skipIds: List<Int> = emptyList()) {
         viewState = ViewState.SHOW_CONTENT
         circularProgressView?.root?.isVisible = false
-        horizontalProgressView?.root?.isVisible = false
         errorView?.root?.isVisible = false
         setContentVisibility(true, skipIds)
     }
@@ -151,7 +154,6 @@ class ApiViewStateConstraintLayout : ConstraintLayout {
         viewState = ViewState.PROGRESS_LOADING
         circularProgressView ?: inflateCircularProgressView()
         circularProgressView?.root?.isVisible = true
-        horizontalProgressView?.root?.isVisible = false
         errorView?.root?.isVisible = false
         setContentVisibility(false, skipIds)
         typedArray?.getDimensionPixelSize(
@@ -175,10 +177,17 @@ class ApiViewStateConstraintLayout : ConstraintLayout {
         circularProgressView?.circularProgressBar?.requestLayout()
     }
 
-    fun showHorizontalProgress(skipIds: List<Int> = emptyList()) {
+    fun showHorizontalProgress(isSync : Boolean, skipIds: List<Int> = emptyList()) {
         viewState = ViewState.HORIZONTAL_LOADING
         horizontalProgressView ?: inflateHorizontalProgressView()
-        horizontalProgressView?.root?.isVisible = true
+        if(isSync)
+            updateProgressUi(false, false)
+        else{
+            horizontalProgressView?.tvProgress?.isVisible = false
+            horizontalProgressView?.root?.isVisible = true
+            horizontalProgressView?.ivCompleted?.isVisible = false
+            horizontalProgressView?.horizontalProgressBar?.isVisible = true
+        }
         circularProgressView?.root?.isVisible = false
         errorView?.root?.isVisible = false
         setContentVisibility(true, skipIds)
@@ -206,6 +215,41 @@ class ApiViewStateConstraintLayout : ConstraintLayout {
         horizontalProgressView?.horizontalProgressBar?.requestLayout()
     }
 
+    fun showProgress(progressCount : String){
+        if(horizontalProgressView?.ivCompleted?.visibility == GONE) {
+            circularProgressView?.root?.isVisible = false
+            horizontalProgressView?.tvProgress?.isVisible = true
+            horizontalProgressView?.tvProgress?.text = progressCount
+        }
+    }
+
+    fun hideProgressUi(){
+        horizontalProgressView?.root?.isVisible = false
+    }
+
+    fun updateProgressUi(isFinishing : Boolean, isShowCompleted : Boolean){
+        horizontalProgressView?.tvProgress?.isVisible = true
+        circularProgressView?.root?.isVisible = false
+        if(isFinishing){
+            horizontalProgressView?.horizontalProgressBar?.isVisible = false
+            if(isShowCompleted) {
+                horizontalProgressView?.tvProgress?.text = context?.getString(R.string.msg_sync_successfully)
+                horizontalProgressView?.ivCompleted?.isVisible = true
+                Handler(Looper.getMainLooper()).postDelayed({
+                    horizontalProgressView?.root?.isVisible = false
+                }, 3000)
+            }else{
+                horizontalProgressView?.tvProgress?.text = context?.getString(R.string.text_syncing)
+                horizontalProgressView?.root?.isVisible = false
+            }
+        }else{
+            horizontalProgressView?.tvProgress?.text = context?.getString(R.string.text_syncing)
+            horizontalProgressView?.root?.isVisible = true
+            horizontalProgressView?.ivCompleted?.isVisible = false
+            horizontalProgressView?.horizontalProgressBar?.isVisible = true
+
+        }
+    }
 
     fun showError(
         @DrawableRes drawableResId: Int? = null,
@@ -222,6 +266,7 @@ class ApiViewStateConstraintLayout : ConstraintLayout {
         errorView ?: inflateErrorView()
         errorView?.root?.isVisible = true
         horizontalProgressView?.root?.isVisible = false
+        Timber.d("***********  showError")
         circularProgressView?.root?.isVisible = false
         setContentVisibility(false, skipIds)
         drawableResId?.let {
