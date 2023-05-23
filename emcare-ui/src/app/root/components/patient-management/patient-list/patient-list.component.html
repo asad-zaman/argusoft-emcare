@@ -1,8 +1,9 @@
 <app-location-filter *ngIf="isView" [isOtherPage]="false" (isClear)="clearFilter($event)"
   (locationId)="getLocationId($event)"></app-location-filter>
 <div *ngIf="isView" class="main-wrapper">
-  <h1 class="heading">{{'Patients' | translate}}</h1>
-  <hr>
+  <div class="custom-header">
+    <h1 class="heading">{{'Patients' | translate}}</h1>
+  </div>
   <div class="row align-items-center mb-3">
     <div class="col-3 position-relative">
       <input class="form-control custom-input h-35" id="exampleFormControlInput1" [(ngModel)]="searchString"
