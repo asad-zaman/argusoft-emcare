@@ -39,7 +39,7 @@ public class UserController {
     @GetMapping("/user/page")
     public ResponseEntity<Object> getUserPage(HttpServletRequest request,
                                               @RequestParam(value = "pageNo") Integer pageNo,
-                                              @Nullable @RequestParam(value = "search",required = false) String searchString) {
+                                              @Nullable @RequestParam(value = "search", required = false) String searchString) {
         return ResponseEntity.ok(userService.getUserPage(request, pageNo, searchString));
     }
 
@@ -64,13 +64,18 @@ public class UserController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<Object> addUser(@RequestBody UserDto user) {
-        return userService.signUp(user);
+    public ResponseEntity<Object> addUser(@RequestBody UserDto user, HttpServletRequest request) {
+        return userService.signUp(user, request);
+    }
+
+    @PostMapping("/auth/login")
+    public ResponseEntity<Object> userLogin(@RequestBody LoginRequestDto loginCred, HttpServletRequest request) {
+        return userService.userLogin(loginCred, request);
     }
 
     @PostMapping("/user/add")
-    public ResponseEntity<Object> addUserFromWeb(@RequestBody UserDto user) {
-        return userService.addUser(user);
+    public ResponseEntity<Object> addUserFromWeb(@RequestBody UserDto user, HttpServletRequest request) {
+        return userService.addUser(user, request);
     }
 
     @PostMapping("/role/add")
@@ -90,8 +95,11 @@ public class UserController {
     }
 
     @PutMapping("/user/update/{userId}")
-    public ResponseEntity<Object> updateUser(@RequestBody UserDto userDto, @PathVariable(value = "userId") String userId) {
-        return userService.updateUser(userDto, userId);
+    public ResponseEntity<Object> updateUser(
+            @RequestBody UserDto userDto,
+            @PathVariable(value = "userId") String userId,
+            HttpServletRequest request) {
+        return userService.updateUser(userDto, userId, request);
     }
 
     @PutMapping("/user/update/password/{userId}")
@@ -115,8 +123,13 @@ public class UserController {
     }
 
     @GetMapping("user/locationId/{locationId}")
-    public PageDto getUsersUnderLocation(@PathVariable(value = "locationId") Integer locationId,
+    public PageDto getUsersUnderLocation(@PathVariable(value = "locationId") Object locationId,
                                          @RequestParam(value = "pageNo") Integer pageNo) {
         return userService.getUsersUnderLocation(locationId, pageNo);
+    }
+
+    @GetMapping("user/check/email")
+    public ResponseEntity checkEmailAlreadyExist(@RequestParam(value = "emailId") String emailId) {
+        return ResponseEntity.status(HttpStatus.OK).body(userService.checkEmailIdExist(emailId));
     }
 }

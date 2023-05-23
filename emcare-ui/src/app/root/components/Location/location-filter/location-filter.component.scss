@@ -23,13 +23,13 @@ input[type="checkbox"] {
   box-sizing: border-box;
   cursor: pointer;
   position: absolute;
-  z-index: 99;
+  z-index: 9;
   height: 100%;
   width: 100%;
   right: 250px;
   height: 22px;
   width: 22px;
-  top: 129px;
+  top: 150px;
 }
 
 input[type="checkbox"]:checked~.sidebarIconToggle>.horizontal {

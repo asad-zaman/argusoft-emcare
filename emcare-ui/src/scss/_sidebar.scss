@@ -1,12 +1,13 @@
 .sidenav {
-    z-index: 10;
-    border-right: 1px solid $color-gray-50;
+    z-index: 11;
+    border: none;
     position: fixed;
+    box-shadow: 1px 1px 15px #e6eef3;
     left: 0px;
     top: 53px;
     width: 210px;
     height: 100%;
-    background: $color-light-gray;
+    background: #FFFFFF;
     .nav-link {
         margin: 0px;
         padding: 0px;
@@ -28,11 +29,11 @@
                     transform: translateY(-50%);
                     font-size: 16px;
                 }
-                &:hover {
-                    background: $color-red;
-                    color: $color-white;
+                &:hover:not(.active) {
+                    background: $color-white !important;
+                    color: $color-gray-80 !important;
                     i {
-                        color: $color-white;
+                        color: $color-gray-80 !important;
                     }
                 }
                 .drop-icon {

@@ -1,5 +1,6 @@
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
+import { appConstants } from "src/app/app.config";
 import { environment } from "src/environments/environment";
 @Injectable({
     providedIn: 'root'
@@ -214,5 +215,135 @@ export class FhirService {
     getPatientEncounter(id) {
         let url = `${environment.apiUrl}/api/questionnaire_response/byPatient?patientId=${id}`;
         return this.http.get(url, this.getHeaders());
+    }
+
+    getAllCodes() {
+        let url = `${environment.apiUrl}/api/custom/code/all`;
+        return this.http.get(url, this.getHeaders());
+    }
+
+    getCodes(pageIndex, search?) {
+        let url;
+        if (search) {
+            url = `${environment.apiUrl}/api/custom/code/page?pageNo=${pageIndex}&search=${search}`;
+        } else {
+            url = `${environment.apiUrl}/api/custom/code/page?pageNo=${pageIndex}`;
+        }
+        return this.http.get(url, this.getHeaders());
+    }
+
+    getCodeById(codeId) {
+        let url = `${environment.apiUrl}/api/custom/code/${codeId}`;
+        return this.http.get(url, this.getHeaders());
+    }
+
+    addCustomCode(codeObj) {
+        const url = `${environment.apiUrl}/api/custom/code/add`;
+        return this.http.post(url, codeObj, this.getHeaders());
+    }
+
+    updateCustomCode(codeObj) {
+        const url = `${environment.apiUrl}/api/custom/code/update`;
+        return this.http.put(url, codeObj, this.getHeaders());
+    }
+
+    addIndicator(body) {
+        const url = `${environment.apiUrl}/api/indicator/add`;
+        return this.http.post(url, body, this.getHeaders());
+    }
+
+    getIndicatorCompileValue(codeIdArr) {
+        const url = `${environment.apiUrl}/api/indicator/compile/value`;
+        return this.http.post(url, codeIdArr, this.getHeaders());
+    }
+
+    getIndicators(pageIndex, search?) {
+        let url;
+        if (search) {
+            url = `${environment.apiUrl}/api/indicator/page?pageNo=${pageIndex}&search=${search}`;
+        } else {
+            url = `${environment.apiUrl}/api/indicator/page?pageNo=${pageIndex}`;
+        }
+        return this.http.get(url, this.getHeaders());
+    }
+
+    getAllIndicators() {
+        let url = `${environment.apiUrl}/api/indicator/all`;
+        return this.http.get(url, this.getHeaders());
+    }
+
+    getIndicatorById(indicatorId) {
+        let url = `${environment.apiUrl}/api/indicator/${indicatorId}`;
+        return this.http.get(url, this.getHeaders());
+    }
+
+    checkTenantField(field, fieldValue) {
+        let url = `${environment.apiUrl}/api/country/tenant/check?key=${field}&value=${fieldValue}`;
+        return this.http.get(url, this.getHeaders());
+    }
+
+    checkEmail(email) {
+        let url = `${environment.apiUrl}/api/user/check/email?emailId=${email}`;
+        return this.http.get(url, this.getHeaders());
+    }
+
+    getAllTenants() {
+        let url = `${environment.apiUrl}/api/country/tenant/all`;
+        return this.http.get(url, this.getHeaders());
+    }
+
+    addTenant(data) {
+        const url = `${environment.apiUrl}/api/country/tenant/add`;
+        return this.http.post(url, data, this.getHeaders());
+    }
+
+    addNewLog(formData) {
+        let authToken = localStorage.getItem("access_token");
+        authToken = authToken && authToken.substring(1, authToken.length - 1);
+        const headerObj = {
+            headers: new HttpHeaders({
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Headers': 'Content-Type',
+                'Access-Control-Allow-Methods': 'GET,POST,OPTIONS,DELETE,PUT',
+                'Authorization': `Bearer ${authToken}`
+            })
+        };
+        let url = `${environment.apiUrl}/api/country/application/log/add`;
+        return this.http.post(url, formData, headerObj);
+    }
+
+    getCountry() {
+        let url = `${environment.apiUrl}/api/open/country/global/app`;
+        return this.http.get(url);
+    }
+
+    getAllLogs() {
+        let url = `${environment.apiUrl}/api/country/application/log/all`;
+        return this.http.get(url, this.getHeaders());
+    }
+
+    getConsultationExportData(id) {
+        let url = `${environment.apiUrl}/api/questionnaire_response/export/${id}`;
+        return this.http.get(url, this.getHeaders());
+    }
+
+    filterIndicatorValue(data) {
+        let url = `${environment.apiUrl}/api/indicator/filter/value`;
+        return this.http.post(url, data, this.getHeaders());
+    }
+
+    getAgeConditionAndValue(age) {
+        const con = age.substring(0, 2);
+        if (con === '<=' || con === '>=') {
+            return {
+                condition: appConstants.conditionArrForAgeAndColor.find(el => el.id === con),
+                value: age.substring(3)
+            };
+        } else {
+            return {
+                condition: appConstants.conditionArrForAgeAndColor.find(el => el.id === age.charAt(0)),
+                value: age.substring(2)
+            };
+        }
     }
 }

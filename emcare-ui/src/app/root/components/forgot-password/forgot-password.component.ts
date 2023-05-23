@@ -46,7 +46,7 @@ export class ForgotPasswordComponent implements OnInit {
     });
   }
 
-  get f() {
+  get getFormConfrols() {
     return this.forgotPasswordForm.controls;
   }
 

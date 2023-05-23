@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthGuard } from 'src/app/auth/auth.guard';
@@ -7,6 +7,9 @@ import { UserManagementService } from 'src/app/root/services/user-management.ser
 import { FhirService, ToasterService } from 'src/app/shared';
 import { MustMatch } from 'src/app/shared/validators/must-match.validator';
 import { SearchCountryField, CountryISO, PhoneNumberFormat } from 'ngx-intl-tel-input';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { appConstants } from 'src/app/app.config';
 
 @Component({
   selector: 'app-manage-user',
@@ -30,8 +33,9 @@ export class ManageUserComponent implements OnInit {
   SearchCountryField = SearchCountryField;
   CountryISO = CountryISO;
   PhoneNumberFormat = PhoneNumberFormat;
-  preferredCountries: CountryISO[] = [CountryISO.Iraq, CountryISO.UnitedStates];
   language: string;
+  emailTermChanged: Subject<string> = new Subject<string>();
+  emailAsUsername = false;
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -41,14 +45,24 @@ export class ManageUserComponent implements OnInit {
     private readonly roleService: RoleManagementService,
     private readonly toasterService: ToasterService,
     private readonly authGuard: AuthGuard,
-    private readonly fhirService: FhirService
+    private readonly fhirService: FhirService,
+    private readonly cdr: ChangeDetectorRef
   ) { }
 
   ngOnInit(): void {
     this.prerequisite();
   }
 
+  ngAfterViewChecked() {
+    this.cdr.detectChanges();
+    if (this.emailAsUsername) {
+      this.userForm.controls['email'].setValidators([]);
+      this.userForm.controls['email'].updateValueAndValidity();
+    }
+  }
+
   prerequisite() {
+    this.getAllSettings()
     this.checkFeatures();
     const routeParams = this.route.snapshot.paramMap;
     this.editId = routeParams.get('id');
@@ -59,6 +73,27 @@ export class ManageUserComponent implements OnInit {
       this.mapUpdateForm();
     } else { }
     this.getFacilities();
+    this.setPrefferedCountry();
+  }
+
+  setPrefferedCountry() {
+    const country = localStorage.getItem(appConstants.localStorageKeys.ApplicationAgent)
+    if (country !== 'Global') {
+      this.userForm.controls['countryCode'].setValue(CountryISO[country]);
+    } else {
+      this.userForm.controls['countryCode'].setValue(CountryISO.Iraq);
+    }
+  }
+
+  getAllSettings() {
+    this.fhirService.getAllAdminSettings().subscribe((res: any) => {
+      if (res) {
+        const data = res.find(el => el.key === appConstants.EMailAsUsername);
+        this.emailAsUsername = data.value === 'Active';
+      }
+    }, () => {
+      this.toasterService.showToast('error', 'Server issue!', 'EMCARE');
+    });
   }
 
   checkFeatures() {
@@ -66,16 +101,10 @@ export class ManageUserComponent implements OnInit {
       if (res.relatedFeature && res.relatedFeature.length > 0) {
         this.isAddFeature = res.featureJSON['canAdd'];
         this.isEditFeature = res.featureJSON['canEdit'];
-        if (this.isAddFeature && this.isEditFeature) {
-          this.isAllowed = true;
-        } else if (this.isAddFeature && !this.isEdit) {
-          this.isAllowed = true;
-        } else if (!this.isEditFeature && this.isEdit) {
-          this.isAllowed = false;
-        } else if (!this.isAddFeature && this.isEdit) {
-          this.isAllowed = true;
-        } else if (this.isEditFeature && this.isEdit) {
-          this.isAllowed = true;
+        if (this.isEdit) {
+          this.isAllowed = this.isEditFeature || !this.isAddFeature ? true : false;
+        } else if (this.isAddFeature) {
+          this.isAllowed = this.isEditFeature || !this.isEdit ? true : false;
         } else {
           this.isAllowed = false;
         }
@@ -116,33 +145,38 @@ export class ManageUserComponent implements OnInit {
   }
 
   initUserForm() {
+    const validationArr = [
+      Validators.required,
+      Validators.pattern('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-]+$')
+    ];
     if (this.isEdit) {
       this.userForm = this.formBuilder.group({
         firstName: ['', [Validators.required]],
         lastName: ['', [Validators.required]],
-        countryCode: [CountryISO.Iraq],
+        countryCode: [''],
         phone: ['', [Validators.required]],
         selectedFacility: [''],
         facility: ['', Validators.required],
-        role: ['', [Validators.required]]
+        role: ['', [Validators.required]],
+        username: [{ value: '', disabled: true }, [Validators.required]],
+        email: ['', validationArr],
       });
-      this.userForm.addControl('username', new FormControl({ value: '', disabled: true }, Validators.required));
     } else {
       this.userForm = this.formBuilder.group({
         firstName: ['', [Validators.required]],
         lastName: ['', [Validators.required]],
-        email: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-]+$')]],
-        countryCode: [CountryISO.Iraq],
+        email: ['', validationArr],
+        countryCode: [''],
         phone: ['', [Validators.required]],  // 10 digit number
-        password: ['', Validators.required],
-        confirmPassword: ['', Validators.required],
+        password: ['', [Validators.required]],
+        confirmPassword: ['', [Validators.required]],
         role: ['', [Validators.required]],
         selectedFacility: [''],
-        facility: ['', Validators.required]
+        facility: ['', [Validators.required]],
+        username: ['', [Validators.required]]
       }, {
         validator: MustMatch('password', 'confirmPassword')
       });
-      this.userForm.addControl('username', new FormControl('', Validators.required));
     }
   }
 
@@ -156,7 +190,7 @@ export class ManageUserComponent implements OnInit {
     });
   }
 
-  get f() {
+  get getFormConfrols() {
     return this.userForm.controls;
   }
 
@@ -249,5 +283,24 @@ export class ManageUserComponent implements OnInit {
 
   back() {
     this.router.navigate(['/showUsers']);
+  }
+
+  checkEmail() {
+    if (this.emailTermChanged.observers.length === 0) {
+      this.emailTermChanged.pipe(
+        debounceTime(1000),
+        distinctUntilChanged()
+      ).subscribe(_term => {
+        if (this.getFormConfrols.email.valid) {
+          this.fhirService.checkEmail(this.getFormConfrols.email.value).subscribe(res => {
+            if (res['status'] === 400) {
+              this.toasterService.showToast('error', 'Email is already exists!', 'EMCARE!');
+              this.getFormConfrols.email.reset();
+            }
+          });
+        } else { }
+      });
+    }
+    this.emailTermChanged.next(this.getFormConfrols.email.value);
   }
 }

@@ -1,67 +1,192 @@
-<div class="main-wrapper">
-  <div *ngIf="isView">
-    <span class="dashboard-title">{{'Key Performance Indicators' | translate}}</span>
-    <span class="date-title"> | {{getDateData()}}</span>
-    <span class="sync-title" (click)="getLastSyncDate()">{{'Last sync' | translate}}: {{lastScDate}}</span>
-    <div class="mt-3 d-flex">
-      <ng-container *ngIf="!isEmpty(dashboardData)">
-        <p-card
-          [style]="{'overflow': 'hidden', 'width': '200px', 'height': '80px', 'margin-right': '2em','cursor': 'pointer'}"
-          (click)="redirectToRoute('/showPatients')">
-          <div class="row">
-            <h3 class="col-4 w-700 ctype-1">{{dashboardData.totalPatient}}</h3>
-            <div class="col-8 c-style">
-              <h6>{{'Total Patients' | translate}}</h6>
-            </div>
-          </div>
-        </p-card>
-        <p-card
-          [style]="{'overflow': 'hidden', 'width': '200px', 'height': '80px', 'margin-right': '2em','cursor': 'pointer'}"
-          (click)="redirectToRoute('/showUsers')">
-          <div class="row">
-            <h3 class="col-4 w-700 ctype-2">{{dashboardData.totalUser}}</h3>
-            <div class="col-8 c-style">
-              <h6>{{'Total Users' | translate}}</h6>
-            </div>
-          </div>
-        </p-card>
-        <p-card
-          [style]="{'overflow': 'hidden', 'width': '200px', 'height': '80px', 'margin-right': '2em','cursor': 'pointer'}"
-          (click)="redirectToRoute('/confirmUsers')">
-          <div class="row">
-            <h3 class="col-4 w-700 ctype-3">{{dashboardData.pendingRequest}}</h3>
-            <div class="col-8 c-style">
-              <h6>{{'Pending User Requests' | translate}}</h6>
-            </div>
-          </div>
-        </p-card>
-      </ng-container>
+<div class="main-wrapper-no-heading">
+  <!--small-card-->
+  <div class="dashboard_patients_card-wrapper">
+    <div routerLink="/showPatients" class="dashboard_patients_card cursor-pointer">
+      <div class="icon-patients"><i class="bi bi-heart-pulse " aria-hidden="true"></i></div>
+      <div class="number">{{dashboardData.totalPatient}} <span>{{'Total Patients' | translate}}</span></div>
+    </div>
+    <div routerLink="/showUsers" class="dashboard_patients_card cursor-pointer">
+      <div class="icon-users"><i class="bi bi-people" aria-hidden="true"></i></div>
+      <div class="number">{{dashboardData.totalUser}} <span>{{'Total Users' | translate}}</span></div>
+    </div>
+    <div routerLink="/confirmUsers" class="dashboard_patients_card cursor-pointer">
+      <div class="icon-pending"><i class="bi bi-clock-history" aria-hidden="true"></i></div>
+      <div class="number">{{dashboardData.pendingRequest}} <span>{{'Pending User Requests' | translate}}</span></div>
     </div>
   </div>
-  <div class="row mt-5">
-    <div class="col-6">
-      <h3 class="text-left">{{'Map' | translate}}</h3>
-      <div class="card mt-3">
-        <div class="card-body">
-          <div #mapRef style="width:100%;height:800px"></div>
+  <!--small-card-END-->
+  <div class="row">
+    <!--left-grid-->
+    <div class="col-12 col-md-12 col-lg-12 col-xl-6">
+      <div class="dashboard-card height___350">
+        <div class="dashboard-card-heading">
+          <h3>{{'Analysis' | translate}}</h3>
+          <p>{{'Number of consultations per date' | translate}}</p>
+        </div>
+        <div class="dashboard-card-body">
+          <div id="scatter-chart-container"
+            style="min-width: 310px; max-width: 800px; height: 300px; margin: 0 auto; top: -50px;">
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12 col-md-6">
+          <div class="dashboard-card pt-3 height___400">
+            <div class="dashboard-card-heading">
+              <h4>{{'Number of consultations per facility' | translate}}</h4>
+            </div>
+            <div class="dashboard-card-body">
+              <div class="text-center">
+                <div id="consultationPerFacility" style="width:100%;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-md-6 pl___7">
+          <div class="dashboard-card pt-3 height___400">
+            <div class="dashboard-card-heading">
+              <h4>{{'Number of consultations by age group' | translate}}</h4>
+            </div>
+            <div class="dashboard-card-body">
+              <div class="text-center">
+                <div id="consultationByAgeGroup" style="width:100%;"></div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-    <div class="col-6">
-      <h3 class="mt-2">{{'Analysis' | translate}} | {{getDateData()}}</h3>
-      <div class="row">
-        <div class="col-12 mb-3">
-          <div id="container" style="min-width: 310px; max-width: 800px; height: 400px; margin: 0 auto"></div>
-          <h5 class="card-title text-center">Number of consultations per week
+    <!--left-grid-END-->
+    <!--right-grid-->
+    <div class="col-12 col-md-12 col-lg-12 col-xl-6 pl___7">
+      <ng-container *ngIf="!this.indicatorApiBusy; else showSpinner">
+        <div *ngIf="this.indicatorArr.length > 0; else noData" class="dashboard-card">
+          <div class="dashboard-card-heading">
+            <h3>{{'Indicators' | translate}}</h3>
+          </div>
+          <div class="dashboard-card-body indicators_scroll">
+            <div class="table-responsive">
+              <table class="data-table">
+                <ng-container *ngFor="let indicator of this.indicatorArr; let i=index">
+                  <tr>
+                    <td #iValues class="cst-table-style percentage-text">
+                      {{this.getIndicators().controls[i].value.indicatorValue}}%</td>
+                    <td class="cst-table-style">
+                      {{indicator.indicatorName}}</td>
+                    <td><i (click)="enableFilter(i)" class="bi bi-filter-square chart-icon" aria-hidden="true"></i></td>
+                    <td><i *ngIf="indicator.indicatorType === 'filter'" class="bi bi-graph-up-arrow chart-icon"
+                        aria-hidden="true"></i></td>
+                  </tr>
+                  <tr *ngIf="indicator.showFilter">
+                    <td colspan="2">
+                      <div class="filter-content mt-3">
+                        <form [formGroup]="indicatorFilterForm" name="indicatorFilterForm" novalidate>
+                          <div formArrayName="indicators">
+                            <div [formGroupName]="i">
+                              <div class="row">
+                                <div class="col-12 col-sm-6">
+                                  <div class="mb-3">
+                                    <label class="form-label">{{'Facility' | translate}}</label>
+                                    <p-multiSelect placeholder="Select" [options]="facilityArr"
+                                      formControlName="facility" optionLabel="name" dataKey="id">
+                                    </p-multiSelect>
+                                  </div>
+                                </div>
+                                <div class="col-12 col-sm-6">
+                                  <div class="mb-3">
+                                    <label class="form-label">{{'Gender' | translate}}</label>
+                                    <p-dropdown placeholder="Select" [options]="genderArr" formControlName="gender"
+                                      optionLabel="name" dataKey="id"
+                                      [showClear]="this.getIndicators().controls[i].value.gender ? true : false">
+                                    </p-dropdown>
+                                  </div>
+                                </div>
+                                <div class="col-12 col-sm-12">
+                                  <div class="mb-3">
+                                    <label class="form-label">{{'Age' | translate}}</label>
+                                    <div class="row">
+                                      <div class="col-6">
+                                        <p-dropdown placeholder="Select" [options]="conditionArrForAgeAndColor"
+                                          formControlName="ageCondition" optionLabel="name" dataKey="id"
+                                          [showClear]="this.getIndicators().controls[i].value.ageCondition ? true : false"
+                                          (onChange)="checkForInBetween($event, i)">
+                                        </p-dropdown>
+                                      </div>
+                                      <ng-container
+                                        *ngIf="this.getIndicators().controls[i].value.isShowBetween; else noBetween">
+                                        <div class="col-3">
+                                          <input class="form-control custom-input" formControlName="ageValue"
+                                            type="number" id="value" placeholder="">
+                                        </div>
+                                        <div class="col-3">
+                                          <input class="form-control custom-input" formControlName="ageExtraValue"
+                                            type="number" id="value" placeholder="">
+                                        </div>
+                                      </ng-container>
+                                      <ng-template #noBetween>
+                                        <div class="col-6">
+                                          <input class="form-control custom-input" formControlName="ageValue"
+                                            type="number" id="value" placeholder="{{'Value Placeholder' | translate}}">
+                                        </div>
+                                      </ng-template>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="col-12 col-sm-12">
+                                  <div class="mb-3">
+                                    <div class="row">
+                                      <div class="col-6">
+                                        <label class="form-label">{{'Date From' | translate}}</label>
+                                        <input class="form-control custom-input" type="date" formControlName="startDate"
+                                          id="startDate" (change)="onDateSelection(1, i)"
+                                          placeholder="{{'Value Placeholder' | translate}}">
+                                      </div>
+                                      <div class="col-6">
+                                        <label class="form-label">{{'Date To' | translate}}</label>
+                                        <input class="form-control custom-input" type="date" formControlName="endDate"
+                                          id="endDate" (change)="onDateSelection(2, i)"
+                                          placeholder="{{'Value Placeholder' | translate}}">
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="col-12 col-sm-12">
+                                  <button (click)="filterIndicator(i)" class="btn-blue btn mt-3">
+                                    {{'Filter' | translate}}
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </form>
+                      </div>
+                    </td>
+                  </tr>
+                </ng-container>
+              </table>
+            </div>
+          </div>
+        </div>
+        <ng-template #noData>
+          <h5 class="p-20">
+            {{'NoIndicators' | translate}}
           </h5>
+        </ng-template>
+      </ng-container>
+      <ng-template #showSpinner>
+        <div class="spinner-border">
+          <span class="sr-only" id="loadbar"></span>
         </div>
-        <div class="col-6">
-          <div id="consultationPerFacility" style="width:100%; height:400px;"></div>
-        </div>
-        <div class="col-6">
-          <div id="consultationByAgeGroup" style="width:100%; height:400px;"></div>
-        </div>
-      </div>
+      </ng-template>
+    </div>
+    <!--right-grid-END-->
+  </div>
+  <div class="dashboard-card">
+    <div class="dashboard-card-heading">
+      <h3>{{'Map' | translate}}</h3>
+    </div>
+    <div class="dashboard-card-body">
+      <div class="mt-3" #mapRef style="width:100%;height:400px"></div>
     </div>
   </div>
 </div>

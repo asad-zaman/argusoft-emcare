@@ -85,29 +85,29 @@
             <version>5.7.0</version>
         </dependency>
 
-<!--        <dependency>-->
-<!--            <groupId>org.opencds.cqf.ruler</groupId>-->
-<!--            <artifactId>cqf-ruler-cql</artifactId>-->
-<!--            <version>0.5.0</version>-->
-<!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.opencds.cqf.ruler</groupId>-->
+        <!--            <artifactId>cqf-ruler-cql</artifactId>-->
+        <!--            <version>0.5.0</version>-->
+        <!--        </dependency>-->
 
-<!--        <dependency>-->
-<!--            <groupId>org.opencds.cqf.ruler</groupId>-->
-<!--            <artifactId>cqf-ruler-core</artifactId>-->
-<!--            <version>0.5.0</version>-->
-<!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.opencds.cqf.ruler</groupId>-->
+        <!--            <artifactId>cqf-ruler-core</artifactId>-->
+        <!--            <version>0.5.0</version>-->
+        <!--        </dependency>-->
 
-<!--        <dependency>-->
-<!--            <groupId>org.opencds.cqf.ruler</groupId>-->
-<!--            <artifactId>cqf-ruler-cr</artifactId>-->
-<!--            <version>0.5.0</version>-->
-<!--        </dependency>-->
-<!--        &lt;!&ndash; https://mvnrepository.com/artifact/ca.uhn.hapi.fhir/hapi-fhir-jpaserver-base &ndash;&gt;-->
-<!--        <dependency>-->
-<!--            <groupId>ca.uhn.hapi.fhir</groupId>-->
-<!--            <artifactId>hapi-fhir-jpaserver-base</artifactId>-->
-<!--            <version>6.1.0</version>-->
-<!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.opencds.cqf.ruler</groupId>-->
+        <!--            <artifactId>cqf-ruler-cr</artifactId>-->
+        <!--            <version>0.5.0</version>-->
+        <!--        </dependency>-->
+        <!--        &lt;!&ndash; https://mvnrepository.com/artifact/ca.uhn.hapi.fhir/hapi-fhir-jpaserver-base &ndash;&gt;-->
+        <!--        <dependency>-->
+        <!--            <groupId>ca.uhn.hapi.fhir</groupId>-->
+        <!--            <artifactId>hapi-fhir-jpaserver-base</artifactId>-->
+        <!--            <version>6.1.0</version>-->
+        <!--        </dependency>-->
 
         <!--**********************-->
 
@@ -208,8 +208,11 @@
             <artifactId>twilio</artifactId>
             <version>8.31.0</version>
         </dependency>
-
-
+        <dependency>
+            <groupId>net.objecthunter</groupId>
+            <artifactId>exp4j</artifactId>
+            <version>0.4.8</version>
+        </dependency>
     </dependencies>
     <repositories>
         <repository>
@@ -240,5 +243,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>

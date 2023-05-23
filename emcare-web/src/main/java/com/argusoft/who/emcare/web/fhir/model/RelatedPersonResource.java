@@ -4,6 +4,7 @@ import com.argusoft.who.emcare.web.common.model.EntityAuditInfo;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Objects;
 
 @Entity
 @Table(name = "related_person_resource")
@@ -51,5 +52,19 @@ public class RelatedPersonResource extends EntityAuditInfo implements Serializab
 
     public void setPatientId(String patientId) {
         this.patientId = patientId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof RelatedPersonResource)) return false;
+        if (!super.equals(o)) return false;
+        RelatedPersonResource that = (RelatedPersonResource) o;
+        return Objects.equals(getId(), that.getId()) && Objects.equals(getText(), that.getText()) && Objects.equals(getResourceId(), that.getResourceId()) && Objects.equals(getPatientId(), that.getPatientId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), getId(), getText(), getResourceId(), getPatientId());
     }
 }

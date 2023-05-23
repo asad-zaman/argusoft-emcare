@@ -1,0 +1,105 @@
+.btn-black {
+    background: #4d4d4d;
+    text-transform: none;
+    color: #fff !important;
+    font-size: 14px;
+    padding: 7px 25px;
+}
+
+.add-icon-circle {
+    font-size: 40px;
+    color: #146ca1;
+    cursor: pointer;
+    float: right;
+    position: relative;
+    top: -6px;
+}
+
+.indicator-acc-accordion .accordion-button {
+    font-size: 18px;
+    box-shadow: none;
+    padding-right: 70px;
+    font-weight: 500;
+}
+
+.indicator-acc-accordion .accordion-item {
+    margin-bottom: 20px;
+    border: 1px solid #ecf4ff;
+}
+
+.indicator-acc-accordion .accordion-header {
+    position: relative;
+}
+
+.indicator-acc-accordion-delete-icon {
+    position: absolute;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background: #d5e0ef;
+    right: 15px;
+    top: 8px;
+    z-index: 99;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.indicator-acc-accordion-delete-icon i {
+    font-size: 20px;
+    color: #146ca1;
+}
+
+.pl__15 {
+    padding-left: 20px;
+}
+
+.pr__15 {
+    padding-right: 20px;
+}
+
+.dashboard-card {
+    margin-bottom: 20px;
+    background: #fff;
+    border-radius: 5px;
+    box-shadow: 2px 2px 15px #e1ecf6;
+}
+
+.dashboard-card .dashboard-card-heading {
+    padding: 15px;
+    padding-top: 25px;
+}
+
+.dashboard-card .dashboard-card-heading h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 2px;
+}
+
+.dashboard-card .dashboard-card-heading h4 {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 2px;
+}
+
+.dashboard-card .dashboard-card-heading p {
+    margin: 0px;
+}
+
+.dashboard-card .dashboard-card-body {
+    padding: 15px;
+    padding-top: 0px;
+}
+
+.cst-trash {
+    font-size: 25px;
+    color: #146ca1;
+    cursor: pointer;
+    position: relative;
+    top: 0;
+}
+
+.mt-28 {
+    margin-top: 28px;
+}

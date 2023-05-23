@@ -1,5 +1,5 @@
-<div *ngIf="isAllowed" class="main-wrapper">
-  <div class="form-wrapper-facility">
+<div *ngIf="isAllowed" class="main-wrapper-no-heading">
+  <div class="form-wrapper-broad">
     <form [formGroup]="orgForm" name="orgForm" novalidate>
       <div class="mb-5">
         <h1 class="heading">
@@ -13,9 +13,9 @@
             <label class="form-label">{{'Name' | translate}}</label>
             <input formControlName="organizationName" type="text" class="form-control custom-input"
               id="organizationName" placeholder="Enter organization name"
-              [ngClass]="{ 'is-invalid': submitted && f.organizationName.errors }">
-            <div *ngIf="submitted && f.organizationName.errors" class="invalid-feedback">
-              <div class="cst-error-style" *ngIf="f.organizationName.errors.required">
+              [ngClass]="{ 'is-invalid': submitted && getFormConfrols.organizationName.errors }">
+            <div *ngIf="submitted && getFormConfrols.organizationName.errors" class="invalid-feedback">
+              <div class="cst-error-style" *ngIf="getFormConfrols.organizationName.errors.required">
                 *{{'Name is required' | translate}}</div>
             </div>
           </div>
@@ -24,9 +24,9 @@
           <div class="mb-3">
             <label class="form-label">{{'Alias Name' | translate}}</label>
             <input formControlName="alias" type="text" class="form-control custom-input" id="alias"
-              placeholder="Enter alias name" [ngClass]="{ 'is-invalid': submitted && f.alias.errors }">
-            <div *ngIf="submitted && f.alias.errors" class="invalid-feedback">
-              <div class="cst-error-style" *ngIf="f.alias.errors.required">
+              placeholder="Enter alias name" [ngClass]="{ 'is-invalid': submitted && getFormConfrols.alias.errors }">
+            <div *ngIf="submitted && getFormConfrols.alias.errors" class="invalid-feedback">
+              <div class="cst-error-style" *ngIf="getFormConfrols.alias.errors.required">
                 *{{'Alias is required' | translate}}</div>
             </div>
           </div>
@@ -35,9 +35,9 @@
           <div class="mb-3">
             <label class="form-label">{{'Address Street' | translate}}</label>
             <input formControlName="addressStreet" type="text" class="form-control custom-input" id="addressStreet1"
-              placeholder="Enter address street" [ngClass]="{ 'is-invalid': submitted && f.addressStreet.errors }">
-            <div *ngIf="submitted && f.addressStreet.errors" class="invalid-feedback">
-              <div class="cst-error-style" *ngIf="f.addressStreet.errors.required">
+              placeholder="Enter address street" [ngClass]="{ 'is-invalid': submitted && getFormConfrols.addressStreet.errors }">
+            <div *ngIf="submitted && getFormConfrols.addressStreet.errors" class="invalid-feedback">
+              <div class="cst-error-style" *ngIf="getFormConfrols.addressStreet.errors.required">
                 *{{'Address street is required' | translate}}</div>
             </div>
           </div>
@@ -46,9 +46,9 @@
           <div class="mb-3">
             <label class="form-label">{{'Telecom' | translate}}</label>
             <input formControlName="telecom" type="number" class="form-control custom-input" id="telecom"
-              placeholder="Enter telecom" [ngClass]="{ 'is-invalid': submitted && f.telecom.errors }">
-            <div *ngIf="submitted && f.telecom.errors" class="invalid-feedback">
-              <div class="cst-error-style" *ngIf="f.telecom.errors.required">
+              placeholder="Enter telecom" [ngClass]="{ 'is-invalid': submitted && getFormConfrols.telecom.errors }">
+            <div *ngIf="submitted && getFormConfrols.telecom.errors" class="invalid-feedback">
+              <div class="cst-error-style" *ngIf="getFormConfrols.telecom.errors.required">
                 *{{'Telecom is required' | translate}}</div>
             </div>
           </div>
@@ -57,7 +57,7 @@
           <div class="mb-3">
             <label class="form-label">{{'Status' | translate}}</label>
             <p-dropdown formControlName="status" [options]="statusArr" optionLabel="name"
-              [ngClass]="{ 'is-invalid': submitted && f.status.errors }">
+              [ngClass]="{ 'is-invalid': submitted && getFormConfrols.status.errors }">
             </p-dropdown>
           </div>
         </div>

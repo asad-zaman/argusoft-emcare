@@ -4,6 +4,7 @@ import com.argusoft.who.emcare.web.common.model.EntityAuditInfo;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Objects;
 
 @Entity
 @Table(name = "activity_definition_resource")
@@ -41,5 +42,19 @@ public class ActivityDefinitionResource extends EntityAuditInfo implements Seria
 
     public void setResourceId(String resourceId) {
         this.resourceId = resourceId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ActivityDefinitionResource)) return false;
+        if (!super.equals(o)) return false;
+        ActivityDefinitionResource that = (ActivityDefinitionResource) o;
+        return Objects.equals(getId(), that.getId()) && Objects.equals(getText(), that.getText()) && Objects.equals(getResourceId(), that.getResourceId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), getId(), getText(), getResourceId());
     }
 }

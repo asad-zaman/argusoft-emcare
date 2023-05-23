@@ -5,8 +5,7 @@ export { LocationManagementComponent } from './components/Location/location-mana
 export { ShowLocationComponent } from './components/Location/location-management/show-location/show-location.component';
 export { ShowLocationTypeComponent } from './components/Location/location-type/show-location-type/show-location-type.component';
 export { LocationService } from './services/location.service';
-export { DeviceManagementComponent } from './components/Device-Management/device-management/device-management.component';
-export { DeviceListComponent } from './components/Device-Management/device-list/device-list.component';
+export { DeviceListComponent } from './components/device-list/device-list.component';
 export { DeviceManagementService } from './services/device-management.service';
 export { UserListComponent } from './components/User/user-list/user-list.component';
 export { ManageUserComponent } from './components/User/manage-user/manage-user.component';
@@ -35,4 +34,11 @@ export { OrganizationListComponent } from './components/organization-list/organi
 export { DuplicatePatientsComponent } from './components/duplicate-patients/duplicate-patients.component';
 export { ConsultationListComponent } from './components/patient-management/consultation-list/consultation-list.component';
 export { ViewConsultationComponent } from './components/patient-management/view-consultation/view-consultation.component';
-
+export { ManageCodeComponent } from './components/code/manage-code/manage-code.component';
+export { CodeListComponent } from './components/code/code-list/code-list.component';
+export { IndicatorComponent } from './components/indicator/indicator.component';
+export { IndicatorListComponent } from './components/indicator-list/indicator-list.component';
+export { TenantListComponent } from './components/tenant-list/tenant-list.component';
+export { ManageTenantComponent } from './components/manage-tenant/manage-tenant.component';
+export { AddLogComponent } from './components/add-log/add-log.component';
+export { LogListComponent } from './components/log-list/log-list.component';

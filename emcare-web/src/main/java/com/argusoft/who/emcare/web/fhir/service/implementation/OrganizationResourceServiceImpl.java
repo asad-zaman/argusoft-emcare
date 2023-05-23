@@ -37,7 +37,7 @@ public class OrganizationResourceServiceImpl implements OrganizationResourceServ
 
     @Override
     public OrganizationResource saveResource(OrganizationResource organizationResource) {
-        return organizationResourceRepository.save(organizationResource);
+        return organizationResourceRepository.saveAndFlush(organizationResource);
     }
 
     @Override

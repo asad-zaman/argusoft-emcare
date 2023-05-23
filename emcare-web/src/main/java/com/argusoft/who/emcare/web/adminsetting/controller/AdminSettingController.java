@@ -1,6 +1,5 @@
 package com.argusoft.who.emcare.web.adminsetting.controller;
 
-import com.argusoft.who.emcare.web.adminsetting.Entity.Settings;
 import com.argusoft.who.emcare.web.adminsetting.dto.SettingDto;
 import com.argusoft.who.emcare.web.adminsetting.service.AdminSettingService;
 import org.springframework.beans.factory.annotation.Autowired;

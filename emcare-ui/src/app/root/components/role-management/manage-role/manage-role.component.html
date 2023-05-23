@@ -1,4 +1,4 @@
-<div *ngIf="isAllowed" class="main-wrapper">
+<div *ngIf="isAllowed" class="main-wrapper-no-heading">
   <div class="form-wrapper">
     <form [formGroup]="roleForm" name="roleForm" novalidate>
       <div class="mb-5">
@@ -18,9 +18,9 @@
             <label class="form-label">{{'Role Name' | translate}}</label>
             <input class="form-control custom-input" formControlName="name" type="text" id="name"
               placeholder="{{'Role Name Placeholder' | translate}}"
-              [ngClass]="{ 'is-invalid': submitted && f.name.errors }">
-            <div *ngIf="submitted && f.name.errors" class="invalid-feedback">
-              <div class="cst-error-style" *ngIf="f.name.errors.required">
+              [ngClass]="{ 'is-invalid': submitted && getFormConfrols.name.errors }">
+            <div *ngIf="submitted && getFormConfrols.name.errors" class="invalid-feedback">
+              <div class="cst-error-style" *ngIf="getFormConfrols.name.errors.required">
                 {{'Role Name Required Message' | translate}}</div>
             </div>
           </div>

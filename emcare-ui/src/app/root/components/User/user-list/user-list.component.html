@@ -1,7 +1,10 @@
-<app-location-filter *ngIf="isView" (locationId)="getLocationId($event)"></app-location-filter>
+<app-location-filter *ngIf="isView" [isOtherPage]="false" (isClear)="clearFilter($event)"
+  (locationId)="getLocationId($event)">
+</app-location-filter>
 <div *ngIf="isView" class="main-wrapper">
-  <h1 class="heading">{{'User list Heading' | translate}}</h1>
-  <hr>
+  <div class="custom-header">
+    <h1 class="heading">{{'User list Heading' | translate}}</h1>
+  </div>
   <div class="row align-items-center mb-3">
     <div class="col-lg-3 col-xxl-2 col-md-5 position-relative">
       <input class="form-control custom-input h-35" id="exampleFormControlInput1" [(ngModel)]="searchString"
@@ -39,8 +42,7 @@
               <td class="text-center">{{user.phone ? user.phone : 'NA'}}</td>
               <td class="text-center">{{user.realmRoles[0] ? (user.realmRoles[0] | uppercase) : 'NA'}}</td>
               <ng-container></ng-container>
-              <td class="cst-text-overflow"
-                [ngClass]="{'text-center': getFacilityNames(user.facilities) == 'NA'}"
+              <td class="cst-text-overflow" [ngClass]="{'text-center': getFacilityNames(user.facilities) == 'NA'}"
                 pTooltip={{getFacilityNames(user.facilities)}} tooltipPosition="bottom">
                 <ng-container *ngIf="getFacilityNames(user.facilities) !== 'NA'; else noContent">
                   <ul style="list-style-type:circle">
@@ -53,8 +55,7 @@
                   <span>NA</span>
                 </ng-template>
               </td>
-              <td class="cst-text-overflow"
-                [ngClass]="{'text-center': getFacilityNames(user.facilities) == 'NA'}"
+              <td class="cst-text-overflow" [ngClass]="{'text-center': getFacilityNames(user.facilities) == 'NA'}"
                 pTooltip={{getLocation(user.facilities)}} tooltipPosition="bottom">
                 <ng-container *ngIf="getLocation(user.facilities) !== 'NA'; else noContent">
                   <ul style="list-style-type:circle">
@@ -70,10 +71,10 @@
               <td class="text-center">
                 <span [ngClass]="(!!user.enabled) ? 'badges-red bg-green' : 'badges-red'">
                   <ng-container *ngIf="!!user.enabled; else NotVerified">
-                    Active
+                    {{'Active' | translate}}
                   </ng-container>
                   <ng-template #NotVerified>
-                    In Active
+                    {{'In Active' | translate}}
                   </ng-template>
                 </span>
               </td>
@@ -129,9 +130,9 @@
                 <div class="mb-3">
                   <label class="form-label">{{'Password' | translate}}</label>
                   <input type="password" formControlName="password" class="form-control custom-input"
-                    [ngClass]="{ 'is-invalid': submitted && f.password.errors }" />
-                  <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
-                    <div *ngIf="f.password.errors.required">
+                    [ngClass]="{ 'is-invalid': submitted && getFormConfrols.password.errors }" />
+                  <div *ngIf="submitted && getFormConfrols.password.errors" class="invalid-feedback">
+                    <div *ngIf="getFormConfrols.password.errors.required">
                       {{'Password Required Message' | translate}}</div>
                   </div>
                 </div>
@@ -142,12 +143,12 @@
                 <div class="mb-3">
                   <label class="form-label">{{'ConfirmPassword' | translate}}</label>
                   <input type="password" formControlName="confirmPassword" class="form-control custom-input"
-                    [ngClass]="{ 'is-invalid': submitted && f.confirmPassword.errors }" />
-                  <div *ngIf="submitted && f.confirmPassword.errors" class="invalid-feedback">
-                    <div *ngIf="f.confirmPassword.errors.required">
+                    [ngClass]="{ 'is-invalid': submitted && getFormConfrols.confirmPassword.errors }" />
+                  <div *ngIf="submitted && getFormConfrols.confirmPassword.errors" class="invalid-feedback">
+                    <div *ngIf="getFormConfrols.confirmPassword.errors.required">
                       {{'Confirm Password Required Message' | translate}}
                     </div>
-                    <div *ngIf="f.confirmPassword.errors.mustMatch">
+                    <div *ngIf="getFormConfrols.confirmPassword.errors.mustMatch">
                       {{'Passwords Match Message' | translate}}
                     </div>
                   </div>

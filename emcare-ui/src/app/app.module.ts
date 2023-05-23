@@ -9,7 +9,6 @@ import {
   LocationManagementComponent,
   LocationTypeComponent,
   LocationService,
-  DeviceManagementComponent,
   DeviceManagementService,
   UserListComponent,
   ManageUserComponent,
@@ -35,7 +34,15 @@ import {
   LanguageListComponent,
   DuplicatePatientsComponent,
   ConsultationListComponent,
-  ViewConsultationComponent
+  ViewConsultationComponent,
+  ManageCodeComponent,
+  CodeListComponent,
+  IndicatorComponent,
+  IndicatorListComponent,
+  ForgotPasswordComponent,
+  AdminPanelComponent,
+  ManageOrganizationComponent,
+  OrganizationListComponent
 } from './root/index';
 import { AuthenticationService, ToasterService } from './shared';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -52,17 +59,23 @@ import { ShowFacilityComponent } from './root/components/Facility/show-facility/
 import { CheckboxModule } from 'primeng/checkbox';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { TooltipModule } from 'primeng/tooltip';
-import { ForgotPasswordComponent } from './root/components/forgot-password/forgot-password.component';
-import { AdminPanelComponent } from './root/components/admin-panel/admin-panel.component';
 import { AccordionModule } from 'primeng/accordion';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { ChartModule } from 'angular-highcharts';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
-import { ManageOrganizationComponent } from './root/components/manage-organization/manage-organization.component';
-import { OrganizationListComponent } from './root/components/organization-list/organization-list.component';
 import { NgxIntlTelInputModule } from 'ngx-intl-tel-input';
+import { TenantListComponent } from './root/components/tenant-list/tenant-list.component';
+import { ManageTenantComponent } from './root/components/manage-tenant/manage-tenant.component';
+import { MessagesModule } from 'primeng/messages';
+import { MessageModule } from 'primeng/message';
+import { TermsConditionsComponent } from './root/components/terms-conditions/terms-conditions.component';
+import { AddLogComponent } from './root/components/add-log/add-log.component';
+import { LogListComponent } from './root/components/log-list/log-list.component';
+import { LocationSubjects } from './root/components/Location/location-filter/LocationSubject';
+import { ColorPickerModule } from 'primeng/colorpicker';
+import { CalendarModule } from 'primeng/calendar';
 
 @NgModule({
   declarations: [
@@ -74,7 +87,6 @@ import { NgxIntlTelInputModule } from 'ngx-intl-tel-input';
     LocationManagementComponent,
     ShowLocationTypeComponent,
     ShowLocationComponent,
-    DeviceManagementComponent,
     DeviceListComponent,
     UserListComponent,
     ManageUserComponent,
@@ -101,7 +113,16 @@ import { NgxIntlTelInputModule } from 'ngx-intl-tel-input';
     OrganizationListComponent,
     DuplicatePatientsComponent,
     ConsultationListComponent,
-    ViewConsultationComponent
+    ViewConsultationComponent,
+    ManageCodeComponent,
+    CodeListComponent,
+    IndicatorComponent,
+    IndicatorListComponent,
+    TenantListComponent,
+    ManageTenantComponent,
+    TermsConditionsComponent,
+    AddLogComponent,
+    LogListComponent
   ],
   imports: [
     BrowserModule,
@@ -124,7 +145,11 @@ import { NgxIntlTelInputModule } from 'ngx-intl-tel-input';
     CardModule,
     ChartModule,
     ToastModule,
-    NgxIntlTelInputModule
+    NgxIntlTelInputModule,
+    MessagesModule,
+    MessageModule,
+    ColorPickerModule,
+    CalendarModule
   ],
   providers: [
     AuthenticationService,
@@ -141,6 +166,7 @@ import { NgxIntlTelInputModule } from 'ngx-intl-tel-input';
     ToasterService,
     LaunguageSubjects,
     MessageService,
+    LocationSubjects
   ],
   bootstrap: [AppComponent]
 })

@@ -13,6 +13,7 @@ import org.keycloak.representations.idm.UserRepresentation;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class UserMapper {
 
@@ -60,7 +61,7 @@ public class UserMapper {
         if (userInfo.getAttributes() == null || userInfo.getAttributes().isEmpty()) {
             userMaster.setLanguage(CommonConstant.ENGLISH);
         } else {
-            userMaster.setLanguage( userInfo.getAttributes() != null && userInfo.getAttributes().get(CommonConstant.LANGUAGE_KEY) != null
+            userMaster.setLanguage(userInfo.getAttributes() != null && userInfo.getAttributes().get(CommonConstant.LANGUAGE_KEY) != null
                     ? userInfo.getAttributes().get(CommonConstant.LANGUAGE_KEY).get(0)
                     : CommonConstant.ENGLISH);
             userMaster.setPhone(
@@ -106,7 +107,7 @@ public class UserMapper {
         user.setEmail(userRepresentation.getEmail());
         user.setEnabled(userRepresentation.isEnabled());
         user.setRealmRoles(userRepresentation.getRealmRoles());
-        user.setLanguage( userRepresentation.getAttributes() != null && userRepresentation.getAttributes().get(CommonConstant.LANGUAGE_KEY) != null
+        user.setLanguage(userRepresentation.getAttributes() != null && userRepresentation.getAttributes().get(CommonConstant.LANGUAGE_KEY) != null
                 ? userRepresentation.getAttributes().get(CommonConstant.LANGUAGE_KEY).get(0)
                 : CommonConstant.ENGLISH);
         user.setPhone(
@@ -121,12 +122,13 @@ public class UserMapper {
         return user;
     }
 
-    public static List<UserLocationMapping> getUserMappingEntityPerLocation(UserDto userDto, String userId) {
+    public static List<UserLocationMapping> getUserMappingEntityPerLocation(UserDto userDto, String userId, Map<String, Long> locationId) {
         List<UserLocationMapping> users = new ArrayList<>();
 
         for (String facilityId : userDto.getFacilityIds()) {
             UserLocationMapping user = new UserLocationMapping();
             user.setUserId(userId);
+            user.setLocationId(locationId.get(facilityId).intValue());
             user.setFacilityId(facilityId);
             user.setIsFirst(true);
             if (userDto.getRegRequestFrom().equalsIgnoreCase(UserConst.MOBILE)) {
@@ -140,6 +142,17 @@ public class UserMapper {
             users.add(user);
         }
 
+        return users;
+    }
+
+    public static List<UserLocationMapping> getUserMappingEntityPerLocationForTenant(UserDto userDto, String userId, Map<String, Long> locationId) {
+        List<UserLocationMapping> users = new ArrayList<>();
+        UserLocationMapping user = new UserLocationMapping();
+        user.setUserId(userId);
+        user.setIsFirst(false);
+        user.setRegRequestFrom(UserConst.WEB);
+        user.setState(true);
+        users.add(user);
         return users;
     }
 }

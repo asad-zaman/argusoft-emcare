@@ -16,6 +16,7 @@ import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.resource.UserResource;
 import org.keycloak.representations.idm.UserSessionRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -47,6 +48,9 @@ public class DeviceServiceImpl implements DeviceService {
     @Autowired
     KeyCloakConfig keyCloakConfig;
 
+    @Value("${keycloak.realm}")
+    String realm;
+
     @Override
     public ResponseEntity<Object> addNewDevice(DeviceDto deviceDto) {
         String userId = emCareSecurityUser.getLoggedInUserId();
@@ -76,9 +80,9 @@ public class DeviceServiceImpl implements DeviceService {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new Response("Device Data Not Found", HttpStatus.NO_CONTENT.value()));
         }
         Keycloak keycloak = keyCloakConfig.getInstance();
-        UserResource userResource = keycloak.realm(KeyCloakConfig.REALM).users().get(userId);
+        UserResource userResource = keycloak.realm(realm).users().get(userId);
         UserSessionRepresentation sessions = userResource.getUserSessions().get(0);
-        keycloak.realm(KeyCloakConfig.REALM).deleteSession(sessions.getId());
+        keycloak.realm(realm).deleteSession(sessions.getId());
         DeviceMaster updatedDevice = DeviceMapper.getDeviceMaster(oldDeviceDetails, deviceDto, userName);
         return ResponseEntity.status(HttpStatus.OK).body(updatedDevice);
     }
@@ -95,11 +99,11 @@ public class DeviceServiceImpl implements DeviceService {
         deviceInfo.setIsBlocked(status);
         deviceRepository.save(deviceInfo);
         Keycloak keycloak = keyCloakConfig.getInstance();
-        UserResource userResource = keycloak.realm(KeyCloakConfig.REALM).users().get(deviceInfo.getLastLoggedInUser());
+        UserResource userResource = keycloak.realm(realm).users().get(deviceInfo.getLastLoggedInUser());
         List<UserSessionRepresentation> userSessions = userResource.getUserSessions();
         if (!userSessions.isEmpty()) {
             UserSessionRepresentation sessions = userSessions.get(0);
-            keycloak.realm(KeyCloakConfig.REALM).deleteSession(sessions.getId());
+            keycloak.realm(realm).deleteSession(sessions.getId());
         }
         return ResponseEntity.ok(deviceInfo);
     }
@@ -119,8 +123,6 @@ public class DeviceServiceImpl implements DeviceService {
         if (deviceUUID != null) {
             device = deviceRepository.getDeviceByDeviceUUID(deviceUUID).orElse(null);
         }
-
-
         return ResponseEntity.ok(device);
     }
 
@@ -154,7 +156,8 @@ public class DeviceServiceImpl implements DeviceService {
             totalCount = deviceRepository.count();
             allDevice = deviceRepository.findAll(page);
         }
-        allDevice.forEach(deviceMaster -> {});
+        allDevice.forEach(deviceMaster -> {
+        });
         allDevice.forEach(deviceMaster -> list.add(DeviceMapper.getDeviceWithUser(deviceMaster, userService.getUserDtoById(deviceMaster.getLastLoggedInUser()))));
 
         PageDto pageDto = new PageDto();

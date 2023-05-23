@@ -1,12 +1,7 @@
 package com.argusoft.who.emcare.web.user.service;
 
 import com.argusoft.who.emcare.web.common.dto.PageDto;
-import com.argusoft.who.emcare.web.config.KeyCloakConfig;
 import com.argusoft.who.emcare.web.user.dto.*;
-import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
-import org.keycloak.OAuth2Constants;
-import org.keycloak.admin.client.Keycloak;
-import org.keycloak.admin.client.KeycloakBuilder;
 import org.keycloak.admin.client.resource.RolesResource;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
@@ -14,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author jay
@@ -36,9 +32,11 @@ public interface UserService {
 
     public RolesResource getAllRolesForSignUp(HttpServletRequest request);
 
-    public ResponseEntity<Object> signUp(UserDto user);
+    public ResponseEntity<Object> signUp(UserDto user, HttpServletRequest request);
 
-    public ResponseEntity<Object> addUser(UserDto user);
+    public ResponseEntity<Object> userLogin(LoginRequestDto loginCred, HttpServletRequest request);
+
+    public ResponseEntity<Object> addUser(UserDto user, HttpServletRequest request);
 
     public void addRealmRole(RoleDto role);
 
@@ -50,7 +48,7 @@ public interface UserService {
 
     public ResponseEntity<Object> getUserRolesById(String userId);
 
-    public ResponseEntity<Object> updateUser(UserDto userDto, String userId);
+    public ResponseEntity<Object> updateUser(UserDto userDto, String userId, HttpServletRequest request);
 
     public ResponseEntity<Object> updatePassword(UserDto userDto, String userId);
 
@@ -60,23 +58,21 @@ public interface UserService {
 
     public String getRoleNameById(String roleId);
 
-    public PageDto getUsersUnderLocation(Integer locationId, Integer pageNo);
+    public PageDto getUsersUnderLocation(Object locationId, Integer pageNo);
 
     public UserRepresentation getUserByEmailId(String emailId);
 
     public UserRepresentation resetPassword(String emailId, String password);
 
-    public default Keycloak getKeyCloakInstance() {
-        return KeycloakBuilder.builder()
-                .serverUrl(KeyCloakConfig.SERVER_URL)
-                .realm(KeyCloakConfig.REALM)
-                .grantType(OAuth2Constants.PASSWORD)
-                .username(KeyCloakConfig.USER_NAME)
-                .password(KeyCloakConfig.PASSWORD)
-                .clientId(KeyCloakConfig.CLIENT_ID)
-                .authorization(KeyCloakConfig.getAccessToken())
-                .clientSecret(KeyCloakConfig.CLIENT_SECRET)
-                .resteasyClient(new ResteasyClientBuilder().connectionPoolSize(10).build())
-                .build();
-    }
+    public Map<String, Object> checkEmailIdExist(String email);
+
+    public ResponseEntity<Object> addUserForCountry(UserDto user, String tenantId);
+
+    public void removeRole(String roleName) throws Exception;
+
+    public void removeUser(String email) throws Exception;
+
+    public List<String> getCurrentUserFacility();
+
+
 }

@@ -10,6 +10,7 @@ import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
 import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.fhir.model.QuestionnaireMaster;
 import com.argusoft.who.emcare.web.fhir.service.QuestionnaireMasterService;
+import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.Meta;
 import org.hl7.fhir.r4.model.Questionnaire;
@@ -150,6 +151,11 @@ public class QuestionnaireResourceProvider implements IResourceProvider {
         } else {
             questionnaireMasterService.remove(questionnaireMaster);
         }
+    }
+
+    @Search()
+    public Bundle getQuestionnaireCountBasedOnDate(@RequiredParam(name = CommonConstant.SUMMARY) String type, @OptionalParam(name = CommonConstant.RESOURCE_LAST_UPDATED_AT) DateParam theDate) {
+        return questionnaireMasterService.getQuestionnaireCountBasedOnDate(type, theDate);
     }
 
 }

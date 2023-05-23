@@ -1,0 +1,131 @@
+.cst-white {
+    background-color: white;
+}
+
+.loglist {
+    position: fixed;
+    left: 265px;
+    top: 180px;
+    background: #fff;
+    width: 260px;
+}
+
+.loglist ul {
+    margin: 0px;
+    padding: 0px;
+}
+
+.loglist ul li {
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: normal;
+    list-style-type: none;
+    color: #57686f;
+    padding: 14px 8px;
+    background: #fff;
+    border-bottom: 1px solid #ebeced;
+}
+
+.loglist ul li:last-child {
+    border: 0px;
+}
+
+.loglist ul .loglist-active {
+    position: relative;
+    background: #146ca1;
+    font-weight: 500;
+    color: #fff;
+}
+
+.loglist ul .loglist-active .apk-date {
+    color: #fff;
+}
+
+.loglist ul .loglist-active:after {
+    content: "";
+    position: absolute;
+    right: -70px;
+    top: 0px;
+    width: 0;
+    height: 0;
+    border-top: 33px solid transparent;
+    // border-left: 30px solid #146ca1;
+    border-bottom: 33px solid transparent;
+    border-right: 40px solid transparent;
+}
+
+@media (max-width: 991px) {
+    .loglist {
+        width: 80%;
+        position: relative;
+        left: 0px;
+        top: 60px;
+    }
+
+    .loglist_header {
+        width: 100%;
+        left: 0;
+    }
+}
+
+.apk-download {
+    margin-left: 340px;
+    border-left: 1px solid #ebeced;
+    padding-left: 40px;
+    margin-top: 33px;
+}
+
+.apk-download .apk-text {
+    padding: 20px 0px;
+    position: relative;
+    border-bottom: 1px solid #ebeced;
+}
+
+.apk-download .apk-text i {
+    position: absolute;
+    left: 280px;
+    top: 10px;
+    font-size: 26px;
+    cursor: pointer;
+    color: #146ca1;
+}
+
+.apk-download .apk-text ul {
+    margin-top: 10px;
+    padding: 0px;
+    margin-left: 18px;
+}
+
+.apk-download .apk-text ul li {
+    margin-bottom: 6px;
+}
+
+.apk-download .apk-text:last-child {
+    border: 0px;
+}
+
+.apk-download h4 {
+    font-size: 16px;
+    color: #57686f;
+    width: 260px;
+    display: -webkit-box;
+    max-width: 100%;
+    -webkit-line-clamp: 1 !important;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+@media (max-width: 991px) {
+    .apk-download {
+        margin-left: 0px;
+        margin-top: 100px;
+    }
+}
+
+.apk-date {
+    display: block;
+    font-size: 11px;
+    font-weight: normal;
+    color: #57686f;
+}

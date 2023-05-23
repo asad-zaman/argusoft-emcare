@@ -1,0 +1,61 @@
+<div *ngIf="isView" class="main-wrapper">
+  <div class="custom-header">
+    <h1 class="heading">{{'Device List' | translate}}</h1>
+  </div>
+  <div class="row align-items-center mb-3">
+    <div class=" col-lg-3 col-xxl-2 col-md-5 position-relative">
+      <input class="form-control custom-input h-35" id="exampleFormControlInput1" [(ngModel)]="searchString"
+        (input)="searchFilter()" placeholder="{{'Search Placeholder' | translate}}">
+    </div>
+  </div>
+  <!--Table-->
+  <div *ngIf="!isAPIBusy" class="table-responsive">
+    <table class="data-table" aria-labelledby="device-list">
+      <thead>
+        <tr>
+          <th>{{'Sr. No' | translate}}</th>
+          <th>{{'Device UUID' | translate}}</th>
+          <th>{{'Android Version' | translate}}</th>
+          <th>{{'Logged in User' | translate}}</th>
+          <th>{{'Ig Version' | translate}}</th>
+          <th>{{'App Usage' | translate}}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngIf="filteredDevices && filteredDevices.length > 0; else noRecords">
+          <ng-container *ngFor="let data of filteredDevices | 
+          paginate : { itemsPerPage: tableSize, currentPage: currentPage, totalItems: totalCount }; let i=index">
+            <tr>
+              <td>{{currentPage == 0 ? ((currentPage)*10 + i + 1) : ((currentPage-1)*10 + i + 1)}}</td>
+              <td>{{data.deviceUUID}}</td>
+              <td>{{data.androidVersion}}</td>
+              <td>{{data.usersResource ? data.usersResource.userName : 'NA'}}</td>
+              <td>{{data.igVersion ? data.igVersion : 'NA'}}</td>
+              <td>
+                <label class="switch">
+                  <input [(ngModel)]="data.appUsage" (click)="editDevice($event, data.deviceId)" id="isBlocked"
+                    type="checkbox">
+                  <span class="slider round"></span>
+                </label>
+              </td>
+            </tr>
+          </ng-container>
+        </ng-container>
+        <ng-template #noRecords>
+          <div class="no-record">
+            {{'No Records' | translate}}
+          </div>
+        </ng-template>
+      </tbody>
+    </table>
+    <div *ngIf="filteredDevices && filteredDevices.length > 0" class="d-flex justify-content-end mt-3">
+      <pagination-controls responsive="true" [previousLabel]="getLabel(0)" [nextLabel]="getLabel(1)"
+        (pageChange)="onIndexChange($event)">
+      </pagination-controls>
+    </div>
+  </div>
+  <!--Table-END-->
+</div>
+<div *ngIf="!isView" class="main-wrapper-nodata">
+  {{'NoAccess' | translate}}
+</div>

@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AuthGuard } from 'src/app/auth/auth.guard';
 import { FhirService, ToasterService } from 'src/app/shared';
 import { LocationService } from '../../../services/location.service';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-manage-facility',
@@ -15,7 +16,7 @@ export class ManageFacilityComponent implements OnInit {
   facilityForm: FormGroup;
   isEdit: boolean = false;
   editId: string;
-  submitted: boolean;
+  submitted: boolean = false;
   locationArr: Array<any> = [];
   statusArr: Array<any> = [];
   selectedId: any;
@@ -28,6 +29,7 @@ export class ManageFacilityComponent implements OnInit {
   isAllowed: boolean = true;
   orgArr = [];
   isOrganizationAsFacility = false;
+  apiBusy: boolean = true;
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -50,9 +52,22 @@ export class ManageFacilityComponent implements OnInit {
   }
 
   prerequisite() {
-    this.initFacilityForm();
-    this.getAllOrganizations();
-    this.getAllLocations();
+    forkJoin([
+      this.fhirService.getAllOrganizations(),
+      this.locationService.getAllLocations()
+    ]).subscribe(result => {
+      if (result && result.length > 0) {
+        this.setAllOrganizations(result[0]);
+        this.setAllLocations(result[1]);
+        this.checkEditParam();
+        this.apiBusy = false;
+        //  toDo when both api succeds then only this should be init
+        //  check and set values
+        this.initFacilityForm();
+      }
+    }, (_e) => {
+      this.toasterService.showToast('error', 'Server issue!', 'EM CARE !');
+    });
   }
 
   checkFeatures() {
@@ -60,16 +75,10 @@ export class ManageFacilityComponent implements OnInit {
       if (res.relatedFeature && res.relatedFeature.length > 0) {
         this.isAddFeature = res.featureJSON['canAdd'];
         this.isEditFeature = res.featureJSON['canEdit'];
-        if (this.isAddFeature && this.isEditFeature) {
-          this.isAllowed = true;
-        } else if (this.isAddFeature && !this.isEdit) {
-          this.isAllowed = true;
-        } else if (!this.isEditFeature && this.isEdit) {
-          this.isAllowed = false;
-        } else if (!this.isAddFeature && this.isEdit) {
-          this.isAllowed = true;
-        } else if (this.isEditFeature && this.isEdit) {
-          this.isAllowed = true;
+        if (this.isEdit) {
+          this.isAllowed = this.isEditFeature || !this.isAddFeature ? true : false;
+        } else if (this.isAddFeature) {
+          this.isAllowed = this.isEditFeature || !this.isEdit ? true : false;
         } else {
           this.isAllowed = false;
         }
@@ -98,14 +107,12 @@ export class ManageFacilityComponent implements OnInit {
     this.checkFeatures();
   }
 
-  getAllOrganizations() {
-    this.fhirService.getAllOrganizations().subscribe(res => {
-      if (res && res['entry']) {
-        this.orgArr = res['entry'].map(el => {
-          return { id: el.resource.id, name: el.resource.name }
-        });
-      }
-    });
+  setAllOrganizations(res) {
+    if (res && res['entry']) {
+      this.orgArr = res['entry'].map(el => {
+        return { id: el.resource.id, name: el.resource.name }
+      });
+    }
   }
 
   getStatusObjById(status) {
@@ -135,13 +142,10 @@ export class ManageFacilityComponent implements OnInit {
     });
   }
 
-  getAllLocations() {
-    this.locationService.getAllLocations().subscribe((res: Array<Object>) => {
-      if (res) {
-        this.locationArr = res;
-        this.checkEditParam();
-      }
-    })
+  setAllLocations(res) {
+    if (res) {
+      this.locationArr = res;
+    }
   }
 
   initFacilityForm() {
@@ -158,7 +162,7 @@ export class ManageFacilityComponent implements OnInit {
     });
   }
 
-  get f() {
+  get getFormConfrols() {
     return this.facilityForm.controls;
   }
 
@@ -257,7 +261,7 @@ export class ManageFacilityComponent implements OnInit {
       });
     }
     else {
-      this.toasterService.showToast('info', 'Geolocation is not supported by this browser!!', 'EMCARE');
+      this.toasterService.showToast('info', 'Geolocation is not supported by this browser!', 'EMCARE');
     }
   }
 
