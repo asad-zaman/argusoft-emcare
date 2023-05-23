@@ -92,32 +92,35 @@ CREATE TABLE public.email_content (
 
 ALTER TABLE public.email_content OWNER TO postgres;
 
-CREATE TABLE public.emcare_custom_code_system (
+CREATE TABLE IF NOT EXISTS public.emcare_custom_code_system
+(
     code_id bigint NOT NULL,
-    created_by character varying(255) NOT NULL,
+    created_by character varying(255) COLLATE pg_catalog."default" NOT NULL,
     created_on timestamp without time zone NOT NULL,
-    modified_by character varying(255),
+    modified_by character varying(255) COLLATE pg_catalog."default",
     modified_on timestamp without time zone,
-    code character varying(255) NOT NULL,
-    code_description character varying(255)
+    code character varying(255) COLLATE pg_catalog."default" NOT NULL,
+    code_description character varying(255) COLLATE pg_catalog."default",
+    condition bytea,
+    value_type character varying(255) COLLATE pg_catalog."default",
+    value bytea
 );
 
 
 ALTER TABLE public.emcare_custom_code_system OWNER TO postgres;
 
-CREATE TABLE public.emcare_resources (
+CREATE TABLE IF NOT EXISTS public.emcare_resources
+(
     id integer NOT NULL,
-    resource_id character varying(255),
-    text text,
-    type text,
-    modified_by character varying(255),
+    resource_id character varying(255) COLLATE pg_catalog."default",
+    text text COLLATE pg_catalog."default",
+    type text COLLATE pg_catalog."default",
+    modified_by character varying(255) COLLATE pg_catalog."default",
     modified_on timestamp without time zone,
-    created_by character varying(255) NOT NULL,
+    created_by character varying(255) COLLATE pg_catalog."default" NOT NULL,
     created_on timestamp without time zone NOT NULL,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone,
-    updated_by uuid,
-    facility_id character varying(255)
+    facility_id character varying(255) COLLATE pg_catalog."default",
+    gender text COLLATE pg_catalog."default" GENERATED ALWAYS AS (((text)::json ->> 'gender'::text)) STORED
 );
 
 
@@ -305,19 +308,19 @@ CREATE TABLE public.menu_config (
 
 ALTER TABLE public.menu_config OWNER TO postgres;
 
-CREATE TABLE public.observation_resource (
+CREATE TABLE IF NOT EXISTS public.observation_resource
+(
     id bigint NOT NULL,
-    created_by character varying(255) NOT NULL,
+    created_by character varying(255) COLLATE pg_catalog."default" NOT NULL,
     created_on timestamp without time zone NOT NULL,
-    modified_by character varying(255),
+    modified_by character varying(255) COLLATE pg_catalog."default",
     modified_on timestamp without time zone,
-    resource_id character varying(255),
-    subject_id character varying(255),
-    subject_type character varying(255),
-    text text,
-    ident text GENERATED ALWAYS AS (((text)::json -> 'id'::text)) STORED
+    resource_id character varying(255) COLLATE pg_catalog."default",
+    subject_id character varying(255) COLLATE pg_catalog."default",
+    subject_type character varying(255) COLLATE pg_catalog."default",
+    text text COLLATE pg_catalog."default",
+    code text COLLATE pg_catalog."default" GENERATED ALWAYS AS ((((((text)::json -> 'code'::text) -> 'coding'::text) -> 0) ->> 'code'::text)) STORED
 );
-
 
 ALTER TABLE public.observation_resource OWNER TO postgres;
 

@@ -2,8 +2,9 @@
   (locationId)="getLocationId($event)">
 </app-location-filter>
 <div *ngIf="isView" class="main-wrapper">
-  <h1 class="heading">{{'User list Heading' | translate}}</h1>
-  <hr>
+  <div class="custom-header">
+    <h1 class="heading">{{'User list Heading' | translate}}</h1>
+  </div>
   <div class="row align-items-center mb-3">
     <div class="col-lg-3 col-xxl-2 col-md-5 position-relative">
       <input class="form-control custom-input h-35" id="exampleFormControlInput1" [(ngModel)]="searchString"
