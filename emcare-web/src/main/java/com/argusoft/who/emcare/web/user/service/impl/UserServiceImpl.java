@@ -467,7 +467,6 @@ public class UserServiceImpl implements UserService {
         } else {
             kcUser.setUsername(user.getUserName());
         }
-        kcUser.setUsername(user.getUserName());
         kcUser.setCredentials(Collections.singletonList(credentialRepresentation));
         kcUser.setFirstName(user.getFirstName());
         kcUser.setLastName(user.getLastName());
