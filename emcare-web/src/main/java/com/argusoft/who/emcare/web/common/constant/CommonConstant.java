@@ -88,7 +88,7 @@ public class CommonConstant {
     public static final String URL_PREFIX = "jdbc:postgresql://";
     public static final String POSTGRESQL_DEFAULT_DATABASE = "postgres";
     public static final String SUPER_ADMIN_ROLE = "SUPER_ADMIN";
-    public static final String DEFAULT_TENANT_ID = "Global";
+    public static final String DEFAULT_TENANT_ID = "Kambezi";
     public static final String TENANT_ID = "tenantID";
     public static final String VALUE = "value";
     public static final String TENANT_ADMIN_ROLE_POSTFIX = "_Admin";
