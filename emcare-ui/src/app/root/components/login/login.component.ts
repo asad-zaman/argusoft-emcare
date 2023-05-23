@@ -46,7 +46,7 @@ export class LoginComponent implements OnInit {
     this.loginForm = this.formBuilder.group({
       username: [
         window.location.href == url ? environment.testUsername : '',
-        [Validators.required, Validators.pattern(appConstants.emailPattern)],
+        [Validators.required],
       ],
       password: [
         window.location.href == url ? environment.testPassword : '',
