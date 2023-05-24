@@ -68,4 +68,9 @@ public class OpenApiController {
     public ResponseEntity<ApplicationLog> getLatestApplication() {
         return ResponseEntity.ok().body(applicationLogService.getLatestApplicationLogs());
     }
+
+    @GetMapping("/country/application/log/all")
+    public ResponseEntity<Object> getAllApplicationLog() throws Exception {
+        return ResponseEntity.ok().body(applicationLogService.getAllApplicationLogs());
+    }
 }
