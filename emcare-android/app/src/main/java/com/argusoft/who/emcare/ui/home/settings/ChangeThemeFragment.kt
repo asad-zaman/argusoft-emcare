@@ -99,8 +99,8 @@ class ChangeThemeFragment : BaseFragment<FragmentScreenResizeSettingsBinding>() 
                         binding.rootLayout.showProgress(it)
                         Log.d("Synced", "$progress%")
                     }
-                } else {
-                    binding.rootLayout.hideProgressUi()
+                } else if(it.first == 0){
+                    binding.rootLayout.updateProgressUi(true, true)
                 }
             }
             apiResponse.handleListApiView(binding.rootLayout) {

@@ -90,11 +90,12 @@ class SignUpViewModel @Inject constructor(
             !isTermsChecked -> _errorMessageState.value = R.string.error_msg_terms
 //            roleName.isNullOrEmpty() -> _errorMessageState.value = R.string.error_msg_role
             else -> {
+                val builder = StringBuilder()
                 signupRequest.firstName = firstname
                 signupRequest.lastName = lastname
                 signupRequest.email = email
                 signupRequest.facilityIds = listOf(facilityId)
-                signupRequest.roleName = DEFAULT_USER_ROLE
+                signupRequest.roleName = builder.append(country).append("_").append(DEFAULT_USER_ROLE).toString()
                 signupRequest.phone = phone
                 signupRequest.countryCode = DEFAULT_COUNTRY_CODE
                 _errorMessageState.value = 0

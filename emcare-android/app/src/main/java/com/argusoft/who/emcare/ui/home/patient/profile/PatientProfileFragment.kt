@@ -125,8 +125,8 @@ class PatientProfileFragment : BaseFragment<FragmentPatientProfileBinding>() {
                         binding.patientProfileLayout.showProgress(it)
                         Log.d("Synced", "$progress%")
                     }
-                } else {
-                    binding.patientProfileLayout.hideProgressUi()
+                }else if(it.first == 0){
+                    binding.patientProfileLayout.updateProgressUi(true, true)
                 }
             }
             apiResponse.whenFailed {

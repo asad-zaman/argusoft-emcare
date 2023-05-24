@@ -78,8 +78,8 @@ class AboutFragment : BaseFragment<FragmentAboutBinding>() {
                         binding.progressLayout.showProgress(it)
                         Log.d("Synced", "$progress%")
                     }
-                } else {
-                    binding.progressLayout.hideProgressUi()
+                }else if(it.first == 0){
+                    binding.progressLayout.updateProgressUi(true, true)
                 }
             }
 

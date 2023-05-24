@@ -80,8 +80,10 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(), EasyPermissions.Perm
                     "Synced $progress%".also { binding.progressLayout.showProgress(it)
                         Log.d("Synced", "$progress%")
                     }
-                }else{
-                    binding.progressLayout.hideProgressUi()
+                }else if(it.first == 0){
+                    binding.progressLayout.updateProgressUi(true, true)
+                    startActivity(Intent(requireContext(), HomeActivity::class.java))
+                    requireActivity().finish()
                 }
             }
 
