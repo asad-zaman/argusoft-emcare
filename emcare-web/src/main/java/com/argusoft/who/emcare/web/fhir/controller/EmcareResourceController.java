@@ -77,6 +77,12 @@ public class EmcareResourceController {
         return emcareResourceService.getPatientsPage(pageNo, searchString);
     }
 
+    @GetMapping("/patient/page/all")
+    public PageDto getPatientsDataByFilter(@Nullable @RequestParam(value = "search", required = false) String searchString,
+                                           @Nullable @RequestParam(value = "locationId") Object locationId) {
+        return emcareResourceService.getPatientsAllDataByFilter(searchString, locationId);
+    }
+
     @GetMapping("/patient/locationId/{locationId}")
     public PageDto getAllPatientsUnderLocation(@PathVariable(value = "locationId") Object locationId,
                                                @RequestParam(value = "pageNo") Integer pageNo) {

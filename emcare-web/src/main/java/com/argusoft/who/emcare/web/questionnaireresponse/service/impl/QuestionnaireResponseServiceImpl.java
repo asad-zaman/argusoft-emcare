@@ -132,4 +132,14 @@ public class QuestionnaireResponseServiceImpl implements QuestionnaireResponseSe
         List<QuestionnaireResponse> questionnaireResponses = questionnaireResponseRepository.findByPatientId(patientId);
         return questionnaireResponses.stream().map(QuestionnaireResponse::getQuestionnaireResponseText).collect(Collectors.toList());
     }
+
+    @Override
+    public Map<String, Object> getAllDataForExport() {
+        List<String> patients = questionnaireResponseRepository.findDistinctPatientIdd();
+        Map<String, Object> map = new HashMap<>();
+        for (String patient : patients) {
+            map.put(patient, questionnaireResponseRepository.findByPatientId(patient).stream().map(QuestionnaireResponse::getQuestionnaireResponseText).collect(Collectors.toList()));
+        }
+        return map;
+    }
 }
