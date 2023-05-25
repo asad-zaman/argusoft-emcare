@@ -318,6 +318,69 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
     }
 
     @Override
+    public PageDto getPatientsAllDataByFilter(String searchString,Object locationId) {
+        List<Patient> patientsList = new ArrayList<>();
+        List<PatientDto> patientDtosList;
+        Integer totalCount = 0;
+        List<EmcareResource> resourcesList;
+        if (searchString != null && !searchString.isEmpty()) {
+            totalCount = repository.findByTypeContainingAndTextContainingIgnoreCase(CommonConstant.FHIR_PATIENT, searchString).size();
+            resourcesList = repository.findByTypeContainingAndTextContainingIgnoreCase(CommonConstant.FHIR_PATIENT, searchString);
+        } else {
+            totalCount = repository.findAllByType(CommonConstant.FHIR_PATIENT).size();
+            resourcesList = repository.findAllByType(CommonConstant.FHIR_PATIENT);
+        }
+
+        for (EmcareResource emcareResource : resourcesList) {
+            Patient patient = parser.parseResource(Patient.class, emcareResource.getText());
+            patientsList.add(patient);
+        }
+
+        patientDtosList = EmcareResourceMapper.patientEntitiesToDtoMapper(patientsList);
+
+        if(Objects.nonNull(locationId)){
+            List<Integer> locationIds;
+            List<String> childFacilityIds = new ArrayList<>();
+            if (isNumeric(locationId.toString())) {
+                locationIds = locationMasterDao.getAllChildLocationId(Integer.parseInt(locationId.toString()));
+                childFacilityIds = locationResourceRepository.findResourceIdIn(locationIds);
+            } else {
+                childFacilityIds.add(locationId.toString());
+            }
+
+            List<String> finalChildFacilityIds = childFacilityIds;
+            patientDtosList = patientDtosList.stream().filter(patientDto -> finalChildFacilityIds.contains(patientDto.getFacility())).collect(Collectors.toList());
+        }
+
+        //Converting caregiverId and locationid to name
+        for (PatientDto patientDto : patientDtosList) {
+
+            if (patientDto.getCaregiver() != null) {
+                RelatedPerson caregiver = relatedPersonResourceService.getResourceById(patientDto.getCaregiver());
+                if (caregiver != null) {
+                    patientDto.setCaregiver(caregiver.getNameFirstRep().getGiven().get(0) + " " + caregiver.getNameFirstRep().getFamily());
+                } else {
+                    patientDto.setCaregiver(null);
+                }
+            }
+
+            if (patientDto.getFacility() != null) {
+                FacilityDto facilityDto = locationResourceService.getFacilityDto(patientDto.getFacility());
+                if (facilityDto != null) {
+                    patientDto.setFacility(facilityDto.getFacilityName());
+                    patientDto.setOrganizationName(facilityDto.getOrganizationName());
+                    patientDto.setLocationName(facilityDto.getLocationName());
+                }
+            }
+        }
+
+        PageDto pageDto = new PageDto();
+        pageDto.setList(patientDtosList);
+        pageDto.setTotalCount(totalCount.longValue());
+        return pageDto;
+    }
+
+    @Override
     public List<EmcareResource> retrieveResourcesByType(String type, DateParam theDate, IdType theId) {
         List<String> childFacilityIds = new ArrayList<>();
         if (theId != null) {

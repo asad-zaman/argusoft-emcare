@@ -39,4 +39,7 @@ public interface QuestionnaireResponseRepository extends JpaRepository<Questionn
     public List<MiniPatient> findDistinctByPatientIdIn(@Param("resourceId") List<String> resourceId);
 
     public List<QuestionnaireResponse> findByPatientId(String patientId);
+
+    @Query(value = "SELECT DISTINCT(patient_id) FROM QUESTIONNAIRE_RESPONSE", nativeQuery = true)
+    public List<String> findDistinctPatientIdd();
 }
