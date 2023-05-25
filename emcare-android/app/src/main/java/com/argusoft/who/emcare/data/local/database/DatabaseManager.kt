@@ -67,6 +67,10 @@ class DatabaseManager(roomDatabase: RoomDatabase) : Database {
         return dao.getAllConsultations()
     }
 
+    override suspend fun getAllConsultationsAfterTimestamp(timestamp: String): List<ConsultationFlowItem>? {
+        return dao.getAllConsultationsAfterTimestamp(timestamp)
+    }
+
     override suspend fun getAllConsultationsByEncounterId(encounterId: String): List<ConsultationFlowItem>? {
         return dao.getAllConsultationsByEncounterId(encounterId)
     }
@@ -113,5 +117,12 @@ class DatabaseManager(roomDatabase: RoomDatabase) : Database {
 
     override suspend fun deleteConsultationFlowItemById(consultationFlowItemId: String) {
         return dao.deleteConsultationFlowItemById(consultationFlowItemId)
+    }
+
+    override suspend fun getNextConsultationByConsultationIdAndEncounterId(
+        consultationId: String,
+        encounterId: String
+    ): ConsultationFlowItem? {
+        return dao.getNextConsultationByConsultationIdAndEncounterId(consultationId, encounterId)
     }
 }

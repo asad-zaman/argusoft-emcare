@@ -54,6 +54,9 @@ export class HomeComponent implements OnInit {
     this.getDashboardData();
     this.getChartData();
     this.getIndicatorCompileValue();
+    if (!this.conditionArrForAgeAndColor.find(el => el.id === 'bw')) {
+      this.conditionArrForAgeAndColor.push({ id: 'bw', name: 'between' });
+    }
   }
 
   getDashboardData() {
@@ -378,7 +381,9 @@ export class HomeComponent implements OnInit {
       ageValue: data.age ? this.fhirService.getAgeConditionAndValue(data.age).value : null,
       startDate: data.startDate,
       endDate: data.endDate,
-      facility: []
+      facility: [],
+      isShowBetween: false,
+      ageExtraValue: ''
     });
   }
 
@@ -399,8 +404,13 @@ export class HomeComponent implements OnInit {
       const data = {
         indicatorId: controls.value.indicatorId,
         gender: controls.value.gender ? controls.value.gender.id : null,
-        age: controls.value.ageCondition && controls.value.ageValue ?
-          `${controls.value.ageCondition.id} ${controls.value.ageValue}` : null,
+        age: controls.value.isShowBetween ? (
+          controls.value.ageCondition && controls.value.ageValue && controls.value.ageExtraValue ?
+            `between ${controls.value.ageValue} and ${controls.value.ageExtraValue}` : null
+        ) : (
+          controls.value.ageCondition && controls.value.ageValue ?
+            `${controls.value.ageCondition.id} ${controls.value.ageValue}` : null
+        ),
         startDate: new Date(controls.value.startDate).toISOString(),
         endDate: controls.value.endDate ? new Date(controls.value.endDate).toISOString() : null,
       }
@@ -423,6 +433,14 @@ export class HomeComponent implements OnInit {
         this.toasterService.showToast('error', 'End Date shoyld be greater than start date!', 'EM CARE!');
         num === 1 ? controls['controls'].startDate.setValue(null) : controls['controls'].endDate.setValue(null);
       }
+    }
+  }
+
+  checkForInBetween(event, i) {
+    if (event.value && event.value.id === 'bw') {
+      this.getIndicators().controls[i].patchValue({ isShowBetween: true });
+    } else {
+      this.getIndicators().controls[i].patchValue({ isShowBetween: false });
     }
   }
 }

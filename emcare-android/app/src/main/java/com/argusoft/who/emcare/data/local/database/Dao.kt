@@ -55,6 +55,9 @@ interface Dao {
     @Query("SELECT * from consultationflowitem")
     suspend fun getAllConsultations(): List<ConsultationFlowItem>?
 
+    @Query("SELECT * from consultationflowitem WHERE consultationDate > :timestamp")
+    suspend fun getAllConsultationsAfterTimestamp(timestamp: String): List<ConsultationFlowItem>?
+
     @Query("SELECT * from consultationflowitem WHERE encounterId=:encounterId ORDER BY consultationDate DESC")
     suspend fun getAllConsultationsByEncounterId(encounterId: String): List<ConsultationFlowItem>?
 
@@ -90,4 +93,7 @@ interface Dao {
 
     @Query("DElETE FROM consultationflowitem WHERE id=:consultationFlowItemId")
     suspend fun deleteConsultationFlowItemById(consultationFlowItemId: String)
+
+    @Query("SELECT * FROM consultationflowitem WHERE encounterId=:encounterId AND consultationStage !=(SELECT consultationStage FROM consultationflowitem WHERE id=:consultationId) AND consultationDate>(SELECT consultationDate FROM consultationflowitem WHERE id=:consultationId) ORDER BY consultationDate ASC LIMIT 1")
+    suspend fun getNextConsultationByConsultationIdAndEncounterId(consultationId: String, encounterId: String): ConsultationFlowItem?
 }

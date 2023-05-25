@@ -22,6 +22,10 @@ interface Preference {
 
     fun getUser(): User?
 
+    fun setSelectedCountry(selectedCountry: String)
+
+    fun getSelectedCountry(): String
+
     fun setLoggedInUser(loggedInUser: LoggedInUser)
 
     fun getLoggedInUser() : LoggedInUser?
@@ -35,6 +39,14 @@ interface Preference {
     fun getSubmittedResourceAsString(): String?
 
     fun setSubmittedResource(bundle: Bundle)
+
+    fun setTheme(theme: Int)
+
+    fun getTheme(): Int
+
+    fun setCountry(country: String)
+
+    fun getCountry(): String
 
     fun clear()
 }

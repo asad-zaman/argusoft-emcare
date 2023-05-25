@@ -90,12 +90,30 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/countryTextInputLayout"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:endIconMode="dropdown_menu"
+                    android:visibility="visible"
+                    app:layout_constraintTop_toBottomOf="@+id/lastNameTextInputLayout">
+
+                    <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                        android:id="@+id/countryEditText"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/colorWhite"
+                        android:hint="@string/patient_country" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/facilityTextInputLayout"
                     style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:endIconMode="dropdown_menu"
-                    app:layout_constraintTop_toBottomOf="@+id/lastNameTextInputLayout">
+                    app:layout_constraintTop_toBottomOf="@+id/countryTextInputLayout">
 
                     <com.google.android.material.textfield.MaterialAutoCompleteTextView
                         android:id="@+id/facilityEditText"
@@ -179,6 +197,18 @@
                         android:inputType="textPassword" />
                 </com.google.android.material.textfield.TextInputLayout>
 
+                <CheckBox
+                    android:id="@+id/termsAndPolicyTextView"
+                    style="@style/TextView.SemiBold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/text_terms_and_policy"
+                    android:layout_marginTop="@dimen/_16sdp"
+                    android:textColor="@color/textColorBlack"
+                    android:textSize="@dimen/dialog_button_text_size_default"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:gravity="top"
+                    app:layout_constraintTop_toBottomOf="@+id/confirmPasswordTextInputLayout"  />
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/submitButton"
                     style="@style/Button"
@@ -188,7 +218,7 @@
                     android:text="@string/button_submit"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/confirmPasswordTextInputLayout" />
+                    app:layout_constraintTop_toBottomOf="@+id/termsAndPolicyTextView" />
                 <ViewSwitcher
                     android:id="@+id/viewSwitcher"
                     android:layout_width="match_parent"

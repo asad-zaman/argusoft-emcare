@@ -10,6 +10,8 @@ import java.time.Instant
 @Entity
 @JsonClass(generateAdapter = true)
 data class LoggedInUser(
+    @Json(name = "countryCode")
+    var countryCode: String? = "",
     @Json(name = "email")
     var email: String? = null,
     @Json(name = "feature")

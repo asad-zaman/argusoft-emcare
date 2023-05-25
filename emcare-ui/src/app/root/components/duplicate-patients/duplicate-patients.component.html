@@ -1,8 +1,7 @@
 <div class="main-wrapper">
-  <div class="">
+  <div class="custom-header">
     <h1 class="heading mr-3">{{'Duplicate Patients' | translate}}</h1>
   </div>
-  <hr>
   <div *ngIf="duplicatePatientArr.length > 0; else noData" class="custom-accordion">
     <div class="accordion" id="accordionExample">
       <ng-container *ngFor="let dPatient of duplicatePatientArr; let i=index">

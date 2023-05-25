@@ -2,7 +2,6 @@ package com.argusoft.who.emcare.ui.home.patient.add
 
 import android.view.View
 import androidx.activity.addCallback
-import androidx.core.os.bundleOf
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -27,7 +26,7 @@ class AddPatientFragment : BaseFragment<FragmentAddPatientBinding>() {
 
     private val homeViewModel: HomeViewModel by viewModels()
 //    private val settingsViewModel: SettingsViewModel by activityViewModels()
-    private val questionnaireFragment = QuestionnaireFragment()
+    private var questionnaireFragment = QuestionnaireFragment()
 
     override fun initView() {
         binding.headerLayout.toolbar.title = getString(R.string.title_emcare_registration)
@@ -60,12 +59,12 @@ class AddPatientFragment : BaseFragment<FragmentAddPatientBinding>() {
     private fun addQuestionnaireFragmentWithQR(pair: Pair<String, String>) {
         homeViewModel.questionnaireJson = pair.first
         homeViewModel.questionnaireJson?.let {
-            questionnaireFragment.arguments =
-                bundleOf(
-                    QuestionnaireFragment.EXTRA_QUESTIONNAIRE_JSON_STRING to pair.first,
-                    QuestionnaireFragment.EXTRA_QUESTIONNAIRE_RESPONSE_JSON_STRING to pair.second,
-                    QuestionnaireFragment.EXTRA_ENABLE_REVIEW_PAGE to true
-                )
+            questionnaireFragment = QuestionnaireFragment.builder()
+                .setQuestionnaire(pair.first)
+                .setQuestionnaireResponse(pair.second)
+                .showReviewPageBeforeSubmit(true)
+                .setCustomQuestionnaireItemViewHolderFactoryMatchersProvider("CUSTOM")
+                .build()
             childFragmentManager.commit {
                 add(R.id.fragmentContainerView, questionnaireFragment, QuestionnaireFragment::class.java.simpleName)
             }
@@ -80,25 +79,19 @@ class AddPatientFragment : BaseFragment<FragmentAddPatientBinding>() {
         observeNotNull(homeViewModel.saveQuestionnaire) { apiResponse ->
             apiResponse.handleApiView(binding.progressLayout, skipIds = listOf(R.id.headerLayout)) {
                 if (it is ConsultationFlowItem) {
-                    activity?.alertDialog {
-                        setMessage(R.string.msg_continue_consultation)
-                        setPositiveButton(R.string.button_yes) { _, _ ->
-                            findNavController().popBackStack(R.id.addPatientFragment, true)
-                            navigate(R.id.action_homeFragment_to_patientQuestionnaireFragment) {
-                                putString(INTENT_EXTRA_QUESTIONNAIRE_ID, it.questionnaireId)
-                                putString(INTENT_EXTRA_STRUCTUREMAP_ID, it.structureMapId)
-                                putString(INTENT_EXTRA_QUESTIONNAIRE_HEADER, it.questionnaireId)
-                                putString(INTENT_EXTRA_CONSULTATION_FLOW_ITEM_ID, it.id)
-                                putString(INTENT_EXTRA_PATIENT_ID, it.patientId)
-                                putString(INTENT_EXTRA_ENCOUNTER_ID, it.encounterId)
-                                putString(INTENT_EXTRA_CONSULTATION_STAGE, it.consultationStage)
-                                putString(INTENT_EXTRA_QUESTIONNAIRE_RESPONSE, it.questionnaireResponseText)
-                            }
-                        }
-                        setNegativeButton(R.string.button_no) { _, _ ->
-                            navigate(R.id.action_addPatientFragment_to_homeFragment)
-                        }
-                    }?.show()
+                    findNavController().popBackStack(R.id.addPatientFragment, true)
+                    navigate(R.id.action_homeFragment_to_patientQuestionnaireFragment) {
+                        putString(INTENT_EXTRA_QUESTIONNAIRE_ID, it.questionnaireId)
+                        putString(INTENT_EXTRA_STRUCTUREMAP_ID, it.structureMapId)
+                        putString(INTENT_EXTRA_QUESTIONNAIRE_HEADER, stageToBadgeMap[it.consultationStage])
+                        putString(INTENT_EXTRA_CONSULTATION_FLOW_ITEM_ID, it.id)
+                        putString(INTENT_EXTRA_PATIENT_ID, it.patientId)
+                        putString(INTENT_EXTRA_ENCOUNTER_ID, it.encounterId)
+                        putString(INTENT_EXTRA_CONSULTATION_STAGE, it.consultationStage)
+                        putString(INTENT_EXTRA_QUESTIONNAIRE_RESPONSE, it.questionnaireResponseText)
+                    }
+                } else {
+                    navigate(R.id.action_addPatientFragment_to_homeFragment)
                 }
             }
         }

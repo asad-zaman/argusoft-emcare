@@ -71,7 +71,7 @@ class PreviousConsultationQuestionnaireViewModel @Inject constructor(
                                         dateOfConsultation = ZonedDateTime.parse(consultationFlowItem.consultationDate?.substringBefore("+").plus("Z[UTC]")).format(
                                             DateTimeFormatter.ofPattern(DATE_FORMAT)),
                                         badgeText = stageToBadgeMap[consultationFlowItem.consultationStage],
-                                        header = consultationFlowItem.questionnaireId, //TODO: For test only, replace it with appropriate header
+                                        header = stageToBadgeMap[consultationFlowItem.consultationStage],
                                         consultationIcon = stageToIconMap[consultationFlowItem.consultationStage],
                                         consultationFlowItemId = consultationFlowItem.id,
                                         patientId = consultationFlowItem.patientId,
@@ -84,8 +84,6 @@ class PreviousConsultationQuestionnaireViewModel @Inject constructor(
                                     )
                                     )
                                 )
-                            } else {
-                                sidepaneList.add(SidepaneItem(stageToIconMap[stage], stageToBadgeMap[stage]))
                             }
                         }
                     }

@@ -1,10 +1,15 @@
 package com.argusoft.who.emcare.ui.home
 
+import android.app.Application
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.uhn.fhir.context.FhirContext
+import ca.uhn.fhir.context.FhirVersionEnum
+import com.argusoft.who.emcare.EmCareApplication
+import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.data.remote.ApiResponse
 import com.argusoft.who.emcare.di.AppModule
 import com.argusoft.who.emcare.ui.common.*
@@ -15,12 +20,19 @@ import com.argusoft.who.emcare.ui.common.model.SidepaneItem
 import com.argusoft.who.emcare.ui.home.patient.PatientRepository
 import com.argusoft.who.emcare.utils.extention.orEmpty
 import com.argusoft.who.emcare.utils.listener.SingleLiveEvent
-import com.google.android.fhir.datacapture.common.datatype.asStringValue
-import com.google.android.fhir.datacapture.createQuestionnaireResponseItem
+import com.google.android.fhir.datacapture.extensions.allItems
+import com.google.android.fhir.datacapture.extensions.asStringValue
+import com.google.android.fhir.datacapture.extensions.createQuestionnaireResponseItem
+import com.google.android.fhir.knowledge.KnowledgeManager
 import com.google.android.fhir.workflow.FhirOperator
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.collect
 import org.hl7.fhir.r4.model.*
+import org.hl7.fhir.r4.model.QuestionnaireResponse.QuestionnaireResponseItemComponent
+import java.io.File
+import java.time.Instant
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -32,6 +44,8 @@ class HomeViewModel @Inject constructor(
     private val consultationFlowRepository: ConsultationFlowRepository,
     private val fhirOperator: FhirOperator,
     private val libraryRepository: LibraryRepository,
+    private val knowledgeManager: KnowledgeManager,
+    @ApplicationContext private val context: Context,
     @AppModule.IoDispatcher private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : ViewModel() {
 
@@ -65,6 +79,9 @@ class HomeViewModel @Inject constructor(
     private val _saveQuestionnaire = MutableLiveData<ApiResponse<ConsultationFlowItem>>()
     val saveQuestionnaire: LiveData<ApiResponse<ConsultationFlowItem>> = _saveQuestionnaire
 
+    private val _nextQuestionnaire = MutableLiveData<ApiResponse<ConsultationFlowItem>>()
+    val nextQuestionnaire: LiveData<ApiResponse<ConsultationFlowItem>> = _nextQuestionnaire
+
     private val _sidepaneItems = SingleLiveEvent<ApiResponse<List<SidepaneItem>>>()
     val sidepaneItems: LiveData<ApiResponse<List<SidepaneItem>>> = _sidepaneItems
 
@@ -77,15 +94,21 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun loadLibraries() {
+    fun loadLibraries(context: Context) {
         viewModelScope.launch {
             libraryRepository.getLibraries().collect {
                 val librariesList = it.data
                 librariesList?.forEach { library ->
-                    fhirOperator.loadLib(library)
+                    knowledgeManager.install(writeToFile(library))
                 }
                 _librariesLoaded.value = ApiResponse.Success(1)
             }
+        }
+    }
+
+    private fun writeToFile(library: Library): File {
+        return File(context.filesDir, if (library.name == null)  library.title else library.name).apply {
+            writeText(FhirContext.forR4Cached().newJsonParser().encodeResourceToString(library))
         }
     }
 
@@ -103,7 +126,27 @@ class HomeViewModel @Inject constructor(
             consultationFlowRepository.getAllConsultationsByEncounterId(encounterId).collect{
                 patientRepository.getPatientById(patientId).collect { patientResponse ->
                     val patientItem = patientResponse.data!!
-                    consultationFlowStageList.forEach { stage ->
+
+                    var currentConsultationFLowList = consultationFlowStageList
+                    val encounterConsultationItem = it.data?.filter {consultationFlowItem -> consultationFlowItem.consultationStage.equals(
+                        CONSULTATION_STAGE_REGISTRATION_ENCOUNTER)  }
+                    if(patientItem.hasBirthDate()){
+                        var isAgeUnderTwoMonths = patientItem.birthDate.toInstant().isAfter(Instant.now().minusSeconds(3600*24*60))
+                        //Taking care of case when consultation has started for under two months and on reopenin the child is now over two months.
+                        if(encounterConsultationItem?.isNotEmpty() == true){
+                            isAgeUnderTwoMonths =
+                                patientItem.birthDate.toInstant()
+                                    .plusMillis(
+                                    (ZonedDateTime.parse(encounterConsultationItem[0].consultationDate?.substringBefore("+").plus("Z[UTC]")).toInstant().toEpochMilli()
+                                    - Instant.now().toEpochMilli()) * 1000)
+                                .isAfter(Instant.now().minusSeconds(3600*24*60))
+                        }
+                        if(isAgeUnderTwoMonths){
+                            currentConsultationFLowList = consultationFlowStageListUnderTwoMonths
+                        }
+                    }
+
+                    currentConsultationFLowList.forEach { stage ->
                         val consultationFlowItems = it.data?.filter { consultationFlowItem -> consultationFlowItem.consultationStage.equals(stage) }
                         val consultationFlowItem = consultationFlowItems?.firstOrNull()
                         if(!stage.equals(CONSULTATION_STAGE_REGISTRATION_PATIENT)){
@@ -117,7 +160,7 @@ class HomeViewModel @Inject constructor(
                                         dateOfBirth = patientItem.birthDateElement.valueAsString ?: "Not Provided",
                                         dateOfConsultation = ZonedDateTime.parse(consultationFlowItem.consultationDate?.substringBefore("+").plus("Z[UTC]")).format(DateTimeFormatter.ofPattern(DATE_FORMAT)),
                                         badgeText = stageToBadgeMap[consultationFlowItem.consultationStage],
-                                        header = consultationFlowItem.questionnaireId, //TODO: For test only, replace it with appropriate header
+                                        header = stageToBadgeMap[consultationFlowItem.consultationStage],
                                         consultationIcon = stageToIconMap[consultationFlowItem.consultationStage],
                                         consultationFlowItemId = consultationFlowItem.id,
                                         patientId = consultationFlowItem.patientId,
@@ -156,7 +199,7 @@ class HomeViewModel @Inject constructor(
                                     dateOfBirth = patientItem.birthDateElement.valueAsString ?: "Not Provided",
                                     dateOfConsultation = ZonedDateTime.parse(consultationFlowItem.consultationDate?.substringBefore("+").plus("Z[UTC]")).format(DateTimeFormatter.ofPattern(DATE_FORMAT)),
                                     badgeText = stageToBadgeMap[consultationFlowItem.consultationStage],
-                                    header = consultationFlowItem.questionnaireId, //TODO: For test only, replace it with appropriate header
+                                    header = stageToBadgeMap[consultationFlowItem.consultationStage],
                                     consultationIcon = stageToIconMap[consultationFlowItem.consultationStage],
                                     consultationFlowItemId = consultationFlowItem.id,
                                     patientId = consultationFlowItem.patientId,
@@ -207,17 +250,34 @@ class HomeViewModel @Inject constructor(
     }
 
 
-    fun getQuestionnaireWithQR(questionnaireId: String, patientId: String, encounterId: String, isPreviouslySavedConsultation: Boolean) {
+    fun getQuestionnaireWithQR(questionnaireId: String, patientId: String, encounterId: String, isPreviouslySavedConsultation: Boolean, previousQuestionnaireResponse: String? = "") {
         _questionnaireWithQR.value = ApiResponse.Loading()
         viewModelScope.launch {
             patientRepository.getQuestionnaire(questionnaireId).collect {
                 val parser = FhirContext.forR4().newJsonParser()
-                val questionnaireJsonWithQR: Questionnaire = preProcessQuestionnaire(it.data!!, patientId, encounterId, isPreviouslySavedConsultation)
-                val questionnaireResponse: QuestionnaireResponse = generateQuestionnaireResponseWithPatientIdAndEncounterId(questionnaireJsonWithQR, patientId!!, encounterId!!)
+                val questionnaireJsonWithQR: Questionnaire? = preProcessQuestionnaire(it.data!!, patientId, encounterId, isPreviouslySavedConsultation)
+                if(questionnaireJsonWithQR == null) {
+                    _questionnaireWithQR.value = ApiResponse.ApiError(apiErrorMessageResId = R.string.initial_expression_error)
+                } else {
+                    var questionnaireResponse: QuestionnaireResponse = QuestionnaireResponse()
+                    questionnaireResponse = if(isPreviouslySavedConsultation) {
+                        addHiddenQuestionnaireItemsWithNestedItems(previousQuestionnaireResponse!!, questionnaireJsonWithQR)
+                    } else
+                        generateQuestionnaireResponseWithPatientIdAndEncounterId(questionnaireJsonWithQR, patientId!!, encounterId!!)
+                    val questionnaireString = parser.encodeResourceToString(questionnaireJsonWithQR)
+                    val questionnaireResponseString = parser.encodeResourceToString(questionnaireResponse)
+                    _questionnaireWithQR.value = ApiResponse.Success(data=questionnaireString to questionnaireResponseString)
+                }
+            }
+        }
+    }
 
-                val questionnaireString = parser.encodeResourceToString(questionnaireJsonWithQR)
-                val questionnaireResponseString = parser.encodeResourceToString(questionnaireResponse)
-                _questionnaireWithQR.value = ApiResponse.Success(data=questionnaireString to questionnaireResponseString)
+
+    fun moveToNextQuestionnaire(consultationFlowItemId: String, encounterId: String){
+        _questionnaireWithQR.value = ApiResponse.Loading()
+        viewModelScope.launch {
+            consultationFlowRepository.getNextConsultationByConsultationIdAndEncounterId(consultationFlowItemId, encounterId).collect{
+                _nextQuestionnaire.value = it
             }
         }
     }
@@ -260,12 +320,136 @@ class HomeViewModel @Inject constructor(
         return questionnaireResponse
     }
 
-    private suspend fun preProcessQuestionnaire(questionnaire: Questionnaire, patientId: String, encounterId: String, isPreviouslySavedConsultation: Boolean) : Questionnaire {
-        var ansQuestionnaire = injectUuid(questionnaire)
+     private fun addHiddenQuestionnaireItems(previousQuestionnaireResponse: String, questionnaire: Questionnaire): QuestionnaireResponse {
+        val previousQuestionnaireResponseObject = FhirContext.forCached(FhirVersionEnum.R4).newJsonParser().parseResource(QuestionnaireResponse::class.java, previousQuestionnaireResponse)
+        val questionnaireLinkIdList = mutableListOf<String>()
+
+        //Adding link id of all questionnaire items
+        questionnaire.item.forEach { item ->
+            questionnaireLinkIdList.add(item.linkId)
+        }
+
+        //Fetching list of all questionnaire items
+        val questionnaireResponseItemsList = mutableListOf<QuestionnaireResponseItemComponent>()
+        questionnaireResponseItemsList.addAll(previousQuestionnaireResponseObject.allItems)
+
+        val finalQuestionnaireResponseItemsList = mutableListOf<QuestionnaireResponseItemComponent>()
+        var matchingQuestionnaireResponseItem: QuestionnaireResponseItemComponent?
+
+        //Setting items with previously answered questions through link id
+        questionnaireLinkIdList.forEachIndexed { index, linkId ->
+            try{
+                matchingQuestionnaireResponseItem = questionnaireResponseItemsList.firstOrNull { questionnaireResponseItem ->
+                    linkId == questionnaireResponseItem.linkId
+                }
+                if (matchingQuestionnaireResponseItem != null) {
+                    finalQuestionnaireResponseItemsList.add(matchingQuestionnaireResponseItem!!)
+                } else {
+                    questionnaireResponseItemsList.add(index, QuestionnaireResponseItemComponent(StringType(linkId)))
+                    finalQuestionnaireResponseItemsList.add(QuestionnaireResponseItemComponent(StringType(linkId)))
+                }
+            }catch (e: java.lang.IndexOutOfBoundsException){
+                questionnaireResponseItemsList.add(index, QuestionnaireResponseItemComponent(StringType(linkId)))
+                finalQuestionnaireResponseItemsList.add(QuestionnaireResponseItemComponent(StringType(linkId)))
+            }
+        }
+
+        previousQuestionnaireResponseObject.item = finalQuestionnaireResponseItemsList
+        return previousQuestionnaireResponseObject
+    }
+
+
+    private fun addHiddenQuestionnaireItemsWithNestedItems(previousQuestionnaireResponse: String, questionnaire: Questionnaire): QuestionnaireResponse {
+        val previousQuestionnaireResponseObject = FhirContext.forCached(FhirVersionEnum.R4).newJsonParser().parseResource(QuestionnaireResponse::class.java, previousQuestionnaireResponse)
+        val questionnaireLinkIdList = mutableListOf<String>()
+        val groupLinkIdMap = mutableMapOf<String, MutableList<String>>()
+        //Adding link id of all questionnaire items
+        questionnaire.item.forEach { item ->
+            questionnaireLinkIdList.add(item.linkId)
+            if(item.type.equals("group") && item.hasItem()){
+                item.item.forEach{ nestedItem ->
+                    val groupLinkIdList: MutableList<String> = if(groupLinkIdMap.containsKey(item.linkId)) groupLinkIdMap[item.linkId]!! else mutableListOf<String>()
+                    groupLinkIdList.add(nestedItem.linkId)
+                    groupLinkIdMap[item.linkId] = groupLinkIdList
+                }
+            }
+        }
+
+        //Fetching list of all questionnaire items
+        val questionnaireResponseItemsList = mutableListOf<QuestionnaireResponseItemComponent>()
+        questionnaireResponseItemsList.addAll(previousQuestionnaireResponseObject.allItems)
+
+        val finalQuestionnaireResponseItemsList = mutableListOf<QuestionnaireResponseItemComponent>()
+
+        //Setting items with previously answered questions through link id
+        questionnaireLinkIdList.forEachIndexed { index, linkId ->
+            try{
+                val matchingQuestionnaireResponseItem = questionnaireResponseItemsList.firstOrNull { questionnaireResponseItem ->
+                    linkId == questionnaireResponseItem.linkId
+                }
+                if (matchingQuestionnaireResponseItem != null) {
+                    if(groupLinkIdMap[linkId] != null){
+                        groupLinkIdMap[linkId]?.forEach { nestedItemLinkId ->
+                            val nestedItem = matchingQuestionnaireResponseItem.item.firstOrNull { _ ->
+                                linkId == nestedItemLinkId
+                            }
+                            if(nestedItem == null){
+                                matchingQuestionnaireResponseItem.addItem(
+                                    QuestionnaireResponseItemComponent(StringType(linkId))
+                                )
+                            }
+                        }
+                    }
+                    finalQuestionnaireResponseItemsList.add(matchingQuestionnaireResponseItem!!)
+                } else {
+                    var questionnaireResponseItemToAdd = QuestionnaireResponseItemComponent(StringType(linkId))
+                    if(groupLinkIdMap[linkId] != null){
+                        groupLinkIdMap[linkId]?.forEach { nestedItemLinkId ->
+                            questionnaireResponseItemToAdd.addItem(
+                                QuestionnaireResponseItemComponent(StringType(nestedItemLinkId))
+                            )
+                        }
+                    }
+                    questionnaireResponseItemsList.add(index, questionnaireResponseItemToAdd)
+                    finalQuestionnaireResponseItemsList.add(questionnaireResponseItemToAdd)
+                }
+            }catch (e: java.lang.IndexOutOfBoundsException){
+                var questionnaireResponseItemToAdd = QuestionnaireResponseItemComponent(StringType(linkId))
+                if(groupLinkIdMap[linkId] != null){
+                    groupLinkIdMap[linkId]?.forEach { nestedItemLinkId ->
+                        questionnaireResponseItemToAdd.addItem(
+                            QuestionnaireResponseItemComponent(StringType(nestedItemLinkId))
+                        )
+                    }
+                }
+                questionnaireResponseItemsList.add(index, questionnaireResponseItemToAdd)
+                finalQuestionnaireResponseItemsList.add(questionnaireResponseItemToAdd)
+            }
+        }
+
+
+
+        previousQuestionnaireResponseObject.item = finalQuestionnaireResponseItemsList
+        return previousQuestionnaireResponseObject
+    }
+
+
+    private suspend fun preProcessQuestionnaire(questionnaire: Questionnaire, patientId: String, encounterId: String, isPreviouslySavedConsultation: Boolean) : Questionnaire? {
+        var ansQuestionnaire: Questionnaire? = injectUuid(questionnaire)
+        ansQuestionnaire = addEmptySpaceToScroll(ansQuestionnaire!!)
         if(questionnaire.hasExtension(URL_CQF_LIBRARY) && !isPreviouslySavedConsultation){
-            ansQuestionnaire = injectInitialExpressionCqlValues(questionnaire, patientId, encounterId)
+            ansQuestionnaire = injectInitialExpressionCqlValues(ansQuestionnaire!!, patientId, encounterId)
         }
         return ansQuestionnaire
+    }
+
+    private fun addEmptySpaceToScroll(questionnaire: Questionnaire): Questionnaire {
+        questionnaire.item.add(Questionnaire.QuestionnaireItemComponent().apply {
+            linkId = EMPTY_SPACE_TO_SCROLL_LINK_ID
+            type = Questionnaire.QuestionnaireItemType.DISPLAY
+            text = "<br><br><br><br><br><br><br>"
+        })
+        return questionnaire
     }
 
     private fun injectUuid(questionnaire: Questionnaire) : Questionnaire {
@@ -279,38 +463,51 @@ class HomeViewModel @Inject constructor(
         return questionnaire
     }
 
-    private suspend fun injectInitialExpressionCqlValues(questionnaire: Questionnaire, patientId: String, encounterId: String): Questionnaire = withContext(dispatcher) {
-        val cqlLibraryURL = questionnaire.getExtensionByUrl(URL_CQF_LIBRARY).value.asStringValue()
-        val expressionSet = mutableSetOf<String>()
-        //If questionnaire has Cql library then evaluate library and inject the parameters
-        if(cqlLibraryURL.isNotEmpty()){
-            //Creating ExpressionSet
-            questionnaire.item.forEach { item ->
-                if(item.hasExtension(URL_INITIAL_EXPRESSION)) {
-                    expressionSet.add((item.getExtensionByUrl(URL_INITIAL_EXPRESSION).value as Expression).expression)
-                }
-            }
-            //Creating parameterObject to pass encounterId
-            val parameterObject = Parameters().apply {
-                parameter = listOf(
-                    Parameters.ParametersParameterComponent().apply {
-                        name = "encounterid"
-                        value = StringType(encounterId)
+    private suspend fun injectInitialExpressionCqlValues(questionnaire: Questionnaire, patientId: String, encounterId: String): Questionnaire? = withContext(dispatcher) {
+        try {
+            val cqlLibraryURL =
+                questionnaire.getExtensionByUrl(URL_CQF_LIBRARY).value.asStringValue()
+            val expressionSet = mutableSetOf<String>()
+            //If questionnaire has Cql library then evaluate library and inject the parameters
+            if (cqlLibraryURL.isNotEmpty()) {
+                //Creating ExpressionSet
+                questionnaire.item.forEach { item ->
+                    if (item.hasExtension(URL_INITIAL_EXPRESSION)) {
+                        expressionSet.add((item.getExtensionByUrl(URL_INITIAL_EXPRESSION).value as Expression).expression)
                     }
-                )
-            }
-            //Evaluating Library
-            val parameters = fhirOperator.evaluateLibrary(cqlLibraryURL, patientId, expressionSet, parameterObject) as Parameters
-            //Inject parameters to appropriate places
-            questionnaire.item.forEach { item ->
-                if(item.hasExtension(URL_INITIAL_EXPRESSION)) {
-                    val value = parameters.getParameter((item.getExtensionByUrl(URL_INITIAL_EXPRESSION).value as Expression).expression) //parameter has same name as linkId
-                    //inject value in the QuestionnaireItem as InitialComponent
-                    if(value != null)
-                        item.initial = mutableListOf(Questionnaire.QuestionnaireItemInitialComponent(value))
+                }
+                //Creating parameterObject to pass encounterId
+                val parameterObject = Parameters().apply {
+                    parameter = listOf(
+                        Parameters.ParametersParameterComponent().apply {
+                            name = "encounterid"
+                            value = StringType(encounterId)
+                        }
+                    )
+                }
+                //Evaluating Library
+                val parameters = fhirOperator.evaluateLibrary(
+                    cqlLibraryURL,
+                    patientId,
+                    parameterObject,
+                    expressionSet
+                ) as Parameters
+                //Inject parameters to appropriate places
+                questionnaire.item.forEach { item ->
+                    if (item.hasExtension(URL_INITIAL_EXPRESSION)) {
+                        val value =
+                            parameters.getParameter((item.getExtensionByUrl(URL_INITIAL_EXPRESSION).value as Expression).expression) //parameter has same name as linkId
+                        //inject value in the QuestionnaireItem as InitialComponent
+                        if (value != null)
+                            item.initial =
+                                mutableListOf(Questionnaire.QuestionnaireItemInitialComponent(value))
+                    }
                 }
             }
+            return@withContext questionnaire
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return@withContext null
         }
-        return@withContext questionnaire
     }
 }

@@ -46,10 +46,11 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
             binding.navView.menu.getItem(1).title = preference.getLoggedInUser()?.facility?.get(0)?.facilityName
         }
         binding.navView.menu.getItem(2).title = "About"
-        binding.navView.menu.getItem(3).title = "Logout"
+        binding.navView.menu.getItem(3).title = "Change Theme"
+                                                                                        binding.navView.menu.getItem(4).title = "Logout"
         sidepaneAdapter = SidepaneAdapter(onClickListener = this, navHostFragment = navHostFragment)
         setupSidepane()
-        homeViewModel.loadLibraries()
+        homeViewModel.loadLibraries(applicationContext)
     }
 
     fun openDrawer() {
@@ -88,6 +89,10 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
                 R.id.action_about -> {
                     closeDrawer()
                     navHostFragment.navController.navigate(R.id.action_global_aboutFragment)
+                }
+                R.id.action_change_theme -> {
+                    closeDrawer()
+                    navHostFragment.navController.navigate(R.id.action_global_changeThemeFragment)
                 }
             }
             return@setNavigationItemSelectedListener true

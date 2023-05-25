@@ -21,7 +21,10 @@ const val INTENT_EXTRA_QUESTIONNAIRE_HEADER = "INTENT_EXTRA_QUESTIONNAIRE_HEADER
 const val INTENT_EXTRA_IS_DELETE_NEXT_CONSULTATIONS = "INTENT_EXTRA_IS_DELETE_NEXT_CONSULTATIONS"
 const val MY_UPDATE_REQUEST_CODE = 50
 const val DATE_FORMAT = "dd/MM/YY"
-
+const val DATE_FORMAT_2 = "MM/dd/yyyy"
+const val APP_THEME_COMPACT = -1
+const val APP_THEME_COMFORTABLE = 0
+const val APP_THEME_ENLARGED = 2
 //URLS
 const val URL_CQF_LIBRARY = "http://hl7.org/fhir/StructureDefinition/cqf-library"
 const val URL_INITIAL_EXPRESSION = "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression"
@@ -52,8 +55,12 @@ const val CONSULTATION_STAGE_ASSESSMENTS = "ASSESSMENTS"
 const val CONSULTATION_STAGE_CLASSIFICATIONS = "CLASSIFICATIONS"
 const val CONSULTATION_STAGE_TREATMENTS = "TREATMENTS"
 
-const val DEFAULT_USER_ROLE = "user"
+const val DEFAULT_USER_ROLE = "User"
 const val DEFAULT_COUNTRY_CODE = "IQ"
+const val ASSESS_SICK_CHILD_LINK_ID = "EmCare.B7-B8-B9.DE01"
+const val END_CONSULTATION_CODING_VALUE =  "EmCare.B7-B8-B9.DE03"
+
+const val EMPTY_SPACE_TO_SCROLL_LINK_ID = "empty_space_to_scroll"
 
 val consultationFlowStageList = arrayListOf<String?>(
     CONSULTATION_STAGE_REGISTRATION_PATIENT,
@@ -66,6 +73,17 @@ val consultationFlowStageList = arrayListOf<String?>(
     CONSULTATION_STAGE_CLASSIFICATIONS,
     CONSULTATION_STAGE_TREATMENTS
 )
+val consultationFlowStageListUnderTwoMonths = arrayListOf<String?>(
+    CONSULTATION_STAGE_REGISTRATION_PATIENT,
+    CONSULTATION_STAGE_REGISTRATION_ENCOUNTER,
+    CONSULTATION_STAGE_MEASUREMENTS,
+    CONSULTATION_STAGE_SYMPTOMS,
+    CONSULTATION_STAGE_SIGNS,
+    CONSULTATION_STAGE_ASSESSMENTS,
+    CONSULTATION_STAGE_CLASSIFICATIONS,
+    CONSULTATION_STAGE_TREATMENTS
+)
+
 val stageToBadgeMap = mapOf(
     CONSULTATION_STAGE_REGISTRATION_PATIENT to "Registration Patient",
     CONSULTATION_STAGE_REGISTRATION_ENCOUNTER to "Registration",
@@ -113,3 +131,27 @@ val stageToStructureMapId = mapOf(
     CONSULTATION_STAGE_CLASSIFICATIONS to "emcare.b23.classification",
     CONSULTATION_STAGE_TREATMENTS to "emcare.treatment",
     )
+
+val stageToQuestionnaireIdUnderTwoMonths = mapOf(
+    CONSULTATION_STAGE_REGISTRATION_PATIENT to "emcarea.registration.p",
+    CONSULTATION_STAGE_REGISTRATION_ENCOUNTER to "emcareb.registration.e",
+    CONSULTATION_STAGE_DANGER_SIGNS to "emcare.b7.lti-dangersigns",
+    CONSULTATION_STAGE_MEASUREMENTS to "emcare.b6.measurements",
+    CONSULTATION_STAGE_SYMPTOMS to "emcare.b18-21.symptoms.2m.m",
+    CONSULTATION_STAGE_SIGNS to "emcare.b18-21.signs.2m.m",
+    CONSULTATION_STAGE_ASSESSMENTS to "emcare.b22.assessmentstests",
+    CONSULTATION_STAGE_CLASSIFICATIONS to "emcare.b23.classification.m",
+    CONSULTATION_STAGE_TREATMENTS to "emcare.treatment",
+)
+
+val stageToStructureMapIdUnderTwoMonths = mapOf(
+    CONSULTATION_STAGE_REGISTRATION_PATIENT to "emcarea.registration.p",
+    CONSULTATION_STAGE_REGISTRATION_ENCOUNTER to "emcareb.registration.e",
+    CONSULTATION_STAGE_DANGER_SIGNS to "emcare.b7.lti-dangersigns",
+    CONSULTATION_STAGE_MEASUREMENTS to "emcare.b6.measurements",
+    CONSULTATION_STAGE_SYMPTOMS to "emcare.b18-21.symptoms.2m.m",
+    CONSULTATION_STAGE_SIGNS to "emcare.b18-21.signs.2m.m",
+    CONSULTATION_STAGE_ASSESSMENTS to "emcare.b22.assessmentstests",
+    CONSULTATION_STAGE_CLASSIFICATIONS to "emcare.b23.classification.m",
+    CONSULTATION_STAGE_TREATMENTS to "emcare.treatment",
+)

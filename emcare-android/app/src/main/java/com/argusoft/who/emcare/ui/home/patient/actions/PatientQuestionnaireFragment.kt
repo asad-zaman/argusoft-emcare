@@ -12,6 +12,8 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import ca.uhn.fhir.context.FhirContext
+import ca.uhn.fhir.context.FhirVersionEnum
 import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.databinding.FragmentPatientQuestionnaireBinding
 import com.argusoft.who.emcare.ui.common.*
@@ -30,13 +32,12 @@ import java.text.SimpleDateFormat
 class PatientQuestionnaireFragment : BaseFragment<FragmentPatientQuestionnaireBinding>() {
 
     private val homeViewModel: HomeViewModel by viewModels()
-    private val questionnaireFragment = QuestionnaireFragment()
+    private var questionnaireFragment = QuestionnaireFragment()
     private var consultationFlowId: String? = null
 
     override fun initView() {
         (activity as? HomeActivity)?.closeSidepane()
         consultationFlowId = requireArguments().getString(INTENT_EXTRA_CONSULTATION_FLOW_ITEM_ID)
-//        binding.headerLayout.toolbar.setTitleSidepane(getString(R.string.patient) + " " + requireArguments().getString(INTENT_EXTRA_QUESTIONNAIRE_HEADER))
         binding.headerLayout.toolbar.setTitleSidepane(
             requireArguments().getString(
                 INTENT_EXTRA_QUESTIONNAIRE_HEADER
@@ -50,7 +51,8 @@ class PatientQuestionnaireFragment : BaseFragment<FragmentPatientQuestionnaireBi
                 it,
                 requireArguments().getString(INTENT_EXTRA_PATIENT_ID)!!,
                 requireArguments().getString(INTENT_EXTRA_ENCOUNTER_ID)!!,
-                isPreviouslySavedConsultation = !questionnaireResponse.isNullOrEmpty()
+                isPreviouslySavedConsultation = !questionnaireResponse.isNullOrEmpty(),
+                questionnaireResponse
             )
         }
 
@@ -59,15 +61,34 @@ class PatientQuestionnaireFragment : BaseFragment<FragmentPatientQuestionnaireBi
             viewLifecycleOwner
         ) { _, _ ->
             if(requireArguments().getBoolean(INTENT_EXTRA_IS_DELETE_NEXT_CONSULTATIONS)){
-                activity?.alertDialog {
-                    setMessage(R.string.msg_delete_on_save_consultation)
-                    setPositiveButton(R.string.button_yes) { _, _ ->
-                        homeViewModel.deleteNextConsultations(
-                            requireArguments().getString(INTENT_EXTRA_CONSULTATION_FLOW_ITEM_ID)!!,
-                            requireArguments().getString(INTENT_EXTRA_ENCOUNTER_ID)!!)
-                    }
-                    setNegativeButton(R.string.button_no) { _, _ -> }
-                }?.show()
+                //Logic to avoid saving questionnaire if no changes are done
+                val latestQuestionnaireResponseObject = questionnaireFragment.getQuestionnaireResponse()
+
+                //Removing the empty blank space item from QR.
+                val questionnaireResponseItems = latestQuestionnaireResponseObject.item
+                latestQuestionnaireResponseObject.item = questionnaireResponseItems.dropLast(1)
+
+                val latestQuestionnaireResponse = FhirContext.forCached(FhirVersionEnum.R4).newJsonParser()
+                    .encodeResourceToString(latestQuestionnaireResponseObject)
+
+                //If New QR And previously saved QR are equal then move to next questionnaire else delete next QR & resources and save questionnaire.
+                if(latestQuestionnaireResponse.equals(
+                        requireArguments().getString(INTENT_EXTRA_QUESTIONNAIRE_RESPONSE))){
+                    moveToNextQuestionnaire(
+                        requireArguments().getString(INTENT_EXTRA_CONSULTATION_FLOW_ITEM_ID)!!,
+                        requireArguments().getString(INTENT_EXTRA_ENCOUNTER_ID)!!)
+                } else {
+                    activity?.alertDialog {
+                        setMessage(R.string.msg_delete_on_save_consultation)
+                        setPositiveButton(R.string.button_yes) { _, _ ->
+                            homeViewModel.deleteNextConsultations(
+                                requireArguments().getString(INTENT_EXTRA_CONSULTATION_FLOW_ITEM_ID)!!,
+                                requireArguments().getString(INTENT_EXTRA_ENCOUNTER_ID)!!)
+                        }
+                        setNegativeButton(R.string.button_no) { _, _ -> }
+                    }?.show()
+                }
+
             } else {
                 saveQuestionnaire()
             }
@@ -107,15 +128,19 @@ class PatientQuestionnaireFragment : BaseFragment<FragmentPatientQuestionnaireBi
         }
     }
 
+    private fun moveToNextQuestionnaire(consultationFlowItemId: String, encounterId: String) {
+        homeViewModel.moveToNextQuestionnaire(consultationFlowItemId, encounterId)
+    }
+
     private fun addQuestionnaireFragment(pair: Pair<String, String>) {
         homeViewModel.questionnaireJson = pair.first
         homeViewModel.questionnaireJson?.let {
-            questionnaireFragment.arguments =
-                bundleOf(
-                    QuestionnaireFragment.EXTRA_QUESTIONNAIRE_JSON_STRING to pair.first,
-                    QuestionnaireFragment.EXTRA_QUESTIONNAIRE_RESPONSE_JSON_STRING to pair.second,
-                    QuestionnaireFragment.EXTRA_ENABLE_REVIEW_PAGE to true
-                )
+            questionnaireFragment = QuestionnaireFragment.builder()
+                .setQuestionnaire(pair.first)
+                .setQuestionnaireResponse(pair.second)
+                .showReviewPageBeforeSubmit(false)
+                .setCustomQuestionnaireItemViewHolderFactoryMatchersProvider("CUSTOM")
+                .build()
             childFragmentManager.commit {
                 add(
                     R.id.fragmentContainerView,
@@ -133,7 +158,7 @@ class PatientQuestionnaireFragment : BaseFragment<FragmentPatientQuestionnaireBi
             val submittedResources = preference.getSubmittedResourceAsString()
             if(submittedResources != null) {
                 val clipboard =
-                    context!!.getSystemService(Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
+                    requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
                 val clip = ClipData.newPlainText("Extracted Resource", preference.getSubmittedResourceAsString())
                 clipboard.setPrimaryClip(clip)
                 context?.showSnackBar(
@@ -162,7 +187,7 @@ class PatientQuestionnaireFragment : BaseFragment<FragmentPatientQuestionnaireBi
                 val dateOfBirth = patientItem.birthDateElement.valueAsString
                 if(dateOfBirth != null && dateOfBirth.isNotBlank()){
                     val oldFormatDate = SimpleDateFormat("yyyy-MM-dd").parse(dateOfBirth)
-                    binding.dobTextView.text = SimpleDateFormat(DATE_FORMAT).format(oldFormatDate!!)
+                    binding.dobTextView.text = SimpleDateFormat(DATE_FORMAT_2).format(oldFormatDate!!)
                 } else {
                     binding.dobTextView.text = "Not Provided"
                 }
@@ -179,7 +204,7 @@ class PatientQuestionnaireFragment : BaseFragment<FragmentPatientQuestionnaireBi
 
         observeNotNull(homeViewModel.sidepaneItems) { apiResponse ->
             apiResponse.whenSuccess {
-                (activity as? HomeActivity)?.setupSidepane()
+                (activity as? HomeActivity)?.setupSidepane(isPreviousConsultation = false)
                 (activity as? HomeActivity)?.sidepaneAdapter?.clearAllItems()
                 (activity as? HomeActivity)?.sidepaneAdapter?.addAll(it)
             }
@@ -197,7 +222,26 @@ class PatientQuestionnaireFragment : BaseFragment<FragmentPatientQuestionnaireBi
                     navigate(R.id.action_patientQuestionnaireFragment_to_patientQuestionnaireFragment) {
                         putString(INTENT_EXTRA_QUESTIONNAIRE_ID, it.questionnaireId)
                         putString(INTENT_EXTRA_STRUCTUREMAP_ID, it.structureMapId)
-                        putString(INTENT_EXTRA_QUESTIONNAIRE_HEADER, it.questionnaireId)
+                        putString(INTENT_EXTRA_QUESTIONNAIRE_HEADER, stageToBadgeMap[it.consultationStage])
+                        putString(INTENT_EXTRA_CONSULTATION_FLOW_ITEM_ID, it.id)
+                        putString(INTENT_EXTRA_PATIENT_ID, it.patientId)
+                        putString(INTENT_EXTRA_ENCOUNTER_ID, it.encounterId)
+                        putString(INTENT_EXTRA_CONSULTATION_STAGE, it.consultationStage)
+                        putString(INTENT_EXTRA_QUESTIONNAIRE_RESPONSE, it.questionnaireResponseText)
+                    }
+                } else {
+                    navigate(R.id.action_patientQuestionnaireFragment_to_homeFragment)
+                }
+            }
+        }
+
+        observeNotNull(homeViewModel.nextQuestionnaire) { apiResponse ->
+            apiResponse.handleApiView(binding.progressLayout, skipIds = listOf(R.id.headerLayout)) {
+                if (it is ConsultationFlowItem) {
+                    navigate(R.id.action_patientQuestionnaireFragment_to_patientQuestionnaireFragment) {
+                        putString(INTENT_EXTRA_QUESTIONNAIRE_ID, it.questionnaireId)
+                        putString(INTENT_EXTRA_STRUCTUREMAP_ID, it.structureMapId)
+                        putString(INTENT_EXTRA_QUESTIONNAIRE_HEADER, stageToBadgeMap[it.consultationStage])
                         putString(INTENT_EXTRA_CONSULTATION_FLOW_ITEM_ID, it.id)
                         putString(INTENT_EXTRA_PATIENT_ID, it.patientId)
                         putString(INTENT_EXTRA_ENCOUNTER_ID, it.encounterId)
@@ -215,20 +259,9 @@ class PatientQuestionnaireFragment : BaseFragment<FragmentPatientQuestionnaireBi
                 binding.progressLayout,
                 skipIds = listOf(R.id.headerLayout)
             ) {
-                if (requireArguments().getString(INTENT_EXTRA_QUESTIONNAIRE_RESPONSE)
-                        .isNullOrEmpty()
-                )
-                    it?.let { addQuestionnaireFragment(it) }
-                else
-                    it?.let {
-                        addQuestionnaireFragment(
-                            it.first to
-                                    requireArguments().getString(
-                                        INTENT_EXTRA_QUESTIONNAIRE_RESPONSE,
-                                        it.second
-                                    )
-                        )
-                    }
+                it?.let {
+                    addQuestionnaireFragment(it.first to it.second)
+                }
             }
         }
 

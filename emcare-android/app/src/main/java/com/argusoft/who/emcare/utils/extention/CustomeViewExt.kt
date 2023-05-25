@@ -16,14 +16,16 @@ fun <T> ApiResponse<T>?.handleApiView(
 ) {
     when (this) {
         is ApiResponse.Loading -> {
-            progressLayout?.showHorizontalProgress(skipIds)
+            progressLayout?.showHorizontalProgress(false, skipIds)
         }
         is ApiResponse.Success -> {
             progressLayout?.showContent(skipIds)
+            progressLayout?.updateProgressUi(true, false)
             isSuccess(data)
         }
         is ApiResponse.ApiError -> {
             progressLayout?.showContent(skipIds)
+            progressLayout?.hideProgressUi()
             progressLayout?.context?.showSnackBar(
                 view = progressLayout,
                 message = apiErrorMessage ?: apiErrorMessageResId?.let { progressLayout.context?.getString(it) },
@@ -32,6 +34,7 @@ fun <T> ApiResponse<T>?.handleApiView(
         }
         is ApiResponse.ServerError -> {
             progressLayout?.showContent(skipIds)
+            progressLayout?.updateProgressUi(true, false)
             progressLayout?.context?.showSnackBar(
                 view = progressLayout,
                 message = errorMessage,
@@ -40,6 +43,7 @@ fun <T> ApiResponse<T>?.handleApiView(
         }
         is ApiResponse.NoInternetConnection -> {
             progressLayout?.showContent(skipIds)
+            progressLayout?.updateProgressUi(true, false)
             progressLayout?.context?.showSnackBar(
                 view = progressLayout,
                 message = progressLayout.getString(R.string.no_internet_message),
@@ -71,7 +75,12 @@ inline fun <reified T> ApiResponse<T>?.handleListApiView(
                 }
             }
         }
+//        is ApiResponse.InProgress -> {
+//            progressLayout?.showHorizontalProgress(true)
+//
+//        }
         is ApiResponse.Success -> {
+            progressLayout?.updateProgressUi(true, true)
             if (isRequiredClear) {
                 adapter?.clearAllItems()
             }
@@ -117,6 +126,7 @@ inline fun <reified T> ApiResponse<T>?.handleListApiView(
             }
         }
         is ApiResponse.ServerError -> {
+            progressLayout?.updateProgressUi(true, false)
             if (progressLayout?.swipeRefreshLayout?.isRefreshing == true || (adapter?.itemCount ?: 0) > 0) {
                 progressLayout?.swipeRefreshLayout?.isRefreshing = false
                 progressLayout?.swipeRefreshLayout?.isEnabled = true
@@ -134,6 +144,7 @@ inline fun <reified T> ApiResponse<T>?.handleListApiView(
             }
         }
         is ApiResponse.NoInternetConnection -> {
+            progressLayout?.updateProgressUi(true, false)
             if (progressLayout?.swipeRefreshLayout?.isRefreshing == true || (adapter?.itemCount ?: 0) > 0) {
                 progressLayout?.swipeRefreshLayout?.isRefreshing = false
                 progressLayout?.swipeRefreshLayout?.isEnabled = true
@@ -164,6 +175,15 @@ inline fun <T> ApiResponse<T>.whenLoading(function: () -> Unit): ApiResponse<T> 
     return this
 }
 
+inline fun <T> ApiResponse<T>.whenInProgress(function: (Pair<Int, Int>) -> Unit): ApiResponse<T> {
+    when (this) {
+        is ApiResponse.InProgress -> {
+            function(Pair(total,progressCount))
+        }
+    }
+    return this
+}
+
 inline fun <T> ApiResponse<T>.whenSuccess(function: (T) -> Unit): ApiResponse<T> {
     when (this) {
         is ApiResponse.Success -> {
@@ -173,7 +193,7 @@ inline fun <T> ApiResponse<T>.whenSuccess(function: (T) -> Unit): ApiResponse<T>
     return this
 }
 
-inline fun <T> ApiResponse<T>.whenFailed(function: () -> Unit): ApiResponse<T> {
+inline fun <T> ApiResponse<T>.whenFailed(function: (Int?) -> Unit): ApiResponse<T> {
     when (this) {
         is ApiResponse.Success -> {
             //Empty Block
@@ -182,7 +202,7 @@ inline fun <T> ApiResponse<T>.whenFailed(function: () -> Unit): ApiResponse<T> {
             //Empty Block
         }
         else -> {
-            function()
+            function(null)
         }
     }
     return this

@@ -22,6 +22,8 @@ public interface EmcareResourceService {
 
     public PageDto getPatientsPage(Integer pageNo, String searchString);
 
+    public PageDto getPatientsAllDataByFilter(String searchString, Object locationId);
+
     public List<EmcareResource> retrieveResourcesByType(String type, DateParam theDate, IdType theId);
 
     public EmcareResource findByResourceId(String resourceId);
