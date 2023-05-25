@@ -54,7 +54,7 @@
             </div>
           </div>
           <div class="row">
-            <div *ngIf="!isEdit && !emailAsUsername" class="col-12 col-sm-12">
+            <div *ngIf="!emailAsUsername" class="col-12 col-sm-12">
               <div class="mb-3">
                 <label class="form-label">{{'Email' | translate}}</label>
                 <input formControlName="email" id="email" placeholder="{{'Email Placeholder' | translate}}" type="email"

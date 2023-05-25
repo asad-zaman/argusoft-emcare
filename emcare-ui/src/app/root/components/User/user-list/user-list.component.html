@@ -38,7 +38,7 @@
               <td class="text-center">{{currentPage == 0 ? ((currentPage)*10 + i + 1) : ((currentPage-1)*10 + i + 1)}}
               </td>
               <td class="text-center cst-break">{{user.firstName}} {{user.lastName}}</td>
-              <td class="text-center">{{user.userName}}</td>
+              <td class="text-center">{{user.email}}</td>
               <td class="text-center">{{user.phone ? user.phone : 'NA'}}</td>
               <td class="text-center">{{user.realmRoles[0] ? (user.realmRoles[0] | uppercase) : 'NA'}}</td>
               <ng-container></ng-container>

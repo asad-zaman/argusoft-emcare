@@ -129,6 +129,7 @@ export class ManageUserComponent implements OnInit {
   mapUpdateForm() {
     this.userService.getUserById(this.editId).subscribe(res => {
       if (res) {
+        console.log(res);
         const data = {
           firstName: res['firstName'],
           lastName: res['lastName'],
@@ -136,7 +137,8 @@ export class ManageUserComponent implements OnInit {
           facility: this.mapFacilityRes(res['facilities']),
           countryCode: res['countryCode'],
           phone: res['phone'],
-          role: this.roles.find(el => el['name'] === res['realmRoles'][0])
+          role: this.roles.find(el => el['name'] === res['realmRoles'][0]),
+          email: res['email']
         };
         this.language = res['language'];
         this.userForm.patchValue(data);
@@ -159,7 +161,7 @@ export class ManageUserComponent implements OnInit {
         facility: ['', Validators.required],
         role: ['', [Validators.required]],
         username: [{ value: '', disabled: true }, [Validators.required]],
-        email: ['', validationArr],
+        email: [{ value: '', disabled: true }, validationArr],
       });
     } else {
       this.userForm = this.formBuilder.group({

@@ -338,7 +338,8 @@ public class UserServiceImpl implements UserService {
         if (usernameSetting.getValue().equals(CommonConstant.ACTIVE)) {
             kcUser.setUsername(user.getEmail());
         } else {
-            kcUser.setUsername(user.getUserName());
+
+            kcUser.setUsername(Objects.isNull(user.getUserName()) ? user.getEmail() : user.getUserName());
         }
         kcUser.setCredentials(Collections.singletonList(credentialRepresentation));
         kcUser.setFirstName(user.getFirstName());
@@ -424,8 +425,8 @@ public class UserServiceImpl implements UserService {
                 String userId = accessToken.getSubject();
                 UserRepresentation userRepresentation = getUserByEmailId(loginCred.getUsername());
                 String tenantId = Objects.nonNull(userRepresentation.getAttributes().get(CommonConstant.TENANT_ID))
-                    ? userRepresentation.getAttributes().get(CommonConstant.TENANT_ID).get(0)
-                    : defaultTenant;
+                        ? userRepresentation.getAttributes().get(CommonConstant.TENANT_ID).get(0)
+                        : defaultTenant;
                 Set<String> roles = accessToken.getRealmAccess().getRoles();
                 TenantContext.clearTenant();
                 TenantContext.setCurrentTenant(tenantId);
@@ -467,7 +468,6 @@ public class UserServiceImpl implements UserService {
         } else {
             kcUser.setUsername(user.getUserName());
         }
-        kcUser.setUsername(user.getUserName());
         kcUser.setCredentials(Collections.singletonList(credentialRepresentation));
         kcUser.setFirstName(user.getFirstName());
         kcUser.setLastName(user.getLastName());
