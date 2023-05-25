@@ -318,8 +318,8 @@ export class FhirService {
     }
 
     getAllLogs() {
-        let url = `${environment.apiUrl}/api/country/application/log/all`;
-        return this.http.get(url, this.getHeaders());
+        let url = `${environment.apiUrl}/api/open/country/application/log/all`;
+        return this.http.get(url);
     }
 
     getConsultationExportData(id) {

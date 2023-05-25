@@ -304,7 +304,7 @@ export class AppComponent implements OnInit {
       feature['subMenuActive'] = true;
     }
     const routeArr = this.authGuard.getFeatureAndRedirectUser(featureName);
-    return routeArr.includes(this.currentUrl.split('/').slice(0,2).join('/'));
+    return routeArr.includes(this.currentUrl.split('/').slice(0, 2).join('/'));
   }
 
   applySidebarChange() {
@@ -328,6 +328,6 @@ export class AppComponent implements OnInit {
   }
 
   onClickSidebarBtn() {
-    this.isSidebarOpen = !this.isSidebarOpen; 
+    this.isSidebarOpen = !this.isSidebarOpen;
   }
 }
