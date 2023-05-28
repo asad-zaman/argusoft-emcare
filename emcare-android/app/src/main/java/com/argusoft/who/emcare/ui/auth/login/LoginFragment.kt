@@ -12,13 +12,24 @@ import com.argusoft.who.emcare.sync.SyncViewModel
 import com.argusoft.who.emcare.ui.common.REQUEST_CODE_READ_PHONE_STATE
 import com.argusoft.who.emcare.ui.common.base.BaseFragment
 import com.argusoft.who.emcare.ui.home.HomeActivity
-import com.argusoft.who.emcare.utils.extention.*
+import com.argusoft.who.emcare.utils.extention.getDeviceModel
+import com.argusoft.who.emcare.utils.extention.getDeviceName
+import com.argusoft.who.emcare.utils.extention.getDeviceOS
+import com.argusoft.who.emcare.utils.extention.getDeviceUUID
+import com.argusoft.who.emcare.utils.extention.getEnterText
+import com.argusoft.who.emcare.utils.extention.handleApiView
+import com.argusoft.who.emcare.utils.extention.handleListApiView
+import com.argusoft.who.emcare.utils.extention.navigate
+import com.argusoft.who.emcare.utils.extention.observeNotNull
+import com.argusoft.who.emcare.utils.extention.showSnackBar
+import com.argusoft.who.emcare.utils.extention.whenInProgress
+import com.argusoft.who.emcare.utils.extention.whenLoading
 import com.google.android.fhir.sync.SyncJobStatus
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
-import kotlin.math.roundToInt
+import java.io.File
 
 @AndroidEntryPoint
 class LoginFragment : BaseFragment<FragmentLoginBinding>(), EasyPermissions.PermissionCallbacks {
@@ -31,6 +42,34 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(), EasyPermissions.Perm
         if(preference.getCountry().isNotBlank()){
             binding.emcareTitleTextView.text = binding.emcareTitleTextView.text.toString() + " " + preference.getCountry()
         }
+        loginViewModel.clearData()
+    }
+
+    fun clearApplicationData() {
+        val cache: File = requireContext().getCacheDir()
+        val appDir = File(cache.getParent())
+        if (appDir.exists()) {
+            val children: Array<String> = appDir.list()
+            for (s in children) {
+                if (s != "lib") {
+                    deleteDir(File(appDir, s))
+                    Log.i("TAG", "File /data/data/APP_PACKAGE/$s DELETED")
+                }
+            }
+        }
+    }
+
+    private fun deleteDir(dir: File?): Boolean {
+        if (dir != null && dir.isDirectory) {
+            val children = dir.list()
+            for (i in children.indices) {
+                val success = deleteDir(File(dir, children[i]))
+                if (!success) {
+                    return false
+                }
+            }
+        }
+        return dir!!.delete()
     }
 
     override fun initListener() {
@@ -50,64 +89,63 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(), EasyPermissions.Perm
         }
         observeNotNull(loginViewModel.loginApiState) {
             it.handleApiView(binding.progressLayout) {
-                binding.progressLayout.updateProgressUi(true, false)
-                syncViewModel.syncPatients(true)
+                if(preference.getFacilityId().isNotEmpty()){
+                    binding.progressLayout.updateProgressUi(true, false)
+                    syncViewModel.syncPatients(true)
+                }
+
             }
         }
 
         observeNotNull(syncViewModel.syncState) { apiResponse ->
 
             apiResponse.whenLoading {
-                binding.progressLayout.showHorizontalProgress(true)
+                if(preference.getFacilityId().isNotEmpty())
+                    binding.progressLayout.showHorizontalProgress(true)
             }
 
             apiResponse.whenInProgress {
                 Log.d("it.total.toDouble()", it.first.toDouble().toString())
                 Log.d("it.progress", it.second.toDouble().toString())
-                if(it.second == 100){
-                    binding.progressLayout.updateProgressUi(true, true)
-                    loginViewModel.addDevice(
-                        getDeviceName(),
-                        getDeviceOS(),
-                        getDeviceModel(),
-                        requireContext().getDeviceUUID().toString(),
-                        BuildConfig.VERSION_NAME
-                    )
-                    startActivity(Intent(requireContext(), HomeActivity::class.java))
-                    requireActivity().finish()
-                }else if(it.first > 0) {
+               /* if(it.second >= 100){
+
+                }else*/ if(it.first > 0 && it.second <=100) {
                     val progress = it.second
                     "Synced $progress%".also { binding.progressLayout.showProgress(it)
                         Log.d("Synced", "$progress%")
                     }
                 }else if(it.first == 0){
-                    binding.progressLayout.updateProgressUi(true, true)
-                    startActivity(Intent(requireContext(), HomeActivity::class.java))
-                    requireActivity().finish()
+                   /* if(preference.getFacilityId().isNotEmpty()) {
+                        binding.progressLayout.updateProgressUi(true, true)
+                        startActivity(Intent(requireContext(), HomeActivity::class.java))
+                        requireActivity().finish()
+                    }else{
+                        binding.progressLayout.hideProgressUi()
+                    }*/
                 }
             }
 
             apiResponse.handleListApiView(binding.progressLayout) {
                 when (it) {
 
-//                    is SyncJobStatus.Finished -> {
-//                        binding.progressLayout.updateProgressUi(true, true)
-////                        requireContext().showSnackBar(
-////                            view = binding.progressLayout,
-////                            message = getString(R.string.msg_sync_successfully),
-////                            duration = Snackbar.LENGTH_SHORT,
-////                            isError = false
-////                        )
-//                        loginViewModel.addDevice(
-//                            getDeviceName(),
-//                            getDeviceOS(),
-//                            getDeviceModel(),
-//                            requireContext().getDeviceUUID().toString(),
-//                            BuildConfig.VERSION_NAME
+                    is SyncJobStatus.Finished -> {
+                        binding.progressLayout.updateProgressUi(true, true)
+//                        requireContext().showSnackBar(
+//                            view = binding.progressLayout,
+//                            message = getString(R.string.msg_sync_successfully),
+//                            duration = Snackbar.LENGTH_SHORT,
+//                            isError = false
 //                        )
-//                        startActivity(Intent(requireContext(), HomeActivity::class.java))
-//                        requireActivity().finish()
-//                    }
+                        loginViewModel.addDevice(
+                            getDeviceName(),
+                            getDeviceOS(),
+                            getDeviceModel(),
+                            requireContext().getDeviceUUID().toString(),
+                            BuildConfig.VERSION_NAME
+                        )
+                        startActivity(Intent(requireContext(), HomeActivity::class.java))
+                        requireActivity().finish()
+                    }
                     is SyncJobStatus.Failed -> {
                         binding.progressLayout.showContent()
                         binding.progressLayout.hideProgressUi()

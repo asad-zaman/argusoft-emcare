@@ -1,5 +1,6 @@
 package com.argusoft.who.emcare.ui.home
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.activityViewModels
@@ -87,7 +88,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(){
             apiResponse.whenInProgress {
                 Log.d("it.total.toDouble()", it.first.toDouble().toString())
                 Log.d("it.progress", it.second.toDouble().toString())
-                if(it.second == 100){
+               /* if(it.second >= 100){
                     binding.rootLayout.updateProgressUi(true, true)
                     loginViewModel.addDevice(
                         getDeviceName(),
@@ -96,7 +97,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(){
                         requireContext().getDeviceUUID().toString(),
                         BuildConfig.VERSION_NAME
                     )
-                }else if(it.first > 0) {
+                }else */if(it.first > 0) {
                     val progress = it.second
                     "Synced $progress%".also { binding.rootLayout.showProgress(it)
                         Log.d("Synced", "$progress%")
@@ -108,6 +109,16 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(){
 
             apiResponse.handleListApiView(binding.rootLayout) {
                 when(it) {
+                    is SyncJobStatus.Finished -> {
+                        binding.rootLayout.updateProgressUi(true, true)
+                        loginViewModel.addDevice(
+                            getDeviceName(),
+                            getDeviceOS(),
+                            getDeviceModel(),
+                            requireContext().getDeviceUUID().toString(),
+                            BuildConfig.VERSION_NAME
+                        )
+                    }
                     is SyncJobStatus.Failed -> {
                         binding.rootLayout.showContent()
                         binding.rootLayout.hideProgressUi()

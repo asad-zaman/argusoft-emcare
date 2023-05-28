@@ -109,7 +109,7 @@ class PatientProfileFragment : BaseFragment<FragmentPatientProfileBinding>() {
                 binding.patientProfileLayout.showHorizontalProgress(true)
             }
             apiResponse.whenInProgress {
-                if(it.second == 100){
+               /* if(it.second >= 100){
                     binding.patientProfileLayout.updateProgressUi(true, true)
                     homeViewModel.loadLibraries(context!!)
                     loginViewModel.addDevice(
@@ -119,7 +119,7 @@ class PatientProfileFragment : BaseFragment<FragmentPatientProfileBinding>() {
                         requireContext().getDeviceUUID().toString(),
                         BuildConfig.VERSION_NAME
                     )
-                }else if (it.first > 0) {
+                }else*/ if (it.first > 0) {
                     val progress = it.second
                     "Synced $progress%".also {
                         binding.patientProfileLayout.showProgress(it)
@@ -142,7 +142,17 @@ class PatientProfileFragment : BaseFragment<FragmentPatientProfileBinding>() {
             apiResponse.handleListApiView(binding.patientProfileLayout) {
                 when (it) {
 
-
+                    is SyncJobStatus.Finished -> {
+                        binding.patientProfileLayout.updateProgressUi(true, true)
+                        homeViewModel.loadLibraries(context!!)
+                        loginViewModel.addDevice(
+                            getDeviceName(),
+                            getDeviceOS(),
+                            getDeviceModel(),
+                            requireContext().getDeviceUUID().toString(),
+                            BuildConfig.VERSION_NAME
+                        )
+                    }
                     is SyncJobStatus.Failed -> {
                         binding.patientProfileLayout.showContent()
                         binding.patientProfileLayout.hideProgressUi()

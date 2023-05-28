@@ -25,7 +25,7 @@ class ConsultationListFragment: BaseFragment<FragmentConsultationListBinding>(),
     }
 
     override fun onResume() {
-        super.onStart()
+        super.onResume()
         homeViewModel.getConsultations((this.parentFragment)?.view?.findViewById<SearchView>(R.id.searchView)?.query.toString(), consultationAdapter.isNotEmpty())
         (this.parentFragment)?.view?.findViewById<SearchView>(R.id.searchView)?.setOnQueryTextListener(this)
     }

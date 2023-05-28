@@ -84,7 +84,7 @@ class ChangeThemeFragment : BaseFragment<FragmentScreenResizeSettingsBinding>() 
                 binding.rootLayout.showHorizontalProgress(true)
             }
             apiResponse.whenInProgress {
-                if(it.second == 100){
+             /*   if(it.second >= 100){
                     binding.rootLayout.updateProgressUi(true, true)
                     loginViewModel.addDevice(
                         getDeviceName(),
@@ -93,18 +93,27 @@ class ChangeThemeFragment : BaseFragment<FragmentScreenResizeSettingsBinding>() 
                         requireContext().getDeviceUUID().toString(),
                         BuildConfig.VERSION_NAME
                     )
-                }else if (it.first > 0) {
-                    val progress = it.second
-                    "Synced $progress%".also {
-                        binding.rootLayout.showProgress(it)
-                        Log.d("Synced", "$progress%")
-                    }
-                } else if(it.first == 0){
-                    binding.rootLayout.updateProgressUi(true, true)
+                }else*/if(it.first > 0) {
+                val progress = it.second
+                "Synced $progress%".also { binding.rootLayout.showProgress(it)
+                    Log.d("Synced", "$progress%")
                 }
+            }else if(it.first == 0){
+                binding.rootLayout.updateProgressUi(true, true)
+            }
             }
             apiResponse.handleListApiView(binding.rootLayout) {
                 when (it) {
+                    is SyncJobStatus.Finished -> {
+                        binding.rootLayout.updateProgressUi(true, true)
+                        loginViewModel.addDevice(
+                            getDeviceName(),
+                            getDeviceOS(),
+                            getDeviceModel(),
+                            requireContext().getDeviceUUID().toString(),
+                            BuildConfig.VERSION_NAME
+                        )
+                    }
                     is SyncJobStatus.Failed -> {
                         binding.rootLayout.showContent()
                         binding.rootLayout.hideProgressUi()
