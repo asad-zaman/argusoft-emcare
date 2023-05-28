@@ -2,6 +2,8 @@ package com.argusoft.who.emcare.ui.auth.login
 
 import android.Manifest
 import android.content.Intent
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.View
 import androidx.fragment.app.viewModels
@@ -30,6 +32,9 @@ import dagger.hilt.android.AndroidEntryPoint
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
 import java.io.File
+import java.util.Timer
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
 
 @AndroidEntryPoint
 class LoginFragment : BaseFragment<FragmentLoginBinding>(), EasyPermissions.PermissionCallbacks {
@@ -37,6 +42,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(), EasyPermissions.Perm
     private val syncViewModel: SyncViewModel by viewModels()
     private val loginViewModel: LoginViewModel by viewModels()
     private val formatString12 = "dd/MM/yyyy hh:mm:ss a"
+    private var progressCount : Int = 0
 
     override fun initView() {
         if(preference.getCountry().isNotBlank()){
@@ -91,6 +97,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(), EasyPermissions.Perm
             it.handleApiView(binding.progressLayout) {
                 if(preference.getFacilityId().isNotEmpty()){
                     binding.progressLayout.updateProgressUi(true, false)
+                    Log.d("Sync Called","Above SyncPatients")
                     syncViewModel.syncPatients(true)
                 }
 
@@ -106,36 +113,10 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(), EasyPermissions.Perm
 
             apiResponse.whenInProgress {
                 Log.d("it.total.toDouble()", it.first.toDouble().toString())
-                Log.d("it.progress", it.second.toDouble().toString())
-               /* if(it.second >= 100){
-
-                }else*/ if(it.first > 0 && it.second <=100) {
-                    val progress = it.second
-                    "Synced $progress%".also { binding.progressLayout.showProgress(it)
-                        Log.d("Synced", "$progress%")
-                    }
-                }else if(it.first == 0){
-                   /* if(preference.getFacilityId().isNotEmpty()) {
+                Log.d("it.progress.toDouble()", it.second.toDouble().toString())
+                if(it.second >= 100){
+                    Handler(Looper.getMainLooper()).postDelayed({
                         binding.progressLayout.updateProgressUi(true, true)
-                        startActivity(Intent(requireContext(), HomeActivity::class.java))
-                        requireActivity().finish()
-                    }else{
-                        binding.progressLayout.hideProgressUi()
-                    }*/
-                }
-            }
-
-            apiResponse.handleListApiView(binding.progressLayout) {
-                when (it) {
-
-                    is SyncJobStatus.Finished -> {
-                        binding.progressLayout.updateProgressUi(true, true)
-//                        requireContext().showSnackBar(
-//                            view = binding.progressLayout,
-//                            message = getString(R.string.msg_sync_successfully),
-//                            duration = Snackbar.LENGTH_SHORT,
-//                            isError = false
-//                        )
                         loginViewModel.addDevice(
                             getDeviceName(),
                             getDeviceOS(),
@@ -145,7 +126,47 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(), EasyPermissions.Perm
                         )
                         startActivity(Intent(requireContext(), HomeActivity::class.java))
                         requireActivity().finish()
+                    }, 5000)
+//                    Executors.newSingleThreadScheduledExecutor().schedule({
+//
+//                    }, 5, TimeUnit.SECONDS)
+                }else if(it.first > 0 && it.second <=100) {
+                    val progress = it.second
+                    "Synced $progress%".also { binding.progressLayout.showProgress(it)
+                        Log.d("Synced", "$progress%")
                     }
+                }else if(it.first == 0){
+                    if(preference.getFacilityId().isNotEmpty()) {
+                        binding.progressLayout.updateProgressUi(true, true)
+                        startActivity(Intent(requireContext(), HomeActivity::class.java))
+                        requireActivity().finish()
+                    }else{
+                        binding.progressLayout.hideProgressUi()
+                    }
+                }
+            }
+
+            apiResponse.handleListApiView(binding.progressLayout) {
+                when (it) {
+
+//                    is SyncJobStatus.Finished -> {
+//                        binding.progressLayout.updateProgressUi(true, true)
+////                        requireContext().showSnackBar(
+////                            view = binding.progressLayout,
+////                            message = getString(R.string.msg_sync_successfully),
+////                            duration = Snackbar.LENGTH_SHORT,
+////                            isError = false
+////                        )
+//                        loginViewModel.addDevice(
+//                            getDeviceName(),
+//                            getDeviceOS(),
+//                            getDeviceModel(),
+//                            requireContext().getDeviceUUID().toString(),
+//                            BuildConfig.VERSION_NAME
+//                        )
+//                        startActivity(Intent(requireContext(), HomeActivity::class.java))
+//                        requireActivity().finish()
+//                    }
                     is SyncJobStatus.Failed -> {
                         binding.progressLayout.showContent()
                         binding.progressLayout.hideProgressUi()

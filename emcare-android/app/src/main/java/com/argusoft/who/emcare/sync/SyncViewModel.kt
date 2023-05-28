@@ -48,6 +48,7 @@ class SyncViewModel @Inject constructor(
     private var progressOriginal: Int = 0
 
     fun syncPatients(isRefresh: Boolean) {
+        Log.d("Sync Called","Inside SyncPatients")
         isFinished = false
         _syncState.value = ApiResponse.Loading(isRefresh)
         viewModelScope.launch {
@@ -115,6 +116,7 @@ class SyncViewModel @Inject constructor(
                                         progressCount = progress
                                     )
                                     if (progress >= 100) {
+                                        preference.writeLastSyncTimestamp(lastSyncTime)
                                         break
                                     }
                                     lastProgress = progress

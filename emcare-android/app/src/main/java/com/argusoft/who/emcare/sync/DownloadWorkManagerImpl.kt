@@ -16,6 +16,7 @@
 
 package com.argusoft.who.emcare.sync
 
+import android.util.Log
 import com.argusoft.who.emcare.data.local.pref.Preference
 import com.google.android.fhir.sync.DownloadWorkManager
 import com.google.android.fhir.sync.Request
@@ -45,6 +46,7 @@ class DownloadWorkManagerImpl constructor(
   }
 
   override suspend fun getNextRequest(): Request? {
+    Log.d("Sync Called","Inside getNextRequest")
     getGmtTimeFromLastSyncTime()
     var url = urls.poll() ?: return null
     if(url.contains("Patient", true)){

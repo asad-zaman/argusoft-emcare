@@ -2,6 +2,8 @@ package com.argusoft.who.emcare.ui.home
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -19,6 +21,8 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
 import kotlin.math.roundToInt
 
 @AndroidEntryPoint
@@ -88,16 +92,19 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(){
             apiResponse.whenInProgress {
                 Log.d("it.total.toDouble()", it.first.toDouble().toString())
                 Log.d("it.progress", it.second.toDouble().toString())
-               /* if(it.second >= 100){
-                    binding.rootLayout.updateProgressUi(true, true)
-                    loginViewModel.addDevice(
-                        getDeviceName(),
-                        getDeviceOS(),
-                        getDeviceModel(),
-                        requireContext().getDeviceUUID().toString(),
-                        BuildConfig.VERSION_NAME
-                    )
-                }else */if(it.first > 0) {
+                if(it.second >= 100){
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        binding.rootLayout.updateProgressUi(true, true)
+                        loginViewModel.addDevice(
+                            getDeviceName(),
+                            getDeviceOS(),
+                            getDeviceModel(),
+                            requireContext().getDeviceUUID().toString(),
+                            BuildConfig.VERSION_NAME
+                        )
+                    }, 5000)
+
+                }else if(it.first > 0) {
                     val progress = it.second
                     "Synced $progress%".also { binding.rootLayout.showProgress(it)
                         Log.d("Synced", "$progress%")
@@ -109,16 +116,16 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(){
 
             apiResponse.handleListApiView(binding.rootLayout) {
                 when(it) {
-                    is SyncJobStatus.Finished -> {
-                        binding.rootLayout.updateProgressUi(true, true)
-                        loginViewModel.addDevice(
-                            getDeviceName(),
-                            getDeviceOS(),
-                            getDeviceModel(),
-                            requireContext().getDeviceUUID().toString(),
-                            BuildConfig.VERSION_NAME
-                        )
-                    }
+//                    is SyncJobStatus.Finished -> {
+//                        binding.rootLayout.updateProgressUi(true, true)
+//                        loginViewModel.addDevice(
+//                            getDeviceName(),
+//                            getDeviceOS(),
+//                            getDeviceModel(),
+//                            requireContext().getDeviceUUID().toString(),
+//                            BuildConfig.VERSION_NAME
+//                        )
+//                    }
                     is SyncJobStatus.Failed -> {
                         binding.rootLayout.showContent()
                         binding.rootLayout.hideProgressUi()

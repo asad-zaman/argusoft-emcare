@@ -1,5 +1,7 @@
 package com.argusoft.who.emcare.ui.home.about
 
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import androidx.fragment.app.viewModels
 import com.argusoft.who.emcare.BuildConfig
@@ -13,6 +15,8 @@ import com.argusoft.who.emcare.utils.extention.*
 import com.google.android.fhir.sync.SyncJobStatus
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
 import kotlin.math.roundToInt
 
 @AndroidEntryPoint
@@ -61,16 +65,18 @@ class AboutFragment : BaseFragment<FragmentAboutBinding>() {
 //                )
             }
             apiResponse.whenInProgress {
-               /* if(it.second >= 100){
-                    binding.progressLayout.updateProgressUi(true, true)
-                    loginViewModel.addDevice(
-                        getDeviceName(),
-                        getDeviceOS(),
-                        getDeviceModel(),
-                        requireContext().getDeviceUUID().toString(),
-                        BuildConfig.VERSION_NAME
-                    )
-                }else*/ if (it.first > 0) {
+                if(it.second >= 100){
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        binding.progressLayout.updateProgressUi(true, true)
+                        loginViewModel.addDevice(
+                            getDeviceName(),
+                            getDeviceOS(),
+                            getDeviceModel(),
+                            requireContext().getDeviceUUID().toString(),
+                            BuildConfig.VERSION_NAME
+                        )
+                    }, 5000)
+                }else if (it.first > 0) {
                     val progress = it.second
                     "Synced $progress%".also {
                         binding.progressLayout.showProgress(it)
@@ -84,16 +90,16 @@ class AboutFragment : BaseFragment<FragmentAboutBinding>() {
             apiResponse.handleListApiView(binding.progressLayout) {
                 when (it) {
 
-                    is SyncJobStatus.Finished -> {
-                        binding.progressLayout.updateProgressUi(true, true)
-                        loginViewModel.addDevice(
-                            getDeviceName(),
-                            getDeviceOS(),
-                            getDeviceModel(),
-                            requireContext().getDeviceUUID().toString(),
-                            BuildConfig.VERSION_NAME
-                        )
-                    }
+//                    is SyncJobStatus.Finished -> {
+//                        binding.progressLayout.updateProgressUi(true, true)
+//                        loginViewModel.addDevice(
+//                            getDeviceName(),
+//                            getDeviceOS(),
+//                            getDeviceModel(),
+//                            requireContext().getDeviceUUID().toString(),
+//                            BuildConfig.VERSION_NAME
+//                        )
+//                    }
                     is SyncJobStatus.Failed -> {
                         binding.progressLayout.showContent()
                         binding.progressLayout.hideProgressUi()

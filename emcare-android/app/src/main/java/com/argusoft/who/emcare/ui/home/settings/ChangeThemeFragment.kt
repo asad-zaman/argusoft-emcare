@@ -1,6 +1,8 @@
 package com.argusoft.who.emcare.ui.home.settings
 
 import android.content.Intent
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.View
 import android.widget.CompoundButton
@@ -19,6 +21,8 @@ import com.argusoft.who.emcare.utils.extention.*
 import com.google.android.fhir.sync.SyncJobStatus
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
 import kotlin.math.roundToInt
 
 
@@ -84,16 +88,18 @@ class ChangeThemeFragment : BaseFragment<FragmentScreenResizeSettingsBinding>() 
                 binding.rootLayout.showHorizontalProgress(true)
             }
             apiResponse.whenInProgress {
-             /*   if(it.second >= 100){
-                    binding.rootLayout.updateProgressUi(true, true)
-                    loginViewModel.addDevice(
-                        getDeviceName(),
-                        getDeviceOS(),
-                        getDeviceModel(),
-                        requireContext().getDeviceUUID().toString(),
-                        BuildConfig.VERSION_NAME
-                    )
-                }else*/if(it.first > 0) {
+                if(it.second >= 100){
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        binding.rootLayout.updateProgressUi(true, true)
+                        loginViewModel.addDevice(
+                            getDeviceName(),
+                            getDeviceOS(),
+                            getDeviceModel(),
+                            requireContext().getDeviceUUID().toString(),
+                            BuildConfig.VERSION_NAME
+                        )
+                    }, 5000)
+                }else if(it.first > 0) {
                 val progress = it.second
                 "Synced $progress%".also { binding.rootLayout.showProgress(it)
                     Log.d("Synced", "$progress%")
@@ -104,16 +110,16 @@ class ChangeThemeFragment : BaseFragment<FragmentScreenResizeSettingsBinding>() 
             }
             apiResponse.handleListApiView(binding.rootLayout) {
                 when (it) {
-                    is SyncJobStatus.Finished -> {
-                        binding.rootLayout.updateProgressUi(true, true)
-                        loginViewModel.addDevice(
-                            getDeviceName(),
-                            getDeviceOS(),
-                            getDeviceModel(),
-                            requireContext().getDeviceUUID().toString(),
-                            BuildConfig.VERSION_NAME
-                        )
-                    }
+//                    is SyncJobStatus.Finished -> {
+//                        binding.rootLayout.updateProgressUi(true, true)
+//                        loginViewModel.addDevice(
+//                            getDeviceName(),
+//                            getDeviceOS(),
+//                            getDeviceModel(),
+//                            requireContext().getDeviceUUID().toString(),
+//                            BuildConfig.VERSION_NAME
+//                        )
+//                    }
                     is SyncJobStatus.Failed -> {
                         binding.rootLayout.showContent()
                         binding.rootLayout.hideProgressUi()
