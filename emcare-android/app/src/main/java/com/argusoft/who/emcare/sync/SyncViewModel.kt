@@ -75,75 +75,12 @@ class SyncViewModel @Inject constructor(
                     } else if (syncJobStatus is SyncJobStatus.InProgress) {
                         progress = syncJobStatus.completed.toDouble().div(syncJobStatus.total)
                             .times(100).toInt()
-                        progressOriginal = progress
-//                    _syncState.value = ApiResponse.InProgress(
-//                        syncJobStatus.total,
-//                        progressCount = progress
-//                    )
-//                    if (progress >= 100) {
-//                        preference.writeLastSyncTimestamp(lastSyncTime)
-//                    }
-                        if (!isProgressAlreadyStarted) {
-                            viewModelScope.launch {
-                                while (lastProgress <= 100) {
-                                    if (syncJobStatus.total == 0) {
-                                        _syncState.value = ApiResponse.InProgress(
-                                            syncJobStatus.total,
-                                            progressCount = 0
-                                        )
-                                        break
-                                    }
-                                    if (progress == 0) {
-                                        progress = 1
-                                        lastProgress = 1
-                                    }
-//
-                                    if (progress < lastProgress)
-                                        progress = lastProgress
-                                    else if ((progress - lastProgress) > diff)
-                                        progress = lastProgress + (diff - (lastProgress % diff))
-                                    else
-                                        progress += (diff - (progress % diff))
 
-                                    if (progress >= 100 && lastProgress < 99)
-                                        progress = 99
+                        // fhir auto sync progress
+                        autoSyncProgress(syncJobStatus)
 
-//                                if (progress >= 100 && progressOriginal>= 100) {
-//                                    progress = 99
-//                                }
-                                    _syncState.value = ApiResponse.InProgress(
-                                        syncJobStatus.total,
-                                        progressCount = progress
-                                    )
-                                    if (progress >= 100) {
-                                        preference.writeLastSyncTimestamp(lastSyncTime)
-                                        break
-                                    }
-                                    lastProgress = progress
-
-
-                                    delay(timeDelay)
-
-                                }
-                            }
-                            isProgressAlreadyStarted = true
-                        }
-//                    if(!isFinished) {
-////                        val progress = syncJobStatus.completed.toDouble().div(syncJobStatus.total)
-////                            .times(100).roundToInt()
-////                        _syncState.value = ApiResponse.InProgress(
-////                            syncJobStatus.total,
-////                            syncJobStatus.completed,
-////                            progressCount = progress
-////                        )
-//                        if (syncJobStatus.total == syncJobStatus.completed && lastProgress == 100) {
-//                            isFinished = true
-//                            Log.d("it.progress", lastProgress.toString())
-//                            _syncState.value = ApiResponse.Success(null)
-//                            if(syncJobStatus.total != 0)
-//                                preference.writeLastSyncTimestamp(lastSyncTime)
-//                        }
-//                    }
+                        // for smooth manual transition
+//                        manualSyncProgress(syncJobStatus)
 
                     } else {
                         _syncState.value = (syncJobStatus is SyncJobStatus.Failed)?.let {
@@ -151,6 +88,64 @@ class SyncViewModel @Inject constructor(
                         }
                     }
             }
+        }
+    }
+
+    private fun autoSyncProgress(syncJobStatus : SyncJobStatus.InProgress){
+        _syncState.value = ApiResponse.InProgress(
+            syncJobStatus.total,
+            progressCount = progress
+        )
+        if (progress >= 100) {
+            preference.writeLastSyncTimestamp(lastSyncTime)
+        }
+    }
+
+    private fun manualSyncProgress(syncJobStatus : SyncJobStatus.InProgress){
+        progressOriginal = progress
+        if (!isProgressAlreadyStarted) {
+            viewModelScope.launch {
+                while (lastProgress <= 100) {
+                    if (syncJobStatus.total == 0) {
+                        _syncState.value = ApiResponse.InProgress(
+                            total = 0,
+                            progressCount = 0
+                        )
+                        break
+                    }
+                    if (progress == 0) {
+                        progress = 1
+                        lastProgress = 1
+                    }
+//
+                    if (progress < lastProgress)
+                        progress = lastProgress
+                    else if ((progress - lastProgress) > diff)
+                        progress = lastProgress + (diff - (lastProgress % diff))
+                    else
+                        progress += (diff - (progress % diff))
+
+//                   if (progress >= 100 && lastProgress < 99)
+//                       progress = 99
+
+                    if (progress >= 100 && progressOriginal < 100) {
+                        progress = 99
+                    }
+                    _syncState.value = ApiResponse.InProgress(
+                        syncJobStatus.total,
+                        progressCount = progress
+                    )
+                    if (progress >= 100 && progressOriginal >= 100) {
+                        preference.writeLastSyncTimestamp(lastSyncTime)
+                        break
+                    }
+                    lastProgress = progress
+
+                    delay(timeDelay)
+
+                }
+            }
+            isProgressAlreadyStarted = true
         }
     }
 }

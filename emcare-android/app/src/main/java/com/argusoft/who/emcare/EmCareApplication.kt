@@ -142,7 +142,7 @@ class EmCareApplication : Application(), Configuration.Provider, DataCaptureConf
                 enableEncryptionIfSupported = false,
                 DatabaseErrorStrategy.RECREATE_AT_OPEN,
                 ServerConfiguration(BuildConfig.FHIR_BASE_URL,
-                    NetworkConfiguration(connectionTimeOut = 600, readTimeOut = 600, writeTimeOut = 600),
+                    NetworkConfiguration(connectionTimeOut = 1200, readTimeOut = 1200, writeTimeOut = 1200),
                     EmcareAuthenticator(preference),
                     httpLogger =
                     HttpLogger(
