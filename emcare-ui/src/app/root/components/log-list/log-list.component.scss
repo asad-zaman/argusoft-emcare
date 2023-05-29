@@ -129,3 +129,18 @@
     font-weight: normal;
     color: #57686f;
 }
+
+.cst-no-token {
+    padding-left: 0;
+    z-index: 99;
+    position: absolute;
+}
+
+.cst-no-token-customheader {
+    width: 100%;
+    left: 0;
+}
+
+.cst-no-token-loglist {
+    left: 20px;
+}

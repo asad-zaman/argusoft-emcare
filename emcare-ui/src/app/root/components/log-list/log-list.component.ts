@@ -13,6 +13,7 @@ export class LogListComponent implements OnInit {
   applicationData = [];
   logs = [];
   currentActive = 0;
+  token;
 
   constructor(
     private readonly fhirService: FhirService,
@@ -24,6 +25,7 @@ export class LogListComponent implements OnInit {
   }
 
   prerequisite() {
+    this.token = JSON.parse(localStorage.getItem('access_token'));
     this.getLogList();
   }
 

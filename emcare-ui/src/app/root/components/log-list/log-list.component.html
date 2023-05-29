@@ -1,12 +1,12 @@
-<div class="main-wrapper cst-white">
-  <div class="custom-header">
+<div class="main-wrapper cst-white" [ngClass]="{'cst-no-token': !this.token}">
+  <div class="custom-header" [ngClass]="{'cst-no-token-customheader': !this.token}">
     <h1 class="heading">{{'Logs' | translate}}</h1>
-    <div>
+    <div *ngIf="this.token">
       <button (click)="navigateToAddLog()" type="button" class="btn btn-blue">
         +&nbsp;{{'Add Log' | translate}}</button>
     </div>
   </div>
-  <div class="loglist">
+  <div class="loglist" [ngClass]="{'cst-no-token-loglist': !this.token}">
     <h5 style="padding-left: 8px; font-size: 20px; font-weight: 600;">{{'Log List' | translate}}</h5>
     <ul>
       <ng-container *ngFor="let data of this.applicationData; let i=index">
