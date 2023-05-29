@@ -346,4 +346,24 @@ export class FhirService {
             };
         }
     }
+
+    getAllPatientsForExport(searchName?, locationId?) {
+        let url = `${environment.apiUrl}/api/emcare/patient/page/all`;
+        if (searchName && locationId) {
+            url = `${url}?search=${searchName}&locationId=${locationId}`;
+        } else {
+            if (searchName) {
+                url = `${url}?search=${searchName}`;
+            }
+            if (locationId) {
+                url = `${url}?locationId=${locationId}`;
+            }
+        }
+        return this.http.get(url, this.getHeaders());
+    }
+
+    getAllConsultationsForExport() {
+        let url = `${environment.apiUrl}/api/questionnaire_response/export/all`;
+        return this.http.get(url, this.getHeaders());
+    }
 }

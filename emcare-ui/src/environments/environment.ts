@@ -5,8 +5,8 @@
 export const environment = {
   production: false,
   // apiUrl: 'http://localhost:8080',
-  apiUrl: 'http://13.126.141.238',
-  questionnaireBuilderUrl: 'http://13.126.141.238/questionnaireBuilder',
+  apiUrl: 'http://3.111.94.246:8080',
+  questionnaireBuilderUrl: 'http://3.111.94.246:8080/questionnaireBuilder',
   testUrl: 'http://localhost:4200/login',
   testUsername: 'emcare@gmail.com',
   testPassword: 'argusadmin',

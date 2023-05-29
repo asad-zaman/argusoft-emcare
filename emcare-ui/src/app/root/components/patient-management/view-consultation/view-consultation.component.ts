@@ -14,7 +14,7 @@ export class ViewConsultationComponent implements OnInit {
   editId: string;
   isEdit: boolean = false;
   encounterKeys = [];
-  selectedEnKey = {};
+  selectedEnKey;
   selectedEncounterIcon = 0;
   data = [];
   currentObj = {};
@@ -72,20 +72,20 @@ export class ViewConsultationComponent implements OnInit {
   manipulateRes(res) {
     for (let key in res) {
       if (res.hasOwnProperty(key)) {
-        this.encounterKeys.push({ name: key, data: res[key] });
+        this.encounterKeys.push({ id: key, value: res[key] });
       }
     }
   }
 
   getEncounterData() {
-    const tempData = this.encounterKeys.find(el => el.id = this.selectedEnKey).data;
-    this.manipulateResAsPerKey(tempData);
+    const tempData = this.encounterKeys.find(el => el.id === this.selectedEnKey.id);
+    this.manipulateResAsPerKey(tempData.value);
+    this.selectedEncounterIcon = 0;
   }
 
   selectEncounter(index) {
     this.selectedEncounterIcon = index;
     this.currentObj = this.data[this.selectedEncounterIcon];
-    console.log(this.currentObj);
   }
 
   manipulateResAsPerKey(tempkeyData) {
@@ -121,6 +121,7 @@ export class ViewConsultationComponent implements OnInit {
       }
       el['queAnsObj'] = queAnsObj;
     });
+    this.data = [];
     for (let key in this.iconObjRes) {
       if (this.iconObjRes.hasOwnProperty(key)) {
         const item = tempDataArr.find(el => el.stage === this.iconObjRes[key]);
