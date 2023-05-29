@@ -29,6 +29,8 @@ export class ConsultationListComponent implements OnInit {
   isView: boolean = true;
   showCheckboxes = false;
   enableAll = false;
+  exportAllConsultations = false;
+  filteredAllConsultations = [];
 
   constructor(
     private readonly fhirService: FhirService,
@@ -92,6 +94,9 @@ export class ConsultationListComponent implements OnInit {
         debounceTime(1000),
         distinctUntilChanged()
       ).subscribe(_term => {
+        if (this.exportAllConsultations) {
+          this.exportAllConsultations = !this.exportAllConsultations;
+        }
         if (this.searchString && this.searchString.length >= 1) {
           this.consultations = [];
           this.fhirService.getPatientsByPageIndex(this.currentPage, this.searchString).subscribe(res => {
@@ -201,7 +206,8 @@ export class ConsultationListComponent implements OnInit {
   }
 
   convertToExcel() {
-    const selectedConsultations = this.filteredConsultations.filter(el => el.isExcelPDF === true);
+    let selectedConsultations;
+    let answerData: any = [];
     let workbook = new Workbook();
     let worksheet = workbook.addWorksheet('Consultation Data');
     worksheet.columns = [
@@ -211,51 +217,36 @@ export class ConsultationListComponent implements OnInit {
       { header: 'answer', key: 'answer', width: 35 },
     ];
 
-    let answerData: any = [];
-    selectedConsultations.forEach((patient, i) => {
-      this.fhirService.getConsultationExportData(patient.id).subscribe((res: any) => {
-        if (i >= 1) {
+    if (this.exportAllConsultations) {
+      let count = 0;
+      for (const key in this.filteredAllConsultations) {
+        count++;
+        const element = this.filteredAllConsultations[key];
+        if (count >= 1) {
           answerData.push({ Consultation: ``, linkId: '', text: '', answer: '' });
         }
         answerData.push({
-          Consultation: `${patient.givenName} ${patient.familyName}'s consultation data`,
+          Consultation: `${key}'s consultation data`,
           linkId: '-', text: '-', answer: '-'
         });
-        res.forEach((el, ind) => {
-          if (el) {
-            const currData = JSON.parse(el);
-            for (const key in currData) {
-              if (key == 'item') {
-                const items = currData[key];
-                items.forEach(item => {
-                  const answerObjForArr = {};
-                  if (item.hasOwnProperty('text') && item.hasOwnProperty('answer')) {
-                    for (const k in item) {
-                      if (k === 'answer') {
-                        const answerObj = item['answer'][0];
-                        for (const a in answerObj) {
-                          if (a !== 'item' && a !== 'valueCoding' && a !== 'valueQuantity') {
-                            answerObjForArr[k] = answerObj[a];
-                          } else {
-                            if (a !== 'item') {
-                              const val = answerObj[a].display ? answerObj[a].display : answerObj[a].value;
-                              answerObjForArr[k] = val;
-                            }
-                          }
-                        }
-                      } else {
-                        answerObjForArr[k] = item[k];
-                      }
-                    }
-                    answerData.push(answerObjForArr);
-                  }
-                });
-              }
-            }
+        answerData = this.manipulateData(element, answerData);
+      }
+    } else {
+      selectedConsultations = this.filteredConsultations.filter(el => el.isExcelPDF === true);
+      selectedConsultations.forEach((patient, i) => {
+        this.fhirService.getConsultationExportData(patient.id).subscribe((res: any) => {
+          if (i >= 1) {
+            answerData.push({ Consultation: ``, linkId: '', text: '', answer: '' });
           }
+          answerData.push({
+            Consultation: `${patient.givenName} ${patient.familyName}'s consultation data`,
+            linkId: '-', text: '-', answer: '-'
+          });
+          answerData = this.manipulateData(res, answerData);
         });
       });
-    });
+    }
+
     setTimeout(() => {
       worksheet.addRows(answerData, "n");
       workbook.xlsx.writeBuffer().then((data) => {
@@ -263,6 +254,43 @@ export class ConsultationListComponent implements OnInit {
         fs.saveAs(blob, `ConsultationData.xlsx`);
       });
     }, 1000);
+  }
+
+  manipulateData(res, answerData) {
+    res.forEach((el, ind) => {
+      if (el) {
+        const currData = JSON.parse(el);
+        for (const key in currData) {
+          if (key == 'item') {
+            const items = currData[key];
+            items.forEach(item => {
+              const answerObjForArr = {};
+              if (item.hasOwnProperty('text') && item.hasOwnProperty('answer')) {
+                for (const k in item) {
+                  if (k === 'answer') {
+                    const answerObj = item['answer'][0];
+                    for (const a in answerObj) {
+                      if (a !== 'item' && a !== 'valueCoding' && a !== 'valueQuantity') {
+                        answerObjForArr[k] = answerObj[a];
+                      } else {
+                        if (a !== 'item') {
+                          const val = answerObj[a].display ? answerObj[a].display : answerObj[a].value;
+                          answerObjForArr[k] = val;
+                        }
+                      }
+                    }
+                  } else {
+                    answerObjForArr[k] = item[k];
+                  }
+                }
+                answerData.push(answerObjForArr);
+              }
+            });
+          }
+        }
+      }
+    });
+    return answerData;
   }
 
   exportPDF(patient) {
@@ -349,7 +377,7 @@ export class ConsultationListComponent implements OnInit {
   }
 
   convertToPDF() {
-    const selectedConsultations = this.filteredConsultations.filter(el => el.isExcelPDF === true);
+    let selectedConsultations;
     let data = [];
     data.push({ text: '                            ' });
 
@@ -360,54 +388,22 @@ export class ConsultationListComponent implements OnInit {
       alignment: 'center',
       color: '#047886'
     });
-    contentArr.push({ columns: [{ text: '                            ' }] })
+    contentArr.push({ columns: [{ text: '                            ' }] });
 
-    selectedConsultations.forEach(consultation => {
-      this.fhirService.getConsultationExportData(consultation.id).subscribe((res: any) => {
+    if (this.exportAllConsultations) {
+      for (const key in this.filteredAllConsultations) {
+        const element = this.filteredAllConsultations[key];
         let answerInnerData = [];
         let answerOuterData = [];
         let data = [];
-        res.forEach((el, ind) => {
-          if (el) {
-            const currData = JSON.parse(el);
-            let str = `${ind + 1}) ` + currData['resourceType'] + ' => ' + currData['questionnaire'];
-            let obj = { text: str };
-            data.push(obj);
-            for (const key in currData) {
-              if (key == 'item') {
-                const items = currData[key];
-                answerInnerData = [];
-                items.forEach(item => {
-                  const answerObjForArr = {};
-                  if (item.hasOwnProperty('text') && item.hasOwnProperty('answer')) {
-                    for (const k in item) {
-                      if (k === 'answer') {
-                        const answerObj = item['answer'][0];
-                        for (const a in answerObj) {
-                          if (a !== 'item' && a !== 'valueCoding' && a !== 'valueQuantity') {
-                            answerObjForArr[k] = answerObj[a];
-                          } else {
-                            if (a !== 'item') {
-                              const val = answerObj[a].display ? answerObj[a].display : answerObj[a].value;
-                              answerObjForArr[k] = val;
-                            }
-                          }
-                        }
-                      } else {
-                        answerObjForArr[k] = item[k];
-                      }
-                    }
-                    answerInnerData.push(answerObjForArr);
-                  }
-                });
-                answerOuterData.push(answerInnerData);
-              }
-            }
-          }
-        });
+
+        let tempObj = this.manipulatePDFData(element, data, answerInnerData, answerOuterData);
+        data = tempObj.data;
+        answerInnerData = tempObj.answerInnerData;
+        answerOuterData = tempObj.answerOuterData;
 
         contentArr.push({
-          text: `${consultation.givenName} ${consultation.familyName}'s consultation data`,
+          text: `${key}'s consultation data`,
           alignment: 'center', fontSize: 16, color: 'red'
         });
         contentArr.push({ columns: [{ text: '                            ' }] })
@@ -427,8 +423,44 @@ export class ConsultationListComponent implements OnInit {
           contentArr.push({ table: tableObj })
           contentArr.push({ columns: [{ text: '                            ' }] })
         });
+      }
+    } else {
+      selectedConsultations = this.filteredConsultations.filter(el => el.isExcelPDF === true);
+      selectedConsultations.forEach(consultation => {
+        this.fhirService.getConsultationExportData(consultation.id).subscribe((res: any) => {
+          let answerInnerData = [];
+          let answerOuterData = [];
+          let data = [];
+
+          let tempObj = this.manipulatePDFData(res, data, answerInnerData, answerOuterData);
+          data = tempObj.data;
+          answerInnerData = tempObj.answerInnerData;
+          answerOuterData = tempObj.answerOuterData;
+
+          contentArr.push({
+            text: `${consultation.givenName} ${consultation.familyName}'s consultation data`,
+            alignment: 'center', fontSize: 16, color: 'red'
+          });
+          contentArr.push({ columns: [{ text: '                            ' }] })
+          contentArr.push({ columns: [{ text: '                            ' }] })
+
+          data.forEach((element, index) => {
+            let tableObj = {};
+            tableObj = {
+              widths: ['auto', 'auto', 'auto'],
+              body: [
+                ['Link Id', 'Text', 'Answer'],
+                ...answerOuterData[index].map(p => ([p.linkId, p.text, p.answer]))
+              ]
+            }
+            contentArr.push({ columns: [element], color: '#047886' })
+            contentArr.push({ columns: [{ text: '                            ' }] })
+            contentArr.push({ table: tableObj })
+            contentArr.push({ columns: [{ text: '                            ' }] })
+          });
+        });
       });
-    });
+    }
 
     setTimeout(() => {
       let docDefinition = {
@@ -436,6 +468,61 @@ export class ConsultationListComponent implements OnInit {
       }
       pdfMake.createPdf(docDefinition).open();
     }, 500);
+  }
+
+  manipulatePDFData(res, data, answerInnerData, answerOuterData) {
+    res.forEach((el, ind) => {
+      if (el) {
+        const currData = JSON.parse(el);
+        let str = `${ind + 1}) ` + currData['resourceType'] + ' => ' + currData['questionnaire'];
+        let obj = { text: str };
+        data.push(obj);
+        for (const key in currData) {
+          if (key == 'item') {
+            const items = currData[key];
+            answerInnerData = [];
+            items.forEach(item => {
+              const answerObjForArr = {};
+              if (item.hasOwnProperty('text') && item.hasOwnProperty('answer')) {
+                for (const k in item) {
+                  if (k === 'answer') {
+                    const answerObj = item['answer'][0];
+                    for (const a in answerObj) {
+                      if (a !== 'item' && a !== 'valueCoding' && a !== 'valueQuantity') {
+                        answerObjForArr[k] = answerObj[a];
+                      } else {
+                        if (a !== 'item') {
+                          const val = answerObj[a].display ? answerObj[a].display : answerObj[a].value;
+                          answerObjForArr[k] = val;
+                        }
+                      }
+                    }
+                  } else {
+                    answerObjForArr[k] = item[k];
+                  }
+                }
+                answerInnerData.push(answerObjForArr);
+              }
+            });
+            answerOuterData.push(answerInnerData);
+          }
+        }
+      }
+    });
+    return { data, answerInnerData, answerOuterData };
+  }
+
+  exportAllTheConsultations() {
+    this.enableAll = false;
+    this.showCheckboxes = false;
+    if (this.exportAllConsultations) {
+      this.fhirService.getAllConsultationsForExport().subscribe((res: any) => {
+        if (res) {
+          this.filteredAllConsultations = res;
+          console.log(this.filteredAllConsultations);
+        }
+      });
+    }
   }
 }
 

@@ -605,3 +605,10 @@ ngx-intl-tel-input input[disabled] {
 .top-180 {
   top: 180px;
 }
+
+@media screen and (max-width: 992px) {
+  .custom-header {
+    width: calc(100%);
+    left: 0px;
+  }
+}

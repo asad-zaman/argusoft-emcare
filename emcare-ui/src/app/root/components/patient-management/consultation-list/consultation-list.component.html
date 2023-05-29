@@ -7,11 +7,16 @@
       <input class="form-control custom-input h-35" id="exampleFormControlInput1" [(ngModel)]="searchString"
         (input)="searchFilter()" placeholder="{{'Search Placeholder' | translate}}">
     </div>
-    <div class="col-9 d-flex cst-export-consultation">
-      <button (click)="onEnableSelectionClick()" class="ml-3 btn btn-blue">
+    <div class="col-3">
+      <p-checkbox styleClass="form-label" [(ngModel)]="exportAllConsultations" label="Export All Consultations"
+        [binary]="true" inputId="binary" value="true" (onChange)="exportAllTheConsultations()">
+      </p-checkbox>
+    </div>
+    <div class="col-6 d-flex cst-export-consultation">
+      <button [disabled]="this.exportAllConsultations" (click)="onEnableSelectionClick()" class="ml-3 btn btn-blue">
         {{'Export' | translate}}
       </button>
-      <ul *ngIf="this.showCheckboxes" class="navigation ml-3 btn btn-blue">
+      <ul *ngIf="this.showCheckboxes || this.exportAllConsultations" class="navigation ml-3 btn btn-blue">
         <li class="dropdown" style="list-style-type: none;">
           <div class="d-flex align-items-center" data-bs-toggle="dropdown">
             {{'Save As' | translate}}
