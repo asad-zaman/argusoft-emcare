@@ -29,5 +29,5 @@ data class User(
     @Json(name = "error_description")
     var errorDescription: String? = null,
     @Json(name = "Application-Agent")
-    var applicationAgent: String? = "Kambezi"
+    var applicationAgent: String? = ""
 )
