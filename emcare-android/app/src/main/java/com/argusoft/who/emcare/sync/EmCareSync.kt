@@ -27,7 +27,7 @@ import com.google.android.fhir.sync.defaultRetryConfiguration
 
 object EmCareSync {
 
-    suspend fun oneTimeSync(
+suspend fun oneTimeSync(
         api: Api,
         database: Database,
         preference: Preference,

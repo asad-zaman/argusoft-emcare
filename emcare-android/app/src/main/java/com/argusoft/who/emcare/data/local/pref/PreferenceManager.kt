@@ -131,4 +131,9 @@ class PreferenceManager(private val sharedPreferences: EncPref) : Preference {
         writeLastSyncTimestamp(lastSyncTimeStamp)
         setCountry(country)
     }
+
+    override fun clearAll() {
+        //Clear all data
+        sharedPreferences.clear()
+    }
 }

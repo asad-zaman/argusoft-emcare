@@ -8,8 +8,11 @@ import com.argusoft.who.emcare.ui.common.KEYCLOAK_CLIENT_SECRET
 import com.argusoft.who.emcare.ui.common.KEYCLOAK_GRANT_TYPE
 import com.argusoft.who.emcare.ui.common.KEYCLOAK_SCOPE
 import com.argusoft.who.emcare.ui.common.model.DeviceDetails
+import com.argusoft.who.emcare.ui.common.model.LoggedInUser
 import com.argusoft.who.emcare.ui.common.model.User
+import com.argusoft.who.emcare.utils.extention.whenSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.collections.set
@@ -56,6 +59,13 @@ class LoginViewModel @Inject constructor(
                 viewModelScope.launch {
                     loginRepository.login(requestMap, deviceDetails).collect {
                         _loginApiState.value = it
+                       /* it.whenSuccess { user ->
+                            loginRepository.getLoggedInUser(it,user,requestMap, deviceDetails).collect{
+                                _loginApiState.value = it
+                            }
+                        }*/
+
+
                     }
                 }
             }
@@ -82,6 +92,12 @@ class LoginViewModel @Inject constructor(
         )
         viewModelScope.launch {
             loginRepository.addDevice(deviceDetails)
+        }
+    }
+
+    fun clearData(){
+        viewModelScope.launch {
+            loginRepository.clearData()
         }
     }
 }

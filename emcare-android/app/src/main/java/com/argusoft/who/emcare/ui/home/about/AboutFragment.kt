@@ -1,5 +1,7 @@
 package com.argusoft.who.emcare.ui.home.about
 
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import androidx.fragment.app.viewModels
 import com.argusoft.who.emcare.BuildConfig
@@ -13,6 +15,8 @@ import com.argusoft.who.emcare.utils.extention.*
 import com.google.android.fhir.sync.SyncJobStatus
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
 import kotlin.math.roundToInt
 
 @AndroidEntryPoint
@@ -50,65 +54,7 @@ class AboutFragment : BaseFragment<FragmentAboutBinding>() {
                     binding.bundleVersionTextView.text = it
             }
         }
-        observeNotNull(syncViewModel.syncState) { apiResponse ->
-            apiResponse.whenLoading {
-                binding.progressLayout.showHorizontalProgress(true)
-//                requireContext().showSnackBar(
-//                    view = binding.progressLayout,
-//                    message = getString(R.string.msg_sync_started),
-//                    duration = Snackbar.LENGTH_INDEFINITE,
-//                    isError = false
-//                )
-            }
-            apiResponse.whenInProgress {
-                Log.d("it.total.toDouble()", it.first.toDouble().toString())
-                Log.d("it.progress", it.second.toDouble().toString())
-                if(it.second == 100){
-                    binding.progressLayout.updateProgressUi(true, true)
-                    loginViewModel.addDevice(
-                        getDeviceName(),
-                        getDeviceOS(),
-                        getDeviceModel(),
-                        requireContext().getDeviceUUID().toString(),
-                        BuildConfig.VERSION_NAME
-                    )
-                }else if (it.first > 0) {
-                    val progress = it.second
-                    "Synced $progress%".also {
-                        binding.progressLayout.showProgress(it)
-                        Log.d("Synced", "$progress%")
-                    }
-                } else {
-                    binding.progressLayout.hideProgressUi()
-                }
-            }
 
-            apiResponse.handleListApiView(binding.progressLayout) {
-                when (it) {
-
-//                    is SyncJobStatus.Finished -> {
-//                        binding.progressLayout.updateProgressUi(true, true)
-//                        loginViewModel.addDevice(
-//                            getDeviceName(),
-//                            getDeviceOS(),
-//                            getDeviceModel(),
-//                            requireContext().getDeviceUUID().toString(),
-//                            BuildConfig.VERSION_NAME
-//                        )
-//                    }
-                    is SyncJobStatus.Failed -> {
-                        binding.progressLayout.showContent()
-                        binding.progressLayout.hideProgressUi()
-//                        binding.progressLayout.updateProgressUi(true, false)
-                        requireContext().showSnackBar(
-                            view = binding.progressLayout,
-                            message = getString(R.string.msg_sync_failed),
-                            duration = Snackbar.LENGTH_SHORT,
-                            isError = true
-                        )
-                    }
-                }
-            }
-        }
+        initObserverSync(binding.progressLayout, false)
     }
 }

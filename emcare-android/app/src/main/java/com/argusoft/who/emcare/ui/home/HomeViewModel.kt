@@ -2,6 +2,7 @@ package com.argusoft.who.emcare.ui.home
 
 import android.app.Application
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -90,6 +91,8 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             patientRepository.getPatients(search, facilityId).collect {
                 _patients.value = it
+
+
             }
         }
     }
@@ -108,7 +111,7 @@ class HomeViewModel @Inject constructor(
 
     private fun writeToFile(library: Library): File {
         return File(context.filesDir, if (library.name == null)  library.title else library.name).apply {
-            writeText(FhirContext.forR4Cached().newJsonParser().encodeResourceToString(library))
+            writeText(FhirContext.forR4().newJsonParser().encodeResourceToString(library))
         }
     }
 
@@ -188,31 +191,36 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             consultationFlowRepository.getAllLatestActiveConsultations().collect {
                 it.data?.forEach{ consultationFlowItem ->
-                    patientRepository.getPatientById(consultationFlowItem.patientId).collect{ patientResponse ->
-                        val patientItem = patientResponse.data
-                        if (patientItem != null) {
-                            consultationsArrayList.add(
-                                ConsultationItemData(
-                                    name = patientItem.nameFirstRep.nameAsSingleString.orEmpty { patientItem.identifierFirstRep.value ?:"#${patientItem.id?.take(9)}"},
-                                    gender = patientItem.genderElement?.valueAsString,
-                                    identifier = patientItem.identifierFirstRep.value ,
-                                    dateOfBirth = patientItem.birthDateElement.valueAsString ?: "Not Provided",
-                                    dateOfConsultation = ZonedDateTime.parse(consultationFlowItem.consultationDate?.substringBefore("+").plus("Z[UTC]")).format(DateTimeFormatter.ofPattern(DATE_FORMAT)),
-                                    badgeText = stageToBadgeMap[consultationFlowItem.consultationStage],
-                                    header = stageToBadgeMap[consultationFlowItem.consultationStage],
-                                    consultationIcon = stageToIconMap[consultationFlowItem.consultationStage],
-                                    consultationFlowItemId = consultationFlowItem.id,
-                                    patientId = consultationFlowItem.patientId,
-                                    encounterId = consultationFlowItem.encounterId,
-                                    questionnaireId = consultationFlowItem.questionnaireId,
-                                    structureMapId = consultationFlowItem.structureMapId,
-                                    consultationStage = consultationFlowItem.consultationStage,
-                                    questionnaireResponseText = consultationFlowItem.questionnaireResponseText,
-                                    isActive = consultationFlowItem.isActive
+                    try {
+                        patientRepository.getPatientById(consultationFlowItem.patientId).collect{ patientResponse ->
+                            val patientItem = patientResponse.data
+                            if (patientItem != null) {
+                                consultationsArrayList.add(
+                                    ConsultationItemData(
+                                        name = patientItem.nameFirstRep.nameAsSingleString.orEmpty { patientItem.identifierFirstRep.value ?:"#${patientItem.id?.take(9)}"},
+                                        gender = patientItem.genderElement?.valueAsString,
+                                        identifier = patientItem.identifierFirstRep.value ,
+                                        dateOfBirth = patientItem.birthDateElement.valueAsString ?: "Not Provided",
+                                        dateOfConsultation = ZonedDateTime.parse(consultationFlowItem.consultationDate?.substringBefore("+").plus("Z[UTC]")).format(DateTimeFormatter.ofPattern(DATE_FORMAT)),
+                                        badgeText = stageToBadgeMap[consultationFlowItem.consultationStage],
+                                        header = stageToBadgeMap[consultationFlowItem.consultationStage],
+                                        consultationIcon = stageToIconMap[consultationFlowItem.consultationStage],
+                                        consultationFlowItemId = consultationFlowItem.id,
+                                        patientId = consultationFlowItem.patientId,
+                                        encounterId = consultationFlowItem.encounterId,
+                                        questionnaireId = consultationFlowItem.questionnaireId,
+                                        structureMapId = consultationFlowItem.structureMapId,
+                                        consultationStage = consultationFlowItem.consultationStage,
+                                        questionnaireResponseText = consultationFlowItem.questionnaireResponseText,
+                                        isActive = consultationFlowItem.isActive
+                                    )
                                 )
-                            )
+                            }
                         }
+                    }catch (e:Exception){
+                        e.printStackTrace()
                     }
+
                 }
                 _consultations.value = ApiResponse.Success(consultationsArrayList.filter { consultationItemData ->
                     if(consultationItemData.identifier != null) {
@@ -320,7 +328,7 @@ class HomeViewModel @Inject constructor(
         return questionnaireResponse
     }
 
-     private fun addHiddenQuestionnaireItems(previousQuestionnaireResponse: String, questionnaire: Questionnaire): QuestionnaireResponse {
+    private fun addHiddenQuestionnaireItemsWithNestedItems(previousQuestionnaireResponse: String, questionnaire: Questionnaire): QuestionnaireResponse {
         val previousQuestionnaireResponseObject = FhirContext.forCached(FhirVersionEnum.R4).newJsonParser().parseResource(QuestionnaireResponse::class.java, previousQuestionnaireResponse)
         val questionnaireLinkIdList = mutableListOf<String>()
 
@@ -335,6 +343,7 @@ class HomeViewModel @Inject constructor(
 
         val finalQuestionnaireResponseItemsList = mutableListOf<QuestionnaireResponseItemComponent>()
         var matchingQuestionnaireResponseItem: QuestionnaireResponseItemComponent?
+        var matchingQuestionnaireItem: Questionnaire.QuestionnaireItemComponent?
 
         //Setting items with previously answered questions through link id
         questionnaireLinkIdList.forEachIndexed { index, linkId ->
@@ -342,11 +351,39 @@ class HomeViewModel @Inject constructor(
                 matchingQuestionnaireResponseItem = questionnaireResponseItemsList.firstOrNull { questionnaireResponseItem ->
                     linkId == questionnaireResponseItem.linkId
                 }
+                matchingQuestionnaireItem = questionnaire.item.firstOrNull { questionnaireItem ->
+                    linkId == questionnaireItem.linkId
+                }
+                val finalQuestionnaireResponseNestedItemsList = mutableListOf<QuestionnaireResponseItemComponent>()
+
                 if (matchingQuestionnaireResponseItem != null) {
+                    if(matchingQuestionnaireItem?.item?.size!! > 0){
+                        matchingQuestionnaireItem?.item?.forEachIndexed { index, questionnaireItemComponent ->
+                            var matchingQuestionnaireResponseNestedItem = matchingQuestionnaireResponseItem?.item?.firstOrNull { questionnaireResponseItem ->
+                                questionnaireItemComponent.linkId == questionnaireResponseItem.linkId
+                            }
+                            if(matchingQuestionnaireResponseNestedItem != null){
+                                finalQuestionnaireResponseNestedItemsList.add(matchingQuestionnaireResponseNestedItem)
+                            }else{
+                                finalQuestionnaireResponseNestedItemsList.add(QuestionnaireResponseItemComponent(StringType(questionnaireItemComponent.linkId)))
+                            }
+                        }
+                        matchingQuestionnaireResponseItem?.item = finalQuestionnaireResponseNestedItemsList
+                    }
                     finalQuestionnaireResponseItemsList.add(matchingQuestionnaireResponseItem!!)
                 } else {
-                    questionnaireResponseItemsList.add(index, QuestionnaireResponseItemComponent(StringType(linkId)))
-                    finalQuestionnaireResponseItemsList.add(QuestionnaireResponseItemComponent(StringType(linkId)))
+                    val newItem = QuestionnaireResponseItemComponent(StringType(linkId))
+                    var matchingQuestionnaireNestedItem = questionnaire.item.firstOrNull { questionnaireItem ->
+                        linkId == questionnaireItem.linkId
+                    }
+                    if(matchingQuestionnaireNestedItem != null){
+                        matchingQuestionnaireNestedItem.item.forEachIndexed { index, questionnaireItemComponent ->
+                            finalQuestionnaireResponseNestedItemsList.add(QuestionnaireResponseItemComponent(StringType(questionnaireItemComponent.linkId)))
+                        }
+                        newItem.item = finalQuestionnaireResponseNestedItemsList
+                    }
+                    questionnaireResponseItemsList.add(index, newItem)
+                    finalQuestionnaireResponseItemsList.add(newItem)
                 }
             }catch (e: java.lang.IndexOutOfBoundsException){
                 questionnaireResponseItemsList.add(index, QuestionnaireResponseItemComponent(StringType(linkId)))
@@ -359,7 +396,7 @@ class HomeViewModel @Inject constructor(
     }
 
 
-    private fun addHiddenQuestionnaireItemsWithNestedItems(previousQuestionnaireResponse: String, questionnaire: Questionnaire): QuestionnaireResponse {
+    private fun addHiddenQuestionnaireItems(previousQuestionnaireResponse: String, questionnaire: Questionnaire): QuestionnaireResponse {
         val previousQuestionnaireResponseObject = FhirContext.forCached(FhirVersionEnum.R4).newJsonParser().parseResource(QuestionnaireResponse::class.java, previousQuestionnaireResponse)
         val questionnaireLinkIdList = mutableListOf<String>()
         val groupLinkIdMap = mutableMapOf<String, MutableList<String>>()
