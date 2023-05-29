@@ -19,7 +19,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
-import okhttp3.internal.wait
+import kotlinx.coroutines.runBlocking
 import org.hl7.fhir.r4.model.PlanDefinition
 import java.util.*
 import javax.inject.Inject
@@ -34,7 +34,7 @@ class LoginRepository @Inject constructor(
 
     fun clearData() {
         if (preference.getFacilityId().isEmpty()){
-            CoroutineScope(Dispatchers.IO).launch {
+            runBlocking(Dispatchers.IO) {
                 database.deleteAllConsultations()
                 fhirEngine.clearDatabase()
             }
@@ -124,7 +124,7 @@ class LoginRepository @Inject constructor(
                         ) {
                             database.deleteAllConsultations()
                             preference.writeLastSyncTimestamp("") //Since its a new user and database is cleared it will require complete sync.
-                            CoroutineScope(Dispatchers.IO).launch {
+                            runBlocking(Dispatchers.IO) {
                                 fhirEngine.clearDatabase()
                                 preference.setFacilityId(loggedInUser.facility!![0].facilityId)
                                 preference.setLoggedInUser(loggedInUser)
@@ -150,29 +150,12 @@ class LoginRepository @Inject constructor(
                 val getDevice = deviceDetails.deviceUUID?.let { api.getDevice(it) }
                 getDevice?.whenResult(onSuccess = {
                     deviceDetails.isBlocked = it.isBlocked
-//                    CoroutineScope(Dispatchers.IO).launch  {
-//                        val planDefinitions = fhirEngine.search<PlanDefinition> {
-//                            sort(PlanDefinition.DATE, Order.ASCENDING)
-//                        }
-//                        if(planDefinitions.isNotEmpty())
-//                            deviceDetails.igVersion = planDefinitions.last().version
-//                        api.addDevice(deviceDetails)
-//                    }
-
                     if (it.isBlocked == true) {
                         emit(ApiResponse.ApiError(apiErrorMessageResId = R.string.blocked_device_message))
                     } else {
                         emit(loginResponse)
                     }
                 }, onFailed = {
-//                    CoroutineScope(Dispatchers.IO).launch  {
-//                        val planDefinitions = fhirEngine.search<PlanDefinition> {
-//                            sort(PlanDefinition.DATE, Order.ASCENDING)
-//                        }
-//                        if(planDefinitions.isNotEmpty())
-//                            deviceDetails.igVersion = planDefinitions.last().version
-//                        api.addDevice(deviceDetails)
-//                    }
                     emit(loginResponse)
                 })
             }, onFailed = {
@@ -195,7 +178,7 @@ class LoginRepository @Inject constructor(
 
     fun addDevice(deviceDetails: DeviceDetails) {
         if (networkHelper.isInternetAvailable()) {
-            CoroutineScope(Dispatchers.IO).launch {
+            runBlocking(Dispatchers.IO) {
                 val planDefinitions = fhirEngine.search<PlanDefinition> {
                     sort(PlanDefinition.DATE, Order.ASCENDING)
                 }
