@@ -33,6 +33,8 @@ export class PatientListComponent implements OnInit {
     isView: boolean = true;
     showCheckboxes = false;
     enableAll = false;
+    exportAllPatient = false;
+    filteredAllPatientData = [];
 
     constructor(
         private readonly fhirService: FhirService,
@@ -124,6 +126,9 @@ export class PatientListComponent implements OnInit {
                 debounceTime(1000),
                 distinctUntilChanged()
             ).subscribe(_term => {
+                if (this.exportAllPatient) {
+                    this.exportAllPatient = !this.exportAllPatient;
+                }
                 if (this.searchString && this.searchString.length >= 1) {
                     this.patients = [];
                     this.fhirService.getPatientsByPageIndex(this.currentPage, this.searchString).subscribe(res => {
@@ -146,6 +151,9 @@ export class PatientListComponent implements OnInit {
     }
 
     getLocationId(data) {
+        if (this.exportAllPatient) {
+            this.exportAllPatient = !this.exportAllPatient;
+        }
         this.selectedId = data;
         if (this.selectedId) {
             this.isLocationFilterOn = true;
@@ -189,7 +197,12 @@ export class PatientListComponent implements OnInit {
     }
 
     convertToExcel() {
-        const selectedPatients = this.filteredPatients.filter(el => el.isExcelPDF === true);
+        let selectedPatients;
+        if (this.exportAllPatient) {
+            selectedPatients = this.filteredAllPatientData['list'];
+        } else {
+            selectedPatients = this.filteredPatients.filter(el => el.isExcelPDF === true);
+        }
         let workbook = new Workbook();
         let worksheet = workbook.addWorksheet(`Patient's Data`);
         const data = [];
@@ -258,7 +271,12 @@ export class PatientListComponent implements OnInit {
     }
 
     convertToPDF() {
-        const selectedPatients = this.filteredPatients.filter(el => el.isExcelPDF === true);
+        let selectedPatients;
+        if (this.exportAllPatient) {
+            selectedPatients = this.filteredAllPatientData['list'];
+        } else {
+            selectedPatients = this.filteredPatients.filter(el => el.isExcelPDF === true);
+        }
         let data = [];
         data.push({ text: '                            ' });
 
@@ -320,5 +338,15 @@ export class PatientListComponent implements OnInit {
                 this.enableAll = true;
             }
         }
+    }
+
+    exportAllThePatients() {
+        this.enableAll = false;
+        this.showCheckboxes = false;
+        this.fhirService.getAllPatientsForExport(this.searchString, this.selectedId).subscribe((res: any) => {
+            if (res) {
+                this.filteredAllPatientData = res;
+            }
+        });
     }
 }

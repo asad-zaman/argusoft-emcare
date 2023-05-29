@@ -71,7 +71,7 @@ export class AuthenticationService {
   }
 
   login(username: string, password: string) {
-    const url = `http://65.0.190.33:8080/api/auth/login`;
+    const url = `${this.backendURL}/api/auth/login`;
     const body = {
       username: username,
       password: password,

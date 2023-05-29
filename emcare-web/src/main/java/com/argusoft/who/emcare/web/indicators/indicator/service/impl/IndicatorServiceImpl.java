@@ -116,17 +116,17 @@ public class IndicatorServiceImpl implements IndicatorService {
         Page<Indicator> indicators;
         if (searchText != null && !searchText.isEmpty()) {
             totalCount = (long) indicatorRepository
-                .findByIndicatorCodeContainingIgnoreCaseOrIndicatorNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(
-                    searchText,
-                    searchText,
-                    searchText
-                ).size();
+                    .findByIndicatorCodeContainingIgnoreCaseOrIndicatorNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(
+                            searchText,
+                            searchText,
+                            searchText
+                    ).size();
             indicators = indicatorRepository
-                .findByIndicatorCodeContainingIgnoreCaseOrIndicatorNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(
-                    searchText,
-                    searchText,
-                    searchText,
-                    page);
+                    .findByIndicatorCodeContainingIgnoreCaseOrIndicatorNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(
+                            searchText,
+                            searchText,
+                            searchText,
+                            page);
         } else {
             totalCount = indicatorRepository.count();
             indicators = indicatorRepository.findAll(page);
@@ -184,9 +184,9 @@ public class IndicatorServiceImpl implements IndicatorService {
         }
         for (IndicatorNumeratorEquation indicatorNumeratorEquation : indicator.getNumeratorEquation()) {
             String query = indicatorQueryBuilder.getQueryForIndicatorNumeratorEquation(indicatorNumeratorEquation,
-                getCommaSepratedFacilityIds(facilityIds),
-                indicator,
-                indicatorFilterDto
+                    getCommaSepratedFacilityIds(facilityIds),
+                    indicator,
+                    indicatorFilterDto
             );
             List<Map<String, Object>> observationResources = observationCustomResourceRepository.findByPublished(query);
             numerator.put(indicatorNumeratorEquation.getEqIdentifier(), (long) observationResources.size());
@@ -194,10 +194,10 @@ public class IndicatorServiceImpl implements IndicatorService {
 
         for (IndicatorDenominatorEquation indicatorDenominatorEquation : indicator.getDenominatorEquation()) {
             String query = indicatorQueryBuilder.getQueryForIndicatorDenominatorEquation(
-                indicatorDenominatorEquation,
-                getCommaSepratedFacilityIds(facilityIds),
-                indicator,
-                indicatorFilterDto
+                    indicatorDenominatorEquation,
+                    getCommaSepratedFacilityIds(facilityIds),
+                    indicator,
+                    indicatorFilterDto
             );
             List<Map<String, Object>> observationResources = observationCustomResourceRepository.findByPublished(query);
             denominator.put(indicatorDenominatorEquation.getEqIdentifier(), (long) observationResources.size());
@@ -205,6 +205,10 @@ public class IndicatorServiceImpl implements IndicatorService {
 
         Integer numeratorResult = replaceValueToEquationAndResolve(indicator.getNumeratorIndicatorEquation(), numerator);
         Integer denominatorResult = replaceValueToEquationAndResolve(indicator.getDenominatorIndicatorEquation(), denominator);
+        if (indicator.getDenominatorEquation().size() == 1
+                && indicator.getDenominatorEquation().get(0).getCode().equalsIgnoreCase(CommonConstant.ALL_CODE)) {
+            denominatorResult = denominatorResult * indicator.getNumeratorEquation().size();
+        }
         Double finalValue = (numeratorResult.doubleValue() / denominatorResult.doubleValue()) * 100;
 
         if (finalValue.isInfinite() || finalValue.isNaN()) {
@@ -225,11 +229,11 @@ public class IndicatorServiceImpl implements IndicatorService {
         stringObjectMap.put(CommonConstant.INDICATOR_VALUE, df.format(finalValue));
         responseList.add(stringObjectMap);
         responseList.sort(
-            (ind1, ind2) ->
-                ind2.get(CommonConstant.INDICATOR_VALUE).toString()
-                    .compareTo(
-                        ind1.get(CommonConstant.INDICATOR_VALUE).toString()
-                    )
+                (ind1, ind2) ->
+                        ind2.get(CommonConstant.INDICATOR_VALUE).toString()
+                                .compareTo(
+                                        ind1.get(CommonConstant.INDICATOR_VALUE).toString()
+                                )
         );
     }
 

@@ -13,12 +13,13 @@
         android:id="@+id/fragmentContainerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:background="@color/questionnaireBackground"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/headerLayout" />
 
     <Button
         android:id="@+id/reset_questionnaire_button"
-        style="@style/Questionnaire.ResetButtonStyle"
+        style="?appThemeButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/label_reset"

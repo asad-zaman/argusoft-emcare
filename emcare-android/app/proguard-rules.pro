@@ -18,6 +18,28 @@
 
 # Uncomment this to preserve the line number information for
 # debugging stack traces.
+
+-keep class kotlin.jvm.** { *; }
+-keep class java.lang.** { *; }
+-keepattributes InnerClasses,EnclosingMethod,Signature
+-keep class ca.uhn.fhir.** { *; }
+-keep class org.hl7.fhir.r4.hapi.ctx.*  { *; }
+-keep class org.hl7.fhir.r4.hapi.ctx.*  { *; }
+-keep class org.hl7.fhir.r4.**  { *; }
+-keep class org.hl7.fhir.utilities.**  { *; }
+-keep class org.hl7.fhir.exceptions.*  { *; }
+-keep class org.hl7.fhir.instance.model.api.*  { *; }
+
+# Used by HapiWorkerContext (fhirpath engine in QuestionnaireViewModel)
+-keep class com.github.benmanes.caffeine.cache.**  { *; }
+
+# sqlcipher
+-keep class net.sqlcipher.** { *; }
+#-keep class net.sqlcipher.database.** { *; }
+
+# retrofit (https://github.com/square/retrofit/issues/3539)
+-keep class com.google.android.fhir.sync.remote.RemoteFhirService { *; }
+
 -keepattributes SourceFile, LineNumberTable
 
 # If you keep the line number information, uncomment this to

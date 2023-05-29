@@ -2,7 +2,6 @@ package com.argusoft.who.emcare.ui.home.patient.profile
 
 import android.view.View
 import androidx.activity.addCallback
-import androidx.core.os.bundleOf
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
 import com.argusoft.who.emcare.R
@@ -18,7 +17,7 @@ import java.text.SimpleDateFormat
 @AndroidEntryPoint
 class PreviousConsultationQuestionnaireFragment: BaseFragment<FragmentPreviousConsultationQuestionnaireBinding>() {
 
-    private val questionnaireFragment = QuestionnaireFragment()
+    private var questionnaireFragment = QuestionnaireFragment()
     private val previousConsultationQuestionnaireViewModel: PreviousConsultationQuestionnaireViewModel by viewModels()
 
     override fun initView() {
@@ -56,12 +55,12 @@ class PreviousConsultationQuestionnaireFragment: BaseFragment<FragmentPreviousCo
         val cleanedQuestionnairePair = previousConsultationQuestionnaireViewModel.cleanQuestionnairePair(pair)
         previousConsultationQuestionnaireViewModel.questionnaireJson = cleanedQuestionnairePair.first
         previousConsultationQuestionnaireViewModel.questionnaireJson?.let {
-            questionnaireFragment.arguments =
-                bundleOf(
-                    QuestionnaireFragment.EXTRA_QUESTIONNAIRE_JSON_STRING to cleanedQuestionnairePair.first,
-                    QuestionnaireFragment.EXTRA_QUESTIONNAIRE_RESPONSE_JSON_STRING to cleanedQuestionnairePair.second,
-                    QuestionnaireFragment.EXTRA_READ_ONLY to true
-                    )
+            questionnaireFragment = QuestionnaireFragment.builder()
+                .setQuestionnaire(cleanedQuestionnairePair.first)
+                .setQuestionnaireResponse(cleanedQuestionnairePair.second)
+                .setCustomQuestionnaireItemViewHolderFactoryMatchersProvider("CUSTOM")
+                .setIsReadOnly(true)
+                .build()
             childFragmentManager.commit {
                 add(
                     R.id.fragmentContainerView,
@@ -71,7 +70,6 @@ class PreviousConsultationQuestionnaireFragment: BaseFragment<FragmentPreviousCo
             }
         }
     }
-
     override fun initObserver() {
         observeNotNull(previousConsultationQuestionnaireViewModel.patient) { apiResponse ->
             apiResponse.whenSuccess { patientItem ->
@@ -80,8 +78,8 @@ class PreviousConsultationQuestionnaireFragment: BaseFragment<FragmentPreviousCo
                 }
                 val dateOfBirth = patientItem.birthDateElement.valueAsString
                 if(dateOfBirth != null && dateOfBirth.isNotBlank()){
-                    val oldFormatDate = SimpleDateFormat("YYYY-MM-DD").parse(dateOfBirth)
-                    binding.dobTextView.text = SimpleDateFormat(DATE_FORMAT).format(oldFormatDate!!)
+                    val oldFormatDate = SimpleDateFormat("yyyy-MM-dd").parse(dateOfBirth)
+                    binding.dobTextView.text = SimpleDateFormat(DATE_FORMAT_2).format(oldFormatDate!!)
                 } else {
                     binding.dobTextView.text = "Not Provided"
                 }

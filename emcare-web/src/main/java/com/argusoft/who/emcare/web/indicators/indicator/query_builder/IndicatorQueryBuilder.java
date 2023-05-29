@@ -26,7 +26,7 @@ public class IndicatorQueryBuilder {
                                                         Indicator indicator,
                                                         IndicatorFilterDto indicatorFilterDto) {
         StringBuilder query = new StringBuilder("with custom_code as ");
-        query = query.append("(select obr.code as code,");
+        query = query.append("(select obr.code as code, emr.resource_id as patient,");
         query = query.append(" obr.modified_on ");
         if (Objects.nonNull(indicatorNumeratorEquation.getValueType())) {
             if(indicatorNumeratorEquation.getValueType().equalsIgnoreCase("Boolean")) {
@@ -49,7 +49,7 @@ public class IndicatorQueryBuilder {
         if (facilityId != null && !facilityId.isEmpty()) {
             query = query.append(" where emr.facility_id in ('" + facilityId + "')");
         }
-        query = query.append(") select * from custom_code ");
+        query = query.append(") select distinct(patient) from custom_code ");
         if (!indicatorNumeratorEquation.getCode().equalsIgnoreCase(CommonConstant.ALL_CODE)) {
             query = query.append("where code = '" + indicatorNumeratorEquation.getCode() + "' ");
         }
@@ -91,7 +91,7 @@ public class IndicatorQueryBuilder {
                                                           Indicator indicator,
                                                           IndicatorFilterDto indicatorFilterDto) {
         StringBuilder query = new StringBuilder("with custom_code as ");
-        query = query.append("(select obr.code as code,");
+        query = query.append("(select obr.code as code, emr.resource_id as patient, ");
         query = query.append(" obr.modified_on ");
         if (Objects.nonNull(indicatorDenominatorEquation.getValueType())) {
             if(indicatorDenominatorEquation.getValueType().equalsIgnoreCase("Boolean")) {
@@ -110,11 +110,11 @@ public class IndicatorQueryBuilder {
         if (Objects.nonNull(indicatorFilterDto.getGender())) {
             query = query.append(" ,emr.gender as gender");
         }
-        query = query.append(" from observation_resource as obr left join emcare_resources as emr on obr.subject_id = emr.resource_id ");
+        query = query.append(" from emcare_resources as emr left join observation_resource as obr on obr.subject_id = emr.resource_id ");
         if (facilityId != null && !facilityId.isEmpty()) {
             query = query.append(" where emr.facility_id in ('" + facilityId + "')");
         }
-        query = query.append(") select * from custom_code where 1=1");
+        query = query.append(") select distinct(patient) from custom_code where 1=1");
         if (!indicatorDenominatorEquation.getCode().equalsIgnoreCase(CommonConstant.ALL_CODE)) {
             query = query.append("and code = '" + indicatorDenominatorEquation.getCode() + "' ");
         }

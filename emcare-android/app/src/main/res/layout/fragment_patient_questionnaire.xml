@@ -14,6 +14,7 @@
         android:id="@+id/patientDetailsConstraintLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/questionnaireBackground"
         app:layout_constraintTop_toBottomOf="@id/headerLayout"
         app:layout_constraintStart_toStartOf="parent"
         >
@@ -63,10 +64,8 @@
         <View
             android:layout_width="0dp"
             android:layout_height="1dp"
-            android:layout_marginTop="@dimen/_8sdp"
             android:layout_marginBottom="@dimen/_4sdp"
             android:layout_marginHorizontal="@dimen/_12sdp"
-            android:background="@color/colorLineBreak"
             app:layout_constraintTop_toBottomOf="@id/dobTextViewLabel"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
@@ -74,6 +73,7 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragmentContainerView"
+        android:background="@color/questionnaireBackground"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:paddingTop="@dimen/_8sdp"
@@ -83,25 +83,22 @@
 
     <Button
         android:id="@+id/save_draft_questionnaire_button"
-        style="@style/Questionnaire.SaveDraftButtonStyle"
+        style="?appThemeButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/label_save_as_draft"
-        android:layout_marginHorizontal="@dimen/item_margin_horizontal"
         android:layout_marginVertical="@dimen/item_margin_vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        />
+        app:backgroundTint="@color/colorAccent"/>
 
     <Button
         android:id="@+id/reset_questionnaire_button"
-        style="@style/Questionnaire.ResetButtonStyle"
+        style="?appThemeButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/label_reset"
         android:layout_marginVertical="@dimen/item_margin_vertical"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        />
+        app:layout_constraintStart_toEndOf="@+id/save_draft_questionnaire_button"        />
 </com.argusoft.who.emcare.widget.ApiViewStateConstraintLayout>

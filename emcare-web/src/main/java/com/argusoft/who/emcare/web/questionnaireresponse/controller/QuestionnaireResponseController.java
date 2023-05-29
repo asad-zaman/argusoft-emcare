@@ -51,5 +51,10 @@ public class QuestionnaireResponseController {
         return ResponseEntity.ok().body(questionnaireResponseService.getDataForExport(patientId));
     }
 
+    @GetMapping("/export/all")
+    public ResponseEntity<Object> getAllDataForExport() {
+        return ResponseEntity.ok().body(questionnaireResponseService.getAllDataForExport());
+    }
+
 
 }

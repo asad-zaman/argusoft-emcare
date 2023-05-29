@@ -2,22 +2,6 @@
     background-color: white;
 }
 
-.loglist_header {
-    position: fixed;
-    width: calc(100% - 200px);
-    top: 50px;
-    left: 200px;
-    padding: 0px 30px;
-    right: 0px;
-    height: 80px;
-    z-index: 1;
-    background: #fff;
-    box-shadow: 1px 1px 10px #e1ecf6;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
 .loglist {
     position: fixed;
     left: 265px;
@@ -77,13 +61,18 @@
         left: 0px;
         top: 60px;
     }
+
+    .loglist_header {
+        width: 100%;
+        left: 0;
+    }
 }
 
 .apk-download {
     margin-left: 340px;
     border-left: 1px solid #ebeced;
     padding-left: 40px;
-    margin-top: 95px;
+    margin-top: 33px;
 }
 
 .apk-download .apk-text {
@@ -139,4 +128,19 @@
     font-size: 11px;
     font-weight: normal;
     color: #57686f;
+}
+
+.cst-no-token {
+    padding-left: 0;
+    z-index: 99;
+    position: absolute;
+}
+
+.cst-no-token-customheader {
+    width: 100%;
+    left: 0;
+}
+
+.cst-no-token-loglist {
+    left: 20px;
 }

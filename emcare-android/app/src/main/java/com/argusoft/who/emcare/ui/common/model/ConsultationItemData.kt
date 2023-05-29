@@ -7,7 +7,7 @@ data class ConsultationItemData(
     val dateOfBirth: String? = "Not Given",
     var dateOfConsultation: String,
     val badgeText: String? = "",
-    val header: String? = "", // TODO: For testing only, replace with badgeText
+    val header: String? = "",
     val consultationIcon: Int?,
     val consultationFlowItemId: String,
     val patientId: String? = null,

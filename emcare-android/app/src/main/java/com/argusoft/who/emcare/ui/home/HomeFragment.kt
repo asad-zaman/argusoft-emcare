@@ -1,28 +1,34 @@
 package com.argusoft.who.emcare.ui.home
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import com.argusoft.who.emcare.BuildConfig
 import com.argusoft.who.emcare.R
-import com.argusoft.who.emcare.data.remote.ApiResponse
 import com.argusoft.who.emcare.databinding.FragmentHomeBinding
 import com.argusoft.who.emcare.sync.SyncViewModel
+import com.argusoft.who.emcare.ui.auth.login.LoginViewModel
 import com.argusoft.who.emcare.ui.common.base.BaseFragment
 import com.argusoft.who.emcare.utils.extention.*
 import com.argusoft.who.emcare.utils.glide.GlideApp
 import com.argusoft.who.emcare.utils.glide.GlideRequests
-import com.google.android.fhir.sync.State
+import com.google.android.fhir.sync.SyncJobStatus
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.*
+import kotlin.math.roundToInt
 
 @AndroidEntryPoint
 class HomeFragment : BaseFragment<FragmentHomeBinding>(){
 
     private lateinit var glideRequests: GlideRequests
+    private val loginViewModel: LoginViewModel by viewModels()
     private val syncViewModel: SyncViewModel by viewModels()
     private val homeViewModel: HomeViewModel by activityViewModels()
     private lateinit var homePagerAdapter: HomePagerAdapter
+    private val formatString12 = "dd/MM/yyyy hh:mm:ss a"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,7 +36,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(){
     }
 
     override fun initView() {
-        binding.headerLayout.toolbar.setTitleDashboard(id = getString(R.string.title_home))
+        binding.headerLayout.toolbar.setTitleDashboard(id = getString(R.string.title_home) + " " + preference.getCountry())
         homePagerAdapter = HomePagerAdapter(this, PatientListFragment(), ConsultationListFragment())
         binding.viewPager2.adapter = homePagerAdapter
         binding.viewPager2.isUserInputEnabled = false
@@ -40,7 +46,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(){
         binding.headerLayout.toolbar.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.action_sync -> {
-                    syncViewModel.syncPatients()
+                    syncViewModel.syncPatients(true)
                 }
                 R.id.action_more -> {
                     (activity as HomeActivity).openDrawer()
@@ -76,32 +82,43 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(){
     override fun initObserver() {
         observeNotNull(syncViewModel.syncState) { apiResponse ->
             apiResponse.whenLoading {
-                binding.rootLayout.showHorizontalProgress()
-                requireContext().showSnackBar(
-                    view = binding.rootLayout,
-                    message = getString(R.string.msg_sync_started),
-                    duration = Snackbar.LENGTH_INDEFINITE,
-                    isError = false
-                )
+                binding.rootLayout.showHorizontalProgress(true)
             }
-            apiResponse.whenFailed {
-                apiResponse.handleListApiView(binding.rootLayout) {
-                    requireContext().showSnackBar(
-                        view = binding.rootLayout,
-                        message = getString(R.string.msg_sync_failed),
-                        duration = Snackbar.LENGTH_SHORT,
-                        isError = true
+            apiResponse.whenInProgress {
+                Log.d("it.total.toDouble()", it.first.toDouble().toString())
+                Log.d("it.progress", it.second.toDouble().toString())
+                if(it.second == 100){
+                    binding.rootLayout.updateProgressUi(true, true)
+                    loginViewModel.addDevice(
+                        getDeviceName(),
+                        getDeviceOS(),
+                        getDeviceModel(),
+                        requireContext().getDeviceUUID().toString(),
+                        BuildConfig.VERSION_NAME
                     )
+                }else if(it.first > 0) {
+                    val progress = it.second
+                    "Synced $progress%".also { binding.rootLayout.showProgress(it)
+                        Log.d("Synced", "$progress%")
+                    }
+                }else{
+                    binding.rootLayout.hideProgressUi()
                 }
             }
-            apiResponse.whenSuccess {
-                apiResponse.handleListApiView(binding.rootLayout) {
-                    requireContext().showSnackBar(
-                        view = binding.rootLayout,
-                        message = getString(R.string.msg_sync_successfully),
-                        duration = Snackbar.LENGTH_SHORT,
-                        isError = false
-                    )
+
+            apiResponse.handleListApiView(binding.rootLayout) {
+                when(it) {
+                    is SyncJobStatus.Failed -> {
+                        binding.rootLayout.showContent()
+                        binding.rootLayout.hideProgressUi()
+//                        binding.rootLayout.updateProgressUi(true, false)
+                        requireContext().showSnackBar(
+                            view = binding.rootLayout,
+                            message = getString(R.string.msg_sync_failed),
+                            duration = Snackbar.LENGTH_SHORT,
+                            isError = true
+                        )
+                    }
                 }
             }
         }

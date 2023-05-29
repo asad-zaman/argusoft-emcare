@@ -1,4 +1,4 @@
-<div *ngIf="isView" class="main-wrapper">
+<div *ngIf="isView" class="main-wrapper-no-heading">
   <h1 class="heading">{{'Consultation' | translate}}</h1>
   <hr>
   <div class="row">
@@ -7,7 +7,7 @@
     </div>
     <div class="col-4">
       <p-dropdown (onChange)="getEncounterData()" [(ngModel)]="selectedEnKey" placeholder="Select an encounter"
-        [options]="this.encounterKeys" optionLabel="name">
+        [options]="this.encounterKeys" optionLabel="id">
       </p-dropdown>
     </div>
     <div class="col-6"></div>
@@ -70,7 +70,7 @@
       </div>
       <ng-template #noData>
         <h5 class="ml-2">
-          {{'NOConsultations' | translate}}
+          {{'No Consultations' | translate}} for {{iconObj[selectedEncounterIcon]}}!
         </h5>
       </ng-template>
     </div>

@@ -116,9 +116,15 @@ hr:not([size]) {
 }
 
 .main-wrapper {
-  margin-top: 53px;
+  margin-top: 130px;
   padding: 20px;
   padding-left: 230px;
+
+  &-no-heading {
+    margin-top: 53px;
+    padding: 20px;
+    padding-left: 230px;
+  }
 
   &-nodata {
     margin-top: 60px;
@@ -577,5 +583,32 @@ ngx-intl-tel-input input[disabled] {
   &-consultation {
     justify-content: right;
     padding-right: 15px;
+  }
+}
+
+.custom-header {
+  position: fixed;
+  width: calc(100% - 200px);
+  top: 50px;
+  left: 200px;
+  padding: 0px 30px;
+  right: 0px;
+  height: 80px;
+  z-index: 10;
+  background: #fff;
+  box-shadow: 1px 1px 10px #e1ecf6;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.top-180 {
+  top: 180px;
+}
+
+@media screen and (max-width: 992px) {
+  .custom-header {
+    width: calc(100%);
+    left: 0px;
   }
 }

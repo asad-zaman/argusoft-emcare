@@ -40,8 +40,7 @@ class SidepaneAdapter(
                     if(isPreviousConsultation) {
                         navHostFragment.navController.navigate(R.id.action_previousConsultationQuestionnaireFragment_to_previousConsultationQuestionnaireFragment, bundleOf(
                             INTENT_EXTRA_QUESTIONNAIRE_ID to list[bindingAdapterPosition]?.consultationItemData?.questionnaireId,
-//                    putString(INTENT_EXTRA_QUESTIONNAIRE_HEADER, list[bindingAdapterPosition]?.badgeText)
-                            INTENT_EXTRA_QUESTIONNAIRE_HEADER to  list[bindingAdapterPosition]?.consultationItemData?.header, //For testing only replace it with badgeText
+                            INTENT_EXTRA_QUESTIONNAIRE_HEADER to  list[bindingAdapterPosition]?.consultationItemData?.header,
                             INTENT_EXTRA_CONSULTATION_FLOW_ITEM_ID to  list[bindingAdapterPosition]?.consultationItemData?.consultationFlowItemId,
                             INTENT_EXTRA_PATIENT_ID to list[bindingAdapterPosition]?.consultationItemData?.patientId,
                             INTENT_EXTRA_ENCOUNTER_ID to list[bindingAdapterPosition]?.consultationItemData?.encounterId,
@@ -51,8 +50,7 @@ class SidepaneAdapter(
                         navHostFragment.navController.navigate(R.id.action_patientQuestionnaireFragment_to_patientQuestionnaireFragment, bundleOf(
                             INTENT_EXTRA_QUESTIONNAIRE_ID to list[bindingAdapterPosition]?.consultationItemData?.questionnaireId,
                             INTENT_EXTRA_STRUCTUREMAP_ID to list[bindingAdapterPosition]?.consultationItemData?.structureMapId,
-//                    putString(INTENT_EXTRA_QUESTIONNAIRE_HEADER, list[bindingAdapterPosition]?.badgeText)
-                            INTENT_EXTRA_QUESTIONNAIRE_HEADER to  list[bindingAdapterPosition]?.consultationItemData?.header, //For testing only replace it with badgeText
+                            INTENT_EXTRA_QUESTIONNAIRE_HEADER to  list[bindingAdapterPosition]?.consultationItemData?.header,
                             INTENT_EXTRA_CONSULTATION_FLOW_ITEM_ID to  list[bindingAdapterPosition]?.consultationItemData?.consultationFlowItemId,
                             INTENT_EXTRA_PATIENT_ID to list[bindingAdapterPosition]?.consultationItemData?.patientId,
                             INTENT_EXTRA_ENCOUNTER_ID to list[bindingAdapterPosition]?.consultationItemData?.encounterId,
