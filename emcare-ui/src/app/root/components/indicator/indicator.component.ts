@@ -190,7 +190,7 @@ export class IndicatorComponent implements OnInit {
     colourSchema.forEach(element => {
       const obj = {
         minValue: element.minValue,
-        condition: element.condition ? this.conditionArrForAgeAndColor.find(el => element.condition) : null,
+        condition: element.condition ? this.conditionArrForAgeAndColor.find(el => el.id === element.condition) : null,
         maxValue: element.maxValue,
         color: element.color
       }
