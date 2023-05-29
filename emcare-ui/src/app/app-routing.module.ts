@@ -94,7 +94,7 @@ const routes: Routes = [
   { path: 'manageTenant', component: ManageTenantComponent, canActivate: [AuthGuard] },
   { path: 'termsAndConditions', component: TermsConditionsComponent },
   { path: 'addLog', component: AddLogComponent, canActivate: [AuthGuard] },
-  { path: 'logList', component: LogListComponent, canActivate: [AuthGuard] },
+  { path: 'logList', component: LogListComponent },
   { path: '**', redirectTo: 'dashboard' }
 ];
 @NgModule({
