@@ -108,71 +108,8 @@ class PatientProfileFragment : BaseFragment<FragmentPatientProfileBinding>() {
     }
 
     override fun initObserver() {
-        observeNotNull(syncViewModel.syncState) { apiResponse ->
-            apiResponse.whenLoading {
-                binding.patientProfileLayout.showHorizontalProgress(true)
-            }
-            apiResponse.whenInProgress {
-                if(it.second >= 100){
-                    Handler(Looper.getMainLooper()).postDelayed({
-                        binding.patientProfileLayout.updateProgressUi(true, true)
-                        homeViewModel.loadLibraries(context!!)
-                        loginViewModel.addDevice(
-                            getDeviceName(),
-                            getDeviceOS(),
-                            getDeviceModel(),
-                            requireContext().getDeviceUUID().toString(),
-                            BuildConfig.VERSION_NAME
-                        )
-                    }, 5000)
-                }else if (it.first > 0) {
-                    val progress = it.second
-                    "Synced $progress%".also {
-                        binding.patientProfileLayout.showProgress(it)
-                        Log.d("Synced", "$progress%")
-                    }
-                }else if(it.first == 0){
-                    binding.patientProfileLayout.updateProgressUi(true, true)
-                }
-            }
-            apiResponse.whenFailed {
-                binding.patientProfileLayout.showContent()
-                binding.patientProfileLayout.hideProgressUi()
-                requireContext().showSnackBar(
-                    view = binding.patientProfileLayout,
-                    message = getString(R.string.msg_sync_failed),
-                    duration = Snackbar.LENGTH_SHORT,
-                    isError = true
-                )
-            }
-            apiResponse.handleListApiView(binding.patientProfileLayout) {
-                when (it) {
 
-//                    is SyncJobStatus.Finished -> {
-//                        binding.patientProfileLayout.updateProgressUi(true, true)
-//                        homeViewModel.loadLibraries(context!!)
-//                        loginViewModel.addDevice(
-//                            getDeviceName(),
-//                            getDeviceOS(),
-//                            getDeviceModel(),
-//                            requireContext().getDeviceUUID().toString(),
-//                            BuildConfig.VERSION_NAME
-//                        )
-//                    }
-                    is SyncJobStatus.Failed -> {
-                        binding.patientProfileLayout.showContent()
-                        binding.patientProfileLayout.hideProgressUi()
-//                        binding.patientProfileLayout.updateProgressUi(true, false)
-                        requireContext().showSnackBar(
-                            view = binding.patientProfileLayout,
-                            message = getString(R.string.msg_sync_failed),
-                            duration = Snackbar.LENGTH_SHORT,
-                            isError = true
-                        )
-                    }
-                }
-            }
-        }
+        initObserverSync(binding.patientProfileLayout, false)
 
         observeNotNull(patientProfileViewModel.activeConsultations) { apiResponse ->
             apiResponse.handleListApiView(binding.activePatientProgressLayout) {

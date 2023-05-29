@@ -83,57 +83,7 @@ class ChangeThemeFragment : BaseFragment<FragmentScreenResizeSettingsBinding>() 
     }
 
     override fun initObserver() {
-        observeNotNull(syncViewModel.syncState) { apiResponse ->
-            apiResponse.whenLoading {
-                binding.rootLayout.showHorizontalProgress(true)
-            }
-            apiResponse.whenInProgress {
-                if(it.second >= 100){
-                    Handler(Looper.getMainLooper()).postDelayed({
-                        binding.rootLayout.updateProgressUi(true, true)
-                        loginViewModel.addDevice(
-                            getDeviceName(),
-                            getDeviceOS(),
-                            getDeviceModel(),
-                            requireContext().getDeviceUUID().toString(),
-                            BuildConfig.VERSION_NAME
-                        )
-                    }, 5000)
-                }else if(it.first > 0) {
-                val progress = it.second
-                "Synced $progress%".also { binding.rootLayout.showProgress(it)
-                    Log.d("Synced", "$progress%")
-                }
-            }else if(it.first == 0){
-                binding.rootLayout.updateProgressUi(true, true)
-            }
-            }
-            apiResponse.handleListApiView(binding.rootLayout) {
-                when (it) {
-//                    is SyncJobStatus.Finished -> {
-//                        binding.rootLayout.updateProgressUi(true, true)
-//                        loginViewModel.addDevice(
-//                            getDeviceName(),
-//                            getDeviceOS(),
-//                            getDeviceModel(),
-//                            requireContext().getDeviceUUID().toString(),
-//                            BuildConfig.VERSION_NAME
-//                        )
-//                    }
-                    is SyncJobStatus.Failed -> {
-                        binding.rootLayout.showContent()
-                        binding.rootLayout.hideProgressUi()
-//                        binding.rootLayout.updateProgressUi(true, false)
-                        requireContext().showSnackBar(
-                            view = binding.rootLayout,
-                            message = getString(R.string.msg_sync_failed),
-                            duration = Snackbar.LENGTH_SHORT,
-                            isError = true
-                        )
-                    }
-                }
-            }
-        }
+        initObserverSync(binding.rootLayout, false)
     }
 
     class RadioGroupCheckListener(vararg allies: Array<CompoundButton?>) :

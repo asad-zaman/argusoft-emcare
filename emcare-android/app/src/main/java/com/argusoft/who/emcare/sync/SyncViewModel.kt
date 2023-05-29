@@ -92,10 +92,13 @@ class SyncViewModel @Inject constructor(
     }
 
     private fun autoSyncProgress(syncJobStatus : SyncJobStatus.InProgress){
-        _syncState.value = ApiResponse.InProgress(
-            syncJobStatus.total,
-            progressCount = progress
-        )
+        if(!isFinished)
+            _syncState.value = ApiResponse.InProgress(
+                syncJobStatus.total,
+                progressCount = progress
+            )
+        isFinished = syncJobStatus.total == 0
+
         if (progress >= 100) {
             preference.writeLastSyncTimestamp(lastSyncTime)
         }

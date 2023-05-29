@@ -54,65 +54,7 @@ class AboutFragment : BaseFragment<FragmentAboutBinding>() {
                     binding.bundleVersionTextView.text = it
             }
         }
-        observeNotNull(syncViewModel.syncState) { apiResponse ->
-            apiResponse.whenLoading {
-                binding.progressLayout.showHorizontalProgress(true)
-//                requireContext().showSnackBar(
-//                    view = binding.progressLayout,
-//                    message = getString(R.string.msg_sync_started),
-//                    duration = Snackbar.LENGTH_INDEFINITE,
-//                    isError = false
-//                )
-            }
-            apiResponse.whenInProgress {
-                if(it.second >= 100){
-                    Handler(Looper.getMainLooper()).postDelayed({
-                        binding.progressLayout.updateProgressUi(true, true)
-                        loginViewModel.addDevice(
-                            getDeviceName(),
-                            getDeviceOS(),
-                            getDeviceModel(),
-                            requireContext().getDeviceUUID().toString(),
-                            BuildConfig.VERSION_NAME
-                        )
-                    }, 5000)
-                }else if (it.first > 0) {
-                    val progress = it.second
-                    "Synced $progress%".also {
-                        binding.progressLayout.showProgress(it)
-                        Log.d("Synced", "$progress%")
-                    }
-                }else if(it.first == 0){
-                    binding.progressLayout.updateProgressUi(true, true)
-                }
-            }
 
-            apiResponse.handleListApiView(binding.progressLayout) {
-                when (it) {
-
-//                    is SyncJobStatus.Finished -> {
-//                        binding.progressLayout.updateProgressUi(true, true)
-//                        loginViewModel.addDevice(
-//                            getDeviceName(),
-//                            getDeviceOS(),
-//                            getDeviceModel(),
-//                            requireContext().getDeviceUUID().toString(),
-//                            BuildConfig.VERSION_NAME
-//                        )
-//                    }
-                    is SyncJobStatus.Failed -> {
-                        binding.progressLayout.showContent()
-                        binding.progressLayout.hideProgressUi()
-//                        binding.progressLayout.updateProgressUi(true, false)
-                        requireContext().showSnackBar(
-                            view = binding.progressLayout,
-                            message = getString(R.string.msg_sync_failed),
-                            duration = Snackbar.LENGTH_SHORT,
-                            isError = true
-                        )
-                    }
-                }
-            }
-        }
+        initObserverSync(binding.progressLayout, false)
     }
 }

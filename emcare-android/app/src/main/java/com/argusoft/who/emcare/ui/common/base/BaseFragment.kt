@@ -2,23 +2,43 @@ package com.argusoft.who.emcare.ui.common.base
 
 import android.app.Application
 import android.content.Context
+import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.viewbinding.ViewBinding
+import com.argusoft.who.emcare.BuildConfig
 import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.data.local.pref.Preference
+import com.argusoft.who.emcare.sync.SyncViewModel
+import com.argusoft.who.emcare.ui.auth.login.LoginViewModel
 import com.argusoft.who.emcare.ui.home.HomeActivity
 import com.argusoft.who.emcare.utils.common.UnauthorizedAccess
+import com.argusoft.who.emcare.utils.extention.getDeviceModel
+import com.argusoft.who.emcare.utils.extention.getDeviceName
+import com.argusoft.who.emcare.utils.extention.getDeviceOS
+import com.argusoft.who.emcare.utils.extention.getDeviceUUID
+import com.argusoft.who.emcare.utils.extention.handleListApiView
 import com.argusoft.who.emcare.utils.extention.hideKeyboard
+import com.argusoft.who.emcare.utils.extention.observeNotNull
 import com.argusoft.who.emcare.utils.extention.onViewBinding
+import com.argusoft.who.emcare.utils.extention.showSnackBar
 import com.argusoft.who.emcare.utils.extention.showToast
+import com.argusoft.who.emcare.utils.extention.whenInProgress
+import com.argusoft.who.emcare.utils.extention.whenLoading
+import com.argusoft.who.emcare.widget.ApiViewStateConstraintLayout
+import com.google.android.fhir.sync.SyncJobStatus
+import com.google.android.material.snackbar.Snackbar
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import javax.inject.Inject
@@ -29,6 +49,8 @@ abstract class BaseFragment<B : ViewBinding> : Fragment(), View.OnClickListener 
     @Inject
     lateinit var preference: Preference
     private var _binding: B? = null
+    private val syncViewModel: SyncViewModel by viewModels()
+    private val loginViewModel: LoginViewModel by viewModels()
     protected val binding
         get() = _binding
             ?: throw RuntimeException("Should only use binding after onCreateView and before onDestroyView")
@@ -53,6 +75,74 @@ abstract class BaseFragment<B : ViewBinding> : Fragment(), View.OnClickListener 
         initView()
         initListener()
         initObserver()
+    }
+
+    fun initObserverSync(progressLayout: ApiViewStateConstraintLayout, isRedirectToHome: Boolean) {
+        observeNotNull(syncViewModel.syncState) { apiResponse ->
+
+            apiResponse.whenLoading {
+                if (preference.getFacilityId().isNotEmpty())
+                    progressLayout.showHorizontalProgress(true)
+            }
+
+            apiResponse.whenInProgress {
+                Log.d("it.total", it.first.toDouble().toString())
+                Log.d("it.progress", it.second.toDouble().toString())
+                if (it.second >= 100) {
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        progressLayout.updateProgressUi(true, true)
+                        loginViewModel.addDevice(
+                            getDeviceName(),
+                            getDeviceOS(),
+                            getDeviceModel(),
+                            requireContext().getDeviceUUID().toString(),
+                            BuildConfig.VERSION_NAME
+                        )
+                        if(isRedirectToHome) {
+                            startActivity(Intent(requireContext(), HomeActivity::class.java))
+                            requireActivity().finish()
+                        }
+                    }, 5000)
+                } else if (it.first > 0 && it.second <= 100) {
+                    val progress = it.second
+                    "Synced $progress%".also {
+                        progressLayout.showProgress(it)
+                        Log.d("Synced", "$progress%")
+                    }
+                } else if (it.first == 0) {
+                    if(isRedirectToHome) {
+                        if (preference.getFacilityId().isNotEmpty()) {
+                            progressLayout.updateProgressUi(true, true)
+                            startActivity(Intent(requireContext(), HomeActivity::class.java))
+                            requireActivity().finish()
+                        } else {
+                            progressLayout.hideProgressUi()
+                        }
+                    }else{
+                        progressLayout.updateProgressUi(true, true)
+                    }
+                }
+            }
+
+            apiResponse.handleListApiView(progressLayout) {
+                when (it) {
+                    is SyncJobStatus.Failed -> {
+                        progressLayout.showContent()
+                        progressLayout.hideProgressUi()
+                        requireContext().showSnackBar(
+                            view = progressLayout,
+                            message = getString(R.string.msg_sync_failed),
+                            duration = Snackbar.LENGTH_SHORT,
+                            isError = true
+                        )
+                        if(isRedirectToHome) {
+                            startActivity(Intent(requireContext(), HomeActivity::class.java))
+                            requireActivity().finish()
+                        }
+                    }
+                }
+            }
+        }
     }
 
     fun Toolbar.setTitleAndBack(id: String? = null) {

@@ -41,8 +41,6 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(), EasyPermissions.Perm
 
     private val syncViewModel: SyncViewModel by viewModels()
     private val loginViewModel: LoginViewModel by viewModels()
-    private val formatString12 = "dd/MM/yyyy hh:mm:ss a"
-    private var progressCount : Int = 0
 
     override fun initView() {
         if(preference.getCountry().isNotBlank()){
@@ -50,34 +48,6 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(), EasyPermissions.Perm
         }
         loginViewModel.clearData()
     }
-
-    fun clearApplicationData() {
-        val cache: File = requireContext().getCacheDir()
-        val appDir = File(cache.getParent())
-        if (appDir.exists()) {
-            val children: Array<String> = appDir.list()
-            for (s in children) {
-                if (s != "lib") {
-                    deleteDir(File(appDir, s))
-                    Log.i("TAG", "File /data/data/APP_PACKAGE/$s DELETED")
-                }
-            }
-        }
-    }
-
-    private fun deleteDir(dir: File?): Boolean {
-        if (dir != null && dir.isDirectory) {
-            val children = dir.list()
-            for (i in children.indices) {
-                val success = deleteDir(File(dir, children[i]))
-                if (!success) {
-                    return false
-                }
-            }
-        }
-        return dir!!.delete()
-    }
-
     override fun initListener() {
         binding.loginButton.setOnClickListener(this)
         binding.signupTextView.setOnClickListener(this)
@@ -93,6 +63,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(), EasyPermissions.Perm
                 isError = true
             )
         }
+
         observeNotNull(loginViewModel.loginApiState) {
             it.handleApiView(binding.progressLayout) {
                 if(preference.getFacilityId().isNotEmpty()){
@@ -104,85 +75,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(), EasyPermissions.Perm
             }
         }
 
-        observeNotNull(syncViewModel.syncState) { apiResponse ->
-
-            apiResponse.whenLoading {
-                if(preference.getFacilityId().isNotEmpty())
-                    binding.progressLayout.showHorizontalProgress(true)
-            }
-
-            apiResponse.whenInProgress {
-                Log.d("it.total.toDouble()", it.first.toDouble().toString())
-                Log.d("it.progress.toDouble()", it.second.toDouble().toString())
-                if(it.second >= 100){
-                    Handler(Looper.getMainLooper()).postDelayed({
-                        binding.progressLayout.updateProgressUi(true, true)
-                        loginViewModel.addDevice(
-                            getDeviceName(),
-                            getDeviceOS(),
-                            getDeviceModel(),
-                            requireContext().getDeviceUUID().toString(),
-                            BuildConfig.VERSION_NAME
-                        )
-                        startActivity(Intent(requireContext(), HomeActivity::class.java))
-                        requireActivity().finish()
-                    }, 5000)
-//                    Executors.newSingleThreadScheduledExecutor().schedule({
-//
-//                    }, 5, TimeUnit.SECONDS)
-                }else if(it.first > 0 && it.second <=100) {
-                    val progress = it.second
-                    "Synced $progress%".also { binding.progressLayout.showProgress(it)
-                        Log.d("Synced", "$progress%")
-                    }
-                }else if(it.first == 0){
-                    if(preference.getFacilityId().isNotEmpty()) {
-                        binding.progressLayout.updateProgressUi(true, true)
-                        startActivity(Intent(requireContext(), HomeActivity::class.java))
-                        requireActivity().finish()
-                    }else{
-                        binding.progressLayout.hideProgressUi()
-                    }
-                }
-            }
-
-            apiResponse.handleListApiView(binding.progressLayout) {
-                when (it) {
-
-//                    is SyncJobStatus.Finished -> {
-//                        binding.progressLayout.updateProgressUi(true, true)
-////                        requireContext().showSnackBar(
-////                            view = binding.progressLayout,
-////                            message = getString(R.string.msg_sync_successfully),
-////                            duration = Snackbar.LENGTH_SHORT,
-////                            isError = false
-////                        )
-//                        loginViewModel.addDevice(
-//                            getDeviceName(),
-//                            getDeviceOS(),
-//                            getDeviceModel(),
-//                            requireContext().getDeviceUUID().toString(),
-//                            BuildConfig.VERSION_NAME
-//                        )
-//                        startActivity(Intent(requireContext(), HomeActivity::class.java))
-//                        requireActivity().finish()
-//                    }
-                    is SyncJobStatus.Failed -> {
-                        binding.progressLayout.showContent()
-                        binding.progressLayout.hideProgressUi()
-//                        binding.progressLayout.updateProgressUi(true, false)
-                        requireContext().showSnackBar(
-                            view = binding.progressLayout,
-                            message = getString(R.string.msg_sync_failed),
-                            duration = Snackbar.LENGTH_SHORT,
-                            isError = true
-                        )
-                        startActivity(Intent(requireContext(), HomeActivity::class.java))
-                        requireActivity().finish()
-                    }
-                }
-            }
-        }
+        initObserverSync(binding.progressLayout, true)
     }
 
     override fun onClick(view: View?) {
