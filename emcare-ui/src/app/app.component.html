@@ -6,8 +6,8 @@
   <!--header-->
   <header>
     <div class="logo d-flex">
-      <img [ngClass]="{'cursor-pointer': this.currentUrl !== '/home'}" src="assets/images/navbar.png"
-        (click)="redirectToDashboard()" alt="EMCARE">
+      <img [ngClass]="{'cursor-pointer': this.currentUrl !== '/home' && this.currentUrl !== '/dashboard'}"
+        src="assets/images/navbar.png" (click)="redirectToDashboard()" alt="EMCARE">
       <h5 class="cst-agent">
         {{getApplicationAgent()}}
       </h5>

@@ -164,8 +164,6 @@ export class AppComponent implements OnInit {
     this.router.events.subscribe((event: NavigationEvent) => {
       if (event instanceof NavigationStart) {
         this.currentUrl = event.url;
-        console.log(this.currentUrl);
-
       }
     });
   }
@@ -334,7 +332,7 @@ export class AppComponent implements OnInit {
   }
 
   redirectToDashboard() {
-    if (this.currentUrl !== '/home') {
+    if (this.currentUrl !== '/home' && this.currentUrl !== '/dashboard') {
       this.router.navigate(['/home']);
     }
   }
