@@ -138,7 +138,7 @@ export class LocationDropdownComponent implements OnInit, OnChanges {
       if (res) {
         this.locationArr = res;
         const data = res.find(el => (el['parent'] === null) || (el['parent'] === 0));
-        console.log(data['type']);
+        this.typeNameArr.push(data['type']);
         // getting conuntries
         this.countryArr = res.filter(el => el['type'] === data['type']);
       }
@@ -152,11 +152,12 @@ export class LocationDropdownComponent implements OnInit, OnChanges {
       if (res) {
         console.log(res);
         res.forEach(element => {
-          arr.push(element)
-          typeName = element['type'];
+          arr.push(element);
+          if (!this.typeNameArr.includes(element['type'])) {
+            this.typeNameArr.push(element['type']);
+          }
         });
       }
-      return typeName;
     });
   }
 
@@ -180,7 +181,7 @@ export class LocationDropdownComponent implements OnInit, OnChanges {
         region: '',
         other: ''
       });
-      this.typeNameArr.push(this.getChildLocations(val, this.stateArr));
+      this.getChildLocations(val, this.stateArr);
     } else if (dropdownNum == 2 && val !== null) {
       this.dropdownActiveArr = [true, true, true, false, false];
       this.cityArr = [];
