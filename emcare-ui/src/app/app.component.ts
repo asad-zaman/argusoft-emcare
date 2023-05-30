@@ -330,4 +330,10 @@ export class AppComponent implements OnInit {
   onClickSidebarBtn() {
     this.isSidebarOpen = !this.isSidebarOpen;
   }
+
+  redirectToDashboard() {
+    if (this.currentUrl !== '/home' && this.currentUrl !== '/dashboard') {
+      this.router.navigate(['/home']);
+    }
+  }
 }

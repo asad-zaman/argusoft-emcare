@@ -612,3 +612,8 @@ ngx-intl-tel-input input[disabled] {
     left: 0px;
   }
 }
+
+.gmnoprint a,
+.gmnoprint span {
+  display: none;
+}
