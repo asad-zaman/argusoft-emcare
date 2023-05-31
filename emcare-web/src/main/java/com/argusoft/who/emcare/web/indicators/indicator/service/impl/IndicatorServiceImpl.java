@@ -185,7 +185,7 @@ public class IndicatorServiceImpl implements IndicatorService {
         List<String> facilityIds;
         if (Boolean.FALSE.equals(isFilter)) {
             facilityIds = userService.getCurrentUserFacility();
-            if (facilityIds.isEmpty()) {
+            if (facilityIds.isEmpty() || Objects.isNull(facilityIds) || Objects.isNull(facilityIds.get(0))) {
                 facilityIds = locationResourceService.getActiveFacility().stream().map(FacilityDto::getFacilityId).collect(Collectors.toList());
             }
         } else {
