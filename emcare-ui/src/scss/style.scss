@@ -617,3 +617,10 @@ ngx-intl-tel-input input[disabled] {
 .gmnoprint span {
   display: none;
 }
+
+.p-multiselect.cst-indicator-dropdown .p-multiselect-label {
+  white-space: nowrap;
+  width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

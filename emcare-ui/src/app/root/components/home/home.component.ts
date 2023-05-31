@@ -398,30 +398,25 @@ export class HomeComponent implements OnInit {
 
   filterIndicator(index) {
     const controls = this.getIndicators().controls[index];
-    if (controls.value.gender || controls.value.startDate ||
-      controls.value.endDate || (controls.value.ageCondition && controls.value.ageValue)
-    ) {
-      const data = {
-        indicatorId: controls.value.indicatorId,
-        gender: controls.value.gender ? controls.value.gender.id : null,
-        age: controls.value.isShowBetween ? (
-          controls.value.ageCondition && controls.value.ageValue && controls.value.ageExtraValue ?
-            `between ${controls.value.ageValue} and ${controls.value.ageExtraValue}` : null
-        ) : (
-          controls.value.ageCondition && controls.value.ageValue ?
-            `${controls.value.ageCondition.id} ${controls.value.ageValue}` : null
-        ),
-        startDate: new Date(controls.value.startDate).toISOString(),
-        endDate: controls.value.endDate ? new Date(controls.value.endDate).toISOString() : null,
-      }
-      this.fhirService.filterIndicatorValue(data).subscribe(res => {
-        if (res) {
-          controls.patchValue({ indicatorValue: res[0].indicatorValue });
-        }
-      });
-    } else {
-      this.toasterService.showToast('warn', 'Please enter filter data!', 'EM CARE!');
+    const data = {
+      indicatorId: controls.value.indicatorId,
+      gender: controls.value.gender ? controls.value.gender.id : null,
+      age: controls.value.isShowBetween ? (
+        controls.value.ageCondition && controls.value.ageValue && controls.value.ageExtraValue ?
+          `between ${controls.value.ageValue} and ${controls.value.ageExtraValue}` : null
+      ) : (
+        controls.value.ageCondition && controls.value.ageValue ?
+          `${controls.value.ageCondition.id} ${controls.value.ageValue}` : null
+      ),
+      startDate: new Date(controls.value.startDate).toISOString(),
+      endDate: controls.value.endDate ? new Date(controls.value.endDate).toISOString() : null,
     }
+    this.fhirService.filterIndicatorValue(data).subscribe(res => {
+      if (res) {
+        controls.patchValue({ indicatorValue: res[0].indicatorValue });
+      }
+    });
+
   }
 
   onDateSelection(num, index) {
