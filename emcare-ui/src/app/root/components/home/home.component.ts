@@ -247,6 +247,7 @@ export class HomeComponent implements OnInit {
       title: {
         text: ''
       },
+      colors: ['#A4D2D3', '#44A9A8'],
       tooltip: {
         pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
       },
