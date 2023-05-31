@@ -224,7 +224,7 @@ public class IndicatorServiceImpl implements IndicatorService {
             finalValue = 0D;
         }
         Map<String, Object> stringObjectMap = new HashMap<>();
-        DecimalFormat df = new DecimalFormat("0.00");
+        DecimalFormat df = new DecimalFormat("0.0");
         stringObjectMap.put("indicatorCode", indicator.getIndicatorCode());
         stringObjectMap.put("indicatorId", indicator.getIndicatorId());
         stringObjectMap.put("age", indicatorFilterDto.getAge());
