@@ -318,7 +318,7 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
     }
 
     @Override
-    public PageDto getPatientsAllDataByFilter(String searchString,Object locationId) {
+    public PageDto getPatientsAllDataByFilter(String searchString, Object locationId) {
         List<Patient> patientsList = new ArrayList<>();
         List<PatientDto> patientDtosList;
         Integer totalCount = 0;
@@ -338,7 +338,7 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
 
         patientDtosList = EmcareResourceMapper.patientEntitiesToDtoMapper(patientsList);
 
-        if(Objects.nonNull(locationId)){
+        if (Objects.nonNull(locationId)) {
             List<Integer> locationIds;
             List<String> childFacilityIds = new ArrayList<>();
             if (isNumeric(locationId.toString())) {
@@ -557,20 +557,11 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
     }
 
     @Override
-    public Map<String, Integer> getPatientAgeGroupCount() {
-        Map<String, Integer> map = new HashMap<>();
-
-        List<PatientDto> patientDtos = getAllPatientsForChart();
-        for (PatientDto patientDto : patientDtos) {
-            if (patientDto.getDob() != null) {
-                Integer age = calculateAge(patientDto.getDob());
-                String key = age.toString() + " to " + (age + 1) + " Years";
-                if (map.get(key) != null) {
-                    map.put(key, map.get(key) + 1);
-                } else {
-                    map.put(key, 1);
-                }
-            }
+    public Map<String, Object> getPatientAgeGroupCount() {
+        Map<String, Object> map = new HashMap<>();
+        List<Map<String, Object>> maps = repository.getPieChartDataBasedOnAgeGroup();
+        for (Map<String, Object> map1 : maps) {
+                map.put(map1.get("key").toString(), map1.get("value"));
         }
         return map;
     }
