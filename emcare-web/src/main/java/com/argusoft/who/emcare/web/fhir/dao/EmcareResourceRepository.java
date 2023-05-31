@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public interface EmcareResourceRepository extends JpaRepository<EmcareResource, Integer> {
@@ -47,5 +48,13 @@ public interface EmcareResourceRepository extends JpaRepository<EmcareResource, 
 
     @Query(value = "SELECT COUNT(*) FROM EMCARE_RESOURCES WHERE TYPE = 'PATIENT' AND facility_id in :ids", nativeQuery = true)
     Long getCountWithFacilityId(@Param("ids") List<String> ids);
+
+    @Query(value = "with t1 as (select to_date(birth_date,'yyyy-mm-dd') as birth_date from emcare_resources er),\n" +
+            "t2 as (select birth_date,(extract(year from age(birth_date) * 12) + extract(month from age(birth_date))) age_in_months from t1)\n" +
+            "select '0 to 2 Months' as key,sum(case when age_in_months <= 2 then 1 else 0 end) value from t2\n" +
+            "union select '3 to 59 Months' as key,sum(case when age_in_months between 3 and 59 then 1 else 0 end) value from t2", nativeQuery = true)
+    List<Map<String,Object>> getPieChartDataBasedOnAgeGroup();
+
+
 
 }
