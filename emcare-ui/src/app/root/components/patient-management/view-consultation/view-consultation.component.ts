@@ -86,6 +86,17 @@ export class ViewConsultationComponent implements OnInit {
   selectEncounter(index) {
     this.selectedEncounterIcon = index;
     this.currentObj = this.data[this.selectedEncounterIcon];
+    this.setUpTheObject(this.currentObj);
+  }
+
+  setUpTheObject(data) {
+    let tempArr = data.queAnsObj.filter(el => el.value !== true && el.value !== false);
+    let tempBoolArr = data.queAnsObj.filter(el => el.value == true || el.value == false);
+    const newArr = [
+      ...tempBoolArr.filter(c => c.value === true), ...tempBoolArr.filter(c => c.value === false)
+    ];
+    const queAnsArr = [...tempArr, ...newArr];
+    data.queAnsObj = queAnsArr;
   }
 
   manipulateResAsPerKey(tempkeyData) {
