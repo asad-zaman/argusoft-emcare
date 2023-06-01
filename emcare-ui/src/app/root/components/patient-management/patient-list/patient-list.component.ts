@@ -35,7 +35,6 @@ export class PatientListComponent implements OnInit {
     enableAll = false;
     exportAllPatient = false;
     filteredAllPatientData = [];
-    btnValue = 'Export';
 
     constructor(
         private readonly fhirService: FhirService,
@@ -317,11 +316,6 @@ export class PatientListComponent implements OnInit {
     onEnableSelectionClick() {
         this.showCheckboxes = !this.showCheckboxes;
         this.enableAll = false;
-        if(this.btnValue == 'Export') {
-            this.btnValue = 'Cancel';
-        } else {
-            this.btnValue= 'Export';
-        }
         if (!this.showCheckboxes) {
             this.filteredPatients.forEach(element => { element['isExcelPDF'] = false; });
         }
