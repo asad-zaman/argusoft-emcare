@@ -150,7 +150,6 @@ export class LocationDropdownComponent implements OnInit, OnChanges {
     // getting child locations by id
     this.locationService.getChildLocationById(id).subscribe((res: Array<Object>) => {
       if (res) {
-        console.log(res);
         res.forEach(element => {
           arr.push(element);
           if (!this.typeNameArr.includes(element['type'])) {
