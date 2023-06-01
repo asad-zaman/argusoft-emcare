@@ -41,11 +41,18 @@ class EmCareApplication : Application(), Configuration.Provider, DataCaptureConf
     @Inject
     lateinit var workerFactory: HiltWorkerFactory
 
+    //Work Manager for EmcareSync Functionality
     override fun getWorkManagerConfiguration() =
         Configuration.Builder()
             .setWorkerFactory(workerFactory)
             .build()
 
+    /*
+        DataCaptureConfiguration for the SDC
+        valueSetResolver for the answerOptions in questionnaire with valueSet URLs.
+        xFhirQueryResolver to support X-Fhir-Query for the library.
+        urlResolver for the Binary Resources.
+     */
     private val dataCaptureConfiguration by lazy {
         DataCaptureConfig(
             valueSetResolverExternal =
@@ -60,40 +67,38 @@ class EmCareApplication : Application(), Configuration.Provider, DataCaptureConf
         )
     }
 
-    object QuestionnaireItemViewHolderFactoryMatchersProviderFactoryImpl :
-        QuestionnaireItemViewHolderFactoryMatchersProviderFactory {
-        override fun get(provider: String): QuestionnaireFragment.QuestionnaireItemViewHolderFactoryMatchersProvider {
-            return when (provider) {
-                "CUSTOM" -> QuestionnaireItemViewHolderFactoryMatchersProviderImpl
-                else -> EmptyQuestionnaireItemViewHolderFactoryMatchersProviderImpl
-            }
+
+
+    override fun getDataCaptureConfig(): DataCaptureConfig {
+        return dataCaptureConfiguration
+    }
+
+    override fun onCreate() {
+        super.onCreate()
+        if (BuildConfig.DEBUG) {
+            Timber.plant(Timber.DebugTree())
         }
-    }
 
-    private object EmptyQuestionnaireItemViewHolderFactoryMatchersProviderImpl :
-        QuestionnaireFragment.QuestionnaireItemViewHolderFactoryMatchersProvider() {
-        override fun get() = emptyList<QuestionnaireFragment.QuestionnaireItemViewHolderFactoryMatcher>()
-    }
-
-    private object QuestionnaireItemViewHolderFactoryMatchersProviderImpl :
-        QuestionnaireFragment.QuestionnaireItemViewHolderFactoryMatchersProvider() {
-        override fun get() = listOf(
-            QuestionnaireFragment.QuestionnaireItemViewHolderFactoryMatcher(
-                CustomBooleanChoiceViewHolderFactory
-            ) { questionnaireItem ->
-                questionnaireItem.getExtensionByUrl(CustomBooleanChoiceViewHolderFactory.WIDGET_EXTENSION).let {
-                    if(it == null) false else it?.value?.toString()?.contains(CustomBooleanChoiceViewHolderFactory.WIDGET_TYPE) == true
-                }
-            },
-            QuestionnaireFragment.QuestionnaireItemViewHolderFactoryMatcher(
-                CustomDisplayViewHolderFactory
-            ) { questionnaireItem ->
-                questionnaireItem.getExtensionByUrl(CustomDisplayViewHolderFactory.WIDGET_EXTENSION).let {
-                    it!= null
-                }
-            }
+        //Initializing Fhir Engine
+        FhirEngineProvider.init(
+            FhirEngineConfiguration(
+                enableEncryptionIfSupported = false,
+                databaseErrorStrategy = DatabaseErrorStrategy.RECREATE_AT_OPEN,
+                serverConfiguration = ServerConfiguration(BuildConfig.FHIR_BASE_URL,
+                networkConfiguration = NetworkConfiguration(connectionTimeOut = 1200, readTimeOut = 1200, writeTimeOut = 1200),
+                authenticator = EmcareAuthenticator(preference),
+                httpLogger = HttpLogger(
+                    HttpLogger.Configuration(
+                        if (BuildConfig.DEBUG) HttpLogger.Level.BODY else HttpLogger.Level.BASIC
+                    )
+                ) { Timber.tag("App-HttpLog").d(it) })
+            )
         )
     }
+
+    /*
+        Returns List of Coding from ValueSets stored in the fhirEngine
+     */
     private suspend fun lookupCodesFromDb(uri: String): List<Coding> {
         val valueSets: List<ValueSet> = FhirEngineProvider.getInstance(this).search {
             filter(
@@ -128,29 +133,38 @@ class EmCareApplication : Application(), Configuration.Provider, DataCaptureConf
         }
     }
 
-    override fun getDataCaptureConfig(): DataCaptureConfig {
-        return dataCaptureConfiguration
+    private object QuestionnaireItemViewHolderFactoryMatchersProviderFactoryImpl :
+        QuestionnaireItemViewHolderFactoryMatchersProviderFactory {
+        override fun get(provider: String): QuestionnaireFragment.QuestionnaireItemViewHolderFactoryMatchersProvider {
+            return when (provider) {
+                "CUSTOM" -> QuestionnaireItemViewHolderFactoryMatchersProviderImpl
+                else -> EmptyQuestionnaireItemViewHolderFactoryMatchersProviderImpl
+            }
+        }
     }
 
-    override fun onCreate() {
-        super.onCreate()
-        if (BuildConfig.DEBUG) {
-            Timber.plant(Timber.DebugTree())
-        }
-        FhirEngineProvider.init(
-            FhirEngineConfiguration(
-                enableEncryptionIfSupported = false,
-                DatabaseErrorStrategy.RECREATE_AT_OPEN,
-                ServerConfiguration(BuildConfig.FHIR_BASE_URL,
-                    NetworkConfiguration(connectionTimeOut = 1200, readTimeOut = 1200, writeTimeOut = 1200),
-                    EmcareAuthenticator(preference),
-                    httpLogger =
-                    HttpLogger(
-                        HttpLogger.Configuration(
-                            if (BuildConfig.DEBUG) HttpLogger.Level.BODY else HttpLogger.Level.BASIC
-                        )
-                    ) { Timber.tag("App-HttpLog").d(it) })
-            )
+    private object EmptyQuestionnaireItemViewHolderFactoryMatchersProviderImpl :
+        QuestionnaireFragment.QuestionnaireItemViewHolderFactoryMatchersProvider() {
+        override fun get() = emptyList<QuestionnaireFragment.QuestionnaireItemViewHolderFactoryMatcher>()
+    }
+
+    private object QuestionnaireItemViewHolderFactoryMatchersProviderImpl :
+        QuestionnaireFragment.QuestionnaireItemViewHolderFactoryMatchersProvider() {
+        override fun get() = listOf(
+            QuestionnaireFragment.QuestionnaireItemViewHolderFactoryMatcher(
+                CustomBooleanChoiceViewHolderFactory
+            ) { questionnaireItem ->
+                questionnaireItem.getExtensionByUrl(CustomBooleanChoiceViewHolderFactory.WIDGET_EXTENSION).let {
+                    if(it == null) false else it?.value?.toString()?.contains(CustomBooleanChoiceViewHolderFactory.WIDGET_TYPE) == true
+                }
+            },
+            QuestionnaireFragment.QuestionnaireItemViewHolderFactoryMatcher(
+                CustomDisplayViewHolderFactory
+            ) { questionnaireItem ->
+                questionnaireItem.getExtensionByUrl(CustomDisplayViewHolderFactory.WIDGET_EXTENSION).let {
+                    it!= null
+                }
+            }
         )
     }
 }

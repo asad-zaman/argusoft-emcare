@@ -1,36 +1,21 @@
 package com.argusoft.who.emcare.ui.home.settings
 
 import android.content.Intent
-import android.os.Handler
-import android.os.Looper
-import android.util.Log
 import android.view.View
 import android.widget.CompoundButton
-import androidx.fragment.app.viewModels
-import com.argusoft.who.emcare.BuildConfig
 import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.databinding.FragmentScreenResizeSettingsBinding
-import com.argusoft.who.emcare.sync.SyncViewModel
-import com.argusoft.who.emcare.ui.auth.login.LoginViewModel
 import com.argusoft.who.emcare.ui.common.APP_THEME_COMFORTABLE
 import com.argusoft.who.emcare.ui.common.APP_THEME_COMPACT
 import com.argusoft.who.emcare.ui.common.APP_THEME_ENLARGED
 import com.argusoft.who.emcare.ui.common.base.BaseFragment
 import com.argusoft.who.emcare.ui.home.HomeActivity
 import com.argusoft.who.emcare.utils.extention.*
-import com.google.android.fhir.sync.SyncJobStatus
-import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
-import java.util.concurrent.Executors
-import java.util.concurrent.TimeUnit
-import kotlin.math.roundToInt
 
 
 @AndroidEntryPoint
 class ChangeThemeFragment : BaseFragment<FragmentScreenResizeSettingsBinding>() {
-
-    private val syncViewModel: SyncViewModel by viewModels()
-    private val loginViewModel: LoginViewModel by viewModels()
 
     override fun initView() {
         binding.headerLayout.toolbar.setTitleDashboard(id = getString(R.string.title_change_theme))
@@ -47,17 +32,7 @@ class ChangeThemeFragment : BaseFragment<FragmentScreenResizeSettingsBinding>() 
     }
 
     override fun initListener() {
-        binding.headerLayout.toolbar.setOnMenuItemClickListener {
-            when (it.itemId) {
-                R.id.action_sync -> {
-                    syncViewModel.syncPatients(true)
-                }
-                R.id.action_more -> {
-                    (activity as HomeActivity).openDrawer()
-                }
-            }
-            return@setOnMenuItemClickListener true
-        }
+        initSyncAndMoreMenuItemListener(binding.headerLayout.toolbar)
         binding.saveButton.setOnClickListener(this)
         binding.closeButton.setOnClickListener(this)
     }
