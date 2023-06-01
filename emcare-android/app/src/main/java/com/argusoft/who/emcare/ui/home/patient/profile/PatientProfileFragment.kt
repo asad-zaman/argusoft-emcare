@@ -1,40 +1,24 @@
 package com.argusoft.who.emcare.ui.home.patient.profile
 
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.util.Log
 import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.argusoft.who.emcare.BuildConfig
 import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.databinding.FragmentPatientProfileBinding
-import com.argusoft.who.emcare.sync.SyncViewModel
-import com.argusoft.who.emcare.ui.auth.login.LoginViewModel
 import com.argusoft.who.emcare.ui.common.*
 import com.argusoft.who.emcare.ui.common.base.BaseFragment
-import com.argusoft.who.emcare.ui.home.HomeActivity
-import com.argusoft.who.emcare.ui.home.HomeViewModel
 import com.argusoft.who.emcare.utils.extention.*
-import com.google.android.fhir.sync.SyncJobStatus
-import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
 import java.util.*
-import java.util.concurrent.Executors
-import java.util.concurrent.TimeUnit
-import kotlin.math.roundToInt
 
 
 @AndroidEntryPoint
 class PatientProfileFragment : BaseFragment<FragmentPatientProfileBinding>() {
 
     private val patientProfileViewModel: PatientProfileViewModel by viewModels()
-    private val loginViewModel: LoginViewModel by viewModels()
-    private val homeViewModel: HomeViewModel by viewModels()
-    private val syncViewModel: SyncViewModel by viewModels()
     private lateinit var activeConsultationsAdapter: PatientProfileActiveConsultationsAdapter
     private lateinit var previousConsultationsAdapter: PatientProfilePreviousConsultationsAdapter
 
@@ -93,18 +77,8 @@ class PatientProfileFragment : BaseFragment<FragmentPatientProfileBinding>() {
 
     override fun initListener() {
         binding.newConsultationButton.setOnClickListener(this)
+        initSyncAndMoreMenuItemListener(binding.headerLayout.toolbar)
 
-        binding.headerLayout.toolbar.setOnMenuItemClickListener {
-            when (it.itemId) {
-                R.id.action_sync -> {
-                    syncViewModel.syncPatients(true)
-                }
-                R.id.action_more -> {
-                    (activity as HomeActivity).openDrawer()
-                }
-            }
-            return@setOnMenuItemClickListener true
-        }
     }
 
     override fun initObserver() {

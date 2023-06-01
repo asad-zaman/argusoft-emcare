@@ -20,6 +20,7 @@ import androidx.viewbinding.ViewBinding
 import com.argusoft.who.emcare.BuildConfig
 import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.data.local.pref.Preference
+import com.argusoft.who.emcare.databinding.LayoutHeaderBinding
 import com.argusoft.who.emcare.sync.SyncViewModel
 import com.argusoft.who.emcare.ui.auth.login.LoginViewModel
 import com.argusoft.who.emcare.ui.home.HomeActivity
@@ -38,6 +39,7 @@ import com.argusoft.who.emcare.utils.extention.whenInProgress
 import com.argusoft.who.emcare.utils.extention.whenLoading
 import com.argusoft.who.emcare.widget.ApiViewStateConstraintLayout
 import com.google.android.fhir.sync.SyncJobStatus
+import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.snackbar.Snackbar
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -77,6 +79,19 @@ abstract class BaseFragment<B : ViewBinding> : Fragment(), View.OnClickListener 
         initObserver()
     }
 
+    fun initSyncAndMoreMenuItemListener(toolbar: MaterialToolbar) {
+        toolbar.setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.action_sync -> {
+                    syncViewModel.syncPatients(true)
+                }
+                R.id.action_more -> {
+                    (activity as HomeActivity).openDrawer()
+                }
+            }
+            return@setOnMenuItemClickListener true
+        }
+    }
     fun initObserverSync(progressLayout: ApiViewStateConstraintLayout, isRedirectToHome: Boolean) {
         observeNotNull(syncViewModel.syncState) { apiResponse ->
 
