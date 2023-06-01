@@ -31,10 +31,10 @@ android {
 
     buildTypes {
         debug {
-            buildConfigField "String", "BASE_URL_TERMS", "\"http://3.111.94.246:8180/\""
-            buildConfigField "String", "BASE_URL", "\"http://3.111.94.246:8180/api/\""
-            buildConfigField "String", "FHIR_BASE_URL", "\"http://3.111.94.246:8180/fhir/\""
-            buildConfigField "String", "KEYCLOAK_BASE_URL", "\"http://3.111.94.246:8180/auth/realms/emcare/protocol/openid-connect/\""
+            buildConfigField "String", "BASE_URL_TERMS", "\"http://3.111.94.246:8080/\""
+            buildConfigField "String", "BASE_URL", "\"http://3.111.94.246:8080/api/\""
+            buildConfigField "String", "FHIR_BASE_URL", "\"http://3.111.94.246:8080/fhir/\""
+            buildConfigField "String", "KEYCLOAK_BASE_URL", "\"http://3.111.94.246:8080/auth/realms/emcare/protocol/openid-connect/\""
             shrinkResources false
             minifyEnabled false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
