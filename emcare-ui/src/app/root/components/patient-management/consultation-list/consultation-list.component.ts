@@ -31,6 +31,7 @@ export class ConsultationListComponent implements OnInit {
   enableAll = false;
   exportAllConsultations = false;
   filteredAllConsultations = [];
+  btnValue = 'Export';
 
   constructor(
     private readonly fhirService: FhirService,
@@ -121,6 +122,11 @@ export class ConsultationListComponent implements OnInit {
   onEnableSelectionClick() {
     this.showCheckboxes = !this.showCheckboxes;
     this.enableAll = false;
+    if(this.btnValue == 'Export') {
+      this.btnValue = 'Cancel';
+    } else {
+      this.btnValue= 'Export';
+    }
     if (!this.showCheckboxes) {
       this.filteredConsultations.forEach(element => { element['isExcelPDF'] = false; });
     }

@@ -16,7 +16,7 @@
     </div>
     <div class="col-6 d-flex cst-export">
       <button [disabled]="this.exportAllPatient" (click)="onEnableSelectionClick()" class="ml-3 btn btn-blue">
-        {{'Export' | translate}}
+        {{btnValue | translate}}
       </button>
       <ul *ngIf="this.showCheckboxes || this.exportAllPatient" class="navigation ml-3 btn btn-blue">
         <li class="dropdown" style="list-style-type: none;">
