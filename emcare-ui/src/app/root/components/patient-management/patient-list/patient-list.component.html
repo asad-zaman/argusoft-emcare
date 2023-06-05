@@ -9,7 +9,7 @@
       <input class="form-control custom-input h-35" id="exampleFormControlInput1" [(ngModel)]="searchString"
         (input)="searchFilter()" placeholder="{{'Search Placeholder' | translate}}">
     </div>
-    <div class="col-3">
+    <div class="col-3 cst-d-flex">
       <p-checkbox styleClass="form-label" [(ngModel)]="exportAllPatient" label="Export All Patients" [binary]="true"
         inputId="binary" value="true" (onChange)="exportAllThePatients()">
       </p-checkbox>
