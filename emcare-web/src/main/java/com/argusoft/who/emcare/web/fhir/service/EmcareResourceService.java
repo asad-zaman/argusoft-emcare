@@ -40,7 +40,7 @@ public interface EmcareResourceService {
 
     public List<PatientDto> getPatientDtoByPatient(List<Patient> patient);
 
-    public Map<String, Integer> getPatientAgeGroupCount();
+    public Map<String, Object> getPatientAgeGroupCount();
 
     public List<PatientDto> getPatientDtoByIds(List<String> ids);
 
