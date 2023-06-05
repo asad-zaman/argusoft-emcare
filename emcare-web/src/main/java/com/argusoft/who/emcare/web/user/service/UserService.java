@@ -16,7 +16,7 @@ import java.util.Map;
  */
 public interface UserService {
 
-    public UserMasterDto getCurrentUser();
+    public ResponseEntity getCurrentUser();
 
     public List<UserListDto> getAllUser(HttpServletRequest request);
 
