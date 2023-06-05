@@ -122,7 +122,7 @@ public class UserMapper {
         return user;
     }
 
-    public static List<UserLocationMapping> getUserMappingEntityPerLocation(UserDto userDto, String userId, Map<String, Long> locationId) {
+    public static List<UserLocationMapping> getUserMappingEntityPerLocation(UserDto userDto, String userId, Map<String, Long> locationId, Boolean isFirst) {
         List<UserLocationMapping> users = new ArrayList<>();
 
         for (String facilityId : userDto.getFacilityIds()) {
@@ -130,7 +130,7 @@ public class UserMapper {
             user.setUserId(userId);
             user.setLocationId(locationId.get(facilityId).intValue());
             user.setFacilityId(facilityId);
-            user.setIsFirst(true);
+            user.setIsFirst(isFirst);
             if (userDto.getRegRequestFrom().equalsIgnoreCase(UserConst.MOBILE)) {
                 user.setRegRequestFrom(UserConst.MOBILE);
                 user.setState(false);
