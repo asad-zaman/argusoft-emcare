@@ -142,7 +142,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserMasterDto getCurrentUser() {
+    public ResponseEntity getCurrentUser() {
         AccessToken user = emCareSecurityUser.getLoggedInUser();
         Keycloak keycloak = keyCloakConfig.getInstance();
         UserRepresentation userInfo = keycloak.realm(realm).users().get(user.getSubject()).toRepresentation();
@@ -155,6 +155,12 @@ public class UserServiceImpl implements UserService {
             for (String id : facilityIds)
                 facilityDtos.add(locationResourceService.getFacilityDto(id));
         }
+        if(!facilityDtos.isEmpty()) {
+            facilityDtos = facilityDtos.stream().filter(facilityDto -> facilityDto.getStatus().equalsIgnoreCase(CommonConstant.ACTIVE)).collect(Collectors.toList());
+            if(facilityDtos.isEmpty()) {
+                return new ResponseEntity<Response>(new Response("No Active Facilities Associated", HttpStatus.FORBIDDEN.value()), HttpStatus.FORBIDDEN);
+            }
+        }
         UserMasterDto masterUser = UserMapper.getMasterUser(user, facilityDtos, userInfo);
         List<RoleRepresentation> roleRepresentationList = keycloak.realm(realm).users().get(masterUser.getUserId()).roles().realmLevel().listAll();
         List<String> roleIds = new ArrayList<>();
@@ -163,7 +169,7 @@ public class UserServiceImpl implements UserService {
         }
 
         masterUser.setFeature(getUserFeatureJson(roleIds, masterUser.getUserId()));
-        return masterUser;
+        return ResponseEntity.ok().body(masterUser);
     }
 
     @Override
@@ -366,7 +372,7 @@ public class UserServiceImpl implements UserService {
         try {
             javax.ws.rs.core.Response response = usersResource.create(kcUser);
             String userId = CreatedResponseUtil.getCreatedId(response);
-            userLocationMappingRepository.saveAll(UserMapper.getUserMappingEntityPerLocation(user, userId, locationMap));
+            userLocationMappingRepository.saveAll(UserMapper.getUserMappingEntityPerLocation(user, userId, locationMap, Boolean.TRUE));
             UserResource userResource = usersResource.get(userId);
 
 //        Set Realm Role
@@ -492,7 +498,7 @@ public class UserServiceImpl implements UserService {
 
             javax.ws.rs.core.Response response = usersResource.create(kcUser);
             String userId = CreatedResponseUtil.getCreatedId(response);
-            userLocationMappingRepository.saveAll(UserMapper.getUserMappingEntityPerLocation(user, userId, locationMap));
+            userLocationMappingRepository.saveAll(UserMapper.getUserMappingEntityPerLocation(user, userId, locationMap, Boolean.FALSE));
             UserResource userResource = usersResource.get(userId);
 
 //        Set Realm Role

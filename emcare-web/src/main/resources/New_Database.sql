@@ -123,6 +123,9 @@ CREATE TABLE IF NOT EXISTS public.emcare_resources
     gender text COLLATE pg_catalog."default" GENERATED ALWAYS AS (((text)::json ->> 'gender'::text)) STORED
 );
 
+alter table emcare_resources
+add column birth_date text 
+GENERATED ALWAYS AS ((text)::json ->> 'birthDate'::text) STORED;
 
 ALTER TABLE public.emcare_resources OWNER TO postgres;
 

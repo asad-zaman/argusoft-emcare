@@ -194,6 +194,7 @@
     <string name="error_msg_password_not_match">Password does\'t match</string>
     <string name="button_submit_location">Submit Location</string>
     <string name="error_msg_not_find_user">Invalid user credentials</string>
+    <string name="error_facility_not_assigned_user">Sorry, currently there is no facility assigned to this user! Please contact to admin.</string>
     <string name="button_select">Select</string>
     <string name="button_continue">Continue</string>
     <string name="error_msg_select_location">Please select location</string>

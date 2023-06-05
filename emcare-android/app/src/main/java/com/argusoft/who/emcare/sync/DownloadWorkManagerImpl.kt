@@ -16,29 +16,38 @@
 
 package com.argusoft.who.emcare.sync
 
+import android.util.Log
 import com.argusoft.who.emcare.data.local.pref.Preference
 import com.google.android.fhir.sync.DownloadWorkManager
 import com.google.android.fhir.sync.Request
 import com.google.android.fhir.sync.SyncDataParams
 import org.hl7.fhir.exceptions.FHIRException
 import org.hl7.fhir.r4.model.*
+import java.text.DateFormat
 import java.text.SimpleDateFormat
-import java.time.OffsetDateTime
-import java.time.ZoneId
-import java.time.ZonedDateTime
 import java.util.*
 
 class DownloadWorkManagerImpl constructor(
   private val preference: Preference
 ): DownloadWorkManager {
   private val resourceTypeList = ResourceType.values().map { it.name }
-  private val urls = LinkedList(listOf("Patient", "Questionnaire", "Encounter", "StructureDefinition", "StructureMap", "ValueSet", "Library", "OperationDefinition", "Observation", "RelatedPerson", "PlanDefinition", "Binary"))
+  private val urls = LinkedList(listOf("PlanDefinition","Library", "StructureMap", "Questionnaire", "StructureDefinition", "ValueSet", "OperationDefinition", "Patient", "Encounter", "Observation", "RelatedPerson", "Binary"))
 
 //  private val formatString1: SimpleDateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
-  var formatString1: SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-  var formatString2: SimpleDateFormat = SimpleDateFormat("dd/MM/yyyy hh:mm:ss a")
+  var formatStringGmt: DateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+  var formatStringLocal: SimpleDateFormat = SimpleDateFormat("dd/MM/yyyy hh:mm:ss a")
+  var lastUpdatedTime: String = ""
+
+  private fun getGmtTimeFromLastSyncTime(){
+    if(preference.getLastSyncTimestamp().isNotEmpty()) {
+      formatStringGmt.timeZone = TimeZone.getTimeZone("gmt")
+      lastUpdatedTime = formatStringGmt.format(formatStringLocal.parse(preference.getLastSyncTimestamp()))
+    }
+  }
 
   override suspend fun getNextRequest(): Request? {
+    Log.d("Sync Called","Inside getNextRequest")
+    getGmtTimeFromLastSyncTime()
     var url = urls.poll() ?: return null
     if(url.contains("Patient", true)){
       url = url.plus("?_id=${preference.getFacilityId()}&_query=bundle")
@@ -46,26 +55,24 @@ class DownloadWorkManagerImpl constructor(
       url = url.plus("?_facilityId=${preference.getFacilityId()}")
     }
     if(preference.getLastSyncTimestamp().isNotEmpty()){
-      url = affixLastUpdatedTimestamp(url, formatString1.format(formatString2.parse(
-        preference.getLastSyncTimestamp())), !url.contains("?_id")
+      url = affixLastUpdatedTimestamp(url, lastUpdatedTime, !url.contains("?_id")
               && !url.contains("?_facilityId"))
 //      context.getLatestTimestampFor(ResourceType.fromCode(url.findAnyOf(resourceTypeList, ignoreCase = true)!!.second))?.let {
 //        url = affixLastUpdatedTimestamp(url, it, !url.contains("?_id") || !url.contains("?_facilityId"))
 //      }
     }
 
-    return com.google.android.fhir.sync.Request.of(url)
+    return Request.of(url)
   }
 
   override suspend fun getSummaryRequestUrls(): Map<ResourceType, String> {
-
+    getGmtTimeFromLastSyncTime()
     return urls.associate { urlString ->
       val stringWithCount = urlString.plus("?${SyncDataParams.SUMMARY_KEY}=${SyncDataParams.SUMMARY_COUNT_VALUE}")
       val stringWithFacilityId = if(stringWithCount.contains("Patient", true) || stringWithCount.contains("RelatedPerson", true) || stringWithCount.contains("Observation", true) || stringWithCount.contains("Encounter", true))  stringWithCount.plus("&_facilityId=${preference.getFacilityId()}&_query=summary") else stringWithCount
       var stringWithTimeStamp = stringWithFacilityId
       if(preference.getLastSyncTimestamp().isNotEmpty()){
-        stringWithTimeStamp = affixLastUpdatedTimestamp(stringWithFacilityId,  formatString1.format(formatString2.parse(
-          preference.getLastSyncTimestamp())), false)
+        stringWithTimeStamp = affixLastUpdatedTimestamp(stringWithFacilityId, lastUpdatedTime, false)
 //        context.getLatestTimestampFor(ResourceType.fromCode(stringWithFacilityId.substringBefore("?")))?.let {
 //          stringWithTimeStamp = affixLastUpdatedTimestamp(stringWithFacilityId, it, false)
 //        }
@@ -123,25 +130,12 @@ class DownloadWorkManagerImpl constructor(
   private fun affixLastUpdatedTimestamp(url: String, lastUpdated: String?, isFirstQueryParam: Boolean): String {
     var downloadUrl = url
 
-    // Affix lastUpdate to a $everything query using _since as per:
-    // https://hl7.org/fhir/operation-patient-everything.html
-//    if (downloadUrl.contains("\$everything")) {
-//      downloadUrl = "$downloadUrl?_since=$lastUpdated"
-//    }
-
     // Affix lastUpdate to non-$everything queries as per:
     // https://hl7.org/fhir/operation-patient-everything.html
     if (!downloadUrl.contains("\$everything") && lastUpdated != null) {
-      val zonedDateTime: ZonedDateTime = ZonedDateTime.parse(lastUpdated)
-      val lastUpdatedTimeWithoutTimeZone: OffsetDateTime = ZonedDateTime.ofInstant(zonedDateTime.toInstant(), ZoneId.of("UTC")).toOffsetDateTime()
-      downloadUrl = if(isFirstQueryParam) "$downloadUrl?_lastUpdated=gt$lastUpdatedTimeWithoutTimeZone"
-      else "$downloadUrl&_lastUpdated=gt$lastUpdatedTimeWithoutTimeZone"
+      downloadUrl = if(isFirstQueryParam) "$downloadUrl?_lastUpdated=gt$lastUpdated"
+      else "$downloadUrl&_lastUpdated=gt$lastUpdated"
     }
-
-    // Do not modify any URL set by a server that specifies the token of the page to return.
-//    if (downloadUrl.contains("&page_token")) {
-//      downloadUrl = url
-//    }
 
     return downloadUrl
   }

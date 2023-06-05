@@ -46,14 +46,6 @@ class ApiManager(private val preference: Preference) : Api {
         return@lazy okHttpClientBuilder
     }
 
-    private val keyCloakApiService: KeyCloakApiService by lazy {
-        return@lazy Retrofit.Builder()
-            .baseUrl(BuildConfig.KEYCLOAK_BASE_URL)
-            .client(okHttpClientBuilder.build())
-            .addConverterFactory(MoshiConverterFactory.create())
-            .build()
-            .create(KeyCloakApiService::class.java)
-    }
 
     private val apiService: ApiService by lazy {
         return@lazy Retrofit.Builder()

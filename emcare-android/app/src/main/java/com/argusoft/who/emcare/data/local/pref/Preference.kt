@@ -49,4 +49,6 @@ interface Preference {
     fun getCountry(): String
 
     fun clear()
+
+    fun clearAll()
 }

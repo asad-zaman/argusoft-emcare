@@ -37,7 +37,7 @@ public class DashboardServiceImpl implements DashboardService {
     @Override
     public ResponseEntity<Object> getDashboardBarChartData() {
         List<ChartDto> pieData = userLocationMappingRepository.getDashboardPieChartData();
-        Map<String, Integer> ageData = emcareResourceService.getPatientAgeGroupCount();
+        Map<String, Object> ageData = emcareResourceService.getPatientAgeGroupCount();
         Calendar calendar = Calendar.getInstance();
         int currentWeekNumber = calendar.get(Calendar.WEEK_OF_YEAR);
         List<ScatterCharDto> scatterCharDtos = userLocationMappingRepository.getDashboardScatterChartData(currentWeekNumber);

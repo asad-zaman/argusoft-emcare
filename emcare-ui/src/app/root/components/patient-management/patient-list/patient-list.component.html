@@ -9,14 +9,14 @@
       <input class="form-control custom-input h-35" id="exampleFormControlInput1" [(ngModel)]="searchString"
         (input)="searchFilter()" placeholder="{{'Search Placeholder' | translate}}">
     </div>
-    <div class="col-3">
+    <div class="col-3 cst-d-flex">
       <p-checkbox styleClass="form-label" [(ngModel)]="exportAllPatient" label="Export All Patients" [binary]="true"
         inputId="binary" value="true" (onChange)="exportAllThePatients()">
       </p-checkbox>
     </div>
     <div class="col-6 d-flex cst-export">
       <button [disabled]="this.exportAllPatient" (click)="onEnableSelectionClick()" class="ml-3 btn btn-blue">
-        {{'Export' | translate}}
+        {{showCheckboxes ? 'Cancel' : 'Export'| translate}}
       </button>
       <ul *ngIf="this.showCheckboxes || this.exportAllPatient" class="navigation ml-3 btn btn-blue">
         <li class="dropdown" style="list-style-type: none;">
