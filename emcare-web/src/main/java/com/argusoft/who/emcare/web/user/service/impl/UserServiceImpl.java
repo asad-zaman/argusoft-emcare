@@ -366,7 +366,7 @@ public class UserServiceImpl implements UserService {
         try {
             javax.ws.rs.core.Response response = usersResource.create(kcUser);
             String userId = CreatedResponseUtil.getCreatedId(response);
-            userLocationMappingRepository.saveAll(UserMapper.getUserMappingEntityPerLocation(user, userId, locationMap));
+            userLocationMappingRepository.saveAll(UserMapper.getUserMappingEntityPerLocation(user, userId, locationMap, Boolean.TRUE));
             UserResource userResource = usersResource.get(userId);
 
 //        Set Realm Role
@@ -492,7 +492,7 @@ public class UserServiceImpl implements UserService {
 
             javax.ws.rs.core.Response response = usersResource.create(kcUser);
             String userId = CreatedResponseUtil.getCreatedId(response);
-            userLocationMappingRepository.saveAll(UserMapper.getUserMappingEntityPerLocation(user, userId, locationMap));
+            userLocationMappingRepository.saveAll(UserMapper.getUserMappingEntityPerLocation(user, userId, locationMap, Boolean.FALSE));
             UserResource userResource = usersResource.get(userId);
 
 //        Set Realm Role
