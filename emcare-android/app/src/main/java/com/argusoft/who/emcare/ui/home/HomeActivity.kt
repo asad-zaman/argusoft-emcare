@@ -112,7 +112,10 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
                 if(count > 0){
                     alertDialog {
                         setMessage("There is un-synced data and we request you to sync before logging out!")
-                        setPositiveButton("Close") {_, _ -> }
+                        setPositiveButton(R.string.button_logout_anyway) { _, _ ->
+                            logout()
+                        }
+                        setNegativeButton(R.string.button_no) { _, _ -> }
                     }.show()
                 } else {
                     alertDialog {
