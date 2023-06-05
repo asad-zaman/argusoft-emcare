@@ -125,4 +125,8 @@ class DatabaseManager(roomDatabase: RoomDatabase) : Database {
     ): ConsultationFlowItem? {
         return dao.getNextConsultationByConsultationIdAndEncounterId(consultationId, encounterId)
     }
+
+    override suspend fun getConsultationCountAfterTimestamp(timestamp: String): Int {
+        return dao.getConsultationCountAfterTimestamp(timestamp)
+    }
 }
