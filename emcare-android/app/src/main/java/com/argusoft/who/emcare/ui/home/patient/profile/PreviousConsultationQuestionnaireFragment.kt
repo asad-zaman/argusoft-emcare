@@ -58,6 +58,8 @@ class PreviousConsultationQuestionnaireFragment: BaseFragment<FragmentPreviousCo
                 .setQuestionnaire(cleanedQuestionnairePair.first)
                 .setQuestionnaireResponse(cleanedQuestionnairePair.second)
                 .setCustomQuestionnaireItemViewHolderFactoryMatchersProvider("CUSTOM")
+                .showAsterisk(true)
+                .showRequiredText(false)
                 .setIsReadOnly(true)
                 .build()
             childFragmentManager.commit {
