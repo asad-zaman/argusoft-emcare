@@ -115,7 +115,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
                         setPositiveButton(R.string.button_logout_anyway) { _, _ ->
                             logout()
                         }
-                        setNegativeButton(R.string.button_no) { _, _ -> }
+                        setNegativeButton(R.string.button_cancel) { _, _ -> }
                     }.show()
                 } else {
                     alertDialog {
