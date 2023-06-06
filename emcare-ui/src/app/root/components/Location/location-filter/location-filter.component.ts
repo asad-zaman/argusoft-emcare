@@ -13,7 +13,8 @@ export class LocationFilterComponent implements OnInit {
   currentLan;
   formData;
   dropdownActiveArr = [];
-  @Input() isOtherPage?: boolean;
+  @Input() isFacilityNotAllowed?: boolean;
+  @Input() isPatientPage?: boolean;
   @Output() isClear = new EventEmitter<any>();
 
   constructor(
