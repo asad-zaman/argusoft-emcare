@@ -91,9 +91,10 @@
     <string name="button_try_again">Try Again</string>
     <string name="button_refresh">Refresh</string>
     <string name="button_turn_on_internet_connectivity">Turn on internet connectivity</string>
+    <string name="button_logout_anyway">Logout anyway</string>
 
     <!--Messages Text-->
-    <string name="questionnaire_render_error">Some error occured with the questionnaire, please sync &amp; try again!</string>
+    <string name="questionnaire_render_error">Some error occurred with the questionnaire, please sync &amp; try again!</string>
     <string name="no_internet_title">No Internet Available</string>
     <string name="no_record_found">No Record Found</string>
     <string name="server_error_title">Something want wrong</string>
