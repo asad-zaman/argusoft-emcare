@@ -1,6 +1,7 @@
 import { Component, OnInit, Output, EventEmitter, Input, SimpleChanges, ChangeDetectorRef, ChangeDetectionStrategy, OnChanges } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Observable, Subscription } from 'rxjs';
+import { appConstants } from 'src/app/app.config';
 import { LocationService } from 'src/app/root/services/location.service';
 import { FhirService } from 'src/app/shared';
 import { LocationSubjects } from '../LocationSubject';
@@ -26,7 +27,8 @@ export class LocationDropdownComponent implements OnInit, OnChanges {
 
   @Input() isMultiplePage?;
   @Input() idArr?: Array<any>;
-  @Input() isOtherPage?: boolean;
+  @Input() isFacilityNotAllowed?: boolean;
+  @Input() isPatientPage?: boolean;
   @Output() locationFormValueAndDropdownArr = new EventEmitter<any>();
 
   eventsSubscription: Subscription;
@@ -141,6 +143,13 @@ export class LocationDropdownComponent implements OnInit, OnChanges {
         this.typeNameArr.push(data['type']);
         // getting conuntries
         this.countryArr = res.filter(el => el['type'] === data['type']);
+        if (this.isPatientPage) {
+          const agent = localStorage.getItem(appConstants.localStorageKeys.ApplicationAgent);
+          const currCountry = this.countryArr.find(el => el.name === agent);
+          const eventObj = { value: { id: currCountry.id } };
+          this.locationFilterForm.patchValue({ country: currCountry });
+          this.onClicked(eventObj, 1);
+        }
       }
     })
   }
