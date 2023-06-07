@@ -49,8 +49,8 @@ public class BundleResourceProvider implements IResourceProvider {
         Bundle retVal = new Bundle();
 
         for (BundleEntryComponent bundleEntry : bundleEntries) {
-            String resourceType;
-            String resourceId;
+            String resourceType = "";
+            String resourceId = "";
             String requestType = bundleEntry.getRequest().getMethod().getDisplay();
             System.out.println("Request Type +++++++++++++++++" + requestType);
             if (requestType.equalsIgnoreCase("delete")) {
