@@ -44,7 +44,6 @@ public class BundleResourceProvider implements IResourceProvider {
     @Transaction
     public Bundle createResourcesFromBundle(@TransactionParam Bundle theBundle) {
 
-        System.out.println(gson.toJson(theBundle));
         List<BundleEntryComponent> bundleEntries = theBundle.getEntry();
         Bundle retVal = new Bundle();
 
