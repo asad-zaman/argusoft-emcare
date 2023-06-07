@@ -52,7 +52,6 @@ public class BundleResourceProvider implements IResourceProvider {
         System.out.println(gson.toJson(theBundle));
         List<BundleEntryComponent> bundleEntries = theBundle.getEntry();
         Bundle retVal = new Bundle();
-        System.out.println("==================="+ gson.toJson(theBundle));
         for (BundleEntryComponent bundleEntry : bundleEntries) {
             String resourceType = "";
             String resourceId = "";
