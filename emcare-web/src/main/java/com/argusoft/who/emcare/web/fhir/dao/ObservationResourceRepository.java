@@ -45,6 +45,6 @@ public interface ObservationResourceRepository extends JpaRepository<Observation
 
     @Modifying
     @Query(value = "DELETE from observation_resource WHERE resource_id :id", nativeQuery = true)
-    Long deleteByResourceId(@Param("id") String id);
+    void deleteByResourceId(@Param("id") String id);
 
 }
