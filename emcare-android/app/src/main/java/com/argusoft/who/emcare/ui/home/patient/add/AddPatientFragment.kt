@@ -5,16 +5,19 @@ import androidx.activity.addCallback
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.argusoft.who.emcare.EmCareApplication_HiltComponents.ViewModelC
 import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.databinding.FragmentAddPatientBinding
 import com.argusoft.who.emcare.ui.common.*
 import com.argusoft.who.emcare.ui.common.base.BaseFragment
 import com.argusoft.who.emcare.ui.common.model.ConsultationFlowItem
 import com.argusoft.who.emcare.ui.home.HomeViewModel
+import com.argusoft.who.emcare.ui.home.fhirResources.FhirResourcesViewModel
 import com.argusoft.who.emcare.utils.extention.alertDialog
 import com.argusoft.who.emcare.utils.extention.handleApiView
 import com.argusoft.who.emcare.utils.extention.navigate
 import com.argusoft.who.emcare.utils.extention.observeNotNull
+import com.argusoft.who.emcare.utils.extention.whenSuccess
 import com.google.android.fhir.datacapture.QuestionnaireFragment
 import dagger.hilt.android.AndroidEntryPoint
 import com.google.android.fhir.datacapture.QuestionnaireFragment.Companion.SUBMIT_REQUEST_KEY
@@ -25,23 +28,27 @@ import java.util.*
 class AddPatientFragment : BaseFragment<FragmentAddPatientBinding>() {
 
     private val homeViewModel: HomeViewModel by viewModels()
+    private val fhirResourcesViewModel: FhirResourcesViewModel by viewModels()
 //    private val settingsViewModel: SettingsViewModel by activityViewModels()
     private var questionnaireFragment = QuestionnaireFragment()
 
     override fun initView() {
         binding.headerLayout.toolbar.title = getString(R.string.title_emcare_registration)
-        homeViewModel.getQuestionnaireWithQR(stageToQuestionnaireId[CONSULTATION_STAGE_REGISTRATION_PATIENT]!!, UUID.randomUUID().toString(), UUID.randomUUID().toString(), isPreviouslySavedConsultation = false)
+        val patientId = UUID.randomUUID().toString()
+        val encounterId = UUID.randomUUID().toString()
+
+        fhirResourcesViewModel.createStartAudit(
+            consultationStage = CONSULTATION_STAGE_REGISTRATION_PATIENT,
+            patientId = patientId,
+            encounterId = encounterId,
+        )
+        homeViewModel.getQuestionnaireWithQR(stageToQuestionnaireId[CONSULTATION_STAGE_REGISTRATION_PATIENT]!!, patientId = patientId, encounterId = encounterId, isPreviouslySavedConsultation = false)
         childFragmentManager.setFragmentResultListener(SUBMIT_REQUEST_KEY, viewLifecycleOwner) { _, _ ->
-            homeViewModel.questionnaireJson?.let {
-                homeViewModel.saveQuestionnaire(
-                    questionnaireResponse = questionnaireFragment.getQuestionnaireResponse(),
-                    questionnaire = it,
-                    facilityId = preference.getLoggedInUser()?.facility?.get(0)?.facilityId!!,
-                    structureMapId = stageToStructureMapId[CONSULTATION_STAGE_REGISTRATION_PATIENT]!!,
-                    consultationFlowItemId = null,
-                    consultationStage = CONSULTATION_STAGE_REGISTRATION_PATIENT
-                )
-            }
+            fhirResourcesViewModel.saveStartAndEndAudit(
+                consultationStage = CONSULTATION_STAGE_REGISTRATION_PATIENT,
+                patientId = patientId,
+                encounterId = encounterId,
+            )
         }
 
         requireActivity().onBackPressedDispatcher.addCallback(this) {
@@ -52,6 +59,19 @@ class AddPatientFragment : BaseFragment<FragmentAddPatientBinding>() {
                 }
                 setNegativeButton(R.string.button_no) { _, _ -> }
             }?.show()
+        }
+    }
+
+    private fun saveQuestionnaire() {
+        homeViewModel.questionnaireJson?.let {
+            homeViewModel.saveQuestionnaire(
+                questionnaireResponse = questionnaireFragment.getQuestionnaireResponse(),
+                questionnaire = it,
+                facilityId = preference.getLoggedInUser()?.facility?.get(0)?.facilityId!!,
+                structureMapId = stageToStructureMapId[CONSULTATION_STAGE_REGISTRATION_PATIENT]!!,
+                consultationFlowItemId = null,
+                consultationStage = CONSULTATION_STAGE_REGISTRATION_PATIENT
+            )
         }
     }
 
@@ -78,6 +98,12 @@ class AddPatientFragment : BaseFragment<FragmentAddPatientBinding>() {
     }
 
     override fun initObserver() {
+        observeNotNull(fhirResourcesViewModel.auditSaved) { apiResponse ->
+            apiResponse.whenSuccess {
+                saveQuestionnaire()
+            }
+        }
+
         observeNotNull(homeViewModel.saveQuestionnaire) { apiResponse ->
             apiResponse.handleApiView(binding.progressLayout, skipIds = listOf(R.id.headerLayout)) {
                 if (it is ConsultationFlowItem) {
