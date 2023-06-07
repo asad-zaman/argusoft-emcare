@@ -42,9 +42,12 @@ public class BundleResourceProvider implements IResourceProvider {
     public Bundle createResourcesFromBundle(@TransactionParam Bundle theBundle) {
         List<BundleEntryComponent> bundleEntries = theBundle.getEntry();
         Bundle retVal = new Bundle();
+        String resourceString = parser.encodeResourceToString(theBundle);
+        System.out.println("========================"+resourceString);
         for (BundleEntryComponent bundleEntry : bundleEntries) {
             String requestType = bundleEntry.getRequest().getMethod().getDisplay();
             Resource resource = bundleEntry.getResource();
+
             String resourceType = resource.fhirType();
 
             System.out.println("ResourceType +++++++++++++++++" + resourceType);
