@@ -51,8 +51,7 @@ public class BundleResourceProvider implements IResourceProvider {
 
         List<BundleEntryComponent> bundleEntries = theBundle.getEntry();
         Bundle retVal = new Bundle();
-        String resourceString = parser.encodeResourceToString(theBundle);
-        System.out.println("===========THE BUNDLE ============="+resourceString);
+
         for (BundleEntryComponent bundleEntry : bundleEntries) {
             String resourceType = "";
             String resourceId = "";
