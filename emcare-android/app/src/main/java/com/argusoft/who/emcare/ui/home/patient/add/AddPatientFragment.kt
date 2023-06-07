@@ -63,6 +63,8 @@ class AddPatientFragment : BaseFragment<FragmentAddPatientBinding>() {
                 .setQuestionnaire(pair.first)
                 .setQuestionnaireResponse(pair.second)
                 .showReviewPageBeforeSubmit(true)
+                .showAsterisk(true)
+                .showRequiredText(false)
                 .setCustomQuestionnaireItemViewHolderFactoryMatchersProvider("CUSTOM")
                 .build()
             childFragmentManager.commit {

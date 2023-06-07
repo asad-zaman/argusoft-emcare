@@ -15,7 +15,7 @@ android {
         minSdkVersion 26
         targetSdkVersion 31
         versionCode 6
-        versionName "1.1.7"
+        versionName "1.1.9"
         vectorDrawables.useSupportLibrary = true
         javaCompileOptions {
             annotationProcessorOptions {
@@ -37,10 +37,31 @@ android {
             buildConfigField "String", "KEYCLOAK_BASE_URL", "\"http://3.111.94.246:8080/auth/realms/emcare/protocol/openid-connect/\""
             shrinkResources false
             minifyEnabled false
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+//            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            resValue "string", "app_version", "${defaultConfig.versionName}.debug"
+            resValue "string", "app_name", "EmCare debug"
+            manifestPlaceholders = [
+                    appIcon: "@drawable/emcare_logo_dev",
+                    appIconRound: "@drawable/emcare_logo_dev"
+            ]
+            applicationIdSuffix ".debug"
+        }
+        dev {
+            buildConfigField "String", "BASE_URL_TERMS", "\"http://3.111.94.246:8080/\""
+            buildConfigField "String", "BASE_URL", "\"http://3.111.94.246:8080/api/\""
+            buildConfigField "String", "FHIR_BASE_URL", "\"http://3.111.94.246:8080/fhir/\""
+            buildConfigField "String", "KEYCLOAK_BASE_URL", "\"http://3.111.94.246:8080/auth/realms/emcare/protocol/openid-connect/\""
+            shrinkResources false
+            minifyEnabled false
+//            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
             resValue "string", "app_version", "${defaultConfig.versionName}.dev"
             resValue "string", "app_name", "EmCare dev"
+            manifestPlaceholders = [
+                    appIcon: "@drawable/emcare_logo_dev",
+                    appIconRound: "@drawable/emcare_logo_dev"
+            ]
             applicationIdSuffix ".dev"
+            signingConfig signingConfigs.debug
         }
         release {
             buildConfigField "String", "BASE_URL_TERMS", "\"https://emcare.argusoft.com/\""
@@ -52,6 +73,10 @@ android {
 //            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             resValue "string", "app_version", "${defaultConfig.versionName}.release"
             resValue "string", "app_name", "EmCare"
+            manifestPlaceholders = [
+                    appIcon: "@drawable/emcare_logo_2",
+                    appIconRound: "@drawable/emcare_logo_2"
+            ]
         }
 
         staging {
@@ -65,6 +90,11 @@ android {
             resValue "string", "app_version", "${defaultConfig.versionName}.staging"
             applicationIdSuffix ".staging"
             resValue "string", "app_name", "EmCare Staging"
+            manifestPlaceholders = [
+                    appIcon: "@drawable/emcare_logo_staging",
+                    appIconRound: "@drawable/emcare_logo_staging"
+            ]
+            signingConfig signingConfigs.debug
         }
     }
 
@@ -195,11 +225,11 @@ dependencies {
     implementation "androidx.work:work-runtime-ktx:2.7.1"
 
     //Fhir
-    //Local Build Link: https://drive.google.com/file/d/1XWiW_2KZJrnsTasU6NobEl_2sftT6FcP/view?usp=share_link
+    //Local Build Link: https://drive.google.com/file/d/1EqcdIdqRrd_f4RF3xnDRiLvRRvNr-mye/view?usp=share_link
     implementation "com.google.android.fhir:engine:0.1.0-beta03"
     implementation "com.google.android.fhir:data-capture:1.0.0"
     implementation "com.google.android.fhir:workflow:0.1.0-alpha02"
-    implementation "com.google.android.fhir:knowledger:0.1.0-alpha001"
+    implementation "com.google.android.fhir:knowledge:0.1.0-alpha01"
     //EventBus
     implementation("org.greenrobot:eventbus:3.3.1")
 
