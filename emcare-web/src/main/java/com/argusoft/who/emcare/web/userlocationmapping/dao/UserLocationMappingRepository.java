@@ -88,7 +88,7 @@ public interface UserLocationMappingRepository extends JpaRepository<UserLocatio
 
 @Query(value = "SELECT all_dates.date AS day, COALESCE(counts.count, 0) AS count\n" +
         "FROM (\n" +
-        "    SELECT cast(generate_series(CURRENT_DATE - INTERVAL '15 days', CURRENT_DATE, INTERVAL '1 day') as date) AS date\n" +
+        "    SELECT cast(generate_series(CURRENT_DATE - INTERVAL '14 days', CURRENT_DATE, INTERVAL '1 day') as date) AS date\n" +
         ") AS all_dates\n" +
         "LEFT JOIN (\n" +
         "    SELECT cast(created_on as date) AS day, COUNT(resource_id) AS count\n" +
