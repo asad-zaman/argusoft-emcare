@@ -146,6 +146,7 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
             resourceId = UUID.randomUUID().toString();
             resource.setId(resourceId);
         }
+        System.out.println("Resource Id ================"+ resourceId);
 
         String resourceString = parser.encodeResourceToString(resource);
         switch (resourceType.toUpperCase()) {
