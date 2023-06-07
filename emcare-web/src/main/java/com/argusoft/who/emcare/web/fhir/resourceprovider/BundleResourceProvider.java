@@ -5,6 +5,7 @@ import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.rest.annotation.Transaction;
 import ca.uhn.fhir.rest.annotation.TransactionParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
+import com.argusoft.who.emcare.web.fhir.dao.ObservationResourceRepository;
 import com.argusoft.who.emcare.web.fhir.service.EmcareResourceService;
 import com.google.gson.Gson;
 import org.hl7.fhir.r4.model.Bundle;
@@ -25,7 +26,9 @@ public class BundleResourceProvider implements IResourceProvider {
     @Autowired
     private EmcareResourceService emcareResourceService;
 
-    Gson gson =  new Gson();
+    Gson gson = new Gson();
+    @Autowired
+    private ObservationResourceRepository observationResourceRepository;
 
     /**
      * The getResourceType method comes from IResourceProvider, and must be
@@ -46,12 +49,21 @@ public class BundleResourceProvider implements IResourceProvider {
         Bundle retVal = new Bundle();
 
         for (BundleEntryComponent bundleEntry : bundleEntries) {
+            String resourceType;
+            String resourceId;
             String requestType = bundleEntry.getRequest().getMethod().getDisplay();
-            Resource resource = bundleEntry.getResource();
-            String resourceType = resource.fhirType();
-            System.out.println("ResourceType +++++++++++++++++" + resourceType);
             System.out.println("Request Type +++++++++++++++++" + requestType);
-            String resourceId = emcareResourceService.saveOrUpdateResourceByRequestType(resource, resourceType, requestType);
+            if (requestType.equalsIgnoreCase("delete")) {
+                String resId = bundleEntry.getIdElement().getId();
+                System.out.println("====================" + resId);
+                observationResourceRepository.deleteByResourceId(resId);
+            } else {
+                Resource resource = bundleEntry.getResource();
+                resourceType = resource.fhirType();
+                System.out.println("ResourceType +++++++++++++++++" + resourceType);
+                resourceId = emcareResourceService.saveOrUpdateResourceByRequestType(resource, resourceType, requestType);
+
+            }
 
             //Adding resource to return Bundle if it is created.
             if (requestType.equals("PUT")) {

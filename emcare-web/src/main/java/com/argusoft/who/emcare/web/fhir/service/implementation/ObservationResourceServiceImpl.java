@@ -158,4 +158,9 @@ public class ObservationResourceServiceImpl implements ObservationResourceServic
         bundle.setTotal(count.intValue());
         return bundle;
     }
+
+    @Override
+    public void deleteObservation(String theId) {
+        observationResourceRepository.deleteByResourceId(theId);
+    }
 }
