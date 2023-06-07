@@ -54,7 +54,7 @@ public class BundleResourceProvider implements IResourceProvider {
             String requestType = bundleEntry.getRequest().getMethod().getDisplay();
             System.out.println("Request Type +++++++++++++++++" + requestType);
             if (requestType.equalsIgnoreCase("delete")) {
-                String resId = bundleEntry.getIdElement().getId();
+                String resId = bundleEntry.getFullUrlElement().getIdElement().getId();
                 System.out.println("====================" + resId);
                 observationResourceRepository.deleteByResourceId(resId);
             } else {
