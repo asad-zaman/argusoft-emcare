@@ -7,6 +7,7 @@ import ca.uhn.fhir.rest.annotation.TransactionParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import com.argusoft.who.emcare.web.fhir.dao.ObservationResourceRepository;
 import com.argusoft.who.emcare.web.fhir.service.EmcareResourceService;
+import com.argusoft.who.emcare.web.fhir.service.ObservationResourceService;
 import com.google.gson.Gson;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Bundle.BundleEntryComponent;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Component
 public class BundleResourceProvider implements IResourceProvider {
@@ -29,6 +31,9 @@ public class BundleResourceProvider implements IResourceProvider {
     Gson gson = new Gson();
     @Autowired
     private ObservationResourceRepository observationResourceRepository;
+
+    @Autowired
+    ObservationResourceService observationResourceService;
 
     /**
      * The getResourceType method comes from IResourceProvider, and must be
@@ -55,7 +60,9 @@ public class BundleResourceProvider implements IResourceProvider {
             if (requestType.equalsIgnoreCase("delete")) {
                 String resId = bundleEntry.getFullUrlElement().getIdElement().getId();
                 System.out.println("====================" + resId);
-                observationResourceRepository.deleteByResourceId(resId);
+                if (Objects.nonNull(resId)) {
+                    observationResourceService.deleteObservation(resId);
+                }
             } else {
                 Resource resource = bundleEntry.getResource();
                 resourceType = resource.fhirType();
