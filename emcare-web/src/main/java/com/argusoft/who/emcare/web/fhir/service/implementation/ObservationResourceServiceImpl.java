@@ -132,7 +132,7 @@ public class ObservationResourceServiceImpl implements ObservationResourceServic
         if (theId != null) {
             patientId = emcareResourceService.getPatientIdsUnderFacility(theId);
         }
-        if(patientId.isEmpty()){
+        if (patientId.isEmpty()) {
             Bundle bundle = new Bundle();
             bundle.setTotal(0);
             return bundle;
