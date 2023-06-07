@@ -148,7 +148,6 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
         }
 
         String resourceString = parser.encodeResourceToString(resource);
-        System.out.println("Resource Id==============="+ resourceId);
         switch (resourceType.toUpperCase()) {
             case CommonConstant.FHIR_PATIENT:
                 EmcareResource emcareResource = findByResourceId(resourceId);
