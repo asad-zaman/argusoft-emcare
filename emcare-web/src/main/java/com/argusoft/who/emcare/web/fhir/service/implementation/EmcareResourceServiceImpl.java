@@ -119,10 +119,8 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
             resourceId = UUID.randomUUID().toString();
             resource.setId(resourceId);
         }
-        System.out.println("Resource Id ================"+ resourceId);
 
         String resourceString = parser.encodeResourceToString(resource);
-        System.out.println(resourceString);
         switch (resourceType.toUpperCase()) {
             case CommonConstant.FHIR_PATIENT:
                 EmcareResource emcareResource = findByResourceId(resourceId);
@@ -563,7 +561,7 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
         Map<String, Object> map = new HashMap<>();
         List<Map<String, Object>> maps = repository.getPieChartDataBasedOnAgeGroup();
         for (Map<String, Object> map1 : maps) {
-                map.put(map1.get("key").toString(), map1.get("value"));
+            map.put(map1.get("key").toString(), map1.get("value"));
         }
         return map;
     }
