@@ -56,17 +56,14 @@ public class BundleResourceProvider implements IResourceProvider {
             String resourceType = "";
             String resourceId = "";
             String requestType = bundleEntry.getRequest().getMethod().getDisplay();
-            System.out.println("Request Type +++++++++++++++++" + requestType);
             if (requestType.equalsIgnoreCase("delete")) {
-                String resId = bundleEntry.getFullUrlElement().getIdElement().getId();
-                System.out.println("====================" + resId);
+                String resId = bundleEntry.getRequest().getUrlElement().getIdElement().getId();
                 if (Objects.nonNull(resId)) {
                     observationResourceService.deleteObservation(resId);
                 }
             } else {
                 Resource resource = bundleEntry.getResource();
                 resourceType = resource.fhirType();
-                System.out.println("ResourceType +++++++++++++++++" + resourceType);
                 resourceId = emcareResourceService.saveOrUpdateResourceByRequestType(resource, resourceType, requestType);
 
             }
