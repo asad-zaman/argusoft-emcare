@@ -6,6 +6,7 @@ import ca.uhn.fhir.rest.annotation.Transaction;
 import ca.uhn.fhir.rest.annotation.TransactionParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import com.argusoft.who.emcare.web.fhir.service.EmcareResourceService;
+import com.google.gson.Gson;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Bundle.BundleEntryComponent;
 import org.hl7.fhir.r4.model.Bundle.BundleEntryResponseComponent;
@@ -24,6 +25,8 @@ public class BundleResourceProvider implements IResourceProvider {
     @Autowired
     private EmcareResourceService emcareResourceService;
 
+    Gson gson = new Gson();
+
     /**
      * The getResourceType method comes from IResourceProvider, and must be
      * overridden to indicate what type of resource this provider supplies.
@@ -39,11 +42,14 @@ public class BundleResourceProvider implements IResourceProvider {
     public Bundle createResourcesFromBundle(@TransactionParam Bundle theBundle) {
         List<BundleEntryComponent> bundleEntries = theBundle.getEntry();
         Bundle retVal = new Bundle();
-
+        System.out.println("==================="+ gson.toJson(theBundle));
         for (BundleEntryComponent bundleEntry : bundleEntries) {
             String requestType = bundleEntry.getRequest().getMethod().getDisplay();
             Resource resource = bundleEntry.getResource();
             String resourceType = resource.fhirType();
+
+            System.out.println("ResourceType +++++++++++++++++" + resourceType);
+            System.out.println("Request Type +++++++++++++++++" + requestType);
             String resourceId = emcareResourceService.saveOrUpdateResourceByRequestType(resource, resourceType, requestType);
 
             //Adding resource to return Bundle if it is created.
