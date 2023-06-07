@@ -113,8 +113,8 @@ export class HomeComponent implements OnInit {
         title: {
           text: undefined,
         },
-        startOnTick: false,
-        endOnTick: true,
+        // startOnTick: false,
+        // endOnTick: true,
         tickInterval: 24 * 3600 * 1000,
       },
       yAxis: {
