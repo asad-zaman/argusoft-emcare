@@ -1,4 +1,12 @@
-import { ChangeDetectorRef, Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  OnInit,
+  QueryList,
+  ViewChild,
+  ViewChildren,
+} from '@angular/core';
 import { Router } from '@angular/router';
 import * as Highcharts from 'highcharts';
 import { AuthGuard } from 'src/app/auth/auth.guard';
@@ -12,10 +20,9 @@ NoData(Highcharts);
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss']
+  styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent implements OnInit {
-
   dashboardData: any = {};
   isView = true;
   facilityArr = [];
@@ -39,7 +46,7 @@ export class HomeComponent implements OnInit {
     private readonly cdr: ChangeDetectorRef,
     private readonly formBuilder: FormBuilder,
     private readonly toasterService: ToasterService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.prerequisite();
@@ -73,42 +80,42 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  scatterChart() {
+  barChart() {
     let options = {
       chart: {
-        type: 'scatter',
-        margin: [70, 50, 60, 80],
+        type: 'column',
+        margin: [50, 50, 60, 80],
         events: {
           click: function (e) {
             let x = Math.round(e.xAxis[0].value);
             let y = Math.round(e.yAxis[0].value);
-          }
-        }
+          },
+        },
       },
       title: {
-        text: undefined
+        text: undefined,
       },
       accessibility: {
         announceNewData: {
-          enabled: true
-        }
+          enabled: true,
+        },
       },
       tooltip: {
         enabled: true,
         headerFormat: undefined,
-        pointFormat: `<b>Date = {point.d}</b>, <b>Week = {point.week}</b>, <b>Consultations = {point.y}</b>`,
+        pointFormat: `<b>Date = {point.d}</b>  <br> <br> <b>Consultations = {point.y}</b>`,
       },
       xAxis: {
         labels: {
-          format: '{value:%e-%b-%Y}'
+          rotation: -45,
+          format: '{value:%e-%b-%y}',
         },
         title: {
           text: undefined,
         },
-        gridLineWidth: 1,
-        minPadding: 0.2,
-        maxPadding: 0.2,
-        maxZoom: 6
+        startOnTick: false,
+        endOnTick: true,
+        tickInterval: 24 * 3600 * 1000,
       },
       yAxis: {
         title: {
@@ -117,56 +124,59 @@ export class HomeComponent implements OnInit {
         minPadding: 0.2,
         maxPadding: 0.2,
         maxZoom: 6,
-        plotLines: [{
-          value: 0,
-          width: 1,
-          color: '#808080'
-        }]
+        plotLines: [
+          {
+            value: 0,
+            width: 1,
+            color: '#808080',
+          },
+        ],
       },
       legend: {
-        enabled: false
+        enabled: false,
       },
       credits: {
-        enabled: false
+        enabled: false,
       },
       exporting: {
-        enabled: false
+        enabled: false,
       },
       plotOptions: {
-        series: {
-          lineWidth: 1,
-          point: {
-            events: {
-              click: function () {
-                if (this.series.data.length > 1) {
-                  // this.remove();
-                }
-              }
-            }
-          }
-        }
+        column: {
+          dataLabels: {
+            enabled: true,
+            format: '{y}',
+            // verticalAlign: 'top',
+            // inside: true
+          },
+        },
       },
       series: [
         {
           type: undefined,
-          data: this.scatterData
-        }
-      ]
-    }
+          data: this.scatterData,
+        },
+      ],
+    };
     Highcharts.chart('scatter-chart-container', options);
   }
 
   getChartData() {
     this.fhirService.getChartData().subscribe((res: Array<any>) => {
+      console.log(res);
       if (res) {
-        //  for scatter plot
+        //  for bar plot
         res['scatterChart'].forEach((el, index) => {
-          this.scatterData.push({
-            x: new Date(el[2]),
-            y: el[1],
-            week: el[0],
-            d: new Date(el[2]).toLocaleDateString()
-          });
+          const date = new Date('May 30, 2023');
+          const mlDate = date.getTime();
+
+          if (mlDate < el[1]) {
+            this.scatterData.push({
+              x: new Date(el[1]),
+              y: el[0],
+              d: new Date(el[1]).toLocaleDateString(),
+            });
+          }
         });
         //  for first pie chart
         this.consultationPerFacility = res['consultationPerFacility'];
@@ -183,7 +193,7 @@ export class HomeComponent implements OnInit {
           }
         }
         this.manipulateMapView(res['mapView']);
-        this.scatterChart();
+        this.barChart();
         this.consultationPerFacilityChart();
         this.consultationByAgeGroupChart();
       }
