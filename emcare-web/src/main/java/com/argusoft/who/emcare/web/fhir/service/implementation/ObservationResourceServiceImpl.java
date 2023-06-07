@@ -131,7 +131,7 @@ public class ObservationResourceServiceImpl implements ObservationResourceServic
         if (theId != null) {
             patientId = emcareResourceService.getPatientIdsUnderFacility(theId);
         }
-        if(patientId.isEmpty()){
+        if (patientId.isEmpty()) {
             Bundle bundle = new Bundle();
             bundle.setTotal(0);
             return bundle;
@@ -157,5 +157,10 @@ public class ObservationResourceServiceImpl implements ObservationResourceServic
         Bundle bundle = new Bundle();
         bundle.setTotal(count.intValue());
         return bundle;
+    }
+
+    @Override
+    public void deleteObservation(String theId) {
+        observationResourceRepository.deleteByResourceId(theId);
     }
 }

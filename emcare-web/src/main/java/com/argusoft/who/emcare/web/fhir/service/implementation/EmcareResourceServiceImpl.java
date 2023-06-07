@@ -146,10 +146,8 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
             resourceId = UUID.randomUUID().toString();
             resource.setId(resourceId);
         }
-        System.out.println("Resource Id ================"+ resourceId);
 
         String resourceString = parser.encodeResourceToString(resource);
-        System.out.println(resourceString);
         switch (resourceType.toUpperCase()) {
             case CommonConstant.FHIR_PATIENT:
                 EmcareResource emcareResource = findByResourceId(resourceId);
