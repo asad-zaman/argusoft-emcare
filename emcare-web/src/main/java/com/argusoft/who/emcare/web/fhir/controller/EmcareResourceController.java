@@ -73,7 +73,7 @@ public class EmcareResourceController {
 
     @GetMapping("/patient/page")
     public PageDto getPatientsPage(@RequestParam(value = "pageNo") Integer pageNo,
-                                   @Nullable @RequestParam(value = "search", required = false) String searchString) {
+                                                     @Nullable @RequestParam(value = "search", required = false) String searchString) {
         return emcareResourceService.getPatientsPage(pageNo, searchString);
     }
 
