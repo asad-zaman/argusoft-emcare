@@ -1,4 +1,4 @@
-<app-location-filter *ngIf="isView" [isOtherPage]="true" (isClear)="clearFilter($event)"
+<app-location-filter *ngIf="isView" [isFacilityNotAllowed]="true" (isClear)="clearFilter($event)"
   (locationId)="getLocationId($event)"></app-location-filter>
 <div *ngIf="isView" class="main-wrapper">
   <div class="custom-header">

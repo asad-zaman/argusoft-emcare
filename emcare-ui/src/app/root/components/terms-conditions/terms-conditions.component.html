@@ -3,9 +3,18 @@
   <div class="col-10 cst-main-component">
     <ng-container>
       <!-- description -->
-      <h3 class="my-4">
-        Terms of use and software license agreement
-      </h3>
+      <div class="row">
+        <div class="col-8">
+          <h3 class="my-4">
+            Terms of use and software license agreement
+          </h3>
+        </div>
+        <div class="text-end col-4 mt-3">
+          <button routerLink="/home" class="btn btn-blue ms-3">
+            {{'Back' | translate}}
+          </button>
+        </div>
+      </div>
       <span class="">
         Please read these Terms of Use and Software License Agreement (the “Agreement”) carefully before installing any
         component of Em Care (collectively called “Em Care”). By installing and/or using Em Care, you (the “Licensee”)

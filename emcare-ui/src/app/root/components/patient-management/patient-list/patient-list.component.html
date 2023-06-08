@@ -1,4 +1,4 @@
-<app-location-filter *ngIf="isView" [isOtherPage]="false" (isClear)="clearFilter($event)"
+<app-location-filter *ngIf="isView" [isPatientPage]="true" [isFacilityNotAllowed]="false" (isClear)="clearFilter($event)"
   (locationId)="getLocationId($event)"></app-location-filter>
 <div *ngIf="isView" class="main-wrapper">
   <div class="custom-header">
@@ -46,13 +46,14 @@
               {{'Sr. No' | translate}}.
             </ng-template>
           </th>
-          <th>{{'Identifier' | translate}}</th>
-          <th>{{'Name' | translate}}</th>
-          <th>{{'Gender' | translate}}</th>
+          <th>{{'Family Number' | translate}}</th>
+          <th>{{'Patient Name' | translate}}</th>
+          <th>{{'Sex' | translate}}</th>
           <th>{{'Date of Birth' | translate}}</th>
-          <th>{{'Caregiver Name' | translate}}</th>
-          <th>{{'Facility' | translate}}</th>
-          <th>{{'Location' | translate}}</th>
+          <th>{{'Date of Last Consultation' | translate}}</th>
+          <th>{{'Health Facility' | translate}}</th>
+          <!-- <th>{{'Healthcare Provider' | translate}}</th> -->
+          <!-- <th>{{'Location' | translate}}</th> -->
           <th *ngIf="this.showCheckboxes">{{'Action' | translate}}</th>
         </tr>
       </thead>
@@ -73,27 +74,15 @@
               </td>
               <td>{{patient.identifier ? patient.identifier : 'NA'}}</td>
               <td>
-                <ng-container *ngIf="patient.givenName || patient.familyName; else blankName">
-                  <a style="cursor: pointer;" (click)="showPatientDetails(patient.id)"
-                    class="link">{{patient.givenName}}
-                    {{patient.familyName}}</a>
-                </ng-container>
-                <ng-template #blankName>
-                  NA
-                </ng-template>
+                {{(patient.givenName || patient.familyName) ? (patient.givenName + " " + patient.familyName) : 'NA'}}
               </td>
-              <td>{{patient.gender}}</td>
-              <td>{{patient.dob ? (patient.dob | date:'mediumDate') : 'NA'}}</td>
-              <td>{{patient.caregiver || "NOT PROVIDED"}}</td>
-              <td>
-                <ng-container *ngIf="patient.facility">
-                  {{patient.facility}}
-                </ng-container>
-                <ng-container *ngIf="patient.organizationName">
-                  - {{patient.organizationName}}
-                </ng-container>
-              </td>
-              <td>{{patient.locationName}}</td>
+              <td>{{patient.gender ? (patient.gender) : 'NA'}}</td>
+              <td>{{patient.birthDate ? (patient.birthDate | date:'mediumDate') : 'NA'}}</td>
+              <td>{{patient.consultationDate ? (patient.consultationDate | date:'mediumDate') : 'NA'}}</td>
+
+              <td>{{patient.facilityName ? (patient.facilityName) : 'NA'}}</td>
+              <!-- <td>{{patient.caregiver || "NOT PROVIDED"}}</td> -->
+              <!-- <td>{{patient.locationName}}</td> -->
               <td *ngIf="this.showCheckboxes">
                 <i (click)="exportPDF(patient)" class="cst-icon-style bi bi-download cursor-pointer mr-3"
                   aria-hidden="true"></i>
@@ -116,7 +105,7 @@
     </div>
   </div>
   <!--Table-END-->
-  <div *ngIf="showPatientDetailsFlag" class="modal" tabindex="-1" role="dialog" style="display:block">
+  <!-- <div *ngIf="showPatientDetailsFlag" class="modal" tabindex="-1" role="dialog" style="display:block">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -148,9 +137,9 @@
                 <td class="font-weight-bold">{{'Gender' | translate}}:</td>
                 <td>{{patientDetails.gender}}</td>
               </tr>
-              <tr *ngIf="!!patientDetails.dob">
+              <tr *ngIf="!!patientDetails.birthDate">
                 <td class="font-weight-bold">{{'Date of Birth' | translate}}::</td>
-                <td>{{patientDetails.dob | date:'mediumDate'}}</td>
+                <td>{{patientDetails.birthDate | date:'mediumDate'}}</td>
               </tr>
               <tr *ngIf="!!patientDetails.caregiver">
                 <td class="font-weight-bold">{{'Patient Details' | translate}}:</td>
@@ -185,7 +174,7 @@
         </div>
       </div>
     </div>
-  </div>
+  </div> -->
 </div>
 <div *ngIf="!isView" class="main-wrapper-nodata">
   {{'NoAccess' | translate}}

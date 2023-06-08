@@ -15,7 +15,9 @@ import com.argusoft.who.emcare.web.questionnaireresponse.dto.MiniPatient;
 import com.argusoft.who.emcare.web.questionnaireresponse.dto.QuestionnaireResponseRequestDto;
 import com.argusoft.who.emcare.web.questionnaireresponse.mapper.QuestionnaireResponseMapper;
 import com.argusoft.who.emcare.web.questionnaireresponse.model.QuestionnaireResponse;
+import com.argusoft.who.emcare.web.questionnaireresponse.model.UserSyncLog;
 import com.argusoft.who.emcare.web.questionnaireresponse.respository.QuestionnaireResponseRepository;
+import com.argusoft.who.emcare.web.questionnaireresponse.respository.UserSyncLogRepository;
 import com.argusoft.who.emcare.web.questionnaireresponse.service.QuestionnaireResponseService;
 import com.argusoft.who.emcare.web.user.dto.UserMasterDto;
 import com.argusoft.who.emcare.web.user.service.UserService;
@@ -50,6 +52,9 @@ public class QuestionnaireResponseServiceImpl implements QuestionnaireResponseSe
 
     @Autowired
     EncounterResourceRepository encounterResourceRepository;
+
+    @Autowired
+    UserSyncLogRepository userSyncLogRepository;
 
 
     @Override
@@ -95,8 +100,8 @@ public class QuestionnaireResponseServiceImpl implements QuestionnaireResponseSe
         }
         List<String> resourceIds = resourcesList.stream().map(EmcareResource::getResourceId).collect(Collectors.toList());
         List<MiniPatient> responseList = questionnaireResponseRepository.getDistinctPatientIdInAndConsultationDate(
-                resourceIds,
-                page);
+            resourceIds,
+            page);
         List<String> patientIds = responseList.stream().map(MiniPatient::getPatientId).collect(Collectors.toList());
         totalCount = questionnaireResponseRepository.findDistinctByPatientIdIn(resourceIds).size();
         List<PatientDto> patientList = emcareResourceService.getPatientDtoByIds(patientIds);
@@ -141,5 +146,14 @@ public class QuestionnaireResponseServiceImpl implements QuestionnaireResponseSe
             map.put(patient, questionnaireResponseRepository.findByPatientId(patient).stream().map(QuestionnaireResponse::getQuestionnaireResponseText).collect(Collectors.toList()));
         }
         return map;
+    }
+
+    @Override
+    public void logSyncAttempt() {
+        UserMasterDto userMasterDto = (UserMasterDto) userService.getCurrentUser().getBody();
+        UserSyncLog userSyncLog = new UserSyncLog();
+        userSyncLog.setSyncAttemptTime(new Date());
+        userSyncLog.setUsername(userMasterDto.getUserName());
+        userSyncLogRepository.save(userSyncLog);
     }
 }

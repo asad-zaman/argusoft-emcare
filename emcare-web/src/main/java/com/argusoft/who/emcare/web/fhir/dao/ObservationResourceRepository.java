@@ -4,6 +4,7 @@ import com.argusoft.who.emcare.web.fhir.model.ObservationResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -41,5 +42,9 @@ public interface ObservationResourceRepository extends JpaRepository<Observation
 
     @Query(value = "SELECT COUNT(*) FROM observation_resource WHERE subject_id in :ids", nativeQuery = true)
     Long getCountWithFacilityId(@Param("ids") List<String> ids);
+
+    @Modifying
+    @Query(value = "DELETE from observation_resource WHERE resource_id :id", nativeQuery = true)
+    void deleteByResourceId(@Param("id") String id);
 
 }
