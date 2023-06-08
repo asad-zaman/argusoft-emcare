@@ -62,8 +62,6 @@ export class PatientListComponent implements OnInit {
     }
 
     manipulateResponse(res) {
-      console.log(res);
-
         if (res && res['list']) {
             this.patients = res['list'];
             this.filteredPatients = this.patients;
@@ -72,16 +70,12 @@ export class PatientListComponent implements OnInit {
             this.filteredPatients.forEach(element => {
                 element['isExcelPDF'] = false;
             });
-            console.log(this.filteredPatients);
-
         }
     }
 
     getPatientsByPageIndex(index) {
         this.patients = [];
         this.fhirService.getPatientsByPageIndex(index).subscribe(res => {
-          console.log(res);
-
             this.manipulateResponse(res);
         });
     }
