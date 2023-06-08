@@ -185,10 +185,12 @@ export class PatientListComponent implements OnInit {
         const patientName = `${patient.givenName} ${patient.familyName}`;
 
         for (const k in patient) {
-            if (k === 'dob' || k === 'consultationDate') {
-                data.push({ key: k, value: patient[k] ? this.datePipe.transform(patient[k], 'yyyy-MM-dd') : 'NA' });
-            } else {
-                data.push({ key: k, value: patient[k] ? patient[k] : 'NA' });
+            if (k !== 'key') {
+                if (k === 'dob' || k === 'consultationDate') {
+                    data.push({ key: k, value: patient[k] ? this.datePipe.transform(patient[k], 'yyyy-MM-dd') : 'NA' });
+                } else {
+                    data.push({ key: k, value: patient[k] ? patient[k] : 'NA' });
+                }
             }
         }
 
@@ -228,15 +230,17 @@ export class PatientListComponent implements OnInit {
 
         const dummyPatient = (selectedPatients[0]);
         for (const k in dummyPatient) {
-            data.forEach((element, ind) => {
-                const patient = selectedPatients[ind];
-                if (k === 'dob' || k === 'consultationDate') {
-                    element[k] = patient[k] ? this.datePipe.transform(patient[k], 'yyyy-MM-dd') : 'NA';
-                } else {
-                    element[k] = patient[k] ? patient[k] : 'NA';
-                }
-            });
-            columns.push({ header: `${k}`, key: `${k}`, width: 35 })
+            if (k !== 'key') {
+                data.forEach((element, ind) => {
+                    const patient = selectedPatients[ind];
+                    if (k === 'dob' || k === 'consultationDate') {
+                        element[k] = patient[k] ? this.datePipe.transform(patient[k], 'yyyy-MM-dd') : 'NA';
+                    } else {
+                        element[k] = patient[k] ? patient[k] : 'NA';
+                    }
+                });
+                columns.push({ header: `${k}`, key: `${k}`, width: 35 })
+            }
         }
 
         worksheet.columns = columns;
@@ -254,10 +258,12 @@ export class PatientListComponent implements OnInit {
         data.push({ text: '                            ' });
 
         for (const key in patient) {
-            if (key === 'dob' || key === 'consultationDate') {
-                tableArr.push([key, patient[key] ? this.datePipe.transform(patient[key], 'yyyy-MM-dd') : 'NA']);
-            } else {
-                tableArr.push([key, patient[key] ? patient[key] : 'NA']);
+            if (key !== 'key') {
+                if (key === 'dob' || key === 'consultationDate') {
+                    tableArr.push([key, patient[key] ? this.datePipe.transform(patient[key], 'yyyy-MM-dd') : 'NA']);
+                } else {
+                    tableArr.push([key, patient[key] ? patient[key] : 'NA']);
+                }
             }
         }
 
@@ -309,10 +315,12 @@ export class PatientListComponent implements OnInit {
         selectedPatients.forEach(patient => {
             let tableArr = [];
             for (const key in patient) {
-                if (key === 'dob' || key === 'consultationDate') {
-                    tableArr.push([key, patient[key] ? this.datePipe.transform(patient[key], 'yyyy-MM-dd') : 'NA']);
-                } else {
-                    tableArr.push([key, patient[key] ? patient[key] : 'NA']);
+                if (key !== 'key') {
+                    if (key === 'dob' || key === 'consultationDate') {
+                        tableArr.push([key, patient[key] ? this.datePipe.transform(patient[key], 'yyyy-MM-dd') : 'NA']);
+                    } else {
+                        tableArr.push([key, patient[key] ? patient[key] : 'NA']);
+                    }
                 }
             }
 
