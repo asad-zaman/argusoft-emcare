@@ -22,9 +22,14 @@ public interface LocationResourceRepository extends JpaRepository<LocationResour
 
     Page<LocationResource> findByTextContainingIgnoreCase(String searchString, Pageable page);
 
-    Page<LocationResource> findByTextContainingIgnoreCaseOrOrganizationNameContainingIgnoreCaseOrLocationNameContainingIgnoreCase(String searchString, String searchString1, String searchString2, Pageable page);
+    @Query(value = "select * from location_resources where cast(cast(text AS json)->> 'status' as text) = :status and (organization_name ilike %:searchString% or location_name ilike %:searchString%)",
+            countQuery = "select count(*) from location_resources where cast(cast(text AS json)->> 'status' as text) = :status and (organization_name ilike %:searchString% or location_name ilike %:searchString%)",
+            nativeQuery = true)
+    Page<LocationResource> searchFacilityByStatus(@Param("searchString") String searchString, @Param("status") String status, Pageable page);
 
-    List<LocationResource> findByTextContainingIgnoreCaseOrOrganizationNameContainingIgnoreCaseOrLocationNameContainingIgnoreCase(String searchString, String searchString1, String searchString2);
+    @Query( value =  "select count(*) from location_resources where cast(cast(text AS json)->> 'status' as text) = :status and organization_name ilike %:searchString% or location_name ilike %:searchString%",
+            nativeQuery = true)
+    Long searchFacilityByStatus(@Param("searchString") String searchString, @Param("status") String status);
 
 
     @Query(value = "select distinct location_id from location_resources where resource_id in :id ;", nativeQuery = true)
@@ -32,4 +37,11 @@ public interface LocationResourceRepository extends JpaRepository<LocationResour
 
     @Query(value = "select distinct resource_id from location_resources where location_id in :id ;", nativeQuery = true)
     List<String> findResourceIdIn(@Param("id") List<Integer> id);
+
+    @Query(value = "select * from location_resources where cast(cast(text AS json)->> 'status' as text) = :status",
+            nativeQuery = true)
+    Page<LocationResource> findResourceByStatus(@Param("status") String status,Pageable page);
+
+    @Query(value = "select COUNT(*) from location_resources where cast(cast(text AS json)->> 'status' as text) = :status", nativeQuery = true)
+    Long findResourceByStatus(@Param("status") String status);
 }
