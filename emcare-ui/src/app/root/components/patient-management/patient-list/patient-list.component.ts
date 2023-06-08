@@ -7,10 +7,10 @@ import { FhirService } from "src/app/shared/services/fhir.service";
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
+import { DatePipe } from '@angular/common';
 
 import { Workbook } from 'exceljs';
 import * as fs from 'file-saver';
-import { DatePipe } from "@angular/common";
 
 @Component({
     selector: 'app-patient-list',
@@ -41,7 +41,7 @@ export class PatientListComponent implements OnInit {
         private readonly fhirService: FhirService,
         private readonly toasterService: ToasterService,
         private readonly authGuard: AuthGuard,
-        public datePipe: DatePipe
+        private datePipe: DatePipe
     ) { }
 
     ngOnInit(): void {
@@ -309,14 +309,11 @@ export class PatientListComponent implements OnInit {
         selectedPatients.forEach(patient => {
             let tableArr = [];
             for (const key in patient) {
-                if(key == 'consultationDate'){
-                  tableArr.push([key, patient[key] ? this.datePipe.transform(patient[key],"MMM d, y, HH:mm:ss") : 'NA']);
-                }else{
-
-                  tableArr.push([key, patient[key] ? patient[key] : 'NA']);
+                if (key === 'dob' || key === 'consultationDate') {
+                    tableArr.push([key, patient[key] ? this.datePipe.transform(patient[key], 'yyyy-MM-dd') : 'NA']);
+                } else {
+                    tableArr.push([key, patient[key] ? patient[key] : 'NA']);
                 }
-                  console.log(key);
-
             }
 
             let tableObj = {};
