@@ -33,6 +33,8 @@ export class UserListComponent implements OnInit {
   isAdd: boolean = true;
   isEdit: boolean = true;
   isView: boolean = true;
+  showStatusDialog: boolean = false;
+  currUSer;
 
   constructor(
     private readonly router: Router,
@@ -220,5 +222,20 @@ export class UserListComponent implements OnInit {
       this.resetPageIndex();
       this.getUsersByPageIndex(this.currentPage);
     }
+  }
+
+  onChangeStatus(i) {
+    this.showStatusDialog = true;
+    this.currUSer = this.filteredUserList[i];
+  }
+
+  changeUSerStatus() {
+    const data = { "userId": this.currUSer.id, "isEnabled": !this.currUSer['enabled'] }
+    this.userService.updateUserStatus(data).subscribe(res => {
+      this.showStatusDialog = false;
+      const ind = this.filteredUserList.findIndex(el => el.id === this.currUSer.id);
+      this.filteredUserList[ind]['enabled'] = !this.filteredUserList[ind]['enabled'];
+      this.toasterService.showToast('success', 'User status changed successfully!', 'EMCARE');
+    });
   }
 }

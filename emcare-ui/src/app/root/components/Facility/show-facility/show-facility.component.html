@@ -37,12 +37,15 @@
                 {{data.locationName ? data.locationName : 'NA'}}
               </td>
               <td>
-                <span [ngClass]="(data.status !== 'Inactive') ? 'badges-red bg-green' : 'badges-red'">
+                <span class="badges-red" [ngClass]="{ 
+                  'bg-green' : data.status === 'Active',
+                  'bg-yellow' : data.status === 'Suspended'
+                }">
                   {{data.status}}
                 </span>
               </td>
               <td class="">
-                <i aria-hidden="true" *ngIf="isEdit" (click)="editFacility(i)"
+                <i aria-hidden=" true" *ngIf="isEdit" (click)="editFacility(i)"
                   class="bi bi-pencil-square cursor-pointer font-size-14"></i>
               </td>
             </tr>
