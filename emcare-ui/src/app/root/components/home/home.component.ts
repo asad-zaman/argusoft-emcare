@@ -167,10 +167,10 @@ export class HomeComponent implements OnInit {
       if (res) {
         //  for bar plot
         res['scatterChart'].forEach((el, index) => {
-          const date = new Date('May 30, 2023');
+          const date = new Date('May 31, 2023');
           const mlDate = date.getTime();
 
-          if (mlDate < el[1]) {
+          if (mlDate <= el[1]) {
             this.scatterData.push({
               x: new Date(el[1]),
               y: el[0],
