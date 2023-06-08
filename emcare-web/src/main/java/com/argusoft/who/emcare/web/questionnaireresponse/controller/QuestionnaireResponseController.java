@@ -2,6 +2,7 @@ package com.argusoft.who.emcare.web.questionnaireresponse.controller;
 
 import ca.uhn.fhir.rest.param.DateParam;
 import com.argusoft.who.emcare.web.common.constant.CommonConstant;
+import com.argusoft.who.emcare.web.common.dto.PageDto;
 import com.argusoft.who.emcare.web.questionnaireresponse.dto.QuestionnaireResponseRequestDto;
 import com.argusoft.who.emcare.web.questionnaireresponse.model.QuestionnaireResponse;
 import com.argusoft.who.emcare.web.questionnaireresponse.service.QuestionnaireResponseService;
@@ -10,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Nullable;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -57,5 +59,12 @@ public class QuestionnaireResponseController {
         return ResponseEntity.ok().body(questionnaireResponseService.getAllDataForExport());
     }
 
+    @GetMapping("/consultations/locationId/{locationId}")
+    public PageDto getAllPatientsUnderLocation(@PathVariable(value = "locationId") Object locationId,
+                                               @RequestParam(value = "pageNo") Integer pageNo,
+                                               @Nullable @RequestParam(value = "startDate") Date startDate,
+                                               @Nullable @RequestParam(value = "endDate") Date endDate) {
+        return questionnaireResponseService.getConsultationsUnderLocationId(locationId, pageNo, startDate, endDate);
+    }
 
 }

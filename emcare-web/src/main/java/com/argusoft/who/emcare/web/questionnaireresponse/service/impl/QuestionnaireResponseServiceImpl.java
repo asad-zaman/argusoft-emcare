@@ -22,6 +22,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -95,6 +96,8 @@ public class QuestionnaireResponseServiceImpl implements QuestionnaireResponseSe
             consultations = emcareResourceRepository.findAllConsultations();
         }
 
+
+
         pageDto.setList(consultations);
         pageDto.setTotalCount(totalCount.longValue());
         return pageDto;
@@ -130,8 +133,54 @@ public class QuestionnaireResponseServiceImpl implements QuestionnaireResponseSe
     }
 
     @Override
-    public void logSyncAttempt() {
-        UserMasterDto userMasterDto = (UserMasterDto) userService.getCurrentUser().getBody();
-        questionnaireResponseRepository.logSyncAttempt(userMasterDto.getUserId());
+    public PageDto getConsultationsUnderLocationId(Object locationId, Integer pageNo, Date startDate, Date endDate) {
+        Long offSet = pageNo.longValue() * 10;
+        List<Integer> locationIds;
+        List<String> childFacilityIds = new ArrayList<>();
+        if (isNumeric(locationId.toString())) {
+            locationIds = locationMasterDao.getAllChildLocationId(Integer.parseInt(locationId.toString()));
+            childFacilityIds = locationResourceRepository.findResourceIdIn(locationIds);
+        } else {
+            childFacilityIds.add(locationId.toString());
+        }
+        try {
+
+            if (Objects.isNull(startDate)) {
+                String sDate1 = "31/12/1998";
+                startDate = new SimpleDateFormat("dd/MM/yyyy").parse(sDate1);
+            }
+            if (Objects.isNull(endDate)) {
+                endDate = new Date();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Long totalCount = 0L;
+        List<Map<String, Object>> resourcesList = new ArrayList<>();
+        if (Objects.isNull(locationId)) {
+            totalCount = Long.valueOf(questionnaireResponseRepository.getFilteredDateOnlyCount(startDate,endDate).size());
+            resourcesList = questionnaireResponseRepository.getFilteredDateOnly(startDate, endDate, offSet);
+        } else {
+            totalCount = Long.valueOf(questionnaireResponseRepository.getFilteredConsultationsInCount(childFacilityIds, startDate, endDate).size());
+            resourcesList = questionnaireResponseRepository.getFilteredConsultationsIn(childFacilityIds, startDate, endDate, offSet);
+        }
+        PageDto pageDto = new PageDto();
+        pageDto.setList(resourcesList);
+        pageDto.setTotalCount(totalCount);
+        return pageDto;
     }
+
+    private boolean isNumeric(String strNum) {
+        if (strNum == null) {
+            return false;
+        }
+        try {
+            Integer.parseInt(strNum);
+        } catch (NumberFormatException nfe) {
+            return false;
+        }
+        return true;
+    }
+
+
 }

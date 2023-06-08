@@ -22,5 +22,5 @@ public interface QuestionnaireResponseService {
 
     public Map<String, Object> getAllDataForExport();
 
-    public void logSyncAttempt();
+    public PageDto getConsultationsUnderLocationId(Object locationId,Integer pageNo,Date startDate,Date endDate);
 }
