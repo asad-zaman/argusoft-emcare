@@ -269,6 +269,8 @@ export class ManageUserComponent implements OnInit {
       if (!facArr.includes(selFacility)) {
         facArr.push(selFacility);
         this.userForm.get('facility').setValue(facArr);
+      } else {
+        this.toasterService.showToast('info', 'Please select another facility!', 'EM CARE!');
       }
     } else {
       facArr.push(selFacility);
