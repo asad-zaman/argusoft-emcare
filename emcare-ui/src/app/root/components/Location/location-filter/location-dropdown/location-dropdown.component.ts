@@ -22,6 +22,7 @@ export class LocationDropdownComponent implements OnInit, OnChanges {
   dropdownActiveArr = [true, false, false, false, false];
   locationArr = [];
   facilityArr = [];
+  typeNameArr = [];
 
   @Input() isMultiplePage?;
   @Input() idArr?: Array<any>;
@@ -137,6 +138,7 @@ export class LocationDropdownComponent implements OnInit, OnChanges {
       if (res) {
         this.locationArr = res;
         const data = res.find(el => (el['parent'] === null) || (el['parent'] === 0));
+        this.typeNameArr.push(data['type']);
         // getting conuntries
         this.countryArr = res.filter(el => el['type'] === data['type']);
       }
@@ -144,11 +146,15 @@ export class LocationDropdownComponent implements OnInit, OnChanges {
   }
 
   getChildLocations(id, arr) {
+    let typeName;
     // getting child locations by id
     this.locationService.getChildLocationById(id).subscribe((res: Array<Object>) => {
       if (res) {
         res.forEach(element => {
-          arr.push(element)
+          arr.push(element);
+          if (!this.typeNameArr.includes(element['type'])) {
+            this.typeNameArr.push(element['type']);
+          }
         });
       }
     });

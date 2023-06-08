@@ -94,7 +94,8 @@
             app:launchSingleTop="true"/>
         <action
             android:id="@+id/action_patientProfileFragment_to_previousConsultationQuestionnaireFragment"
-            app:destination="@id/previousConsultationQuestionnaireFragment" />
+            app:destination="@id/previousConsultationQuestionnaireFragment"
+            app:launchSingleTop="true"/>
     </fragment>
 
     <fragment
@@ -110,6 +111,7 @@
             android:id="@+id/action_previousConsultationQuestionnaireFragment_to_previousConsultationQuestionnaireFragment"
             app:popUpToInclusive="true"
             app:popUpTo="@id/previousConsultationQuestionnaireFragment"
-            app:destination="@id/previousConsultationQuestionnaireFragment"/>
+            app:destination="@id/previousConsultationQuestionnaireFragment"
+            app:launchSingleTop="true"/>
     </fragment>
 </navigation>

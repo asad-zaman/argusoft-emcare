@@ -205,30 +205,24 @@ export class PatientListComponent implements OnInit {
         }
         let workbook = new Workbook();
         let worksheet = workbook.addWorksheet(`Patient's Data`);
+
         const data = [];
-
         let columns = [{ header: 'Key', key: 'key', width: 20 }];
-        selectedPatients.forEach((patient, ind) => {
-            const patientName = `Paitent-${ind + 1}`;
-            let c = 0;
-
-            if (ind === 0) {
-                for (const k in patient) {
-                    let obj = { key: k };
-                    obj['Patient' + parseInt(ind + 1)] = patient[k] ? patient[k] : 'NA';
-                    data.push(obj);
-                }
-            } else {
-                let c = 0;
-                for (const k in patient) {
-                    let obj = data[c];
-                    obj['Patient' + parseInt(ind + 1)] = patient[k] ? patient[k] : 'NA';
-                    c++;
-                }
-            }
-
-            columns.push({ header: `Patient${ind + 1}`, key: `Patient${ind + 1}`, width: 35 })
+        selectedPatients.forEach((_patient, ind) => {
+            // creating column 1 of patients
+            let obj = { key: 'Patient' + parseInt(ind + 1) };
+            data.push(obj);
         });
+
+        const dummyPatient = (selectedPatients[0]);
+        for (const k in dummyPatient) {
+            data.forEach((element, ind) => {
+                const patient = selectedPatients[ind];
+                element[k] = patient[k] ? patient[k] : 'NA';
+            });
+            columns.push({ header: `${k}`, key: `${k}`, width: 35 })
+        }
+
         worksheet.columns = columns;
         worksheet.addRows(data, "n");
 

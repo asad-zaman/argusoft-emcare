@@ -11,6 +11,7 @@ import ca.uhn.fhir.context.FhirContext
 import ca.uhn.fhir.context.FhirVersionEnum
 import com.argusoft.who.emcare.EmCareApplication
 import com.argusoft.who.emcare.R
+import com.argusoft.who.emcare.data.local.pref.Preference
 import com.argusoft.who.emcare.data.remote.ApiResponse
 import com.argusoft.who.emcare.di.AppModule
 import com.argusoft.who.emcare.ui.common.*
@@ -33,6 +34,8 @@ import kotlinx.coroutines.flow.collect
 import org.hl7.fhir.r4.model.*
 import org.hl7.fhir.r4.model.QuestionnaireResponse.QuestionnaireResponseItemComponent
 import java.io.File
+import java.text.DateFormat
+import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -47,6 +50,7 @@ class HomeViewModel @Inject constructor(
     private val libraryRepository: LibraryRepository,
     private val knowledgeManager: KnowledgeManager,
     @ApplicationContext private val context: Context,
+    private val preference: Preference,
     @AppModule.IoDispatcher private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : ViewModel() {
 
@@ -86,6 +90,9 @@ class HomeViewModel @Inject constructor(
     private val _sidepaneItems = SingleLiveEvent<ApiResponse<List<SidepaneItem>>>()
     val sidepaneItems: LiveData<ApiResponse<List<SidepaneItem>>> = _sidepaneItems
 
+    private val _unsyncedResourcesCount = SingleLiveEvent<ApiResponse<Int>>()
+    val unsyncedResourcesCount: LiveData<ApiResponse<Int>> = _unsyncedResourcesCount
+
     fun getPatients(search: String? = null, facilityId: String?, isRefresh: Boolean = false) {
         _patients.value = ApiResponse.Loading(isRefresh)
         viewModelScope.launch {
@@ -114,6 +121,31 @@ class HomeViewModel @Inject constructor(
             writeText(FhirContext.forR4().newJsonParser().encodeResourceToString(library))
         }
     }
+
+    private fun getGmtTimeFromLastSyncTime(): String {
+        val formatStringGmt: DateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS")
+        val formatStringLocal: SimpleDateFormat = SimpleDateFormat("dd/MM/yyyy hh:mm:ss a")
+        return if(preference.getLastSyncTimestamp().isNotEmpty()) {
+            formatStringGmt.timeZone = TimeZone.getTimeZone("gmt")
+            formatStringGmt.format(formatStringLocal.parse(preference.getLastSyncTimestamp()))
+        } else {
+            ""
+        }
+    }
+    fun checkUnsycnedResources() {
+        val lastSyncTimestamp = getGmtTimeFromLastSyncTime()
+        if(lastSyncTimestamp.isNotEmpty()){
+            viewModelScope.launch {
+                consultationFlowRepository.getConsultationCountAfterTimestamp(lastSyncTimestamp).collect{
+                    val count = it.data!!
+                    _unsyncedResourcesCount.value = ApiResponse.Success(data = count!!)
+                }
+            }
+        } else {
+            _unsyncedResourcesCount.value = ApiResponse.Success(data = 0)
+        }
+    }
+
 
     fun getPatient(patientId: String) {
         viewModelScope.launch {

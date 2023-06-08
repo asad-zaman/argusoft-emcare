@@ -86,15 +86,19 @@ public interface UserLocationMappingRepository extends JpaRepository<UserLocatio
             "GROUP BY FACILITY_ID;", nativeQuery = true)
     List<ChartDto> getDashboardPieChartData();
 
-    @Query(value = "SELECT date_part('week', created_on) AS \"weekly\",\n" +
-            "       COUNT(resource_id) as \"count\"           \n" +
-            "FROM emcare_resources\n" +
-            "where type = 'PATIENT' and date_part('year', created_on) = date_part('year', CURRENT_DATE)\n" +
-            "GROUP BY  weekly\n" +
-            "ORDER BY weekly ASC limit :currentWeekNumber", nativeQuery = true)
+@Query(value = "SELECT all_dates.date AS day, COALESCE(counts.count, 0) AS count\n" +
+        "FROM (\n" +
+        "    SELECT cast(generate_series(CURRENT_DATE - INTERVAL '14 days', CURRENT_DATE, INTERVAL '1 day') as date) AS date\n" +
+        ") AS all_dates\n" +
+        "LEFT JOIN (\n" +
+        "    SELECT cast(created_on as date) AS day, COUNT(resource_id) AS count\n" +
+        "    FROM emcare_resources\n" +
+        "    WHERE type = 'PATIENT' AND created_on > CURRENT_DATE - INTERVAL '14 days'\n" +
+        "    GROUP BY cast(created_on as date)\n" +
+        ") AS counts ON all_dates.date = counts.day\n" +
+        "ORDER BY all_dates.date;", nativeQuery = true)
     List<ScatterCharDto> getDashboardScatterChartData(
-            @Param("currentWeekNumber") Integer currentWeekNumber
-    );
+            @Param("currentWeekNumber") Integer currentWeekNumber);
 
     @Query(value = "select distinct(user_id) from user_location_mapping;", nativeQuery = true)
     List<String> getDistinctUserId();
