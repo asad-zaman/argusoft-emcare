@@ -142,4 +142,10 @@ public class QuestionnaireResponseServiceImpl implements QuestionnaireResponseSe
         }
         return map;
     }
+
+    @Override
+    public void logSyncAttempt() {
+        UserMasterDto userMasterDto = (UserMasterDto) userService.getCurrentUser().getBody();
+        questionnaireResponseRepository.logSyncAttempt(userMasterDto.getUserId());
+    }
 }

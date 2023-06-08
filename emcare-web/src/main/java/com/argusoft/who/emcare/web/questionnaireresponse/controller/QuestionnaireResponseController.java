@@ -31,6 +31,7 @@ public class QuestionnaireResponseController {
 
     @GetMapping("/fetch/all")
     public ResponseEntity<Object> getQuestionnaireResponseByUserLocation(@Nullable @RequestParam(value = CommonConstant.RESOURCE_LAST_UPDATED_AT) DateParam theDate) {
+        questionnaireResponseService.logSyncAttempt();
         List<QuestionnaireResponse> questionnaireResponses = questionnaireResponseService.getQuestionnaireResponseByUserLocation(Objects.nonNull(theDate) ? theDate.getValue() : null);
         return ResponseEntity.ok().body(questionnaireResponses);
     }

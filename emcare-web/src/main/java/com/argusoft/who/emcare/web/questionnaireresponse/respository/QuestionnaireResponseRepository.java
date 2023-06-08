@@ -42,4 +42,7 @@ public interface QuestionnaireResponseRepository extends JpaRepository<Questionn
 
     @Query(value = "SELECT DISTINCT(patient_id) FROM QUESTIONNAIRE_RESPONSE", nativeQuery = true)
     public List<String> findDistinctPatientIdd();
+
+    @Query(value = "insert into user_sync_log (user_id, sync_attempt_time) values ( :userId ,now())")
+    public void logSyncAttempt(String userId);
 }
