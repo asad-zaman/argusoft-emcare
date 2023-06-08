@@ -4,6 +4,7 @@ import com.argusoft.who.emcare.web.questionnaireresponse.dto.MiniPatient;
 import com.argusoft.who.emcare.web.questionnaireresponse.model.QuestionnaireResponse;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -42,7 +43,4 @@ public interface QuestionnaireResponseRepository extends JpaRepository<Questionn
 
     @Query(value = "SELECT DISTINCT(patient_id) FROM QUESTIONNAIRE_RESPONSE", nativeQuery = true)
     public List<String> findDistinctPatientIdd();
-
-    @Query(value = "insert into user_sync_log (user_id, sync_attempt_time) values ( :userId ,now())")
-    public void logSyncAttempt(String userId);
 }
