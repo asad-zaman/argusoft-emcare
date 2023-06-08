@@ -32,7 +32,7 @@
       </thead>
       <tbody>
         <ng-container *ngIf="filteredUserList && filteredUserList.length > 0; else noRecords">
-          <ng-container *ngFor="let user of filteredUserList | 
+          <ng-container *ngFor="let user of filteredUserList |
           paginate : { itemsPerPage: tableSize, currentPage: currentPage, totalItems: totalCount }; let i=index">
             <tr>
               <td class="text-center">{{currentPage == 0 ? ((currentPage)*10 + i + 1) : ((currentPage-1)*10 + i + 1)}}

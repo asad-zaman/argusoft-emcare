@@ -6,12 +6,10 @@ import com.argusoft.who.emcare.web.fhir.dao.EmcareResourceRepository;
 import com.argusoft.who.emcare.web.fhir.dao.EncounterResourceRepository;
 import com.argusoft.who.emcare.web.fhir.dao.LocationResourceRepository;
 import com.argusoft.who.emcare.web.fhir.dto.FacilityDto;
-import com.argusoft.who.emcare.web.fhir.dto.PatientDto;
 import com.argusoft.who.emcare.web.fhir.model.EmcareResource;
 import com.argusoft.who.emcare.web.fhir.model.EncounterResource;
 import com.argusoft.who.emcare.web.fhir.service.EmcareResourceService;
 import com.argusoft.who.emcare.web.location.dao.LocationMasterDao;
-import com.argusoft.who.emcare.web.questionnaireresponse.dto.MiniPatient;
 import com.argusoft.who.emcare.web.questionnaireresponse.dto.QuestionnaireResponseRequestDto;
 import com.argusoft.who.emcare.web.questionnaireresponse.mapper.QuestionnaireResponseMapper;
 import com.argusoft.who.emcare.web.questionnaireresponse.model.QuestionnaireResponse;
@@ -86,30 +84,18 @@ public class QuestionnaireResponseServiceImpl implements QuestionnaireResponseSe
     @Override
     public PageDto getQuestionnaireResponsePage(Integer pageNo, String searchString) {
         Pageable page = PageRequest.of(pageNo, CommonConstant.PAGE_SIZE);
-        List<EmcareResource> resourcesList;
+//        List<EmcareResource> resourcesList;
+        List<Map<String,Object>> consultations;
         Integer totalCount = 0;
-        if (searchString != null && !searchString.isEmpty()) {
-            resourcesList = emcareResourceRepository.findByTypeContainingAndTextContainingIgnoreCaseOrderByCreatedOnDesc(CommonConstant.FHIR_PATIENT, searchString);
-        } else {
-            resourcesList = emcareResourceRepository.findAllByType(CommonConstant.FHIR_PATIENT);
-        }
-        List<String> resourceIds = resourcesList.stream().map(EmcareResource::getResourceId).collect(Collectors.toList());
-        List<MiniPatient> responseList = questionnaireResponseRepository.getDistinctPatientIdInAndConsultationDate(
-                resourceIds,
-                page);
-        List<String> patientIds = responseList.stream().map(MiniPatient::getPatientId).collect(Collectors.toList());
-        totalCount = questionnaireResponseRepository.findDistinctByPatientIdIn(resourceIds).size();
-        List<PatientDto> patientList = emcareResourceService.getPatientDtoByIds(patientIds);
-        for (PatientDto patientDto : patientList) {
-            for (MiniPatient miniPatient : responseList) {
-                if (patientDto.getId().equalsIgnoreCase(miniPatient.getPatientId())) {
-                    patientDto.setConsultationDate(miniPatient.getConsultationDate());
-                }
-            }
-        }
-        Collections.reverse(patientList);
         PageDto pageDto = new PageDto();
-        pageDto.setList(patientList);
+
+        if (searchString != null && !searchString.isEmpty()) {
+            consultations = emcareResourceRepository.findConsultationsBySearch(searchString);
+        } else {
+            consultations = emcareResourceRepository.findAllConsultations();
+        }
+
+        pageDto.setList(consultations);
         pageDto.setTotalCount(totalCount.longValue());
         return pageDto;
     }
