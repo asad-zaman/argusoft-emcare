@@ -25,6 +25,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
@@ -40,26 +41,26 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
     private String searchString;
 
     String query = "WITH MAX_CONSULTATION_DATE AS\n" +
-            "(SELECT PATIENT_ID,\n" +
-            "MAX(CONSULTATION_DATE) as cnslDate\n" +
-            "FROM QUESTIONNAIRE_RESPONSE\n" +
-            "GROUP BY PATIENT_ID)\n" +
-            "SELECT\n" +
-            "CONCAT('Patient',' ',row_number() over (ORDER BY emcare_resources.id)) as \"key\",\n" +
-            "EMCARE_RESOURCES.resource_id, \n" +
-            "cast((EMCARE_RESOURCES.text) as json) -> cast('identifier' as text) -> 0 ->> cast('value' as text) as \"identifier\",\n" +
-            "CONCAT(cast((EMCARE_RESOURCES.text) as json) -> cast('name' as text) -> 0 -> cast('given' as text) ->> 0, ' ', cast((EMCARE_RESOURCES.text) as json) -> cast('name' as text) -> 0 -> cast('given' as text) ->> 1) as \"givenName\",\n" +
-            "cast((EMCARE_RESOURCES.text) as json) -> cast('name' as text) -> 0 ->> cast('family' as text) as \"familyName\",\n" +
-            "cast((EMCARE_RESOURCES.text) as json) ->> cast('gender' as text) as \"gender\",\n" +
-            "cast((EMCARE_RESOURCES.text) as json) ->> cast('birthDate' as text) as \"birthDate\",\n" +
-            "cast((LOCATION_RESOURCES.text) as json) ->> cast('name' as text) as \"facilityName\",\n" +
-            "cast((LOCATION_RESOURCES.text) as json) -> cast('address' as text) -> cast('line' as text) ->> 0 as \"addressLine\",\n" +
-            "(LOCATION_RESOURCES.organization_name) as \"organizationName\",\n" +
-            "(LOCATION_RESOURCES.location_name) as \"locationName\",\n" +
-            "MAX_CONSULTATION_DATE.cnslDate as \"consultationDate\"\n" +
-            "FROM EMCARE_RESOURCES\n" +
-            "LEFT OUTER JOIN MAX_CONSULTATION_DATE ON EMCARE_RESOURCES.RESOURCE_ID = MAX_CONSULTATION_DATE.PATIENT_ID\n" +
-            "LEFT JOIN LOCATION_RESOURCES ON EMCARE_RESOURCES.facility_id = LOCATION_RESOURCES.resource_id ORDER BY EMCARE_RESOURCES.created_on DESC limit 10" ;
+        "(SELECT PATIENT_ID,\n" +
+        "MAX(CONSULTATION_DATE) as cnslDate\n" +
+        "FROM QUESTIONNAIRE_RESPONSE\n" +
+        "GROUP BY PATIENT_ID)\n" +
+        "SELECT\n" +
+        "CONCAT('Patient',' ',row_number() over (ORDER BY emcare_resources.id)) as \"key\",\n" +
+        "EMCARE_RESOURCES.resource_id, \n" +
+        "cast((EMCARE_RESOURCES.text) as json) -> cast('identifier' as text) -> 0 ->> cast('value' as text) as \"identifier\",\n" +
+        "CONCAT(cast((EMCARE_RESOURCES.text) as json) -> cast('name' as text) -> 0 -> cast('given' as text) ->> 0, ' ', cast((EMCARE_RESOURCES.text) as json) -> cast('name' as text) -> 0 -> cast('given' as text) ->> 1) as \"givenName\",\n" +
+        "cast((EMCARE_RESOURCES.text) as json) -> cast('name' as text) -> 0 ->> cast('family' as text) as \"familyName\",\n" +
+        "cast((EMCARE_RESOURCES.text) as json) ->> cast('gender' as text) as \"gender\",\n" +
+        "cast((EMCARE_RESOURCES.text) as json) ->> cast('birthDate' as text) as \"birthDate\",\n" +
+        "cast((LOCATION_RESOURCES.text) as json) ->> cast('name' as text) as \"facilityName\",\n" +
+        "cast((LOCATION_RESOURCES.text) as json) -> cast('address' as text) -> cast('line' as text) ->> 0 as \"addressLine\",\n" +
+        "(LOCATION_RESOURCES.organization_name) as \"organizationName\",\n" +
+        "(LOCATION_RESOURCES.location_name) as \"locationName\",\n" +
+        "MAX_CONSULTATION_DATE.cnslDate as \"consultationDate\"\n" +
+        "FROM EMCARE_RESOURCES\n" +
+        "LEFT OUTER JOIN MAX_CONSULTATION_DATE ON EMCARE_RESOURCES.RESOURCE_ID = MAX_CONSULTATION_DATE.PATIENT_ID\n" +
+        "LEFT JOIN LOCATION_RESOURCES ON EMCARE_RESOURCES.facility_id = LOCATION_RESOURCES.resource_id ORDER BY EMCARE_RESOURCES.created_on DESC limit 10";
 
     @Autowired
     EmcareResourceRepository repository;
@@ -297,7 +298,7 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
     public PageDto getPatientsPage(Integer pageNo, String searchString) {
 
         Integer totalCount = 0;
-        List<Map<String,Object>> resourcesList;
+        List<Map<String, Object>> resourcesList;
         Pageable page = PageRequest.of(pageNo, CommonConstant.PAGE_SIZE);
         this.searchString = searchString;
         PageDto pageDto = new PageDto();
@@ -309,7 +310,7 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
             pageDto.setTotalCount(totalCount.longValue());
         } else {
             totalCount = repository.getCountOfPatients();
-            resourcesList = customRepository.getPatientsList(query + " offset "+ page.getOffset(),pageNo);
+            resourcesList = customRepository.getPatientsList(query + " offset " + page.getOffset(), pageNo);
             pageDto.setList(resourcesList);
             pageDto.setTotalCount(totalCount.longValue());
         }
@@ -321,8 +322,8 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
     public PageDto getPatientsAllDataByFilter(String searchString, Object locationId) {
 
         Integer totalCount = 0;
-        List<Map<String,Object>> resourcesList;
-        Pageable page = PageRequest.ofSize( CommonConstant.PAGE_SIZE);
+        List<Map<String, Object>> resourcesList;
+        Pageable page = PageRequest.ofSize(CommonConstant.PAGE_SIZE);
         this.searchString = searchString;
         PageDto pageDto = new PageDto();
 
@@ -333,7 +334,7 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
             pageDto.setTotalCount(totalCount.longValue());
         } else {
             totalCount = repository.getCountOfPatients();
-            resourcesList = customRepository.getPatientsList(query + " offset "+ page.getOffset());
+            resourcesList = customRepository.getPatientsList(query + " offset " + page.getOffset());
             pageDto.setList(resourcesList);
             pageDto.setTotalCount(totalCount.longValue());
         }
@@ -372,8 +373,8 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
     }
 
     @Override
-    public PageDto getPatientUnderLocationId(Object locationId, Integer pageNo) {
-
+    public PageDto getPatientUnderLocationId(Object locationId, Integer pageNo, Date startDate, Date endDate) {
+        Long offSet = pageNo.longValue() * 10;
         List<Integer> locationIds;
         List<String> childFacilityIds = new ArrayList<>();
         if (isNumeric(locationId.toString())) {
@@ -382,12 +383,27 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
         } else {
             childFacilityIds.add(locationId.toString());
         }
+        try {
 
-
-        Long totalCount = Long.valueOf(repository.getFilteredPatientsIn(childFacilityIds).size());
-        List<Map<String,Object>> resourcesList = repository.getFilteredPatientsIn(childFacilityIds);
-        System.out.println(totalCount);
-        System.out.println(resourcesList);
+            if (Objects.isNull(startDate)) {
+                String sDate1 = "31/12/1998";
+                startDate = new SimpleDateFormat("dd/MM/yyyy").parse(sDate1);
+            }
+            if (Objects.isNull(endDate)) {
+                endDate = new Date();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Long totalCount = 0L;
+        List<Map<String, Object>> resourcesList = new ArrayList<>();
+        if (Objects.isNull(locationId)) {
+            totalCount = Long.valueOf(repository.getFilteredDateOnlyCount(startDate, endDate).size());
+            resourcesList = repository.getFilteredDateOnly(startDate, endDate, offSet);
+        } else {
+            totalCount = Long.valueOf(repository.getFilteredPatientsInCount(childFacilityIds, startDate, endDate).size());
+            resourcesList = repository.getFilteredPatientsIn(childFacilityIds, startDate, endDate, offSet);
+        }
         PageDto pageDto = new PageDto();
         pageDto.setList(resourcesList);
         pageDto.setTotalCount(totalCount);
