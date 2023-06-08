@@ -76,6 +76,7 @@ import { LogListComponent } from './root/components/log-list/log-list.component'
 import { LocationSubjects } from './root/components/Location/location-filter/LocationSubject';
 import { ColorPickerModule } from 'primeng/colorpicker';
 import { CalendarModule } from 'primeng/calendar';
+import { InputTextareaModule } from 'primeng/inputtextarea';
 
 @NgModule({
   declarations: [
@@ -149,7 +150,8 @@ import { CalendarModule } from 'primeng/calendar';
     MessagesModule,
     MessageModule,
     ColorPickerModule,
-    CalendarModule
+    CalendarModule,
+    InputTextareaModule
   ],
   providers: [
     AuthenticationService,

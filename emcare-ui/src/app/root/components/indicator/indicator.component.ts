@@ -263,7 +263,9 @@ export class IndicatorComponent implements OnInit {
         this.formBuilder.array([]) : this.formBuilder.array([this.newColorSectionAddition()]),
       gender: [''],
       ageCondition: [''],
-      ageValue: ['']
+      ageValue: [''],
+      allowQueryBuilder: [false],
+      query: ['']
     });
     this.checkEditParam();
   }
@@ -658,5 +660,13 @@ export class IndicatorComponent implements OnInit {
     if (event.target.value > 100 || event.target.value < 0) {
       this.toasterService.showToast('error', 'Please enter value between 0 to 100!', 'EM CARE!');
     }
+  }
+
+  setAllowQueryBuilderTrue() {
+    this.indicatorForm.patchValue({ allowQueryBuilder: true });
+  }
+
+  setAllowQueryBuilderFalse() {
+    this.indicatorForm.patchValue({ allowQueryBuilder: false });
   }
 }
