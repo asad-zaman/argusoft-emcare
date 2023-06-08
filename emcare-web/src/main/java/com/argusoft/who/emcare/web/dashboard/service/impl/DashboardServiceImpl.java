@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.sql.Date;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoField;
 import java.util.*;
 
@@ -37,7 +38,7 @@ public class DashboardServiceImpl implements DashboardService {
     @Override
     public ResponseEntity<Object> getDashboardBarChartData() {
         List<ChartDto> pieData = userLocationMappingRepository.getDashboardPieChartData();
-        Map<String, Integer> ageData = emcareResourceService.getPatientAgeGroupCount();
+        Map<String, Object> ageData = emcareResourceService.getPatientAgeGroupCount();
         Calendar calendar = Calendar.getInstance();
         int currentWeekNumber = calendar.get(Calendar.WEEK_OF_YEAR);
         List<ScatterCharDto> scatterCharDtos = userLocationMappingRepository.getDashboardScatterChartData(currentWeekNumber);
@@ -53,13 +54,12 @@ public class DashboardServiceImpl implements DashboardService {
         }
         List<List<Object>> scatterPoints = new ArrayList<>();
         for (ScatterCharDto scatterCharDto : scatterCharDtos) {
-            LocalDate week = LocalDate.now().with(ChronoField.ALIGNED_WEEK_OF_YEAR, scatterCharDto.getWeekly());
-            LocalDate weekStartDate = week.with(DayOfWeek.MONDAY);
+
             List<Object> tuple = new ArrayList<>();
-            tuple.add(scatterCharDto.getWeekly());
             tuple.add(scatterCharDto.getCount());
-            tuple.add(Date.valueOf(weekStartDate));
+            tuple.add(Date.valueOf(scatterCharDto.getDay()));
             scatterPoints.add(tuple);
+
         }
         listMap.put("consultationPerFacility", pieD);
         listMap.put("consultationByAgeGroup", ageData);

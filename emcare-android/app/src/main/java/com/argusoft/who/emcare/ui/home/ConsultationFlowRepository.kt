@@ -88,5 +88,10 @@ class ConsultationFlowRepository @Inject constructor(
         emit(ApiResponse.Success(data = consultationFlowItemIds))
     }
 
+    fun getConsultationCountAfterTimestamp(timestamp: String) = flow {
+        val count = database.getConsultationCountAfterTimestamp(timestamp)
+        emit(ApiResponse.Success(data = count))
+    }
+
 
 }

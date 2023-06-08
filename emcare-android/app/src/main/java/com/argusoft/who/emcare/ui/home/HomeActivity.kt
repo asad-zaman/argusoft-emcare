@@ -12,6 +12,8 @@ import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.databinding.ActivityHomeBinding
 import com.argusoft.who.emcare.ui.common.base.BaseActivity
 import com.argusoft.who.emcare.utils.extention.alertDialog
+import com.argusoft.who.emcare.utils.extention.observeNotNull
+import com.argusoft.who.emcare.utils.extention.whenSuccess
 import com.google.android.material.navigation.NavigationView
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -78,13 +80,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
             when (it.itemId) {
                 R.id.action_logout -> {
                     closeDrawer()
-                    alertDialog {
-                        setMessage(R.string.msg_logout)
-                        setPositiveButton(R.string.button_yes) { _, _ ->
-                            logout()
-                        }
-                        setNegativeButton(R.string.button_no) { _, _ -> }
-                    }.show()
+                    homeViewModel.checkUnsycnedResources()
                 }
                 R.id.action_about -> {
                     closeDrawer()
@@ -111,7 +107,27 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
     }
 
     override fun initObserver() {
-        //No Observers
+        observeNotNull(homeViewModel.unsyncedResourcesCount) {
+            it.whenSuccess {count ->
+                if(count > 0){
+                    alertDialog {
+                        setMessage("There is un-synced data and we request you to sync before logging out!")
+                        setPositiveButton(R.string.button_logout_anyway) { _, _ ->
+                            logout()
+                        }
+                        setNegativeButton(R.string.button_cancel) { _, _ -> }
+                    }.show()
+                } else {
+                    alertDialog {
+                        setMessage(R.string.msg_logout)
+                        setPositiveButton(R.string.button_yes) { _, _ ->
+                            logout()
+                        }
+                        setNegativeButton(R.string.button_no) { _, _ -> }
+                    }.show()
+                }
+            }
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {

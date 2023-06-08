@@ -5,6 +5,8 @@ import com.argusoft.who.emcare.web.common.dto.PageDto;
 import com.argusoft.who.emcare.web.common.response.Response;
 import com.argusoft.who.emcare.web.fhir.dao.ObservationCustomResourceRepository;
 import com.argusoft.who.emcare.web.fhir.dao.ObservationResourceRepository;
+import com.argusoft.who.emcare.web.fhir.dto.FacilityDto;
+import com.argusoft.who.emcare.web.fhir.service.LocationResourceService;
 import com.argusoft.who.emcare.web.indicators.indicator.dto.IndicatorDto;
 import com.argusoft.who.emcare.web.indicators.indicator.dto.IndicatorFilterDto;
 import com.argusoft.who.emcare.web.indicators.indicator.entity.Indicator;
@@ -33,6 +35,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.text.DecimalFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * <h1> Indicator Service like Add, Update, and Get.</h1>
@@ -63,6 +66,9 @@ public class IndicatorServiceImpl implements IndicatorService {
 
     @Autowired
     IndicatorQueryBuilder indicatorQueryBuilder;
+
+    @Autowired
+    LocationResourceService locationResourceService;
 
     @Autowired
     UserService userService;
@@ -179,6 +185,9 @@ public class IndicatorServiceImpl implements IndicatorService {
         List<String> facilityIds;
         if (Boolean.FALSE.equals(isFilter)) {
             facilityIds = userService.getCurrentUserFacility();
+            if (facilityIds.isEmpty() || Objects.isNull(facilityIds) || Objects.isNull(facilityIds.get(0))) {
+                facilityIds = locationResourceService.getActiveFacility().stream().map(FacilityDto::getFacilityId).collect(Collectors.toList());
+            }
         } else {
             facilityIds = indicatorFilterDto.getFacilityIds();
         }
@@ -215,7 +224,7 @@ public class IndicatorServiceImpl implements IndicatorService {
             finalValue = 0D;
         }
         Map<String, Object> stringObjectMap = new HashMap<>();
-        DecimalFormat df = new DecimalFormat("0.00");
+        DecimalFormat df = new DecimalFormat("0.0");
         stringObjectMap.put("indicatorCode", indicator.getIndicatorCode());
         stringObjectMap.put("indicatorId", indicator.getIndicatorId());
         stringObjectMap.put("age", indicatorFilterDto.getAge());

@@ -70,7 +70,7 @@ public class QuestionnaireResponseServiceImpl implements QuestionnaireResponseSe
 
     @Override
     public List<QuestionnaireResponse> getQuestionnaireResponseByUserLocation(Date theDate) {
-        UserMasterDto userMasterDto = userService.getCurrentUser();
+        UserMasterDto userMasterDto = (UserMasterDto) userService.getCurrentUser().getBody();
         List<String> facilityIds = userMasterDto.getFacilities().stream().map(FacilityDto::getFacilityId).collect(Collectors.toList());
         List<EmcareResource> patientList = emcareResourceRepository.findByFacilityIdIn(facilityIds);
         List<String> patientIds = patientList.stream().map(EmcareResource::getResourceId).collect(Collectors.toList());
