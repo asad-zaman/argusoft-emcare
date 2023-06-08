@@ -571,6 +571,15 @@ CREATE TABLE IF NOT EXISTS public.binary_resource
 
 ALTER TABLE IF EXISTS public.binary_resource OWNER to postgres;
 
+create table if not exists user_sync_log (
+id serial,
+user_id text,
+sync_attempt_time timestamp,
+primary key (id)
+);
+
+ALTER TABLE IF EXISTS public.user_sync_log OWNER to postgres;
+
 INSERT INTO public.email_content (id, code, content, created_at, subject, var_list) VALUES (3, 'CONFIRMATION_EMAIL_APPROVED', '<!DOCTYPE html>
 <html>
 <head>
