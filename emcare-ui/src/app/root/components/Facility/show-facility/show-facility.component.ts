@@ -141,7 +141,8 @@ export class ShowFacilityComponent implements OnInit {
   }
 
   onChangeCheckboxForFacility() {
-    this.fhirService.getFacilityByPageAndSearch(this.currentPage, null, this.isInactive).subscribe(res => {
+    this.currentPage = 0;
+    this.fhirService.getFacilityByPageAndSearch(this.currentPage, this.searchString, this.isInactive).subscribe(res => {
       this.isAPIBusy = false;
       this.manipulateRes(res);
     });
