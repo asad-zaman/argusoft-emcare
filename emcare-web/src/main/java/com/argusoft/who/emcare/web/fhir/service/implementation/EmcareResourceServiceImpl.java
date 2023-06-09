@@ -408,9 +408,10 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
         Date startDate = null;
         Date endDate = null;
         try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             if (Objects.isNull(sDate)) {
                 String sDate1 = "1998-12-31";
-                sDate = new SimpleDateFormat("yyyy-MM-dd").format(sDate1).toString();
+                sDate = sdf.format(sdf.parse("2013-09-18"));
             }
             if (Objects.isNull(eDate)) {
                 eDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date()).toString();
