@@ -1,5 +1,6 @@
 <app-location-filter *ngIf="isView" [isPatientPage]="true" [isFacilityNotAllowed]="false"
-  (isClear)="clearFilter($event)" (locationId)="getLocationId($event)"></app-location-filter>
+  (isClear)="clearFilter($event)" (locationId)="getLocationId($event)">
+</app-location-filter>
 <div *ngIf="isView" class="main-wrapper">
   <div class="custom-header">
     <h1 class="heading">{{'Patients' | translate}}</h1>
