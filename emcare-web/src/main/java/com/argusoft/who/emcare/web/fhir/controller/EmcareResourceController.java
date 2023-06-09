@@ -87,8 +87,8 @@ public class EmcareResourceController {
     @GetMapping("/patient/locationId")
     public PageDto getAllPatientsUnderLocation(@Nullable @RequestParam(value = "locationId") Object locationId,
                                                @RequestParam(value = "pageNo") Integer pageNo,
-                                               @Nullable @RequestParam(value = "startDate") Date startDate,
-                                               @Nullable @RequestParam(value = "endDate") Date endDate) {
+                                               @Nullable @RequestParam(value = "startDate") String startDate,
+                                               @Nullable @RequestParam(value = "endDate") String endDate) {
         return emcareResourceService.getPatientUnderLocationId(locationId, pageNo, startDate, endDate);
     }
 
