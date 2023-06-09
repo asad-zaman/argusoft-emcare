@@ -72,6 +72,10 @@ export class FhirService {
         return this.http.get(`${this.fhirBaseURL}/patient/locationId?startDate=${dateObj.startDate}&endDate=${dateObj.endDate}&pageNo=${pageIndex}&locationId=${locationId ? locationId : ''}`, this.getHeaders());
     }
 
+    getConsultationsByLocationAndPageIndex(locationId, pageIndex, dateObj) {
+        return this.http.get(`${environment.apiUrl}/api/questionnaire_response/consultations/locationId?pageNo=${pageIndex}&locationId=${locationId ? locationId : ''}&startDate=${dateObj.startDate}&endDate=${dateObj.endDate}`, this.getHeaders());
+    }
+
     addLaunguage(data) {
         const url = `${environment.apiUrl}/api/language/add`;
         return this.http.post(url, data, this.getHeaders());

@@ -1,3 +1,6 @@
+<app-location-filter *ngIf="isView" [isPatientPage]="true" [isFacilityNotAllowed]="false"
+  (isClear)="clearFilter($event)" (locationId)="getLocationId($event)">
+</app-location-filter>
 <div *ngIf="isView" class="main-wrapper">
   <div class="custom-header">
     <h1 class="heading">{{'Consultations' | translate}}</h1>
@@ -7,12 +10,12 @@
       <input class="form-control custom-input h-35" id="exampleFormControlInput1" [(ngModel)]="searchString"
         (input)="searchFilter()" placeholder="{{'Search Placeholder' | translate}}">
     </div>
-    <div class="col-3">
+    <div class="col-3 cst-d-flex">
       <p-checkbox styleClass="form-label" [(ngModel)]="exportAllConsultations" label="Export All Consultations"
         [binary]="true" inputId="binary" value="true" (onChange)="exportAllTheConsultations()">
       </p-checkbox>
     </div>
-    <div class="col-6 d-flex cst-export-consultation">
+    <div class="col-6 d-flex cst-export">
       <button [disabled]="this.exportAllConsultations" (click)="onEnableSelectionClick()" class="ml-3 btn btn-blue">
         {{showCheckboxes ? 'Cancel' : 'Export'| translate}}
       </button>
