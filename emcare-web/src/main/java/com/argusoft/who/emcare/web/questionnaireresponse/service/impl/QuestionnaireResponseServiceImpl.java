@@ -6,12 +6,10 @@ import com.argusoft.who.emcare.web.fhir.dao.EmcareResourceRepository;
 import com.argusoft.who.emcare.web.fhir.dao.EncounterResourceRepository;
 import com.argusoft.who.emcare.web.fhir.dao.LocationResourceRepository;
 import com.argusoft.who.emcare.web.fhir.dto.FacilityDto;
-import com.argusoft.who.emcare.web.fhir.dto.PatientDto;
 import com.argusoft.who.emcare.web.fhir.model.EmcareResource;
 import com.argusoft.who.emcare.web.fhir.model.EncounterResource;
 import com.argusoft.who.emcare.web.fhir.service.EmcareResourceService;
 import com.argusoft.who.emcare.web.location.dao.LocationMasterDao;
-import com.argusoft.who.emcare.web.questionnaireresponse.dto.MiniPatient;
 import com.argusoft.who.emcare.web.questionnaireresponse.dto.QuestionnaireResponseRequestDto;
 import com.argusoft.who.emcare.web.questionnaireresponse.mapper.QuestionnaireResponseMapper;
 import com.argusoft.who.emcare.web.questionnaireresponse.model.QuestionnaireResponse;
@@ -26,6 +24,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -91,30 +90,20 @@ public class QuestionnaireResponseServiceImpl implements QuestionnaireResponseSe
     @Override
     public PageDto getQuestionnaireResponsePage(Integer pageNo, String searchString) {
         Pageable page = PageRequest.of(pageNo, CommonConstant.PAGE_SIZE);
-        List<EmcareResource> resourcesList;
+//        List<EmcareResource> resourcesList;
+        List<Map<String,Object>> consultations;
         Integer totalCount = 0;
-        if (searchString != null && !searchString.isEmpty()) {
-            resourcesList = emcareResourceRepository.findByTypeContainingAndTextContainingIgnoreCaseOrderByCreatedOnDesc(CommonConstant.FHIR_PATIENT, searchString);
-        } else {
-            resourcesList = emcareResourceRepository.findAllByType(CommonConstant.FHIR_PATIENT);
-        }
-        List<String> resourceIds = resourcesList.stream().map(EmcareResource::getResourceId).collect(Collectors.toList());
-        List<MiniPatient> responseList = questionnaireResponseRepository.getDistinctPatientIdInAndConsultationDate(
-            resourceIds,
-            page);
-        List<String> patientIds = responseList.stream().map(MiniPatient::getPatientId).collect(Collectors.toList());
-        totalCount = questionnaireResponseRepository.findDistinctByPatientIdIn(resourceIds).size();
-        List<PatientDto> patientList = emcareResourceService.getPatientDtoByIds(patientIds);
-        for (PatientDto patientDto : patientList) {
-            for (MiniPatient miniPatient : responseList) {
-                if (patientDto.getId().equalsIgnoreCase(miniPatient.getPatientId())) {
-                    patientDto.setConsultationDate(miniPatient.getConsultationDate());
-                }
-            }
-        }
-        Collections.reverse(patientList);
         PageDto pageDto = new PageDto();
-        pageDto.setList(patientList);
+
+        if (searchString != null && !searchString.isEmpty()) {
+            consultations = emcareResourceRepository.findConsultationsBySearch(searchString);
+        } else {
+            consultations = emcareResourceRepository.findAllConsultations();
+        }
+
+
+
+        pageDto.setList(consultations);
         pageDto.setTotalCount(totalCount.longValue());
         return pageDto;
     }
@@ -149,6 +138,50 @@ public class QuestionnaireResponseServiceImpl implements QuestionnaireResponseSe
     }
 
     @Override
+    public PageDto getConsultationsUnderLocationId(Object locationId, Integer pageNo, String sDate, String eDate) {
+        Long offSet = pageNo.longValue() * 10;
+        List<Integer> locationIds;
+        List<String> childFacilityIds = new ArrayList<>();
+        if (isNumeric(locationId.toString())) {
+            locationIds = locationMasterDao.getAllChildLocationId(Integer.parseInt(locationId.toString()));
+            childFacilityIds = locationResourceRepository.findResourceIdIn(locationIds);
+        } else {
+            childFacilityIds.add(locationId.toString());
+        }
+
+            Date startDate = null;
+            Date endDate = null;
+            try {
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                if (Objects.isNull(sDate)) {
+                    String sDate1 = "1998-12-31";
+                    sDate = sdf.format(sdf.parse("2013-09-18"));
+                }
+                if (Objects.isNull(eDate)) {
+                    eDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date()).toString();
+                }
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                startDate = simpleDateFormat.parse(sDate);
+                endDate = simpleDateFormat.parse(eDate);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        Long totalCount = 0L;
+        List<Map<String, Object>> resourcesList = new ArrayList<>();
+        if (Objects.isNull(locationId)) {
+            totalCount = Long.valueOf(questionnaireResponseRepository.getFilteredDateOnlyCount(startDate,endDate).size());
+            resourcesList = questionnaireResponseRepository.getFilteredDateOnly(startDate, endDate, offSet);
+        } else {
+            totalCount = Long.valueOf(questionnaireResponseRepository.getFilteredConsultationsInCount(childFacilityIds, startDate, endDate).size());
+            resourcesList = questionnaireResponseRepository.getFilteredConsultationsIn(childFacilityIds, startDate, endDate, offSet);
+        }
+        PageDto pageDto = new PageDto();
+        pageDto.setList(resourcesList);
+        pageDto.setTotalCount(totalCount);
+        return pageDto;
+    }
+
+    @Override
     public void logSyncAttempt() {
         UserMasterDto userMasterDto = (UserMasterDto) userService.getCurrentUser().getBody();
         UserSyncLog userSyncLog = new UserSyncLog();
@@ -156,4 +189,18 @@ public class QuestionnaireResponseServiceImpl implements QuestionnaireResponseSe
         userSyncLog.setUsername(userMasterDto.getUserName());
         userSyncLogRepository.save(userSyncLog);
     }
+
+    private boolean isNumeric(String strNum) {
+        if (strNum == null) {
+            return false;
+        }
+        try {
+            Integer.parseInt(strNum);
+        } catch (NumberFormatException nfe) {
+            return false;
+        }
+        return true;
+    }
+
+
 }
