@@ -182,9 +182,13 @@ export class FhirService {
         return this.http.get(url, this.getHeaders());
     }
 
-    getFacilityByPageAndSearch(pageIndex, search?) {
+    getFacilityByPageAndSearch(pageIndex, search?, filterValue?) {
         let url;
-        if (search) {
+        if (search && filterValue) {
+            url = `${environment.apiUrl}/api/emcare/facility?pageNo=${pageIndex}&search=${search}&filter=${filterValue}`;
+        } else if (filterValue) {
+            url = `${environment.apiUrl}/api/emcare/facility?pageNo=${pageIndex}&filter=${filterValue}`;
+        } else if (search) {
             url = `${environment.apiUrl}/api/emcare/facility?pageNo=${pageIndex}&search=${search}`;
         } else {
             url = `${environment.apiUrl}/api/emcare/facility?pageNo=${pageIndex}`;

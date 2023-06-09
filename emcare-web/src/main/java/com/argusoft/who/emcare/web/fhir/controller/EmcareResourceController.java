@@ -180,8 +180,9 @@ public class EmcareResourceController {
 
     @GetMapping("/facility")
     public PageDto getFacilityPage(@RequiredParam(name = "pageNo") Integer pageNo,
-                                   @Nullable @RequiredParam(name = "search") String search) {
-        return locationResourceService.getEmCareLocationResourcePage(pageNo, search);
+                                   @Nullable @RequiredParam(name = "search") String search,
+                                   @RequiredParam(name="filter") Boolean filter) {
+        return locationResourceService.getEmCareLocationResourcePage(pageNo, search, filter);
     }
 
     @GetMapping("/library")

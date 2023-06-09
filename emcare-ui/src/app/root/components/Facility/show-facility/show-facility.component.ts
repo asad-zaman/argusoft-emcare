@@ -26,6 +26,7 @@ export class ShowFacilityComponent implements OnInit {
   currentPage = 0;
   totalCount = 0;
   tableSize = 10;
+  isInactive = false;
 
   constructor(
     private readonly router: Router,
@@ -76,7 +77,7 @@ export class ShowFacilityComponent implements OnInit {
   }
 
   getFacilityByPageAndSearch(currentPage) {
-    this.fhirService.getFacilityByPageAndSearch(currentPage).subscribe(res => {
+    this.fhirService.getFacilityByPageAndSearch(currentPage, null, this.isInactive).subscribe(res => {
       this.isAPIBusy = false;
       this.manipulateRes(res);
     });
@@ -99,7 +100,7 @@ export class ShowFacilityComponent implements OnInit {
       ).subscribe(_term => {
         if (this.searchString && this.searchString.length >= 1) {
           this.facilityArr = [];
-          this.fhirService.getFacilityByPageAndSearch(0, this.searchString).subscribe(res => {
+          this.fhirService.getFacilityByPageAndSearch(0, this.searchString, this.isInactive).subscribe(res => {
             this.manipulateRes(res);
           });
         } else {
@@ -131,11 +132,19 @@ export class ShowFacilityComponent implements OnInit {
     this.currentPage = event;
     if (this.searchString && this.searchString.length >= 1) {
       this.facilityArr = [];
-      this.fhirService.getFacilityByPageAndSearch(event - 1, this.searchString).subscribe(res => {
+      this.fhirService.getFacilityByPageAndSearch(event - 1, this.searchString, this.isInactive).subscribe(res => {
         this.manipulateRes(res);
       });
     } else {
       this.getFacilityByPageAndSearch(event - 1);
     }
+  }
+
+  onChangeCheckboxForFacility() {
+    this.currentPage = 0;
+    this.fhirService.getFacilityByPageAndSearch(this.currentPage, this.searchString, this.isInactive).subscribe(res => {
+      this.isAPIBusy = false;
+      this.manipulateRes(res);
+    });
   }
 }
