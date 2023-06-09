@@ -22,14 +22,14 @@ public interface LocationResourceRepository extends JpaRepository<LocationResour
 
     Page<LocationResource> findByTextContainingIgnoreCase(String searchString, Pageable page);
 
-    @Query(value = "select * from location_resources where cast(cast(text AS json)->> 'status' as text) = :status and (organization_name ilike %:searchString% or location_name ilike %:searchString%)",
+    @Query(value = "select * from location_resources where cast(cast(text AS json)->> 'status' as text) in :status and (organization_name ilike %:searchString% or location_name ilike %:searchString%)",
             countQuery = "select count(*) from location_resources where cast(cast(text AS json)->> 'status' as text) = :status and (organization_name ilike %:searchString% or location_name ilike %:searchString%)",
             nativeQuery = true)
-    Page<LocationResource> searchFacilityByStatus(@Param("searchString") String searchString, @Param("status") String status, Pageable page);
+    Page<LocationResource> searchFacilityByStatus(@Param("searchString") String searchString, @Param("status") List<String> status, Pageable page);
 
-    @Query( value =  "select count(*) from location_resources where cast(cast(text AS json)->> 'status' as text) = :status and organization_name ilike %:searchString% or location_name ilike %:searchString%",
+    @Query( value =  "select count(*) from location_resources where cast(cast(text AS json)->> 'status' as text) in :status and organization_name ilike %:searchString% or location_name ilike %:searchString%",
             nativeQuery = true)
-    Long searchFacilityByStatus(@Param("searchString") String searchString, @Param("status") String status);
+    Long searchFacilityByStatus(@Param("searchString") String searchString, @Param("status") List<String> status);
 
 
     @Query(value = "select distinct location_id from location_resources where resource_id in :id ;", nativeQuery = true)
@@ -38,10 +38,10 @@ public interface LocationResourceRepository extends JpaRepository<LocationResour
     @Query(value = "select distinct resource_id from location_resources where location_id in :id ;", nativeQuery = true)
     List<String> findResourceIdIn(@Param("id") List<Integer> id);
 
-    @Query(value = "select * from location_resources where cast(cast(text AS json)->> 'status' as text) = :status",
+    @Query(value = "select * from location_resources where cast(cast(text AS json)->> 'status' as text) in :status",
             nativeQuery = true)
-    Page<LocationResource> findResourceByStatus(@Param("status") String status,Pageable page);
+    Page<LocationResource> findResourceByStatus(@Param("status") List<String> status,Pageable page);
 
-    @Query(value = "select COUNT(*) from location_resources where cast(cast(text AS json)->> 'status' as text) = :status", nativeQuery = true)
-    Long findResourceByStatus(@Param("status") String status);
+    @Query(value = "select COUNT(*) from location_resources where cast(cast(text AS json)->> 'status' as text) in :status", nativeQuery = true)
+    Long findResourceByStatus(@Param("status") List<String> status);
 }

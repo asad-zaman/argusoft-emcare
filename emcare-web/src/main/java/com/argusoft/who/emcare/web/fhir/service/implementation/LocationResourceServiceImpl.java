@@ -177,13 +177,14 @@ public class LocationResourceServiceImpl implements LocationResourceService {
         Sort sort = Sort.by("created_on").descending();
         Pageable page = PageRequest.of(pageNo, CommonConstant.PAGE_SIZE, sort);
         Long count = 0L;
-        String status;
+        List<String> status = new ArrayList<>();
 
         if(filter==null){
-            filter=false;
+            status.add("active");
+        }else {
+            status.add("inactive");
+            status.add("suspended");
         }
-
-        status= filter ? "inactive" : "active";
 
         if (searchString != null && !searchString.isEmpty()) {
             locationResources = locationResourceRepository.searchFacilityByStatus(searchString, status, page);
