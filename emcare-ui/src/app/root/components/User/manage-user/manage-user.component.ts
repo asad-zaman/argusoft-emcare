@@ -129,7 +129,6 @@ export class ManageUserComponent implements OnInit {
   mapUpdateForm() {
     this.userService.getUserById(this.editId).subscribe(res => {
       if (res) {
-        console.log(res);
         const data = {
           firstName: res['firstName'],
           lastName: res['lastName'],
