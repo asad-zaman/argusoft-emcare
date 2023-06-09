@@ -577,10 +577,12 @@ public class UserServiceImpl implements UserService {
         UserRepresentation user = usersResource.get(userUpdateDto.getUserId()).toRepresentation();
         user.setEnabled(userUpdateDto.getIsEnabled());
         usersResource.get(userUpdateDto.getUserId()).update(user);
-        UserLocationMapping oldUser = userLocationMappingRepository.findByUserId(userUpdateDto.getUserId()).get(0);
-        oldUser.setState(userUpdateDto.getIsEnabled());
-        oldUser.setIsFirst(false);
-        userLocationMappingRepository.save(oldUser);
+        List<UserLocationMapping> userLocationMappings = userLocationMappingRepository.findByUserId(userUpdateDto.getUserId());
+        for (UserLocationMapping oldUser : userLocationMappings){
+            oldUser.setState(userUpdateDto.getIsEnabled());
+            oldUser.setIsFirst(false);
+            userLocationMappingRepository.save(oldUser);
+        }
 
         if (userUpdateDto.getIsEnabled()) {
             CompletableFuture.runAsync(() -> {
@@ -608,7 +610,7 @@ public class UserServiceImpl implements UserService {
             });
         }
 
-        return ResponseEntity.ok(oldUser);
+        return ResponseEntity.ok(userLocationMappings);
 
     }
 

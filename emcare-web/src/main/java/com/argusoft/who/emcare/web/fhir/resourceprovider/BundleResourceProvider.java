@@ -67,7 +67,6 @@ public class BundleResourceProvider implements IResourceProvider {
                 resourceId = emcareResourceService.saveOrUpdateResourceByRequestType(resource, resourceType, requestType);
 
             }
-
             //Adding resource to return Bundle if it is created.
             if (requestType.equals("PUT")) {
                 BundleEntryResponseComponent bundleResponse = new BundleEntryResponseComponent();

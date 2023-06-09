@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @CrossOrigin(origins = "**")
@@ -85,8 +86,10 @@ public class EmcareResourceController {
 
     @GetMapping("/patient/locationId/{locationId}")
     public PageDto getAllPatientsUnderLocation(@PathVariable(value = "locationId") Object locationId,
-                                               @RequestParam(value = "pageNo") Integer pageNo) {
-        return emcareResourceService.getPatientUnderLocationId(locationId, pageNo);
+                                               @RequestParam(value = "pageNo") Integer pageNo,
+                                               @Nullable @RequestParam(value = "startDate") Date startDate,
+                                               @Nullable @RequestParam(value = "endDate") Date endDate) {
+        return emcareResourceService.getPatientUnderLocationId(locationId, pageNo, startDate, endDate);
     }
 
     @GetMapping("/patient/{patientId}")
@@ -98,7 +101,7 @@ public class EmcareResourceController {
             EmcareResource caregiverResource = emcareResourceService.findByResourceId(patientDto.getCaregiver());
             RelatedPerson caregiver = parser.parseResource(RelatedPerson.class, caregiverResource.getText());
             patientDto.setCaregiver(
-                    caregiver.getNameFirstRep().getGiven().get(0) + " " + caregiver.getNameFirstRep().getFamily());
+                caregiver.getNameFirstRep().getGiven().get(0) + " " + caregiver.getNameFirstRep().getFamily());
         }
 
         if (patientDto.getFacility() != null) {
