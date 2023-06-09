@@ -96,9 +96,11 @@ public class QuestionnaireResponseServiceImpl implements QuestionnaireResponseSe
         PageDto pageDto = new PageDto();
 
         if (searchString != null && !searchString.isEmpty()) {
-            consultations = emcareResourceRepository.findConsultationsBySearch(searchString);
+            consultations = emcareResourceRepository.findConsultationsBySearch(searchString, page);
+            totalCount = emcareResourceRepository.findConsultationsBySearchCount(searchString).size();
         } else {
-            consultations = emcareResourceRepository.findAllConsultations();
+            consultations = emcareResourceRepository.findAllConsultations(page);
+            totalCount = emcareResourceRepository.findAllConsultationsCount().size();
         }
 
 
