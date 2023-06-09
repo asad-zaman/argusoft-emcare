@@ -397,11 +397,13 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
         Long offSet = pageNo.longValue() * 10;
         List<Integer> locationIds;
         List<String> childFacilityIds = new ArrayList<>();
-        if (isNumeric(locationId.toString())) {
-            locationIds = locationMasterDao.getAllChildLocationId(Integer.parseInt(locationId.toString()));
-            childFacilityIds = locationResourceRepository.findResourceIdIn(locationIds);
-        } else {
-            childFacilityIds.add(locationId.toString());
+        if (Objects.nonNull(locationId)) {
+            if (isNumeric(locationId.toString())) {
+                locationIds = locationMasterDao.getAllChildLocationId(Integer.parseInt(locationId.toString()));
+                childFacilityIds = locationResourceRepository.findResourceIdIn(locationIds);
+            } else {
+                childFacilityIds.add(locationId.toString());
+            }
         }
         try {
 
