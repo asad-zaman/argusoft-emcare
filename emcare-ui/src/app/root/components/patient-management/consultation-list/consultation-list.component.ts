@@ -59,6 +59,7 @@ export class ConsultationListComponent implements OnInit {
     if (res && res['list']) {
       this.consultations = res['list'];
       this.filteredConsultations = this.consultations;
+
       this.filteredConsultations = _.sortBy(this.filteredConsultations, 'consultationDate').reverse();
       this.totalCount = res['totalCount'];
       this.isAPIBusy = false;
@@ -66,20 +67,23 @@ export class ConsultationListComponent implements OnInit {
         element['isExcelPDF'] = false;
       });
     }
+
   }
 
   getConsultationsByPageIndex(index) {
     this.consultations = [];
     this.fhirService.getConsultationList(index).subscribe(res => {
+
       this.manipulateResponse(res);
     });
+
   }
 
   onIndexChange(event) {
     this.currentPage = event;
     if (this.searchString && this.searchString.length >= 1) {
       this.consultations = [];
-      this.fhirService.getPatientsByPageIndex(event - 1, this.searchString).subscribe(res => {
+      this.fhirService.getConsultationList(event - 1, this.searchString).subscribe(res => {
         this.manipulateResponse(res);
       });
     } else {
@@ -99,7 +103,7 @@ export class ConsultationListComponent implements OnInit {
         }
         if (this.searchString && this.searchString.length >= 1) {
           this.consultations = [];
-          this.fhirService.getPatientsByPageIndex(this.currentPage, this.searchString).subscribe(res => {
+          this.fhirService.getConsultationList(this.currentPage, this.searchString).subscribe(res => {
             this.manipulateResponse(res);
           });
         } else {
@@ -115,7 +119,7 @@ export class ConsultationListComponent implements OnInit {
   }
 
   viewConsultation(index) {
-    this.router.navigate([`view-consultation/${this.filteredConsultations[index]['id']}`]);
+    this.router.navigate([`view-consultation/${this.filteredConsultations[index]['resource_id']}`]);
   }
 
   onEnableSelectionClick() {
@@ -158,7 +162,7 @@ export class ConsultationListComponent implements OnInit {
     ];
 
     let answerData: any = [];
-    this.fhirService.getConsultationExportData(patient.id).subscribe((res: any) => {
+    this.fhirService.getConsultationExportData(patient.resource_id).subscribe((res: any) => {
       answerData.push({
         Consultation: `${patient.givenName} ${patient.familyName}'s consultation data`,
         linkId: '-', text: '-', answer: '-'
@@ -234,7 +238,7 @@ export class ConsultationListComponent implements OnInit {
     } else {
       selectedConsultations = this.filteredConsultations.filter(el => el.isExcelPDF === true);
       selectedConsultations.forEach((patient, i) => {
-        this.fhirService.getConsultationExportData(patient.id).subscribe((res: any) => {
+        this.fhirService.getConsultationExportData(patient.resource_id).subscribe((res: any) => {
           if (i >= 1) {
             answerData.push({ Consultation: ``, linkId: '', text: '', answer: '' });
           }
@@ -294,7 +298,7 @@ export class ConsultationListComponent implements OnInit {
   }
 
   exportPDF(patient) {
-    this.fhirService.getConsultationExportData(patient.id).subscribe((res: any) => {
+    this.fhirService.getConsultationExportData(patient.resource_id).subscribe((res: any) => {
       let answerInnerData = [];
       let answerOuterData = [];
       let data = [];
@@ -427,7 +431,7 @@ export class ConsultationListComponent implements OnInit {
     } else {
       selectedConsultations = this.filteredConsultations.filter(el => el.isExcelPDF === true);
       selectedConsultations.forEach(consultation => {
-        this.fhirService.getConsultationExportData(consultation.id).subscribe((res: any) => {
+        this.fhirService.getConsultationExportData(consultation.resource_id).subscribe((res: any) => {
           let answerInnerData = [];
           let answerOuterData = [];
           let data = [];
@@ -519,7 +523,6 @@ export class ConsultationListComponent implements OnInit {
       this.fhirService.getAllConsultationsForExport().subscribe((res: any) => {
         if (res) {
           this.filteredAllConsultations = res;
-          console.log(this.filteredAllConsultations);
         }
       });
     }
