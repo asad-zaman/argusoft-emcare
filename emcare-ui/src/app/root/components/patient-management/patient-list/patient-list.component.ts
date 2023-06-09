@@ -36,6 +36,7 @@ export class PatientListComponent implements OnInit {
     enableAll = false;
     exportAllPatient = false;
     filteredAllPatientData = [];
+    dateObj = {};
 
     constructor(
         private readonly fhirService: FhirService,
@@ -81,7 +82,7 @@ export class PatientListComponent implements OnInit {
     }
 
     getPatientsBasedOnLocationAndPageIndex(pageIndex) {
-        this.fhirService.getPatientsByLocationAndPageIndex(this.selectedId, pageIndex).subscribe(res => {
+        this.fhirService.getPatientsByLocationAndPageIndex(this.selectedId, pageIndex, this.dateObj).subscribe(res => {
             if (res) {
                 this.filteredPatients = [];
                 this.filteredPatients = res['list'];
@@ -156,15 +157,16 @@ export class PatientListComponent implements OnInit {
         if (this.exportAllPatient) {
             this.exportAllPatient = !this.exportAllPatient;
         }
-        this.selectedId = data;
+
+        this.selectedId = data.locationId;
+        this.dateObj = data.dateObj;
+
         if (this.selectedId) {
             this.isLocationFilterOn = true;
-            this.resetPageIndex();
-            const pageIndex = this.currentPage == 0 ? this.currentPage : this.currentPage - 1;
-            this.getPatientsBasedOnLocationAndPageIndex(pageIndex);
-        } else {
-            this.toasterService.showToast('info', 'Please select Location!', 'EMCARE');
         }
+        this.resetPageIndex();
+        const pageIndex = this.currentPage == 0 ? this.currentPage : this.currentPage - 1;
+        this.getPatientsBasedOnLocationAndPageIndex(pageIndex);
     }
 
     clearFilter(event) {

@@ -68,8 +68,8 @@ export class FhirService {
         return this.http.get(`${this.fhirBaseURL}/questionnaire/page?pageNo=${pageIndex}`, this.getHeaders());
     }
 
-    getPatientsByLocationAndPageIndex(locationId, pageIndex) {
-        return this.http.get(`${this.fhirBaseURL}/patient/locationId/${locationId}?pageNo=${pageIndex}`, this.getHeaders());
+    getPatientsByLocationAndPageIndex(locationId, pageIndex, dateObj) {
+        return this.http.get(`${this.fhirBaseURL}/patient/locationId?startDate=${dateObj.startDate}&endDate=${dateObj.endDate}&pageNo=${pageIndex}&locationId=${locationId ? locationId : ''}`, this.getHeaders());
     }
 
     addLaunguage(data) {
