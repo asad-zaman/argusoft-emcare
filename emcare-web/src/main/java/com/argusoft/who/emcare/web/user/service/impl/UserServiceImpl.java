@@ -228,13 +228,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public PageDto getUserPage(HttpServletRequest request, Integer pageNo, String searchString) {
+    public PageDto getUserPage(HttpServletRequest request, Integer pageNo, String searchString, Boolean filter) {
         Integer pageSize = CommonConstant.PAGE_SIZE;
         Integer startIndex = pageNo * pageSize;
         Integer endIndex = (pageNo + 1) * pageSize;
+        if(filter == null) {
+            filter = false;
+        }
+        filter = !filter;
         List<MultiLocationUserListDto> userList = new ArrayList<>();
         Keycloak keycloak = keyCloakConfig.getInstance();
-        List<String> countryUsers = userLocationMappingRepository.getDistinctUserId();
+        List<String> countryUsers = userLocationMappingRepository.getDistinctUserIdUsingFilter(filter);
         Integer userTotalCount = countryUsers.size();
         if (endIndex > userTotalCount) {
             endIndex = userTotalCount;

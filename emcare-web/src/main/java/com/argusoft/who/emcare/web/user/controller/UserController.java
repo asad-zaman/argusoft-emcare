@@ -39,8 +39,9 @@ public class UserController {
     @GetMapping("/user/page")
     public ResponseEntity<Object> getUserPage(HttpServletRequest request,
                                               @RequestParam(value = "pageNo") Integer pageNo,
-                                              @Nullable @RequestParam(value = "search", required = false) String searchString) {
-        return ResponseEntity.ok(userService.getUserPage(request, pageNo, searchString));
+                                              @Nullable @RequestParam(value = "search", required = false) String searchString,
+                                              @RequestParam(value = "filter", required = false) Boolean filter) {
+        return ResponseEntity.ok(userService.getUserPage(request, pageNo, searchString, filter));
     }
 
     @GetMapping("/user/signedup")

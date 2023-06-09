@@ -33,6 +33,7 @@ export class UserListComponent implements OnInit {
   isAdd: boolean = true;
   isEdit: boolean = true;
   isView: boolean = true;
+  isInactive: boolean = false;
 
   constructor(
     private readonly router: Router,
@@ -72,7 +73,7 @@ export class UserListComponent implements OnInit {
 
   getUsersByPageIndex(index) {
     this.mainUserList = [];
-    this.userService.getUsersByPage(index).subscribe(res => {
+    this.userService.getUsersByPage(this.currentPage, null, this.isInactive).subscribe(res => {
       this.manipulateResponse(res);
     });
   }
@@ -220,5 +221,13 @@ export class UserListComponent implements OnInit {
       this.resetPageIndex();
       this.getUsersByPageIndex(this.currentPage);
     }
+  }
+
+  onChangeCheckboxForUser() {
+    this.currentPage = 0;
+    this.userService.getUsersByPage(this.currentPage, null, this.isInactive).subscribe((res) => {
+        this.isAPIBusy = false;
+        this.manipulateResponse(res);
+      });
   }
 }
