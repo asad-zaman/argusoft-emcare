@@ -31,6 +31,9 @@ export class ConsultationListComponent implements OnInit {
   enableAll = false;
   exportAllConsultations = false;
   filteredAllConsultations = [];
+  selectedId: any;
+  dateObj: any;
+  isLocationFilterOn: boolean;
 
   constructor(
     private readonly fhirService: FhirService,
@@ -67,27 +70,38 @@ export class ConsultationListComponent implements OnInit {
         element['isExcelPDF'] = false;
       });
     }
-
   }
 
   getConsultationsByPageIndex(index) {
     this.consultations = [];
     this.fhirService.getConsultationList(index).subscribe(res => {
-
-      this.manipulateResponse(res);
+      if (res) {
+        this.manipulateResponse(res);
+      }
     });
+  }
 
+  getConsultationsBasedOnLocationAndPageIndex(pageIndex) {
+    this.fhirService.getConsultationsByLocationAndPageIndex(this.selectedId, pageIndex, this.dateObj).subscribe(res => {
+      if (res) {
+        this.manipulateResponse(res);
+      }
+    });
   }
 
   onIndexChange(event) {
     this.currentPage = event;
-    if (this.searchString && this.searchString.length >= 1) {
-      this.consultations = [];
-      this.fhirService.getConsultationList(event - 1, this.searchString).subscribe(res => {
-        this.manipulateResponse(res);
-      });
+    if (this.isLocationFilterOn) {
+      this.getConsultationsBasedOnLocationAndPageIndex(event - 1);
     } else {
-      this.getConsultationsByPageIndex(event - 1);
+      if (this.searchString && this.searchString.length >= 1) {
+        this.consultations = [];
+        this.fhirService.getConsultationList(event - 1, this.searchString).subscribe(res => {
+          this.manipulateResponse(res);
+        });
+      } else {
+        this.getConsultationsByPageIndex(event - 1);
+      }
     }
   }
 
@@ -107,7 +121,11 @@ export class ConsultationListComponent implements OnInit {
             this.manipulateResponse(res);
           });
         } else {
-          this.getConsultationsByPageIndex(this.currentPage);
+          if (this.isLocationFilterOn) {
+            this.getConsultationsBasedOnLocationAndPageIndex(this.currentPage);
+          } else {
+            this.getConsultationsByPageIndex(this.currentPage);
+          }
         }
       });
     }
@@ -525,6 +543,29 @@ export class ConsultationListComponent implements OnInit {
           this.filteredAllConsultations = res;
         }
       });
+    }
+  }
+
+  getLocationId(data) {
+    if (this.exportAllConsultations) {
+      this.exportAllConsultations = !this.exportAllConsultations;
+    }
+
+    this.selectedId = data.locationId;
+    this.dateObj = data.dateObj;
+
+    if (this.selectedId && this.dateObj['startDate'] && this.dateObj['endDate']) {
+      this.isLocationFilterOn = true;
+    }
+    this.resetPageIndex();
+    const pageIndex = this.currentPage == 0 ? this.currentPage : this.currentPage - 1;
+    this.getConsultationsBasedOnLocationAndPageIndex(pageIndex);
+  }
+
+  clearFilter(event) {
+    if (event) {
+      this.resetPageIndex();
+      this.getConsultationsByPageIndex(this.currentPage);
     }
   }
 }
