@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -56,10 +57,12 @@ export class UserManagementService {
     return this.http.get(`${this.userURL}/locationId/${id}`, this.getHeaders());
   }
 
-  getUsersByPage(pageIndex, search?) {
+  getUsersByPage(pageIndex, search?,filterValue?) {
     let url;
-    if (search) {
-      url = `${this.userURL}/page?pageNo=${pageIndex}&search=${search}`;
+    if (search && filterValue) {
+      url = `${this.userURL}/page?pageNo=${pageIndex}&search=${search}&filter=${filterValue}`;
+    } else if(filterValue) {
+      url = `${this.userURL}/page?pageNo=${pageIndex}&filter=${filterValue}`;
     } else {
       url = `${this.userURL}/page?pageNo=${pageIndex}`;
     }
