@@ -26,6 +26,7 @@ export class ShowFacilityComponent implements OnInit {
   currentPage = 0;
   totalCount = 0;
   tableSize = 10;
+  isInactive = false;
 
   constructor(
     private readonly router: Router,
@@ -77,6 +78,7 @@ export class ShowFacilityComponent implements OnInit {
 
   getFacilityByPageAndSearch(currentPage) {
     this.fhirService.getFacilityByPageAndSearch(currentPage).subscribe(res => {
+      console.log(res);
       this.isAPIBusy = false;
       this.manipulateRes(res);
     });
@@ -137,5 +139,12 @@ export class ShowFacilityComponent implements OnInit {
     } else {
       this.getFacilityByPageAndSearch(event - 1);
     }
+  }
+
+  onChangeCheckboxForFacility() {
+    this.fhirService.getFacilityByPageAndSearch(this.currentPage, null, this.isInactive).subscribe(res => {
+      this.isAPIBusy = false;
+      this.manipulateRes(res);
+    });
   }
 }
