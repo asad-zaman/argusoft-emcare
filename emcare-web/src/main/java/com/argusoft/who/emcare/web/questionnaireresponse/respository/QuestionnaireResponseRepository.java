@@ -4,7 +4,6 @@ import com.argusoft.who.emcare.web.questionnaireresponse.dto.MiniPatient;
 import com.argusoft.who.emcare.web.questionnaireresponse.model.QuestionnaireResponse;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -51,7 +50,6 @@ public interface QuestionnaireResponseRepository extends JpaRepository<Questionn
             "FROM QUESTIONNAIRE_RESPONSE\n" +
             "GROUP BY PATIENT_ID)\n" +
             "SELECT\n" +
-            "EMCARE_RESOURCES.text as \"text\",\n" +
             "CONCAT('Patient',' ',row_number() over (ORDER BY emcare_resources.id)) as \"key\",\n" +
             "EMCARE_RESOURCES.resource_id, \n" +
             "cast((EMCARE_RESOURCES.text) as json) -> cast('identifier' as text) -> 0 ->> cast('value' as text) as \"identifier\",\n" +
@@ -83,7 +81,6 @@ public interface QuestionnaireResponseRepository extends JpaRepository<Questionn
             "FROM QUESTIONNAIRE_RESPONSE\n" +
             "GROUP BY PATIENT_ID)\n" +
             "SELECT\n" +
-            "EMCARE_RESOURCES.text as \"text\",\n" +
             "CONCAT('Patient',' ',row_number() over (ORDER BY emcare_resources.id)) as \"key\",\n" +
             "EMCARE_RESOURCES.resource_id, \n" +
             "cast((EMCARE_RESOURCES.text) as json) -> cast('identifier' as text) -> 0 ->> cast('value' as text) as \"identifier\",\n" +
@@ -113,7 +110,6 @@ public interface QuestionnaireResponseRepository extends JpaRepository<Questionn
             "FROM QUESTIONNAIRE_RESPONSE\n" +
             "GROUP BY PATIENT_ID)\n" +
             "SELECT\n" +
-            "EMCARE_RESOURCES.text as \"text\",\n" +
             "CONCAT('Patient',' ',row_number() over (ORDER BY emcare_resources.id)) as \"key\",\n" +
             "EMCARE_RESOURCES.resource_id, \n" +
             "cast((EMCARE_RESOURCES.text) as json) -> cast('identifier' as text) -> 0 ->> cast('value' as text) as \"identifier\",\n" +
@@ -143,7 +139,6 @@ public interface QuestionnaireResponseRepository extends JpaRepository<Questionn
             "FROM QUESTIONNAIRE_RESPONSE\n" +
             "GROUP BY PATIENT_ID)\n" +
             "SELECT\n" +
-            "EMCARE_RESOURCES.text as \"text\",\n" +
             "CONCAT('Patient',' ',row_number() over (ORDER BY emcare_resources.id)) as \"key\",\n" +
             "EMCARE_RESOURCES.resource_id, \n" +
             "cast((EMCARE_RESOURCES.text) as json) -> cast('identifier' as text) -> 0 ->> cast('value' as text) as \"identifier\",\n" +

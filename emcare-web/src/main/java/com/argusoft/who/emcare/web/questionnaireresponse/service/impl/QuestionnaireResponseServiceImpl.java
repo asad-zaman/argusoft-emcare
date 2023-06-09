@@ -138,7 +138,7 @@ public class QuestionnaireResponseServiceImpl implements QuestionnaireResponseSe
     }
 
     @Override
-    public PageDto getConsultationsUnderLocationId(Object locationId, Integer pageNo, Date startDate, Date endDate) {
+    public PageDto getConsultationsUnderLocationId(Object locationId, Integer pageNo, String sDate, String eDate) {
         Long offSet = pageNo.longValue() * 10;
         List<Integer> locationIds;
         List<String> childFacilityIds = new ArrayList<>();
@@ -148,18 +148,24 @@ public class QuestionnaireResponseServiceImpl implements QuestionnaireResponseSe
         } else {
             childFacilityIds.add(locationId.toString());
         }
-        try {
 
-            if (Objects.isNull(startDate)) {
-                String sDate1 = "31/12/1998";
-                startDate = new SimpleDateFormat("dd/MM/yyyy").parse(sDate1);
+            Date startDate = null;
+            Date endDate = null;
+            try {
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                if (Objects.isNull(sDate)) {
+                    String sDate1 = "1998-12-31";
+                    sDate = sdf.format(sdf.parse("2013-09-18"));
+                }
+                if (Objects.isNull(eDate)) {
+                    eDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date()).toString();
+                }
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                startDate = simpleDateFormat.parse(sDate);
+                endDate = simpleDateFormat.parse(eDate);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            if (Objects.isNull(endDate)) {
-                endDate = new Date();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         Long totalCount = 0L;
         List<Map<String, Object>> resourcesList = new ArrayList<>();
         if (Objects.isNull(locationId)) {

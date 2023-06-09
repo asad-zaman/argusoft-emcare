@@ -11,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Nullable;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -58,11 +57,11 @@ public class QuestionnaireResponseController {
         return ResponseEntity.ok().body(questionnaireResponseService.getAllDataForExport());
     }
 
-    @GetMapping("/consultations/locationId/{locationId}")
-    public PageDto getAllPatientsUnderLocation(@PathVariable(value = "locationId") Object locationId,
+    @GetMapping("/consultations/locationId")
+    public PageDto getAllPatientsUnderLocation(@Nullable @RequestParam(value = "locationId") Object locationId,
                                                @RequestParam(value = "pageNo") Integer pageNo,
-                                               @Nullable @RequestParam(value = "startDate") Date startDate,
-                                               @Nullable @RequestParam(value = "endDate") Date endDate) {
+                                               @Nullable @RequestParam(value = "startDate") String startDate,
+                                               @Nullable @RequestParam(value = "endDate") String endDate) {
         return questionnaireResponseService.getConsultationsUnderLocationId(locationId, pageNo, startDate, endDate);
     }
 
