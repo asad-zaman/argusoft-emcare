@@ -91,7 +91,7 @@ public class QuestionnaireResponseServiceImpl implements QuestionnaireResponseSe
     public PageDto getQuestionnaireResponsePage(Integer pageNo, String searchString) {
         Pageable page = PageRequest.of(pageNo, CommonConstant.PAGE_SIZE);
 //        List<EmcareResource> resourcesList;
-        List<Map<String,Object>> consultations;
+        List<Map<String, Object>> consultations;
         Integer totalCount = 0;
         PageDto pageDto = new PageDto();
 
@@ -100,7 +100,6 @@ public class QuestionnaireResponseServiceImpl implements QuestionnaireResponseSe
         } else {
             consultations = emcareResourceRepository.findAllConsultations();
         }
-
 
 
         pageDto.setList(consultations);
@@ -142,34 +141,36 @@ public class QuestionnaireResponseServiceImpl implements QuestionnaireResponseSe
         Long offSet = pageNo.longValue() * 10;
         List<Integer> locationIds;
         List<String> childFacilityIds = new ArrayList<>();
-        if (isNumeric(locationId.toString())) {
-            locationIds = locationMasterDao.getAllChildLocationId(Integer.parseInt(locationId.toString()));
-            childFacilityIds = locationResourceRepository.findResourceIdIn(locationIds);
-        } else {
-            childFacilityIds.add(locationId.toString());
+        if (Objects.nonNull(locationId)) {
+            if (isNumeric(locationId.toString())) {
+                locationIds = locationMasterDao.getAllChildLocationId(Integer.parseInt(locationId.toString()));
+                childFacilityIds = locationResourceRepository.findResourceIdIn(locationIds);
+            } else {
+                childFacilityIds.add(locationId.toString());
+            }
         }
 
-            Date startDate = null;
-            Date endDate = null;
-            try {
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                if (Objects.isNull(sDate)) {
-                    String sDate1 = "1998-12-31";
-                    sDate = sdf.format(sdf.parse("2013-09-18"));
-                }
-                if (Objects.isNull(eDate)) {
-                    eDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date()).toString();
-                }
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                startDate = simpleDateFormat.parse(sDate);
-                endDate = simpleDateFormat.parse(eDate);
-            } catch (Exception e) {
-                e.printStackTrace();
+        Date startDate = null;
+        Date endDate = null;
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            if (Objects.isNull(sDate)) {
+                String sDate1 = "1998-12-31";
+                sDate = sdf.format(sdf.parse("2013-09-18"));
             }
+            if (Objects.isNull(eDate)) {
+                eDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date()).toString();
+            }
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            startDate = simpleDateFormat.parse(sDate);
+            endDate = simpleDateFormat.parse(eDate);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         Long totalCount = 0L;
         List<Map<String, Object>> resourcesList = new ArrayList<>();
         if (Objects.isNull(locationId)) {
-            totalCount = Long.valueOf(questionnaireResponseRepository.getFilteredDateOnlyCount(startDate,endDate).size());
+            totalCount = Long.valueOf(questionnaireResponseRepository.getFilteredDateOnlyCount(startDate, endDate).size());
             resourcesList = questionnaireResponseRepository.getFilteredDateOnly(startDate, endDate, offSet);
         } else {
             totalCount = Long.valueOf(questionnaireResponseRepository.getFilteredConsultationsInCount(childFacilityIds, startDate, endDate).size());
