@@ -393,7 +393,7 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
     }
 
     @Override
-    public PageDto getPatientUnderLocationId(Object locationId, Integer pageNo, Date startDate, Date endDate) {
+    public PageDto getPatientUnderLocationId(Object locationId, Integer pageNo, String sDate, String eDate) {
         Long offSet = pageNo.longValue() * 10;
         List<Integer> locationIds;
         List<String> childFacilityIds = new ArrayList<>();
@@ -405,15 +405,19 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
                 childFacilityIds.add(locationId.toString());
             }
         }
+        Date startDate = null;
+        Date endDate = null;
         try {
-
-            if (Objects.isNull(startDate)) {
-                String sDate1 = "31/12/1998";
-                startDate = new SimpleDateFormat("dd/MM/yyyy").parse(sDate1);
+            if (Objects.isNull(sDate)) {
+                String sDate1 = "1998-12-31";
+                sDate = new SimpleDateFormat("yyyy-MM-dd").format(sDate1).toString();
             }
-            if (Objects.isNull(endDate)) {
-                endDate = new Date();
+            if (Objects.isNull(eDate)) {
+                eDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date()).toString();
             }
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            startDate = simpleDateFormat.parse(sDate);
+            endDate = simpleDateFormat.parse(eDate);
         } catch (Exception e) {
             e.printStackTrace();
         }
