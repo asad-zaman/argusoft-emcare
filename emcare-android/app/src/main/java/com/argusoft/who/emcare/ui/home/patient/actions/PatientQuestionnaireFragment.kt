@@ -21,6 +21,7 @@ import com.argusoft.who.emcare.ui.common.base.BaseFragment
 import com.argusoft.who.emcare.ui.common.model.ConsultationFlowItem
 import com.argusoft.who.emcare.ui.home.HomeActivity
 import com.argusoft.who.emcare.ui.home.HomeViewModel
+import com.argusoft.who.emcare.ui.home.fhirResources.FhirResourcesViewModel
 import com.argusoft.who.emcare.utils.extention.*
 import com.google.android.fhir.datacapture.QuestionnaireFragment
 import dagger.hilt.android.AndroidEntryPoint
@@ -32,11 +33,17 @@ import java.text.SimpleDateFormat
 class PatientQuestionnaireFragment : BaseFragment<FragmentPatientQuestionnaireBinding>() {
 
     private val homeViewModel: HomeViewModel by viewModels()
+    private val fhirResourcesViewModel: FhirResourcesViewModel by viewModels()
     private var questionnaireFragment = QuestionnaireFragment()
     private var consultationFlowId: String? = null
 
     override fun initView() {
         (activity as? HomeActivity)?.closeSidepane()
+        fhirResourcesViewModel.createStartAudit(
+            consultationStage = requireArguments().getString(INTENT_EXTRA_CONSULTATION_STAGE)!!,
+            patientId = requireArguments().getString(INTENT_EXTRA_PATIENT_ID)!!,
+            encounterId = requireArguments().getString(INTENT_EXTRA_ENCOUNTER_ID)!!,
+        )
         consultationFlowId = requireArguments().getString(INTENT_EXTRA_CONSULTATION_FLOW_ITEM_ID)
         binding.headerLayout.toolbar.setTitleSidepane(
             requireArguments().getString(
@@ -90,7 +97,11 @@ class PatientQuestionnaireFragment : BaseFragment<FragmentPatientQuestionnaireBi
                 }
 
             } else {
-                saveQuestionnaire()
+                fhirResourcesViewModel.saveStartAndEndAudit(
+                    consultationStage = requireArguments().getString(INTENT_EXTRA_CONSULTATION_STAGE)!!,
+                    patientId = requireArguments().getString(INTENT_EXTRA_PATIENT_ID)!!,
+                    encounterId = requireArguments().getString(INTENT_EXTRA_ENCOUNTER_ID)!!,
+                )
             }
         }
 
@@ -214,6 +225,16 @@ class PatientQuestionnaireFragment : BaseFragment<FragmentPatientQuestionnaireBi
 
         observeNotNull(homeViewModel.deleteNextConsultations) { apiResponse ->
             apiResponse.whenSuccess {
+                fhirResourcesViewModel.saveStartAndEndAudit(
+                    consultationStage = requireArguments().getString(INTENT_EXTRA_CONSULTATION_STAGE)!!,
+                    patientId = requireArguments().getString(INTENT_EXTRA_PATIENT_ID)!!,
+                    encounterId = requireArguments().getString(INTENT_EXTRA_ENCOUNTER_ID)!!,
+                )
+            }
+        }
+
+        observeNotNull(fhirResourcesViewModel.auditSaved) { apiResponse ->
+            apiResponse.whenSuccess {
                 saveQuestionnaire()
             }
         }
@@ -267,6 +288,16 @@ class PatientQuestionnaireFragment : BaseFragment<FragmentPatientQuestionnaireBi
             }
         }
 
+        observeNotNull(fhirResourcesViewModel.draftAuditSaved) { apiResponse ->
+            apiResponse.whenSuccess {
+                if(requireArguments().getString(INTENT_EXTRA_CONSULTATION_FLOW_ITEM_ID) != null) {
+                    homeViewModel.saveQuestionnaireAsDraft(requireArguments().getString(INTENT_EXTRA_CONSULTATION_FLOW_ITEM_ID)!!, questionnaireFragment.getQuestionnaireResponse())
+                } else {
+                    homeViewModel.saveQuestionnaireAsDraftNew(questionnaireFragment.getQuestionnaireResponse())
+                }
+            }
+        }
+
         observeNotNull(homeViewModel.draftQuestionnaire) {
             it.whenSuccess {
                 context?.showSnackBar(
@@ -314,11 +345,11 @@ class PatientQuestionnaireFragment : BaseFragment<FragmentPatientQuestionnaireBi
                 activity?.alertDialog {
                     setMessage(R.string.msg_save_draft)
                     setPositiveButton(R.string.button_yes) { _, _ ->
-                        if(requireArguments().getString(INTENT_EXTRA_CONSULTATION_FLOW_ITEM_ID) != null) {
-                            homeViewModel.saveQuestionnaireAsDraft(requireArguments().getString(INTENT_EXTRA_CONSULTATION_FLOW_ITEM_ID)!!, questionnaireFragment.getQuestionnaireResponse())
-                        } else {
-                            homeViewModel.saveQuestionnaireAsDraftNew(questionnaireFragment.getQuestionnaireResponse())
-                        }
+                        fhirResourcesViewModel.saveStartAndDraftAudit(
+                            consultationStage = requireArguments().getString(INTENT_EXTRA_CONSULTATION_STAGE)!!,
+                            patientId = requireArguments().getString(INTENT_EXTRA_PATIENT_ID)!!,
+                            encounterId = requireArguments().getString(INTENT_EXTRA_ENCOUNTER_ID)!!,
+                        )
                     }
                     setNegativeButton(R.string.button_no) { _, _ -> }
                 }?.show()

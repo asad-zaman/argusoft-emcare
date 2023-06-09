@@ -22,6 +22,7 @@ class PreferenceManager(private val sharedPreferences: EncPref) : Preference {
         private const val SUBMITTED_RESOURCE = "SUBMITTED_RESOURCE"
         private const val THEME = "THEME"
         private const val COUNTRY = "COUNTRY"
+        private const val START_AUDIT = "START_AUDIT"
 
     }
 
@@ -119,6 +120,14 @@ class PreferenceManager(private val sharedPreferences: EncPref) : Preference {
 
     override fun getCountry(): String {
         return sharedPreferences.getString(COUNTRY, "")
+    }
+
+    override fun setStartAudit(startAudit: String) {
+        sharedPreferences.putString(START_AUDIT, startAudit)
+    }
+
+    override fun getStartAudit(): String {
+        return sharedPreferences.getString(START_AUDIT, "")
     }
 
     override fun clear() {
