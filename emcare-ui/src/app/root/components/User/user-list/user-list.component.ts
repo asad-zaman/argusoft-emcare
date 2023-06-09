@@ -90,16 +90,16 @@ export class UserListComponent implements OnInit {
       if (this.searchString && this.searchString.length >= 1) {
         this.mainUserList = [];
         this.userService
-          .getUsersByPage(event - 1, this.searchString)
-          .subscribe((res) => {
-            this.manipulateResponse(res);
-          });
+        .getUsersByPage(event - 1, this.searchString)
+        .subscribe((res) => {
+          this.manipulateResponse(res);
+        });
       } else {
         this.getUsersByPageIndex(event - 1);
       }
     }
   }
-
+  
   searchFilter() {
     this.resetPageIndex();
     if (this.searchTermChanged.observers.length === 0) {
@@ -109,7 +109,7 @@ export class UserListComponent implements OnInit {
           if (this.searchString && this.searchString.length >= 1) {
             this.mainUserList = [];
             this.userService
-              .getUsersByPage(this.currentPage, this.searchString)
+              .getUsersByPage(this.currentPage, this.searchString, this.isInactive)
               .subscribe((res) => {
                 this.manipulateResponse(res);
               });
@@ -241,10 +241,9 @@ export class UserListComponent implements OnInit {
   }
 
   onChangeCheckboxForUser() {
+    this.searchString = ""; 
     this.currentPage = 0;
-    this.userService
-      .getUsersByPage(this.currentPage, null, this.isInactive)
-      .subscribe((res) => {
+    this.userService.getUsersByPage(this.currentPage, null, this.isInactive).subscribe((res) => {
         this.isAPIBusy = false;
         this.manipulateResponse(res);
       });

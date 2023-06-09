@@ -60,10 +60,12 @@ export class UserManagementService {
   getUsersByPage(pageIndex, search?,filterValue?) {
     let url;
     if (search && filterValue) {
-      url = `${this.userURL}/page?pageNo=${pageIndex}&search=${search}&filter=${filterValue}`;
-    } else if(filterValue) {
-      url = `${this.userURL}/page?pageNo=${pageIndex}&filter=${filterValue}`;
-    } else {
+      url = `${this.userURL}/page?pageNo=${pageIndex}&search=${search}&filter=${filterValue}`;      
+    } else if(search) {      
+      url = `${this.userURL}/page?pageNo=${pageIndex}&search=${search}`;
+    }else if(filterValue) {      
+      url = `${this.userURL}/page?pageNo=${pageIndex}&filter=${filterValue} `;
+    } else {      
       url = `${this.userURL}/page?pageNo=${pageIndex}`;
     }
     return this.http.get(url, this.getHeaders());
