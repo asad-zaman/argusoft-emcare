@@ -75,6 +75,8 @@ class SyncViewModel @Inject constructor(
                     } else if (syncJobStatus is SyncJobStatus.InProgress) {
                         progress = syncJobStatus.completed.toDouble().div(syncJobStatus.total)
                             .times(100).toInt()
+                        if(syncJobStatus.total == 0)
+                            preference.writeLastSyncTimestamp(lastSyncTime)
 
                         // fhir auto sync progress
                         autoSyncProgress(syncJobStatus)
