@@ -23,7 +23,7 @@ public interface LocationResourceService {
 
     public MethodOutcome updateLocationResource(IdType theId, Location theLocation);
 
-    public PageDto getEmCareLocationResourcePage(Integer pageNo, String searchString);
+    public PageDto getEmCareLocationResourcePage(Integer pageNo, String searchString, Boolean filter);
 
     public FacilityDto getFacilityDto(String id);
 

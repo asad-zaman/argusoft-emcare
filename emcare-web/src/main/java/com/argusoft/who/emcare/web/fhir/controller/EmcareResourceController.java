@@ -84,8 +84,8 @@ public class EmcareResourceController {
         return emcareResourceService.getPatientsAllDataByFilter(searchString, locationId);
     }
 
-    @GetMapping("/patient/locationId/{locationId}")
-    public PageDto getAllPatientsUnderLocation(@PathVariable(value = "locationId") Object locationId,
+    @GetMapping("/patient/locationId")
+    public PageDto getAllPatientsUnderLocation(@Nullable @RequestParam(value = "locationId") Object locationId,
                                                @RequestParam(value = "pageNo") Integer pageNo,
                                                @Nullable @RequestParam(value = "startDate") Date startDate,
                                                @Nullable @RequestParam(value = "endDate") Date endDate) {
@@ -180,8 +180,9 @@ public class EmcareResourceController {
 
     @GetMapping("/facility")
     public PageDto getFacilityPage(@RequiredParam(name = "pageNo") Integer pageNo,
-                                   @Nullable @RequiredParam(name = "search") String search) {
-        return locationResourceService.getEmCareLocationResourcePage(pageNo, search);
+                                   @Nullable @RequiredParam(name = "search") String search,
+                                   @RequiredParam(name="filter") Boolean filter) {
+        return locationResourceService.getEmCareLocationResourcePage(pageNo, search, filter);
     }
 
     @GetMapping("/library")

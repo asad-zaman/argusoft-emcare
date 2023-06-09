@@ -171,19 +171,27 @@ public class LocationResourceServiceImpl implements LocationResourceService {
     }
 
     @Override
-    public PageDto getEmCareLocationResourcePage(Integer pageNo, String searchString) {
+    public PageDto getEmCareLocationResourcePage(Integer pageNo, String searchString, Boolean filter) {
         List<FacilityDto> facilityDtos = new ArrayList<>();
         Page<LocationResource> locationResources = null;
-        Sort sort = Sort.by("createdOn").descending();
+        Sort sort = Sort.by("created_on").descending();
         Pageable page = PageRequest.of(pageNo, CommonConstant.PAGE_SIZE, sort);
-        Long count;
+        Long count = 0L;
+        List<String> status = new ArrayList<>();
+
+        if(filter==null){
+            status.add("active");
+        }else {
+            status.add("inactive");
+            status.add("suspended");
+        }
 
         if (searchString != null && !searchString.isEmpty()) {
-            locationResources = locationResourceRepository.findByTextContainingIgnoreCaseOrOrganizationNameContainingIgnoreCaseOrLocationNameContainingIgnoreCase(searchString, searchString, searchString, page);
-            count = Long.valueOf(locationResourceRepository.findByTextContainingIgnoreCaseOrOrganizationNameContainingIgnoreCaseOrLocationNameContainingIgnoreCase(searchString, searchString, searchString).size());
+            locationResources = locationResourceRepository.searchFacilityByStatus(searchString, status, page);
+            count = locationResourceRepository.searchFacilityByStatus(searchString, status);
         } else {
-            locationResources = locationResourceRepository.findAll(page);
-            count = Long.valueOf(locationResourceRepository.findAll().size());
+                locationResources = locationResourceRepository.findResourceByStatus(status, page);
+                count = Long.valueOf(locationResourceRepository.findResourceByStatus(status));
         }
 
 
