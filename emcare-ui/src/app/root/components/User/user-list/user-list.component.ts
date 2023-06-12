@@ -95,7 +95,6 @@ export class UserListComponent implements OnInit {
           this.manipulateResponse(res);
         });
       } else {
-        console.log('in');
         this.getUsersByPageIndex(event - 1);
       }
     }
