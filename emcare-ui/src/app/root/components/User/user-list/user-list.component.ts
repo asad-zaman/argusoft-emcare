@@ -152,9 +152,9 @@ export class UserListComponent implements OnInit {
     }
   }
 
-  getUsersBasedOnLocationAndPageIndex(pageIndex) {
+  getUsersBasedOnLocationAndPageIndex(pageIndex) {    
     this.userService
-      .getUsersByLocationAndPageIndex(this.selectedId, pageIndex)
+      .getUsersByLocationAndPageIndex(this.selectedId, pageIndex,this.isInactive)
       .subscribe((res) => {
         if (res) {
           this.filteredUserList = [];

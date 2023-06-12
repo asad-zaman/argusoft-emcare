@@ -75,7 +75,7 @@ export class UserManagementService {
     return this.http.put(`${this.userURL}/update/password/${id}`, user, this.getHeaders());
   }
 
-  getUsersByLocationAndPageIndex(locationId, pageIndex) {
-    return this.http.get(`${this.userURL}/locationId/${locationId}?pageNo=${pageIndex}`, this.getHeaders());
+  getUsersByLocationAndPageIndex(locationId, pageIndex,filterValue?) {
+    return this.http.get(`${this.userURL}/locationId/${locationId}?pageNo=${pageIndex}&filter=${filterValue}`, this.getHeaders());
   }
 }
