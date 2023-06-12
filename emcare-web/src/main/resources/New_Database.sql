@@ -186,6 +186,9 @@ CREATE TABLE public.indicator (
 
 ALTER TABLE public.indicator OWNER TO postgres;
 
+alter table indicator add column  is_query_configure boolean;
+alter table indicator add column query text;
+
 CREATE TABLE public.indicator_denominator_equation (
     denominator_id bigint NOT NULL,
     created_by character varying(255) NOT NULL,
@@ -584,6 +587,27 @@ CREATE TABLE IF NOT EXISTS public.user_sync_log
 );
 
 ALTER TABLE IF EXISTS public.user_sync_log OWNER to postgres;
+
+DROP TABLE IF EXISTS public.audit_event_resource;
+
+CREATE TABLE IF NOT EXISTS public.audit_event_resource
+(
+    id bigint NOT NULL,
+    conslt_stage character varying(255) COLLATE pg_catalog."default",
+    encounter_id character varying(255) COLLATE pg_catalog."default",
+    patient_id character varying(255) COLLATE pg_catalog."default",
+    recorded timestamp without time zone,
+    resource_id character varying(255) COLLATE pg_catalog."default",
+    status character varying(255) COLLATE pg_catalog."default",
+    text text COLLATE pg_catalog."default",
+    created_by character varying(255) COLLATE pg_catalog."default" NOT NULL,
+    created_on timestamp without time zone NOT NULL,
+    modified_by character varying(255) COLLATE pg_catalog."default",
+    modified_on timestamp without time zone,
+    CONSTRAINT audit_event_resource_pkey PRIMARY KEY (id)
+);
+
+ALTER TABLE IF EXISTS public.audit_event_resource OWNER to postgres;
 
 INSERT INTO public.email_content (id, code, content, created_at, subject, var_list) VALUES (3, 'CONFIRMATION_EMAIL_APPROVED', '<!DOCTYPE html>
 <html>
