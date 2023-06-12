@@ -199,7 +199,6 @@ public class IndicatorServiceImpl implements IndicatorService {
         for (IndicatorDenominatorEquation indicatorDenominatorEquation : indicator.getDenominatorEquation()) {
             String query = indicatorQueryBuilder.getQueryForIndicatorDenominatorEquation(indicatorDenominatorEquation, getCommaSepratedFacilityIds(facilityIds), indicator, indicatorFilterDto);
             List<Map<String, Object>> observationResources = observationCustomResourceRepository.findByPublished(query);
-            System.out.println(query);
             denominator.put(indicatorDenominatorEquation.getEqIdentifier(), (long) observationResources.size());
         }
 
