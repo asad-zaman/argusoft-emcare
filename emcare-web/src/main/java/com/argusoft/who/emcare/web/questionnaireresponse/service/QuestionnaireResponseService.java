@@ -21,4 +21,8 @@ public interface QuestionnaireResponseService {
     public List<String> getDataForExport(String patientId);
 
     public Map<String, Object> getAllDataForExport();
+
+    public PageDto getConsultationsUnderLocationId(Object locationId,Integer pageNo,String startDate,String endDate);
+
+    public void logSyncAttempt();
 }

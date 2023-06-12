@@ -16,6 +16,7 @@ import org.hl7.fhir.r4.model.Observation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.*;
 
 @Service
@@ -131,7 +132,7 @@ public class ObservationResourceServiceImpl implements ObservationResourceServic
         if (theId != null) {
             patientId = emcareResourceService.getPatientIdsUnderFacility(theId);
         }
-        if(patientId.isEmpty()){
+        if (patientId.isEmpty()) {
             Bundle bundle = new Bundle();
             bundle.setTotal(0);
             return bundle;
@@ -157,5 +158,10 @@ public class ObservationResourceServiceImpl implements ObservationResourceServic
         Bundle bundle = new Bundle();
         bundle.setTotal(count.intValue());
         return bundle;
+    }
+
+    @Override
+    public void deleteObservation(String theId) {
+        observationResourceRepository.deleteByResourceId(theId);
     }
 }

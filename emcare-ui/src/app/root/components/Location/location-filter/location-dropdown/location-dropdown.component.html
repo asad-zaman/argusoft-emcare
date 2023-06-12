@@ -1,6 +1,6 @@
 <form [formGroup]="locationFilterForm" name="locationFilterForm" novalidate>
   <div class="row">
-    <div *ngIf="facilityArr.length > 0 && !isOtherPage" class="col-12 col-sm-12 cst-bottom-border">
+    <div *ngIf="facilityArr.length > 0 && !isFacilityNotAllowed" class="col-12 col-sm-12 cst-bottom-border">
       <div class="mb-3">
         <label class="form-label">{{'Facility' | translate}}</label>
         <p-dropdown (onChange)="onChangeFacility()" placeholder="Select" [options]="facilityArr"
@@ -9,7 +9,7 @@
         </p-dropdown>
       </div>
     </div>
-    <div *ngIf="dropdownActiveArr[0] == true && countryArr.length > 0" class="col-12 col-sm-12">
+    <div *ngIf="!isPatientPage && dropdownActiveArr[0] == true && countryArr.length > 0" class="col-12 col-sm-12">
       <div class="mb-3">
         <ng-container *ngIf="this.typeNameArr[0]; else country">
           <label class="form-label">{{this.typeNameArr[0]}}</label>
@@ -74,6 +74,22 @@
         <p-dropdown placeholder="Select" (onChange)="onClicked($event, 5)" [options]="otherArr" formControlName="other"
           optionLabel="name" dataKey="id" [showClear]="locationFilterForm.get('other').value ? true : false">
         </p-dropdown>
+      </div>
+    </div>
+    <div *ngIf="isPatientPage" class="cst-bottom-top">
+      <div class="my-3">
+        <div class="row">
+          <div class="col-6">
+            <label class="form-label">{{'Date From' | translate}}</label>
+            <input class="form-control custom-input" type="date" formControlName="startDate" id="startDate"
+              (change)="onDateSelection(1, i)" placeholder="{{'Value Placeholder' | translate}}">
+          </div>
+          <div class="col-6">
+            <label class="form-label">{{'Date To' | translate}}</label>
+            <input class="form-control custom-input" type="date" formControlName="endDate" id="endDate"
+              (change)="onDateSelection(2, i)" placeholder="{{'Value Placeholder' | translate}}">
+          </div>
+        </div>
       </div>
     </div>
   </div>

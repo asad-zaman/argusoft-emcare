@@ -49,7 +49,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { HomeComponent } from './root/components/home/home.component';
 import { HTTPStatus, LaunguageSubjects, TokenInterceptor } from './auth/token-interceptor';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -168,7 +168,8 @@ import { InputTextareaModule } from 'primeng/inputtextarea';
     ToasterService,
     LaunguageSubjects,
     MessageService,
-    LocationSubjects
+    LocationSubjects,
+    DatePipe
   ],
   bootstrap: [AppComponent]
 })

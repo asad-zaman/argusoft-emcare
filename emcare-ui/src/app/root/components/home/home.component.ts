@@ -113,8 +113,8 @@ export class HomeComponent implements OnInit {
         title: {
           text: undefined,
         },
-        startOnTick: false,
-        endOnTick: true,
+        // startOnTick: false,
+        // endOnTick: true,
         tickInterval: 24 * 3600 * 1000,
       },
       yAxis: {
@@ -163,14 +163,13 @@ export class HomeComponent implements OnInit {
 
   getChartData() {
     this.fhirService.getChartData().subscribe((res: Array<any>) => {
-      console.log(res);
       if (res) {
         //  for bar plot
         res['scatterChart'].forEach((el, index) => {
-          const date = new Date('May 30, 2023');
+          const date = new Date('May 31, 2023');
           const mlDate = date.getTime();
 
-          if (mlDate < el[1]) {
+          if (mlDate <= el[1]) {
             this.scatterData.push({
               x: new Date(el[1]),
               y: el[0],

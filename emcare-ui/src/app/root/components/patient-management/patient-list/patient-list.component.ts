@@ -7,6 +7,7 @@ import { FhirService } from "src/app/shared/services/fhir.service";
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
+import { DatePipe } from '@angular/common';
 
 import { Workbook } from 'exceljs';
 import * as fs from 'file-saver';
@@ -35,11 +36,18 @@ export class PatientListComponent implements OnInit {
     enableAll = false;
     exportAllPatient = false;
     filteredAllPatientData = [];
+    dateObj = {};
+    columnOrder = ['resource_id', 'identifier', 'givenName',
+        'familyName', 'gender', 'birthDate',
+        'facilityName', 'addressLine', 'organizationName',
+        'locationName', 'consultationDate'];
+    disableSaveButton: boolean;
 
     constructor(
         private readonly fhirService: FhirService,
         private readonly toasterService: ToasterService,
-        private readonly authGuard: AuthGuard
+        private readonly authGuard: AuthGuard,
+        private datePipe: DatePipe
     ) { }
 
     ngOnInit(): void {
@@ -74,17 +82,16 @@ export class PatientListComponent implements OnInit {
     getPatientsByPageIndex(index) {
         this.patients = [];
         this.fhirService.getPatientsByPageIndex(index).subscribe(res => {
-            this.manipulateResponse(res);
+            if (res) {
+                this.manipulateResponse(res);
+            }
         });
     }
 
     getPatientsBasedOnLocationAndPageIndex(pageIndex) {
-        this.fhirService.getPatientsByLocationAndPageIndex(this.selectedId, pageIndex).subscribe(res => {
+        this.fhirService.getPatientsByLocationAndPageIndex(this.selectedId, pageIndex, this.dateObj).subscribe(res => {
             if (res) {
-                this.filteredPatients = [];
-                this.filteredPatients = res['list'];
-                this.totalCount = res['totalCount'];
-                this.isAPIBusy = false;
+                this.manipulateResponse(res);
             }
         });
     }
@@ -154,15 +161,16 @@ export class PatientListComponent implements OnInit {
         if (this.exportAllPatient) {
             this.exportAllPatient = !this.exportAllPatient;
         }
-        this.selectedId = data;
-        if (this.selectedId) {
+
+        this.selectedId = data.locationId;
+        this.dateObj = data.dateObj;
+
+        if (this.selectedId && this.dateObj['startDate'] && this.dateObj['endDate']) {
             this.isLocationFilterOn = true;
-            this.resetPageIndex();
-            const pageIndex = this.currentPage == 0 ? this.currentPage : this.currentPage - 1;
-            this.getPatientsBasedOnLocationAndPageIndex(pageIndex);
-        } else {
-            this.toasterService.showToast('info', 'Please select Location!', 'EMCARE');
         }
+        this.resetPageIndex();
+        const pageIndex = this.currentPage == 0 ? this.currentPage : this.currentPage - 1;
+        this.getPatientsBasedOnLocationAndPageIndex(pageIndex);
     }
 
     clearFilter(event) {
@@ -176,10 +184,15 @@ export class PatientListComponent implements OnInit {
         const data = [];
         const patientName = `${patient.givenName} ${patient.familyName}`;
 
-        for (const k in patient) {
-            data.push({ key: k, value: patient[k] ? patient[k] : 'NA' });
-        }
-
+        this.columnOrder.forEach(k => {
+            if (k !== 'key') {
+                if (k === 'dob' || k === 'consultationDate') {
+                    data.push({ key: k, value: patient[k] ? this.datePipe.transform(patient[k], 'yyyy-MM-dd') : 'NA' });
+                } else {
+                    data.push({ key: k, value: patient[k] ? patient[k] : 'NA' });
+                }
+            }
+        });
         let workbook = new Workbook();
         let worksheet = workbook.addWorksheet(patientName);
 
@@ -214,14 +227,19 @@ export class PatientListComponent implements OnInit {
             data.push(obj);
         });
 
-        const dummyPatient = (selectedPatients[0]);
-        for (const k in dummyPatient) {
-            data.forEach((element, ind) => {
-                const patient = selectedPatients[ind];
-                element[k] = patient[k] ? patient[k] : 'NA';
-            });
-            columns.push({ header: `${k}`, key: `${k}`, width: 35 })
-        }
+        this.columnOrder.forEach(k => {
+            if (k !== 'key') {
+                data.forEach((element, ind) => {
+                    const patient = selectedPatients[ind];
+                    if (k === 'dob' || k === 'consultationDate') {
+                        element[k] = patient[k] ? this.datePipe.transform(patient[k], 'yyyy-MM-dd') : 'NA';
+                    } else {
+                        element[k] = patient[k] ? patient[k] : 'NA';
+                    }
+                });
+                columns.push({ header: `${k}`, key: `${k}`, width: 35 })
+            }
+        });
 
         worksheet.columns = columns;
         worksheet.addRows(data, "n");
@@ -237,9 +255,15 @@ export class PatientListComponent implements OnInit {
         let tableArr = [];
         data.push({ text: '                            ' });
 
-        for (const key in patient) {
-            tableArr.push([key, patient[key] ? patient[key] : 'NA']);
-        }
+        this.columnOrder.forEach(key => {
+            if (key !== 'key') {
+                if (key === 'dob' || key === 'consultationDate') {
+                    tableArr.push([key, patient[key] ? this.datePipe.transform(patient[key], 'yyyy-MM-dd') : 'NA']);
+                } else {
+                    tableArr.push([key, patient[key] ? patient[key] : 'NA']);
+                }
+            }
+        });
 
         let docDefinition = {
             content: [
@@ -288,9 +312,15 @@ export class PatientListComponent implements OnInit {
 
         selectedPatients.forEach(patient => {
             let tableArr = [];
-            for (const key in patient) {
-                tableArr.push([key, patient[key] ? patient[key] : 'NA']);
-            }
+            this.columnOrder.forEach(key => {
+                if (key !== 'key') {
+                    if (key === 'dob' || key === 'consultationDate') {
+                        tableArr.push([key, patient[key] ? this.datePipe.transform(patient[key], 'yyyy-MM-dd') : 'NA']);
+                    } else {
+                        tableArr.push([key, patient[key] ? patient[key] : 'NA']);
+                    }
+                }
+            });
 
             let tableObj = {};
             tableObj = {
@@ -310,20 +340,24 @@ export class PatientListComponent implements OnInit {
     onEnableSelectionClick() {
         this.showCheckboxes = !this.showCheckboxes;
         this.enableAll = false;
+        this.disableSaveButton = true;
         if (!this.showCheckboxes) {
             this.filteredPatients.forEach(element => { element['isExcelPDF'] = false; });
         }
     }
 
     enableAllBoxes() {
+        this.disableSaveButton = false;
         if (this.enableAll) {
             this.filteredPatients.forEach(element => { element['isExcelPDF'] = true; });
         } else {
+            this.disableSaveButton = true;
             this.filteredPatients.forEach(element => { element['isExcelPDF'] = false; });
         }
     }
 
     enableEachBox(patient) {
+        this.disableSaveButton = false;
         if (!patient.isExcelPDF) {
             this.enableAll = false;
         } else {
@@ -335,6 +369,7 @@ export class PatientListComponent implements OnInit {
     }
 
     exportAllThePatients() {
+        this.disableSaveButton = false;
         this.enableAll = false;
         this.showCheckboxes = false;
         this.fhirService.getAllPatientsForExport(this.searchString, this.selectedId).subscribe((res: any) => {

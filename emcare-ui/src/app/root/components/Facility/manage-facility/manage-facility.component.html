@@ -23,7 +23,7 @@
               </div>
             </div>
             <input formControlName="name" type="text" class="form-control custom-input" id="name"
-              placeholder="Enter facility name" onkeyup="this.value = this.value.toUpperCase();">
+              placeholder="Enter facility name">
           </div>
         </div>
         <div class="col-12 col-sm-4">
@@ -155,7 +155,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body cst-body">
-        <app-location-dropdown [isOtherPage]="true" [idArr]="locationIdArr"
+        <app-location-dropdown [isFacilityNotAllowed]="true" [idArr]="locationIdArr"
           (locationFormValueAndDropdownArr)="getFormValue($event)">
         </app-location-dropdown>
       </div>

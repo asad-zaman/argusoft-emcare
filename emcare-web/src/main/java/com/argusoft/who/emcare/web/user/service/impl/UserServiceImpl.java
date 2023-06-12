@@ -228,13 +228,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public PageDto getUserPage(HttpServletRequest request, Integer pageNo, String searchString) {
+    public PageDto getUserPage(HttpServletRequest request, Integer pageNo, String searchString, Boolean filter) {
         Integer pageSize = CommonConstant.PAGE_SIZE;
         Integer startIndex = pageNo * pageSize;
         Integer endIndex = (pageNo + 1) * pageSize;
+        if(filter == null) {
+            filter = false;
+        }
+        filter = !filter;
         List<MultiLocationUserListDto> userList = new ArrayList<>();
         Keycloak keycloak = keyCloakConfig.getInstance();
-        List<String> countryUsers = userLocationMappingRepository.getDistinctUserId();
+        List<String> countryUsers = userLocationMappingRepository.getDistinctUserIdUsingFilter(filter);
         Integer userTotalCount = countryUsers.size();
         if (endIndex > userTotalCount) {
             endIndex = userTotalCount;
@@ -577,10 +581,12 @@ public class UserServiceImpl implements UserService {
         UserRepresentation user = usersResource.get(userUpdateDto.getUserId()).toRepresentation();
         user.setEnabled(userUpdateDto.getIsEnabled());
         usersResource.get(userUpdateDto.getUserId()).update(user);
-        UserLocationMapping oldUser = userLocationMappingRepository.findByUserId(userUpdateDto.getUserId()).get(0);
-        oldUser.setState(userUpdateDto.getIsEnabled());
-        oldUser.setIsFirst(false);
-        userLocationMappingRepository.save(oldUser);
+        List<UserLocationMapping> userLocationMappings = userLocationMappingRepository.findByUserId(userUpdateDto.getUserId());
+        for (UserLocationMapping oldUser : userLocationMappings){
+            oldUser.setState(userUpdateDto.getIsEnabled());
+            oldUser.setIsFirst(false);
+            userLocationMappingRepository.save(oldUser);
+        }
 
         if (userUpdateDto.getIsEnabled()) {
             CompletableFuture.runAsync(() -> {
@@ -608,7 +614,7 @@ public class UserServiceImpl implements UserService {
             });
         }
 
-        return ResponseEntity.ok(oldUser);
+        return ResponseEntity.ok(userLocationMappings);
 
     }
 

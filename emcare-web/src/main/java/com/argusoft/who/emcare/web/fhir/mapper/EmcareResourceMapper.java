@@ -60,6 +60,9 @@ public class EmcareResourceMapper {
             pDto.setAddressPostalCode(p.getAddressFirstRep().getPostalCode());
         }
 
+        //consultationDate
+
+
         return pDto;
     }
 

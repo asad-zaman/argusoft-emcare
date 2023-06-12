@@ -22,7 +22,7 @@ public interface UserService {
 
     public List<MultiLocationUserListDto> getAllUserWithMultiLocation(HttpServletRequest request);
 
-    public PageDto getUserPage(HttpServletRequest request, Integer pageNo, String searchString);
+    public PageDto getUserPage(HttpServletRequest request, Integer pageNo, String searchString, Boolean filter);
 
     public List<UserListDto> getAllSignedUpUser(HttpServletRequest request);
 

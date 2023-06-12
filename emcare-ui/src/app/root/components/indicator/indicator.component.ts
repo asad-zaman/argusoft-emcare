@@ -348,7 +348,6 @@ export class IndicatorComponent implements OnInit {
 
   saveData() {
     this.submitted = true;
-    console.log(this.indicatorForm.controls);
     if (this.indicatorForm.valid) {
       const body = this.getRequestBody(this.indicatorForm.value);
       if (this.isEdit) {

@@ -1,4 +1,4 @@
-<app-location-filter *ngIf="isView" [isOtherPage]="false" (isClear)="clearFilter($event)"
+<app-location-filter *ngIf="isView" [isFacilityNotAllowed]="false" (isClear)="clearFilter($event)"
   (locationId)="getLocationId($event)">
 </app-location-filter>
 <div *ngIf="isView" class="main-wrapper">
@@ -9,6 +9,11 @@
     <div class="col-lg-3 col-xxl-2 col-md-5 position-relative">
       <input class="form-control custom-input h-35" id="exampleFormControlInput1" [(ngModel)]="searchString"
         (input)="searchFilter()" placeholder="{{'Search Placeholder' | translate}}">
+    </div>
+    <div class="col-3 cst-d-flex">
+      <p-checkbox styleClass="form-label" [(ngModel)]="isInactive" label="Show Inactive Users" [binary]="true"
+        inputId="binary" value="true" (onChange)="onChangeCheckboxForUser()">
+      </p-checkbox>
     </div>
     <div *ngIf="isAdd" class="col text-end">
       <button class=" btn btn-blue" routerLink="/addUser">+ {{'Add User' | translate}}</button>
@@ -32,7 +37,7 @@
       </thead>
       <tbody>
         <ng-container *ngIf="filteredUserList && filteredUserList.length > 0; else noRecords">
-          <ng-container *ngFor="let user of filteredUserList | 
+          <ng-container *ngFor="let user of filteredUserList |
           paginate : { itemsPerPage: tableSize, currentPage: currentPage, totalItems: totalCount }; let i=index">
             <tr>
               <td class="text-center">{{currentPage == 0 ? ((currentPage)*10 + i + 1) : ((currentPage-1)*10 + i + 1)}}
@@ -70,7 +75,7 @@
               </td>
               <td class="text-center">
                 <span [ngClass]="(!!user.enabled) ? 'badges-red bg-green' : 'badges-red'">
-                  <ng-container *ngIf="!!user.enabled; else NotVerified">
+                  <ng-container *ngIf="user.enabled; else NotVerified">
                     {{'Active' | translate}}
                   </ng-container>
                   <ng-template #NotVerified>
@@ -85,15 +90,26 @@
                       <i class="bi bi-three-dots-vertical ps-2" aria-hidden="true"></i>
                     </div>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                      <li (click)="updateUser(i)">
+                      <li class="cursor-pointer" (click)="updateUser(i)">
                         <a class="dropdown-item">
                           <i class="bi bi-pencil font-size-14 mr-2" aria-hidden="true"></i>{{'Update User' | translate}}
                         </a>
                       </li>
-                      <li (click)="onResetPassword(i)">
+                      <li class="cursor-pointer" (click)="onResetPassword(i)">
                         <a class="dropdown-item">
-                          <i class="bi bi-pencil font-size-14 mr-2"
+                          <i class="bi bi-file-earmark-lock font-size-14 mr-2"
                             aria-hidden="true"></i>{{'Reset Password' | translate}}
+                        </a>
+                      </li>
+                      <li class="cursor-pointer" (click)="onChangeStatus(i)">
+                        <a class="dropdown-item">
+                          <i class="bi bi-person font-size-14 mr-2" aria-hidden="true"></i>
+                          <ng-container *ngIf="user.enabled; else inActive">
+                            {{'Mark As InActive' | translate}}
+                          </ng-container>
+                          <ng-template #inActive>
+                            {{'Mark As Active' | translate}}
+                          </ng-template>
                         </a>
                       </li>
                     </ul>
@@ -162,6 +178,27 @@
               </div>
             </div>
           </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div *ngIf="showStatusDialog" class="modal" tabindex="-1" role="dialog" style="display:block">
+  <div class="modal-dialog modal-dialog-centered" style="width: 400px; height: 500px">
+    <div class="modal-content">
+      <div class="modal-body">
+        <h2 class="modal-title text-center">
+          {{'Change User Status' | translate}}
+        </h2>
+        <div class="text-center my-3">
+          <p class="font-size-15">
+            {{'Status message' | translate}}
+        </div>
+        <div class="text-center">
+          <button type="button" class="btn-blue btn mr-2" style="width: 100px;"
+            (click)="changeUSerStatus()">{{'Ok' | translate}}</button>
+          <button type="button" class="btn-blue btn" style="width: 100px;"
+            (click)="showStatusDialog = false">{{'Cancel' | translate}}</button>
         </div>
       </div>
     </div>

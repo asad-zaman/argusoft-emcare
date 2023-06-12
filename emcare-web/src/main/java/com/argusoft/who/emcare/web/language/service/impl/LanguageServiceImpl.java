@@ -1,12 +1,15 @@
 package com.argusoft.who.emcare.web.language.service.impl;
 
 import com.argusoft.who.emcare.web.config.IBMConfig;
+import com.argusoft.who.emcare.web.config.tenant.TenantContext;
 import com.argusoft.who.emcare.web.language.dao.LanguageRepository;
 import com.argusoft.who.emcare.web.language.dto.LanguageAddDto;
 import com.argusoft.who.emcare.web.language.dto.LanguageDto;
 import com.argusoft.who.emcare.web.language.mapper.LanguageMapper;
 import com.argusoft.who.emcare.web.language.model.LanguageTranslation;
 import com.argusoft.who.emcare.web.language.service.LanguageService;
+import com.argusoft.who.emcare.web.tenant.entity.TenantConfig;
+import com.argusoft.who.emcare.web.tenant.repository.TenantConfigRepository;
 import com.ibm.watson.language_translator.v3.LanguageTranslator;
 import com.ibm.watson.language_translator.v3.model.Languages;
 import com.ibm.watson.language_translator.v3.model.TranslateOptions;
@@ -14,6 +17,7 @@ import com.ibm.watson.language_translator.v3.model.Translation;
 import org.apache.commons.compress.utils.Lists;
 import org.codehaus.jettison.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,7 +36,13 @@ public class LanguageServiceImpl implements LanguageService {
     LanguageRepository languageRepository;
 
     @Autowired
+    TenantConfigRepository tenantConfigRepository;
+
+    @Autowired
     IBMConfig ibmConfig;
+
+    @Value("${defaultTenant}")
+    private String defaultTenant;
 
     @Override
     @Transactional
@@ -97,7 +107,8 @@ public class LanguageServiceImpl implements LanguageService {
 
     @Transactional
     public void translateNewlyAddedLabels() {
-        LOGGER.info("-----------Start Translating Newly Added Labels---------------- ");
+        LOGGER.info("-----------FOR TENANT " + TenantContext.getCurrentTenant() + "---------------- ");
+        LOGGER.info("----------- Start Translating Newly Added Labels ---------------- ");
         LanguageTranslator languageTranslator = ibmConfig.getLanguageTranslatorInstance();
         List<String> englishKeys = new ArrayList<>();
         JSONObject englishJson = new JSONObject();
@@ -143,6 +154,16 @@ public class LanguageServiceImpl implements LanguageService {
             }
         }
         LOGGER.info("-------- Translation Completed Server Up SuccessFully --------- ");
+        LOGGER.info("-----------FOR TENANT " + TenantContext.getCurrentTenant() + " DONE---------------- ");
     }
 
+    public List<String> getMakeAllTenantTranslation() {
+        List<TenantConfig> tenantConfigs = tenantConfigRepository.findAll();
+        List<String> tenantIds = new ArrayList<>();
+        tenantIds.add(defaultTenant);
+        for (TenantConfig tenantConfig : tenantConfigs) {
+            tenantIds.add(tenantConfig.getTenantId());
+        }
+        return tenantIds;
+    }
 }
