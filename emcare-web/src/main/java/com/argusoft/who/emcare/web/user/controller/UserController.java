@@ -125,8 +125,8 @@ public class UserController {
 
     @GetMapping("user/locationId/{locationId}")
     public PageDto getUsersUnderLocation(@PathVariable(value = "locationId") Object locationId,
-                                         @RequestParam(value = "pageNo") Integer pageNo) {
-        return userService.getUsersUnderLocation(locationId, pageNo);
+                                         @RequestParam(value = "pageNo") Integer pageNo,@RequestParam(value = "filter", required = false) Boolean filter) {
+        return userService.getUsersUnderLocation(locationId, pageNo,filter);
     }
 
     @GetMapping("user/check/email")
