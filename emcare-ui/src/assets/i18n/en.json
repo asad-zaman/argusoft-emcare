@@ -364,5 +364,6 @@
   "Mark As Active": "Mark As Active",
   "Mark As InActive": "Mark As InActive",
   "Change User Status": "Change User Status",
-  "Status message": "Are you sure you want to change the user status?"
+  "Status message": "Are you sure you want to change the user status?",
+  "Build using query builder": "Build using query builder"
 }
