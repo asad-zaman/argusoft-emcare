@@ -263,7 +263,9 @@ export class IndicatorComponent implements OnInit {
         this.formBuilder.array([]) : this.formBuilder.array([this.newColorSectionAddition()]),
       gender: [''],
       ageCondition: [''],
-      ageValue: ['']
+      ageValue: [''],
+      allowQueryBuilder: [false],
+      query: ['']
     });
     this.checkEditParam();
   }
@@ -411,7 +413,9 @@ export class IndicatorComponent implements OnInit {
       "denominatorEquationString": JSON.stringify(this.denominatorEquationStringArr),
       "colourSchema": JSON.stringify(this.getColorSchemaObj()),
       "gender": null,
-      "age": null
+      "age": null,
+      "isQueryConfigure": formValue.allowQueryBuilder,
+      "query": formValue.query
     }
   }
 
@@ -645,7 +649,7 @@ export class IndicatorComponent implements OnInit {
     this.getColorSections().controls.forEach(element => {
       tempArr.push({
         minValue: element.value.minValue,
-        condition: element.value.condition.id,
+        condition: element.value.condition && element.value.condition.id,
         maxValue: element.value.maxValue,
         color: element.value.color
       });
@@ -657,5 +661,13 @@ export class IndicatorComponent implements OnInit {
     if (event.target.value > 100 || event.target.value < 0) {
       this.toasterService.showToast('error', 'Please enter value between 0 to 100!', 'EM CARE!');
     }
+  }
+
+  setAllowQueryBuilderTrue() {
+    this.indicatorForm.patchValue({ allowQueryBuilder: true });
+  }
+
+  setAllowQueryBuilderFalse() {
+    this.indicatorForm.patchValue({ allowQueryBuilder: false });
   }
 }

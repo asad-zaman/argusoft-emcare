@@ -133,6 +133,10 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
     ObservationResourceRepository observationResourceRepository;
     @Autowired
     BinaryResourceService binaryResourceService;
+
+    @Autowired
+    AuditEventResourceService auditEventResourceService;
+
     @Autowired
     private LocationService locationService;
     @Autowired
@@ -303,6 +307,14 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
                     binaryResourceService.updateBinaryResource(resource.getIdElement(), binary);
                 } else {
                     binaryResourceService.saveResource(parser.parseResource(Binary.class, resourceString));
+                }
+                break;
+            case CommonConstant.AUDITEVENT_TYPE_STRING:
+                AuditEvent auditEvent = auditEventResourceService.getResourceById(resourceId);
+                if (auditEvent != null) {
+                    auditEventResourceService.updateAuditEventResource(resource.getIdElement(), auditEvent);
+                } else {
+                    auditEventResourceService.saveResource(parser.parseResource(AuditEvent.class, resourceString));
                 }
                 break;
             default:
