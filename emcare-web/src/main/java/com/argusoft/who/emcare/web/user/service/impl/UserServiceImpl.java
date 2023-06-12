@@ -9,6 +9,7 @@ import com.argusoft.who.emcare.web.common.response.Response;
 import com.argusoft.who.emcare.web.common.service.CommonService;
 import com.argusoft.who.emcare.web.config.KeyCloakConfig;
 import com.argusoft.who.emcare.web.config.tenant.TenantContext;
+import com.argusoft.who.emcare.web.fhir.dao.LocationResourceRepository;
 import com.argusoft.who.emcare.web.fhir.dto.FacilityDto;
 import com.argusoft.who.emcare.web.fhir.service.LocationResourceService;
 import com.argusoft.who.emcare.web.location.dao.LocationMasterDao;
@@ -102,6 +103,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     LocationResourceService locationResourceService;
+
+    @Autowired
+    LocationResourceRepository locationResourceRepository;
 
     @Autowired
     RoleEntityRepository roleEntityRepository;
@@ -659,17 +663,28 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public PageDto getUsersUnderLocation(Object locationId, Integer pageNo) {
+    public PageDto getUsersUnderLocation(Object locationId, Integer pageNo, Boolean filter) {
         List<MultiLocationUserListDto> userList = new ArrayList<>();
-        if (!isNumeric(locationId.toString())) {
-            locationId = locationResourceService.getFacilityDto(locationId.toString()).getLocationId().intValue();
+        if(filter == null) {
+            filter = false;
+        }
+        filter = !filter;
+        List<Integer> locationIds;
+        List<String> childFacilityIds = new ArrayList<>();
+        if (Objects.nonNull(locationId)) {
+            if (isNumeric(locationId.toString())) {
+                locationIds = locationMasterDao.getAllChildLocationId(Integer.parseInt(locationId.toString()));
+                childFacilityIds = locationResourceRepository.findResourceIdIn(locationIds);
+            } else {
+                childFacilityIds.add(locationId.toString());
+            }
         }
         Keycloak keycloak = keyCloakConfig.getInstance();
-        Integer totalCount = userLocationMappingRepository.getAllUserOnChildLocations(Integer.parseInt(locationId.toString())).size();
-        List<String> allUsersIdUnderLocation = userLocationMappingRepository.getAllUserOnChildLocationsWithPage(Integer.parseInt(locationId.toString()), pageNo, CommonConstant.PAGE_SIZE);
+        Integer totalCount = userLocationMappingRepository.getAllUserBasedOnFacilityIdCount(childFacilityIds,filter).size();
+        List<String> allUsersIdUnderLocation = userLocationMappingRepository.getAllUserBasedOnFacilityId(childFacilityIds, filter, pageNo * 10 );
         List<UserRepresentation> userRepresentations = new ArrayList<>();
         for (String userId : allUsersIdUnderLocation) {
-            userRepresentations.add(getUserById(userId));
+            userRepresentations.add(keycloak.realm(realm).users().get(userId).toRepresentation());
         }
         for (UserRepresentation representation : userRepresentations) {
             List<RoleRepresentation> roleRepresentationList = keycloak.realm(realm).users().get(representation.getId()).roles().realmLevel().listAll();

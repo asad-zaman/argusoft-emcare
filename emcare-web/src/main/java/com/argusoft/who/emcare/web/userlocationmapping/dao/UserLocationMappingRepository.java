@@ -28,8 +28,9 @@ public interface UserLocationMappingRepository extends JpaRepository<UserLocatio
         "LEFT JOIN LOCATION_RESOURCES AS LR ON CH.ID = LR.LOCATION_ID\n" +
         "LEFT JOIN USER_LOCATION_MAPPING AS ULM ON LR.RESOURCE_ID = ULM.FACILITY_ID\n" +
         "WHERE ULM.USER_ID IS NOT NULL\n" +
-        "   AND ULM.FACILITY_ID IS NOT NULL offset :pageNo * :pageSize limit :pageSize", nativeQuery = true)
-    public List<String> getAllUserOnChildLocationsWithPage(@Param("id") Integer id, @Param("pageNo") Integer pageNo, @Param("pageSize") Integer pageSize);
+        "   AND ULM.FACILITY_ID IS NOT NULL\n" +
+        "   AND ULM.STATE = :filter offset :pageNo * :pageSize limit :pageSize", nativeQuery = true)
+    public List<String> getAllUserOnChildLocationsWithPage(@Param("id") Integer id, @Param("pageNo") Integer pageNo, @Param("pageSize") Integer pageSize, Boolean filter);
 
     @Query(value = "WITH RECURSIVE CHILD AS\n" +
         " (SELECT *\n" +
@@ -44,8 +45,32 @@ public interface UserLocationMappingRepository extends JpaRepository<UserLocatio
         "LEFT JOIN LOCATION_RESOURCES AS LR ON CH.ID = LR.LOCATION_ID\n" +
         "LEFT JOIN USER_LOCATION_MAPPING AS ULM ON LR.RESOURCE_ID = ULM.FACILITY_ID\n" +
         "WHERE ULM.USER_ID IS NOT NULL\n" +
-        "   AND ULM.FACILITY_ID IS NOT NULL", nativeQuery = true)
-    public List<String> getAllUserOnChildLocations(@Param("id") Integer id);
+        "   AND ULM.FACILITY_ID IS NOT NULL\n"+
+        "   AND ULM.STATE = :filter", nativeQuery = true)
+    public List<String> getAllUserOnChildLocations(@Param("id") Integer id, Boolean filter);
+
+
+    @Query(value = "SELECT USER_ID\n" +
+            "FROM USER_LOCATION_MAPPING\n" +
+            "WHERE STATE = :filter \n" +
+            "AND FACILITY_ID IN :facilityIds \n" +
+            "GROUP BY USER_ID\n" +
+            "ORDER BY MAX(CREATE_DATE) DESC\n" +
+            "LIMIT 10\n" +
+            "OFFSET :offset ;", nativeQuery = true)
+    public List<String> getAllUserBasedOnFacilityId(@Param("facilityIds") List<String> facilityIds,
+                                                   @Param("filter") Boolean filter,
+                                                   @Param("offset") Integer offset);
+
+    @Query(value = "SELECT USER_ID\n" +
+            "FROM USER_LOCATION_MAPPING\n" +
+            "WHERE STATE = :filter \n" +
+            "\tAND FACILITY_ID IN :facilityIds \n" +
+            "GROUP BY USER_ID\n" +
+            "ORDER BY MAX(CREATE_DATE) DESC;", nativeQuery = true)
+    public List<String> getAllUserBasedOnFacilityIdCount(@Param("facilityIds") List<String> facilityIds,
+                                                   @Param("filter") Boolean filter);
+
 
 
     List<UserLocationMapping> findByRegRequestFromAndIsFirst(String regRequestFrom, boolean isFirst);
