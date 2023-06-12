@@ -25,6 +25,8 @@ public class IndicatorDto {
     private String colourSchema;
     private String age;
     private String gender;
+    private Boolean isQueryConfigure;
+    private String query;
 
     private String displayType;
     private List<IndicatorNumeratorEquationDto> numeratorEquations;
@@ -148,5 +150,21 @@ public class IndicatorDto {
 
     public void setGender(String gender) {
         this.gender = gender;
+    }
+
+    public Boolean getQueryConfigure() {
+        return isQueryConfigure;
+    }
+
+    public void setQueryConfigure(Boolean queryConfigure) {
+        isQueryConfigure = queryConfigure;
+    }
+
+    public String getQuery() {
+        return query;
+    }
+
+    public void setQuery(String query) {
+        this.query = query;
     }
 }
