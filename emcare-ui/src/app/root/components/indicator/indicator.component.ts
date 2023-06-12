@@ -413,7 +413,9 @@ export class IndicatorComponent implements OnInit {
       "denominatorEquationString": JSON.stringify(this.denominatorEquationStringArr),
       "colourSchema": JSON.stringify(this.getColorSchemaObj()),
       "gender": null,
-      "age": null
+      "age": null,
+      "isQueryConfigure": formValue.allowQueryBuilder,
+      "query": formValue.query
     }
   }
 
@@ -647,7 +649,7 @@ export class IndicatorComponent implements OnInit {
     this.getColorSections().controls.forEach(element => {
       tempArr.push({
         minValue: element.value.minValue,
-        condition: element.value.condition.id,
+        condition: element.value.condition && element.value.condition.id,
         maxValue: element.value.maxValue,
         color: element.value.color
       });
