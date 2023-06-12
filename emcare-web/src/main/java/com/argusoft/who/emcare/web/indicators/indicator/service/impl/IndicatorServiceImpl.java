@@ -88,8 +88,12 @@ public class IndicatorServiceImpl implements IndicatorService {
             indicatorDenominatorEquationRepository.deleteByDenominatorIndicator(indicatorDto.getIndicatorId());
         }
         Indicator indicator = indicatorRepository.save(IndicatorMapper.getIndicator(indicatorDto));
-        indicatorNumeratorEquationRepository.saveAll(indicator.getNumeratorEquation());
-        indicatorDenominatorEquationRepository.saveAll(indicator.getDenominatorEquation());
+        if (!indicator.getNumeratorEquation().isEmpty()) {
+            indicatorNumeratorEquationRepository.saveAll(indicator.getNumeratorEquation());
+        }
+        if (!indicator.getDenominatorEquation().isEmpty()) {
+            indicatorDenominatorEquationRepository.saveAll(indicator.getDenominatorEquation());
+        }
         return ResponseEntity.status(HttpStatus.OK).body(indicator);
     }
 
@@ -121,18 +125,8 @@ public class IndicatorServiceImpl implements IndicatorService {
         Long totalCount;
         Page<Indicator> indicators;
         if (searchText != null && !searchText.isEmpty()) {
-            totalCount = (long) indicatorRepository
-                    .findByIndicatorCodeContainingIgnoreCaseOrIndicatorNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(
-                            searchText,
-                            searchText,
-                            searchText
-                    ).size();
-            indicators = indicatorRepository
-                    .findByIndicatorCodeContainingIgnoreCaseOrIndicatorNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(
-                            searchText,
-                            searchText,
-                            searchText,
-                            page);
+            totalCount = (long) indicatorRepository.findByIndicatorCodeContainingIgnoreCaseOrIndicatorNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(searchText, searchText, searchText).size();
+            indicators = indicatorRepository.findByIndicatorCodeContainingIgnoreCaseOrIndicatorNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(searchText, searchText, searchText, page);
         } else {
             totalCount = indicatorRepository.count();
             indicators = indicatorRepository.findAll(page);
@@ -156,7 +150,11 @@ public class IndicatorServiceImpl implements IndicatorService {
             indicatorFilterDto.setAge(indicator.getAge());
             indicatorFilterDto.setGender(indicator.getGender());
             if (indicator.getDisplayType().equalsIgnoreCase(CommonConstant.INDICATOR_DISPLAY_TYPE_COUNT)) {
-                getCountIndicatorValue(indicator, numerator, denominator, responseList, indicatorFilterDto, false);
+                if (Boolean.TRUE.equals(indicator.getQueryConfigure())) {
+                    getCountByDirectQuery(indicator, responseList, indicatorFilterDto, false);
+                } else {
+                    getCountIndicatorValue(indicator, numerator, denominator, responseList, indicatorFilterDto, false);
+                }
             }
         }
         return ResponseEntity.status(HttpStatus.OK).body(responseList);
@@ -173,15 +171,16 @@ public class IndicatorServiceImpl implements IndicatorService {
         Map<String, Long> numerator = new HashMap<>();
         Map<String, Long> denominator = new HashMap<>();
         if (indicator.getDisplayType().equalsIgnoreCase(CommonConstant.INDICATOR_DISPLAY_TYPE_COUNT)) {
-            getCountIndicatorValue(indicator, numerator, denominator, responseList, indicatorFilterDto, true);
+            if (Boolean.TRUE.equals(indicator.getQueryConfigure())) {
+                getCountByDirectQuery(indicator, responseList, indicatorFilterDto, true);
+            } else {
+                getCountIndicatorValue(indicator, numerator, denominator, responseList, indicatorFilterDto, true);
+            }
         }
         return ResponseEntity.status(HttpStatus.OK).body(responseList);
     }
 
-    private void getCountIndicatorValue(Indicator indicator, final Map<String, Long> numerator,
-                                        final Map<String, Long> denominator,
-                                        final List<Map<String, Object>> responseList,
-                                        IndicatorFilterDto indicatorFilterDto, Boolean isFilter) {
+    private void getCountIndicatorValue(Indicator indicator, final Map<String, Long> numerator, final Map<String, Long> denominator, final List<Map<String, Object>> responseList, IndicatorFilterDto indicatorFilterDto, Boolean isFilter) {
         List<String> facilityIds;
         if (Boolean.FALSE.equals(isFilter)) {
             facilityIds = userService.getCurrentUserFacility();
@@ -192,30 +191,21 @@ public class IndicatorServiceImpl implements IndicatorService {
             facilityIds = indicatorFilterDto.getFacilityIds();
         }
         for (IndicatorNumeratorEquation indicatorNumeratorEquation : indicator.getNumeratorEquation()) {
-            String query = indicatorQueryBuilder.getQueryForIndicatorNumeratorEquation(indicatorNumeratorEquation,
-                    getCommaSepratedFacilityIds(facilityIds),
-                    indicator,
-                    indicatorFilterDto
-            );
+            String query = indicatorQueryBuilder.getQueryForIndicatorNumeratorEquation(indicatorNumeratorEquation, getCommaSepratedFacilityIds(facilityIds), indicator, indicatorFilterDto);
             List<Map<String, Object>> observationResources = observationCustomResourceRepository.findByPublished(query);
             numerator.put(indicatorNumeratorEquation.getEqIdentifier(), (long) observationResources.size());
         }
 
         for (IndicatorDenominatorEquation indicatorDenominatorEquation : indicator.getDenominatorEquation()) {
-            String query = indicatorQueryBuilder.getQueryForIndicatorDenominatorEquation(
-                    indicatorDenominatorEquation,
-                    getCommaSepratedFacilityIds(facilityIds),
-                    indicator,
-                    indicatorFilterDto
-            );
+            String query = indicatorQueryBuilder.getQueryForIndicatorDenominatorEquation(indicatorDenominatorEquation, getCommaSepratedFacilityIds(facilityIds), indicator, indicatorFilterDto);
             List<Map<String, Object>> observationResources = observationCustomResourceRepository.findByPublished(query);
+            System.out.println(query);
             denominator.put(indicatorDenominatorEquation.getEqIdentifier(), (long) observationResources.size());
         }
 
         Integer numeratorResult = replaceValueToEquationAndResolve(indicator.getNumeratorIndicatorEquation(), numerator);
         Integer denominatorResult = replaceValueToEquationAndResolve(indicator.getDenominatorIndicatorEquation(), denominator);
-        if (indicator.getDenominatorEquation().size() == 1
-                && indicator.getDenominatorEquation().get(0).getCode().equalsIgnoreCase(CommonConstant.ALL_CODE)) {
+        if (indicator.getDenominatorEquation().size() == 1 && indicator.getDenominatorEquation().get(0).getCode().equalsIgnoreCase(CommonConstant.ALL_CODE)) {
             denominatorResult = denominatorResult * indicator.getNumeratorEquation().size();
         }
         Double finalValue = (numeratorResult.doubleValue() / denominatorResult.doubleValue()) * 100;
@@ -237,14 +227,42 @@ public class IndicatorServiceImpl implements IndicatorService {
         stringObjectMap.put("colorSchema", indicator.getColourSchema());
         stringObjectMap.put(CommonConstant.INDICATOR_VALUE, df.format(finalValue));
         responseList.add(stringObjectMap);
-        responseList.sort(
-                (ind1, ind2) ->
-                        ind2.get(CommonConstant.INDICATOR_VALUE).toString()
-                                .compareTo(
-                                        ind1.get(CommonConstant.INDICATOR_VALUE).toString()
-                                )
-        );
+        responseList.sort((ind1, ind2) -> ind2.get(CommonConstant.INDICATOR_VALUE).toString().compareTo(ind1.get(CommonConstant.INDICATOR_VALUE).toString()));
     }
+
+    private void getCountByDirectQuery(Indicator indicator,
+                                       final List<Map<String, Object>> responseList,
+                                       IndicatorFilterDto indicatorFilterDto,
+                                       Boolean isFilter) {
+        List<String> facilityIds;
+        if (Boolean.FALSE.equals(isFilter)) {
+            facilityIds = userService.getCurrentUserFacility();
+            if (facilityIds.isEmpty() || Objects.isNull(facilityIds) || Objects.isNull(facilityIds.get(0))) {
+                facilityIds = locationResourceService.getActiveFacility().stream().map(FacilityDto::getFacilityId).collect(Collectors.toList());
+            }
+        } else {
+            facilityIds = indicatorFilterDto.getFacilityIds();
+        }
+        String facilityId = getCommaSepratedFacilityIdsWithFullString(facilityIds);
+        String query = indicatorQueryBuilder.changeQueryBasedOnFilterValueReplace(facilityId, indicator, indicatorFilterDto);
+        List<Map<String, Object>> observationResources = observationCustomResourceRepository.findByPublished(query);
+
+        Map<String, Object> stringObjectMap = new HashMap<>();
+        DecimalFormat df = new DecimalFormat("0.0");
+        stringObjectMap.put("indicatorCode", indicator.getIndicatorCode());
+        stringObjectMap.put("indicatorId", indicator.getIndicatorId());
+        stringObjectMap.put("age", indicatorFilterDto.getAge());
+        stringObjectMap.put("facilityIds", indicatorFilterDto.getFacilityIds());
+        stringObjectMap.put("gender", indicatorFilterDto.getGender());
+        stringObjectMap.put("startDate", indicatorFilterDto.getStartDate());
+        stringObjectMap.put("endDate", indicatorFilterDto.getEndDate());
+        stringObjectMap.put("indicatorName", indicator.getIndicatorName());
+        stringObjectMap.put("indicatorType", indicator.getDisplayType());
+        stringObjectMap.put("colorSchema", indicator.getColourSchema());
+        stringObjectMap.put(CommonConstant.INDICATOR_VALUE, df.format(observationResources.size()));
+        responseList.add(stringObjectMap);
+    }
+
 
     private Integer replaceValueToEquationAndResolve(String equation, Map<String, Long> data) {
         String eq = equation;
@@ -271,6 +289,14 @@ public class IndicatorServiceImpl implements IndicatorService {
             return null;
         } else {
             return String.join("','", facilityIds);
+        }
+    }
+
+    public String getCommaSepratedFacilityIdsWithFullString(List<String> facilityIds) {
+        if (facilityIds == null || facilityIds.isEmpty()) {
+            return null;
+        } else {
+            return "'" + String.join("','", facilityIds) + "'";
         }
     }
 }

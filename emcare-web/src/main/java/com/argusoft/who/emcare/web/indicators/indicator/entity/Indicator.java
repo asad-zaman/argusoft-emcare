@@ -67,7 +67,7 @@ public class Indicator extends EntityAuditInfo implements Serializable {
     @JsonIgnore
     private List<IndicatorDenominatorEquation> denominatorEquation;
 
-    @Column(name = "colour_schema",columnDefinition = "TEXT")
+    @Column(name = "colour_schema", columnDefinition = "TEXT")
     private String colourSchema;
 
     @Column(name = "age")
@@ -75,6 +75,12 @@ public class Indicator extends EntityAuditInfo implements Serializable {
 
     @Column(name = "gender")
     private String gender;
+
+    @Column(name = "is_query_configure")
+    private Boolean isQueryConfigure;
+
+    @Column(name = "query", columnDefinition = "TEXT")
+    private String query;
 
     public Long getIndicatorId() {
         return indicatorId;
@@ -194,6 +200,22 @@ public class Indicator extends EntityAuditInfo implements Serializable {
 
     public void setGender(String gender) {
         this.gender = gender;
+    }
+
+    public Boolean getQueryConfigure() {
+        return isQueryConfigure;
+    }
+
+    public void setQueryConfigure(Boolean queryConfigure) {
+        isQueryConfigure = queryConfigure;
+    }
+
+    public String getQuery() {
+        return query;
+    }
+
+    public void setQuery(String query) {
+        this.query = query;
     }
 
     @Override
