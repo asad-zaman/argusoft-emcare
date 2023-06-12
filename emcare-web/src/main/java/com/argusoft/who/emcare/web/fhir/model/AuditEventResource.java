@@ -4,11 +4,11 @@ import com.argusoft.who.emcare.web.common.model.EntityAuditInfo;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.util.Date;
 import java.util.Objects;
 
 @Entity
-@Table(name="audit_event_resource")
+@Table(name = "audit_event_resource")
 public class AuditEventResource extends EntityAuditInfo implements Serializable {
 
     @Id
@@ -19,12 +19,11 @@ public class AuditEventResource extends EntityAuditInfo implements Serializable 
     @Column(name = "text", columnDefinition = "TEXT")
     private String text;
 
-
     @Column(name = "resource_id")
     private String resourceId;
 
     @Column(name = "recorded")
-    private Timestamp recorded;
+    private Date recorded;
 
     @Column(name = "status")
     private String status;
@@ -58,11 +57,11 @@ public class AuditEventResource extends EntityAuditInfo implements Serializable 
         return resourceId;
     }
 
-    public Timestamp getRecorded() {
+    public Date getRecorded() {
         return recorded;
     }
 
-    public void setRecorded(Timestamp recorded) {
+    public void setRecorded(Date recorded) {
         this.recorded = recorded;
     }
 

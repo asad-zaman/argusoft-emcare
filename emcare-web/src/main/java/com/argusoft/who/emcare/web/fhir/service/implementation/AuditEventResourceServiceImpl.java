@@ -6,7 +6,6 @@ import ca.uhn.fhir.rest.api.MethodOutcome;
 import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.fhir.dao.AuditEventResourceRepository;
 import com.argusoft.who.emcare.web.fhir.model.AuditEventResource;
-import com.argusoft.who.emcare.web.fhir.model.LibraryResource;
 import com.argusoft.who.emcare.web.fhir.service.AuditEventResourceService;
 import org.hl7.fhir.r4.model.AuditEvent;
 import org.hl7.fhir.r4.model.IdType;
@@ -44,21 +43,38 @@ public class AuditEventResourceServiceImpl implements AuditEventResourceService 
 
         String auditEventString = parser.encodeResourceToString(auditEvent);
 
-        AuditEventResource auditEventResource= new AuditEventResource();
+        AuditEventResource auditEventResource = new AuditEventResource();
         auditEventResource.setText(auditEventString);
         auditEventResource.setResourceId(auditEventId);
-
+        auditEventResource.setRecorded(auditEvent.getRecorded());
+        String status = auditEvent.getType().getDisplay();
+        if (status.equalsIgnoreCase(CommonConstant.DRAFT_DISPLAY_VALUE)) {
+            auditEventResource.setStatus(CommonConstant.DRAFT);
+        } else {
+            auditEventResource.setStatus(CommonConstant.START);
+        }
+        for (AuditEvent.AuditEventAgentComponent agent : auditEvent.getAgent()) {
+            if (agent.getType().getText().equalsIgnoreCase(CommonConstant.FHIR_PATIENT)) {
+                auditEventResource.setPatientId(agent.getWho().getIdentifier().getValue());
+            }
+            if (agent.getType().getText().equalsIgnoreCase(CommonConstant.ENCOUNTER)) {
+                auditEventResource.setEncounterId(agent.getWho().getIdentifier().getValue());
+            }
+            if (agent.getType().getText().equalsIgnoreCase(CommonConstant.CONSULTATION_STAGE_KEY)) {
+                auditEventResource.setCnsltStage(agent.getWho().getIdentifier().getValue());
+            }
+        }
         auditEventResourceRepository.save(auditEventResource);
 
         return auditEvent;
     }
 
     @Override
-    public AuditEvent getResourceById(String id){
+    public AuditEvent getResourceById(String id) {
         AuditEventResource auditEventResource = auditEventResourceRepository.findByResourceId(id);
         AuditEvent auditEvent = null;
-        if (auditEventResource != null){
-            auditEvent = parser.parseResource(AuditEvent.class,auditEventResource.getText());
+        if (auditEventResource != null) {
+            auditEvent = parser.parseResource(AuditEvent.class, auditEventResource.getText());
         }
         return auditEvent;
     }
@@ -74,9 +90,27 @@ public class AuditEventResourceServiceImpl implements AuditEventResourceService 
         String encodeResource = parser.encodeResourceToString(auditEvent);
         AuditEventResource auditEventResource = auditEventResourceRepository.findByResourceId(idType.getIdPart());
         auditEventResource.setText(encodeResource);
-
+        auditEventResource.setRecorded(auditEvent.getRecorded());
+        String status = auditEvent.getType().getDisplay();
+        if (status.equalsIgnoreCase(CommonConstant.DRAFT_DISPLAY_VALUE)) {
+            auditEventResource.setStatus(CommonConstant.DRAFT);
+        } else {
+            auditEventResource.setStatus(CommonConstant.START);
+        }
+        for (AuditEvent.AuditEventAgentComponent agent : auditEvent.getAgent()) {
+            if (agent.getType().getText().equalsIgnoreCase(CommonConstant.FHIR_PATIENT)) {
+                auditEventResource.setPatientId(agent.getWho().getIdentifier().getValue());
+            }
+            if (agent.getType().getText().equalsIgnoreCase(CommonConstant.ENCOUNTER)) {
+                auditEventResource.setEncounterId(agent.getWho().getIdentifier().getValue());
+            }
+            if (agent.getType().getText().equalsIgnoreCase(CommonConstant.CONSULTATION_STAGE_KEY)) {
+                auditEventResource.setCnsltStage(agent.getWho().getIdentifier().getValue());
+            }
+        }
+        auditEventResourceRepository.save(auditEventResource);
         MethodOutcome retVal = new MethodOutcome();
-        retVal.setId(new IdType(CommonConstant.AUDIT_EVENT,auditEvent.getId(),"1"));
+        retVal.setId(new IdType(CommonConstant.AUDIT_EVENT, auditEvent.getId(), "1"));
         retVal.setResource(auditEvent);
         return retVal;
     }
