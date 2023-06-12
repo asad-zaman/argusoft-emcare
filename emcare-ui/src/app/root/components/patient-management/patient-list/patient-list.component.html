@@ -19,9 +19,10 @@
       <button [disabled]="this.exportAllPatient" (click)="onEnableSelectionClick()" class="ml-3 btn btn-blue">
         {{showCheckboxes ? 'Cancel' : 'Export'| translate}}
       </button>
-      <ul *ngIf="this.showCheckboxes || this.exportAllPatient" class="navigation ml-3 btn btn-blue">
+      <ul [ngStyle]="{'opacity': disableSaveButton ? '0.5' : '1'}" *ngIf="this.showCheckboxes || this.exportAllPatient"
+        class="navigation ml-3 btn btn-blue">
         <li class="dropdown" style="list-style-type: none;">
-          <div class="d-flex align-items-center" data-bs-toggle="dropdown">
+          <div [disabled]="disableSaveButton" class="d-flex align-items-center" data-bs-toggle="dropdown">
             {{'Save As' | translate}}
           </div>
           <ul class="dropdown-menu cst-transform" aria-labelledby="dropdownMenuButton1">
