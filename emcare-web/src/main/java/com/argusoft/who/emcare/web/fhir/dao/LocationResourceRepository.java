@@ -22,12 +22,12 @@ public interface LocationResourceRepository extends JpaRepository<LocationResour
 
     Page<LocationResource> findByTextContainingIgnoreCase(String searchString, Pageable page);
 
-    @Query(value = "select * from location_resources where cast(cast(text AS json)->> 'status' as text) in :status and (organization_name ilike %:searchString% or location_name ilike %:searchString%)",
-            countQuery = "select count(*) from location_resources where cast(cast(text AS json)->> 'status' as text) in :status and (organization_name ilike %:searchString% or location_name ilike %:searchString%)",
+    @Query(value = "select * from location_resources where cast(cast(text AS json)->> 'status' as text) in :status and (cast(cast(text AS json)->> 'name' as text) ilike %:searchString% or cast(cast(text AS json)-> 'address' -> 'line' -> 0 as text) ilike %:searchString% or organization_name ilike %:searchString% or location_name ilike %:searchString%)",
+            countQuery = "select count(*) from location_resources where cast(cast(text AS json)->> 'status' as text) in :status and (cast(cast(text AS json)->> 'name' as text) ilike %:searchString% or cast(cast(text AS json)-> 'address' -> 'line' -> 0 as text) ilike %:searchString% or organization_name ilike %:searchString% or location_name ilike %:searchString%)",
             nativeQuery = true)
     Page<LocationResource> searchFacilityByStatus(@Param("searchString") String searchString, @Param("status") List<String> status, Pageable page);
 
-    @Query( value =  "select count(*) from location_resources where cast(cast(text AS json)->> 'status' as text) in :status and organization_name ilike %:searchString% or location_name ilike %:searchString%",
+    @Query( value =  "select count(*) from location_resources where cast(cast(text AS json)->> 'status' as text) in :status and (cast(cast(text AS json)->> 'name' as text) ilike %:searchString% or cast(cast(text AS json)-> 'address' -> 'line' -> 0 as text) ilike %:searchString% or organization_name ilike %:searchString% or location_name ilike %:searchString%)",
             nativeQuery = true)
     Long searchFacilityByStatus(@Param("searchString") String searchString, @Param("status") List<String> status);
 
