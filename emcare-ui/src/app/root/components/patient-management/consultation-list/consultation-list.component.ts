@@ -34,6 +34,7 @@ export class ConsultationListComponent implements OnInit {
   selectedId: any;
   dateObj: any;
   isLocationFilterOn: boolean;
+  disableSaveButton: boolean;
 
   constructor(
     private readonly fhirService: FhirService,
@@ -143,20 +144,24 @@ export class ConsultationListComponent implements OnInit {
   onEnableSelectionClick() {
     this.showCheckboxes = !this.showCheckboxes;
     this.enableAll = false;
+    this.disableSaveButton = true;
     if (!this.showCheckboxes) {
       this.filteredConsultations.forEach(element => { element['isExcelPDF'] = false; });
     }
   }
 
   enableAllBoxes() {
+    this.disableSaveButton = false;
     if (this.enableAll) {
       this.filteredConsultations.forEach(element => { element['isExcelPDF'] = true; });
     } else {
+      this.disableSaveButton = true;
       this.filteredConsultations.forEach(element => { element['isExcelPDF'] = false; });
     }
   }
 
   enableEachBox(patient) {
+    this.disableSaveButton = false;
     if (!patient.isExcelPDF) {
       this.enableAll = false;
     } else {
@@ -535,6 +540,7 @@ export class ConsultationListComponent implements OnInit {
   }
 
   exportAllTheConsultations() {
+    this.disableSaveButton = false;
     this.enableAll = false;
     this.showCheckboxes = false;
     if (this.exportAllConsultations) {

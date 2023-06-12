@@ -41,6 +41,7 @@ export class PatientListComponent implements OnInit {
         'familyName', 'gender', 'birthDate',
         'facilityName', 'addressLine', 'organizationName',
         'locationName', 'consultationDate'];
+    disableSaveButton: boolean;
 
     constructor(
         private readonly fhirService: FhirService,
@@ -339,20 +340,24 @@ export class PatientListComponent implements OnInit {
     onEnableSelectionClick() {
         this.showCheckboxes = !this.showCheckboxes;
         this.enableAll = false;
+        this.disableSaveButton = true;
         if (!this.showCheckboxes) {
             this.filteredPatients.forEach(element => { element['isExcelPDF'] = false; });
         }
     }
 
     enableAllBoxes() {
+        this.disableSaveButton = false;
         if (this.enableAll) {
             this.filteredPatients.forEach(element => { element['isExcelPDF'] = true; });
         } else {
+            this.disableSaveButton = true;
             this.filteredPatients.forEach(element => { element['isExcelPDF'] = false; });
         }
     }
 
     enableEachBox(patient) {
+        this.disableSaveButton = false;
         if (!patient.isExcelPDF) {
             this.enableAll = false;
         } else {
@@ -364,6 +369,7 @@ export class PatientListComponent implements OnInit {
     }
 
     exportAllThePatients() {
+        this.disableSaveButton = false;
         this.enableAll = false;
         this.showCheckboxes = false;
         this.fhirService.getAllPatientsForExport(this.searchString, this.selectedId).subscribe((res: any) => {
