@@ -338,11 +338,17 @@ export class PatientListComponent implements OnInit {
     }
 
     onEnableSelectionClick() {
-        this.showCheckboxes = !this.showCheckboxes;
-        this.enableAll = false;
-        this.disableSaveButton = true;
-        if (!this.showCheckboxes) {
-            this.filteredPatients.forEach(element => { element['isExcelPDF'] = false; });
+        if (this.exportAllPatient) {
+          this.exportAllPatient = false;
+        } else {
+          this.showCheckboxes = !this.showCheckboxes;
+          this.enableAll = false;
+          this.disableSaveButton = true;
+          if (!this.showCheckboxes) {
+            this.filteredPatients.forEach((element) => {
+              element['isExcelPDF'] = false;
+            });
+          }
         }
     }
 
