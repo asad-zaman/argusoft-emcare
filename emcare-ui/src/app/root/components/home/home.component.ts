@@ -101,7 +101,7 @@ export class HomeComponent implements OnInit {
         },
       },
       tooltip: {
-        enabled: true,
+        enabled: false,
         headerFormat: undefined,
         pointFormat: `<b>Date = {point.d}</b>  <br> <br> <b>Consultations = {point.y}</b>`,
       },

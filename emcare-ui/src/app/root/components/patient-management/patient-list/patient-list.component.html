@@ -16,8 +16,8 @@
       </p-checkbox>
     </div>
     <div class="col-6 d-flex cst-export">
-      <button [disabled]="this.exportAllPatient" (click)="onEnableSelectionClick()" class="ml-3 btn btn-blue">
-        {{showCheckboxes ? 'Cancel' : 'Export'| translate}}
+      <button (click)="onEnableSelectionClick()" class="ml-3 btn btn-blue">
+        {{ exportAllPatient ? 'Cancel' : (showCheckboxes ? 'Cancel' : ('Export'| translate)) }}
       </button>
       <ul [ngStyle]="{'opacity': disableSaveButton ? '0.5' : '1'}" *ngIf="this.showCheckboxes || this.exportAllPatient"
         class="navigation ml-3 btn btn-blue">
