@@ -5,7 +5,9 @@ import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.rest.annotation.Transaction;
 import ca.uhn.fhir.rest.annotation.TransactionParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
+import com.argusoft.who.emcare.web.fhir.dao.BundleSyncResourceRepository;
 import com.argusoft.who.emcare.web.fhir.dao.ObservationResourceRepository;
+import com.argusoft.who.emcare.web.fhir.model.BundleSyncResource;
 import com.argusoft.who.emcare.web.fhir.service.EmcareResourceService;
 import com.argusoft.who.emcare.web.fhir.service.ObservationResourceService;
 import com.google.gson.Gson;
@@ -35,6 +37,9 @@ public class BundleResourceProvider implements IResourceProvider {
     @Autowired
     ObservationResourceService observationResourceService;
 
+    @Autowired
+    BundleSyncResourceRepository bundleSyncResourceRepository;
+
     /**
      * The getResourceType method comes from IResourceProvider, and must be
      * overridden to indicate what type of resource this provider supplies.
@@ -51,6 +56,11 @@ public class BundleResourceProvider implements IResourceProvider {
 
         List<BundleEntryComponent> bundleEntries = theBundle.getEntry();
         Bundle retVal = new Bundle();
+        String bundle = parser.encodeResourceToString(theBundle);
+        BundleSyncResource bundleSyncResource = new BundleSyncResource();
+        bundleSyncResource.setText(bundle);
+        bundleSyncResource.setSync_on(new Date());
+        bundleSyncResourceRepository.save(bundleSyncResource);
 
         for (BundleEntryComponent bundleEntry : bundleEntries) {
             String resourceType = "";
