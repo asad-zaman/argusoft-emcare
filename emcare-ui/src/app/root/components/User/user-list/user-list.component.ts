@@ -75,7 +75,7 @@ export class UserListComponent implements OnInit {
   getUsersByPageIndex(index) {
     this.mainUserList = [];
     this.userService
-      .getUsersByPage(this.currentPage, null, this.isInactive)
+      .getUsersByPage(index, null, this.isInactive)
       .subscribe((res) => {
         this.manipulateResponse(res);
       });
