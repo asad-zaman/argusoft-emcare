@@ -19,12 +19,14 @@ public class CommonConstant {
     public static final String ENGLISH = "en";
     public static final String LOCATION_TYPE_STRING = "LOCATION";
     public static final String BINARY_TYPE_STRING = "BINARY";
+    public static final String AUDITEVENT_TYPE_STRING = "AUDITEVENT";
     public static final String OPERATION_DEFINITION = "OPERATIONDEFINITION";
     public static final String CODE_SYSTEM = "CODESYSTEM";
     public static final String QUESTIONNAIRE = "QUESTIONNAIRE";
     public static final String STRUCTURE_DEFINITION = "STRUCTUREDEFINITION";
     public static final String STRUCTURE_MAP = "STRUCTUREMAP";
     public static final String LIBRARY = "LIBRARY";
+    public static final String AUDIT_EVENT = "AUDITEVENT";
     public static final String OBSERVATION = "OBSERVATION";
     public static final String MEDICATION = "MEDICATION";
     public static final String ACTIVITY_DEFINITION = "ACTIVITYDEFINITION";
@@ -39,6 +41,10 @@ public class CommonConstant {
     public static final String INACTIVE = "Inactive";
     //    FHIR
     public static final String FHIR_PATIENT = "PATIENT";
+    public static final String CONSULTATION_STAGE_KEY = "Consultation Stage";
+    public static final String DRAFT_DISPLAY_VALUE = "An operation on other objects";
+    public static final String DRAFT = "DRAFT";
+    public static final String START = "START";
     public static final String FHIR_QUESTIONNAIRE = "Questionnaire";
     public static final String LOCATION_EXTENSION_URL = "http://hl7.org/fhir/StructureDefinition/patient-locationId";
     public static final String PRIMARY_CAREGIVER_EXTENSION_URL = "https://fhir.dk.swisstph-mis.ch/matchbox/fhir/StructureDefinition/primary-caregiver";

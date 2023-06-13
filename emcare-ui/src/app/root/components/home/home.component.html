@@ -21,7 +21,7 @@
       <div class="dashboard-card height___350">
         <div class="dashboard-card-heading">
           <h3>{{'Analysis' | translate}}</h3>
-          <p>{{'Number of consultations per date' | translate}}</p>
+          <p>Number of consultations for last 15 days</p>
         </div>
         <div class="dashboard-card-body">
           <div id="scatter-chart-container"
@@ -87,8 +87,9 @@
                                 <div class="col-12 col-sm-6">
                                   <div class="mb-3">
                                     <label class="form-label">{{'Facility' | translate}}</label>
-                                    <p-multiSelect placeholder="Select" [options]="facilityArr"
-                                      formControlName="facility" optionLabel="name" dataKey="id">
+                                    <p-multiSelect styleClass="cst-indicator-dropdown" placeholder="Select"
+                                      [options]="facilityArr" formControlName="facility" optionLabel="name"
+                                      dataKey="id">
                                     </p-multiSelect>
                                   </div>
                                 </div>

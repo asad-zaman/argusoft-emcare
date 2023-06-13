@@ -96,7 +96,7 @@ class SignUpFragment : BaseFragment<FragmentSignupBinding>() {
     override fun initObserver() {
         observeNotNull(signUpViewModel.errorMessageState) {
             if (it == 0) {
-                preference.setSelectedCountry("")
+//                preference.setSelectedCountry("")
                 signUpViewModel.signup(
                     binding.passwordEditText.getEnterText(),
                     binding.confirmPasswordEditText.getEnterText(),

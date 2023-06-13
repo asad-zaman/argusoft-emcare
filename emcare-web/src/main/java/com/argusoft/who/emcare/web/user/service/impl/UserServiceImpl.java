@@ -9,6 +9,7 @@ import com.argusoft.who.emcare.web.common.response.Response;
 import com.argusoft.who.emcare.web.common.service.CommonService;
 import com.argusoft.who.emcare.web.config.KeyCloakConfig;
 import com.argusoft.who.emcare.web.config.tenant.TenantContext;
+import com.argusoft.who.emcare.web.fhir.dao.LocationResourceRepository;
 import com.argusoft.who.emcare.web.fhir.dto.FacilityDto;
 import com.argusoft.who.emcare.web.fhir.service.LocationResourceService;
 import com.argusoft.who.emcare.web.location.dao.LocationMasterDao;
@@ -104,6 +105,9 @@ public class UserServiceImpl implements UserService {
     LocationResourceService locationResourceService;
 
     @Autowired
+    LocationResourceRepository locationResourceRepository;
+
+    @Autowired
     RoleEntityRepository roleEntityRepository;
 
     @Autowired
@@ -142,7 +146,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserMasterDto getCurrentUser() {
+    public ResponseEntity getCurrentUser() {
         AccessToken user = emCareSecurityUser.getLoggedInUser();
         Keycloak keycloak = keyCloakConfig.getInstance();
         UserRepresentation userInfo = keycloak.realm(realm).users().get(user.getSubject()).toRepresentation();
@@ -155,6 +159,12 @@ public class UserServiceImpl implements UserService {
             for (String id : facilityIds)
                 facilityDtos.add(locationResourceService.getFacilityDto(id));
         }
+        if (!facilityDtos.isEmpty()) {
+            facilityDtos = facilityDtos.stream().filter(facilityDto -> facilityDto.getStatus().equalsIgnoreCase(CommonConstant.ACTIVE)).collect(Collectors.toList());
+            if (facilityDtos.isEmpty()) {
+                return new ResponseEntity<Response>(new Response("No Active Facilities Associated", HttpStatus.FORBIDDEN.value()), HttpStatus.FORBIDDEN);
+            }
+        }
         UserMasterDto masterUser = UserMapper.getMasterUser(user, facilityDtos, userInfo);
         List<RoleRepresentation> roleRepresentationList = keycloak.realm(realm).users().get(masterUser.getUserId()).roles().realmLevel().listAll();
         List<String> roleIds = new ArrayList<>();
@@ -163,7 +173,7 @@ public class UserServiceImpl implements UserService {
         }
 
         masterUser.setFeature(getUserFeatureJson(roleIds, masterUser.getUserId()));
-        return masterUser;
+        return ResponseEntity.ok().body(masterUser);
     }
 
     @Override
@@ -222,40 +232,26 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public PageDto getUserPage(HttpServletRequest request, Integer pageNo, String searchString) {
-        Integer pageSize = CommonConstant.PAGE_SIZE;
-        Integer startIndex = pageNo * pageSize;
-        Integer endIndex = (pageNo + 1) * pageSize;
+    public PageDto getUserPage(HttpServletRequest request, Integer pageNo, String searchString, Boolean filter) {
+        if (filter == null) {
+            filter = false;
+        }
+        filter = !filter;
         List<MultiLocationUserListDto> userList = new ArrayList<>();
         Keycloak keycloak = keyCloakConfig.getInstance();
-        List<String> countryUsers = userLocationMappingRepository.getDistinctUserId();
-        Integer userTotalCount = countryUsers.size();
-        if (endIndex > userTotalCount) {
-            endIndex = userTotalCount;
-        }
-        List<UserRepresentation> userRepresentations;
-        if (searchString != null && !searchString.isEmpty()) {
-            userRepresentations = keycloak.realm(realm).users().search(searchString, 0, 1000);
-            userRepresentations = userRepresentations.stream().filter(userRepresentation -> countryUsers.contains(userRepresentation.getId())).collect(Collectors.toList());
-
-            Collections.sort(userRepresentations, (rp1, rp2) -> rp2.getCreatedTimestamp().compareTo(rp1.getCreatedTimestamp()));
-            if (userRepresentations.size() <= endIndex) {
-                endIndex = userRepresentations.size();
-
-            }
-            userTotalCount = userRepresentations.size();
-            if (startIndex > endIndex) {
-                userRepresentations = new ArrayList<>();
-            } else {
-                userRepresentations = userRepresentations.subList(startIndex, endIndex);
-            }
+        Integer userTotalCount;
+        List<UserRepresentation> userRepresentations = new ArrayList<>();
+        List<String> userIds;
+        if (Objects.nonNull(searchString)) {
+            userTotalCount = userLocationMappingRepository.getUserPageDataWithSearchCount(searchString, filter).size();
+            userIds = userLocationMappingRepository.getUserPageDataWithSearch(searchString, filter, pageNo * CommonConstant.PAGE_SIZE);
         } else {
+            userTotalCount = userLocationMappingRepository.getUserPageDataWithoutSearchCount(filter).size();
+            userIds = userLocationMappingRepository.getUserPageDataWithoutSearch(filter, pageNo * CommonConstant.PAGE_SIZE);
+        }
 
-            List<UserRepresentation> representations = keycloak.realm(realm).users().list();
-            userRepresentations = representations.stream().filter(userRepresentation -> countryUsers.contains(userRepresentation.getId())).collect(Collectors.toList());
-
-            Collections.sort(userRepresentations, (rp1, rp2) -> rp2.getCreatedTimestamp().compareTo(rp1.getCreatedTimestamp()));
-            userRepresentations = userRepresentations.subList(startIndex, endIndex);
+        for (String userId : userIds) {
+            userRepresentations.add(keycloak.realm(realm).users().get(userId).toRepresentation());
         }
 
         for (UserRepresentation representation : userRepresentations) {
@@ -276,7 +272,6 @@ public class UserServiceImpl implements UserService {
                         facilityDtos.add(locationResourceService.getFacilityDto(mapping.getFacilityId()));
                     }
                 }
-
                 userList.add(UserMapper.getMultiLocationUserListDto(representation, facilityDtos));
             } else {
                 userList.add(UserMapper.getMultiLocationUserListDto(representation, null));
@@ -366,7 +361,7 @@ public class UserServiceImpl implements UserService {
         try {
             javax.ws.rs.core.Response response = usersResource.create(kcUser);
             String userId = CreatedResponseUtil.getCreatedId(response);
-            userLocationMappingRepository.saveAll(UserMapper.getUserMappingEntityPerLocation(user, userId, locationMap));
+            userLocationMappingRepository.saveAll(UserMapper.getUserMappingEntityPerLocation(user, userId, locationMap, Boolean.TRUE));
             UserResource userResource = usersResource.get(userId);
 
 //        Set Realm Role
@@ -425,8 +420,8 @@ public class UserServiceImpl implements UserService {
                 String userId = accessToken.getSubject();
                 UserRepresentation userRepresentation = getUserByEmailId(loginCred.getUsername());
                 String tenantId = Objects.nonNull(userRepresentation.getAttributes().get(CommonConstant.TENANT_ID))
-                        ? userRepresentation.getAttributes().get(CommonConstant.TENANT_ID).get(0)
-                        : defaultTenant;
+                    ? userRepresentation.getAttributes().get(CommonConstant.TENANT_ID).get(0)
+                    : defaultTenant;
                 Set<String> roles = accessToken.getRealmAccess().getRoles();
                 TenantContext.clearTenant();
                 TenantContext.setCurrentTenant(tenantId);
@@ -492,7 +487,7 @@ public class UserServiceImpl implements UserService {
 
             javax.ws.rs.core.Response response = usersResource.create(kcUser);
             String userId = CreatedResponseUtil.getCreatedId(response);
-            userLocationMappingRepository.saveAll(UserMapper.getUserMappingEntityPerLocation(user, userId, locationMap));
+            userLocationMappingRepository.saveAll(UserMapper.getUserMappingEntityPerLocation(user, userId, locationMap, Boolean.FALSE));
             UserResource userResource = usersResource.get(userId);
 
 //        Set Realm Role
@@ -571,10 +566,12 @@ public class UserServiceImpl implements UserService {
         UserRepresentation user = usersResource.get(userUpdateDto.getUserId()).toRepresentation();
         user.setEnabled(userUpdateDto.getIsEnabled());
         usersResource.get(userUpdateDto.getUserId()).update(user);
-        UserLocationMapping oldUser = userLocationMappingRepository.findByUserId(userUpdateDto.getUserId()).get(0);
-        oldUser.setState(userUpdateDto.getIsEnabled());
-        oldUser.setIsFirst(false);
-        userLocationMappingRepository.save(oldUser);
+        List<UserLocationMapping> userLocationMappings = userLocationMappingRepository.findByUserId(userUpdateDto.getUserId());
+        for (UserLocationMapping oldUser : userLocationMappings) {
+            oldUser.setState(userUpdateDto.getIsEnabled());
+            oldUser.setIsFirst(false);
+            userLocationMappingRepository.save(oldUser);
+        }
 
         if (userUpdateDto.getIsEnabled()) {
             CompletableFuture.runAsync(() -> {
@@ -602,7 +599,7 @@ public class UserServiceImpl implements UserService {
             });
         }
 
-        return ResponseEntity.ok(oldUser);
+        return ResponseEntity.ok(userLocationMappings);
 
     }
 
@@ -647,17 +644,28 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public PageDto getUsersUnderLocation(Object locationId, Integer pageNo) {
+    public PageDto getUsersUnderLocation(Object locationId, Integer pageNo, Boolean filter) {
         List<MultiLocationUserListDto> userList = new ArrayList<>();
-        if (!isNumeric(locationId.toString())) {
-            locationId = locationResourceService.getFacilityDto(locationId.toString()).getLocationId().intValue();
+        if (filter == null) {
+            filter = false;
+        }
+        filter = !filter;
+        List<Integer> locationIds;
+        List<String> childFacilityIds = new ArrayList<>();
+        if (Objects.nonNull(locationId)) {
+            if (isNumeric(locationId.toString())) {
+                locationIds = locationMasterDao.getAllChildLocationId(Integer.parseInt(locationId.toString()));
+                childFacilityIds = locationResourceRepository.findResourceIdIn(locationIds);
+            } else {
+                childFacilityIds.add(locationId.toString());
+            }
         }
         Keycloak keycloak = keyCloakConfig.getInstance();
-        Integer totalCount = userLocationMappingRepository.getAllUserOnChildLocations(Integer.parseInt(locationId.toString())).size();
-        List<String> allUsersIdUnderLocation = userLocationMappingRepository.getAllUserOnChildLocationsWithPage(Integer.parseInt(locationId.toString()), pageNo, CommonConstant.PAGE_SIZE);
+        Integer totalCount = userLocationMappingRepository.getAllUserBasedOnFacilityIdCount(childFacilityIds, filter).size();
+        List<String> allUsersIdUnderLocation = userLocationMappingRepository.getAllUserBasedOnFacilityId(childFacilityIds, filter, pageNo * 10);
         List<UserRepresentation> userRepresentations = new ArrayList<>();
         for (String userId : allUsersIdUnderLocation) {
-            userRepresentations.add(getUserById(userId));
+            userRepresentations.add(keycloak.realm(realm).users().get(userId).toRepresentation());
         }
         for (UserRepresentation representation : userRepresentations) {
             List<RoleRepresentation> roleRepresentationList = keycloak.realm(realm).users().get(representation.getId()).roles().realmLevel().listAll();

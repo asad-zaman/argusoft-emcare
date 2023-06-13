@@ -1,5 +1,6 @@
-<app-location-filter *ngIf="isView" [isOtherPage]="false" (isClear)="clearFilter($event)"
-  (locationId)="getLocationId($event)"></app-location-filter>
+<app-location-filter *ngIf="isView" [isPatientPage]="true" [isFacilityNotAllowed]="false"
+  (isClear)="clearFilter($event)" (locationId)="getLocationId($event)">
+</app-location-filter>
 <div *ngIf="isView" class="main-wrapper">
   <div class="custom-header">
     <h1 class="heading">{{'Patients' | translate}}</h1>
@@ -9,18 +10,19 @@
       <input class="form-control custom-input h-35" id="exampleFormControlInput1" [(ngModel)]="searchString"
         (input)="searchFilter()" placeholder="{{'Search Placeholder' | translate}}">
     </div>
-    <div class="col-3">
+    <div class="col-3 cst-d-flex">
       <p-checkbox styleClass="form-label" [(ngModel)]="exportAllPatient" label="Export All Patients" [binary]="true"
         inputId="binary" value="true" (onChange)="exportAllThePatients()">
       </p-checkbox>
     </div>
     <div class="col-6 d-flex cst-export">
-      <button [disabled]="this.exportAllPatient" (click)="onEnableSelectionClick()" class="ml-3 btn btn-blue">
-        {{'Export' | translate}}
+      <button (click)="onEnableSelectionClick()" class="ml-3 btn btn-blue">
+        {{ exportAllPatient ? 'Cancel' : (showCheckboxes ? 'Cancel' : ('Export'| translate)) }}
       </button>
-      <ul *ngIf="this.showCheckboxes || this.exportAllPatient" class="navigation ml-3 btn btn-blue">
+      <ul [ngStyle]="{'opacity': disableSaveButton ? '0.5' : '1'}" *ngIf="this.showCheckboxes || this.exportAllPatient"
+        class="navigation ml-3 btn btn-blue">
         <li class="dropdown" style="list-style-type: none;">
-          <div class="d-flex align-items-center" data-bs-toggle="dropdown">
+          <div [disabled]="disableSaveButton" class="d-flex align-items-center" data-bs-toggle="dropdown">
             {{'Save As' | translate}}
           </div>
           <ul class="dropdown-menu cst-transform" aria-labelledby="dropdownMenuButton1">
@@ -46,13 +48,12 @@
               {{'Sr. No' | translate}}.
             </ng-template>
           </th>
-          <th>{{'Identifier' | translate}}</th>
-          <th>{{'Name' | translate}}</th>
-          <th>{{'Gender' | translate}}</th>
+          <th>{{'Family Number' | translate}}</th>
+          <th>{{'Patient Name' | translate}}</th>
+          <th>{{'Sex' | translate}}</th>
           <th>{{'Date of Birth' | translate}}</th>
-          <th>{{'Caregiver Name' | translate}}</th>
-          <th>{{'Facility' | translate}}</th>
-          <th>{{'Location' | translate}}</th>
+          <th>{{'Date of Last Consultation' | translate}}</th>
+          <th>{{'Health Facility' | translate}}</th>
           <th *ngIf="this.showCheckboxes">{{'Action' | translate}}</th>
         </tr>
       </thead>
@@ -73,27 +74,13 @@
               </td>
               <td>{{patient.identifier ? patient.identifier : 'NA'}}</td>
               <td>
-                <ng-container *ngIf="patient.givenName || patient.familyName; else blankName">
-                  <a style="cursor: pointer;" (click)="showPatientDetails(patient.id)"
-                    class="link">{{patient.givenName}}
-                    {{patient.familyName}}</a>
-                </ng-container>
-                <ng-template #blankName>
-                  NA
-                </ng-template>
+                {{(patient.givenName || patient.familyName) ? (patient.givenName + " " + patient.familyName) : 'NA'}}
               </td>
-              <td>{{patient.gender}}</td>
-              <td>{{patient.dob ? (patient.dob | date:'mediumDate') : 'NA'}}</td>
-              <td>{{patient.caregiver || "NOT PROVIDED"}}</td>
-              <td>
-                <ng-container *ngIf="patient.facility">
-                  {{patient.facility}}
-                </ng-container>
-                <ng-container *ngIf="patient.organizationName">
-                  - {{patient.organizationName}}
-                </ng-container>
-              </td>
-              <td>{{patient.locationName}}</td>
+              <td>{{patient.gender ? (patient.gender) : 'NA'}}</td>
+              <td>{{patient.birthDate ? (patient.birthDate | date:'mediumDate') : 'NA'}}</td>
+              <td>{{patient.consultationDate ? (patient.consultationDate | date:'mediumDate') : 'NA'}}</td>
+
+              <td>{{patient.facilityName ? (patient.facilityName) : 'NA'}}</td>
               <td *ngIf="this.showCheckboxes">
                 <i (click)="exportPDF(patient)" class="cst-icon-style bi bi-download cursor-pointer mr-3"
                   aria-hidden="true"></i>
@@ -116,76 +103,6 @@
     </div>
   </div>
   <!--Table-END-->
-  <div *ngIf="showPatientDetailsFlag" class="modal" tabindex="-1" role="dialog" style="display:block">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h4 class="modal-title">{{'Patient Details' | translate}}</h4>
-        </div>
-        <div class="modal-body">
-          <table class="table table-borderless" aria-labelledby="patient-data">
-            <thead *ngIf="false">
-              <th></th>
-            </thead>
-            <tbody>
-              <tr>
-                <td class="font-weight-bold">{{'Identifier' | translate}}:</td>
-                <td>{{patientDetails.identifier}}</td>
-              </tr>
-              <tr *ngIf="!!patientDetails.id">
-                <td class="font-weight-bold">{{'Sr. No' | translate}}:</td>
-                <td>{{patientDetails.id}}</td>
-              </tr>
-              <tr *ngIf="!!patientDetails.givenName">
-                <td class="font-weight-bold">{{'Patient Details' | translate}}:</td>
-                <td>{{patientDetails.givenName}}</td>
-              </tr>
-              <tr *ngIf="!!patientDetails.familyName">
-                <td class="font-weight-bold">{{'Patient Details' | translate}}:</td>
-                <td>{{patientDetails.familyName}}</td>
-              </tr>
-              <tr *ngIf="!!patientDetails.gender">
-                <td class="font-weight-bold">{{'Gender' | translate}}:</td>
-                <td>{{patientDetails.gender}}</td>
-              </tr>
-              <tr *ngIf="!!patientDetails.dob">
-                <td class="font-weight-bold">{{'Date of Birth' | translate}}::</td>
-                <td>{{patientDetails.dob | date:'mediumDate'}}</td>
-              </tr>
-              <tr *ngIf="!!patientDetails.caregiver">
-                <td class="font-weight-bold">{{'Patient Details' | translate}}:</td>
-                <td>{{patientDetails.caregiver}}</td>
-              </tr>
-              <tr
-                *ngIf="!!patientDetails.addressLine || !!patientDetails.addressCity || !!patientDetails.addressCountry">
-                <td class="font-weight-bold">{{'Patient Details' | translate}}:</td>
-                <td>
-                  <div>
-                    <span *ngIf="!!patientDetails.addressLine">{{patientDetails.addressLine}},<br /></span>
-                    <span *ngIf="!!patientDetails.addressCity">{{patientDetails.addressCity}},<br /></span>
-                    <span *ngIf="!!patientDetails.addressCountry">{{patientDetails.addressCountry}}</span>
-                  </div>
-                </td>
-              </tr>
-              <tr *ngIf="!!patientDetails.addressPostalCode">
-                <td class="font-weight-bold">{{'Patient Details' | translate}}:</td>
-                <td>{{patientDetails.addressPostalCode}}</td>
-              </tr>
-              <tr *ngIf="!!patientDetails.location">
-                <td class="font-weight-bold">{{'Location' | translate}}:</td>
-                <td>{{patientDetails.location}}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class=" btn btn-blue" (click)="closePopup()">
-            {{'Close' | translate}}
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
 </div>
 <div *ngIf="!isView" class="main-wrapper-nodata">
   {{'NoAccess' | translate}}

@@ -13,6 +13,86 @@ body {
   font-size: 14px;
 
   &[dir="rtl"] {
+    .custom-header {
+      position: fixed;
+      width: calc(100% - 200px);
+      top: 50px;
+      right: 200px;
+      padding: 0px 30px;
+      left: 0px;
+      height: 80px;
+      z-index: 10;
+      background: #fff;
+      box-shadow: 1px 1px 10px #e1ecf6;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .cst-d-flex {
+      display: flex;
+    }
+
+    .p-checkbox {
+      margin-left: 10px;
+    }
+
+    .consultation-tab-btn {
+      position: absolute;
+      border-right: 1px solid #d9d9d9;
+      right: 230px;
+      height: 100%;
+      top: 261px;
+      width: 130px;
+      background: #f4f4f4;
+    }
+
+    .consultation-tab-content {
+      width: calc(100% - 150px);
+      height: 500px;
+      padding: 30px 0px;
+      margin-right: 150px;
+    }
+
+    .cst-card-btn {
+      margin-right: 10px;
+    }
+
+    .custom-accordion .badge-duplicate {
+      background: #d96060;
+      padding: 3px 8px;
+      display: inline-block;
+      color: #fff;
+      text-align: center;
+      border-radius: 5px;
+      font-size: 12px;
+      margin-left: 15px;
+    }
+
+    .cst-rtl-heading {
+      margin-right: 140px;
+    }
+
+    .custom-accordion .accordion-header .pos {
+      left: 50px;
+    }
+
+    .loglist {
+      position: fixed;
+      right: 265px;
+      top: 180px;
+      background: #fff;
+      width: 260px;
+    }
+
+    .apk-download {
+      margin-right: 340px;
+      margin-left: 0;
+      border-right: 1px solid #ebeced;
+      padding-right: 40px;
+      margin-top: 33px;
+    }
+
     .user-char-logo {
       margin-left: 10px;
     }
@@ -66,6 +146,11 @@ body {
     }
 
     .main-wrapper {
+      padding: 20px;
+      padding-right: 250px;
+    }
+
+    .main-wrapper-no-heading {
       padding: 20px;
       padding-right: 250px;
     }
@@ -579,11 +664,6 @@ ngx-intl-tel-input input[disabled] {
 .cst-export {
   justify-content: right;
   padding-right: 135px;
-
-  &-consultation {
-    justify-content: right;
-    padding-right: 15px;
-  }
 }
 
 .custom-header {
@@ -611,4 +691,16 @@ ngx-intl-tel-input input[disabled] {
     width: calc(100%);
     left: 0px;
   }
+}
+
+.gmnoprint a,
+.gmnoprint span {
+  display: none;
+}
+
+.p-multiselect.cst-indicator-dropdown .p-multiselect-label {
+  white-space: nowrap;
+  width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

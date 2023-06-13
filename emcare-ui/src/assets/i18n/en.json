@@ -360,5 +360,10 @@
   "NoIndicators": "There are no indicators!",
   "Save As": "Save As",
   "Save As Excel": "Save As Excel",
-  "Save As PDF": "Save As PDF"
+  "Save As PDF": "Save As PDF",
+  "Mark As Active": "Mark As Active",
+  "Mark As InActive": "Mark As Inactive",
+  "Change User Status": "Change User Status",
+  "Status message": "Are you sure you want to change the user status?",
+  "Build using query builder": "Build using query builder"
 }

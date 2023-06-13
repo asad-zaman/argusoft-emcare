@@ -68,8 +68,12 @@ export class FhirService {
         return this.http.get(`${this.fhirBaseURL}/questionnaire/page?pageNo=${pageIndex}`, this.getHeaders());
     }
 
-    getPatientsByLocationAndPageIndex(locationId, pageIndex) {
-        return this.http.get(`${this.fhirBaseURL}/patient/locationId/${locationId}?pageNo=${pageIndex}`, this.getHeaders());
+    getPatientsByLocationAndPageIndex(locationId, pageIndex, dateObj) {
+        return this.http.get(`${this.fhirBaseURL}/patient/locationId?startDate=${dateObj.startDate}&endDate=${dateObj.endDate}&pageNo=${pageIndex}&locationId=${locationId ? locationId : ''}`, this.getHeaders());
+    }
+
+    getConsultationsByLocationAndPageIndex(locationId, pageIndex, dateObj) {
+        return this.http.get(`${environment.apiUrl}/api/questionnaire_response/consultations/locationId?pageNo=${pageIndex}&locationId=${locationId ? locationId : ''}&startDate=${dateObj.startDate}&endDate=${dateObj.endDate}`, this.getHeaders());
     }
 
     addLaunguage(data) {
@@ -182,9 +186,13 @@ export class FhirService {
         return this.http.get(url, this.getHeaders());
     }
 
-    getFacilityByPageAndSearch(pageIndex, search?) {
+    getFacilityByPageAndSearch(pageIndex, search?, filterValue?) {
         let url;
-        if (search) {
+        if (search && filterValue) {
+            url = `${environment.apiUrl}/api/emcare/facility?pageNo=${pageIndex}&search=${search}&filter=${filterValue}`;
+        } else if (filterValue) {
+            url = `${environment.apiUrl}/api/emcare/facility?pageNo=${pageIndex}&filter=${filterValue}`;
+        } else if (search) {
             url = `${environment.apiUrl}/api/emcare/facility?pageNo=${pageIndex}&search=${search}`;
         } else {
             url = `${environment.apiUrl}/api/emcare/facility?pageNo=${pageIndex}`;

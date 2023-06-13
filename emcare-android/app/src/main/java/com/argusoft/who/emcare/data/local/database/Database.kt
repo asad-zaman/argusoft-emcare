@@ -58,4 +58,6 @@ interface Database {
     suspend fun getNextConsultationFlowItemIds(consultationFlowItemId: String, encounterId: String): List<String>
 
     suspend fun deleteConsultationFlowItemById(consultationFlowItemId: String)
+
+    suspend fun getConsultationCountAfterTimestamp(timestamp: String): Int
 }

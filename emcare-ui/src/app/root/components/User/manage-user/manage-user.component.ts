@@ -129,7 +129,6 @@ export class ManageUserComponent implements OnInit {
   mapUpdateForm() {
     this.userService.getUserById(this.editId).subscribe(res => {
       if (res) {
-        console.log(res);
         const data = {
           firstName: res['firstName'],
           lastName: res['lastName'],
@@ -269,6 +268,8 @@ export class ManageUserComponent implements OnInit {
       if (!facArr.includes(selFacility)) {
         facArr.push(selFacility);
         this.userForm.get('facility').setValue(facArr);
+      } else {
+        this.toasterService.showToast('info', 'Please select another facility!', 'EM CARE!');
       }
     } else {
       facArr.push(selFacility);

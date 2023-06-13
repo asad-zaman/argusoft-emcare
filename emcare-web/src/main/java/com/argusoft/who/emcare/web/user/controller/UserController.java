@@ -28,7 +28,7 @@ public class UserController {
 
     @GetMapping("/user")
     public ResponseEntity<Object> getCurrentLoggedInUser() {
-        return ResponseEntity.ok(userService.getCurrentUser());
+        return userService.getCurrentUser();
     }
 
     @GetMapping("/user/all")
@@ -39,8 +39,9 @@ public class UserController {
     @GetMapping("/user/page")
     public ResponseEntity<Object> getUserPage(HttpServletRequest request,
                                               @RequestParam(value = "pageNo") Integer pageNo,
-                                              @Nullable @RequestParam(value = "search", required = false) String searchString) {
-        return ResponseEntity.ok(userService.getUserPage(request, pageNo, searchString));
+                                              @Nullable @RequestParam(value = "search", required = false) String searchString,
+                                              @RequestParam(value = "filter", required = false) Boolean filter) {
+        return ResponseEntity.ok(userService.getUserPage(request, pageNo, searchString, filter));
     }
 
     @GetMapping("/user/signedup")
@@ -124,8 +125,8 @@ public class UserController {
 
     @GetMapping("user/locationId/{locationId}")
     public PageDto getUsersUnderLocation(@PathVariable(value = "locationId") Object locationId,
-                                         @RequestParam(value = "pageNo") Integer pageNo) {
-        return userService.getUsersUnderLocation(locationId, pageNo);
+                                         @RequestParam(value = "pageNo") Integer pageNo,@RequestParam(value = "filter", required = false) Boolean filter) {
+        return userService.getUsersUnderLocation(locationId, pageNo,filter);
     }
 
     @GetMapping("user/check/email")

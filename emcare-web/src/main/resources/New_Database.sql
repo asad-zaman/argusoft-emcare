@@ -123,6 +123,9 @@ CREATE TABLE IF NOT EXISTS public.emcare_resources
     gender text COLLATE pg_catalog."default" GENERATED ALWAYS AS (((text)::json ->> 'gender'::text)) STORED
 );
 
+alter table emcare_resources
+add column birth_date text
+GENERATED ALWAYS AS ((text)::json ->> 'birthDate'::text) STORED;
 
 ALTER TABLE public.emcare_resources OWNER TO postgres;
 
@@ -182,6 +185,9 @@ CREATE TABLE public.indicator (
 
 
 ALTER TABLE public.indicator OWNER TO postgres;
+
+alter table indicator add column  is_query_configure boolean;
+alter table indicator add column query text;
 
 CREATE TABLE public.indicator_denominator_equation (
     denominator_id bigint NOT NULL,
@@ -567,6 +573,41 @@ CREATE TABLE IF NOT EXISTS public.binary_resource
 );
 
 ALTER TABLE IF EXISTS public.binary_resource OWNER to postgres;
+
+CREATE TABLE IF NOT EXISTS public.user_sync_log
+(
+    id bigint NOT NULL,
+    sync_attempt_time timestamp without time zone NOT NULL,
+    username character varying(255) COLLATE pg_catalog."default" NOT NULL,
+     created_by character varying(255) COLLATE pg_catalog."default" NOT NULL,
+        created_on timestamp without time zone NOT NULL,
+        modified_by character varying(255) COLLATE pg_catalog."default",
+        modified_on timestamp without time zone,
+    CONSTRAINT user_sync_log_pkey PRIMARY KEY (id)
+);
+
+ALTER TABLE IF EXISTS public.user_sync_log OWNER to postgres;
+
+DROP TABLE IF EXISTS public.audit_event_resource;
+
+CREATE TABLE IF NOT EXISTS public.audit_event_resource
+(
+    id bigint NOT NULL,
+    conslt_stage character varying(255) COLLATE pg_catalog."default",
+    encounter_id character varying(255) COLLATE pg_catalog."default",
+    patient_id character varying(255) COLLATE pg_catalog."default",
+    recorded timestamp without time zone,
+    resource_id character varying(255) COLLATE pg_catalog."default",
+    status character varying(255) COLLATE pg_catalog."default",
+    text text COLLATE pg_catalog."default",
+    created_by character varying(255) COLLATE pg_catalog."default" NOT NULL,
+    created_on timestamp without time zone NOT NULL,
+    modified_by character varying(255) COLLATE pg_catalog."default",
+    modified_on timestamp without time zone,
+    CONSTRAINT audit_event_resource_pkey PRIMARY KEY (id)
+);
+
+ALTER TABLE IF EXISTS public.audit_event_resource OWNER to postgres;
 
 INSERT INTO public.email_content (id, code, content, created_at, subject, var_list) VALUES (3, 'CONFIRMATION_EMAIL_APPROVED', '<!DOCTYPE html>
 <html>
@@ -1002,7 +1043,7 @@ INSERT INTO public.email_content (id, code, content, created_at, subject, var_li
           <tr>
             <td bgcolor="#ffffff" align="left" style="padding: 24px; font-family: ''Source Sans Pro'', Helvetica, Arial, sans-serif; font-size: 16px; line-height: 24px;">
               <h1 style="margin: 0 0 12px; font-size: 32px; font-weight: 400; line-height: 48px;">One Time Password</h1>
-              <p style="margin: 0;">Your one time password for reset password is 
+              <p style="margin: 0;">Your one time password for reset password is
                 <p style="margin: 0 0 12px; font-size: 35px; font-weight: 600; line-height: 48px;">{{otp}}</p>
               </p>
             </td>

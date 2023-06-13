@@ -20,4 +20,6 @@ public interface ObservationResourceService {
 
     public Bundle getObservationCountBasedOnDate(String summaryType, DateParam theDate, String theId);
 
+    public void deleteObservation(String theId);
+
 }

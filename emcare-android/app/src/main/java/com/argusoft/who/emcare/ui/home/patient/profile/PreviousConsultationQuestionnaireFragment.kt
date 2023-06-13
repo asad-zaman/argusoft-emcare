@@ -4,6 +4,7 @@ import android.view.View
 import androidx.activity.addCallback
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.databinding.FragmentPreviousConsultationQuestionnaireBinding
 import com.argusoft.who.emcare.ui.common.*
@@ -34,9 +35,7 @@ class PreviousConsultationQuestionnaireFragment: BaseFragment<FragmentPreviousCo
         }
 
         requireActivity().onBackPressedDispatcher.addCallback(this) {
-            navigate(R.id.action_previousConsultationQuestionnaireFragment_to_patientProfileFragment) {
-                    putString(INTENT_EXTRA_PATIENT_ID, requireArguments().getString(INTENT_EXTRA_PATIENT_ID))
-            }
+            findNavController().popBackStack()
 
         }
 
@@ -59,6 +58,8 @@ class PreviousConsultationQuestionnaireFragment: BaseFragment<FragmentPreviousCo
                 .setQuestionnaire(cleanedQuestionnairePair.first)
                 .setQuestionnaireResponse(cleanedQuestionnairePair.second)
                 .setCustomQuestionnaireItemViewHolderFactoryMatchersProvider("CUSTOM")
+                .showAsterisk(true)
+                .showRequiredText(false)
                 .setIsReadOnly(true)
                 .build()
             childFragmentManager.commit {

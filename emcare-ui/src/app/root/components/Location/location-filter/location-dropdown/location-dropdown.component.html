@@ -1,6 +1,6 @@
 <form [formGroup]="locationFilterForm" name="locationFilterForm" novalidate>
   <div class="row">
-    <div *ngIf="facilityArr.length > 0 && !isOtherPage" class="col-12 col-sm-12 cst-bottom-border">
+    <div *ngIf="facilityArr.length > 0 && !isFacilityNotAllowed" class="col-12 col-sm-12 cst-bottom-border">
       <div class="mb-3">
         <label class="form-label">{{'Facility' | translate}}</label>
         <p-dropdown (onChange)="onChangeFacility()" placeholder="Select" [options]="facilityArr"
@@ -9,9 +9,14 @@
         </p-dropdown>
       </div>
     </div>
-    <div *ngIf="dropdownActiveArr[0] == true && countryArr.length > 0" class="col-12 col-sm-12">
+    <div *ngIf="!isPatientPage && dropdownActiveArr[0] == true && countryArr.length > 0" class="col-12 col-sm-12">
       <div class="mb-3">
-        <label class="form-label">{{'Country' | translate}}</label>
+        <ng-container *ngIf="this.typeNameArr[0]; else country">
+          <label class="form-label">{{this.typeNameArr[0]}}</label>
+        </ng-container>
+        <ng-template #country>
+          <label class="form-label">{{'Country' | translate}}</label>
+        </ng-template>
         <p-dropdown [showClear]="true" placeholder="Select" (onChange)="onClicked($event, 1)" [options]="countryArr"
           formControlName="country" optionLabel="name" dataKey="id"
           [showClear]="locationFilterForm.get('country').value ? true : false">
@@ -20,7 +25,12 @@
     </div>
     <div *ngIf="dropdownActiveArr[1] == true && stateArr.length > 0" class="col-12 col-sm-12">
       <div class="mb-3">
-        <label class="form-label">{{'State' | translate}}</label>
+        <ng-container *ngIf="this.typeNameArr[1]; else state">
+          <label class="form-label">{{this.typeNameArr[1]}}</label>
+        </ng-container>
+        <ng-template #state>
+          <label class="form-label">{{'State' | translate}}</label>
+        </ng-template>
         <p-dropdown placeholder="Select" (onChange)="onClicked($event, 2)" [options]="stateArr" formControlName="state"
           optionLabel="name" dataKey="id" [showClear]="locationFilterForm.get('state').value ? true : false">
         </p-dropdown>
@@ -28,7 +38,12 @@
     </div>
     <div *ngIf="dropdownActiveArr[2] == true && cityArr.length > 0" class="col-12 col-sm-12">
       <div class="mb-3">
-        <label class="form-label">{{'City' | translate}}</label>
+        <ng-container *ngIf="this.typeNameArr[2]; else city">
+          <label class="form-label">{{this.typeNameArr[2]}}</label>
+        </ng-container>
+        <ng-template #city>
+          <label class="form-label">{{'City' | translate}}</label>
+        </ng-template>
         <p-dropdown placeholder="Select" (onChange)="onClicked($event, 3)" [options]="cityArr" formControlName="city"
           optionLabel="name" dataKey="id" [showClear]="locationFilterForm.get('city').value ? true : false">
         </p-dropdown>
@@ -36,7 +51,12 @@
     </div>
     <div *ngIf="dropdownActiveArr[3] == true && regionArr.length > 0" class="col-12 col-sm-12">
       <div class="mb-3">
-        <label class="form-label">{{'Region' | translate}}</label>
+        <ng-container *ngIf="this.typeNameArr[3]; else Region">
+          <label class="form-label">{{this.typeNameArr[3]}}</label>
+        </ng-container>
+        <ng-template #Region>
+          <label class="form-label">{{'Region' | translate}}</label>
+        </ng-template>
         <p-dropdown placeholder="Select" (onChange)="onClicked($event, 4)" [options]="regionArr"
           formControlName="region" optionLabel="name" dataKey="id"
           [showClear]="locationFilterForm.get('region').value ? true : false">
@@ -45,10 +65,31 @@
     </div>
     <div *ngIf="dropdownActiveArr[4] == true && otherArr.length > 0" class="col-12 col-sm-12">
       <div class="mb-3">
-        <label class="form-label">{{'Other' | translate}}</label>
+        <ng-container *ngIf="this.typeNameArr[4]; else other">
+          <label class="form-label">{{this.typeNameArr[4]}}</label>
+        </ng-container>
+        <ng-template #other>
+          <label class="form-label">{{'Other' | translate}}</label>
+        </ng-template>
         <p-dropdown placeholder="Select" (onChange)="onClicked($event, 5)" [options]="otherArr" formControlName="other"
           optionLabel="name" dataKey="id" [showClear]="locationFilterForm.get('other').value ? true : false">
         </p-dropdown>
+      </div>
+    </div>
+    <div *ngIf="isPatientPage" class="cst-bottom-top">
+      <div class="my-3">
+        <div class="row">
+          <div class="col-6">
+            <label class="form-label">{{'Date From' | translate}}</label>
+            <input class="form-control custom-input" type="date" formControlName="startDate" id="startDate"
+              (change)="onDateSelection(1, i)" placeholder="{{'Value Placeholder' | translate}}">
+          </div>
+          <div class="col-6">
+            <label class="form-label">{{'Date To' | translate}}</label>
+            <input class="form-control custom-input" type="date" formControlName="endDate" id="endDate"
+              (change)="onDateSelection(2, i)" placeholder="{{'Value Placeholder' | translate}}">
+          </div>
+        </div>
       </div>
     </div>
   </div>

@@ -49,7 +49,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { HomeComponent } from './root/components/home/home.component';
 import { HTTPStatus, LaunguageSubjects, TokenInterceptor } from './auth/token-interceptor';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -76,6 +76,7 @@ import { LogListComponent } from './root/components/log-list/log-list.component'
 import { LocationSubjects } from './root/components/Location/location-filter/LocationSubject';
 import { ColorPickerModule } from 'primeng/colorpicker';
 import { CalendarModule } from 'primeng/calendar';
+import { InputTextareaModule } from 'primeng/inputtextarea';
 
 @NgModule({
   declarations: [
@@ -149,7 +150,8 @@ import { CalendarModule } from 'primeng/calendar';
     MessagesModule,
     MessageModule,
     ColorPickerModule,
-    CalendarModule
+    CalendarModule,
+    InputTextareaModule
   ],
   providers: [
     AuthenticationService,
@@ -166,7 +168,8 @@ import { CalendarModule } from 'primeng/calendar';
     ToasterService,
     LaunguageSubjects,
     MessageService,
-    LocationSubjects
+    LocationSubjects,
+    DatePipe
   ],
   bootstrap: [AppComponent]
 })
