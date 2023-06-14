@@ -142,11 +142,14 @@ export class ConsultationListComponent implements OnInit {
   }
 
   onEnableSelectionClick() {
-    this.showCheckboxes = !this.showCheckboxes;
+    if (this.exportAllConsultations) {
+      this.exportAllConsultations = false;
+    }  else{   this.showCheckboxes = !this.showCheckboxes;
     this.enableAll = false;
     this.disableSaveButton = true;
     if (!this.showCheckboxes) {
       this.filteredConsultations.forEach(element => { element['isExcelPDF'] = false; });
+      }
     }
   }
 
