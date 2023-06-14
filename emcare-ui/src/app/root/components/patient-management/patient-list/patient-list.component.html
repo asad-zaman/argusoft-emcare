@@ -74,7 +74,7 @@
               </td>
               <td>{{patient.identifier ? patient.identifier : 'NA'}}</td>
               <td>
-                {{(patient.givenName || patient.familyName) ? (patient.givenName + " " + patient.familyName) : 'NA'}}
+                {{(patient.familyName) ? (patient.givenName + " " + patient.familyName) : 'NA'}}
               </td>
               <td>{{patient.gender ? (patient.gender) : 'NA'}}</td>
               <td>{{patient.birthDate ? (patient.birthDate | date:'mediumDate') : 'NA'}}</td>

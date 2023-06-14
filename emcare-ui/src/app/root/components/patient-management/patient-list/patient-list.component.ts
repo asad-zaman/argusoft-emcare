@@ -165,7 +165,7 @@ export class PatientListComponent implements OnInit {
         this.selectedId = data.locationId;
         this.dateObj = data.dateObj;
 
-        if (this.selectedId && this.dateObj['startDate'] && this.dateObj['endDate']) {
+        if (this.selectedId || this.dateObj['startDate'] || this.dateObj['endDate']) {
             this.isLocationFilterOn = true;
         }
         this.resetPageIndex();
