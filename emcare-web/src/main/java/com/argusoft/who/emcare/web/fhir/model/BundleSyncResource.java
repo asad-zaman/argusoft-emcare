@@ -16,8 +16,11 @@ public class BundleSyncResource implements Serializable {
     @Column(name = "bundle_text", columnDefinition = "TEXT")
     private String text;
 
-    @Column(name = "synced_on")
+    @Column(name = "synced_on", nullable = false)
     private Date sync_on;
+
+    @Column(name="user_id", nullable = false)
+    private String userId;
 
     public String getText() {
         return text;
@@ -33,5 +36,13 @@ public class BundleSyncResource implements Serializable {
 
     public void setSync_on(Date sync_on) {
         this.sync_on = sync_on;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 }

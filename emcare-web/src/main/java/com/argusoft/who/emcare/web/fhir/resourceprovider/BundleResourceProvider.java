@@ -10,6 +10,7 @@ import com.argusoft.who.emcare.web.fhir.dao.ObservationResourceRepository;
 import com.argusoft.who.emcare.web.fhir.model.BundleSyncResource;
 import com.argusoft.who.emcare.web.fhir.service.EmcareResourceService;
 import com.argusoft.who.emcare.web.fhir.service.ObservationResourceService;
+import com.argusoft.who.emcare.web.secuirty.EmCareSecurityUser;
 import com.google.gson.Gson;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Bundle.BundleEntryComponent;
@@ -18,6 +19,7 @@ import org.hl7.fhir.r4.model.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -40,6 +42,9 @@ public class BundleResourceProvider implements IResourceProvider {
     @Autowired
     BundleSyncResourceRepository bundleSyncResourceRepository;
 
+    @Autowired
+    EmCareSecurityUser emCareSecurityUser;
+
     /**
      * The getResourceType method comes from IResourceProvider, and must be
      * overridden to indicate what type of resource this provider supplies.
@@ -52,14 +57,16 @@ public class BundleResourceProvider implements IResourceProvider {
     }
 
     @Transaction
-    public Bundle createResourcesFromBundle(@TransactionParam Bundle theBundle) {
+    public Bundle createResourcesFromBundle(@TransactionParam Bundle theBundle, HttpServletRequest httpServletRequest) {
 
         List<BundleEntryComponent> bundleEntries = theBundle.getEntry();
         Bundle retVal = new Bundle();
         String bundle = parser.encodeResourceToString(theBundle);
+        String userId = httpServletRequest.getUserPrincipal().getName();
         BundleSyncResource bundleSyncResource = new BundleSyncResource();
         bundleSyncResource.setText(bundle);
         bundleSyncResource.setSync_on(new Date());
+        bundleSyncResource.setUserId(userId);
         bundleSyncResourceRepository.save(bundleSyncResource);
 
         for (BundleEntryComponent bundleEntry : bundleEntries) {
