@@ -156,11 +156,11 @@ public class QuestionnaireResponseServiceImpl implements QuestionnaireResponseSe
         Date endDate = null;
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            if (Objects.isNull(sDate)) {
+            if (Objects.isNull(sDate) || sDate.isEmpty()) {
                 String sDate1 = "1998-12-31";
-                sDate = sdf.format(sdf.parse("2013-09-18"));
+                sDate = sdf.format(sdf.parse(sDate1));
             }
-            if (Objects.isNull(eDate)) {
+            if (Objects.isNull(eDate) || eDate.isEmpty()) {
                 eDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date()).toString();
             }
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");

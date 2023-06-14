@@ -91,7 +91,7 @@ export class ConsultationListComponent implements OnInit {
   }
 
   onIndexChange(event) {
-    this.currentPage = event;
+    this.currentPage = event;    
     if (this.isLocationFilterOn) {
       this.getConsultationsBasedOnLocationAndPageIndex(event - 1);
     } else {
@@ -563,7 +563,7 @@ export class ConsultationListComponent implements OnInit {
     this.selectedId = data.locationId;
     this.dateObj = data.dateObj;
 
-    if (this.selectedId && this.dateObj['startDate'] && this.dateObj['endDate']) {
+    if (this.selectedId || this.dateObj['startDate'] || this.dateObj['endDate']) {
       this.isLocationFilterOn = true;
     }
     this.resetPageIndex();
