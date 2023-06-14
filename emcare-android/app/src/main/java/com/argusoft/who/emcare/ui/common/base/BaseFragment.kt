@@ -211,8 +211,8 @@ abstract class BaseFragment<B : ViewBinding> : Fragment(), View.OnClickListener 
         hideKeyboard(view)
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
+    override fun onDestroy() {
+        super.onDestroy()
         _binding = null
         if (EventBus.getDefault().isRegistered(this))
             EventBus.getDefault().unregister(this)
