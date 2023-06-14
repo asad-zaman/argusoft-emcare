@@ -406,6 +406,7 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
 
     @Override
     public PageDto getPatientUnderLocationId(Object locationId, Integer pageNo, String sDate, String eDate) {
+ 
         Long offSet = pageNo.longValue() * 10;
         List<Integer> locationIds;
         List<String> childFacilityIds = new ArrayList<>();
@@ -421,11 +422,11 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
         Date endDate = null;
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            if (Objects.isNull(sDate)) {
+            if (Objects.isNull(sDate) || sDate.isEmpty()) {
                 String sDate1 = "1998-12-31";
-                sDate = sdf.format(sdf.parse("2013-09-18"));
+                sDate = sdf.format(sdf.parse(sDate1));
             }
-            if (Objects.isNull(eDate)) {
+            if (Objects.isNull(eDate) || eDate.isEmpty()) {
                 eDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date()).toString();
             }
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
