@@ -91,7 +91,7 @@ class TenantFilter implements Filter {
         } catch (Exception ex) {
 
         } finally {
-            tenantConfigRepository.removeIdeaConnection();
+//            tenantConfigRepository.removeIdeaConnection();
             TenantContext.clearTenant();
         }
     }
