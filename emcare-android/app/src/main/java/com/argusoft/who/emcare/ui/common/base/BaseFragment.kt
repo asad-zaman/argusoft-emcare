@@ -106,16 +106,16 @@ abstract class BaseFragment<B : ViewBinding> : Fragment(), View.OnClickListener 
                 Log.d("it.total", it.first.toDouble().toString())
                 Log.d("it.progress", it.second.toDouble().toString())
                 if (it.second >= 100) {
+                    loginViewModel.addDevice(
+                        getDeviceName(),
+                        getDeviceOS(),
+                        getDeviceModel(),
+                        requireContext().getDeviceUUID().toString(),
+                        BuildConfig.VERSION_NAME
+                    )
                     Handler(Looper.getMainLooper()).postDelayed({
                         progressLayout.updateProgressUi(true, true)
                         homeViewModel.loadLibraries(context!!)
-                        loginViewModel.addDevice(
-                            getDeviceName(),
-                            getDeviceOS(),
-                            getDeviceModel(),
-                            requireContext().getDeviceUUID().toString(),
-                            BuildConfig.VERSION_NAME
-                        )
                         if(isRedirectToHome) {
                             startActivity(Intent(requireContext(), HomeActivity::class.java))
                             requireActivity().finish()
