@@ -236,14 +236,19 @@ export class LocationDropdownComponent implements OnInit, OnChanges {
   // as api is not ready yet so both things can not work together
   checkFacilityAndLocationAndRemoveFirstSelection() {
     if (this.currentSelection === 1) {
-      this.dropdownActiveArr = [true, false, false, false, false];
-      this.locationFilterForm.patchValue({
-        country: null,
-        state: null,
-        city: null,
-        region: null,
-        other: null
-      });
+      if (this.isPatientPage) {
+        this.dropdownActiveArr = [true, true, false, false, false];
+        this.locationFilterForm.patchValue({
+          state: null, city: null,
+          region: null, other: null
+        });
+      } else {
+        this.dropdownActiveArr = [true, false, false, false, false];
+        this.locationFilterForm.patchValue({
+          country: null, state: null,
+          city: null, region: null, other: null
+        });
+      }
     } else {
       this.locationFilterForm.patchValue({
         facility: null
@@ -261,8 +266,6 @@ export class LocationDropdownComponent implements OnInit, OnChanges {
 
   resetData() {
     this.locationFilterForm.reset();
-    this.locationFilterForm.controls['startDate'].reset('');
-    this.locationFilterForm.controls['endDate'].reset('');
     this.dropdownActiveArr = [true, false, false, false, false];
     this.checkPatientPage();
   }
@@ -275,8 +278,8 @@ export class LocationDropdownComponent implements OnInit, OnChanges {
       city: formValue.city ? formValue.city.id : '',
       region: formValue.region ? formValue.region.id : '',
       other: formValue.other ? formValue.other.id : '',
-      startDate: formValue.startDate ? formValue.startDate: '', 
-      endDate: formValue.endDate ? formValue.endDate: ''
+      startDate: formValue.startDate ? formValue.startDate : '',
+      endDate: formValue.endDate ? formValue.endDate : ''
     }
   }
 
@@ -288,7 +291,7 @@ export class LocationDropdownComponent implements OnInit, OnChanges {
 
   onDateSelection(num, index) {
     const controls = this.locationFilterForm.controls;
-    if (controls.startDate && controls.endDate) {
+    if (controls.startDate.value && controls.endDate.value) {
       const startDate = new Date(controls.startDate.value).getTime();
       const endDate = new Date(controls.endDate.value).getTime();
       if (endDate < startDate) {
