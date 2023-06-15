@@ -7,8 +7,8 @@
       <input class="form-control custom-input h-35" id="exampleFormControlInput1" [(ngModel)]="searchString"
         (input)="searchFilter()" placeholder="{{'Search Placeholder' | translate}}">
     </div>
-    <div class="col-3 cst-d-flex">
-      <p-checkbox styleClass="form-label" [(ngModel)]="isInactive" label="Show Inactive Facilities" [binary]="true"
+    <div class="col-4 cst-d-flex">
+      <p-checkbox styleClass="form-label" [(ngModel)]="isInactive" label="Show Inactive & Suspended Facilities" [binary]="true"
         inputId="binary" value="true" (onChange)="onChangeCheckboxForFacility()">
       </p-checkbox>
     </div>

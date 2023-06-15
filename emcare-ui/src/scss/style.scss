@@ -13,6 +13,14 @@ body {
   font-size: 14px;
 
   &[dir="rtl"] {
+    .cst-mr-80 {
+      margin-right: 80px;
+    }
+
+    .iti--allow-dropdown .iti__flag-container, .iti--separate-dial-code .iti__flag-container {
+      top: 25px;
+    }
+
     .custom-header {
       position: fixed;
       width: calc(100% - 200px);

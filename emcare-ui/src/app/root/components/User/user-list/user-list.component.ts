@@ -42,7 +42,7 @@ export class UserListComponent implements OnInit {
     private readonly formBuilder: FormBuilder,
     private readonly toasterService: ToasterService,
     private readonly authGuard: AuthGuard
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.prerequisite();
@@ -90,16 +90,16 @@ export class UserListComponent implements OnInit {
       if (this.searchString && this.searchString.length >= 1) {
         this.mainUserList = [];
         this.userService
-        .getUsersByPage(event - 1, this.searchString)
-        .subscribe((res) => {
-          this.manipulateResponse(res);
-        });
+          .getUsersByPage(event - 1, this.searchString)
+          .subscribe((res) => {
+            this.manipulateResponse(res);
+          });
       } else {
         this.getUsersByPageIndex(event - 1);
       }
     }
   }
-  
+
   searchFilter() {
     this.resetPageIndex();
     if (this.searchTermChanged.observers.length === 0) {
@@ -152,9 +152,9 @@ export class UserListComponent implements OnInit {
     }
   }
 
-  getUsersBasedOnLocationAndPageIndex(pageIndex) {    
+  getUsersBasedOnLocationAndPageIndex(pageIndex) {
     this.userService
-      .getUsersByLocationAndPageIndex(this.selectedId, pageIndex,this.isInactive)
+      .getUsersByLocationAndPageIndex(this.selectedId, pageIndex, this.isInactive)
       .subscribe((res) => {
         if (res) {
           this.filteredUserList = [];
@@ -241,12 +241,12 @@ export class UserListComponent implements OnInit {
   }
 
   onChangeCheckboxForUser() {
-    this.searchString = ""; 
+    this.searchString = "";
     this.currentPage = 0;
     this.userService.getUsersByPage(this.currentPage, null, this.isInactive).subscribe((res) => {
-        this.isAPIBusy = false;
-        this.manipulateResponse(res);
-      });
+      this.isAPIBusy = false;
+      this.manipulateResponse(res);
+    });
   }
 
   onChangeStatus(i) {
@@ -261,11 +261,14 @@ export class UserListComponent implements OnInit {
     };
     this.userService.updateUserStatus(data).subscribe((res) => {
       this.showStatusDialog = false;
-      const ind = this.filteredUserList.findIndex(
-        (el) => el.id === this.currUSer.id
-      );
-      this.filteredUserList[ind]['enabled'] =
-        !this.filteredUserList[ind]['enabled'];
+      if (this.isInactive) {
+        this.getUsersByPageIndex(this.currentPage);
+      } else {
+        const ind = this.filteredUserList.findIndex(
+          (el) => el.id === this.currUSer.id
+        );
+        this.filteredUserList[ind]['enabled'] = !this.filteredUserList[ind]['enabled'];
+      }
       this.toasterService.showToast(
         'success',
         'User status changed successfully!',
