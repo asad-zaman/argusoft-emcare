@@ -261,6 +261,8 @@ export class LocationDropdownComponent implements OnInit, OnChanges {
 
   resetData() {
     this.locationFilterForm.reset();
+    this.locationFilterForm.controls['startDate'].reset('');
+    this.locationFilterForm.controls['endDate'].reset('');
     this.dropdownActiveArr = [true, false, false, false, false];
     this.checkPatientPage();
   }
@@ -290,7 +292,7 @@ export class LocationDropdownComponent implements OnInit, OnChanges {
       const startDate = new Date(controls.startDate.value).getTime();
       const endDate = new Date(controls.endDate.value).getTime();
       if (endDate < startDate) {
-        this.toasterService.showToast('error', 'End Date shoyld be greater than start date!', 'EM CARE!');
+        this.toasterService.showToast('error', 'End Date should be greater than start date!', 'EM CARE!');
         num === 1 ? controls.startDate.setValue(null) : controls.endDate.setValue(null);
       } else {
         this.emitData();

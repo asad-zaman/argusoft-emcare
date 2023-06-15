@@ -436,7 +436,7 @@ export class HomeComponent implements OnInit {
       const startDate = new Date(controls.value.startDate).getTime();
       const endDate = new Date(controls.value.endDate).getTime();
       if (endDate < startDate) {
-        this.toasterService.showToast('error', 'End Date shoyld be greater than start date!', 'EM CARE!');
+        this.toasterService.showToast('error', 'End Date should be greater than start date!', 'EM CARE!');
         num === 1 ? controls['controls'].startDate.setValue(null) : controls['controls'].endDate.setValue(null);
       }
     }
