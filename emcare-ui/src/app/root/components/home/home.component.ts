@@ -163,6 +163,7 @@ export class HomeComponent implements OnInit {
 
   getChartData() {
     this.fhirService.getChartData().subscribe((res: Array<any>) => {
+      console.log(res);
       if (res) {
         //  for bar plot
         res['scatterChart'].forEach((el, index) => {
