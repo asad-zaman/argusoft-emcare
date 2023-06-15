@@ -121,13 +121,20 @@ abstract class BaseFragment<B : ViewBinding> : Fragment(), View.OnClickListener 
                             requireActivity().finish()
                         }
                     }, 5000)
-                } else if (it.first > 0 && it.second <= 100) {
+                } else if (it.first > 0) {
                     val progress = it.second
                     "Synced $progress%".also {
                         progressLayout.showProgress(it)
                         Log.d("Synced", "$progress%")
                     }
                 } else if (it.first == 0) {
+                    loginViewModel.addDevice(
+                        getDeviceName(),
+                        getDeviceOS(),
+                        getDeviceModel(),
+                        requireContext().getDeviceUUID().toString(),
+                        BuildConfig.VERSION_NAME
+                    )
                     if(isRedirectToHome) {
                         if (preference.getFacilityId().isNotEmpty()) {
                             progressLayout.updateProgressUi(true, true)
@@ -209,8 +216,8 @@ abstract class BaseFragment<B : ViewBinding> : Fragment(), View.OnClickListener 
         hideKeyboard(view)
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
+    override fun onDestroy() {
+        super.onDestroy()
         _binding = null
         if (EventBus.getDefault().isRegistered(this))
             EventBus.getDefault().unregister(this)
@@ -220,6 +227,8 @@ abstract class BaseFragment<B : ViewBinding> : Fragment(), View.OnClickListener 
     fun onEvent(unauthorizedAccess: UnauthorizedAccess) {
         context.showToast(messageResId = R.string.msg_session_expired)
         (activity as? BaseActivity<*>)?.logout()
+        if (EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().unregister(this)
     }
 
     fun Application.isNetworkAvailable(): Boolean {

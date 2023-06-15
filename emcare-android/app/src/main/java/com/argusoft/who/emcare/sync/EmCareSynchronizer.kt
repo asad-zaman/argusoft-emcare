@@ -16,12 +16,9 @@
 
 package com.argusoft.who.emcare.sync
 
-import android.text.format.DateFormat
 import com.argusoft.who.emcare.data.local.database.Database
 import com.argusoft.who.emcare.data.local.pref.Preference
 import com.argusoft.who.emcare.data.remote.Api
-import com.argusoft.who.emcare.data.remote.ApiResponse
-import com.argusoft.who.emcare.ui.common.model.ConsultationFlowItem
 import com.argusoft.who.emcare.utils.extention.whenFailed
 import com.argusoft.who.emcare.utils.extention.whenSuccess
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -135,7 +132,7 @@ internal class EmCareSynchronizer(
                 }
                 SyncType.CONSULTATION_FLOW_ITEM -> {
                     val consultations =
-                        if(preference.getLastSyncTimestamp().isNotEmpty()) {
+                    if(preference.getLastSyncTimestamp().isNotEmpty()) {
                         val timestamp = ZonedDateTime.parse(preference.getLastSyncTimestamp(), DateTimeFormatter.ofPattern(formatString12).withZone(ZoneId.systemDefault())).toOffsetDateTime().atZoneSameInstant(ZoneId.of("UTC")).toString().substringBefore("Z[UTC]")
                         api.getConsultationFlowWithTimestamp(timestamp)
                     } else {

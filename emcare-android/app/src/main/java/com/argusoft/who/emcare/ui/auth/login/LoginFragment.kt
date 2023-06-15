@@ -1,9 +1,6 @@
 package com.argusoft.who.emcare.ui.auth.login
 
 import android.Manifest
-import android.content.Intent
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import android.view.View
 import androidx.fragment.app.viewModels
@@ -13,28 +10,18 @@ import com.argusoft.who.emcare.databinding.FragmentLoginBinding
 import com.argusoft.who.emcare.sync.SyncViewModel
 import com.argusoft.who.emcare.ui.common.REQUEST_CODE_READ_PHONE_STATE
 import com.argusoft.who.emcare.ui.common.base.BaseFragment
-import com.argusoft.who.emcare.ui.home.HomeActivity
 import com.argusoft.who.emcare.utils.extention.getDeviceModel
 import com.argusoft.who.emcare.utils.extention.getDeviceName
 import com.argusoft.who.emcare.utils.extention.getDeviceOS
 import com.argusoft.who.emcare.utils.extention.getDeviceUUID
 import com.argusoft.who.emcare.utils.extention.getEnterText
 import com.argusoft.who.emcare.utils.extention.handleApiView
-import com.argusoft.who.emcare.utils.extention.handleListApiView
 import com.argusoft.who.emcare.utils.extention.navigate
 import com.argusoft.who.emcare.utils.extention.observeNotNull
 import com.argusoft.who.emcare.utils.extention.showSnackBar
-import com.argusoft.who.emcare.utils.extention.whenInProgress
-import com.argusoft.who.emcare.utils.extention.whenLoading
-import com.google.android.fhir.sync.SyncJobStatus
-import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
-import java.io.File
-import java.util.Timer
-import java.util.concurrent.Executors
-import java.util.concurrent.TimeUnit
 
 @AndroidEntryPoint
 class LoginFragment : BaseFragment<FragmentLoginBinding>(), EasyPermissions.PermissionCallbacks {
@@ -43,11 +30,13 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(), EasyPermissions.Perm
     private val loginViewModel: LoginViewModel by viewModels()
 
     override fun initView() {
-        if(preference.getCountry().isNotBlank()){
-            binding.emcareTitleTextView.text = binding.emcareTitleTextView.text.toString() + " " + preference.getCountry()
+        if (preference.getCountry().isNotBlank()) {
+            binding.emcareTitleTextView.text =
+                binding.emcareTitleTextView.text.toString() + " " + preference.getCountry()
         }
-        loginViewModel.clearData()
+//        loginViewModel.clearData()
     }
+
     override fun initListener() {
         binding.loginButton.setOnClickListener(this)
         binding.signupTextView.setOnClickListener(this)
@@ -66,9 +55,9 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(), EasyPermissions.Perm
 
         observeNotNull(loginViewModel.loginApiState) {
             it.handleApiView(binding.progressLayout) {
-                if(preference.getFacilityId().isNotEmpty()){
+                if (preference.getFacilityId().isNotEmpty()) {
                     binding.progressLayout.updateProgressUi(true, false)
-                    Log.d("Sync Called","Above SyncPatients")
+                    Log.d("Sync Called", "Above SyncPatients")
                     syncViewModel.syncPatients(true)
                 }
 
@@ -85,6 +74,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(), EasyPermissions.Perm
                 preference.setSelectedCountry("")
                 deviceInfo()
             }
+
             R.id.signupTextView -> {
                 navigate(R.id.action_loginFragment_to_signUpFragment)
             }
@@ -122,7 +112,11 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(), EasyPermissions.Perm
         }
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
     }
