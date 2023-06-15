@@ -261,8 +261,6 @@ export class LocationDropdownComponent implements OnInit, OnChanges {
 
   resetData() {
     this.locationFilterForm.reset();
-    this.locationFilterForm.controls['startDate'].reset('');
-    this.locationFilterForm.controls['endDate'].reset('');
     this.dropdownActiveArr = [true, false, false, false, false];
     this.checkPatientPage();
   }
@@ -288,7 +286,7 @@ export class LocationDropdownComponent implements OnInit, OnChanges {
 
   onDateSelection(num, index) {
     const controls = this.locationFilterForm.controls;
-    if (controls.startDate && controls.endDate) {
+    if (controls.startDate.value && controls.endDate.value) {
       const startDate = new Date(controls.startDate.value).getTime();
       const endDate = new Date(controls.endDate.value).getTime();
       if (endDate < startDate) {
