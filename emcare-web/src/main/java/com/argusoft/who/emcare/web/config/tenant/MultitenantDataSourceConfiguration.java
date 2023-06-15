@@ -3,6 +3,7 @@ package com.argusoft.who.emcare.web.config.tenant;
 import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.tenant.entity.TenantConfig;
 import com.argusoft.who.emcare.web.tenant.repository.TenantConfigRepository;
+import org.flywaydb.core.Flyway;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.jdbc.DataSourceBuilder;
@@ -69,6 +70,15 @@ public class MultitenantDataSourceConfiguration {
         dataSource1.setDefaultTargetDataSource(resolvedDataSources.get(defaultTenant));
         dataSource1.setTargetDataSources(resolvedDataSources);
         dataSource1.afterPropertiesSet();
+
+        for (Map.Entry<Object, DataSource> entry : dataSource1.getResolvedDataSources().entrySet()) {
+            DataSource dataSource = entry.getValue();
+            Flyway flyway = Flyway.configure()
+                .dataSource(dataSource).schemas("public")
+                .load();
+            flyway.migrate();
+        }
+
         return dataSource1;
     }
 }

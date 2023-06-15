@@ -69,7 +69,7 @@ public interface QuestionnaireResponseRepository extends JpaRepository<Questionn
             "left outer join user_entity on emcare_resources.created_by = user_entity.id \n" +
             "LEFT JOIN LOCATION_RESOURCES ON EMCARE_RESOURCES.facility_id = LOCATION_RESOURCES.resource_id \n" +
             "where MAX_CONSULTATION_DATE.cnslDate notnull and \n" +
-            "EMCARE_RESOURCES.FACILITY_ID in :ids and EMCARE_RESOURCES.modified_on between :startDate and :endDate ORDER BY EMCARE_RESOURCES.created_on DESC limit 10 offset :offset",nativeQuery = true)
+            "EMCARE_RESOURCES.FACILITY_ID in :ids and MAX_CONSULTATION_DATE.cnslDate between :startDate and :endDate ORDER BY EMCARE_RESOURCES.created_on DESC limit 10 offset :offset",nativeQuery = true)
     List<Map<String, Object>> getFilteredConsultationsIn(@Param("ids") List<String> ids,
                                                     @Param("startDate") Date startDate,
                                                     @Param("endDate") Date endDate,
@@ -100,7 +100,7 @@ public interface QuestionnaireResponseRepository extends JpaRepository<Questionn
             "left outer join user_entity on emcare_resources.created_by = user_entity.id \n" +
             "LEFT JOIN LOCATION_RESOURCES ON EMCARE_RESOURCES.facility_id = LOCATION_RESOURCES.resource_id \n" +
             "where MAX_CONSULTATION_DATE.cnslDate notnull and \n" +
-            "EMCARE_RESOURCES.FACILITY_ID in :ids and EMCARE_RESOURCES.modified_on between :startDate and :endDate ORDER BY EMCARE_RESOURCES.created_on DESC",nativeQuery = true)
+            "EMCARE_RESOURCES.FACILITY_ID in :ids and MAX_CONSULTATION_DATE.cnslDate between :startDate and :endDate ORDER BY EMCARE_RESOURCES.created_on DESC",nativeQuery = true)
     List<Map<String, Object>> getFilteredConsultationsInCount(@Param("ids") List<String> ids,
                                                          @Param("startDate") Date startDate,
                                                          @Param("endDate") Date endDate);
@@ -129,7 +129,7 @@ public interface QuestionnaireResponseRepository extends JpaRepository<Questionn
             "left outer join user_entity on emcare_resources.created_by = user_entity.id \n" +
             "LEFT JOIN LOCATION_RESOURCES ON EMCARE_RESOURCES.facility_id = LOCATION_RESOURCES.resource_id \n" +
             "where MAX_CONSULTATION_DATE.cnslDate notnull and \n" +
-            "EMCARE_RESOURCES.modified_on between :startDate and :endDate ORDER BY EMCARE_RESOURCES.created_on desc limit 10 offset :offset",nativeQuery = true)
+            "MAX_CONSULTATION_DATE.cnslDate between :startDate and :endDate ORDER BY EMCARE_RESOURCES.created_on desc limit 10 offset :offset",nativeQuery = true)
     List<Map<String, Object>> getFilteredDateOnly(@Param("startDate") Date startDate,
                                                   @Param("endDate") Date endDate,
                                                   @Param("offset") Long offset);
@@ -158,7 +158,7 @@ public interface QuestionnaireResponseRepository extends JpaRepository<Questionn
             "left outer join user_entity on emcare_resources.created_by = user_entity.id \n" +
             "LEFT JOIN LOCATION_RESOURCES ON EMCARE_RESOURCES.facility_id = LOCATION_RESOURCES.resource_id \n" +
             "where MAX_CONSULTATION_DATE.cnslDate notnull and \n" +
-            "EMCARE_RESOURCES.modified_on between :startDate and :endDate ORDER BY EMCARE_RESOURCES.created_on DESC",nativeQuery = true)
+            "MAX_CONSULTATION_DATE.cnslDate between :startDate and :endDate ORDER BY EMCARE_RESOURCES.created_on DESC",nativeQuery = true)
     List<Map<String, Object>> getFilteredDateOnlyCount(@Param("startDate") Date startDate,
                                                        @Param("endDate") Date endDate);
 }

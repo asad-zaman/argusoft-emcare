@@ -97,6 +97,7 @@ export class PatientListComponent implements OnInit {
     }
 
     onIndexChange(event) {
+        this.enableAll = false;
         this.currentPage = event;
         if (this.isLocationFilterOn) {
             this.getPatientsBasedOnLocationAndPageIndex(event - 1);
@@ -165,7 +166,7 @@ export class PatientListComponent implements OnInit {
         this.selectedId = data.locationId;
         this.dateObj = data.dateObj;
 
-        if (this.selectedId && this.dateObj['startDate'] && this.dateObj['endDate']) {
+        if (this.selectedId || this.dateObj['startDate'] || this.dateObj['endDate']) {
             this.isLocationFilterOn = true;
         }
         this.resetPageIndex();
@@ -339,16 +340,16 @@ export class PatientListComponent implements OnInit {
 
     onEnableSelectionClick() {
         if (this.exportAllPatient) {
-          this.exportAllPatient = false;
+            this.exportAllPatient = false;
         } else {
-          this.showCheckboxes = !this.showCheckboxes;
-          this.enableAll = false;
-          this.disableSaveButton = true;
-          if (!this.showCheckboxes) {
-            this.filteredPatients.forEach((element) => {
-              element['isExcelPDF'] = false;
-            });
-          }
+            this.showCheckboxes = !this.showCheckboxes;
+            this.enableAll = false;
+            this.disableSaveButton = true;
+            if (!this.showCheckboxes) {
+                this.filteredPatients.forEach((element) => {
+                    element['isExcelPDF'] = false;
+                });
+            }
         }
     }
 
@@ -364,10 +365,13 @@ export class PatientListComponent implements OnInit {
 
     enableEachBox(patient) {
         this.disableSaveButton = false;
+        const checkLength = this.filteredPatients.filter(element => element['isExcelPDF'] === true).length;
+        if (checkLength === 0) {
+            this.disableSaveButton = true;
+        }
         if (!patient.isExcelPDF) {
             this.enableAll = false;
         } else {
-            const checkLength = this.filteredPatients.filter(element => element['isExcelPDF'] === true).length;
             if (this.filteredPatients.length === checkLength) {
                 this.enableAll = true;
             }
