@@ -91,7 +91,8 @@ export class ConsultationListComponent implements OnInit {
   }
 
   onIndexChange(event) {
-    this.currentPage = event;    
+    this.enableAll = false;
+    this.currentPage = event;
     if (this.isLocationFilterOn) {
       this.getConsultationsBasedOnLocationAndPageIndex(event - 1);
     } else {
@@ -144,11 +145,12 @@ export class ConsultationListComponent implements OnInit {
   onEnableSelectionClick() {
     if (this.exportAllConsultations) {
       this.exportAllConsultations = false;
-    }  else{   this.showCheckboxes = !this.showCheckboxes;
-    this.enableAll = false;
-    this.disableSaveButton = true;
-    if (!this.showCheckboxes) {
-      this.filteredConsultations.forEach(element => { element['isExcelPDF'] = false; });
+    } else {
+      this.showCheckboxes = !this.showCheckboxes;
+      this.enableAll = false;
+      this.disableSaveButton = true;
+      if (!this.showCheckboxes) {
+        this.filteredConsultations.forEach(element => { element['isExcelPDF'] = false; });
       }
     }
   }
@@ -165,10 +167,13 @@ export class ConsultationListComponent implements OnInit {
 
   enableEachBox(patient) {
     this.disableSaveButton = false;
+    const checkLength = this.filteredConsultations.filter(element => element['isExcelPDF'] === true).length;
+    if (checkLength === 0) {
+      this.disableSaveButton = true;
+    }
     if (!patient.isExcelPDF) {
       this.enableAll = false;
     } else {
-      const checkLength = this.filteredConsultations.filter(element => element['isExcelPDF'] === true).length;
       if (this.filteredConsultations.length === checkLength) {
         this.enableAll = true;
       }

@@ -73,7 +73,8 @@
         <div class="col-12 col-sm-6">
           <div class="mb-3">
             <label class="form-label">{{'Query' | translate}}</label>
-            <textarea class="form-control custom-input" rows="5" cols="30" pInputTextarea formControlName="query" [autoResize]="true"></textarea>
+            <textarea class="form-control custom-input" rows="5" cols="30" pInputTextarea formControlName="query"
+              [autoResize]="true"></textarea>
           </div>
         </div>
       </div>
@@ -131,7 +132,7 @@
                             <div class="col-xl-12 col-xxl-6 col-12 mb-3">
                               <label class="form-label">{{'Condition' | translate}}</label>
                               <p-dropdown placeholder="Select" [options]="conditionArr" formControlName="condition"
-                                optionLabel="name" dataKey="id">
+                                optionLabel="name" dataKey="id" [showClear]="true">
                               </p-dropdown>
                             </div>
                           </div>
@@ -234,7 +235,7 @@
                             <div class="col-xl-12 col-xxl-6 col-12 mb-3">
                               <label class="form-label">{{'Condition' | translate}}</label>
                               <p-dropdown placeholder="Select" [options]="conditionArr" formControlName="condition"
-                                optionLabel="name" dataKey="id">
+                                optionLabel="name" dataKey="id" [showClear]="true">
                               </p-dropdown>
                             </div>
                           </div>
