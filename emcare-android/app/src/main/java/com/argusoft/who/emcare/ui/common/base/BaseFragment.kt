@@ -24,6 +24,7 @@ import com.argusoft.who.emcare.databinding.LayoutHeaderBinding
 import com.argusoft.who.emcare.sync.SyncViewModel
 import com.argusoft.who.emcare.ui.auth.login.LoginViewModel
 import com.argusoft.who.emcare.ui.home.HomeActivity
+import com.argusoft.who.emcare.ui.home.HomeViewModel
 import com.argusoft.who.emcare.utils.common.UnauthorizedAccess
 import com.argusoft.who.emcare.utils.extention.getDeviceModel
 import com.argusoft.who.emcare.utils.extention.getDeviceName
@@ -53,6 +54,7 @@ abstract class BaseFragment<B : ViewBinding> : Fragment(), View.OnClickListener 
     private var _binding: B? = null
     private val syncViewModel: SyncViewModel by viewModels()
     private val loginViewModel: LoginViewModel by viewModels()
+    private val homeViewModel: HomeViewModel by viewModels()
     protected val binding
         get() = _binding
             ?: throw RuntimeException("Should only use binding after onCreateView and before onDestroyView")
@@ -106,6 +108,7 @@ abstract class BaseFragment<B : ViewBinding> : Fragment(), View.OnClickListener 
                 if (it.second >= 100) {
                     Handler(Looper.getMainLooper()).postDelayed({
                         progressLayout.updateProgressUi(true, true)
+                        homeViewModel.loadLibraries(context!!)
                         loginViewModel.addDevice(
                             getDeviceName(),
                             getDeviceOS(),
@@ -128,12 +131,14 @@ abstract class BaseFragment<B : ViewBinding> : Fragment(), View.OnClickListener 
                     if(isRedirectToHome) {
                         if (preference.getFacilityId().isNotEmpty()) {
                             progressLayout.updateProgressUi(true, true)
+                            homeViewModel.loadLibraries(context!!)
                             startActivity(Intent(requireContext(), HomeActivity::class.java))
                             requireActivity().finish()
                         } else {
                             progressLayout.hideProgressUi()
                         }
                     }else{
+                        homeViewModel.loadLibraries(context!!)
                         progressLayout.updateProgressUi(true, true)
                     }
                 }

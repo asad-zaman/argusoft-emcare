@@ -9,7 +9,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.uhn.fhir.context.FhirContext
 import ca.uhn.fhir.context.FhirVersionEnum
-import com.argusoft.who.emcare.EmCareApplication
 import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.data.local.pref.Preference
 import com.argusoft.who.emcare.data.remote.ApiResponse
@@ -106,6 +105,9 @@ class HomeViewModel @Inject constructor(
 
     fun loadLibraries(context: Context) {
         viewModelScope.launch {
+            runBlocking {
+                clearKnowledgeManagerDatabase()
+            }
             libraryRepository.getLibraries().collect {
                 val librariesList = it.data
                 librariesList?.forEach { library ->
@@ -114,6 +116,10 @@ class HomeViewModel @Inject constructor(
                 _librariesLoaded.value = ApiResponse.Success(1)
             }
         }
+    }
+
+    private suspend fun clearKnowledgeManagerDatabase() = withContext(dispatcher) {
+        knowledgeManager.clearDatabase()
     }
 
     private fun writeToFile(library: Library): File {
