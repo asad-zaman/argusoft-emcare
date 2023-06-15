@@ -281,7 +281,7 @@ public interface EmcareResourceRepository extends JpaRepository<EmcareResource, 
         "FROM EMCARE_RESOURCES\n" +
         "LEFT OUTER JOIN MAX_CONSULTATION_DATE ON EMCARE_RESOURCES.RESOURCE_ID = MAX_CONSULTATION_DATE.PATIENT_ID\n" +
         "LEFT JOIN LOCATION_RESOURCES ON EMCARE_RESOURCES.facility_id = LOCATION_RESOURCES.resource_id \n" +
-        "where EMCARE_RESOURCES.FACILITY_ID in :ids and EMCARE_RESOURCES.modified_on between :startDate and :endDate ORDER BY EMCARE_RESOURCES.created_on DESC limit 10 offset :offset", nativeQuery = true)
+        "where EMCARE_RESOURCES.FACILITY_ID in :ids and MAX_CONSULTATION_DATE.cnslDate between :startDate and :endDate ORDER BY EMCARE_RESOURCES.created_on DESC limit 10 offset :offset", nativeQuery = true)
     List<Map<String, Object>> getFilteredPatientsIn(@Param("ids") List<String> ids,
                                                     @Param("startDate") Date startDate,
                                                     @Param("endDate") Date endDate,
@@ -310,7 +310,7 @@ public interface EmcareResourceRepository extends JpaRepository<EmcareResource, 
         "FROM EMCARE_RESOURCES\n" +
         "LEFT OUTER JOIN MAX_CONSULTATION_DATE ON EMCARE_RESOURCES.RESOURCE_ID = MAX_CONSULTATION_DATE.PATIENT_ID\n" +
         "LEFT JOIN LOCATION_RESOURCES ON EMCARE_RESOURCES.facility_id = LOCATION_RESOURCES.resource_id \n" +
-        "where EMCARE_RESOURCES.FACILITY_ID in :ids and EMCARE_RESOURCES.modified_on between :startDate and :endDate ORDER BY EMCARE_RESOURCES.created_on DESC", nativeQuery = true)
+        "where EMCARE_RESOURCES.FACILITY_ID in :ids and MAX_CONSULTATION_DATE.cnslDate between :startDate and :endDate ORDER BY EMCARE_RESOURCES.created_on DESC", nativeQuery = true)
     List<Map<String, Object>> getFilteredPatientsInCount(@Param("ids") List<String> ids,
                                                          @Param("startDate") Date startDate,
                                                          @Param("endDate") Date endDate);
@@ -337,7 +337,7 @@ public interface EmcareResourceRepository extends JpaRepository<EmcareResource, 
         "FROM EMCARE_RESOURCES\n" +
         "LEFT OUTER JOIN MAX_CONSULTATION_DATE ON EMCARE_RESOURCES.RESOURCE_ID = MAX_CONSULTATION_DATE.PATIENT_ID\n" +
         "LEFT JOIN LOCATION_RESOURCES ON EMCARE_RESOURCES.facility_id = LOCATION_RESOURCES.resource_id \n" +
-        "where EMCARE_RESOURCES.modified_on between :startDate and :endDate ORDER BY EMCARE_RESOURCES.created_on DESC limit 10 offset :offset", nativeQuery = true)
+        "where MAX_CONSULTATION_DATE.cnslDate between :startDate and :endDate ORDER BY EMCARE_RESOURCES.created_on DESC limit 10 offset :offset", nativeQuery = true)
     List<Map<String, Object>> getFilteredDateOnly(@Param("startDate") Date startDate,
                                                   @Param("endDate") Date endDate,
                                                   @Param("offset") Long offset);
@@ -365,7 +365,7 @@ public interface EmcareResourceRepository extends JpaRepository<EmcareResource, 
         "FROM EMCARE_RESOURCES\n" +
         "LEFT OUTER JOIN MAX_CONSULTATION_DATE ON EMCARE_RESOURCES.RESOURCE_ID = MAX_CONSULTATION_DATE.PATIENT_ID\n" +
         "LEFT JOIN LOCATION_RESOURCES ON EMCARE_RESOURCES.facility_id = LOCATION_RESOURCES.resource_id \n" +
-        "where EMCARE_RESOURCES.modified_on between :startDate and :endDate ORDER BY EMCARE_RESOURCES.created_on DESC", nativeQuery = true)
+        "where MAX_CONSULTATION_DATE.cnslDate between :startDate and :endDate ORDER BY EMCARE_RESOURCES.created_on DESC", nativeQuery = true)
     List<Map<String, Object>> getFilteredDateOnlyCount(@Param("startDate") Date startDate,
                                                        @Param("endDate") Date endDate);
 
