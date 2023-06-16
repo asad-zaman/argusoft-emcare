@@ -16,6 +16,7 @@ import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Questionnaire;
 import org.hl7.fhir.r4.model.RelatedPerson;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Nullable;
@@ -200,6 +201,11 @@ public class EmcareResourceController {
     @GetMapping("active/facility")
     public List<FacilityDto> getActiveFacility() {
         return locationResourceService.getActiveFacility();
+    }
+
+    @GetMapping("/facility/check")
+    public ResponseEntity<Object> checkFacilityDuplicates(@RequestParam(name = "facilityName") String facilityName) {
+        return locationResourceService.checkIfFacilityIsPresent(facilityName);
     }
 
 }
