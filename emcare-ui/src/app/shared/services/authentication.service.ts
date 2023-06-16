@@ -98,6 +98,11 @@ export class AuthenticationService {
     );
   }
 
+  deleteSession() {
+    const url = `${this.backendURL}/api/auth/logout`;
+    return this.http.get<any>(url);
+  }
+
   getIsLoggedIn(): Observable<boolean> {
     return this.isLoggedIn;
   }

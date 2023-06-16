@@ -228,6 +228,7 @@ export class AppComponent implements OnInit {
 
   logout() {
     //  on logout direction should be set to ltr as it's english language
+    this.authenticationService.deleteSession();
     this.renderer.setAttribute(document.body, 'dir', 'ltr');
     this.router.navigate(['/login']);
     localStorage.clear();

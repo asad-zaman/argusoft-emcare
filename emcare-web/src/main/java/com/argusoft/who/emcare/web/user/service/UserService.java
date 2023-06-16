@@ -7,6 +7,7 @@ import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.http.ResponseEntity;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +36,8 @@ public interface UserService {
     public ResponseEntity<Object> signUp(UserDto user, HttpServletRequest request);
 
     public ResponseEntity<Object> userLogin(LoginRequestDto loginCred, HttpServletRequest request);
+
+    public ResponseEntity<Object> userLogOut(HttpServletRequest request) throws ServletException;
 
     public ResponseEntity<Object> addUser(UserDto user, HttpServletRequest request);
 
