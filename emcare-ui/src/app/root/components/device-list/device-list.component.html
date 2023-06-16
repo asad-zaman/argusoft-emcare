@@ -32,7 +32,7 @@
               <td>{{data.usersResource ? data.usersResource.userName : 'NA'}}</td>
               <td>{{data.igVersion ? data.igVersion : 'NA'}}</td>
               <td>
-                <label class="switch">
+                <label class="switch cst-float-left">
                   <input [(ngModel)]="data.appUsage" (click)="editDevice($event, data.deviceId)" id="isBlocked"
                     type="checkbox">
                   <span class="slider round"></span>
