@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Nullable;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -72,6 +73,11 @@ public class UserController {
     @PostMapping("/auth/login")
     public ResponseEntity<Object> userLogin(@RequestBody LoginRequestDto loginCred, HttpServletRequest request) {
         return userService.userLogin(loginCred, request);
+    }
+
+    @DeleteMapping("/auth/logout")
+    public ResponseEntity<Object> userLogOut(HttpServletRequest request) throws ServletException {
+       return userService.userLogOut(request);
     }
 
     @PostMapping("/user/add")
