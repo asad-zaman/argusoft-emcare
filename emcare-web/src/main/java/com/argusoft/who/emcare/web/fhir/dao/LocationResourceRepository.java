@@ -44,4 +44,7 @@ public interface LocationResourceRepository extends JpaRepository<LocationResour
 
     @Query(value = "select COUNT(*) from location_resources where cast(cast(text AS json)->> 'status' as text) in :status", nativeQuery = true)
     Long findResourceByStatus(@Param("status") List<String> status);
+
+    @Query(value="select * from location_resources where LOWER(cast(cast(text AS json)->> 'name' as text)) = LOWER( :facilityName );", nativeQuery= true)
+    List<LocationResource> findIfFacilityIsPresent(@Param("facilityName") String facilityName);
 }
