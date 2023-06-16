@@ -28,6 +28,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
 
     override fun initView() {
 //        signUpViewModel.getLocationsAndRoles()
+        homeViewModel.loadLibraries(applicationContext)
         val drawerLayout: DrawerLayout = binding.drawerLayout
         val navView: NavigationView = binding.navView
         navHostFragment = supportFragmentManager.findFragmentById(R.id.navHostFragment) as NavHostFragment
@@ -52,7 +53,6 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
                                                                                         binding.navView.menu.getItem(4).title = "Logout"
         sidepaneAdapter = SidepaneAdapter(onClickListener = this, navHostFragment = navHostFragment)
         setupSidepane()
-        homeViewModel.loadLibraries(applicationContext)
     }
 
     fun openDrawer() {
