@@ -44,6 +44,7 @@ import org.keycloak.representations.AccessToken;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
+import org.keycloak.representations.idm.UserSessionRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
@@ -55,6 +56,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.sql.DataSource;
 import java.util.*;
@@ -125,8 +127,14 @@ public class UserServiceImpl implements UserService {
     @Value("${config.keycloak.clientSecret}")
     String clientSecret;
 
+    @Value("${keycloak.auth-server-url}")
+    String keycloakServerURL;
+
     @Value("${config.keycloak.login-server-url}")
     String keycloakLoginURL;
+
+    @Value("${keycloak.realm}")
+    String keycloakrealm;
 
     @Value("${defaultTenant}")
     private String defaultTenant;
@@ -444,6 +452,32 @@ public class UserServiceImpl implements UserService {
             }
         }
 
+    }
+
+    @Override
+    public ResponseEntity<Object> userLogOut(HttpServletRequest request) throws ServletException {
+        AccessToken user = emCareSecurityUser.getLoggedInUser();
+        Keycloak keycloak = keyCloakConfig.getInstance();
+        UserResource userResource = keycloak.realm(realm).users().get(user.getSubject());
+        List<UserSessionRepresentation> userSessionRepresentations = userResource.getUserSessions();
+
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.add(CommonConstant.GRANT_TYPE, CommonConstant.PASSWORD);
+        map.add(CommonConstant.CLIENT_ID, clientId);
+        map.add(CommonConstant.CLIENT_SECRET, clientSecret);
+        HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(map, headers);
+
+
+        for(UserSessionRepresentation sessionRepresentation : userSessionRepresentations){
+            System.out.println(sessionRepresentation.getId());
+            keycloak.realm(realm).deleteSession(sessionRepresentation.getId());
+        }
+
+        return  null;
     }
 
     @Override

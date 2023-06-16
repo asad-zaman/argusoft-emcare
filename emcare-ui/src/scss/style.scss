@@ -13,6 +13,14 @@ body {
   font-size: 14px;
 
   &[dir="rtl"] {
+    .text-end {
+      text-align: left !important;
+    }
+  
+    .cst-float-left {
+      float: left;
+    }
+  
     .cst-mr-80 {
       margin-right: 80px;
     }
@@ -114,7 +122,7 @@ body {
     }
 
     .sidebarIconToggle {
-      right: 690px !important;
+      right: 700px !important;
 
       .cst-filter-btn {
         width: 150px;
