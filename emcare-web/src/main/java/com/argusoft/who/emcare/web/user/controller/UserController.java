@@ -75,7 +75,7 @@ public class UserController {
         return userService.userLogin(loginCred, request);
     }
 
-    @DeleteMapping("/auth/logout")
+    @GetMapping("/auth/logout")
     public ResponseEntity<Object> userLogOut(HttpServletRequest request) throws ServletException {
        return userService.userLogOut(request);
     }
