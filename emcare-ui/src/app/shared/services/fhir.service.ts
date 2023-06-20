@@ -295,6 +295,11 @@ export class FhirService {
         return this.http.get(url, this.getHeaders());
     }
 
+    checkFacility(facility) {
+        let url = `${environment.apiUrl}/api/emcare/facility/check?facilityName=${facility}`;
+        return this.http.get(url, this.getHeaders());
+    }
+
     getAllTenants() {
         let url = `${environment.apiUrl}/api/country/tenant/all`;
         return this.http.get(url, this.getHeaders());
