@@ -405,7 +405,7 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
     }
 
     @Override
-    public PageDto getPatientUnderLocationId(Object locationId, Integer pageNo, String sDate, String eDate) {
+    public PageDto getPatientUnderLocationId(Object locationId,String searchString, Integer pageNo, String sDate, String eDate) {
  
         Long offSet = pageNo.longValue() * 10;
         List<Integer> locationIds;
@@ -438,11 +438,23 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
         Long totalCount = 0L;
         List<Map<String, Object>> resourcesList = new ArrayList<>();
         if (Objects.isNull(locationId)) {
-            totalCount = Long.valueOf(repository.getFilteredDateOnlyCount(startDate, endDate).size());
-            resourcesList = repository.getFilteredDateOnly(startDate, endDate, offSet);
+            if (searchString != null && !searchString.isEmpty()){
+                totalCount = Long.valueOf(repository.getFilteredDateAndSearchStringOnlyCount(searchString,startDate,endDate).size());
+                resourcesList = repository.getFilteredDateAndSearchString(searchString,startDate,endDate,offSet);
+            }
+            else {
+                totalCount = Long.valueOf(repository.getFilteredDateOnlyCount(startDate, endDate).size());
+                resourcesList = repository.getFilteredDateOnly(startDate, endDate, offSet);
+            }
         } else {
-            totalCount = Long.valueOf(repository.getFilteredPatientsInCount(childFacilityIds, startDate, endDate).size());
-            resourcesList = repository.getFilteredPatientsIn(childFacilityIds, startDate, endDate, offSet);
+            if (searchString != null && !searchString.isEmpty()){
+                totalCount = Long.valueOf(repository.getFilteredPatientsInAndSearchStringCount(childFacilityIds,searchString,startDate,endDate).size());
+                resourcesList = repository.getFilteredPatientsInAndSearchString(childFacilityIds,searchString,startDate,endDate,offSet);
+
+            }else {
+                totalCount = Long.valueOf(repository.getFilteredPatientsInCount(childFacilityIds, startDate, endDate).size());
+                resourcesList = repository.getFilteredPatientsIn(childFacilityIds, startDate, endDate, offSet);
+            }
         }
         PageDto pageDto = new PageDto();
         pageDto.setList(resourcesList);
