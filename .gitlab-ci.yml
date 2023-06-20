@@ -1,10 +1,7 @@
-stages:
-  - build
-
-build:
-  stage: build
-  tags:
+tags:
     - EmCare
+
+test-job:
   script:
-    - cd emcare-web
-    - mvn clean install
+    - echo "This is my first job!"
+    - date
