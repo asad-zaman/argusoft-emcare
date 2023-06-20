@@ -25,6 +25,7 @@ import com.argusoft.who.emcare.sync.SyncViewModel
 import com.argusoft.who.emcare.ui.auth.login.LoginViewModel
 import com.argusoft.who.emcare.ui.home.HomeActivity
 import com.argusoft.who.emcare.ui.home.HomeViewModel
+import com.argusoft.who.emcare.ui.home.fhirResources.FhirResourcesViewModel
 import com.argusoft.who.emcare.utils.common.UnauthorizedAccess
 import com.argusoft.who.emcare.utils.extention.getDeviceModel
 import com.argusoft.who.emcare.utils.extention.getDeviceName
@@ -55,6 +56,7 @@ abstract class BaseFragment<B : ViewBinding> : Fragment(), View.OnClickListener 
     private val syncViewModel: SyncViewModel by viewModels()
     private val loginViewModel: LoginViewModel by viewModels()
     private val homeViewModel: HomeViewModel by viewModels()
+    private val fhirResourcesViewModel: FhirResourcesViewModel by viewModels()
     protected val binding
         get() = _binding
             ?: throw RuntimeException("Should only use binding after onCreateView and before onDestroyView")
@@ -94,6 +96,26 @@ abstract class BaseFragment<B : ViewBinding> : Fragment(), View.OnClickListener 
             return@setOnMenuItemClickListener true
         }
     }
+
+    fun initObserverPurgeResources(progressLayout: ApiViewStateConstraintLayout, isRedirectToHome: Boolean) {
+        observeNotNull(fhirResourcesViewModel.resourcesPurged) {
+//            Handler(Looper.getMainLooper()).postDelayed({
+//                progressLayout.updateProgressUi(true, true)
+//                loginViewModel.addDevice(
+//                    getDeviceName(),
+//                    getDeviceOS(),
+//                    getDeviceModel(),
+//                    requireContext().getDeviceUUID().toString(),
+//                    BuildConfig.VERSION_NAME
+//                )
+//                if(isRedirectToHome) {
+//                    startActivity(Intent(requireContext(), HomeActivity::class.java))
+//                    requireActivity().finish()
+//                }
+//            }, 5000)
+
+        }
+    }
     fun initObserverSync(progressLayout: ApiViewStateConstraintLayout, isRedirectToHome: Boolean) {
         observeNotNull(syncViewModel.syncState) { apiResponse ->
 
@@ -113,15 +135,17 @@ abstract class BaseFragment<B : ViewBinding> : Fragment(), View.OnClickListener 
                         requireContext().getDeviceUUID().toString(),
                         BuildConfig.VERSION_NAME
                     )
+                    homeViewModel.loadLibraries(context!!, true)
+                    fhirResourcesViewModel.purgeAllAudits()
                     Handler(Looper.getMainLooper()).postDelayed({
                         progressLayout.updateProgressUi(true, true)
-                        homeViewModel.loadLibraries(context!!)
                         if(isRedirectToHome) {
                             startActivity(Intent(requireContext(), HomeActivity::class.java))
                             requireActivity().finish()
                         }
                     }, 5000)
-                } else if (it.first > 0) {
+
+                } else if (it.first > 0 && it.second <= 100) {
                     val progress = it.second
                     "Synced $progress%".also {
                         progressLayout.showProgress(it)
@@ -135,17 +159,18 @@ abstract class BaseFragment<B : ViewBinding> : Fragment(), View.OnClickListener 
                         requireContext().getDeviceUUID().toString(),
                         BuildConfig.VERSION_NAME
                     )
+                    fhirResourcesViewModel.purgeAllAudits()
                     if(isRedirectToHome) {
                         if (preference.getFacilityId().isNotEmpty()) {
                             progressLayout.updateProgressUi(true, true)
-                            homeViewModel.loadLibraries(context!!)
+                            homeViewModel.loadLibraries(context!!,true)
                             startActivity(Intent(requireContext(), HomeActivity::class.java))
                             requireActivity().finish()
                         } else {
                             progressLayout.hideProgressUi()
                         }
                     }else{
-                        homeViewModel.loadLibraries(context!!)
+                        homeViewModel.loadLibraries(context!!,true)
                         progressLayout.updateProgressUi(true, true)
                     }
                 }

@@ -41,6 +41,9 @@ class FhirResourcesViewModel @Inject constructor(
     private val _draftAuditSaved = SingleLiveEvent<ApiResponse<String>>()
     val draftAuditSaved: LiveData<ApiResponse<String>> = _draftAuditSaved
 
+    private val _resourcesPurged = SingleLiveEvent<ApiResponse<String>>()
+    val resourcesPurged: LiveData<ApiResponse<String>> = _resourcesPurged
+
     private val parser = FhirContext.forR4().newJsonParser()
 
     fun createStartAudit(consultationStage: String, patientId: String, encounterId: String) {
@@ -87,6 +90,14 @@ class FhirResourcesViewModel @Inject constructor(
                 fhirResourcesRepository.saveAudit(draftAudit).collect{
                     _draftAuditSaved.value = ApiResponse.Success("Done")
                 }
+            }
+        }
+    }
+
+    fun purgeAllAudits() {
+        viewModelScope.launch {
+            fhirResourcesRepository.purgeAllAudits().collect {
+                _resourcesPurged.value = ApiResponse.Success("Done")
             }
         }
     }

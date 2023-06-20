@@ -84,6 +84,7 @@ class PatientProfileFragment : BaseFragment<FragmentPatientProfileBinding>() {
     override fun initObserver() {
 
         initObserverSync(binding.patientProfileLayout, false)
+        initObserverPurgeResources(binding.patientProfileLayout,false)
 
         observeNotNull(patientProfileViewModel.activeConsultations) { apiResponse ->
             apiResponse.handleListApiView(binding.activePatientProgressLayout) {

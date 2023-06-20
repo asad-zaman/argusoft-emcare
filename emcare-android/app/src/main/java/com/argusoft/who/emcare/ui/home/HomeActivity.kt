@@ -12,7 +12,9 @@ import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.databinding.ActivityHomeBinding
 import com.argusoft.who.emcare.ui.common.base.BaseActivity
 import com.argusoft.who.emcare.utils.extention.alertDialog
+import com.argusoft.who.emcare.utils.extention.dismissProgressDialog
 import com.argusoft.who.emcare.utils.extention.observeNotNull
+import com.argusoft.who.emcare.utils.extention.showProgressDialog
 import com.argusoft.who.emcare.utils.extention.whenSuccess
 import com.google.android.material.navigation.NavigationView
 import dagger.hilt.android.AndroidEntryPoint
@@ -28,7 +30,8 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
 
     override fun initView() {
 //        signUpViewModel.getLocationsAndRoles()
-        homeViewModel.loadLibraries(applicationContext)
+
+        homeViewModel.loadLibraries(applicationContext, false)
         val drawerLayout: DrawerLayout = binding.drawerLayout
         val navView: NavigationView = binding.navView
         navHostFragment = supportFragmentManager.findFragmentById(R.id.navHostFragment) as NavHostFragment
@@ -93,7 +96,6 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
             }
             return@setNavigationItemSelectedListener true
         }
-
     }
 
     fun toggleSidepane() {
@@ -128,6 +130,12 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
                 }
             }
         }
+        observeNotNull(homeViewModel.librariesLoaded) {
+            it.whenSuccess {
+                dismissProgressDialog()
+            }
+        }
+
     }
 
     override fun onSupportNavigateUp(): Boolean {

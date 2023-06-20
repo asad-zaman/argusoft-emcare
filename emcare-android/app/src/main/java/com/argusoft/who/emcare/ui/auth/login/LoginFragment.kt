@@ -65,6 +65,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(), EasyPermissions.Perm
         }
 
         initObserverSync(binding.progressLayout, true)
+        initObserverPurgeResources(binding.progressLayout, true)
     }
 
     override fun onClick(view: View?) {

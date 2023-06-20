@@ -59,6 +59,8 @@ class ChangeThemeFragment : BaseFragment<FragmentScreenResizeSettingsBinding>() 
 
     override fun initObserver() {
         initObserverSync(binding.rootLayout, false)
+        initObserverPurgeResources(binding.rootLayout,false)
+
     }
 
     class RadioGroupCheckListener(vararg allies: Array<CompoundButton?>) :

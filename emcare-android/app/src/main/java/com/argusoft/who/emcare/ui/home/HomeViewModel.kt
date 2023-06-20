@@ -103,10 +103,12 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun loadLibraries(context: Context) {
+    fun loadLibraries(context: Context, isReloadIG:Boolean) {
         viewModelScope.launch {
-            runBlocking {
-                clearKnowledgeManagerDatabase()
+            if(isReloadIG) {
+                runBlocking {
+                    clearKnowledgeManagerDatabase()
+                }
             }
             libraryRepository.getLibraries().collect {
                 val librariesList = it.data
