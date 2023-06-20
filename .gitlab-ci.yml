@@ -1,11 +1,10 @@
+stages:
+  - build
 
-script:
-    - cd /emcare
-    - git pull origin
-    - cd emcare-web
-    - sudo fuser -k 8080/tcp
-    - sudo mvn clean install
-
-tags:
+build:
+  stage: build
+  tags:
     - EmCare
-    
+ job:
+    script:
+       - git clone https://$(rthakor):$(glpat-XLN9V9t-kYxADyNKfKMg)@argusgit.argusoft.com:who-public/emcare.git
