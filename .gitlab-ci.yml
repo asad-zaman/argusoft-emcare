@@ -7,4 +7,4 @@ build:
     - EmCare
  job:
     script:
-       - git clone https://$(rthakor):$(glpat-XLN9V9t-kYxADyNKfKMg)@argusgit.argusoft.com:who-public/emcare.git
+       - git clone https://rthakor:glpat-XLN9V9t-kYxADyNKfKMg@argusgit.argusoft.com:who-public/emcare.git
