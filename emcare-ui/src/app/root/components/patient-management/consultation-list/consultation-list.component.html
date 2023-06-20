@@ -11,7 +11,7 @@
         (input)="searchFilter()" placeholder="{{'Search Placeholder' | translate}}">
     </div>
     <div class="col-3 cst-d-flex">
-      <p-checkbox styleClass="form-label" [(ngModel)]="exportAllConsultations" label="Export All Consultations"
+      <p-checkbox *ngIf="showAllPatientCheckbox" styleClass="form-label" [(ngModel)]="exportAllConsultations" label="Export All Consultations"
         [binary]="true" inputId="binary" value="true" (onChange)="exportAllTheConsultations()">
       </p-checkbox>
     </div>

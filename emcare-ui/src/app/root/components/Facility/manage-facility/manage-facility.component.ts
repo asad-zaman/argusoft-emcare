@@ -4,7 +4,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AuthGuard } from 'src/app/auth/auth.guard';
 import { FhirService, ToasterService } from 'src/app/shared';
 import { LocationService } from '../../../services/location.service';
-import { forkJoin } from 'rxjs';
+import { forkJoin, Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'app-manage-facility',
@@ -30,6 +31,7 @@ export class ManageFacilityComponent implements OnInit {
   orgArr = [];
   isOrganizationAsFacility = false;
   apiBusy: boolean = true;
+  facilityTermChanged: Subject<string> = new Subject<string>();
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -282,6 +284,7 @@ export class ManageFacilityComponent implements OnInit {
     const org = this.facilityForm.get('organization').value;
     if (org && org.name) {
       this.facilityForm.get('name').setValue(org.name);
+      this.checkFacility();
     }
   }
 
@@ -291,5 +294,25 @@ export class ManageFacilityComponent implements OnInit {
         returnRoute: this.editId ? `editFacility/${this.editId}` : '/addFacility'
       }
     });
+  }
+
+  checkFacility() {
+    if (this.facilityTermChanged.observers.length === 0) {
+      this.facilityTermChanged.pipe(
+        debounceTime(1000),
+        distinctUntilChanged()
+      ).subscribe(_term => {
+        if (this.getFormConfrols.name.valid && this.getFormConfrols.name.value) {
+          this.fhirService.checkFacility(this.getFormConfrols.name.value).subscribe(() => { }, (error) => {
+            if (error['status'] === 400) {
+              this.toasterService.showToast('error', 'Facility is already exists!', 'EMCARE!');
+              this.getFormConfrols.name.reset();
+              this.getFormConfrols.isOrganizationAsFacility.reset();
+            }
+          });
+        } else { }
+      });
+    }
+    this.facilityTermChanged.next(this.getFormConfrols.name.value);
   }
 }
