@@ -1,7 +1,11 @@
+
+script:
+    - cd /emcare
+    - git pull origin
+    - cd emcare-web
+    - sudo fuser -k 8080/tcp
+    - sudo mvn clean install
+
 tags:
     - EmCare
-
-test-job:
-  script:
-    - echo "This is my first job!"
-    - date
+    
