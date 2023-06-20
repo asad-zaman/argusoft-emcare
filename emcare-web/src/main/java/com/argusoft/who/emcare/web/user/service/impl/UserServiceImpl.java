@@ -471,9 +471,7 @@ public class UserServiceImpl implements UserService {
         map.add(CommonConstant.CLIENT_SECRET, clientSecret);
         HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(map, headers);
 
-
         for(UserSessionRepresentation sessionRepresentation : userSessionRepresentations){
-            System.out.println(sessionRepresentation.getId());
             keycloak.realm(realm).deleteSession(sessionRepresentation.getId());
         }
 

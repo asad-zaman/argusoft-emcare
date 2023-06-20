@@ -139,7 +139,7 @@ public class QuestionnaireResponseServiceImpl implements QuestionnaireResponseSe
     }
 
     @Override
-    public PageDto getConsultationsUnderLocationId(Object locationId, Integer pageNo, String sDate, String eDate) {
+    public PageDto getConsultationsUnderLocationId(Object locationId, Integer pageNo, String sDate, String eDate, String searchString) {
         Long offSet = pageNo.longValue() * 10;
         List<Integer> locationIds;
         List<String> childFacilityIds = new ArrayList<>();
@@ -157,7 +157,7 @@ public class QuestionnaireResponseServiceImpl implements QuestionnaireResponseSe
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             if (Objects.isNull(sDate) || sDate.isEmpty()) {
-                String sDate1 = "1998-12-31";
+                        String sDate1 = "1998-12-31";
                 sDate = sdf.format(sdf.parse(sDate1));
             }
             if (Objects.isNull(eDate) || eDate.isEmpty()) {
@@ -172,11 +172,24 @@ public class QuestionnaireResponseServiceImpl implements QuestionnaireResponseSe
         Long totalCount = 0L;
         List<Map<String, Object>> resourcesList = new ArrayList<>();
         if (Objects.isNull(locationId)) {
-            totalCount = Long.valueOf(questionnaireResponseRepository.getFilteredDateOnlyCount(startDate, endDate).size());
-            resourcesList = questionnaireResponseRepository.getFilteredDateOnly(startDate, endDate, offSet);
-        } else {
-            totalCount = Long.valueOf(questionnaireResponseRepository.getFilteredConsultationsInCount(childFacilityIds, startDate, endDate).size());
-            resourcesList = questionnaireResponseRepository.getFilteredConsultationsIn(childFacilityIds, startDate, endDate, offSet);
+            if (searchString != null && !searchString.isEmpty()){
+                totalCount = Long.valueOf(questionnaireResponseRepository.getFilteredDateWithSearchCount(searchString,startDate, endDate).size());
+                resourcesList = questionnaireResponseRepository.getFilteredDateWithSearch(searchString,startDate, endDate, offSet);
+            }
+            else{
+                totalCount = Long.valueOf(questionnaireResponseRepository.getFilteredDateOnlyCount(startDate, endDate).size());
+                resourcesList = questionnaireResponseRepository.getFilteredDateOnly(startDate, endDate, offSet);
+            }
+        }
+        else {
+            if (searchString != null && !searchString.isEmpty()) {
+                totalCount = Long.valueOf(questionnaireResponseRepository.getFilteredConsultationWithSearchCount(searchString, childFacilityIds, startDate, endDate).size());
+                resourcesList = questionnaireResponseRepository.getFilteredConsultationWithSearch(searchString, childFacilityIds, startDate, endDate, offSet);
+            }
+            else{
+                totalCount = Long.valueOf(questionnaireResponseRepository.getFilteredConsultationsInCount( childFacilityIds, startDate, endDate).size());
+                resourcesList = questionnaireResponseRepository.getFilteredConsultationsIn(childFacilityIds, startDate, endDate, offSet);
+            }
         }
         PageDto pageDto = new PageDto();
         pageDto.setList(resourcesList);
