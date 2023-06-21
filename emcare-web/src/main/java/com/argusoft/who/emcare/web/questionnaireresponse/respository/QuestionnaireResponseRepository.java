@@ -271,7 +271,7 @@ public interface QuestionnaireResponseRepository extends JpaRepository<Questionn
             "LEFT JOIN LOCATION_RESOURCES ON EMCARE_RESOURCES.facility_id = LOCATION_RESOURCES.resource_id \n" +
             "where MAX_CONSULTATION_DATE.cnslDate notnull and \n" +
             "MAX_CONSULTATION_DATE.cnslDate between :startDate and :endDate \n" +
-            "and (cast((EMCARE_RESOURCES.text) as json) -> cast('identifier' as text) -> 0 ->> cast('value' as text) ilike concat('%',:searchString,'%') or \n" +
+            "and ((cast((EMCARE_RESOURCES.text) as json) -> cast('identifier' as text) -> 0 ->> cast('value' as text) ilike concat('%',:searchString,'%') or \n" +
             "\t   CONCAT(cast((EMCARE_RESOURCES.text) as json) -> cast('name' as text) -> 0 -> cast('given' as text) ->> 0,\t   cast((EMCARE_RESOURCES.text) as json) -> cast('name' as text) -> 0 -> cast('given' as text) ->> 1) ilike concat('%',:searchString,'%') or\n" +
             "\t   cast((EMCARE_RESOURCES.text) as json) -> cast('name' as text) -> 0 ->> cast('family' as text) ilike concat('%',:searchString,'%') or\n" +
             "\t   cast((EMCARE_RESOURCES.text) as json) ->> cast('gender' as text) ilike concat('%',:searchString,'%') or\n" +
@@ -279,6 +279,7 @@ public interface QuestionnaireResponseRepository extends JpaRepository<Questionn
             "\t   cast((LOCATION_RESOURCES.text) as json) ->> cast('name' as text) ilike concat('%',:searchString,'%')) or \n" +
             "\t   user_entity.first_name ilike concat('%',:searchString,'%') or\n" +
             "\t   user_entity.last_name ilike concat('%',:searchString,'%')\n" +
+            ")\n" +
             "ORDER BY EMCARE_RESOURCES.created_on desc limit 10 offset :offset\n",nativeQuery = true)
     List<Map<String, Object>> getFilteredDateWithSearch(@Param("searchString") String searchString,
                                                   @Param("startDate") Date startDate,
@@ -311,7 +312,7 @@ public interface QuestionnaireResponseRepository extends JpaRepository<Questionn
                 "LEFT JOIN LOCATION_RESOURCES ON EMCARE_RESOURCES.facility_id = LOCATION_RESOURCES.resource_id \n" +
                 "where MAX_CONSULTATION_DATE.cnslDate notnull and \n" +
                 "MAX_CONSULTATION_DATE.cnslDate between :startDate and :endDate\n" +
-                "and (cast((EMCARE_RESOURCES.text) as json) -> cast('identifier' as text) -> 0 ->> cast('value' as text) ilike concat('%',:searchString,'%') or \n" +
+                "and ((cast((EMCARE_RESOURCES.text) as json) -> cast('identifier' as text) -> 0 ->> cast('value' as text) ilike concat('%',:searchString,'%') or \n" +
                 "\t   CONCAT(cast((EMCARE_RESOURCES.text) as json) -> cast('name' as text) -> 0 -> cast('given' as text) ->> 0,\t   cast((EMCARE_RESOURCES.text) as json) -> cast('name' as text) -> 0 -> cast('given' as text) ->> 1) ilike concat('%',:searchString,'%') or\n" +
                 "\t   cast((EMCARE_RESOURCES.text) as json) -> cast('name' as text) -> 0 ->> cast('family' as text) ilike concat('%',:searchString,'%') or\n" +
                 "\t   cast((EMCARE_RESOURCES.text) as json) ->> cast('gender' as text) ilike concat('%',:searchString,'%') or\n" +
@@ -319,6 +320,7 @@ public interface QuestionnaireResponseRepository extends JpaRepository<Questionn
                 "\t   cast((LOCATION_RESOURCES.text) as json) ->> cast('name' as text) ilike concat('%',:searchString,'%')) or \n" +
                 "\t   user_entity.first_name ilike concat('%',:searchString,'%') or\n" +
                 "\t   user_entity.last_name ilike concat('%',:searchString,'%')\n" +
+                ")\n" +
                 "ORDER BY EMCARE_RESOURCES.created_on DESC",nativeQuery = true)
     List<Map<String, Object>> getFilteredDateWithSearchCount(@Param("searchString") String searchString,
                                                              @Param("startDate") Date startDate,
