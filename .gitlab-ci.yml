@@ -12,4 +12,4 @@ build:
 job1:
   stage: job1
   script:
-    - git clone "https://gitlab-ci-token:${EmCare_Dev}@argusgit.argusoft.com/who-public/emcare.git"
+    - git clone https://oauth2:glpat-XLN9V9t-kYxADyNKfKMg@argusgit.argusoft.com/who-public/emcare.git
