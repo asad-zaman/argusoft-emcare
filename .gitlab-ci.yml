@@ -1,15 +1,12 @@
 stages:
   - Build
 
-variables:
-  GITLAB_TOKEN: "glpat-XLN9V9t-kYxADyNKfKMg"
-
 Build:
   stage: Build
   tags: 
     - EmCare
   script:
-    - git clone "https://oauth2:$GITLAB_TOKEN@argusgit.argusoft.com/who-public/emcare.git"
+    - git clone "https://oauth2:$EmCare_Dev@argusgit.argusoft.com/who-public/emcare.git"
     - git checkout add-ci-cd
     - git branch
     - cd emcare-web/
