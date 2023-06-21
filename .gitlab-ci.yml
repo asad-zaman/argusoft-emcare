@@ -1,13 +1,15 @@
 stages:
   - job1
 
+variables:
+  GITLAB_TOKEN: "glpat-XLN9V9t-kYxADyNKfKMg"
 
 variables:
-  REPO_URL: "https://EmCare:$EmCare_Dev@argusgit.argusoft.com/who-public/emcare.git"
+  REPO_URL: "https::$EmCare_Dev@argusgit.argusoft.com/who-public/emcare.git"
 
 job1:
   stage: job1
   tags: 
     - EmCare
   script:
-    - git clone $REPO_URL
+    - git clone "https://oauth2:${GITLAB_TOKEN}@argusgit.argusoft.com/who-public/emcare.git"
