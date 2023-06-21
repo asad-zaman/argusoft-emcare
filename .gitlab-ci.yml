@@ -12,4 +12,4 @@ Build:
     - git clone "https://oauth2:$GITLAB_TOKEN@argusgit.argusoft.com/who-public/emcare.git"
     - git checkout add-ci-cd
     - git branch
-    - cd /emcare-web
+    - cd emcare-web/
