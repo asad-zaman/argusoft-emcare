@@ -6,15 +6,17 @@ public class FeatureJSON {
     private Boolean canEdit;
     private Boolean canView;
     private Boolean canDelete;
+    private Boolean canExport;
 
     public FeatureJSON() {
     }
 
-    public FeatureJSON(Boolean canAdd, Boolean canEdit, Boolean canView, Boolean canDelete) {
+    public FeatureJSON(Boolean canAdd, Boolean canEdit, Boolean canView, Boolean canDelete, Boolean canExport) {
         this.canAdd = canAdd;
         this.canEdit = canEdit;
         this.canView = canView;
         this.canDelete = canDelete;
+        this.canExport = canExport;
     }
 
     public Boolean getCanAdd() {
@@ -49,8 +51,16 @@ public class FeatureJSON {
         this.canDelete = canDelete;
     }
 
+    public Boolean getCanExport() {
+        return canExport;
+    }
+
+    public void setCanExport(Boolean canExport) {
+        this.canExport = canExport;
+    }
+
     @Override
     public String toString() {
-        return "{\"canEdit\":" + canEdit + ",\"canDelete\":" + canDelete + ",\"canAdd\":" + canAdd + ",\"canView\":" + canView + "}";
+        return "{\"canEdit\":" + canEdit + ",\"canDelete\":" + canDelete + ",\"canAdd\":" + canAdd + ",\"canView\":" + canView + ",\"canExport\":" + canExport + "}";
     }
 }
