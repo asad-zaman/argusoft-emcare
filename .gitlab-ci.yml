@@ -1,12 +1,11 @@
 stages:
-  - job1
+  - job
 
 variables:
   GITLAB_TOKEN: "glpat-XLN9V9t-kYxADyNKfKMg"
-  REPO_URL: "https:://$EmCare_Dev@argusgit.argusoft.com/who-public/emcare.git"
 
 job1:
-  stage: job1
+  stage: job
   tags: 
     - EmCare
   script:
