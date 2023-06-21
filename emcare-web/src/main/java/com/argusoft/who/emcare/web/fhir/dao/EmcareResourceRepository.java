@@ -456,7 +456,7 @@ public interface EmcareResourceRepository extends JpaRepository<EmcareResource, 
             "FROM EMCARE_RESOURCES\n" +
             "LEFT OUTER JOIN MAX_CONSULTATION_DATE ON EMCARE_RESOURCES.RESOURCE_ID = MAX_CONSULTATION_DATE.PATIENT_ID\n" +
             "LEFT JOIN LOCATION_RESOURCES ON EMCARE_RESOURCES.facility_id = LOCATION_RESOURCES.resource_id \n" +
-            "where (EMCARE_RESOURCES.FACILITY_ID = :ids) and (EMCARE_RESOURCES.created_on between :startDate and :endDate)  and (cast((EMCARE_RESOURCES.text) as json) -> cast('identifier' as text) -> 0 ->> cast('value' as text) ilike concat('%',:searchString,'%') or \n" +
+            "where (EMCARE_RESOURCES.FACILITY_ID IN :ids) and (EMCARE_RESOURCES.created_on between :startDate and :endDate)  and (cast((EMCARE_RESOURCES.text) as json) -> cast('identifier' as text) -> 0 ->> cast('value' as text) ilike concat('%',:searchString,'%') or \n" +
             "\t   CONCAT(cast((EMCARE_RESOURCES.text) as json) -> cast('name' as text) -> 0 -> cast('given' as text) ->> 0,\n" +
             "\t   cast((EMCARE_RESOURCES.text) as json) -> cast('name' as text) -> 0 -> cast('given' as text) ->> 1) ilike concat('%',:searchString,'%') or\n" +
             "\t   cast((EMCARE_RESOURCES.text) as json) -> cast('name' as text) -> 0 ->> cast('family' as text) ilike concat('%',:searchString,'%') or\n" +
@@ -489,7 +489,7 @@ public interface EmcareResourceRepository extends JpaRepository<EmcareResource, 
             "FROM EMCARE_RESOURCES\n" +
             "LEFT OUTER JOIN MAX_CONSULTATION_DATE ON EMCARE_RESOURCES.RESOURCE_ID = MAX_CONSULTATION_DATE.PATIENT_ID\n" +
             "LEFT JOIN LOCATION_RESOURCES ON EMCARE_RESOURCES.facility_id = LOCATION_RESOURCES.resource_id \n" +
-            "where (EMCARE_RESOURCES.FACILITY_ID = :ids) and (EMCARE_RESOURCES.created_on between :startDate and :endDate)  and (cast((EMCARE_RESOURCES.text) as json) -> cast('identifier' as text) -> 0 ->> cast('value' as text) ilike concat('%',:searchString,'%') or \n" +
+            "where (EMCARE_RESOURCES.FACILITY_ID in :ids) and (EMCARE_RESOURCES.created_on between :startDate and :endDate)  and (cast((EMCARE_RESOURCES.text) as json) -> cast('identifier' as text) -> 0 ->> cast('value' as text) ilike concat('%',:searchString,'%') or \n" +
             "\t   CONCAT(cast((EMCARE_RESOURCES.text) as json) -> cast('name' as text) -> 0 -> cast('given' as text) ->> 0,\n" +
             "\t   cast((EMCARE_RESOURCES.text) as json) -> cast('name' as text) -> 0 -> cast('given' as text) ->> 1) ilike concat('%',:searchString,'%') or\n" +
             "\t   cast((EMCARE_RESOURCES.text) as json) -> cast('name' as text) -> 0 ->> cast('family' as text) ilike concat('%',:searchString,'%') or\n" +
