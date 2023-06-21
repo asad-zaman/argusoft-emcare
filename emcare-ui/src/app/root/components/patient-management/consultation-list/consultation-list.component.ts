@@ -49,7 +49,7 @@ export class ConsultationListComponent implements OnInit {
 
   prerequisite() {
     this.checkFeatures();
-    this.getConsultationsByPageIndex(this.currentPage);
+    this.getConsultationsBasedOnData(this.currentPage);
   }
 
   checkFeatures() {
@@ -74,17 +74,13 @@ export class ConsultationListComponent implements OnInit {
     }
   }
 
-  getConsultationsByPageIndex(index) {
-    this.consultations = [];
-    this.fhirService.getConsultationList(index).subscribe(res => {
-      if (res) {
-        this.manipulateResponse(res);
-      }
-    });
-  }
-
-  getConsultationsBasedOnLocationAndPageIndex(pageIndex) {
-    this.fhirService.getConsultationsByLocationAndPageIndex(this.selectedId, pageIndex, this.dateObj).subscribe(res => {
+  getConsultationsBasedOnData(pageIndex) {
+    const filterData = {
+      locationId: this.selectedId,
+      dateObj: this.dateObj,
+      searchString: this.searchString
+    };
+    this.fhirService.getConsultationsByData(pageIndex, filterData).subscribe(res => {
       if (res) {
         this.manipulateResponse(res);
       }
@@ -94,18 +90,7 @@ export class ConsultationListComponent implements OnInit {
   onIndexChange(event) {
     this.enableAll = false;
     this.currentPage = event;
-    if (this.isLocationFilterOn) {
-      this.getConsultationsBasedOnLocationAndPageIndex(event - 1);
-    } else {
-      if (this.searchString && this.searchString.length >= 1) {
-        this.consultations = [];
-        this.fhirService.getConsultationList(event - 1, this.searchString).subscribe(res => {
-          this.manipulateResponse(res);
-        });
-      } else {
-        this.getConsultationsByPageIndex(event - 1);
-      }
-    }
+    this.getConsultationsBasedOnData(event - 1);
   }
 
   searchFilter() {
@@ -118,18 +103,7 @@ export class ConsultationListComponent implements OnInit {
         if (this.exportAllConsultations) {
           this.exportAllConsultations = !this.exportAllConsultations;
         }
-        if (this.searchString && this.searchString.length >= 1) {
-          this.consultations = [];
-          this.fhirService.getConsultationList(this.currentPage, this.searchString).subscribe(res => {
-            this.manipulateResponse(res);
-          });
-        } else {
-          if (this.isLocationFilterOn) {
-            this.getConsultationsBasedOnLocationAndPageIndex(this.currentPage);
-          } else {
-            this.getConsultationsByPageIndex(this.currentPage);
-          }
-        }
+        this.getConsultationsBasedOnData(this.currentPage);
       });
     }
     this.searchTermChanged.next(this.searchString);
@@ -555,10 +529,10 @@ export class ConsultationListComponent implements OnInit {
       this.enableAll = false;
       this.enableAllBoxes();
       this.disableSaveButton = false;
-  } else {
+    } else {
       this.showCheckboxes = true;
       this.disableSaveButton = true;
-  }
+    }
     if (this.exportAllConsultations) {
       this.fhirService.getAllConsultationsForExport().subscribe((res: any) => {
         if (res) {
@@ -581,14 +555,13 @@ export class ConsultationListComponent implements OnInit {
     }
     this.resetPageIndex();
     const pageIndex = this.currentPage == 0 ? this.currentPage : this.currentPage - 1;
-    this.getConsultationsBasedOnLocationAndPageIndex(pageIndex);
+    this.getConsultationsBasedOnData(pageIndex);
   }
 
   clearFilter(event) {
     if (event) {
       this.resetPageIndex();
-      this.getConsultationsByPageIndex(this.currentPage);
+      this.getConsultationsBasedOnData(this.currentPage);
     }
   }
 }
-
