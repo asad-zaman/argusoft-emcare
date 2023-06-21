@@ -21,6 +21,7 @@ export class ManageRoleComponent implements OnInit {
   isAddFeature: boolean = true;
   isEditFeature: boolean = true;
   isAllowed: boolean = true;
+  cont: string = localStorage.getItem(appConstants.localStorageKeys.ApplicationAgent);
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -65,7 +66,7 @@ export class ManageRoleComponent implements OnInit {
       this.roleService.getRoleById(this.editId).subscribe(res => {
         if (res) {
           const obj = {
-            name: res['name'],
+            name: res['name'].slice(this.cont.length+1,res['name'].length) ? res['name'].slice(this.cont.length+1,res['name'].length) : res['name'],
             description: res['description']
           }
           this.oldRoleName = res['name'];
@@ -91,12 +92,14 @@ export class ManageRoleComponent implements OnInit {
     this.submitted = true;
     if (this.roleForm.valid) {
       if (this.isEdit) {
+
         const data = {
           "id": this.editId,
           "name": `${con}_${this.roleForm.get('name').value}`,
-          "oldRoleName": `${con}_${this.oldRoleName}`,
+          "oldRoleName": `${this.oldRoleName}`,
           "description": this.roleForm.get('description').value
         };
+        
         this.roleService.updateRole(data).subscribe(() => {
           this.toasterService.showToast('success', 'Role updated successfully!', 'EMCARE');
           this.showRoles();
