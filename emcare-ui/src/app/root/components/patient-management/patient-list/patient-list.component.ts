@@ -57,7 +57,7 @@ export class PatientListComponent implements OnInit {
 
     prerequisite() {
         this.checkFeatures();
-        this.getPatientsByPageIndex(this.currentPage);
+        this.getPatientsBasedOnData(this.currentPage);
     }
 
     checkFeatures() {
@@ -80,17 +80,14 @@ export class PatientListComponent implements OnInit {
         }
     }
 
-    getPatientsByPageIndex(index) {
+    getPatientsBasedOnData(index) {
+        const filterData = {
+            locationId: this.selectedId,
+            dateObj: this.dateObj,
+            searchString: this.searchString
+        };
         this.patients = [];
-        this.fhirService.getPatientsByPageIndex(index).subscribe(res => {
-            if (res) {
-                this.manipulateResponse(res);
-            }
-        });
-    }
-
-    getPatientsBasedOnLocationAndPageIndex(pageIndex) {
-        this.fhirService.getPatientsByLocationAndPageIndex(this.selectedId, pageIndex, this.dateObj).subscribe(res => {
+        this.fhirService.getPatientsByData(index, filterData).subscribe(res => {
             if (res) {
                 this.manipulateResponse(res);
             }
@@ -100,18 +97,7 @@ export class PatientListComponent implements OnInit {
     onIndexChange(event) {
         this.enableAll = false;
         this.currentPage = event;
-        if (this.isLocationFilterOn) {
-            this.getPatientsBasedOnLocationAndPageIndex(event - 1);
-        } else {
-            if (this.searchString && this.searchString.length >= 1) {
-                this.patients = [];
-                this.fhirService.getPatientsByPageIndex(event - 1, this.searchString).subscribe(res => {
-                    this.manipulateResponse(res);
-                });
-            } else {
-                this.getPatientsByPageIndex(event - 1);
-            }
-        }
+        this.getPatientsBasedOnData(event - 1);
     }
 
     showPatientDetails(id) {
@@ -138,18 +124,7 @@ export class PatientListComponent implements OnInit {
                 if (this.exportAllPatient) {
                     this.exportAllPatient = !this.exportAllPatient;
                 }
-                if (this.searchString && this.searchString.length >= 1) {
-                    this.patients = [];
-                    this.fhirService.getPatientsByPageIndex(this.currentPage, this.searchString).subscribe(res => {
-                        this.manipulateResponse(res);
-                    });
-                } else {
-                    if (this.isLocationFilterOn) {
-                        this.getPatientsBasedOnLocationAndPageIndex(this.currentPage);
-                    } else {
-                        this.getPatientsByPageIndex(this.currentPage);
-                    }
-                }
+                this.getPatientsBasedOnData(this.currentPage);
             });
         }
         this.searchTermChanged.next(this.searchString);
@@ -172,13 +147,13 @@ export class PatientListComponent implements OnInit {
         }
         this.resetPageIndex();
         const pageIndex = this.currentPage == 0 ? this.currentPage : this.currentPage - 1;
-        this.getPatientsBasedOnLocationAndPageIndex(pageIndex);
+        this.getPatientsBasedOnData(pageIndex);
     }
 
     clearFilter(event) {
         if (event) {
             this.resetPageIndex();
-            this.getPatientsByPageIndex(this.currentPage);
+            this.getPatientsBasedOnData(this.currentPage);
         }
     }
 
