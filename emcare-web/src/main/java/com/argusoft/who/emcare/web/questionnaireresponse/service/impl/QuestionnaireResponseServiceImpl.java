@@ -157,7 +157,7 @@ public class QuestionnaireResponseServiceImpl implements QuestionnaireResponseSe
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             if (Objects.isNull(sDate) || sDate.isEmpty()) {
-                        String sDate1 = "1998-12-31";
+                String sDate1 = "1998-12-31";
                 sDate = sdf.format(sdf.parse(sDate1));
             }
             if (Objects.isNull(eDate) || eDate.isEmpty()) {
@@ -171,12 +171,11 @@ public class QuestionnaireResponseServiceImpl implements QuestionnaireResponseSe
         }
         Long totalCount = 0L;
         List<Map<String, Object>> resourcesList = new ArrayList<>();
-        if (Objects.isNull(locationId)) {
-            if (searchString != null && !searchString.isEmpty()){
-                totalCount = Long.valueOf(questionnaireResponseRepository.getFilteredDateWithSearchCount(searchString,startDate, endDate).size());
-                resourcesList = questionnaireResponseRepository.getFilteredDateWithSearch(searchString,startDate, endDate, offSet);
-            }
-            else{
+        if (locationId.toString().isEmpty()) {
+            if (searchString != null && !searchString.isEmpty()) {
+                totalCount = Long.valueOf(questionnaireResponseRepository.getFilteredDateWithSearchCount(searchString, startDate, endDate).size());
+                resourcesList = questionnaireResponseRepository.getFilteredDateWithSearch(searchString, startDate, endDate, offSet);
+            } else {
                 totalCount = Long.valueOf(questionnaireResponseRepository.getFilteredDateOnlyCount(startDate, endDate).size());
                 resourcesList = questionnaireResponseRepository.getFilteredDateOnly(startDate, endDate, offSet);
             }
