@@ -5,6 +5,6 @@ build:
   stage: build
   tags:
     - EmCare
- job:
+  job:
     script:
-        - git clone https://gitlab-ci-token:glpat-XLN9V9t-kYxADyNKfKMg@argusgit.argusoft.com:who-public/emcare.git
+        - git clone https://gitlab-ci-token:glpat-XLN9V9t-kYxADyNKfKMg@https://argusgit.argusoft.com/who-public/emcare.git
