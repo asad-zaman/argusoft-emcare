@@ -9,4 +9,4 @@ build:
  
 job1:
   script:
-    - git clone https://gitlab-ci-token:glpat-XLN9V9t-kYxADyNKfKMg@https://argusgit.argusoft.com/who-public/emcare.git
+    - git clone https://gitlab-ci-token:${EmCare_Dev}@https://argusgit.argusoft.com/who-public/emcare.git
