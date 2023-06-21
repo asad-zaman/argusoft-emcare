@@ -1,8 +1,12 @@
+stages:
+  - job1
+
+
 variables:
   REPO_URL: "https://gitlab-ci-token:${EmCare_Dev}@argusgit.argusoft.com/who-public/emcare.git"
-
 
 job1:
   stage: job1
   script:
     - git clone $REPO_URL
+    
