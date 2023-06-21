@@ -8,6 +8,10 @@
     top: 180px;
     background: #fff;
     width: 260px;
+    height: calc(100% - 200px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-bottom: 10px;
 }
 
 .loglist ul {
