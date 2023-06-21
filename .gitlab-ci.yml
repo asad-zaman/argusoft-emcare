@@ -1,11 +1,11 @@
 stages:
-  - job
+  - Build
 
 variables:
   GITLAB_TOKEN: "glpat-XLN9V9t-kYxADyNKfKMg"
 
-job1:
-  stage: job
+Build:
+  stage: Build
   tags: 
     - EmCare
   script:
