@@ -6,8 +6,10 @@ build:
   stage: build
   tags:
     - EmCare
- 
+  script:
+    - echo "Building..."
+
 job1:
   stage: job1
   script:
-    - git clone https://gitlab-ci-token:${EmCare_Dev}@argusgit.argusoft.com/who-public/emcare.git
+    - git clone "https://gitlab-ci-token:${EmCare_Dev}@argusgit.argusoft.com/who-public/emcare.git"
