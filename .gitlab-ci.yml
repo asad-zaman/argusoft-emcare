@@ -3,9 +3,7 @@ stages:
 
 variables:
   GITLAB_TOKEN: "glpat-XLN9V9t-kYxADyNKfKMg"
-
-variables:
-  REPO_URL: "https::$EmCare_Dev@argusgit.argusoft.com/who-public/emcare.git"
+  REPO_URL: "https:://$EmCare_Dev@argusgit.argusoft.com/who-public/emcare.git"
 
 job1:
   stage: job1
