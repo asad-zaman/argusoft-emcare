@@ -8,6 +8,7 @@ import com.argusoft.who.emcare.web.fhir.dto.FacilityMapDto;
 import com.argusoft.who.emcare.web.fhir.model.LocationResource;
 import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.Location;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
@@ -32,4 +33,6 @@ public interface LocationResourceService {
     public List<FacilityMapDto> getAllFacilityMapDto();
 
     public List<String> getAllChildFacilityIds(String facilityId);
+
+    public ResponseEntity<Object> checkIfFacilityIsPresent(String facilityName);
 }

@@ -44,6 +44,7 @@ import org.keycloak.representations.AccessToken;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
+import org.keycloak.representations.idm.UserSessionRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
@@ -55,6 +56,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.sql.DataSource;
 import java.util.*;
@@ -125,8 +127,14 @@ public class UserServiceImpl implements UserService {
     @Value("${config.keycloak.clientSecret}")
     String clientSecret;
 
+    @Value("${keycloak.auth-server-url}")
+    String keycloakServerURL;
+
     @Value("${config.keycloak.login-server-url}")
     String keycloakLoginURL;
+
+    @Value("${keycloak.realm}")
+    String keycloakrealm;
 
     @Value("${defaultTenant}")
     private String defaultTenant;
@@ -444,6 +452,30 @@ public class UserServiceImpl implements UserService {
             }
         }
 
+    }
+
+    @Override
+    public ResponseEntity<Object> userLogOut(HttpServletRequest request) throws ServletException {
+        AccessToken user = emCareSecurityUser.getLoggedInUser();
+        Keycloak keycloak = keyCloakConfig.getInstance();
+        UserResource userResource = keycloak.realm(realm).users().get(user.getSubject());
+        List<UserSessionRepresentation> userSessionRepresentations = userResource.getUserSessions();
+
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.add(CommonConstant.GRANT_TYPE, CommonConstant.PASSWORD);
+        map.add(CommonConstant.CLIENT_ID, clientId);
+        map.add(CommonConstant.CLIENT_SECRET, clientSecret);
+        HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(map, headers);
+
+        for(UserSessionRepresentation sessionRepresentation : userSessionRepresentations){
+            keycloak.realm(realm).deleteSession(sessionRepresentation.getId());
+        }
+
+        return  null;
     }
 
     @Override
@@ -963,7 +995,8 @@ public class UserServiceImpl implements UserService {
                     String json = getMargedStringOfFeatureJson(list);
                     featureJsons.add(MenuConfigMapper.getCurrentUserFeatureJson(ufj, json));
                 } else {
-                    featureJsons.add(MenuConfigMapper.getCurrentUserFeatureJson(ufj, null));
+                    String json = getMargedStringOfFeatureJson(list);
+                    featureJsons.add(MenuConfigMapper.getCurrentUserFeatureJson(ufj, json));
                 }
             }
         }
@@ -986,11 +1019,29 @@ public class UserServiceImpl implements UserService {
     }
 
     private String getMargedStringOfFeatureJson(List<UserFeatureJson> featureJsonList) {
+        FeatureJSON featureJSON = new FeatureJSON(true, true, true, true,true);
+        Gson g = new Gson();
         if (featureJsonList.size() > 2) {
             return featureJsonList.get(0).getFeatureJson();
+        } else if(featureJsonList.size() == 1) {
+            FeatureJSON f = g.fromJson(featureJsonList.get(0).getFeatureJson(), FeatureJSON.class);
+            if (!f.getCanAdd().booleanValue()) {
+                featureJSON.setCanAdd(false);
+            }
+            if (!f.getCanDelete().booleanValue()) {
+                featureJSON.setCanDelete(false);
+            }
+            if (!f.getCanEdit().booleanValue()) {
+                featureJSON.setCanEdit(false);
+            }
+            if (!f.getCanView().booleanValue()) {
+                featureJSON.setCanView(false);
+            }
+            if(Objects.isNull(f.getCanExport()) || !f.getCanExport().booleanValue()) {
+                featureJSON.setCanExport(false);
+            }
+            return featureJSON.toString();
         } else {
-            FeatureJSON featureJSON = new FeatureJSON(true, true, true, true);
-            Gson g = new Gson();
             FeatureJSON f1 = g.fromJson(featureJsonList.get(0).getFeatureJson(), FeatureJSON.class);
             FeatureJSON f2 = g.fromJson(featureJsonList.get(1).getFeatureJson(), FeatureJSON.class);
             if (!f1.getCanAdd().booleanValue() && !f2.getCanAdd().booleanValue()) {
@@ -1004,6 +1055,10 @@ public class UserServiceImpl implements UserService {
             }
             if (!f1.getCanView().booleanValue() && !f2.getCanView().booleanValue()) {
                 featureJSON.setCanView(false);
+            }
+            if (Objects.isNull(f1.getCanExport()) || Objects.isNull(f2.getCanExport()) ||
+                    !f1.getCanExport().booleanValue() && !f2.getCanExport().booleanValue()) {
+                featureJSON.setCanExport(false);
             }
             return featureJSON.toString();
         }

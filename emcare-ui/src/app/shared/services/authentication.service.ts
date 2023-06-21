@@ -79,23 +79,24 @@ export class AuthenticationService {
     return this.http.post<any>(url, body);
   }
 
-  getLoggedInUser() {
+  getAccessTokenHeaderObj() {
     const accessToken = JSON.parse(localStorage.getItem('access_token'));
     const headerObj = {
       headers: new HttpHeaders({
         Authorization: `Bearer ${accessToken}`,
       }),
     };
-    const url = `${this.backendURL}/api/user`;
-    return this.http.get<any>(url, headerObj);
+    return headerObj;
   }
 
-  logout() {
-    return this.http.post<any>(
-      `http:localhost:4200/users/revoke-token`,
-      {},
-      { withCredentials: true }
-    );
+  getLoggedInUser() {    
+    const url = `${this.backendURL}/api/user`;
+    return this.http.get<any>(url, this.getAccessTokenHeaderObj());
+  }
+
+  deleteSession() {
+    const url = `${this.backendURL}/api/auth/logout`;
+    return this.http.get<any>(url, this.getAccessTokenHeaderObj());
   }
 
   getIsLoggedIn(): Observable<boolean> {

@@ -68,12 +68,15 @@ export class FhirService {
         return this.http.get(`${this.fhirBaseURL}/questionnaire/page?pageNo=${pageIndex}`, this.getHeaders());
     }
 
-    getPatientsByLocationAndPageIndex(locationId, pageIndex, dateObj) {
-        return this.http.get(`${this.fhirBaseURL}/patient/locationId?startDate=${dateObj.startDate}&endDate=${dateObj.endDate}&pageNo=${pageIndex}&locationId=${locationId ? locationId : ''}`, this.getHeaders());
+    getPatientsByData(pageIndex, filterData) {
+        let { locationId, dateObj, searchString } = filterData;
+        return this.http.get(`${this.fhirBaseURL}/patient/locationId?startDate=${dateObj && dateObj.startDate ? dateObj.startDate : ''}&endDate=${dateObj && dateObj.endDate ? dateObj.endDate : ''}&pageNo=${pageIndex}&locationId=${locationId ? locationId : ''}&searchString=${searchString ? searchString : ''}`, this.getHeaders());
     }
 
-    getConsultationsByLocationAndPageIndex(locationId, pageIndex, dateObj) {
-        return this.http.get(`${environment.apiUrl}/api/questionnaire_response/consultations/locationId?pageNo=${pageIndex}&locationId=${locationId ? locationId : ''}&startDate=${dateObj.startDate}&endDate=${dateObj.endDate}`, this.getHeaders());
+    getConsultationsByData(pageIndex, filterData) {
+        let { locationId, dateObj, searchString } = filterData;
+        return this.http.get(
+            `${environment.apiUrl}/api/questionnaire_response/consultations/locationId?pageNo=${pageIndex}&locationId=${locationId ? locationId : ''}&startDate=${dateObj && dateObj.startDate ? dateObj.startDate : ''}&endDate=${dateObj && dateObj.endDate ? dateObj.endDate : ''}&searchString=${searchString ? searchString : ''}`, this.getHeaders());
     }
 
     addLaunguage(data) {
@@ -210,16 +213,6 @@ export class FhirService {
         return this.http.get(url, this.getHeaders());
     }
 
-    getConsultationList(pageIndex, search?) {
-        let url;
-        if (search) {
-            url = `${environment.apiUrl}/api/questionnaire_response/page?pageNo=${pageIndex}&search=${search}`;
-        } else {
-            url = `${environment.apiUrl}/api/questionnaire_response/page?pageNo=${pageIndex}`;
-        }
-        return this.http.get(url, this.getHeaders());
-    }
-
     getPatientEncounter(id) {
         let url = `${environment.apiUrl}/api/questionnaire_response/byPatient?patientId=${id}`;
         return this.http.get(url, this.getHeaders());
@@ -292,6 +285,11 @@ export class FhirService {
 
     checkEmail(email) {
         let url = `${environment.apiUrl}/api/user/check/email?emailId=${email}`;
+        return this.http.get(url, this.getHeaders());
+    }
+
+    checkFacility(facility) {
+        let url = `${environment.apiUrl}/api/emcare/facility/check?facilityName=${facility}`;
         return this.http.get(url, this.getHeaders());
     }
 

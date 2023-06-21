@@ -7,6 +7,7 @@ import ca.uhn.fhir.rest.param.DateParam;
 import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
 import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.common.dto.PageDto;
+import com.argusoft.who.emcare.web.common.response.Response;
 import com.argusoft.who.emcare.web.fhir.dao.LocationResourceRepository;
 import com.argusoft.who.emcare.web.fhir.dao.OrganizationResourceRepository;
 import com.argusoft.who.emcare.web.fhir.dto.FacilityDto;
@@ -24,6 +25,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -246,5 +249,18 @@ public class LocationResourceServiceImpl implements LocationResourceService {
         List<Integer> locationIds = locationMasterDao.getAllChildLocationId(facilityDto.getLocationId().intValue());
         childFacilityIds = locationResourceRepository.findResourceIdIn(locationIds);
         return childFacilityIds;
+    }
+
+    @Override
+    public ResponseEntity<Object> checkIfFacilityIsPresent(String facilityName) {
+        List<LocationResource> locationResources = new ArrayList<>();
+
+        locationResources = locationResourceRepository.findIfFacilityIsPresent(facilityName);
+
+        if (!locationResources.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response(facilityName + " facility is already present", HttpStatus.BAD_REQUEST.value()));
+        }
+        return ResponseEntity.ok().body(new Response("No facility available with this name "+ facilityName , HttpStatus.OK.value()));
+
     }
 }

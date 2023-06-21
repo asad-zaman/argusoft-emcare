@@ -407,15 +407,15 @@ export class IndicatorComponent implements OnInit {
       "numeratorIndicatorEquation": this.getNumEquation(),
       "denominatorIndicatorEquation": this.getDenEquation(),
       "displayType": formValue.displayType.id,
-      "numeratorEquations": this.getNumeratorsBody(),
-      "denominatorEquations": this.getDenominatorsBody(),
-      "numeratorEquationString": JSON.stringify(this.numeratorEquationStringArr),
-      "denominatorEquationString": JSON.stringify(this.denominatorEquationStringArr),
+      "numeratorEquations": formValue.allowQueryBuilder ? [] : this.getNumeratorsBody(),
+      "denominatorEquations": formValue.allowQueryBuilder ? [] : this.getDenominatorsBody(),
+      "numeratorEquationString": formValue.allowQueryBuilder ? [] : JSON.stringify(this.numeratorEquationStringArr),
+      "denominatorEquationString": formValue.allowQueryBuilder ? [] : JSON.stringify(this.denominatorEquationStringArr),
       "colourSchema": JSON.stringify(this.getColorSchemaObj()),
       "gender": null,
       "age": null,
       "isQueryConfigure": formValue.allowQueryBuilder,
-      "query": formValue.query
+      "query": formValue.allowQueryBuilder ? formValue.query : null
     }
   }
 
