@@ -64,9 +64,10 @@ export class ManageRoleComponent implements OnInit {
     if (this.editId) {
       this.isEdit = true;
       this.roleService.getRoleById(this.editId).subscribe(res => {
+        var prefix = `${this.cont}_`;
         if (res) {
           const obj = {
-            name: res['name'].slice(this.cont.length+1,res['name'].length) ? res['name'].slice(this.cont.length+1,res['name'].length) : res['name'],
+            name: res['name'].startsWith(prefix) ? res['name'].replace(prefix,"") : res['name'],
             description: res['description']
           }
           this.oldRoleName = res['name'];
