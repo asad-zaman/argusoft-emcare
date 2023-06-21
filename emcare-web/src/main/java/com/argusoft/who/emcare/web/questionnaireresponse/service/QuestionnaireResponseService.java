@@ -22,7 +22,7 @@ public interface QuestionnaireResponseService {
 
     public Map<String, Object> getAllDataForExport();
 
-    public PageDto getConsultationsUnderLocationId(Object locationId,Integer pageNo,String startDate,String endDate);
+    public PageDto getConsultationsUnderLocationId(Object locationId,Integer pageNo,String startDate,String endDate,String searchString);
 
     public void logSyncAttempt();
 }

@@ -62,8 +62,9 @@ public class QuestionnaireResponseController {
     public PageDto getAllPatientsUnderLocation(@Nullable @RequestParam(value = "locationId") Object locationId,
                                                @RequestParam(value = "pageNo") Integer pageNo,
                                                @Nullable @RequestParam(value = "startDate") String startDate,
-                                               @Nullable @RequestParam(value = "endDate") String endDate) {
-        return questionnaireResponseService.getConsultationsUnderLocationId(locationId, pageNo, startDate, endDate);
+                                               @Nullable @RequestParam(value = "endDate") String endDate,
+                                               @Nullable @RequestParam(value = "searchString") String searchString){
+        return questionnaireResponseService.getConsultationsUnderLocationId(locationId, pageNo, startDate, endDate,searchString);
     }
 
 }

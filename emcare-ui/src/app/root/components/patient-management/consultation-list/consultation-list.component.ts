@@ -35,6 +35,7 @@ export class ConsultationListComponent implements OnInit {
   dateObj: any;
   isLocationFilterOn: boolean;
   disableSaveButton: boolean;
+  showAllPatientCheckbox = false;
 
   constructor(
     private readonly fhirService: FhirService,
@@ -143,6 +144,7 @@ export class ConsultationListComponent implements OnInit {
   }
 
   onEnableSelectionClick() {
+    this.showAllPatientCheckbox = !this.showAllPatientCheckbox;
     if (this.exportAllConsultations) {
       this.exportAllConsultations = false;
     } else {
@@ -548,9 +550,15 @@ export class ConsultationListComponent implements OnInit {
   }
 
   exportAllTheConsultations() {
-    this.disableSaveButton = false;
-    this.enableAll = false;
-    this.showCheckboxes = false;
+    if (this.exportAllConsultations) {
+      this.showCheckboxes = false;
+      this.enableAll = false;
+      this.enableAllBoxes();
+      this.disableSaveButton = false;
+  } else {
+      this.showCheckboxes = true;
+      this.disableSaveButton = true;
+  }
     if (this.exportAllConsultations) {
       this.fhirService.getAllConsultationsForExport().subscribe((res: any) => {
         if (res) {

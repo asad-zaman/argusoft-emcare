@@ -42,6 +42,7 @@ export class PatientListComponent implements OnInit {
         'facilityName', 'addressLine', 'organizationName',
         'locationName', 'consultationDate'];
     disableSaveButton: boolean;
+    showAllPatientCheckbox = false;
 
     constructor(
         private readonly fhirService: FhirService,
@@ -339,6 +340,7 @@ export class PatientListComponent implements OnInit {
     }
 
     onEnableSelectionClick() {
+        this.showAllPatientCheckbox = !this.showAllPatientCheckbox;
         if (this.exportAllPatient) {
             this.exportAllPatient = false;
         } else {
@@ -379,9 +381,15 @@ export class PatientListComponent implements OnInit {
     }
 
     exportAllThePatients() {
-        this.disableSaveButton = false;
-        this.enableAll = false;
-        this.showCheckboxes = false;
+        if (this.exportAllPatient) {
+            this.showCheckboxes = false;
+            this.enableAll = false;
+            this.enableAllBoxes();
+            this.disableSaveButton = false;
+        } else {
+            this.showCheckboxes = true;
+            this.disableSaveButton = true;
+        }
         this.fhirService.getAllPatientsForExport(this.searchString, this.selectedId).subscribe((res: any) => {
             if (res) {
                 this.filteredAllPatientData = res;
