@@ -3,7 +3,7 @@ stages:
 
 
 variables:
-  REPO_URL: "https://gitlab-ci-token:${EmCare_Dev}@argusgit.argusoft.com/who-public/emcare.git"
+  REPO_URL: "https://gitlab-ci-token:$EmCare_Dev@argusgit.argusoft.com/who-public/emcare.git"
 
 job1:
   stage: job1
