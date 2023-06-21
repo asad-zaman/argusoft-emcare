@@ -34,11 +34,7 @@ public class MenuConfigMapper {
 
     public static CurrentUserFeatureJson getCurrentUserFeatureJson(UserFeatureJson ufj, String customeFeatureJSON) {
         CurrentUserFeatureJson fJSON = new CurrentUserFeatureJson();
-        if (customeFeatureJSON == null) {
-            fJSON.setFeatureJson(ufj.getFeatureJson());
-        } else {
-            fJSON.setFeatureJson(customeFeatureJSON);
-        }
+        fJSON.setFeatureJson(customeFeatureJSON);
         fJSON.setMenuName(ufj.getMenuName());
         fJSON.setId(Integer.parseInt(ufj.getId()));
         fJSON.setParent(ufj.getParent());

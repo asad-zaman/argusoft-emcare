@@ -995,7 +995,8 @@ public class UserServiceImpl implements UserService {
                     String json = getMargedStringOfFeatureJson(list);
                     featureJsons.add(MenuConfigMapper.getCurrentUserFeatureJson(ufj, json));
                 } else {
-                    featureJsons.add(MenuConfigMapper.getCurrentUserFeatureJson(ufj, null));
+                    String json = getMargedStringOfFeatureJson(list);
+                    featureJsons.add(MenuConfigMapper.getCurrentUserFeatureJson(ufj, json));
                 }
             }
         }
@@ -1018,11 +1019,29 @@ public class UserServiceImpl implements UserService {
     }
 
     private String getMargedStringOfFeatureJson(List<UserFeatureJson> featureJsonList) {
+        FeatureJSON featureJSON = new FeatureJSON(true, true, true, true,true);
+        Gson g = new Gson();
         if (featureJsonList.size() > 2) {
             return featureJsonList.get(0).getFeatureJson();
+        } else if(featureJsonList.size() == 1) {
+            FeatureJSON f = g.fromJson(featureJsonList.get(0).getFeatureJson(), FeatureJSON.class);
+            if (!f.getCanAdd().booleanValue()) {
+                featureJSON.setCanAdd(false);
+            }
+            if (!f.getCanDelete().booleanValue()) {
+                featureJSON.setCanDelete(false);
+            }
+            if (!f.getCanEdit().booleanValue()) {
+                featureJSON.setCanEdit(false);
+            }
+            if (!f.getCanView().booleanValue()) {
+                featureJSON.setCanView(false);
+            }
+            if(Objects.isNull(f.getCanExport()) || !f.getCanExport().booleanValue()) {
+                featureJSON.setCanExport(false);
+            }
+            return featureJSON.toString();
         } else {
-            FeatureJSON featureJSON = new FeatureJSON(true, true, true, true);
-            Gson g = new Gson();
             FeatureJSON f1 = g.fromJson(featureJsonList.get(0).getFeatureJson(), FeatureJSON.class);
             FeatureJSON f2 = g.fromJson(featureJsonList.get(1).getFeatureJson(), FeatureJSON.class);
             if (!f1.getCanAdd().booleanValue() && !f2.getCanAdd().booleanValue()) {
@@ -1036,6 +1055,10 @@ public class UserServiceImpl implements UserService {
             }
             if (!f1.getCanView().booleanValue() && !f2.getCanView().booleanValue()) {
                 featureJSON.setCanView(false);
+            }
+            if (Objects.isNull(f1.getCanExport()) || Objects.isNull(f2.getCanExport()) ||
+                    !f1.getCanExport().booleanValue() && !f2.getCanExport().booleanValue()) {
+                featureJSON.setCanExport(false);
             }
             return featureJSON.toString();
         }
