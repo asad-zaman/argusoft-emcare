@@ -1,15 +1,11 @@
 stages:
-  - build
   - job1
-
-build:
-  stage: build
-  tags:
-    - EmCare
-  script:
-    - echo "Building..."
 
 job1:
   stage: job1
+  tags:
+    - EmCare
   script:
     - git clone https://oauth2:glpat-XLN9V9t-kYxADyNKfKMg@argusgit.argusoft.com/who-public/emcare.git
+  script:
+    - echo "Cloaning..."  
