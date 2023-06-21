@@ -8,6 +8,6 @@ variables:
 job1:
   stage: job1
   tag:
-    -EmCare
+    - EmCare
   script:
     - git clone $REPO_URL
