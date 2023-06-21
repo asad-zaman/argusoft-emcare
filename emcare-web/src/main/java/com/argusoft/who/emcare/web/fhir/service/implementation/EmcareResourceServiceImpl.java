@@ -437,7 +437,7 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
         }
         Long totalCount = 0L;
         List<Map<String, Object>> resourcesList = new ArrayList<>();
-        if (Objects.isNull(locationId)) {
+        if (Objects.isNull(locationId) || locationId.toString().isEmpty()) {
             if (searchString != null && !searchString.isEmpty()){
                 totalCount = Long.valueOf(repository.getFilteredDateAndSearchStringOnlyCount(searchString,startDate,endDate).size());
                 resourcesList = repository.getFilteredDateAndSearchString(searchString,startDate,endDate,offSet);
