@@ -113,9 +113,12 @@ class HomeViewModel @Inject constructor(
             libraryRepository.getLibraries().collect {
                 val librariesList = it.data
                 librariesList?.forEach { library ->
-                    knowledgeManager.install(writeToFile(library))
+                    runBlocking {
+                        knowledgeManager.install(writeToFile(library))
+                    }
                 }
-                _librariesLoaded.value = ApiResponse.Success(1)
+            }.let {
+                _librariesLoaded.value = ApiResponse.Success(if (isReloadIG) 1 else 0)
             }
         }
     }
