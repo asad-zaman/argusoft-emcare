@@ -108,8 +108,6 @@ class PatientRepository @Inject constructor(
         val questionnaireResponseItems = questionnaireResponse.item //Removing the empty blank space item from QR.
         questionnaireResponse.item = questionnaireResponseItems.dropLast(1)
         try {
-            throw java.lang.Exception()
-
             if (QuestionnaireResponseValidator.validateQuestionnaireResponse(
                     questionnaireResource,
                     questionnaireResponse,
