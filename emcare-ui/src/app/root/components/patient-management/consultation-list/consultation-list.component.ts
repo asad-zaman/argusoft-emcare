@@ -36,6 +36,7 @@ export class ConsultationListComponent implements OnInit {
   isLocationFilterOn: boolean;
   disableSaveButton: boolean;
   showAllPatientCheckbox = false;
+  isExportFeatureAllowed = false;
 
   constructor(
     private readonly fhirService: FhirService,
@@ -56,6 +57,7 @@ export class ConsultationListComponent implements OnInit {
     this.authGuard.getFeatureData().subscribe(res => {
       if (res.relatedFeature && res.relatedFeature.length > 0) {
         this.isView = res.featureJSON['canView'];
+        this.isExportFeatureAllowed = res.featureJSON['canExport'];
       }
     });
   }
