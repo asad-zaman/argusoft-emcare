@@ -74,9 +74,16 @@ public class QuestionnaireResponseServiceImpl implements QuestionnaireResponseSe
 
     @Override
     public List<QuestionnaireResponse> getQuestionnaireResponseByUserLocation(Date theDate) {
+        Date prodDate = new Date();
+        try {
+            String prodDateString = "31/05/2023";
+            prodDate = new SimpleDateFormat("dd/MM/yyyy").parse(prodDateString);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
         UserMasterDto userMasterDto = (UserMasterDto) userService.getCurrentUser().getBody();
         List<String> facilityIds = userMasterDto.getFacilities().stream().map(FacilityDto::getFacilityId).collect(Collectors.toList());
-        List<EmcareResource> patientList = emcareResourceRepository.findByFacilityIdIn(facilityIds);
+        List<EmcareResource> patientList = emcareResourceRepository.findByFacilityIdInAndCreatedOnGreaterThan(facilityIds, prodDate);
         List<String> patientIds = patientList.stream().map(EmcareResource::getResourceId).collect(Collectors.toList());
         List<QuestionnaireResponse> questionnaireResponses;
         if (Objects.nonNull(theDate)) {
