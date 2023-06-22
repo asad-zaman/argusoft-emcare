@@ -51,7 +51,7 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/nav_view"
-        android:layout_width="@dimen/_180sdp"
+        android:layout_width="wrap_content"
         android:layout_height="@dimen/_220sdp"
         android:layout_gravity="end"
         app:drawerLayoutCornerSize="@dimen/_5sdp"
@@ -59,6 +59,7 @@
         app:itemTextColor="@color/textColorBlack"
         android:fitsSystemWindows="true"
         app:itemIconTint="@color/textColorBlack"
-        app:menu="@menu/activity_main_drawer" />
+        app:menu="@menu/activity_main_drawer"
+        app:itemMaxLines="3"/>
 </androidx.drawerlayout.widget.DrawerLayout>
 
