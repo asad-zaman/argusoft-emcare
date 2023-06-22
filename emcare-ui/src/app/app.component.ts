@@ -17,6 +17,8 @@ export class AppComponent implements OnInit {
 
   currentUrl: string = '';
   userName: any;
+  firstName: any;
+  lastName: any;
   isSettingDropdownOpen: boolean = false;
   isUserDropdownOpen: boolean = false;
   isPatientDropdownOpen: boolean = false;
@@ -168,8 +170,8 @@ export class AppComponent implements OnInit {
     });
   }
 
-  getUserCharLogo(username) {
-    return username.substring(0, 1).toUpperCase();
+  getUserCharLogo(firstName, lastName) {
+    return (firstName.substring(0,1).toUpperCase() + lastName.substring(0,1).toUpperCase());
   }
 
   setLoggedInUserData() {
@@ -205,8 +207,9 @@ export class AppComponent implements OnInit {
   }
 
   setUserDetails() {
-    this.userName = localStorage.getItem('Username');
-    this.userCharLogo = this.userName && this.getUserCharLogo(this.userName);
+    this.firstName = localStorage.getItem('Firstname');
+    this.lastName = localStorage.getItem('Lastname');
+    this.userCharLogo = this.getUserCharLogo(this.firstName, this.lastName);
   }
 
   hideCurrentDropdown(id) {

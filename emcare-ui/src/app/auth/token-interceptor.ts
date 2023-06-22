@@ -59,13 +59,17 @@ export class HTTPStatus {
 }
 @Injectable()
 export class TokenInterceptor implements HttpInterceptor {
+    
+    private totalRequests = 0;
 
     constructor(
         private readonly status: HTTPStatus,
         private readonly router: Router
     ) { }
 
-    intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> { 
+        this.totalRequests++;
+
         if (localStorage.getItem(appConstants.localStorageKeys.ApplicationAgent)) {
             request = request.clone({
                 setHeaders: { 'Application-Agent': localStorage.getItem(appConstants.localStorageKeys.ApplicationAgent) }
@@ -89,6 +93,9 @@ export class TokenInterceptor implements HttpInterceptor {
     }
 
     private decreaseRequests() {
+        this.totalRequests--;
+        if (this.totalRequests == 0){
         this.status.setHttpStatus(false);
+        }
     }
 }
