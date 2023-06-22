@@ -10,6 +10,7 @@ import com.argusoft.who.emcare.ui.common.*
 import com.argusoft.who.emcare.ui.common.model.ConsultationFlowItem
 import com.argusoft.who.emcare.ui.common.model.PatientItem
 import com.argusoft.who.emcare.ui.home.ConsultationFlowRepository
+import com.argusoft.who.emcare.ui.home.fhirResources.FhirResourcesRepository
 import com.argusoft.who.emcare.utils.extention.toPatientItem
 import com.google.android.fhir.FhirEngine
 import com.google.android.fhir.datacapture.mapping.ResourceMapper
@@ -34,6 +35,7 @@ class PatientRepository @Inject constructor(
     private val fhirEngine: FhirEngine,
     private val application: Application,
     private val consultationFlowRepository: ConsultationFlowRepository,
+    private val fhirResourcesRepository: FhirResourcesRepository,
     private val preference: Preference
 ) {
 
@@ -211,7 +213,9 @@ class PatientRepository @Inject constructor(
         }
         catch (e: Exception) {
             e.printStackTrace()
-            emit(ApiResponse.ApiError(apiErrorMessageResId = R.string.error_saving_resource))
+            fhirResourcesRepository.purgeStartEndAuditsOnException().collect{
+                emit(ApiResponse.ApiError(apiErrorMessageResId = R.string.error_saving_resource))
+            }
         }
     }
 

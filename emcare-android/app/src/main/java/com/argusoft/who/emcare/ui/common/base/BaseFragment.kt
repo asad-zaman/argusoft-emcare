@@ -27,6 +27,7 @@ import com.argusoft.who.emcare.ui.home.HomeActivity
 import com.argusoft.who.emcare.ui.home.HomeViewModel
 import com.argusoft.who.emcare.ui.home.fhirResources.FhirResourcesViewModel
 import com.argusoft.who.emcare.utils.common.UnauthorizedAccess
+import com.argusoft.who.emcare.utils.extention.dismissProgressDialog
 import com.argusoft.who.emcare.utils.extention.getDeviceModel
 import com.argusoft.who.emcare.utils.extention.getDeviceName
 import com.argusoft.who.emcare.utils.extention.getDeviceOS
@@ -39,6 +40,7 @@ import com.argusoft.who.emcare.utils.extention.showSnackBar
 import com.argusoft.who.emcare.utils.extention.showToast
 import com.argusoft.who.emcare.utils.extention.whenInProgress
 import com.argusoft.who.emcare.utils.extention.whenLoading
+import com.argusoft.who.emcare.utils.extention.whenSuccess
 import com.argusoft.who.emcare.widget.ApiViewStateConstraintLayout
 import com.google.android.fhir.sync.SyncJobStatus
 import com.google.android.material.appbar.MaterialToolbar
@@ -162,10 +164,7 @@ abstract class BaseFragment<B : ViewBinding> : Fragment(), View.OnClickListener 
                     fhirResourcesViewModel.purgeAllAudits()
                     if(isRedirectToHome) {
                         if (preference.getFacilityId().isNotEmpty()) {
-                            progressLayout.updateProgressUi(true, true)
                             homeViewModel.loadLibraries(context!!,true)
-                            startActivity(Intent(requireContext(), HomeActivity::class.java))
-                            requireActivity().finish()
                         } else {
                             progressLayout.hideProgressUi()
                         }
@@ -193,6 +192,17 @@ abstract class BaseFragment<B : ViewBinding> : Fragment(), View.OnClickListener 
                         }
                     }
                 }
+            }
+        }
+
+        observeNotNull(homeViewModel.librariesLoaded) {
+            it.whenSuccess { value ->
+                if(value == 1){
+                    startActivity(Intent(requireContext(), HomeActivity::class.java))
+                    requireActivity().finish()
+                }
+                progressLayout.updateProgressUi(isFinishing = true, isShowCompleted = true)
+
             }
         }
     }

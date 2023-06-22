@@ -49,8 +49,11 @@ interface Preference {
     fun getCountry(): String
 
     fun setStartAudit(startAudit: String)
+    fun setEndAudit(endAudit: String)
 
     fun getStartAudit(): String
+
+    fun getEndAudit(): String
 
     fun clear()
 

@@ -1,7 +1,6 @@
 package com.argusoft.who.emcare.ui.home.fhirResources;
 
 import androidx.lifecycle.LiveData
-import com.google.android.fhir.FhirEngine;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.viewModelScope
 import ca.uhn.fhir.context.FhirContext
@@ -15,7 +14,6 @@ import com.argusoft.who.emcare.utils.listener.SingleLiveEvent
 
 import javax.inject.Inject;
 import dagger.hilt.android.lifecycle.HiltViewModel;
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import org.hl7.fhir.r4.model.AuditEvent
 import org.hl7.fhir.r4.model.AuditEvent.AuditEventAgentComponent
@@ -28,6 +26,7 @@ import org.hl7.fhir.r4.model.Reference
 import org.hl7.fhir.r4.model.ResourceType
 import java.time.ZoneId
 import java.time.ZonedDateTime
+import java.util.UUID
 
 @HiltViewModel
 class FhirResourcesViewModel @Inject constructor(
@@ -65,6 +64,8 @@ class FhirResourcesViewModel @Inject constructor(
             patientId = patientId,
             encounterId = encounterId
         )
+        preference.setEndAudit(parser.encodeResourceToString(endAudit))
+
         val startAuditString = preference.getStartAudit()
         val startAuditObject = parser.parseResource(startAuditString) as AuditEvent
         viewModelScope.launch {
@@ -101,10 +102,10 @@ class FhirResourcesViewModel @Inject constructor(
             }
         }
     }
-
     private fun createAudit(consultationStage: String, category: String, patientId: String, encounterId: String) : AuditEvent{
         val recordedElementString = ZonedDateTime.now(ZoneId.of("UTC")).toString().removeSuffix("Z[UTC]").plus("+00:00")
         return AuditEvent().apply {
+            id = UUID.randomUUID().toString()
             type = Coding().apply {
                 display = category
                 code = category

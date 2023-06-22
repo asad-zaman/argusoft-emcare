@@ -23,6 +23,7 @@ class PreferenceManager(private val sharedPreferences: EncPref) : Preference {
         private const val THEME = "THEME"
         private const val COUNTRY = "COUNTRY"
         private const val START_AUDIT = "START_AUDIT"
+        private const val END_AUDIT = "END_AUDIT"
 
     }
 
@@ -128,6 +129,14 @@ class PreferenceManager(private val sharedPreferences: EncPref) : Preference {
 
     override fun getStartAudit(): String {
         return sharedPreferences.getString(START_AUDIT, "")
+    }
+
+    override fun setEndAudit(endAudit: String) {
+        sharedPreferences.putString(END_AUDIT, endAudit)
+    }
+
+    override fun getEndAudit(): String {
+        return sharedPreferences.getString(END_AUDIT, "")
     }
 
     override fun clear() {
