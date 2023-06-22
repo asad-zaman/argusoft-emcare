@@ -162,9 +162,6 @@ export class LoginComponent implements OnInit {
         );
         localStorage.setItem('userFeatures', JSON.stringify(featureObj));
         localStorage.setItem('language', res['language']);
-        localStorage.setItem('Username', res.userName);
-        localStorage.setItem("Firstname",res.firstName);
-        localStorage.setItem("Lastname",res.lastName);
         const isSuperAdmin =
           res['roles'].findIndex((el) => el === 'SUPER_ADMIN') > -1;
         localStorage.setItem('isSuperAdmin', `${isSuperAdmin}`);

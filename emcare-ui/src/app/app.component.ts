@@ -16,9 +16,8 @@ import { appConstants } from './app.config';
 export class AppComponent implements OnInit {
 
   currentUrl: string = '';
-  userName: any;
-  firstName: any;
-  lastName: any;
+  firstName;
+  lastName;
   isSettingDropdownOpen: boolean = false;
   isUserDropdownOpen: boolean = false;
   isPatientDropdownOpen: boolean = false;
@@ -207,8 +206,8 @@ export class AppComponent implements OnInit {
   }
 
   setUserDetails() {
-    this.firstName = localStorage.getItem('Firstname');
-    this.lastName = localStorage.getItem('Lastname');
+    this.firstName = localStorage.getItem(appConstants.localStorageKeys.Firstname);
+    this.lastName = localStorage.getItem(appConstants.localStorageKeys.Lastname);
     this.userCharLogo = this.getUserCharLogo(this.firstName, this.lastName);
   }
 
