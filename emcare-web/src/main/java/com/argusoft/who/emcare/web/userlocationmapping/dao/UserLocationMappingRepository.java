@@ -71,6 +71,31 @@ public interface UserLocationMappingRepository extends JpaRepository<UserLocatio
     public List<String> getAllUserBasedOnFacilityIdCount(@Param("facilityIds") List<String> facilityIds,
                                                          @Param("filter") Boolean filter);
 
+    @Query(value = "select ulm.user_id  from user_location_mapping ulm left join user_entity ue on ulm.user_id = ue.id \n" +
+            "where ulm.facility_id in :facilityIds and (\n" +
+            "ue.first_name ilike concat('%',:searchString,'%') or\n" +
+            "ue.last_name  ilike concat('%',:searchString,'%') or\n" +
+            "ue.email ilike concat('%',:searchString,'%')\n" +
+            ") and ulm.state = :filter\n" +
+            "group by ulm.user_id \n" +
+            "order by max(ulm.create_date) desc",nativeQuery = true)
+    public List<String> getAllUserBasedOnFacilityAndSearchCount(@Param("facilityIds") List<String> facilityIds,
+                                                                @Param("searchString") String searchString,
+                                                                @Param("filter") Boolean filter);
+
+    @Query(value = "select ulm.user_id  from user_location_mapping ulm left join user_entity ue on ulm.user_id = ue.id \n" +
+            "where ulm.facility_id in :facilityIds and (\n" +
+            "ue.first_name ilike concat('%',:searchString,'%') or\n" +
+            "ue.last_name  ilike concat('%',:searchString,'%') or\n" +
+            "ue.email ilike concat('%',:searchString,'%')\n" +
+            ") and ulm.state = :filter\n" +
+            "group by ulm.user_id \n" +
+            "order by max(ulm.create_date) desc limit 10 offset :offset",nativeQuery = true)
+    public List<String> getAllUserBasedOnFacilityAndSearch(@Param("facilityIds") List<String> facilityIds,
+                                                    @Param("searchString") String searchString,
+                                                    @Param("filter") Boolean filter,
+                                                    @Param("offset") Integer offset);
+
 
     List<UserLocationMapping> findByRegRequestFromAndIsFirst(String regRequestFrom, boolean isFirst);
 

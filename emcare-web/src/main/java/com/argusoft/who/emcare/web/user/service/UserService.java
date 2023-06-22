@@ -61,7 +61,7 @@ public interface UserService {
 
     public String getRoleNameById(String roleId);
 
-    public PageDto getUsersUnderLocation(Object locationId, Integer pageNo, Boolean filter);
+    public PageDto getUsersUnderLocation(Object locationId,String searchString, Integer pageNo, Boolean filter);
 
     public UserRepresentation getUserByEmailId(String emailId);
 
