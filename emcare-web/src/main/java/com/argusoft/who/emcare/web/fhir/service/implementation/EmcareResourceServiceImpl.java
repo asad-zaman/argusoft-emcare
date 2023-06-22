@@ -382,15 +382,22 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
             List<Integer> locationIds = locationMasterDao.getAllChildLocationId(facilityDto.getLocationId().intValue());
             childFacilityIds = locationResourceRepository.findResourceIdIn(locationIds);
         }
+        Date prodDate = new Date();
+        try {
+            String prodDateString = "31/05/2023";
+            prodDate = new SimpleDateFormat("dd/MM/yyyy").parse(prodDateString);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
 
         if (theDate == null && theId == null) {
-            return repository.findAllByType(type);
+            return repository.findAllByTypeAndCreatedOnGreaterThan(type, prodDate);
         } else if (theDate != null && theId == null) {
             return repository.getByDateAndType(theDate.getValue(), type);
         } else if (theDate == null) {
-            return repository.findByFacilityIdIn(childFacilityIds);
+            return repository.findByFacilityIdInAndCreatedOnGreaterThan(childFacilityIds, prodDate);
         } else {
-            return repository.findByTypeAndModifiedOnGreaterThanOrCreatedOnGreaterThanAndFacilityIdIn(type, theDate.getValue(), theDate.getValue(), childFacilityIds);
+            return repository.findByTypeAndModifiedOnGreaterThanOrCreatedOnGreaterThanAndFacilityIdInAndCreatedOnGreaterThan(type, theDate.getValue(), theDate.getValue(), childFacilityIds, prodDate);
         }
     }
 
@@ -405,8 +412,8 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
     }
 
     @Override
-    public PageDto getPatientUnderLocationId(Object locationId,String searchString, Integer pageNo, String sDate, String eDate) {
- 
+    public PageDto getPatientUnderLocationId(Object locationId, String searchString, Integer pageNo, String sDate, String eDate) {
+
         Long offSet = pageNo.longValue() * 10;
         List<Integer> locationIds;
         List<String> childFacilityIds = new ArrayList<>();
@@ -438,20 +445,19 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
         Long totalCount = 0L;
         List<Map<String, Object>> resourcesList = new ArrayList<>();
         if (Objects.isNull(locationId) || locationId.toString().isEmpty()) {
-            if (searchString != null && !searchString.isEmpty()){
-                totalCount = Long.valueOf(repository.getFilteredDateAndSearchStringOnlyCount(searchString,startDate,endDate).size());
-                resourcesList = repository.getFilteredDateAndSearchString(searchString,startDate,endDate,offSet);
-            }
-            else {
+            if (searchString != null && !searchString.isEmpty()) {
+                totalCount = Long.valueOf(repository.getFilteredDateAndSearchStringOnlyCount(searchString, startDate, endDate).size());
+                resourcesList = repository.getFilteredDateAndSearchString(searchString, startDate, endDate, offSet);
+            } else {
                 totalCount = Long.valueOf(repository.getFilteredDateOnlyCount(startDate, endDate).size());
                 resourcesList = repository.getFilteredDateOnly(startDate, endDate, offSet);
             }
         } else {
-            if (searchString != null && !searchString.isEmpty()){
-                totalCount = Long.valueOf(repository.getFilteredPatientsInAndSearchStringCount(childFacilityIds,searchString,startDate,endDate).size());
-                resourcesList = repository.getFilteredPatientsInAndSearchString(childFacilityIds,searchString,startDate,endDate,offSet);
+            if (searchString != null && !searchString.isEmpty()) {
+                totalCount = Long.valueOf(repository.getFilteredPatientsInAndSearchStringCount(childFacilityIds, searchString, startDate, endDate).size());
+                resourcesList = repository.getFilteredPatientsInAndSearchString(childFacilityIds, searchString, startDate, endDate, offSet);
 
-            }else {
+            } else {
                 totalCount = Long.valueOf(repository.getFilteredPatientsInCount(childFacilityIds, startDate, endDate).size());
                 resourcesList = repository.getFilteredPatientsIn(childFacilityIds, startDate, endDate, offSet);
             }
@@ -465,8 +471,15 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
     @Override
     public List<String> getPatientIdsUnderFacility(String facilityId) {
         List<String> facilityIds = new ArrayList<>();
+        Date prodDate = new Date();
+        try {
+            String prodDateString = "31/05/2023";
+            prodDate = new SimpleDateFormat("dd/MM/yyyy").parse(prodDateString);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
         facilityIds = locationResourceService.getAllChildFacilityIds(facilityId);
-        List<EmcareResource> emcareResources = repository.findByFacilityIdIn(facilityIds);
+        List<EmcareResource> emcareResources = repository.findByFacilityIdInAndCreatedOnGreaterThan(facilityIds, prodDate);
         return emcareResources.stream().map(EmcareResource::getResourceId).collect(Collectors.toList());
     }
 

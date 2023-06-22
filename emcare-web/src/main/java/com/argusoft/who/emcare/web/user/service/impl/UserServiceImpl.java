@@ -676,8 +676,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public PageDto getUsersUnderLocation(Object locationId, Integer pageNo, Boolean filter) {
+    public PageDto getUsersUnderLocation(Object locationId,String searchString, Integer pageNo, Boolean filter) {
         List<MultiLocationUserListDto> userList = new ArrayList<>();
+        Long totalCount = 0L;
+        List<String> allUsersIdUnderLocation = new ArrayList<>();
         if (filter == null) {
             filter = false;
         }
@@ -693,8 +695,26 @@ public class UserServiceImpl implements UserService {
             }
         }
         Keycloak keycloak = keyCloakConfig.getInstance();
-        Integer totalCount = userLocationMappingRepository.getAllUserBasedOnFacilityIdCount(childFacilityIds, filter).size();
-        List<String> allUsersIdUnderLocation = userLocationMappingRepository.getAllUserBasedOnFacilityId(childFacilityIds, filter, pageNo * 10);
+        if (Objects.isNull(locationId) || locationId.toString().isEmpty()){
+            if (Objects.nonNull(searchString) && !searchString.isEmpty()) {
+                totalCount = Long.valueOf(userLocationMappingRepository.getUserPageDataWithSearchCount(searchString, filter).size());
+                allUsersIdUnderLocation = userLocationMappingRepository.getUserPageDataWithSearch(searchString, filter, pageNo * CommonConstant.PAGE_SIZE);
+            } else {
+                totalCount = Long.valueOf(userLocationMappingRepository.getUserPageDataWithoutSearchCount(filter).size());
+                allUsersIdUnderLocation = userLocationMappingRepository.getUserPageDataWithoutSearch(filter, pageNo * CommonConstant.PAGE_SIZE);
+            }
+
+        }else {
+            if (searchString != null && !searchString.isEmpty()){
+                totalCount = Long.valueOf(userLocationMappingRepository.getAllUserBasedOnFacilityAndSearchCount(childFacilityIds,searchString,filter).size());
+                allUsersIdUnderLocation = userLocationMappingRepository.getAllUserBasedOnFacilityAndSearch(childFacilityIds,searchString,filter,pageNo * 10);
+            }else {
+                totalCount = Long.valueOf(userLocationMappingRepository.getAllUserBasedOnFacilityIdCount(childFacilityIds, filter).size());
+                allUsersIdUnderLocation = userLocationMappingRepository.getAllUserBasedOnFacilityId(childFacilityIds, filter, pageNo * 10);
+            }
+        }
+
+
         List<UserRepresentation> userRepresentations = new ArrayList<>();
         for (String userId : allUsersIdUnderLocation) {
             userRepresentations.add(keycloak.realm(realm).users().get(userId).toRepresentation());
