@@ -434,7 +434,10 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
                 sDate = sdf.format(sdf.parse(sDate1));
             }
             if (Objects.isNull(eDate) || eDate.isEmpty()) {
-                eDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date()).toString();
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(new Date());
+                calendar.add(Calendar.DATE, 1);
+                eDate = new SimpleDateFormat("yyyy-MM-dd").format(calendar.getTime()).toString();
             }
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
             startDate = simpleDateFormat.parse(sDate);
