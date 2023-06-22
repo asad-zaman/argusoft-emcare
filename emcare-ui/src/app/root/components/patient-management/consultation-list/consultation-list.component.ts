@@ -560,6 +560,8 @@ export class ConsultationListComponent implements OnInit {
 
   clearFilter(event) {
     if (event) {
+      this.selectedId = null;
+      this.dateObj = null;
       this.resetPageIndex();
       this.getConsultationsBasedOnData(this.currentPage);
     }

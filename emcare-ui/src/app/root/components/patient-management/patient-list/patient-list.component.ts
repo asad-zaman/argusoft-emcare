@@ -152,6 +152,8 @@ export class PatientListComponent implements OnInit {
 
     clearFilter(event) {
         if (event) {
+            this.selectedId = null;
+            this.dateObj = null;
             this.resetPageIndex();
             this.getPatientsBasedOnData(this.currentPage);
         }
