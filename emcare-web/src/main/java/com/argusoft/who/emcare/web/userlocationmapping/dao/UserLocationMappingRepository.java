@@ -89,7 +89,7 @@ public interface UserLocationMappingRepository extends JpaRepository<UserLocatio
         "  WHERE IS_FIRST = TRUE),\n" +
         " LAST_SEVEN_DAY_REQUEST AS\n" +
         "(SELECT COUNT (DISTINCT ID) AS \"totalPatient\"\n" +
-        " FROM emcare_resources where type = 'PATIENT')\n" +
+        " FROM emcare_resources where type = 'PATIENT' and created_on > '2023-05-31')\n" +
         "SELECT *\n" +
         "FROM TOTAL_USER,\n" +
         " PENDING_REQUEST,\n" +
