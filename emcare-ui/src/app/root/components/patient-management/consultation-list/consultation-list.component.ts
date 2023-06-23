@@ -36,6 +36,7 @@ export class ConsultationListComponent implements OnInit {
   isLocationFilterOn: boolean;
   disableSaveButton: boolean;
   showAllPatientCheckbox = false;
+  isExportFeatureAllowed = false;
 
   constructor(
     private readonly fhirService: FhirService,
@@ -56,6 +57,7 @@ export class ConsultationListComponent implements OnInit {
     this.authGuard.getFeatureData().subscribe(res => {
       if (res.relatedFeature && res.relatedFeature.length > 0) {
         this.isView = res.featureJSON['canView'];
+        this.isExportFeatureAllowed = res.featureJSON['canExport'];
       }
     });
   }
@@ -560,6 +562,8 @@ export class ConsultationListComponent implements OnInit {
 
   clearFilter(event) {
     if (event) {
+      this.selectedId = null;
+      this.dateObj = null;
       this.resetPageIndex();
       this.getConsultationsBasedOnData(this.currentPage);
     }

@@ -74,9 +74,16 @@ public class QuestionnaireResponseServiceImpl implements QuestionnaireResponseSe
 
     @Override
     public List<QuestionnaireResponse> getQuestionnaireResponseByUserLocation(Date theDate) {
+        Date prodDate = new Date();
+        try {
+            String prodDateString = "31/05/2023";
+            prodDate = new SimpleDateFormat("dd/MM/yyyy").parse(prodDateString);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
         UserMasterDto userMasterDto = (UserMasterDto) userService.getCurrentUser().getBody();
         List<String> facilityIds = userMasterDto.getFacilities().stream().map(FacilityDto::getFacilityId).collect(Collectors.toList());
-        List<EmcareResource> patientList = emcareResourceRepository.findByFacilityIdIn(facilityIds);
+        List<EmcareResource> patientList = emcareResourceRepository.findByFacilityIdInAndCreatedOnGreaterThan(facilityIds, prodDate);
         List<String> patientIds = patientList.stream().map(EmcareResource::getResourceId).collect(Collectors.toList());
         List<QuestionnaireResponse> questionnaireResponses;
         if (Objects.nonNull(theDate)) {
@@ -161,7 +168,10 @@ public class QuestionnaireResponseServiceImpl implements QuestionnaireResponseSe
                 sDate = sdf.format(sdf.parse(sDate1));
             }
             if (Objects.isNull(eDate) || eDate.isEmpty()) {
-                eDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date()).toString();
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(new Date());
+                calendar.add(Calendar.DATE, 1);
+                eDate = new SimpleDateFormat("yyyy-MM-dd").format(calendar.getTime()).toString();
             }
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
             startDate = simpleDateFormat.parse(sDate);
@@ -179,14 +189,12 @@ public class QuestionnaireResponseServiceImpl implements QuestionnaireResponseSe
                 totalCount = Long.valueOf(questionnaireResponseRepository.getFilteredDateOnlyCount(startDate, endDate).size());
                 resourcesList = questionnaireResponseRepository.getFilteredDateOnly(startDate, endDate, offSet);
             }
-        }
-        else {
+        } else {
             if (searchString != null && !searchString.isEmpty()) {
                 totalCount = Long.valueOf(questionnaireResponseRepository.getFilteredConsultationWithSearchCount(searchString, childFacilityIds, startDate, endDate).size());
                 resourcesList = questionnaireResponseRepository.getFilteredConsultationWithSearch(searchString, childFacilityIds, startDate, endDate, offSet);
-            }
-            else{
-                totalCount = Long.valueOf(questionnaireResponseRepository.getFilteredConsultationsInCount( childFacilityIds, startDate, endDate).size());
+            } else {
+                totalCount = Long.valueOf(questionnaireResponseRepository.getFilteredConsultationsInCount(childFacilityIds, startDate, endDate).size());
                 resourcesList = questionnaireResponseRepository.getFilteredConsultationsIn(childFacilityIds, startDate, endDate, offSet);
             }
         }

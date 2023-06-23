@@ -29,7 +29,7 @@ export class LoginComponent implements OnInit {
     private readonly router: Router,
     private readonly toasterService: ToasterService,
     private readonly fhirService: FhirService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.prerequisite();
@@ -167,14 +167,8 @@ export class LoginComponent implements OnInit {
         localStorage.setItem('isSuperAdmin', `${isSuperAdmin}`);
         this.authService.setIsLoggedIn(true);
         if (!isSuperAdmin) this.authService.setFeatures(res['feature']);
-        isSuperAdmin
-          ? this.router.navigate(['/tenantList'])
-          : this.router.navigate(['/dashboard']);
-        this.toasterService.showToast(
-          'success',
-          'Welcome to EmCare!',
-          'EMCARE'
-        );
+        isSuperAdmin ? this.router.navigate(['/tenantList']) : this.router.navigate(['/dashboard']);
+        this.toasterService.showToast('success', 'Welcome to EmCare!', 'EMCARE');
       }
     });
   }

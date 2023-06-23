@@ -63,6 +63,11 @@
                 <p-checkbox (click)="onCheckboxClicked(i)" styleClass="ml-3" name="group1" label="Can Delete"
                   value="canDelete" [(ngModel)]="featureConfig.selectedFeatures">
                 </p-checkbox>
+                <ng-container *ngIf="this.isExportPage">
+                  <p-checkbox (click)="onCheckboxClicked(i)" styleClass="ml-3" name="group1" label="Can Export"
+                    value="canExport" [(ngModel)]="featureConfig.selectedFeatures">
+                  </p-checkbox>
+                </ng-container>
               </td>
               <td *ngIf="isDelete">
                 <i aria-hidden="true" (click)="deleteFeatureConfig(i)"
