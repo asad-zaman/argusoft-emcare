@@ -140,10 +140,30 @@ export class LoginComponent implements OnInit {
     this.authService.getLoggedInUser().subscribe((res) => {
       if (res) {
         const featureObj = { feature: res['feature'] };
-        localStorage.setItem(appConstants.localStorageKeys.userFeatures, JSON.stringify(featureObj));
-        localStorage.setItem(appConstants.localStorageKeys.language, res['language']);
-        localStorage.setItem(appConstants.localStorageKeys.Username, res.userName);
-        const isSuperAdmin = res['roles'].findIndex((el) => el === 'SUPER_ADMIN') > -1;
+        localStorage.setItem(
+          appConstants.localStorageKeys.userFeatures,
+          JSON.stringify(featureObj)
+        );
+        localStorage.setItem(
+          appConstants.localStorageKeys.language,
+          res['language']
+        );
+        localStorage.setItem(
+          appConstants.localStorageKeys.Username,
+          res.userName
+        );
+        localStorage.setItem(
+          appConstants.localStorageKeys.Firstname,
+          res.firstName
+        );
+        localStorage.setItem(
+          appConstants.localStorageKeys.Lastname,
+          res.lastName
+        );
+        localStorage.setItem('userFeatures', JSON.stringify(featureObj));
+        localStorage.setItem('language', res['language']);
+        const isSuperAdmin =
+          res['roles'].findIndex((el) => el === 'SUPER_ADMIN') > -1;
         localStorage.setItem('isSuperAdmin', `${isSuperAdmin}`);
         this.authService.setIsLoggedIn(true);
         if (!isSuperAdmin) this.authService.setFeatures(res['feature']);
