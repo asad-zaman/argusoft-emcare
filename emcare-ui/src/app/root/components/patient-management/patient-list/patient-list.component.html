@@ -11,12 +11,12 @@
         (input)="searchFilter()" placeholder="{{'Search Placeholder' | translate}}">
     </div>
     <div class="col-3 cst-d-flex">
-      <p-checkbox *ngIf="showAllPatientCheckbox" styleClass="form-label" [(ngModel)]="exportAllPatient" label="Export All Patients" [binary]="true"
-        inputId="binary" value="true" (onChange)="exportAllThePatients()">
+      <p-checkbox *ngIf="showAllPatientCheckbox" styleClass="form-label" [(ngModel)]="exportAllPatient"
+        label="Export All Patients" [binary]="true" inputId="binary" value="true" (onChange)="exportAllThePatients()">
       </p-checkbox>
     </div>
     <div class="col-6 d-flex cst-export">
-      <button (click)="onEnableSelectionClick()" class="ml-3 btn btn-blue">
+      <button *ngIf="isExportFeatureAllowed" (click)="onEnableSelectionClick()" class="ml-3 btn btn-blue">
         {{ exportAllPatient ? 'Cancel' : (showCheckboxes ? 'Cancel' : ('Export'| translate)) }}
       </button>
       <ul [ngStyle]="{'opacity': disableSaveButton ? '0.5' : '1'}" *ngIf="this.showCheckboxes || this.exportAllPatient"

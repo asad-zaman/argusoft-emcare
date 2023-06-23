@@ -28,6 +28,8 @@ export class ManageFeatureComponent implements OnInit {
   featureArr = ['canAdd', 'canEdit', 'canView', 'canDelete'];
   isAdd = true;
   isDelete = true;
+  featureArrForExport = ['All Patient', 'Consultations'];
+  isExportPage = false;
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -49,7 +51,15 @@ export class ManageFeatureComponent implements OnInit {
     this.featureId = this.route.snapshot.paramMap.get('id');
     this.route.queryParams.subscribe(params => {
       this.featureName = params.name;
-    })
+      this.isExportPage = this.featureArrForExport.includes(this.featureName);
+      if (this.isExportPage) {
+        this.featureArr.push('canExport');
+      }
+    });
+    this.getFeatureConfigAndInitializeForm();
+  }
+
+  getFeatureConfigAndInitializeForm() {
     this.getFeatureConfig();
     this.initFeatureForm();
   }
@@ -68,7 +78,8 @@ export class ManageFeatureComponent implements OnInit {
       add: ['', []],
       edit: ['', []],
       view: ['', []],
-      delete: ['', []]
+      delete: ['', []],
+      export: ['', []]
     });
   }
 
@@ -149,7 +160,7 @@ export class ManageFeatureComponent implements OnInit {
   deleteFeatureConfig(index) {
     this.featureService.deleteFeatureConfig(this.featureConfigList[index]['id']).subscribe(res => {
       this.toasterService.showToast('success', 'Feature deleted successfully!', 'EMCARE');
-      this.prerequisite();
+      this.getFeatureConfigAndInitializeForm();
       this.getFeatureList();
     });
   }
@@ -159,13 +170,13 @@ export class ManageFeatureComponent implements OnInit {
       "menuId": this.featureId,
       "userId": this.selectedUser && this.selectedUser.id,
       "roleId": this.selectedRole && this.selectedRole.id,
-      "featureJson": "{\"canAdd\":true,\"canEdit\":true,\"canView\":true,\"canDelete\":true}"
+      "featureJson": "{\"canAdd\":true,\"canEdit\":true,\"canView\":true,\"canDelete\":true,\"canExport\":false}"
     }
     this.featureService.addFeatureConfig(data).subscribe(_res => {
       this.toasterService.showToast('success', 'Feature added successfully!', 'EMCARE');
       this.selectedUser = null;
       this.selectedRole = null;
-      this.prerequisite();
+      this.getFeatureConfigAndInitializeForm();
       this.getFeatureList();
     });
   }

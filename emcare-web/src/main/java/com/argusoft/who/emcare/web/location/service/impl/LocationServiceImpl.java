@@ -133,13 +133,16 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
-    public ResponseEntity<Object> getLocationByLocationFilter(Integer pageNo, Integer locationId) {
-        List<Integer> childIds = locationMasterDao.getAllChildLocationId(locationId);
+    public ResponseEntity<Object> getLocationByLocationFilter(Integer pageNo, Integer locationId,  String searchString) {
+        List<Integer> childIds = new ArrayList<>();
+        if(locationId != null){
+        childIds = locationMasterDao.getAllChildLocationId(locationId);
+        }
         Integer offset = (pageNo) * CommonConstant.PAGE_SIZE;
         Integer limit = CommonConstant.PAGE_SIZE;
-        List<LocationMaster> locationMasters = locationMasterDao.getLocationByLocationIds(childIds, limit, offset);
-        Long totalCount = locationMasterDao.getLocationByLocationIdsCount(childIds);
 
+        List<LocationMaster> locationMasters = locationMasterDao.getLocationByLocationIds(childIds, searchString, limit, offset);
+        Long totalCount = locationMasterDao.getLocationByLocationIdsCount(childIds, searchString);
         List<LocationaListDto> locationList = new ArrayList<>();
         for (LocationMaster locationMaster : locationMasters) {
             if (locationMaster.getParent() == null || locationMaster.getParent() == 0) {
