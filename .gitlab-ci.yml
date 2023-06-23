@@ -10,3 +10,5 @@ Build:
     - git checkout add-ci-cd
     - git branch
     - cd emcare-web/
+    - sudo mvn clean install
+    - cd target
