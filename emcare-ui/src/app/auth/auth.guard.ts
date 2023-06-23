@@ -62,7 +62,7 @@ export class AuthGuard implements CanActivate {
             'showUsers': { f: 'All Users', reqFeature: ['canView', 'canAdd', 'canEdit'] },
             'addUser': { f: 'All Users', reqFeature: ['canAdd'] },
             'confirmUsers': { f: 'Registration Request', reqFeature: ['canView'] },
-            'showPatients': { f: 'Patients', reqFeature: ['canView'] },
+            'showPatients': { f: 'All Patient', reqFeature: ['canView', 'canExport'] },
             'showQuestionnaires': { f: 'Questionnaires', reqFeature: ['canView', 'canAdd', 'canEdit'] },
             'addQuestionnaire': { f: 'Questionnaires', reqFeature: ['canAdd'] },
             'showRoles': { f: 'Roles', reqFeature: ['canView', 'canAdd', 'canEdit'] },
@@ -77,14 +77,14 @@ export class AuthGuard implements CanActivate {
             'dashboard': { f: 'Dashboard', reqFeature: ['canView'] },
             'showOrganizations': { f: 'Organizations', reqFeature: ['canAdd', 'canEdit', 'canView'] },
             'manage-organization': { f: 'Organizations', reqFeature: ['canAdd', 'canEdit'] },
-            'duplicatePatients': { f: 'Patients', reqFeature: ['canView'] },
-            'consultation-list': { f: 'Patients', reqFeature: ['canView'] },
-            'view-consultation': { f: 'Patients', reqFeature: ['canView'] },
-            'code-list': { f: 'Indicators', reqFeature: ['canView'] },
-            'manageCode': { f: 'Indicators', reqFeature: ['canAdd', 'canEdit'] },
-            'addIndicator': { f: 'Indicators', reqFeature: ['canAdd'] },
-            'editIndicator': { f: 'Indicators', reqFeature: ['canEdit'] },
-            'indicator-list': { f: 'Indicators', reqFeature: ['canView', 'canAdd'] }
+            'duplicatePatients': { f: 'Duplicate Patients', reqFeature: ['canView'] },
+            'consultation-list': { f: 'Consultations', reqFeature: ['canView', 'canExport'] },
+            'view-consultation': { f: 'Consultations', reqFeature: ['canView'] },
+            'code-list': { f: 'Custom Codes', reqFeature: ['canView'] },
+            'manageCode': { f: 'Custom Codes', reqFeature: ['canAdd', 'canEdit'] },
+            'addIndicator': { f: 'All Indicators', reqFeature: ['canAdd'] },
+            'editIndicator': { f: 'All Indicators', reqFeature: ['canEdit'] },
+            'indicator-list': { f: 'All Indicators', reqFeature: ['canView', 'canAdd'] }
         }
     }
 
