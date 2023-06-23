@@ -55,13 +55,12 @@ public class MenuServiceimpl implements MenuService {
                 userName = userService.getUserById(userAccess.getUserId()).getUsername();
             }
             if(!userAccess.getFeatureJson().contains("canExport")){
-                FeatureJSON featureJSON = new FeatureJSON(true, true, true, true,true);
                 Gson g = new Gson();
                 FeatureJSON f = g.fromJson(userAccess.getFeatureJson(), FeatureJSON.class);
                 if(Objects.isNull(f.getCanExport()) || !f.getCanExport().booleanValue()) {
-                    featureJSON.setCanExport(false);
+                    f.setCanExport(false);
                 }
-                userAccess.setFeatureJson(featureJSON.toString());
+                userAccess.setFeatureJson(f.toString());
             }
             configs.add(MenuConfigMapper.getMenuConfigDto(userAccess, userName, roleName));
         }
