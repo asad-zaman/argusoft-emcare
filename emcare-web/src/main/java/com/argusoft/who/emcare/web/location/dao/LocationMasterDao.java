@@ -19,7 +19,7 @@ public interface LocationMasterDao extends JpaRepository<LocationMaster, Integer
 
     List<LocationMaster> findByType(String locationType);
 
-    public Page<LocationMaster> findByNameContainingIgnoreCaseOrTypeContainingIgnoreCase(String searchString1, String searchString2, Pageable pageable);
+    public Page<LocationMaster>findByNameContainingIgnoreCaseOrTypeContainingIgnoreCase(String searchString1, String searchString2, Pageable pageable);
 
     public List<LocationMaster> findByNameContainingIgnoreCaseOrTypeContainingIgnoreCase(String searchString1, String searchString2);
 
@@ -55,11 +55,24 @@ public interface LocationMasterDao extends JpaRepository<LocationMaster, Integer
             "         From alldata", nativeQuery = true)
     public String getNameHierarchy(@Param("id") Integer id);
 
-    @Query(value = "select * from location_master where id in :ids offset :offset limit :limit ;", nativeQuery = true)
-    public List<LocationMaster> getLocationByLocationIds(@Param("ids") List<Integer> ids, @Param("limit") Integer limit, @Param("offset") Integer offset);
 
-    @Query(value = "select count(*) from location_master where id in :ids ;", nativeQuery = true)
-    public Long getLocationByLocationIdsCount(@Param("ids") List<Integer> ids);
+    @Query(value = " SELECT *\t\n" +
+            "FROM location_master\n" +
+            "where (\n" +
+            "      CAST(location_master.\"name\" AS TEXT) ILIKE CONCAT('%', :searchString, '%') OR\n" +
+            "      CAST(location_master.\"parent\" AS TEXT) ILIKE CONCAT('%', :searchString, '%') OR\n" +
+            "      CAST(location_master.\"type\" AS TEXT) ILIKE CONCAT('%', :searchString, '%')\n" +
+            "    ) and (case when :ids is null then true else id in (:ids) end) offset :offset limit :limit ;", nativeQuery = true)
+    public List<LocationMaster> getLocationByLocationIds(@Param("ids") List<Integer> ids,@Param("searchString") String searchString, @Param("limit") Integer limit, @Param("offset") Integer offset);
+
+    @Query(value =" SELECT count(*)\t\n" +
+            "FROM location_master\n" +
+            "where (\n" +
+            "      CAST(location_master.\"name\" AS TEXT) ILIKE CONCAT('%', :searchString, '%') OR\n" +
+            "      CAST(location_master.\"parent\" AS TEXT) ILIKE CONCAT('%', :searchString, '%') OR\n" +
+            "      CAST(location_master.\"type\" AS TEXT) ILIKE CONCAT('%', :searchString, '%')\n" +
+            "    ) and (case when :ids is null then true else id in (:ids) end) ;", nativeQuery = true)
+    public Long getLocationByLocationIdsCount(@Param("ids") List<Integer> ids,@Param("searchString") String searchString);
 
 
 }
