@@ -33,7 +33,6 @@ export class ConsultationListComponent implements OnInit {
   filteredAllConsultations = [];
   selectedId: any;
   dateObj: any;
-  isLocationFilterOn: boolean;
   disableSaveButton: boolean;
   showAllPatientCheckbox = false;
   isExportFeatureAllowed = false;
@@ -64,9 +63,9 @@ export class ConsultationListComponent implements OnInit {
 
   manipulateResponse(res) {
     if (res && res['list']) {
+      this.filteredConsultations = [];
       this.consultations = res['list'];
       this.filteredConsultations = this.consultations;
-
       this.filteredConsultations = _.sortBy(this.filteredConsultations, 'consultationDate').reverse();
       this.totalCount = res['totalCount'];
       this.isAPIBusy = false;
@@ -551,10 +550,6 @@ export class ConsultationListComponent implements OnInit {
 
     this.selectedId = data.locationId;
     this.dateObj = data.dateObj;
-
-    if (this.selectedId || this.dateObj['startDate'] || this.dateObj['endDate']) {
-      this.isLocationFilterOn = true;
-    }
     this.resetPageIndex();
     const pageIndex = this.currentPage == 0 ? this.currentPage : this.currentPage - 1;
     this.getConsultationsBasedOnData(pageIndex);

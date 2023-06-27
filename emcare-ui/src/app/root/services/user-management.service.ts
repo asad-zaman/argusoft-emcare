@@ -57,25 +57,12 @@ export class UserManagementService {
     return this.http.get(`${this.userURL}/locationId/${id}`, this.getHeaders());
   }
 
-  getUsersByPage(pageIndex, search?,filterValue?) {
-    let url;
-    if (search && filterValue) {
-      url = `${this.userURL}/page?pageNo=${pageIndex}&search=${search}&filter=${filterValue}`;      
-    } else if(search) {      
-      url = `${this.userURL}/page?pageNo=${pageIndex}&search=${search}`;
-    }else if(filterValue) {      
-      url = `${this.userURL}/page?pageNo=${pageIndex}&filter=${filterValue} `;
-    } else {      
-      url = `${this.userURL}/page?pageNo=${pageIndex}`;
-    }
-    return this.http.get(url, this.getHeaders());
-  }
-
   updatePassword(user, id) {
     return this.http.put(`${this.userURL}/update/password/${id}`, user, this.getHeaders());
   }
 
-  getUsersByLocationAndPageIndex(locationId, pageIndex,filterValue?) {
-    return this.http.get(`${this.userURL}/locationId/${locationId}?pageNo=${pageIndex}&filter=${filterValue}`, this.getHeaders());
+  getUsersByData(pageIndex, filterObj?) {
+    let { locationId, filterValueForActiveInactive, searchString } = filterObj;
+    return this.http.get(`${this.userURL}/locationId/?locationId=${locationId ? locationId : ''}&pageNo=${pageIndex}&filter=${filterValueForActiveInactive}&searchString=${searchString ? searchString : ''}`, this.getHeaders());
   }
 }

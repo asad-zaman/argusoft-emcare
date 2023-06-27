@@ -51,20 +51,20 @@
               </td>
               <td>{{ featureConfig.userId ? featureConfig.userName : featureConfig.roleName }}</td>
               <td>
-                <p-checkbox (click)="onCheckboxClicked(i)" name="group1" label="Can Add" value="canAdd"
+                <p-checkbox (ngModelChange)="onCheckboxClicked(i)" name="group1" label="Can Add" value="canAdd"
                   [(ngModel)]="featureConfig.selectedFeatures">
                 </p-checkbox>
-                <p-checkbox (click)="onCheckboxClicked(i)" styleClass="ml-3" name="group1" label="Can Edit"
+                <p-checkbox (ngModelChange)="onCheckboxClicked(i)" styleClass="ml-3" name="group1" label="Can Edit"
                   value="canEdit" [(ngModel)]="featureConfig.selectedFeatures">
                 </p-checkbox>
-                <p-checkbox (click)="onCheckboxClicked(i)" styleClass="ml-3" name="group1" label="Can View"
+                <p-checkbox (ngModelChange)="onCheckboxClicked(i)" styleClass="ml-3" name="group1" label="Can View"
                   value="canView" [(ngModel)]="featureConfig.selectedFeatures">
                 </p-checkbox>
-                <p-checkbox (click)="onCheckboxClicked(i)" styleClass="ml-3" name="group1" label="Can Delete"
+                <p-checkbox (ngModelChange)="onCheckboxClicked(i)" styleClass="ml-3" name="group1" label="Can Delete"
                   value="canDelete" [(ngModel)]="featureConfig.selectedFeatures">
                 </p-checkbox>
                 <ng-container *ngIf="this.isExportPage">
-                  <p-checkbox (click)="onCheckboxClicked(i)" styleClass="ml-3" name="group1" label="Can Export"
+                  <p-checkbox (ngModelChange)="onCheckboxClicked(i)" styleClass="ml-3" name="group1" label="Can Export"
                     value="canExport" [(ngModel)]="featureConfig.selectedFeatures">
                   </p-checkbox>
                 </ng-container>

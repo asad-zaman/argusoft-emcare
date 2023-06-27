@@ -1,4 +1,4 @@
-<div class="main-wrapper cst-white" [ngClass]="{'cst-no-token': !this.token}">
+<div *ngIf="isView" class="main-wrapper cst-white" [ngClass]="{'cst-no-token': !this.token}">
   <div class="custom-header" [ngClass]="{'cst-no-token-customheader': !this.token}">
     <h1 class="heading">{{'Logs' | translate}}</h1>
     <div *ngIf="this.token">
@@ -36,4 +36,7 @@
       </div>
     </ng-container>
   </div>
+</div>
+<div *ngIf="!isView" class="main-wrapper-nodata">
+  {{'NoAccess' | translate}}
 </div>
