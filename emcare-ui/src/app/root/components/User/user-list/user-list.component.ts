@@ -26,7 +26,6 @@ export class UserListComponent implements OnInit {
   submitted: boolean = false;
   showResetPasswordDialog: boolean = false;
   isAPIBusy: boolean = true;
-  isLocationFilterOn: boolean = false;
   selectedId: any;
   searchTermChanged: Subject<string> = new Subject<string>();
   isAdd: boolean = true;
@@ -50,7 +49,20 @@ export class UserListComponent implements OnInit {
 
   prerequisite() {
     this.checkFeatures();
-    this.getUsersByPageIndex(this.currentPage);
+    this.getUsersBasedOnData(this.currentPage);
+  }
+
+  getUsersBasedOnData(pageIndex) {
+    const filterData = {
+      locationId: this.selectedId,
+      filterValueForActiveInactive: this.isInactive,
+      searchString: this.searchString
+    };
+    this.userService.getUsersByData(pageIndex, filterData).subscribe(res => {
+      if (res) {
+        this.manipulateResponse(res);
+      }
+    });
   }
 
   checkFeatures() {
@@ -65,6 +77,7 @@ export class UserListComponent implements OnInit {
 
   manipulateResponse(res) {
     if (res && res['list']) {
+      this.filteredUserList = [];
       this.mainUserList = res['list'];
       this.filteredUserList = this.mainUserList;
       this.totalCount = res['totalCount'];
@@ -72,55 +85,17 @@ export class UserListComponent implements OnInit {
     }
   }
 
-  getUsersByPageIndex(index) {
-    this.mainUserList = [];
-    this.userService
-      .getUsersByPage(index, null, this.isInactive)
-      .subscribe((res) => {
-        this.manipulateResponse(res);
-      });
-  }
-
   onIndexChange(event) {
     this.currentPage = event;
-    if (this.isLocationFilterOn) {
-      this.getUsersBasedOnLocationAndPageIndex(event - 1);
-    } else {
-      //  when location filter is not enabled but searchString is there
-      if (this.searchString && this.searchString.length >= 1) {
-        this.mainUserList = [];
-        this.userService
-          .getUsersByPage(event - 1, this.searchString)
-          .subscribe((res) => {
-            this.manipulateResponse(res);
-          });
-      } else {
-        this.getUsersByPageIndex(event - 1);
-      }
-    }
+    this.getUsersBasedOnData(event - 1);
   }
 
   searchFilter() {
     this.resetPageIndex();
     if (this.searchTermChanged.observers.length === 0) {
-      this.searchTermChanged
-        .pipe(debounceTime(1000), distinctUntilChanged())
-        .subscribe((_term) => {
-          if (this.searchString && this.searchString.length >= 1) {
-            this.mainUserList = [];
-            this.userService
-              .getUsersByPage(this.currentPage, this.searchString, this.isInactive)
-              .subscribe((res) => {
-                this.manipulateResponse(res);
-              });
-          } else {
-            if (this.isLocationFilterOn) {
-              this.getUsersBasedOnLocationAndPageIndex(this.currentPage);
-            } else {
-              this.getUsersByPageIndex(this.currentPage);
-            }
-          }
-        });
+      this.searchTermChanged.pipe(debounceTime(1000), distinctUntilChanged()).subscribe((_term) => {
+        this.getUsersBasedOnData(this.currentPage);
+      });
     }
     this.searchTermChanged.next(this.searchString);
   }
@@ -140,29 +115,11 @@ export class UserListComponent implements OnInit {
   getLocationId(data) {
     this.selectedId = data;
     if (this.selectedId) {
-      this.isLocationFilterOn = true;
       this.resetPageIndex();
-      this.getUsersBasedOnLocationAndPageIndex(this.currentPage);
+      this.getUsersBasedOnData(this.currentPage);
     } else {
-      this.toasterService.showToast(
-        'info',
-        'Please select Location!',
-        'EMCARE'
-      );
+      this.toasterService.showToast('info', 'Please select Location!', 'EMCARE');
     }
-  }
-
-  getUsersBasedOnLocationAndPageIndex(pageIndex) {
-    this.userService
-      .getUsersByLocationAndPageIndex(this.selectedId, pageIndex, this.isInactive)
-      .subscribe((res) => {
-        if (res) {
-          this.filteredUserList = [];
-          this.filteredUserList = res['list'];
-          this.totalCount = res['totalCount'];
-          this.isAPIBusy = false;
-        }
-      });
   }
 
   onResetPassword(index) {
@@ -236,17 +193,14 @@ export class UserListComponent implements OnInit {
   clearFilter(event) {
     if (event) {
       this.resetPageIndex();
-      this.getUsersByPageIndex(this.currentPage);
+      this.selectedId = null;
+      this.getUsersBasedOnData(this.currentPage);
     }
   }
 
   onChangeCheckboxForUser() {
-    this.searchString = "";
     this.currentPage = 0;
-    this.userService.getUsersByPage(this.currentPage, null, this.isInactive).subscribe((res) => {
-      this.isAPIBusy = false;
-      this.manipulateResponse(res);
-    });
+    this.getUsersBasedOnData(this.currentPage);
   }
 
   onChangeStatus(i) {
@@ -262,7 +216,7 @@ export class UserListComponent implements OnInit {
     this.userService.updateUserStatus(data).subscribe((res) => {
       this.showStatusDialog = false;
       if (this.isInactive) {
-        this.getUsersByPageIndex(this.currentPage);
+        this.getUsersBasedOnData(this.currentPage);
       } else {
         const ind = this.filteredUserList.findIndex(
           (el) => el.id === this.currUSer.id

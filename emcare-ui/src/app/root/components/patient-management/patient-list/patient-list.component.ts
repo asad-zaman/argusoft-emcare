@@ -28,7 +28,6 @@ export class PatientListComponent implements OnInit {
     totalCount = 0;
     tableSize = 10;
     isAPIBusy: boolean = true;
-    isLocationFilterOn: boolean = false;
     selectedId: any;
     searchTermChanged: Subject<string> = new Subject<string>();
     isView: boolean = true;
@@ -72,6 +71,7 @@ export class PatientListComponent implements OnInit {
 
     manipulateResponse(res) {
         if (res && res['list']) {
+            this.filteredPatients = [];
             this.patients = res['list'];
             this.filteredPatients = this.patients;
             this.totalCount = res['totalCount'];
@@ -143,10 +143,6 @@ export class PatientListComponent implements OnInit {
 
         this.selectedId = data.locationId;
         this.dateObj = data.dateObj;
-
-        if (this.selectedId || this.dateObj['startDate'] || this.dateObj['endDate']) {
-            this.isLocationFilterOn = true;
-        }
         this.resetPageIndex();
         const pageIndex = this.currentPage == 0 ? this.currentPage : this.currentPage - 1;
         this.getPatientsBasedOnData(pageIndex);
