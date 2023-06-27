@@ -190,6 +190,7 @@
 
     <style name="Questionnaire" parent="Theme.MaterialComponents.Light.DarkActionBar">
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="questionnaireGroupTypeQuestionTextStyle">@style/Questionnaire.QuestionTextStyle</item>
         <item name="questionnaireEditButtonStyle">@style/Questionnaire.EditButtonStyle</item>
         <item name="questionnaireTextInputEditTextStyle">@style/Questionnaire.TextInputEditText</item>
         <item name="questionnaireQuestionTextStyle">@style/Questionnaire.QuestionTextStyle</item>
@@ -297,6 +298,7 @@
 
     <style name="QuestionnaireCompact" parent="Theme.MaterialComponents.Light.DarkActionBar">
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="questionnaireGroupTypeQuestionTextStyle">@style/QuestionnaireCompact.QuestionTextStyle</item>
         <item name="questionnaireEditButtonStyle">@style/QuestionnaireCompact.EditButtonStyle</item>
         <item name="questionnaireTextInputEditTextStyle">@style/QuestionnaireCompact.TextInputEditText</item>
         <item name="questionnaireQuestionTextStyle">@style/QuestionnaireCompact.QuestionTextStyle</item>
@@ -373,6 +375,7 @@
 
     <style name="QuestionnaireEnlarged" parent="Theme.MaterialComponents.Light.DarkActionBar">
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="questionnaireGroupTypeQuestionTextStyle">@style/QuestionnaireEnlarged.QuestionTextStyle</item>
         <item name="questionnaireEditButtonStyle">@style/QuestionnaireEnlarged.EditButtonStyle</item>
         <item name="questionnaireTextInputEditTextStyle">@style/QuestionnaireEnlarged.TextInputEditText</item>
         <item name="questionnaireQuestionTextStyle">@style/QuestionnaireEnlarged.QuestionTextStyle</item>
