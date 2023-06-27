@@ -13,7 +13,8 @@ data class PatientItem(
     val isActive: Boolean? = null,
     val html: String? = null,
     var risk: String? = "",
-    var riskItem: RiskAssessmentItem? = null
+    var riskItem: RiskAssessmentItem? = null,
+    var isSynced: Boolean = true
 )
 
 data class RiskAssessmentItem(

@@ -2,12 +2,14 @@ package com.argusoft.who.emcare.ui.home
 
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.databinding.ListItemConsultationBinding
 import com.argusoft.who.emcare.ui.common.*
 import com.argusoft.who.emcare.ui.common.base.BaseAdapter
 import com.argusoft.who.emcare.ui.common.model.ConsultationItemData
+import com.argusoft.who.emcare.utils.extention.getColor
 import com.argusoft.who.emcare.utils.extention.navigate
 import com.argusoft.who.emcare.utils.extention.toBinding
 import java.text.SimpleDateFormat
@@ -61,6 +63,23 @@ class ConsultationAdapter(
             binding.consultationDateValueTextView.text = dateOfConsultation
             binding.badgeTextView.text = badgeText
             binding.rightConsultationImageView.setImageResource(consultationIcon!!)
+            binding.syncStateTextView.let {
+                if (isSynced) {
+                    binding.syncStateTextView.text = binding.root.context.getString(R.string.text_synced)
+                    binding.syncStateTextView.background = ContextCompat.getDrawable(binding.root.context,
+                        R.drawable.selector_bg_light_green)
+                    binding.syncStateTextView.setTextColor(it.getColor(R.color.color_dark_green))
+                    binding.syncStateTextView.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(binding.root.context,
+                        R.drawable.ic_synced), null, null, null)
+                } else {
+                    binding.syncStateTextView.text = binding.root.context.getString(R.string.text_not_synced)
+                    binding.syncStateTextView.background = ContextCompat.getDrawable(binding.root.context,
+                        R.drawable.selector_bg_light_grey)
+                    binding.syncStateTextView.setTextColor(it.getColor(R.color.color_dark_grey))
+                    binding.syncStateTextView.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(binding.root.context,
+                        R.drawable.ic_not_synced), null, null, null)
+                }
+            }
             if(!gender.isNullOrEmpty()){
                 if(gender.equals("male" ,false))
                     binding.childImageView.setImageResource(R.drawable.baby_boy)

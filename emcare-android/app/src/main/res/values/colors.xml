@@ -68,4 +68,10 @@
     <color name="color_yellow">#FAFAB1</color>
     <color name="color_white">#FFFFFF</color>
     <color name="color_grey">#A6A6A6</color>
+
+    <!--Sync status colors-->
+    <color name="color_light_green">#C9E9D1</color>
+    <color name="color_dark_green">#28A745</color>
+    <color name="color_light_grey">#DBDBDB</color>
+    <color name="color_dark_grey">#6D6E72</color>
 </resources>

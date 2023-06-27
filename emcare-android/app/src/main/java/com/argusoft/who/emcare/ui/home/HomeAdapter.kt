@@ -2,6 +2,7 @@ package com.argusoft.who.emcare.ui.home
 
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.databinding.ListItemPatientBinding
@@ -10,6 +11,7 @@ import com.argusoft.who.emcare.ui.common.INTENT_EXTRA_PATIENT_ID
 import com.argusoft.who.emcare.ui.common.INTENT_EXTRA_PATIENT_NAME
 import com.argusoft.who.emcare.ui.common.base.BaseAdapter
 import com.argusoft.who.emcare.ui.common.model.PatientItem
+import com.argusoft.who.emcare.utils.extention.getColor
 import com.argusoft.who.emcare.utils.extention.navigate
 import com.argusoft.who.emcare.utils.extention.orEmpty
 import com.argusoft.who.emcare.utils.extention.toBinding
@@ -48,6 +50,25 @@ class HomeAdapter(
                 patientName = "#${resourceId?.take(8)}"
             }
             binding.nameTextView.setText(patientName)
+            binding.syncStateTextView.let {
+                if (isSynced) {
+                    binding.syncStateTextView.text = binding.root.context.getString(R.string.text_synced)
+                    binding.syncStateTextView.background = ContextCompat.getDrawable(binding.root.context,
+                        R.drawable.selector_bg_light_green)
+                    binding.syncStateTextView.setTextColor(it.getColor(R.color.color_dark_green))
+                    binding.syncStateTextView.setCompoundDrawablesWithIntrinsicBounds(
+                        ContextCompat.getDrawable(binding.root.context,
+                        R.drawable.ic_synced), null, null, null)
+                } else {
+                    binding.syncStateTextView.text = binding.root.context.getString(R.string.text_not_synced)
+                    binding.syncStateTextView.background = ContextCompat.getDrawable(binding.root.context,
+                        R.drawable.selector_bg_light_grey)
+                    binding.syncStateTextView.setTextColor(it.getColor(R.color.color_dark_grey))
+                    binding.syncStateTextView.setCompoundDrawablesWithIntrinsicBounds(
+                        ContextCompat.getDrawable(binding.root.context,
+                        R.drawable.ic_not_synced), null, null, null)
+                }
+            }
             binding.idTextView.text = binding.root.context.getString(R.string.label_id_with_colon, resourceId?.takeLast(3))
             if(!gender.isNullOrEmpty()){
                 if(gender.equals("male" ,false))

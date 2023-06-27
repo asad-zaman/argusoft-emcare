@@ -36,6 +36,35 @@
     },
     {
       "client_info": {
+        "mobilesdk_app_id": "1:695450212805:android:c15a84222e0dbb0df193ac",
+        "android_client_info": {
+          "package_name": "com.argusoft.who.emcare.debug"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "695450212805-km1f9ju2pda7kn7q2dvps32c5ipkuiec.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD7E8oZjzfvUfgGQyADfSmI0EwTX5U5gyo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "695450212805-km1f9ju2pda7kn7q2dvps32c5ipkuiec.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:695450212805:android:da88a9584aa08799f193ac",
         "android_client_info": {
           "package_name": "com.argusoft.who.emcare.dev"

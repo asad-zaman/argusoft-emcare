@@ -1,8 +1,6 @@
 package com.argusoft.who.emcare.ui.home
 
-import android.app.Application
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -13,11 +11,20 @@ import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.data.local.pref.Preference
 import com.argusoft.who.emcare.data.remote.ApiResponse
 import com.argusoft.who.emcare.di.AppModule
-import com.argusoft.who.emcare.ui.common.*
+import com.argusoft.who.emcare.ui.common.CONSULTATION_STAGE_REGISTRATION_ENCOUNTER
+import com.argusoft.who.emcare.ui.common.CONSULTATION_STAGE_REGISTRATION_PATIENT
+import com.argusoft.who.emcare.ui.common.DATE_FORMAT
+import com.argusoft.who.emcare.ui.common.EMPTY_SPACE_TO_SCROLL_LINK_ID
+import com.argusoft.who.emcare.ui.common.URL_CQF_LIBRARY
+import com.argusoft.who.emcare.ui.common.URL_INITIAL_EXPRESSION
+import com.argusoft.who.emcare.ui.common.consultationFlowStageList
+import com.argusoft.who.emcare.ui.common.consultationFlowStageListUnderTwoMonths
 import com.argusoft.who.emcare.ui.common.model.ConsultationFlowItem
 import com.argusoft.who.emcare.ui.common.model.ConsultationItemData
 import com.argusoft.who.emcare.ui.common.model.PatientItem
 import com.argusoft.who.emcare.ui.common.model.SidepaneItem
+import com.argusoft.who.emcare.ui.common.stageToBadgeMap
+import com.argusoft.who.emcare.ui.common.stageToIconMap
 import com.argusoft.who.emcare.ui.home.patient.PatientRepository
 import com.argusoft.who.emcare.utils.extention.orEmpty
 import com.argusoft.who.emcare.utils.listener.SingleLiveEvent
@@ -28,17 +35,31 @@ import com.google.android.fhir.knowledge.KnowledgeManager
 import com.google.android.fhir.workflow.FhirOperator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.collect
-import org.hl7.fhir.r4.model.*
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
+import org.hl7.fhir.r4.model.Expression
+import org.hl7.fhir.r4.model.IdType
+import org.hl7.fhir.r4.model.Identifier
+import org.hl7.fhir.r4.model.Library
+import org.hl7.fhir.r4.model.Parameters
+import org.hl7.fhir.r4.model.Patient
+import org.hl7.fhir.r4.model.Questionnaire
+import org.hl7.fhir.r4.model.QuestionnaireResponse
 import org.hl7.fhir.r4.model.QuestionnaireResponse.QuestionnaireResponseItemComponent
+import org.hl7.fhir.r4.model.Reference
+import org.hl7.fhir.r4.model.ResourceType
+import org.hl7.fhir.r4.model.StringType
 import java.io.File
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
-import java.util.*
+import java.util.TimeZone
+import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
@@ -103,9 +124,9 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun loadLibraries(context: Context, isReloadIG:Boolean) {
+    fun loadLibraries(context: Context, isReloadIG: Boolean) {
         viewModelScope.launch {
-            if(isReloadIG) {
+            if (isReloadIG) {
                 runBlocking {
                     clearKnowledgeManagerDatabase()
                 }
@@ -128,7 +149,10 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun writeToFile(library: Library): File {
-        return File(context.filesDir, if (library.name == null)  library.title else library.name).apply {
+        return File(
+            context.filesDir,
+            if (library.name == null) library.title else library.name
+        ).apply {
             writeText(FhirContext.forR4().newJsonParser().encodeResourceToString(library))
         }
     }
@@ -136,21 +160,23 @@ class HomeViewModel @Inject constructor(
     private fun getGmtTimeFromLastSyncTime(): String {
         val formatStringGmt: DateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS")
         val formatStringLocal: SimpleDateFormat = SimpleDateFormat("dd/MM/yyyy hh:mm:ss a")
-        return if(preference.getLastSyncTimestamp().isNotEmpty()) {
+        return if (preference.getLastSyncTimestamp().isNotEmpty()) {
             formatStringGmt.timeZone = TimeZone.getTimeZone("gmt")
             formatStringGmt.format(formatStringLocal.parse(preference.getLastSyncTimestamp()))
         } else {
             ""
         }
     }
+
     fun checkUnsycnedResources() {
         val lastSyncTimestamp = getGmtTimeFromLastSyncTime()
-        if(lastSyncTimestamp.isNotEmpty()){
+        if (lastSyncTimestamp.isNotEmpty()) {
             viewModelScope.launch {
-                consultationFlowRepository.getConsultationCountAfterTimestamp(lastSyncTimestamp).collect{
-                    val count = it.data!!
-                    _unsyncedResourcesCount.value = ApiResponse.Success(data = count!!)
-                }
+                consultationFlowRepository.getConsultationCountAfterTimestamp(lastSyncTimestamp)
+                    .collect {
+                        val count = it.data!!
+                        _unsyncedResourcesCount.value = ApiResponse.Success(data = count!!)
+                    }
             }
         } else {
             _unsyncedResourcesCount.value = ApiResponse.Success(data = 0)
@@ -169,56 +195,84 @@ class HomeViewModel @Inject constructor(
     fun getSidePaneItems(encounterId: String, patientId: String) {
         viewModelScope.launch {
             val sidepaneList = mutableListOf<SidepaneItem>()
-            consultationFlowRepository.getAllConsultationsByEncounterId(encounterId).collect{
+            consultationFlowRepository.getAllConsultationsByEncounterId(encounterId).collect {
                 patientRepository.getPatientById(patientId).collect { patientResponse ->
                     val patientItem = patientResponse.data!!
 
                     var currentConsultationFLowList = consultationFlowStageList
-                    val encounterConsultationItem = it.data?.filter {consultationFlowItem -> consultationFlowItem.consultationStage.equals(
-                        CONSULTATION_STAGE_REGISTRATION_ENCOUNTER)  }
-                    if(patientItem.hasBirthDate()){
-                        var isAgeUnderTwoMonths = patientItem.birthDate.toInstant().isAfter(Instant.now().minusSeconds(3600*24*60))
+                    val encounterConsultationItem = it.data?.filter { consultationFlowItem ->
+                        consultationFlowItem.consultationStage.equals(
+                            CONSULTATION_STAGE_REGISTRATION_ENCOUNTER
+                        )
+                    }
+                    if (patientItem.hasBirthDate()) {
+                        var isAgeUnderTwoMonths = patientItem.birthDate.toInstant()
+                            .isAfter(Instant.now().minusSeconds(3600 * 24 * 60))
                         //Taking care of case when consultation has started for under two months and on reopenin the child is now over two months.
-                        if(encounterConsultationItem?.isNotEmpty() == true){
+                        if (encounterConsultationItem?.isNotEmpty() == true) {
                             isAgeUnderTwoMonths =
                                 patientItem.birthDate.toInstant()
                                     .plusMillis(
-                                    (ZonedDateTime.parse(encounterConsultationItem[0].consultationDate?.substringBefore("+").plus("Z[UTC]")).toInstant().toEpochMilli()
-                                    - Instant.now().toEpochMilli()) * 1000)
-                                .isAfter(Instant.now().minusSeconds(3600*24*60))
+                                        (ZonedDateTime.parse(
+                                            encounterConsultationItem[0].consultationDate?.substringBefore(
+                                                "+"
+                                            ).plus("Z[UTC]")
+                                        ).toInstant().toEpochMilli()
+                                                - Instant.now().toEpochMilli()) * 1000
+                                    )
+                                    .isAfter(Instant.now().minusSeconds(3600 * 24 * 60))
                         }
-                        if(isAgeUnderTwoMonths){
+                        if (isAgeUnderTwoMonths) {
                             currentConsultationFLowList = consultationFlowStageListUnderTwoMonths
                         }
                     }
 
                     currentConsultationFLowList.forEach { stage ->
-                        val consultationFlowItems = it.data?.filter { consultationFlowItem -> consultationFlowItem.consultationStage.equals(stage) }
+                        val consultationFlowItems = it.data?.filter { consultationFlowItem ->
+                            consultationFlowItem.consultationStage.equals(stage)
+                        }
                         val consultationFlowItem = consultationFlowItems?.firstOrNull()
-                        if(!stage.equals(CONSULTATION_STAGE_REGISTRATION_PATIENT)){
-                            if(consultationFlowItem != null) {
-                                sidepaneList.add(SidepaneItem(stageToIconMap[stage],
-                                    stageToBadgeMap[stage],
-                                    ConsultationItemData(
-                                        name = patientItem.nameFirstRep.nameAsSingleString.orEmpty { patientItem.identifierFirstRep.value ?:"NA #${patientItem.id?.takeLast(9)}"},
-                                        gender = patientItem.genderElement?.valueAsString ,
-                                        identifier = patientItem.identifierFirstRep.value ,
-                                        dateOfBirth = patientItem.birthDateElement.valueAsString ?: "Not Provided",
-                                        dateOfConsultation = ZonedDateTime.parse(consultationFlowItem.consultationDate?.substringBefore("+").plus("Z[UTC]")).format(DateTimeFormatter.ofPattern(DATE_FORMAT)),
-                                        badgeText = stageToBadgeMap[consultationFlowItem.consultationStage],
-                                        header = stageToBadgeMap[consultationFlowItem.consultationStage],
-                                        consultationIcon = stageToIconMap[consultationFlowItem.consultationStage],
-                                        consultationFlowItemId = consultationFlowItem.id,
-                                        patientId = consultationFlowItem.patientId,
-                                        encounterId = consultationFlowItem.encounterId,
-                                        questionnaireId = consultationFlowItem.questionnaireId,
-                                        structureMapId = consultationFlowItem.structureMapId,
-                                        consultationStage = consultationFlowItem.consultationStage,
-                                        questionnaireResponseText = consultationFlowItem.questionnaireResponseText,
-                                        isActive = consultationFlowItem.isActive
-                                    )))
+                        if (!stage.equals(CONSULTATION_STAGE_REGISTRATION_PATIENT)) {
+                            if (consultationFlowItem != null) {
+                                sidepaneList.add(
+                                    SidepaneItem(
+                                        stageToIconMap[stage],
+                                        stageToBadgeMap[stage],
+                                        ConsultationItemData(
+                                            name = patientItem.nameFirstRep.nameAsSingleString.orEmpty {
+                                                patientItem.identifierFirstRep.value
+                                                    ?: "NA #${patientItem.id?.takeLast(9)}"
+                                            },
+                                            gender = patientItem.genderElement?.valueAsString,
+                                            identifier = patientItem.identifierFirstRep.value,
+                                            dateOfBirth = patientItem.birthDateElement.valueAsString
+                                                ?: "Not Provided",
+                                            dateOfConsultation = ZonedDateTime.parse(
+                                                consultationFlowItem.consultationDate?.substringBefore(
+                                                    "+"
+                                                ).plus("Z[UTC]")
+                                            ).format(DateTimeFormatter.ofPattern(DATE_FORMAT)),
+                                            badgeText = stageToBadgeMap[consultationFlowItem.consultationStage],
+                                            header = stageToBadgeMap[consultationFlowItem.consultationStage],
+                                            consultationIcon = stageToIconMap[consultationFlowItem.consultationStage],
+                                            consultationFlowItemId = consultationFlowItem.id,
+                                            patientId = consultationFlowItem.patientId,
+                                            encounterId = consultationFlowItem.encounterId,
+                                            questionnaireId = consultationFlowItem.questionnaireId,
+                                            structureMapId = consultationFlowItem.structureMapId,
+                                            consultationStage = consultationFlowItem.consultationStage,
+                                            questionnaireResponseText = consultationFlowItem.questionnaireResponseText,
+                                            isActive = consultationFlowItem.isActive
+                                        )
+                                    )
+                                )
                             } else {
-                                sidepaneList.add(SidepaneItem(stageToIconMap[stage], stageToBadgeMap[stage]))
+                                sidepaneList.add(
+                                    SidepaneItem(
+                                        stageToIconMap[stage],
+                                        stageToBadgeMap[stage]
+                                    )
+                                )
                             }
                         }
                     }
@@ -228,50 +282,73 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun getConsultations(search: String? = null, isRefresh: Boolean = false){
+    fun getConsultations(search: String? = null, isRefresh: Boolean = false) {
         _consultations.value = ApiResponse.Loading(isRefresh)
         val consultationsArrayList = mutableListOf<ConsultationItemData>()
         viewModelScope.launch {
             consultationFlowRepository.getAllLatestActiveConsultations().collect {
-                it.data?.forEach{ consultationFlowItem ->
-                    try {
-                        patientRepository.getPatientById(consultationFlowItem.patientId).collect{ patientResponse ->
-                            val patientItem = patientResponse.data
-                            if (patientItem != null) {
-                                consultationsArrayList.add(
-                                    ConsultationItemData(
-                                        name = patientItem.nameFirstRep.nameAsSingleString.orEmpty { patientItem.identifierFirstRep.value ?:"#${patientItem.id?.take(9)}"},
-                                        gender = patientItem.genderElement?.valueAsString,
-                                        identifier = patientItem.identifierFirstRep.value ,
-                                        dateOfBirth = patientItem.birthDateElement.valueAsString ?: "Not Provided",
-                                        dateOfConsultation = ZonedDateTime.parse(consultationFlowItem.consultationDate?.substringBefore("+").plus("Z[UTC]")).format(DateTimeFormatter.ofPattern(DATE_FORMAT)),
-                                        badgeText = stageToBadgeMap[consultationFlowItem.consultationStage],
-                                        header = stageToBadgeMap[consultationFlowItem.consultationStage],
-                                        consultationIcon = stageToIconMap[consultationFlowItem.consultationStage],
-                                        consultationFlowItemId = consultationFlowItem.id,
-                                        patientId = consultationFlowItem.patientId,
-                                        encounterId = consultationFlowItem.encounterId,
-                                        questionnaireId = consultationFlowItem.questionnaireId,
-                                        structureMapId = consultationFlowItem.structureMapId,
-                                        consultationStage = consultationFlowItem.consultationStage,
-                                        questionnaireResponseText = consultationFlowItem.questionnaireResponseText,
-                                        isActive = consultationFlowItem.isActive
-                                    )
-                                )
-                            }
+                it.data?.forEach { consultationFlowItem ->
+                    consultationFlowRepository.getConsultationSyncState(consultationFlowItem)
+                        .collect { isSynced ->
+                            patientRepository.getPatientById(consultationFlowItem.patientId)
+                                .collect { patientResponse ->
+                                    val patientItem = patientResponse.data
+                                    if (patientItem != null) {
+                                        consultationsArrayList.add(
+                                            ConsultationItemData(
+                                                name = patientItem.nameFirstRep.nameAsSingleString.orEmpty {
+                                                    patientItem.identifierFirstRep.value
+                                                        ?: "#${patientItem.id?.take(9)}"
+                                                },
+                                                gender = patientItem.genderElement?.valueAsString,
+                                                identifier = patientItem.identifierFirstRep.value,
+                                                dateOfBirth = patientItem.birthDateElement.valueAsString
+                                                    ?: "Not Provided",
+                                                dateOfConsultation = ZonedDateTime.parse(
+                                                    consultationFlowItem.consultationDate?.substringBefore(
+                                                        "+"
+                                                    ).plus("Z[UTC]")
+                                                ).format(DateTimeFormatter.ofPattern(DATE_FORMAT)),
+                                                badgeText = stageToBadgeMap[consultationFlowItem.consultationStage],
+                                                header = stageToBadgeMap[consultationFlowItem.consultationStage],
+                                                consultationIcon = stageToIconMap[consultationFlowItem.consultationStage],
+                                                consultationFlowItemId = consultationFlowItem.id,
+                                                patientId = consultationFlowItem.patientId,
+                                                encounterId = consultationFlowItem.encounterId,
+                                                questionnaireId = consultationFlowItem.questionnaireId,
+                                                structureMapId = consultationFlowItem.structureMapId,
+                                                consultationStage = consultationFlowItem.consultationStage,
+                                                questionnaireResponseText = consultationFlowItem.questionnaireResponseText,
+                                                isActive = consultationFlowItem.isActive,
+                                                isSynced = isSynced.data ?: true
+                                            )
+                                        )
+                                    }
+                                }
                         }
-                    }catch (e:Exception){
-                        e.printStackTrace()
-                    }
 
                 }
-                _consultations.value = ApiResponse.Success(consultationsArrayList.filter { consultationItemData ->
-                    if(consultationItemData.identifier != null) {
-                        search?.let { it1 -> consultationItemData.name?.contains(it1, ignoreCase = true)!! || consultationItemData.identifier.equals(it1, ignoreCase = true) }!!
-                    } else {
-                        search?.let { it1 -> consultationItemData.name?.contains(it1, ignoreCase = true) }!!
-                    }
-                },"No Active Consultations Found")
+                _consultations.value =
+                    ApiResponse.Success(consultationsArrayList.filter { consultationItemData ->
+                        if (consultationItemData.identifier != null) {
+                            search?.let { it1 ->
+                                consultationItemData.name?.contains(
+                                    it1,
+                                    ignoreCase = true
+                                )!! || consultationItemData.identifier.equals(
+                                    it1,
+                                    ignoreCase = true
+                                )
+                            }!!
+                        } else {
+                            search?.let { it1 ->
+                                consultationItemData.name?.contains(
+                                    it1,
+                                    ignoreCase = true
+                                )
+                            }!!
+                        }
+                    }, "No Active Consultations Found")
             }
         }
     }
@@ -284,9 +361,15 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun saveQuestionnaireAsDraft(consultationFlowItemId: String, questionnaireResponse: QuestionnaireResponse) {
+    fun saveQuestionnaireAsDraft(
+        consultationFlowItemId: String,
+        questionnaireResponse: QuestionnaireResponse
+    ) {
         viewModelScope.launch {
-            patientRepository.updateConsultationQuestionnaireResponse(consultationFlowItemId, questionnaireResponse).collect {
+            patientRepository.updateConsultationQuestionnaireResponse(
+                consultationFlowItemId,
+                questionnaireResponse
+            ).collect {
                 _draftQuestionnaire.value = it
             }
         }
@@ -301,49 +384,91 @@ class HomeViewModel @Inject constructor(
     }
 
 
-    fun getQuestionnaireWithQR(questionnaireId: String, patientId: String, encounterId: String, isPreviouslySavedConsultation: Boolean, previousQuestionnaireResponse: String? = "") {
+    fun getQuestionnaireWithQR(
+        questionnaireId: String,
+        patientId: String,
+        encounterId: String,
+        isPreviouslySavedConsultation: Boolean,
+        previousQuestionnaireResponse: String? = ""
+    ) {
         _questionnaireWithQR.value = ApiResponse.Loading()
         viewModelScope.launch {
             patientRepository.getQuestionnaire(questionnaireId).collect {
                 val parser = FhirContext.forR4().newJsonParser()
-                val questionnaireJsonWithQR: Questionnaire? = preProcessQuestionnaire(it.data!!, patientId, encounterId, isPreviouslySavedConsultation)
-                if(questionnaireJsonWithQR == null) {
-                    _questionnaireWithQR.value = ApiResponse.ApiError(apiErrorMessageResId = R.string.initial_expression_error)
+                val questionnaireJsonWithQR: Questionnaire? = preProcessQuestionnaire(
+                    it.data!!,
+                    patientId,
+                    encounterId,
+                    isPreviouslySavedConsultation
+                )
+                if (questionnaireJsonWithQR == null) {
+                    _questionnaireWithQR.value =
+                        ApiResponse.ApiError(apiErrorMessageResId = R.string.initial_expression_error)
                 } else {
                     var questionnaireResponse: QuestionnaireResponse = QuestionnaireResponse()
-                    questionnaireResponse = if(isPreviouslySavedConsultation) {
-                        addHiddenQuestionnaireItemsWithNestedItems(previousQuestionnaireResponse!!, questionnaireJsonWithQR)
+                    questionnaireResponse = if (isPreviouslySavedConsultation) {
+                        addHiddenQuestionnaireItemsWithNestedItems(
+                            previousQuestionnaireResponse!!,
+                            questionnaireJsonWithQR
+                        )
                     } else
-                        generateQuestionnaireResponseWithPatientIdAndEncounterId(questionnaireJsonWithQR, patientId!!, encounterId!!)
+                        generateQuestionnaireResponseWithPatientIdAndEncounterId(
+                            questionnaireJsonWithQR,
+                            patientId!!,
+                            encounterId!!
+                        )
                     val questionnaireString = parser.encodeResourceToString(questionnaireJsonWithQR)
-                    val questionnaireResponseString = parser.encodeResourceToString(questionnaireResponse)
-                    _questionnaireWithQR.value = ApiResponse.Success(data=questionnaireString to questionnaireResponseString)
+                    val questionnaireResponseString =
+                        parser.encodeResourceToString(questionnaireResponse)
+                    _questionnaireWithQR.value =
+                        ApiResponse.Success(data = questionnaireString to questionnaireResponseString)
                 }
             }
         }
     }
 
 
-    fun moveToNextQuestionnaire(consultationFlowItemId: String, encounterId: String){
+    fun moveToNextQuestionnaire(consultationFlowItemId: String, encounterId: String) {
         _questionnaireWithQR.value = ApiResponse.Loading()
         viewModelScope.launch {
-            consultationFlowRepository.getNextConsultationByConsultationIdAndEncounterId(consultationFlowItemId, encounterId).collect{
+            consultationFlowRepository.getNextConsultationByConsultationIdAndEncounterId(
+                consultationFlowItemId,
+                encounterId
+            ).collect {
                 _nextQuestionnaire.value = it
             }
         }
     }
 
-    fun saveQuestionnaire(questionnaireResponse: QuestionnaireResponse, questionnaire: String, facilityId: String, structureMapId: String, consultationFlowItemId: String? = null, consultationStage: String? = null) {
+    fun saveQuestionnaire(
+        questionnaireResponse: QuestionnaireResponse,
+        questionnaire: String,
+        facilityId: String,
+        structureMapId: String,
+        consultationFlowItemId: String? = null,
+        consultationStage: String? = null
+    ) {
         viewModelScope.launch {
-            patientRepository.saveQuestionnaire(questionnaireResponse, questionnaire,facilityId, structureMapId, consultationFlowItemId ,consultationStage).collect {
+            patientRepository.saveQuestionnaire(
+                questionnaireResponse,
+                questionnaire,
+                facilityId,
+                structureMapId,
+                consultationFlowItemId,
+                consultationStage
+            ).collect {
                 _saveQuestionnaire.value = it
             }
         }
     }
 
-    private fun generateQuestionnaireResponseWithPatientIdAndEncounterId(questionnaireJson: Questionnaire, patientId: String, encounterId: String) : QuestionnaireResponse {
-       //Create empty QR as done in the SDC
-        val questionnaireResponse:QuestionnaireResponse = QuestionnaireResponse().apply {
+    private fun generateQuestionnaireResponseWithPatientIdAndEncounterId(
+        questionnaireJson: Questionnaire,
+        patientId: String,
+        encounterId: String
+    ): QuestionnaireResponse {
+        //Create empty QR as done in the SDC
+        val questionnaireResponse: QuestionnaireResponse = QuestionnaireResponse().apply {
             questionnaire = questionnaireJson.url
         }
         questionnaireJson.item.forEach { it2 ->
@@ -371,8 +496,13 @@ class HomeViewModel @Inject constructor(
         return questionnaireResponse
     }
 
-    private fun addHiddenQuestionnaireItemsWithNestedItems(previousQuestionnaireResponse: String, questionnaire: Questionnaire): QuestionnaireResponse {
-        val previousQuestionnaireResponseObject = FhirContext.forCached(FhirVersionEnum.R4).newJsonParser().parseResource(QuestionnaireResponse::class.java, previousQuestionnaireResponse)
+    private fun addHiddenQuestionnaireItemsWithNestedItems(
+        previousQuestionnaireResponse: String,
+        questionnaire: Questionnaire
+    ): QuestionnaireResponse {
+        val previousQuestionnaireResponseObject =
+            FhirContext.forCached(FhirVersionEnum.R4).newJsonParser()
+                .parseResource(QuestionnaireResponse::class.java, previousQuestionnaireResponse)
         val questionnaireLinkIdList = mutableListOf<String>()
 
         //Adding link id of all questionnaire items
@@ -384,53 +514,76 @@ class HomeViewModel @Inject constructor(
         val questionnaireResponseItemsList = mutableListOf<QuestionnaireResponseItemComponent>()
         questionnaireResponseItemsList.addAll(previousQuestionnaireResponseObject.allItems)
 
-        val finalQuestionnaireResponseItemsList = mutableListOf<QuestionnaireResponseItemComponent>()
+        val finalQuestionnaireResponseItemsList =
+            mutableListOf<QuestionnaireResponseItemComponent>()
         var matchingQuestionnaireResponseItem: QuestionnaireResponseItemComponent?
         var matchingQuestionnaireItem: Questionnaire.QuestionnaireItemComponent?
 
         //Setting items with previously answered questions through link id
         questionnaireLinkIdList.forEachIndexed { index, linkId ->
-            try{
-                matchingQuestionnaireResponseItem = questionnaireResponseItemsList.firstOrNull { questionnaireResponseItem ->
-                    linkId == questionnaireResponseItem.linkId
-                }
+            try {
+                matchingQuestionnaireResponseItem =
+                    questionnaireResponseItemsList.firstOrNull { questionnaireResponseItem ->
+                        linkId == questionnaireResponseItem.linkId
+                    }
                 matchingQuestionnaireItem = questionnaire.item.firstOrNull { questionnaireItem ->
                     linkId == questionnaireItem.linkId
                 }
-                val finalQuestionnaireResponseNestedItemsList = mutableListOf<QuestionnaireResponseItemComponent>()
+                val finalQuestionnaireResponseNestedItemsList =
+                    mutableListOf<QuestionnaireResponseItemComponent>()
 
                 if (matchingQuestionnaireResponseItem != null) {
-                    if(matchingQuestionnaireItem?.item?.size!! > 0){
+                    if (matchingQuestionnaireItem?.item?.size!! > 0) {
                         matchingQuestionnaireItem?.item?.forEachIndexed { index, questionnaireItemComponent ->
-                            var matchingQuestionnaireResponseNestedItem = matchingQuestionnaireResponseItem?.item?.firstOrNull { questionnaireResponseItem ->
-                                questionnaireItemComponent.linkId == questionnaireResponseItem.linkId
-                            }
-                            if(matchingQuestionnaireResponseNestedItem != null){
-                                finalQuestionnaireResponseNestedItemsList.add(matchingQuestionnaireResponseNestedItem)
-                            }else{
-                                finalQuestionnaireResponseNestedItemsList.add(QuestionnaireResponseItemComponent(StringType(questionnaireItemComponent.linkId)))
+                            var matchingQuestionnaireResponseNestedItem =
+                                matchingQuestionnaireResponseItem?.item?.firstOrNull { questionnaireResponseItem ->
+                                    questionnaireItemComponent.linkId == questionnaireResponseItem.linkId
+                                }
+                            if (matchingQuestionnaireResponseNestedItem != null) {
+                                finalQuestionnaireResponseNestedItemsList.add(
+                                    matchingQuestionnaireResponseNestedItem
+                                )
+                            } else {
+                                finalQuestionnaireResponseNestedItemsList.add(
+                                    QuestionnaireResponseItemComponent(
+                                        StringType(questionnaireItemComponent.linkId)
+                                    )
+                                )
                             }
                         }
-                        matchingQuestionnaireResponseItem?.item = finalQuestionnaireResponseNestedItemsList
+                        matchingQuestionnaireResponseItem?.item =
+                            finalQuestionnaireResponseNestedItemsList
                     }
                     finalQuestionnaireResponseItemsList.add(matchingQuestionnaireResponseItem!!)
                 } else {
                     val newItem = QuestionnaireResponseItemComponent(StringType(linkId))
-                    var matchingQuestionnaireNestedItem = questionnaire.item.firstOrNull { questionnaireItem ->
-                        linkId == questionnaireItem.linkId
-                    }
-                    if(matchingQuestionnaireNestedItem != null){
+                    var matchingQuestionnaireNestedItem =
+                        questionnaire.item.firstOrNull { questionnaireItem ->
+                            linkId == questionnaireItem.linkId
+                        }
+                    if (matchingQuestionnaireNestedItem != null) {
                         matchingQuestionnaireNestedItem.item.forEachIndexed { index, questionnaireItemComponent ->
-                            finalQuestionnaireResponseNestedItemsList.add(QuestionnaireResponseItemComponent(StringType(questionnaireItemComponent.linkId)))
+                            finalQuestionnaireResponseNestedItemsList.add(
+                                QuestionnaireResponseItemComponent(
+                                    StringType(questionnaireItemComponent.linkId)
+                                )
+                            )
                         }
                         newItem.item = finalQuestionnaireResponseNestedItemsList
                     }
                     questionnaireResponseItemsList.add(index, newItem)
                     finalQuestionnaireResponseItemsList.add(newItem)
                 }
-            }catch (e: java.lang.IndexOutOfBoundsException){
-                questionnaireResponseItemsList.add(index, QuestionnaireResponseItemComponent(StringType(linkId)))
-                finalQuestionnaireResponseItemsList.add(QuestionnaireResponseItemComponent(StringType(linkId)))
+            } catch (e: java.lang.IndexOutOfBoundsException) {
+                questionnaireResponseItemsList.add(
+                    index,
+                    QuestionnaireResponseItemComponent(StringType(linkId))
+                )
+                finalQuestionnaireResponseItemsList.add(
+                    QuestionnaireResponseItemComponent(
+                        StringType(linkId)
+                    )
+                )
             }
         }
 
@@ -439,16 +592,22 @@ class HomeViewModel @Inject constructor(
     }
 
 
-    private fun addHiddenQuestionnaireItems(previousQuestionnaireResponse: String, questionnaire: Questionnaire): QuestionnaireResponse {
-        val previousQuestionnaireResponseObject = FhirContext.forCached(FhirVersionEnum.R4).newJsonParser().parseResource(QuestionnaireResponse::class.java, previousQuestionnaireResponse)
+    private fun addHiddenQuestionnaireItems(
+        previousQuestionnaireResponse: String,
+        questionnaire: Questionnaire
+    ): QuestionnaireResponse {
+        val previousQuestionnaireResponseObject =
+            FhirContext.forCached(FhirVersionEnum.R4).newJsonParser()
+                .parseResource(QuestionnaireResponse::class.java, previousQuestionnaireResponse)
         val questionnaireLinkIdList = mutableListOf<String>()
         val groupLinkIdMap = mutableMapOf<String, MutableList<String>>()
         //Adding link id of all questionnaire items
         questionnaire.item.forEach { item ->
             questionnaireLinkIdList.add(item.linkId)
-            if(item.type.equals("group") && item.hasItem()){
-                item.item.forEach{ nestedItem ->
-                    val groupLinkIdList: MutableList<String> = if(groupLinkIdMap.containsKey(item.linkId)) groupLinkIdMap[item.linkId]!! else mutableListOf<String>()
+            if (item.type.equals("group") && item.hasItem()) {
+                item.item.forEach { nestedItem ->
+                    val groupLinkIdList: MutableList<String> =
+                        if (groupLinkIdMap.containsKey(item.linkId)) groupLinkIdMap[item.linkId]!! else mutableListOf<String>()
                     groupLinkIdList.add(nestedItem.linkId)
                     groupLinkIdMap[item.linkId] = groupLinkIdList
                 }
@@ -459,31 +618,35 @@ class HomeViewModel @Inject constructor(
         val questionnaireResponseItemsList = mutableListOf<QuestionnaireResponseItemComponent>()
         questionnaireResponseItemsList.addAll(previousQuestionnaireResponseObject.allItems)
 
-        val finalQuestionnaireResponseItemsList = mutableListOf<QuestionnaireResponseItemComponent>()
+        val finalQuestionnaireResponseItemsList =
+            mutableListOf<QuestionnaireResponseItemComponent>()
 
         //Setting items with previously answered questions through link id
         questionnaireLinkIdList.forEachIndexed { index, linkId ->
-            try{
-                val matchingQuestionnaireResponseItem = questionnaireResponseItemsList.firstOrNull { questionnaireResponseItem ->
-                    linkId == questionnaireResponseItem.linkId
-                }
+            try {
+                val matchingQuestionnaireResponseItem =
+                    questionnaireResponseItemsList.firstOrNull { questionnaireResponseItem ->
+                        linkId == questionnaireResponseItem.linkId
+                    }
                 if (matchingQuestionnaireResponseItem != null) {
-                    if(groupLinkIdMap[linkId] != null){
+                    if (groupLinkIdMap[linkId] != null) {
                         groupLinkIdMap[linkId]?.forEach { nestedItemLinkId ->
-                            val nestedItem = matchingQuestionnaireResponseItem.item.firstOrNull { _ ->
-                                linkId == nestedItemLinkId
-                            }
-                            if(nestedItem == null){
+                            val nestedItem =
+                                matchingQuestionnaireResponseItem.item.firstOrNull { _ ->
+                                    linkId == nestedItemLinkId
+                                }
+                            if (nestedItem == null) {
                                 matchingQuestionnaireResponseItem.addItem(
                                     QuestionnaireResponseItemComponent(StringType(linkId))
                                 )
                             }
                         }
                     }
-                    finalQuestionnaireResponseItemsList.add(matchingQuestionnaireResponseItem!!)
+                    finalQuestionnaireResponseItemsList.add(matchingQuestionnaireResponseItem)
                 } else {
-                    var questionnaireResponseItemToAdd = QuestionnaireResponseItemComponent(StringType(linkId))
-                    if(groupLinkIdMap[linkId] != null){
+                    val questionnaireResponseItemToAdd =
+                        QuestionnaireResponseItemComponent(StringType(linkId))
+                    if (groupLinkIdMap[linkId] != null) {
                         groupLinkIdMap[linkId]?.forEach { nestedItemLinkId ->
                             questionnaireResponseItemToAdd.addItem(
                                 QuestionnaireResponseItemComponent(StringType(nestedItemLinkId))
@@ -493,9 +656,10 @@ class HomeViewModel @Inject constructor(
                     questionnaireResponseItemsList.add(index, questionnaireResponseItemToAdd)
                     finalQuestionnaireResponseItemsList.add(questionnaireResponseItemToAdd)
                 }
-            }catch (e: java.lang.IndexOutOfBoundsException){
-                var questionnaireResponseItemToAdd = QuestionnaireResponseItemComponent(StringType(linkId))
-                if(groupLinkIdMap[linkId] != null){
+            } catch (e: java.lang.IndexOutOfBoundsException) {
+                val questionnaireResponseItemToAdd =
+                    QuestionnaireResponseItemComponent(StringType(linkId))
+                if (groupLinkIdMap[linkId] != null) {
                     groupLinkIdMap[linkId]?.forEach { nestedItemLinkId ->
                         questionnaireResponseItemToAdd.addItem(
                             QuestionnaireResponseItemComponent(StringType(nestedItemLinkId))
@@ -514,11 +678,17 @@ class HomeViewModel @Inject constructor(
     }
 
 
-    private suspend fun preProcessQuestionnaire(questionnaire: Questionnaire, patientId: String, encounterId: String, isPreviouslySavedConsultation: Boolean) : Questionnaire? {
+    private suspend fun preProcessQuestionnaire(
+        questionnaire: Questionnaire,
+        patientId: String,
+        encounterId: String,
+        isPreviouslySavedConsultation: Boolean
+    ): Questionnaire? {
         var ansQuestionnaire: Questionnaire? = injectUuid(questionnaire)
         ansQuestionnaire = addEmptySpaceToScroll(ansQuestionnaire!!)
-        if(questionnaire.hasExtension(URL_CQF_LIBRARY) && !isPreviouslySavedConsultation){
-            ansQuestionnaire = injectInitialExpressionCqlValues(ansQuestionnaire!!, patientId, encounterId)
+        if (questionnaire.hasExtension(URL_CQF_LIBRARY) && !isPreviouslySavedConsultation) {
+            ansQuestionnaire =
+                injectInitialExpressionCqlValues(ansQuestionnaire!!, patientId, encounterId)
         }
         return ansQuestionnaire
     }
@@ -532,18 +702,27 @@ class HomeViewModel @Inject constructor(
         return questionnaire
     }
 
-    private fun injectUuid(questionnaire: Questionnaire) : Questionnaire {
+    private fun injectUuid(questionnaire: Questionnaire): Questionnaire {
         questionnaire.item.forEach { item ->
-            if(!item.initial.isNullOrEmpty() && item.initial[0].value.asStringValue() == "uuid()") {
+            if (!item.initial.isNullOrEmpty() && item.initial[0].value.asStringValue() == "uuid()") {
                 item.initial =
-                    mutableListOf(Questionnaire.QuestionnaireItemInitialComponent(StringType(
-                        UUID.randomUUID().toString())))
+                    mutableListOf(
+                        Questionnaire.QuestionnaireItemInitialComponent(
+                            StringType(
+                                UUID.randomUUID().toString()
+                            )
+                        )
+                    )
             }
         }
         return questionnaire
     }
 
-    private suspend fun injectInitialExpressionCqlValues(questionnaire: Questionnaire, patientId: String, encounterId: String): Questionnaire? = withContext(dispatcher) {
+    private suspend fun injectInitialExpressionCqlValues(
+        questionnaire: Questionnaire,
+        patientId: String,
+        encounterId: String
+    ): Questionnaire? = withContext(dispatcher) {
         try {
             val cqlLibraryURL =
                 questionnaire.getExtensionByUrl(URL_CQF_LIBRARY).value.asStringValue()

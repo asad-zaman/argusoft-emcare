@@ -51,23 +51,27 @@ class PatientProfileViewModel @Inject constructor(
                 if (patientItem != null) {
                     consultationFlowRepository.getAllLatestActiveConsultationsByPatientId(patientId).collect {
                         it.data?.forEach{ consultationFlowItem ->
-                            consultationsArrayList.add(
-                                ActiveConsultationData(
-                                    consultationLabel = stageToBadgeMap[consultationFlowItem.consultationStage] + " Stage",
-                                    dateOfConsultation = ZonedDateTime.parse(consultationFlowItem.consultationDate?.substringBefore("+").plus("Z[UTC]")).format(
-                                        DateTimeFormatter.ofPattern(DATE_FORMAT)),
-                                    header = stageToBadgeMap[consultationFlowItem.consultationStage],
-                                    consultationIcon = stageToIconMap[consultationFlowItem.consultationStage],
-                                    consultationFlowItemId = consultationFlowItem.id,
-                                    patientId = consultationFlowItem.patientId,
-                                    encounterId = consultationFlowItem.encounterId,
-                                    questionnaireId = consultationFlowItem.questionnaireId,
-                                    structureMapId = consultationFlowItem.structureMapId,
-                                    consultationStage = consultationFlowItem.consultationStage,
-                                    questionnaireResponseText = consultationFlowItem.questionnaireResponseText,
-                                    isActive = consultationFlowItem.isActive
+                            consultationFlowRepository.getConsultationSyncState(consultationFlowItem).collect {
+                                isSynced ->
+                                consultationsArrayList.add(
+                                    ActiveConsultationData(
+                                        consultationLabel = stageToBadgeMap[consultationFlowItem.consultationStage] + " Stage",
+                                        dateOfConsultation = ZonedDateTime.parse(consultationFlowItem.consultationDate?.substringBefore("+").plus("Z[UTC]")).format(
+                                            DateTimeFormatter.ofPattern(DATE_FORMAT)),
+                                        header = stageToBadgeMap[consultationFlowItem.consultationStage],
+                                        consultationIcon = stageToIconMap[consultationFlowItem.consultationStage],
+                                        consultationFlowItemId = consultationFlowItem.id,
+                                        patientId = consultationFlowItem.patientId,
+                                        encounterId = consultationFlowItem.encounterId,
+                                        questionnaireId = consultationFlowItem.questionnaireId,
+                                        structureMapId = consultationFlowItem.structureMapId,
+                                        consultationStage = consultationFlowItem.consultationStage,
+                                        questionnaireResponseText = consultationFlowItem.questionnaireResponseText,
+                                        isActive = consultationFlowItem.isActive,
+                                        isSynced = isSynced.data ?: true
+                                    )
                                 )
-                            )
+                            }
                         }
                     }
                 }
@@ -84,23 +88,27 @@ class PatientProfileViewModel @Inject constructor(
                 if (patientItem != null) {
                     consultationFlowRepository.getAllLatestInActiveConsultationsByPatientId(patientId).collect {
                         it.data?.forEach{ consultationFlowItem ->
-                            consultationsArrayList.add(
-                                PreviousConsultationData(
-                                    consultationLabel = stageToBadgeMap[consultationFlowItem.consultationStage] + " Stage",
-                                    dateOfConsultation = ZonedDateTime.parse(consultationFlowItem.consultationDate?.substringBefore("+").plus("Z[UTC]")).format(
-                                        DateTimeFormatter.ofPattern(DATE_FORMAT)),
-                                    header = stageToBadgeMap[consultationFlowItem.consultationStage],
-                                    consultationIcon = stageToIconMap[consultationFlowItem.consultationStage],
-                                    consultationFlowItemId = consultationFlowItem.id,
-                                    patientId = consultationFlowItem.patientId,
-                                    encounterId = consultationFlowItem.encounterId,
-                                    questionnaireId = consultationFlowItem.questionnaireId,
-                                    structureMapId = consultationFlowItem.structureMapId,
-                                    consultationStage = consultationFlowItem.consultationStage,
-                                    questionnaireResponseText = consultationFlowItem.questionnaireResponseText,
-                                    isActive = consultationFlowItem.isActive
+                            consultationFlowRepository.getConsultationSyncState(consultationFlowItem).collect {
+                                isSynced ->
+                                consultationsArrayList.add(
+                                    PreviousConsultationData(
+                                        consultationLabel = stageToBadgeMap[consultationFlowItem.consultationStage] + " Stage",
+                                        dateOfConsultation = ZonedDateTime.parse(consultationFlowItem.consultationDate?.substringBefore("+").plus("Z[UTC]")).format(
+                                            DateTimeFormatter.ofPattern(DATE_FORMAT)),
+                                        header = stageToBadgeMap[consultationFlowItem.consultationStage],
+                                        consultationIcon = stageToIconMap[consultationFlowItem.consultationStage],
+                                        consultationFlowItemId = consultationFlowItem.id,
+                                        patientId = consultationFlowItem.patientId,
+                                        encounterId = consultationFlowItem.encounterId,
+                                        questionnaireId = consultationFlowItem.questionnaireId,
+                                        structureMapId = consultationFlowItem.structureMapId,
+                                        consultationStage = consultationFlowItem.consultationStage,
+                                        questionnaireResponseText = consultationFlowItem.questionnaireResponseText,
+                                        isActive = consultationFlowItem.isActive,
+                                        isSynced = isSynced.data ?: true
+                                    )
                                 )
-                            )
+                            }
                         }
                     }
                 }

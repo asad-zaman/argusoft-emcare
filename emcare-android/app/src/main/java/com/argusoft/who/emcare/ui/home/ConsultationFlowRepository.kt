@@ -3,11 +3,13 @@ package com.argusoft.who.emcare.ui.home
 import com.argusoft.who.emcare.data.local.database.Database
 import com.argusoft.who.emcare.data.remote.ApiResponse
 import com.argusoft.who.emcare.ui.common.model.ConsultationFlowItem
+import com.google.android.fhir.FhirEngine
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class ConsultationFlowRepository @Inject constructor(
-    private val database: Database
+    private val database: Database,
+    private val fhirEngine: FhirEngine
 ) {
 
     fun getAllActiveConsultations() = flow {
@@ -55,6 +57,21 @@ class ConsultationFlowRepository @Inject constructor(
     fun getAllLatestInActiveConsultationsByPatientId(patientId: String) = flow {
         val list = database.getAllLatestInActiveConsultationsByPatientId(patientId)
         emit(ApiResponse.Success(data = list))
+    }
+
+    fun getConsultationSyncState(consultationItem:ConsultationFlowItem) = flow {
+        var isSynced = true
+        val localChangesList = fhirEngine.getAllLocalChanges()
+        consultationItem.encounterId.let { encounterId ->
+            for (localChange in localChangesList) {
+                localChange?.let {
+                    isSynced = !(it.payload.contains(encounterId))
+                }
+                if(!isSynced)
+                    break
+            }
+        }
+        emit(ApiResponse.Success(data = isSynced))
     }
 
     //For the Patient Profile

@@ -87,6 +87,13 @@ class PatientRepository @Inject constructor(
         }).mapIndexed { index, fhirPatient ->
             fhirPatient.toPatientItem(index + 1)
         }
+        for (patientItem in list){
+            patientItem.resourceId?.let {
+                fhirEngine.getLocalChange(ResourceType.Patient, it)?.let {
+                    patientItem.isSynced = false
+                }
+            }
+        }
         emit(ApiResponse.Success(data = list))
     }
 
