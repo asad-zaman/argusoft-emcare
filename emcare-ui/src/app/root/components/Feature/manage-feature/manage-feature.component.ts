@@ -8,6 +8,7 @@ import { UserManagementService } from 'src/app/root/services/user-management.ser
 import { ToasterService } from 'src/app/shared';
 import { AuthenticationService } from 'src/app/shared/services/authentication.service';
 import { appConstants } from 'src/app/app.config';
+import { FeatureSubjects } from '../featureSubject';
 
 @Component({
   selector: 'app-manage-feature',
@@ -30,6 +31,7 @@ export class ManageFeatureComponent implements OnInit {
   isDelete = true;
   featureArrForExport = ['All Patient', 'Consultations'];
   isExportPage = false;
+  isActionShow: boolean;
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -39,7 +41,8 @@ export class ManageFeatureComponent implements OnInit {
     private readonly toasterService: ToasterService,
     private readonly authenticationService: AuthenticationService,
     private readonly formBuilder: FormBuilder,
-    private readonly authGuard: AuthGuard
+    private readonly authGuard: AuthGuard,
+    private readonly featureSubject: FeatureSubjects
   ) { }
 
   ngOnInit(): void {
@@ -55,6 +58,9 @@ export class ManageFeatureComponent implements OnInit {
       if (this.isExportPage) {
         this.featureArr.push('canExport');
       }
+    });
+    this.featureSubject.getActionShow().subscribe(res => {
+      this.isActionShow = res;
     });
     this.getFeatureConfigAndInitializeForm();
   }
