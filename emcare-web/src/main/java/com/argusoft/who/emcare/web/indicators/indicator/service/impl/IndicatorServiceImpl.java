@@ -258,7 +258,7 @@ public class IndicatorServiceImpl implements IndicatorService {
         stringObjectMap.put("indicatorName", indicator.getIndicatorName());
         stringObjectMap.put("indicatorType", indicator.getDisplayType());
         stringObjectMap.put("colorSchema", indicator.getColourSchema());
-        stringObjectMap.put(CommonConstant.INDICATOR_VALUE, df.format(observationResources.size()));
+        stringObjectMap.put(CommonConstant.INDICATOR_VALUE, observationResources.size() > 0 ? df.format(observationResources.get(0).get("finalvalue")) : df.format(0));
         responseList.add(stringObjectMap);
     }
 

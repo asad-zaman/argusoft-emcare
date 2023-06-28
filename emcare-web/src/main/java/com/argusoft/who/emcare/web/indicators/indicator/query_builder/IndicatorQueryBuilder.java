@@ -8,6 +8,9 @@ import com.argusoft.who.emcare.web.indicators.indicator.entity.IndicatorNumerato
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.stereotype.Component;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Map;
 import java.util.Objects;
 
@@ -157,14 +160,45 @@ public class IndicatorQueryBuilder {
         String query = indicator.getQuery();
         ObjectMapper oMapper = new ObjectMapper();
 
+        String sDate = "";
+        String eDate = "";
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            if (Objects.isNull(indicatorFilterDto.getStartDate())) {
+                String sDate1 = "1998-12-31";
+                sDate = sdf.format(sdf.parse(sDate1));
+                indicatorFilterDto.setStartDate(sdf.parse(sDate));
+            }
+            if (Objects.isNull(indicatorFilterDto.getEndDate())) {
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(new Date());
+                calendar.add(Calendar.DATE, 1);
+                eDate = new SimpleDateFormat("yyyy-MM-dd").format(calendar.getTime()).toString();
+                indicatorFilterDto.setEndDate(sdf.parse(eDate));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         Map<String, Object> filterDtoMap = oMapper.convertValue(indicatorFilterDto, Map.class);
         for (var entry : filterDtoMap.entrySet()) {
-            String value = "'null'";
+            String value = "null";
             if (Objects.nonNull(entry.getValue())) {
-                value = entry.getValue().toString();
+                if (entry.getKey().equalsIgnoreCase("startDate") || entry.getKey().equalsIgnoreCase("endDate")) {
+                    value = new SimpleDateFormat("yyyy-MM-dd").format(entry.getValue());
+                } else {
+                    value = entry.getValue().toString();
+                }
+            } else {
+                if (entry.getKey().equalsIgnoreCase("age")) {
+                    value = ">= 0";
+                }
             }
             query = query.replaceAll(":" + entry.getKey(), value);
 
+        }
+        if (Objects.isNull(facilityId)) {
+            facilityId = "null";
         }
         query = query.replaceAll(":facilityId", facilityId);
         return query;
