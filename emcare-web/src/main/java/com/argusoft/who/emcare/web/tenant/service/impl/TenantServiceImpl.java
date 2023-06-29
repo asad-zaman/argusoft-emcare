@@ -111,8 +111,10 @@ public class TenantServiceImpl implements TenantService {
             System.out.println("Database Connection Checked +++++++++++++++++++++++++++++++++++++++++++");
 
             //    Select Database If create
+            multitenantDataSourceConfiguration.setRunFlyWay(Boolean.FALSE);
             tenantConfig = tenantConfigRepository.save(tenantConfig);
             multitenantDataSourceConfiguration.addDataSourceDynamic();
+            multitenantDataSourceConfiguration.setRunFlyWay(Boolean.TRUE);
             TenantContext.clearTenant();
             TenantContext.setCurrentTenant(tenantConfig.getTenantId());
 
@@ -135,6 +137,10 @@ public class TenantServiceImpl implements TenantService {
             System.out.println("=======================================================================");
             addOrganizationInDatabase(tenantDto);
             System.out.println("Organization added ++++++++++++++++++++++++++++++++++++++++++++++++++++");
+            //    Add Flyway Migrations in DB
+            System.out.println("=======================================================================");
+            multitenantDataSourceConfiguration.addDataSourceForNewTenant();
+            System.out.println("Flyway Migration Done ++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
             //    Add Role in DB
             System.out.println("=======================================================================");
             addRoleForTenant(tenantDto);
@@ -266,6 +272,9 @@ public class TenantServiceImpl implements TenantService {
                     databaseConnectionURL,
                     CommonConstant.POSTGRESQL_DEFAULT_DATABASE,
                     tenantConfig.getPassword());
+
+            statement = connection.createStatement();
+            statement.execute("SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = " + "'" + tenantConfig.getDatabaseName() + "'");
 
             statement.executeUpdate("DROP DATABASE " + tenantConfig.getDatabaseName());
         } catch (Exception ex) {

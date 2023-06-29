@@ -34,6 +34,16 @@ public class MultitenantDataSourceConfiguration {
     @Autowired
     DataSource dataSource;
 
+    private static Boolean runFlyWay = Boolean.TRUE;
+
+    public Boolean getRunFlyWay() {
+        return runFlyWay;
+    }
+
+    public void setRunFlyWay(Boolean runFlyWay) {
+        this.runFlyWay = runFlyWay;
+    }
+
     @Value("${defaultTenant}")
     private String defaultTenant;
 
@@ -71,14 +81,28 @@ public class MultitenantDataSourceConfiguration {
         dataSource1.setTargetDataSources(resolvedDataSources);
         dataSource1.afterPropertiesSet();
 
+        if(runFlyWay){
+            for (Map.Entry<Object, DataSource> entry : dataSource1.getResolvedDataSources().entrySet()) {
+                DataSource dataSource = entry.getValue();
+                Flyway flyway = Flyway.configure()
+                        .dataSource(dataSource).schemas("public")
+                        .load();
+                flyway.migrate();
+            }
+        }
+        return dataSource1;
+    }
+    public void addDataSourceForNewTenant() {
+        AbstractRoutingDataSource dataSource1 = (AbstractRoutingDataSource) dataSource;
+
         for (Map.Entry<Object, DataSource> entry : dataSource1.getResolvedDataSources().entrySet()) {
+            System.out.println(entry.getValue());
             DataSource dataSource = entry.getValue();
             Flyway flyway = Flyway.configure()
-                .dataSource(dataSource).schemas("public")
-                .load();
+                    .baselineOnMigrate(true)
+                    .dataSource(dataSource).schemas("public")
+                    .load();
             flyway.migrate();
         }
-
-        return dataSource1;
     }
 }
