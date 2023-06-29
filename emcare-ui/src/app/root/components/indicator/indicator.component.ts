@@ -157,13 +157,17 @@ export class IndicatorComponent implements OnInit {
       facility: this.getFacilityById(currentIndicator.facilityId),
       displayType: this.getDSTById(currentIndicator.displayType),
       numerators: currentIndicator.numeratorEquation.length > 0 ?
-        this.setNumerators(currentIndicator.numeratorEquation) : [],
+        this.setNumerators(currentIndicator.numeratorEquation) :
+        this.addNumerator(),
       denominators: currentIndicator.denominatorEquation.length > 0 ?
-        this.setDenominators(currentIndicator.denominatorEquation) : [],
+        this.setDenominators(currentIndicator.denominatorEquation) :
+        this.addDenominator(),
       numeratorEquation: numeratorEquation,
       denominatorEquation: denominatorEquation,
       colorArr: colorSchema.length > 0 ?
         this.setColorSchema(colorSchema) : [],
+      allowQueryBuilder: currentIndicator.query ? true : false,
+      query: currentIndicator.query
     });
     this.setNumeratorEquationArr();
     this.setDenominatorEquationArr();

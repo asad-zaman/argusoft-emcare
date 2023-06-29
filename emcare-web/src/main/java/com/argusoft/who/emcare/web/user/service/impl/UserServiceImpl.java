@@ -694,7 +694,7 @@ public class UserServiceImpl implements UserService {
                 childFacilityIds.add(locationId.toString());
             }
         }
-        Keycloak keycloak = keyCloakConfig.getInstance();
+        Keycloak keycloak = keyCloakConfig.getKeyCloakInstance();
         if (Objects.isNull(locationId) || locationId.toString().isEmpty()){
             if (Objects.nonNull(searchString) && !searchString.isEmpty()) {
                 totalCount = Long.valueOf(userLocationMappingRepository.getUserPageDataWithSearchCount(searchString, filter).size());
@@ -716,6 +716,7 @@ public class UserServiceImpl implements UserService {
 
 
         List<UserRepresentation> userRepresentations = new ArrayList<>();
+
         for (String userId : allUsersIdUnderLocation) {
             userRepresentations.add(keycloak.realm(realm).users().get(userId).toRepresentation());
         }
