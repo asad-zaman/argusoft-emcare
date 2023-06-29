@@ -42,3 +42,7 @@ export { TenantListComponent } from './components/tenant-list/tenant-list.compon
 export { ManageTenantComponent } from './components/manage-tenant/manage-tenant.component';
 export { AddLogComponent } from './components/add-log/add-log.component';
 export { LogListComponent } from './components/log-list/log-list.component';
+export { HomeComponent } from './components/home/home.component';
+export { TermsConditionsComponent } from './components/terms-conditions/terms-conditions.component';
+export { LocationSubjects } from './components/Location/location-filter/LocationSubject';
+export { FeatureSubjects } from './components/Feature/featureSubject';

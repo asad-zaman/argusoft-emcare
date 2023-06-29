@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthGuard } from 'src/app/auth/auth.guard';
 import { FeatureManagementService } from 'src/app/root/services/feature-management.service';
+import { FeatureSubjects } from '../featureSubject';
 @Component({
   selector: 'app-feature-list',
   templateUrl: './feature-list.component.html',
@@ -19,7 +20,8 @@ export class FeatureListComponent implements OnInit {
   constructor(
     private readonly router: Router,
     private readonly featureService: FeatureManagementService,
-    private readonly authGuard: AuthGuard
+    private readonly authGuard: AuthGuard,
+    private readonly featureSubject: FeatureSubjects
   ) { }
 
   ngOnInit(): void {
@@ -58,6 +60,8 @@ export class FeatureListComponent implements OnInit {
   }
 
   updateFeature(index) {
+    const isActionShow = this.filteredFeatureList[index]['parent'] === null ? false : true;
+    this.featureSubject.setActionShow(isActionShow);
     this.router.navigate([`editFeature/${this.filteredFeatureList[index]['id']}`],
       { queryParams: { name: this.filteredFeatureList[index]['menuName'] } });
   }
