@@ -363,6 +363,8 @@ export class IndicatorComponent implements OnInit {
       }, () => {
         this.toasterService.showToast('error', 'Server issue!', 'EMCARE!');
       });
+    } else {
+      this.toasterService.showToast('info', "Please fill all the fields!", 'EM CARE!');
     }
   }
 
@@ -409,8 +411,8 @@ export class IndicatorComponent implements OnInit {
       "displayType": formValue.displayType.id,
       "numeratorEquations": formValue.allowQueryBuilder ? [] : this.getNumeratorsBody(),
       "denominatorEquations": formValue.allowQueryBuilder ? [] : this.getDenominatorsBody(),
-      "numeratorEquationString": formValue.allowQueryBuilder ? [] : JSON.stringify(this.numeratorEquationStringArr),
-      "denominatorEquationString": formValue.allowQueryBuilder ? [] : JSON.stringify(this.denominatorEquationStringArr),
+      "numeratorEquationString": formValue.allowQueryBuilder ? JSON.stringify([]) : JSON.stringify(this.numeratorEquationStringArr),
+      "denominatorEquationString": formValue.allowQueryBuilder ? JSON.stringify([]) : JSON.stringify(this.denominatorEquationStringArr),
       "colourSchema": JSON.stringify(this.getColorSchemaObj()),
       "gender": null,
       "age": null,
