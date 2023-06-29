@@ -28,10 +28,13 @@ import com.argusoft.who.emcare.ui.common.stageToIconMap
 import com.argusoft.who.emcare.ui.home.patient.PatientRepository
 import com.argusoft.who.emcare.utils.extention.orEmpty
 import com.argusoft.who.emcare.utils.listener.SingleLiveEvent
+import com.google.android.fhir.FhirEngine
 import com.google.android.fhir.datacapture.extensions.allItems
 import com.google.android.fhir.datacapture.extensions.asStringValue
 import com.google.android.fhir.datacapture.extensions.createQuestionnaireResponseItem
 import com.google.android.fhir.knowledge.KnowledgeManager
+import com.google.android.fhir.search.Order
+import com.google.android.fhir.search.search
 import com.google.android.fhir.workflow.FhirOperator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -46,6 +49,7 @@ import org.hl7.fhir.r4.model.Identifier
 import org.hl7.fhir.r4.model.Library
 import org.hl7.fhir.r4.model.Parameters
 import org.hl7.fhir.r4.model.Patient
+import org.hl7.fhir.r4.model.PlanDefinition
 import org.hl7.fhir.r4.model.Questionnaire
 import org.hl7.fhir.r4.model.QuestionnaireResponse
 import org.hl7.fhir.r4.model.QuestionnaireResponse.QuestionnaireResponseItemComponent
@@ -67,6 +71,7 @@ class HomeViewModel @Inject constructor(
     private val patientRepository: PatientRepository,
     private val consultationFlowRepository: ConsultationFlowRepository,
     private val fhirOperator: FhirOperator,
+    private val fhirEngine: FhirEngine,
     private val libraryRepository: LibraryRepository,
     private val knowledgeManager: KnowledgeManager,
     @ApplicationContext private val context: Context,
@@ -118,19 +123,26 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             patientRepository.getPatients(search, facilityId).collect {
                 _patients.value = it
-
-
             }
         }
     }
 
     fun loadLibraries(context: Context, isReloadIG: Boolean) {
         viewModelScope.launch {
-            if (isReloadIG) {
-                runBlocking {
-                    clearKnowledgeManagerDatabase()
+            //Checking IG version and clearing KnowledgeManager if IG Version is updated.
+            val planDefinitions = fhirEngine.search<PlanDefinition> {
+                sort(PlanDefinition.DATE, Order.ASCENDING)
+            }
+            if(planDefinitions.isNotEmpty()) {
+                val latestIGVersion = planDefinitions.last().version
+                if(preference.getCurrentIGVersion() != latestIGVersion) {
+                    preference.setCurrentIGVersion(latestIGVersion)
+                    runBlocking {
+                        clearKnowledgeManagerDatabase()
+                    }
                 }
             }
+
             libraryRepository.getLibraries().collect {
                 val librariesList = it.data
                 librariesList?.forEach { library ->

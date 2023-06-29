@@ -55,6 +55,11 @@ interface Preference {
 
     fun getEndAudit(): String
 
+    fun getCurrentIGVersion(): String
+
+    fun setCurrentIGVersion(currentIGVersion: String)
+
+
     fun clear()
 
     fun clearAll()

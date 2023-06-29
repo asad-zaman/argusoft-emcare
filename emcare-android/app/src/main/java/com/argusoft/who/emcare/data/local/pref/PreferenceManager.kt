@@ -24,6 +24,7 @@ class PreferenceManager(private val sharedPreferences: EncPref) : Preference {
         private const val COUNTRY = "COUNTRY"
         private const val START_AUDIT = "START_AUDIT"
         private const val END_AUDIT = "END_AUDIT"
+        private const val CURRENT_IG_VERSION = "CURRENT_IG_VERSION"
 
     }
 
@@ -137,6 +138,14 @@ class PreferenceManager(private val sharedPreferences: EncPref) : Preference {
 
     override fun getEndAudit(): String {
         return sharedPreferences.getString(END_AUDIT, "")
+    }
+
+    override fun getCurrentIGVersion(): String {
+        return sharedPreferences.getString(CURRENT_IG_VERSION, "")
+    }
+
+    override fun setCurrentIGVersion(currentIGVersion: String) {
+        sharedPreferences.putString(CURRENT_IG_VERSION, currentIGVersion)
     }
 
     override fun clear() {
