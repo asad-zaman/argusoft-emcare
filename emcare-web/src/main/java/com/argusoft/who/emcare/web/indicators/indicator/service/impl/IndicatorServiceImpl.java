@@ -157,6 +157,7 @@ public class IndicatorServiceImpl implements IndicatorService {
                 }
             }
         }
+        responseList.sort((ind1, ind2) -> ind2.get(CommonConstant.INDICATOR_VALUE).toString().compareTo(ind1.get(CommonConstant.INDICATOR_VALUE).toString()));
         return ResponseEntity.status(HttpStatus.OK).body(responseList);
     }
 
