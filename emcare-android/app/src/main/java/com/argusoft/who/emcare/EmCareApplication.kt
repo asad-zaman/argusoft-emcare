@@ -84,14 +84,16 @@ class EmCareApplication : Application(), Configuration.Provider, DataCaptureConf
             FhirEngineConfiguration(
                 enableEncryptionIfSupported = false,
                 databaseErrorStrategy = DatabaseErrorStrategy.RECREATE_AT_OPEN,
-                serverConfiguration = ServerConfiguration(BuildConfig.FHIR_BASE_URL,
-                networkConfiguration = NetworkConfiguration(connectionTimeOut = 1200, readTimeOut = 1200, writeTimeOut = 1200),
-                authenticator = EmcareAuthenticator(preference),
-                httpLogger = HttpLogger(
+                serverConfiguration = ServerConfiguration(
+                    baseUrl = BuildConfig.FHIR_BASE_URL,
+                    networkConfiguration = NetworkConfiguration(connectionTimeOut = 1200, readTimeOut = 1200, writeTimeOut = 1200, uploadWithGzip = true),
+                    authenticator = EmcareAuthenticator(preference),
+                    httpLogger = HttpLogger(
                     HttpLogger.Configuration(
                         if (BuildConfig.DEBUG) HttpLogger.Level.BODY else HttpLogger.Level.BASIC
                     )
-                ) { Timber.tag("App-HttpLog").d(it) })
+                    ) { Timber.tag("App-HttpLog").d(it) }
+                )
             )
         )
     }

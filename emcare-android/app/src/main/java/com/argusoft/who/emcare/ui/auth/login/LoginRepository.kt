@@ -119,7 +119,7 @@ class LoginRepository @Inject constructor(
 
     fun addDevice(deviceDetails: DeviceDetails) {
         if (networkHelper.isInternetAvailable()) {
-            runBlocking(Dispatchers.IO) {
+            CoroutineScope(Dispatchers.IO).launch {
                 val planDefinitions = fhirEngine.search<PlanDefinition> {
                     sort(PlanDefinition.DATE, Order.ASCENDING)
                 }

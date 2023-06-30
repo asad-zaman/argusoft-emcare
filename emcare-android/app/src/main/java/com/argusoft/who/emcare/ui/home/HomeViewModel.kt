@@ -131,26 +131,11 @@ class HomeViewModel @Inject constructor(
 
     fun loadLibraries(isReloadHomeActivity: Boolean) {
         viewModelScope.launch {
-            //Checking IG version and clearing KnowledgeManager if IG Version is updated.
-            val planDefinitions = fhirEngine.search<PlanDefinition> {
-                sort(PlanDefinition.DATE, Order.ASCENDING)
-            }
-            if(planDefinitions.isNotEmpty()) {
-                val latestIGVersion = planDefinitions.last().version
-                if(preference.getCurrentIGVersion() != latestIGVersion) {
-                    preference.setCurrentIGVersion(latestIGVersion)
-                    runBlocking {
-                        clearKnowledgeManagerDatabase()
-                    }
-                }
-            }
 
             libraryRepository.getLibraries().collect {
                 val librariesList = it.data
                 librariesList?.forEach { library ->
-                    runBlocking {
-                        knowledgeManager.install(writeToFile(library))
-                    }
+                    knowledgeManager.install(writeToFile(library))
                 }
             }.let {
                 _librariesLoaded.value = ApiResponse.Success(if (isReloadHomeActivity) 1 else 0)
