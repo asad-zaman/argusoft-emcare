@@ -137,7 +137,7 @@ abstract class BaseFragment<B : ViewBinding> : Fragment(), View.OnClickListener 
                         requireContext().getDeviceUUID().toString(),
                         BuildConfig.VERSION_NAME
                     )
-                    homeViewModel.loadLibraries(context!!, true)
+                    homeViewModel.loadLibraries(isRedirectToHome)
                     fhirResourcesViewModel.purgeAllAudits()
 //                    Handler(Looper.getMainLooper()).postDelayed({
 //                        progressLayout.updateProgressUi(true, true)
@@ -164,12 +164,12 @@ abstract class BaseFragment<B : ViewBinding> : Fragment(), View.OnClickListener 
                     fhirResourcesViewModel.purgeAllAudits()
                     if(isRedirectToHome) {
                         if (preference.getFacilityId().isNotEmpty()) {
-                            homeViewModel.loadLibraries(context!!,true)
+                            homeViewModel.loadLibraries(isRedirectToHome)
                         } else {
                             progressLayout.hideProgressUi()
                         }
                     }else{
-                        homeViewModel.loadLibraries(context!!,true)
+                        homeViewModel.loadLibraries(isRedirectToHome)
 //                        progressLayout.updateProgressUi(true, true)
                     }
                 }

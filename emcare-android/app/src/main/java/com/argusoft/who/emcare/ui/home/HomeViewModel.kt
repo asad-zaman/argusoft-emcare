@@ -1,6 +1,7 @@
 package com.argusoft.who.emcare.ui.home
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -39,6 +40,7 @@ import com.google.android.fhir.workflow.FhirOperator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -127,7 +129,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun loadLibraries(context: Context, isReloadIG: Boolean) {
+    fun loadLibraries(isReloadHomeActivity: Boolean) {
         viewModelScope.launch {
             //Checking IG version and clearing KnowledgeManager if IG Version is updated.
             val planDefinitions = fhirEngine.search<PlanDefinition> {
@@ -151,7 +153,7 @@ class HomeViewModel @Inject constructor(
                     }
                 }
             }.let {
-                _librariesLoaded.value = ApiResponse.Success(if (isReloadIG) 1 else 0)
+                _librariesLoaded.value = ApiResponse.Success(if (isReloadHomeActivity) 1 else 0)
             }
         }
     }

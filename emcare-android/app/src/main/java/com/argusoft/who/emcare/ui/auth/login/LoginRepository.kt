@@ -42,65 +42,6 @@ class LoginRepository @Inject constructor(
         }
     }
 
-    fun getLoggedInUser(loginResponse: ApiResponse<User>, user: User, requestMap: Map<String, String>, deviceDetails: DeviceDetails) = flow {
-        val loggedInUserResponse = api.getLoggedInUser()
-        loggedInUserResponse.whenResult(onSuccess = { loggedInUser ->
-            if(loggedInUser.facility == null || loggedInUser.facility!!.isEmpty()){
-                preference.clearAll()
-                emit(ApiResponse.ApiError(apiErrorMessageResId = R.string.error_facility_not_assigned_user))
-            }else {
-                //Set preference data
-                if (preference.getFacilityId() != loggedInUser.facility!![0].facilityId || preference.getFacilityId()
-                        .isEmpty()
-                ) {
-                    database.deleteAllConsultations()
-                    CoroutineScope(Dispatchers.IO).launch {
-                        fhirEngine.clearDatabase()
-                    }
-                    preference.writeLastSyncTimestamp("") //Since its a new user and database is cleared it will require complete sync.
-                }
-                preference.setFacilityId(loggedInUser.facility!![0].facilityId)
-                preference.setLoggedInUser(loggedInUser)
-                user.applicationAgent?.let { preference.setCountry(it) }
-                database.saveLoginUser(loggedInUser.apply {
-                    this.password = requestMap["password"]?.let { EncPref.encrypt(it) }
-                })
-            }
-
-            //Get Device Block or not
-            val getDevice = deviceDetails.deviceUUID?.let { api.getDevice(it) }
-            getDevice?.whenResult(onSuccess = {
-                deviceDetails.isBlocked = it.isBlocked
-                CoroutineScope(Dispatchers.IO).launch  {
-                    val planDefinitions = fhirEngine.search<PlanDefinition> {
-                        sort(PlanDefinition.DATE, Order.ASCENDING)
-                    }
-                    if(planDefinitions.isNotEmpty())
-                        deviceDetails.igVersion = planDefinitions.last().version
-                    api.addDevice(deviceDetails)
-                }
-
-                if (it.isBlocked == true) {
-                    emit(ApiResponse.ApiError(apiErrorMessageResId = R.string.blocked_device_message))
-                } else {
-                    emit(loginResponse)
-                }
-            }, onFailed = {
-                CoroutineScope(Dispatchers.IO).launch  {
-                    val planDefinitions = fhirEngine.search<PlanDefinition> {
-                        sort(PlanDefinition.DATE, Order.ASCENDING)
-                    }
-                    if(planDefinitions.isNotEmpty())
-                        deviceDetails.igVersion = planDefinitions.last().version
-                    api.addDevice(deviceDetails)
-                }
-                emit(loginResponse)
-            })
-        }, onFailed = {
-            emit(loginResponse)
-        })
-    }
-
     fun login(requestMap: Map<String, String>, deviceDetails: DeviceDetails) = flow {
         if (networkHelper.isInternetAvailable()) {
             val loginResponse = api.login(requestMap)

@@ -31,7 +31,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
     override fun initView() {
 //        signUpViewModel.getLocationsAndRoles()
 
-        homeViewModel.loadLibraries(applicationContext, false)
+        homeViewModel.loadLibraries(true)
         val drawerLayout: DrawerLayout = binding.drawerLayout
         val navView: NavigationView = binding.navView
         navHostFragment = supportFragmentManager.findFragmentById(R.id.navHostFragment) as NavHostFragment
