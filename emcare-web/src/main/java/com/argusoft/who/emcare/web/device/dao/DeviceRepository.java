@@ -42,21 +42,19 @@ public interface DeviceRepository extends JpaRepository<DeviceMaster, Integer> {
             @Param("deviceId") Integer deviceId
     );
 
-    public List<DeviceMaster> findByAndroidVersionContainingIgnoreCaseOrDeviceNameContainingIgnoreCaseOrDeviceOsContainingIgnoreCaseOrDeviceModelContainingIgnoreCaseOrDeviceUUIDContainingIgnoreCaseOrUserNameContainingIgnoreCase(
-            String searchString1,
-            String searchString2,
-            String searchString3,
-            String searchString4,
-            String searchString5,
-            String searchString6
-            );
-
-    public Page<DeviceMaster> findByAndroidVersionContainingIgnoreCaseOrDeviceNameContainingIgnoreCaseOrDeviceOsContainingIgnoreCaseOrDeviceModelContainingIgnoreCaseOrDeviceUUIDContainingIgnoreCaseOrUserNameContainingIgnoreCase(
-            String searchString1,
-            String searchString2,
-            String searchString3,
-            String searchString4,
-            String searchString5,
-            String searchString6,
-            Pageable pageable);
+@Query(value = "\tselect * from device_master where ( \n" +
+        "\t\t  CAST(device_master.\"device_uuid\" AS TEXT) ILIKE CONCAT('%', :searchString, '%') OR\n" +
+        "\t      CAST(device_master.\"android_version\"  AS TEXT) ILIKE CONCAT('%', :searchString, '%') OR\n" +
+        "\t      CAST(device_master.\"user_name\" AS TEXT) ILIKE CONCAT('%', :searchString, '%')\n" +
+        "\t) limit 10 offset :offset ;", nativeQuery = true)
+    List<DeviceMaster> getAllDeviceWithSearch(
+            @Param(value = "searchString") String searchString,
+            @Param(value = "offset") Integer offset
+    );
+@Query(value = "\tselect count(*) from device_master where ( \n" +
+        "\t\t  CAST(device_master.\"device_uuid\" AS TEXT) ILIKE CONCAT('%', :searchString, '%') OR\n" +
+        "\t      CAST(device_master.\"android_version\"  AS TEXT) ILIKE CONCAT('%', :searchString, '%') OR\n" +
+        "\t      CAST(device_master.\"user_name\" AS TEXT) ILIKE CONCAT('%', :searchString, '%')\n" +
+        "\t)", nativeQuery = true)
+    Long getAllDeviceWithSearchCount(@Param(value = "searchString")String searchString);
 }
