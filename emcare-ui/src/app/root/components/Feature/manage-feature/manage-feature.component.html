@@ -50,7 +50,7 @@
                 </ng-template>
               </td>
               <td>{{ featureConfig.userId ? featureConfig.userName : featureConfig.roleName }}</td>
-              <td *ngIf="isActionShow">
+              <td>
                 <p-checkbox (click)="onCheckboxClicked(i)" name="group1" label="Can Add" value="canAdd"
                   [(ngModel)]="featureConfig.selectedFeatures">
                 </p-checkbox>
