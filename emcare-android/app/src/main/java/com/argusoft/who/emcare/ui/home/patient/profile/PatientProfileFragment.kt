@@ -1,15 +1,25 @@
 package com.argusoft.who.emcare.ui.home.patient.profile
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.argusoft.who.emcare.BuildConfig
 import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.databinding.FragmentPatientProfileBinding
+import com.argusoft.who.emcare.sync.SyncViewModel
+import com.argusoft.who.emcare.ui.auth.login.LoginViewModel
 import com.argusoft.who.emcare.ui.common.*
 import com.argusoft.who.emcare.ui.common.base.BaseFragment
+import com.argusoft.who.emcare.ui.home.HomeActivity
+import com.argusoft.who.emcare.ui.home.HomeViewModel
+import com.argusoft.who.emcare.ui.home.fhirResources.FhirResourcesViewModel
 import com.argusoft.who.emcare.utils.extention.*
+import com.google.android.fhir.sync.SyncJobStatus
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
 import java.util.*
@@ -19,6 +29,10 @@ import java.util.*
 class PatientProfileFragment : BaseFragment<FragmentPatientProfileBinding>() {
 
     private val patientProfileViewModel: PatientProfileViewModel by viewModels()
+    private val homeViewModel: HomeViewModel by viewModels()
+    private val syncViewModel: SyncViewModel by viewModels()
+    private val loginViewModel: LoginViewModel by viewModels()
+    private val fhirResourcesViewModel: FhirResourcesViewModel by viewModels()
     private lateinit var activeConsultationsAdapter: PatientProfileActiveConsultationsAdapter
     private lateinit var previousConsultationsAdapter: PatientProfilePreviousConsultationsAdapter
 
@@ -83,7 +97,75 @@ class PatientProfileFragment : BaseFragment<FragmentPatientProfileBinding>() {
 
     override fun initObserver() {
 
-        initObserverSync(binding.patientProfileLayout, false)
+//        initObserverSync(binding.patientProfileLayout, false)
+        //TODO: make this method generic
+        observeNotNull(syncViewModel.syncState) { apiResponse ->
+
+            apiResponse.whenLoading {
+                if (preference.getFacilityId().isNotEmpty())
+                    binding.patientProfileLayout.showHorizontalProgress(true)
+            }
+
+            apiResponse.whenInProgress {
+                Log.d("it.total", it.first.toDouble().toString())
+                Log.d("it.progress", it.second.toDouble().toString())
+                if (it.second >= 100) {
+                    loginViewModel.addDevice(
+                        getDeviceName(),
+                        getDeviceOS(),
+                        getDeviceModel(),
+                        requireContext().getDeviceUUID().toString(),
+                        BuildConfig.VERSION_NAME
+                    )
+                    homeViewModel.loadLibraries(false)
+                    fhirResourcesViewModel.purgeAllAudits()
+
+                } else if (it.first > 0 && it.second <= 100) {
+                    val progress = it.second
+                    "Synced $progress%".also {
+                        binding.patientProfileLayout.showProgress(it)
+                        Log.d("Synced", "$progress%")
+                    }
+                } else if (it.first == 0) {
+                    loginViewModel.addDevice(
+                        getDeviceName(),
+                        getDeviceOS(),
+                        getDeviceModel(),
+                        requireContext().getDeviceUUID().toString(),
+                        BuildConfig.VERSION_NAME
+                    )
+                    fhirResourcesViewModel.purgeAllAudits()
+                    homeViewModel.loadLibraries(false)
+                }
+            }
+
+            apiResponse.handleListApiView(binding.patientProfileLayout) {
+                when (it) {
+                    is SyncJobStatus.Failed -> {
+                        binding.patientProfileLayout.showContent()
+                        binding.patientProfileLayout.hideProgressUi()
+                        requireContext().showSnackBar(
+                            view = binding.patientProfileLayout,
+                            message = getString(R.string.msg_sync_failed),
+                            duration = Snackbar.LENGTH_SHORT,
+                            isError = true
+                        )
+                    }
+                }
+            }
+        }
+
+        //Temporarily added method TODO: make this method generic
+        observeNotNull(homeViewModel.librariesLoaded) {
+            it.whenSuccess { value ->
+                activeConsultationsAdapter.clearAllItems()
+                previousConsultationsAdapter.clearAllItems()
+                patientProfileViewModel.getActiveConsultations(requireArguments().getString(INTENT_EXTRA_PATIENT_ID)!!)
+                patientProfileViewModel.getPreviousConsultations(requireArguments().getString(INTENT_EXTRA_PATIENT_ID)!!)
+                binding.patientProfileLayout.updateProgressUi(isFinishing = true, isShowCompleted = true)
+            }
+        }
+
         initObserverPurgeResources(binding.patientProfileLayout,false)
 
         observeNotNull(patientProfileViewModel.activeConsultations) { apiResponse ->

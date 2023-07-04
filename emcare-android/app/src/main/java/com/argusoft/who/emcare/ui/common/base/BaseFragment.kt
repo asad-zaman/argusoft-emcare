@@ -139,13 +139,6 @@ abstract class BaseFragment<B : ViewBinding> : Fragment(), View.OnClickListener 
                     )
                     homeViewModel.loadLibraries(isRedirectToHome)
                     fhirResourcesViewModel.purgeAllAudits()
-//                    Handler(Looper.getMainLooper()).postDelayed({
-//                        progressLayout.updateProgressUi(true, true)
-//                        if(isRedirectToHome) {
-//                            startActivity(Intent(requireContext(), HomeActivity::class.java))
-//                            requireActivity().finish()
-//                        }
-//                    }, 5000)
 
                 } else if (it.first > 0 && it.second <= 100) {
                     val progress = it.second
