@@ -129,10 +129,11 @@ public class UserController {
         return userService.updateUserStatus(userUpdateDto);
     }
 
-    @GetMapping("user/locationId/{locationId}")
-    public PageDto getUsersUnderLocation(@PathVariable(value = "locationId") Object locationId,
+    @GetMapping("user/locationId")
+    public PageDto getUsersUnderLocation(@Nullable @RequestParam(value = "locationId") Object locationId,
+                                         @Nullable @RequestParam(value = "searchString")String searchString,
                                          @RequestParam(value = "pageNo") Integer pageNo,@RequestParam(value = "filter", required = false) Boolean filter) {
-        return userService.getUsersUnderLocation(locationId, pageNo,filter);
+        return userService.getUsersUnderLocation(locationId,searchString, pageNo,filter);
     }
 
     @GetMapping("user/check/email")

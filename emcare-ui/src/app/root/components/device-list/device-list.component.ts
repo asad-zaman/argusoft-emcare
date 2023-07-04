@@ -44,9 +44,6 @@ export class DeviceListComponent implements OnInit {
     this.authGuard.getFeatureData().subscribe(res => {
       if (res.relatedFeature && res.relatedFeature.length > 0) {
         this.isView = res.featureJSON['canView'];
-        if (this.isView === false) {
-          this.toasterService.showToast('info', "Sorry! You don't have access to this page!", 'EMCARE');
-        }
       }
     });
   }

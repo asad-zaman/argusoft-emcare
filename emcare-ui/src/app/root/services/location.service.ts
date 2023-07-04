@@ -78,22 +78,13 @@ export class LocationService {
     return this.http.get(`${this.locationURL}/child/${id}`, this.getHeaders());
   }
 
-  getLocationsByPageIndex(pageIndex, search?) {
-    let url;
-    if (search) {
-      url = `${this.locationURL}/page?pageNo=${pageIndex}&orderBy=null&order=null&search=${search}`;
-    } else {
-      url = `${this.locationURL}/page?pageNo=${pageIndex}&orderBy=null&order=null`;
-    }
-    return this.http.get(url, this.getHeaders());
-  }
-
   getParentLocationsById(id) {
     return this.http.get(`${this.locationURL}/parent/${id}`, this.getHeaders());
   }
 
-  getLocationBasedOnFilterAndPageIndex(locationId, pageIndex) {
-    const url = `${this.locationURL}/page/location?pageNo=${pageIndex}&locationId=${locationId}`;
+  getLocationByData(pageIndex, filterData) {
+    let { locationId, searchString } = filterData;
+    const url = `${this.locationURL}/page/location?pageNo=${pageIndex}&locationId=${locationId ? locationId : ''}&searchString=${searchString ? searchString : ''}`;
     return this.http.get(url, this.getHeaders());
   }
 }

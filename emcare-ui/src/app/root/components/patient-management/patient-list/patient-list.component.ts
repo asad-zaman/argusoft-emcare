@@ -28,7 +28,6 @@ export class PatientListComponent implements OnInit {
     totalCount = 0;
     tableSize = 10;
     isAPIBusy: boolean = true;
-    isLocationFilterOn: boolean = false;
     selectedId: any;
     searchTermChanged: Subject<string> = new Subject<string>();
     isView: boolean = true;
@@ -43,6 +42,7 @@ export class PatientListComponent implements OnInit {
         'locationName', 'consultationDate'];
     disableSaveButton: boolean;
     showAllPatientCheckbox = false;
+    isExportFeatureAllowed = false;
 
     constructor(
         private readonly fhirService: FhirService,
@@ -64,12 +64,14 @@ export class PatientListComponent implements OnInit {
         this.authGuard.getFeatureData().subscribe(res => {
             if (res.relatedFeature && res.relatedFeature.length > 0) {
                 this.isView = res.featureJSON['canView'];
+                this.isExportFeatureAllowed = res.featureJSON['canExport'];
             }
         });
     }
 
     manipulateResponse(res) {
         if (res && res['list']) {
+            this.filteredPatients = [];
             this.patients = res['list'];
             this.filteredPatients = this.patients;
             this.totalCount = res['totalCount'];
@@ -141,10 +143,6 @@ export class PatientListComponent implements OnInit {
 
         this.selectedId = data.locationId;
         this.dateObj = data.dateObj;
-
-        if (this.selectedId || this.dateObj['startDate'] || this.dateObj['endDate']) {
-            this.isLocationFilterOn = true;
-        }
         this.resetPageIndex();
         const pageIndex = this.currentPage == 0 ? this.currentPage : this.currentPage - 1;
         this.getPatientsBasedOnData(pageIndex);
@@ -152,6 +150,8 @@ export class PatientListComponent implements OnInit {
 
     clearFilter(event) {
         if (event) {
+            this.selectedId = null;
+            this.dateObj = null;
             this.resetPageIndex();
             this.getPatientsBasedOnData(this.currentPage);
         }

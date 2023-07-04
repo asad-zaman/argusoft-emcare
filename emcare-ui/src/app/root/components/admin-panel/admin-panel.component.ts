@@ -10,7 +10,8 @@ import { appConstants } from 'src/app/app.config';
 })
 export class AdminPanelComponent implements OnInit {
 
-  userName;
+  firstName;
+  lastName;
   settingArr: any = [];
   templateArr: any = [];
   userSettingObj: any[] = [];
@@ -29,7 +30,8 @@ export class AdminPanelComponent implements OnInit {
 
   prerequisite() {
     this.checkFeatures();
-    this.userName = localStorage.getItem('Username');
+    this.firstName = localStorage.getItem(appConstants.localStorageKeys.Firstname)
+    this.lastName = localStorage.getItem(appConstants.localStorageKeys.Lastname)
     this.getAllSettings();
     this.getAllEmailTemplates();
   }

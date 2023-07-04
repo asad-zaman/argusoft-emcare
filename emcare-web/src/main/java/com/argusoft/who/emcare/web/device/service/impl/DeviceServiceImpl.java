@@ -135,35 +135,29 @@ public class DeviceServiceImpl implements DeviceService {
     }
 
     @Override
-    public ResponseEntity<Object> getDevicePage(HttpServletRequest request, Integer pageNo, String orderBy, String order, String searchString) {
+    public PageDto getDevicePage(HttpServletRequest request, Integer pageNo, String orderBy, String order, String searchString) {
         List<DeviceWithUserDetails> list = new ArrayList<>();
         if (orderBy.equalsIgnoreCase("null")) {
             orderBy = "deviceName";
         }
-        Sort sort = order.equalsIgnoreCase(CommonConstant.DESC) ? Sort.by(orderBy).descending() : Sort.by(orderBy).ascending();
+//        Sort sort = order.equalsIgnoreCase(CommonConstant.DESC) ? Sort.by(orderBy).descending() : Sort.by(orderBy).ascending();
         Pageable page;
-        if (!sort.isEmpty()) {
-            page = PageRequest.of(pageNo, CommonConstant.PAGE_SIZE, sort);
-        } else {
-            page = PageRequest.of(pageNo, CommonConstant.PAGE_SIZE);
-        }
-        Long totalCount;
-        Page<DeviceMaster> allDevice;
-        if (searchString != null && !searchString.isEmpty()) {
-            totalCount = Long.valueOf(deviceRepository.findByAndroidVersionContainingIgnoreCaseOrDeviceNameContainingIgnoreCaseOrDeviceOsContainingIgnoreCaseOrDeviceModelContainingIgnoreCaseOrDeviceUUIDContainingIgnoreCaseOrUserNameContainingIgnoreCase(searchString, searchString, searchString, searchString, searchString, searchString).size());
-            allDevice = deviceRepository.findByAndroidVersionContainingIgnoreCaseOrDeviceNameContainingIgnoreCaseOrDeviceOsContainingIgnoreCaseOrDeviceModelContainingIgnoreCaseOrDeviceUUIDContainingIgnoreCaseOrUserNameContainingIgnoreCase(searchString, searchString, searchString, searchString, searchString, searchString, page);
-        } else {
-            totalCount = deviceRepository.count();
-            allDevice = deviceRepository.findAll(page);
-        }
-        allDevice.forEach(deviceMaster -> {
-        });
-        allDevice.forEach(deviceMaster -> list.add(DeviceMapper.getDeviceWithUser(deviceMaster, userService.getUserDtoById(deviceMaster.getLastLoggedInUser()))));
+//        if (!sort.isEmpty()) {
+//            page = PageRequest.of(pageNo, CommonConstant.PAGE_SIZE, sort);
+//        } else {
+// page = PageRequest.of(pageNo, CommonConstant.PAGE_SIZE);
+//        }
+
+        Integer offset = pageNo * 10;
+
+        List<DeviceMaster> allDevice = deviceRepository.getAllDeviceWithSearch(searchString, offset);
+
+        Long totalCount = deviceRepository.getAllDeviceWithSearchCount(searchString);
 
         PageDto pageDto = new PageDto();
-        pageDto.setList(list);
+        pageDto.setList(allDevice);
         pageDto.setTotalCount(totalCount);
-        return ResponseEntity.ok(pageDto);
+        return pageDto;
     }
 
 }

@@ -150,13 +150,14 @@ public class IndicatorServiceImpl implements IndicatorService {
             indicatorFilterDto.setAge(indicator.getAge());
             indicatorFilterDto.setGender(indicator.getGender());
             if (indicator.getDisplayType().equalsIgnoreCase(CommonConstant.INDICATOR_DISPLAY_TYPE_COUNT)) {
-                if (Boolean.TRUE.equals(indicator.getQueryConfigure())) {
+                if (Boolean.TRUE.equals(indicator.getIsQueryConfigure())) {
                     getCountByDirectQuery(indicator, responseList, indicatorFilterDto, false);
                 } else {
                     getCountIndicatorValue(indicator, numerator, denominator, responseList, indicatorFilterDto, false);
                 }
             }
         }
+        responseList.sort((ind1, ind2) -> ind2.get(CommonConstant.INDICATOR_VALUE).toString().compareTo(ind1.get(CommonConstant.INDICATOR_VALUE).toString()));
         return ResponseEntity.status(HttpStatus.OK).body(responseList);
     }
 
@@ -171,7 +172,7 @@ public class IndicatorServiceImpl implements IndicatorService {
         Map<String, Long> numerator = new HashMap<>();
         Map<String, Long> denominator = new HashMap<>();
         if (indicator.getDisplayType().equalsIgnoreCase(CommonConstant.INDICATOR_DISPLAY_TYPE_COUNT)) {
-            if (Boolean.TRUE.equals(indicator.getQueryConfigure())) {
+            if (Boolean.TRUE.equals(indicator.getIsQueryConfigure())) {
                 getCountByDirectQuery(indicator, responseList, indicatorFilterDto, true);
             } else {
                 getCountIndicatorValue(indicator, numerator, denominator, responseList, indicatorFilterDto, true);
@@ -244,6 +245,7 @@ public class IndicatorServiceImpl implements IndicatorService {
         }
         String facilityId = getCommaSepratedFacilityIdsWithFullString(facilityIds);
         String query = indicatorQueryBuilder.changeQueryBasedOnFilterValueReplace(facilityId, indicator, indicatorFilterDto);
+        System.out.println("====="+query);
         List<Map<String, Object>> observationResources = observationCustomResourceRepository.findByPublished(query);
 
         Map<String, Object> stringObjectMap = new HashMap<>();
@@ -258,7 +260,7 @@ public class IndicatorServiceImpl implements IndicatorService {
         stringObjectMap.put("indicatorName", indicator.getIndicatorName());
         stringObjectMap.put("indicatorType", indicator.getDisplayType());
         stringObjectMap.put("colorSchema", indicator.getColourSchema());
-        stringObjectMap.put(CommonConstant.INDICATOR_VALUE, df.format(observationResources.size()));
+        stringObjectMap.put(CommonConstant.INDICATOR_VALUE, observationResources.size() > 0 ? df.format(observationResources.get(0).get("finalvalue")) : df.format(0));
         responseList.add(stringObjectMap);
     }
 
