@@ -124,7 +124,9 @@ public class QuestionnaireResponseServiceImpl implements QuestionnaireResponseSe
         Map<String, Object> responsesWithEncounter = new HashMap<>();
         for (Map.Entry<String, List<QuestionnaireResponse>> key : responses.entrySet()) {
             EncounterResource encounterResource = encounterResourceRepository.findByResourceId(key.getKey());
-            responsesWithEncounter.put(encounterResource.getCreatedOn().toString(), responses.get(key.getKey()));
+            if(encounterResource != null) {
+                responsesWithEncounter.put(encounterResource.getCreatedOn().toString(), responses.get(key.getKey()));
+            }
         }
         return responsesWithEncounter;
     }
