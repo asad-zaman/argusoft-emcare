@@ -18,9 +18,12 @@ import org.apache.commons.compress.utils.Lists;
 import org.codehaus.jettison.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -105,6 +108,22 @@ public class LanguageServiceImpl implements LanguageService {
         return languageRepository.saveAndFlush(LanguageMapper.getLanguageTranslation(language));
     }
 
+    @Override
+    public String getAllKeys() throws IOException {
+
+        Resource resource = new ClassPathResource("en.json");
+        InputStreamReader file = new InputStreamReader(resource.getInputStream());
+        BufferedReader bufferedReader = new BufferedReader(file);
+        String keys = "";
+        String line = bufferedReader.readLine();
+
+        while (line != null) {
+            keys += line;
+            line = bufferedReader.readLine();
+        }
+        return keys;
+    }
+
     @Transactional
     public void translateNewlyAddedLabels() {
         LOGGER.info("-----------FOR TENANT " + TenantContext.getCurrentTenant() + "---------------- ");
@@ -112,10 +131,10 @@ public class LanguageServiceImpl implements LanguageService {
         LanguageTranslator languageTranslator = ibmConfig.getLanguageTranslatorInstance();
         List<String> englishKeys = new ArrayList<>();
         JSONObject englishJson = new JSONObject();
-        LanguageTranslation englishLanguage = languageRepository.findByLanguageCode("en");
         List<LanguageTranslation> otherLanguage = languageRepository.findByLanguageCodeNot("en");
         try {
-            englishJson = new JSONObject(englishLanguage.getLanguageData());
+            englishJson = new JSONObject(getAllKeys());
+
             englishKeys = Lists.newArrayList(englishJson.keys());
         } catch (Exception ex) {
             LOGGER.info("Can't parse English Json");

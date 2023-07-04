@@ -159,6 +159,10 @@ export class ManageTenantComponent implements OnInit {
   }
 
   saveData() {
+    let englishKeys
+    (this.fhirService.getAllKeys().subscribe(key => {
+      englishKeys = key
+    }));
     this.submitted = [true, true, true, true];
     if (this.tenantForm.valid &&
       !this.isDomainRepeat &&
@@ -199,7 +203,7 @@ export class ManageTenantComponent implements OnInit {
           languageCode: this.tenantForm.get('newSelectedLanguage').value['id'],
           languageName: this.tenantForm.get('newSelectedLanguage').value['lanName']
         },
-        defaultLanguage: JSON.stringify(enTrans)
+        defaultLanguage: JSON.stringify(englishKeys)
       };
       this.fhirService.addTenant(data).subscribe(() => {
         this.toasterService.showToast('success', 'Tenant added successfully!', 'EM CARE!');

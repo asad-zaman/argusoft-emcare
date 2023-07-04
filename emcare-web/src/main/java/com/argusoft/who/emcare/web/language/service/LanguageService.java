@@ -5,6 +5,7 @@ import com.argusoft.who.emcare.web.language.dto.LanguageDto;
 import com.argusoft.who.emcare.web.language.model.LanguageTranslation;
 import com.ibm.watson.language_translator.v3.model.Languages;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface LanguageService {
@@ -16,4 +17,6 @@ public interface LanguageService {
     public LanguageTranslation createNewLanguageTranslation(LanguageAddDto languageAddDto);
 
     public LanguageTranslation addOrUpdateLanguageTranslation(LanguageDto language);
+
+    public String getAllKeys() throws IOException;
 }
