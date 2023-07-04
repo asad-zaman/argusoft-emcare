@@ -89,11 +89,6 @@ export class FhirService {
         return this.http.get(url, this.getHeaders());
     }
 
-    getAllKeys() {
-        const url = `${environment.apiUrl}/api/language/allKeys`;
-        return this.http.get(url, this.getHeaders());
-    }
-
     getAllLaunguages() {
         const url = `${environment.apiUrl}/api/language/availableLanguage`;
         return this.http.get(url, this.getHeaders());
