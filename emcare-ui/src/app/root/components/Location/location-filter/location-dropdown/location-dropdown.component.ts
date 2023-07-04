@@ -291,15 +291,14 @@ export class LocationDropdownComponent implements OnInit, OnChanges {
 
   onDateSelection(num, index) {
     const controls = this.locationFilterForm.controls;
-    if (controls.startDate.value && controls.endDate.value) {
-      const startDate = new Date(controls.startDate.value).getTime();
-      const endDate = new Date(controls.endDate.value).getTime();
-      if (endDate < startDate) {
-        this.toasterService.showToast('error', 'End Date should be greater than start date!', 'EM CARE!');
-        num === 1 ? controls.startDate.setValue(null) : controls.endDate.setValue(null);
-      } else {
-        this.emitData();
-      }
+    const startDate = new Date(controls.startDate.value).getTime();
+    const endDate = new Date(controls.endDate.value).getTime();
+    // if both the dates have values then only we should check otherwise no checking
+    if ((endDate < startDate) && controls.startDate.value && controls.endDate.value) {
+      this.toasterService.showToast('error', 'End Date should be greater than start date!', 'EM CARE!');
+      num === 1 ? controls.startDate.setValue(null) : controls.endDate.setValue(null);
+    } else {
+      this.emitData();
     }
   }
 }

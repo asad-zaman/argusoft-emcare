@@ -166,7 +166,7 @@ export class IndicatorComponent implements OnInit {
       denominatorEquation: denominatorEquation,
       colorArr: colorSchema.length > 0 ?
         this.setColorSchema(colorSchema) : [],
-      allowQueryBuilder: currentIndicator.query ? true : false,
+      allowQueryBuilder: currentIndicator.isQueryConfigure,
       query: currentIndicator.query
     });
     this.setNumeratorEquationArr();
