@@ -150,7 +150,7 @@ public class IndicatorServiceImpl implements IndicatorService {
             indicatorFilterDto.setAge(indicator.getAge());
             indicatorFilterDto.setGender(indicator.getGender());
             if (indicator.getDisplayType().equalsIgnoreCase(CommonConstant.INDICATOR_DISPLAY_TYPE_COUNT)) {
-                if (Boolean.TRUE.equals(indicator.getQueryConfigure())) {
+                if (Boolean.TRUE.equals(indicator.getIsQueryConfigure())) {
                     getCountByDirectQuery(indicator, responseList, indicatorFilterDto, false);
                 } else {
                     getCountIndicatorValue(indicator, numerator, denominator, responseList, indicatorFilterDto, false);
@@ -172,7 +172,7 @@ public class IndicatorServiceImpl implements IndicatorService {
         Map<String, Long> numerator = new HashMap<>();
         Map<String, Long> denominator = new HashMap<>();
         if (indicator.getDisplayType().equalsIgnoreCase(CommonConstant.INDICATOR_DISPLAY_TYPE_COUNT)) {
-            if (Boolean.TRUE.equals(indicator.getQueryConfigure())) {
+            if (Boolean.TRUE.equals(indicator.getIsQueryConfigure())) {
                 getCountByDirectQuery(indicator, responseList, indicatorFilterDto, true);
             } else {
                 getCountIndicatorValue(indicator, numerator, denominator, responseList, indicatorFilterDto, true);
@@ -245,6 +245,7 @@ public class IndicatorServiceImpl implements IndicatorService {
         }
         String facilityId = getCommaSepratedFacilityIdsWithFullString(facilityIds);
         String query = indicatorQueryBuilder.changeQueryBasedOnFilterValueReplace(facilityId, indicator, indicatorFilterDto);
+        System.out.println("====="+query);
         List<Map<String, Object>> observationResources = observationCustomResourceRepository.findByPublished(query);
 
         Map<String, Object> stringObjectMap = new HashMap<>();

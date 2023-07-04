@@ -152,11 +152,11 @@ public class IndicatorDto {
         this.gender = gender;
     }
 
-    public Boolean getQueryConfigure() {
+    public Boolean getIsQueryConfigure() {
         return isQueryConfigure;
     }
 
-    public void setQueryConfigure(Boolean queryConfigure) {
+    public void setIsQueryConfigure(Boolean queryConfigure) {
         isQueryConfigure = queryConfigure;
     }
 
