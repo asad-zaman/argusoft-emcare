@@ -72,9 +72,8 @@ public class LanguageServiceImpl implements LanguageService {
         LanguageTranslation languageTranslation = new LanguageTranslation();
 
         LanguageTranslator languageTranslator = ibmConfig.getLanguageTranslatorInstance();
-        LanguageTranslation englishLanguage = languageRepository.findByLanguageCode("en");
         try {
-            jsonObject = new JSONObject(englishLanguage.getLanguageData());
+            jsonObject = new JSONObject(getAllKeys());
             keys = jsonObject.keys();
             while (keys.hasNext()) {
                 String key = keys.next();
