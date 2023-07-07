@@ -457,7 +457,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseEntity<Object> userLogOut(HttpServletRequest request) throws ServletException {
         AccessToken user = emCareSecurityUser.getLoggedInUser();
-        Keycloak keycloak = keyCloakConfig.getInstance();
+        Keycloak keycloak = keyCloakConfig.getKeyCloakInstance();
         UserResource userResource = keycloak.realm(realm).users().get(user.getSubject());
         List<UserSessionRepresentation> userSessionRepresentations = userResource.getUserSessions();
 
@@ -480,7 +480,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseEntity<Object> addUser(UserDto user, HttpServletRequest request) {
-        Keycloak keycloak = keyCloakConfig.getInstance();
+        Keycloak keycloak = keyCloakConfig.getKeyCloakInstance();
 //        Get Realm Resource
         RealmResource realmResource = keycloak.realm(realm);
 //        Get User Resource
@@ -549,7 +549,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void addRealmRole(RoleDto role) {
-        Keycloak keycloak = keyCloakConfig.getInstanceByAuth();
+        Keycloak keycloak = keyCloakConfig.getKeyCloakInstance();
         RoleRepresentation roleRep = new RoleRepresentation();
         roleRep.setName(role.getRoleName());
         roleRep.setDescription(role.getRoleDescription());
@@ -592,7 +592,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseEntity<Object> updateUserStatus(UserUpdateDto userUpdateDto) {
-        Keycloak keycloak = keyCloakConfig.getInstanceByAuth();
+        Keycloak keycloak = keyCloakConfig.getKeyCloakInstance();
 //        Get User Resource
         UsersResource usersResource = keycloak.realm(realm).users();
         UserRepresentation user = usersResource.get(userUpdateDto.getUserId()).toRepresentation();
@@ -637,14 +637,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseEntity<Object> getUserRolesById(String userId) {
-        Keycloak keycloak = keyCloakConfig.getInstanceByAuth();
+        Keycloak keycloak = keyCloakConfig.getKeyCloakInstance();
         RoleMappingResource userRoles = keycloak.realm(realm).users().get(userId).roles();
         return ResponseEntity.ok(userRoles.getAll());
     }
 
     @Override
     public ResponseEntity<Object> updateRole(RoleUpdateDto roleUpdateDto) {
-        Keycloak keycloak = keyCloakConfig.getInstance();
+        Keycloak keycloak = keyCloakConfig.getKeyCloakInstance();
         RoleRepresentation roleRep = new RoleRepresentation();
         roleRep.setName(roleUpdateDto.getName());
         roleRep.setDescription(roleUpdateDto.getDescription());
@@ -659,7 +659,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String getRoleIdByName(String roleName) {
-        Keycloak keycloak = keyCloakConfig.getInstanceByAuth();
+        Keycloak keycloak = keyCloakConfig.getKeyCloakInstance();
         RoleResource roleResource = keycloak.realm(realm).roles().get(roleName);
         return roleResource.toRepresentation().getId();
     }
@@ -667,7 +667,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public String getRoleNameById(String roleId) {
         String roleName = "";
-        Keycloak keycloak = keyCloakConfig.getInstanceByAuth();
+        Keycloak keycloak = keyCloakConfig.getKeyCloakInstance();
         RoleRepresentation roleResource = keycloak.realm(realm).roles().list().stream().filter(role -> roleId.equals(role.getId())).findAny().orElse(null);
         if (roleResource != null) {
             roleName = roleResource.getName();
@@ -800,7 +800,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseEntity<Object> addUserForCountry(UserDto user, String tenantId) {
-        Keycloak keycloak = keyCloakConfig.getInstance();
+        Keycloak keycloak = keyCloakConfig.getKeyCloakInstance();
 //        Get Realm Resource
         RealmResource realmResource = keycloak.realm(realm);
 //        Get User Resource
@@ -877,7 +877,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void removeRole(String roleName) throws Exception {
         try {
-            Keycloak keycloak = keyCloakConfig.getInstance();
+            Keycloak keycloak = keyCloakConfig.getKeyCloakInstance();
             RealmResource realmResource = keycloak.realm(realm);
             keycloak.realm(realm).roles().deleteRole(roleName);
         } catch (Exception ex) {
@@ -888,7 +888,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void removeUser(String email) throws Exception {
         try {
-            Keycloak keycloak = keyCloakConfig.getInstance();
+            Keycloak keycloak = keyCloakConfig.getKeyCloakInstance();
             RealmResource realmResource = keycloak.realm(realm);
             UserRepresentation userRepresentation = getUserByEmailId(email);
             keycloak.realm(realm).users().delete(userRepresentation.getId());
@@ -906,7 +906,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public MultiLocationUserListDto getUserDtoById(String userId) {
-        Keycloak keycloak = keyCloakConfig.getInstanceByAuth();
+        Keycloak keycloak = keyCloakConfig.getKeyCloakInstance();
         MultiLocationUserListDto user;
         UserRepresentation userRepresentation = keycloak.realm(realm).users().get(userId).toRepresentation();
         List<RoleRepresentation> roleRepresentationList = keycloak.realm(realm).users().get(userRepresentation.getId()).roles().realmLevel().listAll();
@@ -936,13 +936,13 @@ public class UserServiceImpl implements UserService {
     @Override
     @Scope("request")
     public UserRepresentation getUserById(String userId) {
-        Keycloak keycloak = keyCloakConfig.getInstance();
+        Keycloak keycloak = keyCloakConfig.getKeyCloakInstance();
         return keycloak.realm(realm).users().get(userId).toRepresentation();
     }
 
     @Override
     public ResponseEntity<Object> updateUser(UserDto userDto, String userId, HttpServletRequest request) {
-        Keycloak keycloak = keyCloakConfig.getInstance();
+        Keycloak keycloak = keyCloakConfig.getKeyCloakInstance();
         RealmResource realmResource = keycloak.realm(realm);
         UserResource userResource = keycloak.realm(realm).users().get(userId);
         UserRepresentation newUser = userResource.toRepresentation();
@@ -991,7 +991,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseEntity<Object> updatePassword(UserDto userDto, String userId) {
-        Keycloak keycloak = keyCloakConfig.getInstance();
+        Keycloak keycloak = keyCloakConfig.getKeyCloakInstance();
         UserResource userResource = keycloak.realm(realm).users().get(userId);
         UserRepresentation newUser = userResource.toRepresentation();
 
@@ -1086,7 +1086,7 @@ public class UserServiceImpl implements UserService {
     }
 
     private UserListDto getUserDtoByIdAndLocation(String userId, String facilityId) {
-        Keycloak keycloak = keyCloakConfig.getInstanceByAuth();
+        Keycloak keycloak = keyCloakConfig.getKeyCloakInstance();
         UserListDto user;
         UserRepresentation userRepresentation = keycloak.realm(realm).users().get(userId).toRepresentation();
         List<RoleRepresentation> roleRepresentationList = keycloak.realm(realm).users().get(userRepresentation.getId()).roles().realmLevel().listAll();
