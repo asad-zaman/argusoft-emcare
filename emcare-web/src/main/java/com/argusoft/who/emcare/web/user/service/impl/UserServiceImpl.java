@@ -306,7 +306,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<RoleRepresentation> getAllRoles(HttpServletRequest request) {
-        Keycloak keycloakInstance = keyCloakConfig.getInstanceByAuth();
+        Keycloak keycloakInstance = keyCloakConfig.getKeyCloakInstance();
         List<RoleRepresentation> roleRepresentationList = keycloakInstance.realm(realm).roles().list();
         List<String> countryRoleId = roleEntityRepository.findAll().stream().map(RoleEntity::getRoleId).collect(Collectors.toList());
         roleRepresentationList = roleRepresentationList.stream().filter(roleRepresentation -> countryRoleId.contains(roleRepresentation.getId())).collect(Collectors.toList());
