@@ -245,7 +245,6 @@ public class IndicatorServiceImpl implements IndicatorService {
         }
         String facilityId = getCommaSepratedFacilityIdsWithFullString(facilityIds);
         String query = indicatorQueryBuilder.changeQueryBasedOnFilterValueReplace(facilityId, indicator, indicatorFilterDto);
-        System.out.println("====="+query);
         List<Map<String, Object>> observationResources = observationCustomResourceRepository.findByPublished(query);
 
         Map<String, Object> stringObjectMap = new HashMap<>();
