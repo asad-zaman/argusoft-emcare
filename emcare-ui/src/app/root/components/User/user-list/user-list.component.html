@@ -10,7 +10,12 @@
       <input class="form-control custom-input h-35" id="exampleFormControlInput1" [(ngModel)]="searchString"
         (input)="searchFilter()" placeholder="{{'Search Placeholder' | translate}}">
     </div>
-    <div *ngIf="isAdd" class="col text-end">
+    <div class="col-3 cst-d-flex">
+      <p-checkbox styleClass="form-label" [(ngModel)]="isInactive" label="Show Inactive Users" [binary]="true"
+        inputId="binary" value="true" (onChange)="onChangeCheckboxForUser()">
+      </p-checkbox>
+    </div>
+    <div *ngIf="isAdd" class="col text-end cst-mr-80">
       <button class=" btn btn-blue" routerLink="/addUser">+ {{'Add User' | translate}}</button>
     </div>
   </div>
@@ -32,7 +37,7 @@
       </thead>
       <tbody>
         <ng-container *ngIf="filteredUserList && filteredUserList.length > 0; else noRecords">
-          <ng-container *ngFor="let user of filteredUserList | 
+          <ng-container *ngFor="let user of filteredUserList |
           paginate : { itemsPerPage: tableSize, currentPage: currentPage, totalItems: totalCount }; let i=index">
             <tr>
               <td class="text-center">{{currentPage == 0 ? ((currentPage)*10 + i + 1) : ((currentPage-1)*10 + i + 1)}}
@@ -181,11 +186,13 @@
 <div *ngIf="showStatusDialog" class="modal" tabindex="-1" role="dialog" style="display:block">
   <div class="modal-dialog modal-dialog-centered" style="width: 400px; height: 500px">
     <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">{{'Status' | translate}}</h5>
+        <i class="bi bi-x font-size-20 text-end cursor-pointer" (click)="showStatusDialog = false"
+          aria-hidden="true"></i>
+      </div>
       <div class="modal-body">
-        <h2 class="modal-title text-center">
-          {{'Change User Status' | translate}}
-        </h2>
-        <div class="text-center my-3">
+        <div class="text-center mb-3">
           <p class="font-size-15">
             {{'Status message' | translate}}
         </div>

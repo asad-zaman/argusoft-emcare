@@ -8,6 +8,8 @@ export const appConstants = {
         refreshTokenExpiryTime: 'refresh_token_expiry_time',
         language: 'language',
         Username: 'Username',
+        Firstname: 'Firstname',
+        Lastname: 'Lastname',
         ApplicationAgent: 'ApplicationAgent'
     },
     EMailAsUsername: "REGISTRATION_EMAIL_AS_USERNAME",

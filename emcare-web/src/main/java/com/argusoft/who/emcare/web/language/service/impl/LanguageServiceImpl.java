@@ -1,12 +1,15 @@
 package com.argusoft.who.emcare.web.language.service.impl;
 
 import com.argusoft.who.emcare.web.config.IBMConfig;
+import com.argusoft.who.emcare.web.config.tenant.TenantContext;
 import com.argusoft.who.emcare.web.language.dao.LanguageRepository;
 import com.argusoft.who.emcare.web.language.dto.LanguageAddDto;
 import com.argusoft.who.emcare.web.language.dto.LanguageDto;
 import com.argusoft.who.emcare.web.language.mapper.LanguageMapper;
 import com.argusoft.who.emcare.web.language.model.LanguageTranslation;
 import com.argusoft.who.emcare.web.language.service.LanguageService;
+import com.argusoft.who.emcare.web.tenant.entity.TenantConfig;
+import com.argusoft.who.emcare.web.tenant.repository.TenantConfigRepository;
 import com.ibm.watson.language_translator.v3.LanguageTranslator;
 import com.ibm.watson.language_translator.v3.model.Languages;
 import com.ibm.watson.language_translator.v3.model.TranslateOptions;
@@ -14,9 +17,13 @@ import com.ibm.watson.language_translator.v3.model.Translation;
 import org.apache.commons.compress.utils.Lists;
 import org.codehaus.jettison.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -32,7 +39,13 @@ public class LanguageServiceImpl implements LanguageService {
     LanguageRepository languageRepository;
 
     @Autowired
+    TenantConfigRepository tenantConfigRepository;
+
+    @Autowired
     IBMConfig ibmConfig;
+
+    @Value("${defaultTenant}")
+    private String defaultTenant;
 
     @Override
     @Transactional
@@ -59,9 +72,8 @@ public class LanguageServiceImpl implements LanguageService {
         LanguageTranslation languageTranslation = new LanguageTranslation();
 
         LanguageTranslator languageTranslator = ibmConfig.getLanguageTranslatorInstance();
-        LanguageTranslation englishLanguage = languageRepository.findByLanguageCode("en");
         try {
-            jsonObject = new JSONObject(englishLanguage.getLanguageData());
+            jsonObject = new JSONObject(getAllKeys());
             keys = jsonObject.keys();
             while (keys.hasNext()) {
                 String key = keys.next();
@@ -95,16 +107,33 @@ public class LanguageServiceImpl implements LanguageService {
         return languageRepository.saveAndFlush(LanguageMapper.getLanguageTranslation(language));
     }
 
+    @Override
+    public String getAllKeys() throws IOException {
+
+        Resource resource = new ClassPathResource("en.json");
+        InputStreamReader file = new InputStreamReader(resource.getInputStream());
+        BufferedReader bufferedReader = new BufferedReader(file);
+        String keys = "";
+        String line = bufferedReader.readLine();
+
+        while (line != null) {
+            keys += line;
+            line = bufferedReader.readLine();
+        }
+        return keys;
+    }
+
     @Transactional
     public void translateNewlyAddedLabels() {
-        LOGGER.info("-----------Start Translating Newly Added Labels---------------- ");
+        LOGGER.info("-----------FOR TENANT " + TenantContext.getCurrentTenant() + "---------------- ");
+        LOGGER.info("----------- Start Translating Newly Added Labels ---------------- ");
         LanguageTranslator languageTranslator = ibmConfig.getLanguageTranslatorInstance();
         List<String> englishKeys = new ArrayList<>();
         JSONObject englishJson = new JSONObject();
-        LanguageTranslation englishLanguage = languageRepository.findByLanguageCode("en");
         List<LanguageTranslation> otherLanguage = languageRepository.findByLanguageCodeNot("en");
         try {
-            englishJson = new JSONObject(englishLanguage.getLanguageData());
+            englishJson = new JSONObject(getAllKeys());
+
             englishKeys = Lists.newArrayList(englishJson.keys());
         } catch (Exception ex) {
             LOGGER.info("Can't parse English Json");
@@ -143,6 +172,16 @@ public class LanguageServiceImpl implements LanguageService {
             }
         }
         LOGGER.info("-------- Translation Completed Server Up SuccessFully --------- ");
+        LOGGER.info("-----------FOR TENANT " + TenantContext.getCurrentTenant() + " DONE---------------- ");
     }
 
+    public List<String> getMakeAllTenantTranslation() {
+        List<TenantConfig> tenantConfigs = tenantConfigRepository.findAll();
+        List<String> tenantIds = new ArrayList<>();
+        tenantIds.add(defaultTenant);
+        for (TenantConfig tenantConfig : tenantConfigs) {
+            tenantIds.add(tenantConfig.getTenantId());
+        }
+        return tenantIds;
+    }
 }

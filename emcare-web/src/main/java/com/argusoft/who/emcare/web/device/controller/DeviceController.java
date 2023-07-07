@@ -1,10 +1,12 @@
 package com.argusoft.who.emcare.web.device.controller;
 
+import com.argusoft.who.emcare.web.common.dto.PageDto;
 import com.argusoft.who.emcare.web.device.dto.DeviceDto;
 import com.argusoft.who.emcare.web.device.service.DeviceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.testcontainers.shaded.org.bouncycastle.cert.ocsp.Req;
 
 import javax.annotation.Nullable;
 import javax.servlet.http.HttpServletRequest;
@@ -36,11 +38,12 @@ public class DeviceController {
     }
 
     @GetMapping("/page")
-    public ResponseEntity<Object> getDevicePage(HttpServletRequest request,
-                                                @RequestParam(value = "pageNo") Integer pageNo,
-                                                @RequestParam(value = "orderBy", defaultValue = "deviceName") String orderBy,
-                                                @RequestParam(value = "order") String order,
-                                                @Nullable @RequestParam(value = "search", required = false) String searchString) {
+    public PageDto getDevicePage(HttpServletRequest request,
+                                 @RequestParam(value = "pageNo") Integer pageNo,
+                                 @Nullable @RequestParam(value = "orderBy", defaultValue = "deviceName") String orderBy,
+                                 @Nullable @RequestParam(value = "order") String order,
+                                 @Nullable @RequestParam(value = "search") String searchString
+    ) {
         return deviceService.getDevicePage(request, pageNo, orderBy, order, searchString);
     }
 

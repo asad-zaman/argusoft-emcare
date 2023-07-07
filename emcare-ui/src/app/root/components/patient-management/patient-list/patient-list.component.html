@@ -1,5 +1,6 @@
 <app-location-filter *ngIf="isView" [isPatientPage]="true" [isFacilityNotAllowed]="false"
-  (isClear)="clearFilter($event)" (locationId)="getLocationId($event)"></app-location-filter>
+  (isClear)="clearFilter($event)" (locationId)="getLocationId($event)">
+</app-location-filter>
 <div *ngIf="isView" class="main-wrapper">
   <div class="custom-header">
     <h1 class="heading">{{'Patients' | translate}}</h1>
@@ -10,17 +11,18 @@
         (input)="searchFilter()" placeholder="{{'Search Placeholder' | translate}}">
     </div>
     <div class="col-3 cst-d-flex">
-      <p-checkbox styleClass="form-label" [(ngModel)]="exportAllPatient" label="Export All Patients" [binary]="true"
-        inputId="binary" value="true" (onChange)="exportAllThePatients()">
+      <p-checkbox *ngIf="showAllPatientCheckbox" styleClass="form-label" [(ngModel)]="exportAllPatient"
+        label="Export All Patients" [binary]="true" inputId="binary" value="true" (onChange)="exportAllThePatients()">
       </p-checkbox>
     </div>
     <div class="col-6 d-flex cst-export">
-      <button [disabled]="this.exportAllPatient" (click)="onEnableSelectionClick()" class="ml-3 btn btn-blue">
-        {{showCheckboxes ? 'Cancel' : 'Export'| translate}}
+      <button *ngIf="isExportFeatureAllowed" (click)="onEnableSelectionClick()" class="ml-3 btn btn-blue">
+        {{ exportAllPatient ? 'Cancel' : (showCheckboxes ? 'Cancel' : ('Export'| translate)) }}
       </button>
-      <ul *ngIf="this.showCheckboxes || this.exportAllPatient" class="navigation ml-3 btn btn-blue">
+      <ul [ngStyle]="{'opacity': disableSaveButton ? '0.5' : '1'}" *ngIf="this.showCheckboxes || this.exportAllPatient"
+        class="navigation ml-3 btn btn-blue">
         <li class="dropdown" style="list-style-type: none;">
-          <div class="d-flex align-items-center" data-bs-toggle="dropdown">
+          <div [disabled]="disableSaveButton" class="d-flex align-items-center" data-bs-toggle="dropdown">
             {{'Save As' | translate}}
           </div>
           <ul class="dropdown-menu cst-transform" aria-labelledby="dropdownMenuButton1">
@@ -72,7 +74,7 @@
               </td>
               <td>{{patient.identifier ? patient.identifier : 'NA'}}</td>
               <td>
-                {{(patient.givenName || patient.familyName) ? (patient.givenName + " " + patient.familyName) : 'NA'}}
+                {{(patient.familyName) ? (patient.givenName + " " + patient.familyName) : 'NA'}}
               </td>
               <td>{{patient.gender ? (patient.gender) : 'NA'}}</td>
               <td>{{patient.birthDate ? (patient.birthDate | date:'mediumDate') : 'NA'}}</td>

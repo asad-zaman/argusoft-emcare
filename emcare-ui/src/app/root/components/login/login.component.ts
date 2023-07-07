@@ -29,7 +29,7 @@ export class LoginComponent implements OnInit {
     private readonly router: Router,
     private readonly toasterService: ToasterService,
     private readonly fhirService: FhirService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.prerequisite();
@@ -152,22 +152,23 @@ export class LoginComponent implements OnInit {
           appConstants.localStorageKeys.Username,
           res.userName
         );
+        localStorage.setItem(
+          appConstants.localStorageKeys.Firstname,
+          res.firstName
+        );
+        localStorage.setItem(
+          appConstants.localStorageKeys.Lastname,
+          res.lastName
+        );
         localStorage.setItem('userFeatures', JSON.stringify(featureObj));
         localStorage.setItem('language', res['language']);
-        localStorage.setItem('Username', res.userName);
         const isSuperAdmin =
           res['roles'].findIndex((el) => el === 'SUPER_ADMIN') > -1;
         localStorage.setItem('isSuperAdmin', `${isSuperAdmin}`);
         this.authService.setIsLoggedIn(true);
         if (!isSuperAdmin) this.authService.setFeatures(res['feature']);
-        isSuperAdmin
-          ? this.router.navigate(['/tenantList'])
-          : this.router.navigate(['/dashboard']);
-        this.toasterService.showToast(
-          'success',
-          'Welcome to EmCare!',
-          'EMCARE'
-        );
+        isSuperAdmin ? this.router.navigate(['/tenantList']) : this.router.navigate(['/dashboard']);
+        this.toasterService.showToast('success', 'Welcome to EmCare!', 'EMCARE');
       }
     });
   }

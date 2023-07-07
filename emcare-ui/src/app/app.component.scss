@@ -1,13 +1,18 @@
 .user-char-logo {
     background: white;
     color: black;
-    width: 40px;
-    height: 40px;
+    width: 42px;
+    height: 42px;
     border-radius: 50%;
     font-size: 20px;
-    padding: 5px 0px 0px 13px;
-    display: inline-block;
-    margin-right: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+   
+}
+
+.user-name {
+    margin-left: 10px;
 }
 
 .spinner-border {

@@ -7,6 +7,7 @@ import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.http.ResponseEntity;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +23,7 @@ public interface UserService {
 
     public List<MultiLocationUserListDto> getAllUserWithMultiLocation(HttpServletRequest request);
 
-    public PageDto getUserPage(HttpServletRequest request, Integer pageNo, String searchString);
+    public PageDto getUserPage(HttpServletRequest request, Integer pageNo, String searchString, Boolean filter);
 
     public List<UserListDto> getAllSignedUpUser(HttpServletRequest request);
 
@@ -35,6 +36,8 @@ public interface UserService {
     public ResponseEntity<Object> signUp(UserDto user, HttpServletRequest request);
 
     public ResponseEntity<Object> userLogin(LoginRequestDto loginCred, HttpServletRequest request);
+
+    public ResponseEntity<Object> userLogOut(HttpServletRequest request) throws ServletException;
 
     public ResponseEntity<Object> addUser(UserDto user, HttpServletRequest request);
 
@@ -58,7 +61,7 @@ public interface UserService {
 
     public String getRoleNameById(String roleId);
 
-    public PageDto getUsersUnderLocation(Object locationId, Integer pageNo);
+    public PageDto getUsersUnderLocation(Object locationId,String searchString, Integer pageNo, Boolean filter);
 
     public UserRepresentation getUserByEmailId(String emailId);
 

@@ -3,12 +3,14 @@ package com.argusoft.who.emcare.web.menu.service.impl;
 import com.argusoft.who.emcare.web.common.response.Response;
 import com.argusoft.who.emcare.web.menu.dao.MenuConfigRepository;
 import com.argusoft.who.emcare.web.menu.dao.UserMenuConfigRepository;
+import com.argusoft.who.emcare.web.menu.dto.FeatureJSON;
 import com.argusoft.who.emcare.web.menu.dto.MenuConfigDto;
 import com.argusoft.who.emcare.web.menu.mapper.MenuConfigMapper;
 import com.argusoft.who.emcare.web.menu.model.MenuConfig;
 import com.argusoft.who.emcare.web.menu.model.UserMenuConfig;
 import com.argusoft.who.emcare.web.menu.service.MenuService;
 import com.argusoft.who.emcare.web.user.service.UserService;
+import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class MenuServiceimpl implements MenuService {
@@ -50,6 +53,14 @@ public class MenuServiceimpl implements MenuService {
             }
             if (userAccess.getUserId() != null) {
                 userName = userService.getUserById(userAccess.getUserId()).getUsername();
+            }
+            if(!userAccess.getFeatureJson().contains("canExport")){
+                Gson g = new Gson();
+                FeatureJSON f = g.fromJson(userAccess.getFeatureJson(), FeatureJSON.class);
+                if(Objects.isNull(f.getCanExport()) || !f.getCanExport().booleanValue()) {
+                    f.setCanExport(false);
+                }
+                userAccess.setFeatureJson(f.toString());
             }
             configs.add(MenuConfigMapper.getMenuConfigDto(userAccess, userName, roleName));
         }

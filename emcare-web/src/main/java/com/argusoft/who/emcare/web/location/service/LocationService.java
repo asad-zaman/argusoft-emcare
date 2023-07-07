@@ -29,7 +29,7 @@ public interface LocationService {
 
     public ResponseEntity<Object> getLocationPage(Integer pageNo, String orderBy, String order, String searchString);
 
-    public ResponseEntity<Object> getLocationByLocationFilter(Integer pageNo, Integer locationId);
+    public ResponseEntity<Object> getLocationByLocationFilter(Integer pageNo, Integer locationId, String searchString);
 
     public ResponseEntity<Object> updateLocation(LocationMasterDto locationMasterDto);
 

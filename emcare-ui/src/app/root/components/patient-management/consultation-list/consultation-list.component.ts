@@ -31,6 +31,11 @@ export class ConsultationListComponent implements OnInit {
   enableAll = false;
   exportAllConsultations = false;
   filteredAllConsultations = [];
+  selectedId: any;
+  dateObj: any;
+  disableSaveButton: boolean;
+  showAllPatientCheckbox = false;
+  isExportFeatureAllowed = false;
 
   constructor(
     private readonly fhirService: FhirService,
@@ -44,19 +49,21 @@ export class ConsultationListComponent implements OnInit {
 
   prerequisite() {
     this.checkFeatures();
-    this.getConsultationsByPageIndex(this.currentPage);
+    this.getConsultationsBasedOnData(this.currentPage);
   }
 
   checkFeatures() {
     this.authGuard.getFeatureData().subscribe(res => {
       if (res.relatedFeature && res.relatedFeature.length > 0) {
         this.isView = res.featureJSON['canView'];
+        this.isExportFeatureAllowed = res.featureJSON['canExport'];
       }
     });
   }
 
   manipulateResponse(res) {
     if (res && res['list']) {
+      this.filteredConsultations = [];
       this.consultations = res['list'];
       this.filteredConsultations = this.consultations;
       this.filteredConsultations = _.sortBy(this.filteredConsultations, 'consultationDate').reverse();
@@ -68,23 +75,23 @@ export class ConsultationListComponent implements OnInit {
     }
   }
 
-  getConsultationsByPageIndex(index) {
-    this.consultations = [];
-    this.fhirService.getConsultationList(index).subscribe(res => {
-      this.manipulateResponse(res);
+  getConsultationsBasedOnData(pageIndex) {
+    const filterData = {
+      locationId: this.selectedId,
+      dateObj: this.dateObj,
+      searchString: this.searchString
+    };
+    this.fhirService.getConsultationsByData(pageIndex, filterData).subscribe(res => {
+      if (res) {
+        this.manipulateResponse(res);
+      }
     });
   }
 
   onIndexChange(event) {
+    this.enableAll = false;
     this.currentPage = event;
-    if (this.searchString && this.searchString.length >= 1) {
-      this.consultations = [];
-      this.fhirService.getPatientsByPageIndex(event - 1, this.searchString).subscribe(res => {
-        this.manipulateResponse(res);
-      });
-    } else {
-      this.getConsultationsByPageIndex(event - 1);
-    }
+    this.getConsultationsBasedOnData(event - 1);
   }
 
   searchFilter() {
@@ -97,14 +104,7 @@ export class ConsultationListComponent implements OnInit {
         if (this.exportAllConsultations) {
           this.exportAllConsultations = !this.exportAllConsultations;
         }
-        if (this.searchString && this.searchString.length >= 1) {
-          this.consultations = [];
-          this.fhirService.getPatientsByPageIndex(this.currentPage, this.searchString).subscribe(res => {
-            this.manipulateResponse(res);
-          });
-        } else {
-          this.getConsultationsByPageIndex(this.currentPage);
-        }
+        this.getConsultationsBasedOnData(this.currentPage);
       });
     }
     this.searchTermChanged.next(this.searchString);
@@ -115,30 +115,42 @@ export class ConsultationListComponent implements OnInit {
   }
 
   viewConsultation(index) {
-    this.router.navigate([`view-consultation/${this.filteredConsultations[index]['id']}`]);
+    this.router.navigate([`view-consultation/${this.filteredConsultations[index]['resource_id']}`]);
   }
 
   onEnableSelectionClick() {
-    this.showCheckboxes = !this.showCheckboxes;
-    this.enableAll = false;
-    if (!this.showCheckboxes) {
-      this.filteredConsultations.forEach(element => { element['isExcelPDF'] = false; });
+    this.showAllPatientCheckbox = !this.showAllPatientCheckbox;
+    if (this.exportAllConsultations) {
+      this.exportAllConsultations = false;
+    } else {
+      this.showCheckboxes = !this.showCheckboxes;
+      this.enableAll = false;
+      this.disableSaveButton = true;
+      if (!this.showCheckboxes) {
+        this.filteredConsultations.forEach(element => { element['isExcelPDF'] = false; });
+      }
     }
   }
 
   enableAllBoxes() {
+    this.disableSaveButton = false;
     if (this.enableAll) {
       this.filteredConsultations.forEach(element => { element['isExcelPDF'] = true; });
     } else {
+      this.disableSaveButton = true;
       this.filteredConsultations.forEach(element => { element['isExcelPDF'] = false; });
     }
   }
 
   enableEachBox(patient) {
+    this.disableSaveButton = false;
+    const checkLength = this.filteredConsultations.filter(element => element['isExcelPDF'] === true).length;
+    if (checkLength === 0) {
+      this.disableSaveButton = true;
+    }
     if (!patient.isExcelPDF) {
       this.enableAll = false;
     } else {
-      const checkLength = this.filteredConsultations.filter(element => element['isExcelPDF'] === true).length;
       if (this.filteredConsultations.length === checkLength) {
         this.enableAll = true;
       }
@@ -158,7 +170,7 @@ export class ConsultationListComponent implements OnInit {
     ];
 
     let answerData: any = [];
-    this.fhirService.getConsultationExportData(patient.id).subscribe((res: any) => {
+    this.fhirService.getConsultationExportData(patient.resource_id).subscribe((res: any) => {
       answerData.push({
         Consultation: `${patient.givenName} ${patient.familyName}'s consultation data`,
         linkId: '-', text: '-', answer: '-'
@@ -234,7 +246,7 @@ export class ConsultationListComponent implements OnInit {
     } else {
       selectedConsultations = this.filteredConsultations.filter(el => el.isExcelPDF === true);
       selectedConsultations.forEach((patient, i) => {
-        this.fhirService.getConsultationExportData(patient.id).subscribe((res: any) => {
+        this.fhirService.getConsultationExportData(patient.resource_id).subscribe((res: any) => {
           if (i >= 1) {
             answerData.push({ Consultation: ``, linkId: '', text: '', answer: '' });
           }
@@ -294,7 +306,7 @@ export class ConsultationListComponent implements OnInit {
   }
 
   exportPDF(patient) {
-    this.fhirService.getConsultationExportData(patient.id).subscribe((res: any) => {
+    this.fhirService.getConsultationExportData(patient.resource_id).subscribe((res: any) => {
       let answerInnerData = [];
       let answerOuterData = [];
       let data = [];
@@ -427,7 +439,7 @@ export class ConsultationListComponent implements OnInit {
     } else {
       selectedConsultations = this.filteredConsultations.filter(el => el.isExcelPDF === true);
       selectedConsultations.forEach(consultation => {
-        this.fhirService.getConsultationExportData(consultation.id).subscribe((res: any) => {
+        this.fhirService.getConsultationExportData(consultation.resource_id).subscribe((res: any) => {
           let answerInnerData = [];
           let answerOuterData = [];
           let data = [];
@@ -513,16 +525,42 @@ export class ConsultationListComponent implements OnInit {
   }
 
   exportAllTheConsultations() {
-    this.enableAll = false;
-    this.showCheckboxes = false;
+    if (this.exportAllConsultations) {
+      this.showCheckboxes = false;
+      this.enableAll = false;
+      this.enableAllBoxes();
+      this.disableSaveButton = false;
+    } else {
+      this.showCheckboxes = true;
+      this.disableSaveButton = true;
+    }
     if (this.exportAllConsultations) {
       this.fhirService.getAllConsultationsForExport().subscribe((res: any) => {
         if (res) {
           this.filteredAllConsultations = res;
-          console.log(this.filteredAllConsultations);
         }
       });
     }
   }
-}
 
+  getLocationId(data) {
+    if (this.exportAllConsultations) {
+      this.exportAllConsultations = !this.exportAllConsultations;
+    }
+
+    this.selectedId = data.locationId;
+    this.dateObj = data.dateObj;
+    this.resetPageIndex();
+    const pageIndex = this.currentPage == 0 ? this.currentPage : this.currentPage - 1;
+    this.getConsultationsBasedOnData(pageIndex);
+  }
+
+  clearFilter(event) {
+    if (event) {
+      this.selectedId = null;
+      this.dateObj = null;
+      this.resetPageIndex();
+      this.getConsultationsBasedOnData(this.currentPage);
+    }
+  }
+}

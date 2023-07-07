@@ -101,7 +101,7 @@ export class HomeComponent implements OnInit {
         },
       },
       tooltip: {
-        enabled: true,
+        enabled: false,
         headerFormat: undefined,
         pointFormat: `<b>Date = {point.d}</b>  <br> <br> <b>Consultations = {point.y}</b>`,
       },
@@ -163,7 +163,6 @@ export class HomeComponent implements OnInit {
 
   getChartData() {
     this.fhirService.getChartData().subscribe((res: Array<any>) => {
-      console.log(res);
       if (res) {
         //  for bar plot
         res['scatterChart'].forEach((el, index) => {
@@ -436,7 +435,7 @@ export class HomeComponent implements OnInit {
       const startDate = new Date(controls.value.startDate).getTime();
       const endDate = new Date(controls.value.endDate).getTime();
       if (endDate < startDate) {
-        this.toasterService.showToast('error', 'End Date shoyld be greater than start date!', 'EM CARE!');
+        this.toasterService.showToast('error', 'End Date should be greater than start date!', 'EM CARE!');
         num === 1 ? controls['controls'].startDate.setValue(null) : controls['controls'].endDate.setValue(null);
       }
     }

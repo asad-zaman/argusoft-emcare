@@ -1,6 +1,6 @@
 <div *ngIf="isView" class="main-wrapper">
   <div class="custom-header">
-    <h1 class="heading">{{'Welcome' | translate}}, {{ userName }}!</h1>
+    <h1 class="heading">{{'Welcome' | translate}}, {{firstName}} {{lastName}}!</h1>
   </div>
   <div *ngIf="isEdit">
     <h5 class="my-4">{{'Manage Settings' | translate}}</h5>

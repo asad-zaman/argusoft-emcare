@@ -16,7 +16,8 @@ import { appConstants } from './app.config';
 export class AppComponent implements OnInit {
 
   currentUrl: string = '';
-  userName: any;
+  firstName;
+  lastName;
   isSettingDropdownOpen: boolean = false;
   isUserDropdownOpen: boolean = false;
   isPatientDropdownOpen: boolean = false;
@@ -168,8 +169,8 @@ export class AppComponent implements OnInit {
     });
   }
 
-  getUserCharLogo(username) {
-    return username.substring(0, 1).toUpperCase();
+  getUserCharLogo(firstName, lastName) {
+    return (firstName.substring(0,1).toUpperCase() + lastName.substring(0,1).toUpperCase());
   }
 
   setLoggedInUserData() {
@@ -205,8 +206,9 @@ export class AppComponent implements OnInit {
   }
 
   setUserDetails() {
-    this.userName = localStorage.getItem('Username');
-    this.userCharLogo = this.userName && this.getUserCharLogo(this.userName);
+    this.firstName = localStorage.getItem(appConstants.localStorageKeys.Firstname);
+    this.lastName = localStorage.getItem(appConstants.localStorageKeys.Lastname);
+    this.userCharLogo = this.getUserCharLogo(this.firstName, this.lastName);
   }
 
   hideCurrentDropdown(id) {
@@ -228,9 +230,11 @@ export class AppComponent implements OnInit {
 
   logout() {
     //  on logout direction should be set to ltr as it's english language
-    this.renderer.setAttribute(document.body, 'dir', 'ltr');
-    this.router.navigate(['/login']);
-    localStorage.clear();
+    this.authenticationService.deleteSession().subscribe(() => {
+      this.renderer.setAttribute(document.body, 'dir', 'ltr');
+      this.router.navigate(['/login']);
+      localStorage.clear();
+    });
   }
 
   hasAccess(feature: string) {

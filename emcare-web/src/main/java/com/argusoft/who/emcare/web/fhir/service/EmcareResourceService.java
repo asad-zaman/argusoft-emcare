@@ -31,7 +31,7 @@ public interface EmcareResourceService {
 
     public void remove(EmcareResource emcareResource);
 
-    public PageDto getPatientUnderLocationId(Object locationId, Integer pageNo, Date startDate, Date endDate);
+    public PageDto getPatientUnderLocationId(Object locationId,String searchString, Integer pageNo, String startDate, String endDate);
 
     public List<String> getPatientIdsUnderFacility(String facilityId);
 

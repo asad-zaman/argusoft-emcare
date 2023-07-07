@@ -11,10 +11,9 @@ import { AuthGuard } from 'src/app/auth/auth.guard';
 @Component({
   selector: 'app-user-list',
   templateUrl: './user-list.component.html',
-  styleUrls: ['./user-list.component.scss']
+  styleUrls: ['./user-list.component.scss'],
 })
 export class UserListComponent implements OnInit {
-
   mainUserList: any;
   filteredUserList: any;
   searchString: string;
@@ -27,12 +26,12 @@ export class UserListComponent implements OnInit {
   submitted: boolean = false;
   showResetPasswordDialog: boolean = false;
   isAPIBusy: boolean = true;
-  isLocationFilterOn: boolean = false;
   selectedId: any;
   searchTermChanged: Subject<string> = new Subject<string>();
   isAdd: boolean = true;
   isEdit: boolean = true;
   isView: boolean = true;
+  isInactive: boolean = false;
   showStatusDialog: boolean = false;
   currUSer;
 
@@ -50,11 +49,24 @@ export class UserListComponent implements OnInit {
 
   prerequisite() {
     this.checkFeatures();
-    this.getUsersByPageIndex(this.currentPage);
+    this.getUsersBasedOnData(this.currentPage);
+  }
+
+  getUsersBasedOnData(pageIndex) {
+    const filterData = {
+      locationId: this.selectedId,
+      filterValueForActiveInactive: this.isInactive,
+      searchString: this.searchString
+    };
+    this.userService.getUsersByData(pageIndex, filterData).subscribe(res => {
+      if (res) {
+        this.manipulateResponse(res);
+      }
+    });
   }
 
   checkFeatures() {
-    this.authGuard.getFeatureData().subscribe(res => {
+    this.authGuard.getFeatureData().subscribe((res) => {
       if (res.relatedFeature && res.relatedFeature.length > 0) {
         this.isAdd = res.featureJSON['canAdd'];
         this.isEdit = res.featureJSON['canEdit'];
@@ -65,6 +77,7 @@ export class UserListComponent implements OnInit {
 
   manipulateResponse(res) {
     if (res && res['list']) {
+      this.filteredUserList = [];
       this.mainUserList = res['list'];
       this.filteredUserList = this.mainUserList;
       this.totalCount = res['totalCount'];
@@ -72,49 +85,16 @@ export class UserListComponent implements OnInit {
     }
   }
 
-  getUsersByPageIndex(index) {
-    this.mainUserList = [];
-    this.userService.getUsersByPage(index).subscribe(res => {
-      this.manipulateResponse(res);
-    });
-  }
-
   onIndexChange(event) {
     this.currentPage = event;
-    if (this.isLocationFilterOn) {
-      this.getUsersBasedOnLocationAndPageIndex(event - 1);
-    } else {
-      //  when location filter is not enabled but searchString is there
-      if (this.searchString && this.searchString.length >= 1) {
-        this.mainUserList = [];
-        this.userService.getUsersByPage(event - 1, this.searchString).subscribe(res => {
-          this.manipulateResponse(res);
-        });
-      } else {
-        this.getUsersByPageIndex(event - 1);
-      }
-    }
+    this.getUsersBasedOnData(event - 1);
   }
 
   searchFilter() {
     this.resetPageIndex();
     if (this.searchTermChanged.observers.length === 0) {
-      this.searchTermChanged.pipe(
-        debounceTime(1000),
-        distinctUntilChanged()
-      ).subscribe(_term => {
-        if (this.searchString && this.searchString.length >= 1) {
-          this.mainUserList = [];
-          this.userService.getUsersByPage(this.currentPage, this.searchString).subscribe(res => {
-            this.manipulateResponse(res);
-          });
-        } else {
-          if (this.isLocationFilterOn) {
-            this.getUsersBasedOnLocationAndPageIndex(this.currentPage);
-          } else {
-            this.getUsersByPageIndex(this.currentPage);
-          }
-        }
+      this.searchTermChanged.pipe(debounceTime(1000), distinctUntilChanged()).subscribe((_term) => {
+        this.getUsersBasedOnData(this.currentPage);
       });
     }
     this.searchTermChanged.next(this.searchString);
@@ -135,23 +115,11 @@ export class UserListComponent implements OnInit {
   getLocationId(data) {
     this.selectedId = data;
     if (this.selectedId) {
-      this.isLocationFilterOn = true;
       this.resetPageIndex();
-      this.getUsersBasedOnLocationAndPageIndex(this.currentPage);
+      this.getUsersBasedOnData(this.currentPage);
     } else {
-      this.toasterService.showToast('info', 'Please select Location!', 'EMCARE')
+      this.toasterService.showToast('info', 'Please select Location!', 'EMCARE');
     }
-  }
-
-  getUsersBasedOnLocationAndPageIndex(pageIndex) {
-    this.userService.getUsersByLocationAndPageIndex(this.selectedId, pageIndex).subscribe(res => {
-      if (res) {
-        this.filteredUserList = [];
-        this.filteredUserList = res['list'];
-        this.totalCount = res['totalCount'];
-        this.isAPIBusy = false;
-      }
-    });
   }
 
   onResetPassword(index) {
@@ -161,12 +129,15 @@ export class UserListComponent implements OnInit {
   }
 
   initResetPasswordForm() {
-    this.resetPasswordForm = this.formBuilder.group({
-      password: ['', Validators.required],
-      confirmPassword: ['', Validators.required],
-    }, {
-      validator: MustMatch('password', 'confirmPassword')
-    });
+    this.resetPasswordForm = this.formBuilder.group(
+      {
+        password: ['', Validators.required],
+        confirmPassword: ['', Validators.required],
+      },
+      {
+        validator: MustMatch('password', 'confirmPassword'),
+      }
+    );
   }
 
   get getFormConfrols() {
@@ -179,13 +150,15 @@ export class UserListComponent implements OnInit {
       return;
     }
     const user = {
-      password: this.resetPasswordForm.value.password
-    }
-    this.userService.updatePassword(user, this.selectedUserId).subscribe(result => {
-      if (result) {
-        this.closeDialog();
-      }
-    });
+      password: this.resetPasswordForm.value.password,
+    };
+    this.userService
+      .updatePassword(user, this.selectedUserId)
+      .subscribe((result) => {
+        if (result) {
+          this.closeDialog();
+        }
+      });
   }
 
   closeDialog() {
@@ -220,8 +193,14 @@ export class UserListComponent implements OnInit {
   clearFilter(event) {
     if (event) {
       this.resetPageIndex();
-      this.getUsersByPageIndex(this.currentPage);
+      this.selectedId = null;
+      this.getUsersBasedOnData(this.currentPage);
     }
+  }
+
+  onChangeCheckboxForUser() {
+    this.currentPage = 0;
+    this.getUsersBasedOnData(this.currentPage);
   }
 
   onChangeStatus(i) {
@@ -230,12 +209,25 @@ export class UserListComponent implements OnInit {
   }
 
   changeUSerStatus() {
-    const data = { "userId": this.currUSer.id, "isEnabled": !this.currUSer['enabled'] }
-    this.userService.updateUserStatus(data).subscribe(res => {
+    const data = {
+      userId: this.currUSer.id,
+      isEnabled: !this.currUSer['enabled'],
+    };
+    this.userService.updateUserStatus(data).subscribe((res) => {
       this.showStatusDialog = false;
-      const ind = this.filteredUserList.findIndex(el => el.id === this.currUSer.id);
-      this.filteredUserList[ind]['enabled'] = !this.filteredUserList[ind]['enabled'];
-      this.toasterService.showToast('success', 'User status changed successfully!', 'EMCARE');
+      if (this.isInactive) {
+        this.getUsersBasedOnData(this.currentPage);
+      } else {
+        const ind = this.filteredUserList.findIndex(
+          (el) => el.id === this.currUSer.id
+        );
+        this.filteredUserList[ind]['enabled'] = !this.filteredUserList[ind]['enabled'];
+      }
+      this.toasterService.showToast(
+        'success',
+        'User status changed successfully!',
+        'EMCARE'
+      );
     });
   }
 }

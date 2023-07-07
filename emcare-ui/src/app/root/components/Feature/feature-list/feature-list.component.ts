@@ -42,10 +42,18 @@ export class FeatureListComponent implements OnInit {
 
   getAllFeatures() {
     this.mainFeatureList = [];
+    this.filteredFeatureList = [];
     this.featureService.getAllFeatures().subscribe(res => {
       if (res) {
         this.mainFeatureList = res;
-        this.filteredFeatureList = this.mainFeatureList;
+        this.mainFeatureList.forEach(el => {
+          //  as Dashboard & Questionnaires are main features which does not have sub features so we need it to show
+          if (el.menuName === 'Dashboard' ||
+            el.menuName === 'Questionnaires' ||
+            el.parent !== null) {
+            this.filteredFeatureList.push(el);
+          }
+        });
         this.isAPIBusy = false;
       }
     });
@@ -58,6 +66,10 @@ export class FeatureListComponent implements OnInit {
   }
 
   updateFeature(index) {
+    /* currently we are not showing main features in list so commenting 
+      this code incase we need it then we can use it again else can remove it */
+    // const isActionShow = this.filteredFeatureList[index]['parent'] === null ? false : true;
+    // this.featureSubject.setActionShow(isActionShow);
     this.router.navigate([`editFeature/${this.filteredFeatureList[index]['id']}`],
       { queryParams: { name: this.filteredFeatureList[index]['menuName'] } });
   }

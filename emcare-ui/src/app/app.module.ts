@@ -42,12 +42,20 @@ import {
   ForgotPasswordComponent,
   AdminPanelComponent,
   ManageOrganizationComponent,
-  OrganizationListComponent
+  OrganizationListComponent,
+  HomeComponent,
+  TermsConditionsComponent,
+  LocationSubjects,
+  FeatureSubjects,
+  TenantListComponent,
+  ShowFacilityComponent,
+  ManageTenantComponent,
+  AddLogComponent,
+  LogListComponent
 } from './root/index';
 import { AuthenticationService, ToasterService } from './shared';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { HomeComponent } from './root/components/home/home.component';
 import { HTTPStatus, LaunguageSubjects, TokenInterceptor } from './auth/token-interceptor';
 import { CommonModule, DatePipe } from '@angular/common';
 import { NgxPaginationModule } from 'ngx-pagination';
@@ -55,7 +63,6 @@ import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BaseModule } from './base.module';
 import { DropdownModule } from 'primeng/dropdown';
-import { ShowFacilityComponent } from './root/components/Facility/show-facility/show-facility.component';
 import { CheckboxModule } from 'primeng/checkbox';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { TooltipModule } from 'primeng/tooltip';
@@ -66,16 +73,11 @@ import { ChartModule } from 'angular-highcharts';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { NgxIntlTelInputModule } from 'ngx-intl-tel-input';
-import { TenantListComponent } from './root/components/tenant-list/tenant-list.component';
-import { ManageTenantComponent } from './root/components/manage-tenant/manage-tenant.component';
 import { MessagesModule } from 'primeng/messages';
 import { MessageModule } from 'primeng/message';
-import { TermsConditionsComponent } from './root/components/terms-conditions/terms-conditions.component';
-import { AddLogComponent } from './root/components/add-log/add-log.component';
-import { LogListComponent } from './root/components/log-list/log-list.component';
-import { LocationSubjects } from './root/components/Location/location-filter/LocationSubject';
 import { ColorPickerModule } from 'primeng/colorpicker';
 import { CalendarModule } from 'primeng/calendar';
+import { InputTextareaModule } from 'primeng/inputtextarea';
 
 @NgModule({
   declarations: [
@@ -150,6 +152,7 @@ import { CalendarModule } from 'primeng/calendar';
     MessageModule,
     ColorPickerModule,
     CalendarModule,
+    InputTextareaModule
   ],
   providers: [
     AuthenticationService,
@@ -167,7 +170,8 @@ import { CalendarModule } from 'primeng/calendar';
     LaunguageSubjects,
     MessageService,
     LocationSubjects,
-    DatePipe
+    DatePipe,
+    FeatureSubjects
   ],
   bootstrap: [AppComponent]
 })

@@ -4,46 +4,62 @@
       <div class="mb-5">
         <h1 class="heading">
           <ng-container *ngIf="!isEdit; else UpdateRole">
-            {{'Add Role' | translate}}
+            {{ 'Add Role' | translate }}
           </ng-container>
           <ng-template #UpdateRole>
-            {{'Update Role' | translate}}
+            {{ 'Update Role' | translate }}
           </ng-template>
-          <hr>
+          <hr />
         </h1>
       </div>
       <div class="row">
         <div class="col-12 col-sm-6">
           <div class="mb-3">
-            <label class="form-label">{{'Role Name' | translate}}</label>
-            <input class="form-control custom-input" formControlName="name" type="text" id="name"
-              placeholder="{{'Role Name Placeholder' | translate}}"
-              [ngClass]="{ 'is-invalid': submitted && getFormConfrols.name.errors }">
-            <div *ngIf="submitted && getFormConfrols.name.errors" class="invalid-feedback">
-              <div class="cst-error-style" *ngIf="getFormConfrols.name.errors.required">
-                {{'Role Name Required Message' | translate}}</div>
+            <label class="form-label">{{ 'Role Name' | translate }}</label>
+              <div class="roleName">
+
+                <input class="form-control custom-input" type="text" id="countryName" value="{{cont}}_" disabled />
+                <input class="form-control custom-input" formControlName="name" type="text" placeholder="{{'Role Name Placeholder' | translate}}" [ngClass]="{ 'is-invalid': submitted && getFormConfrols.name.errors }" id="name" />
+              </div>
+
+            <div
+              *ngIf="submitted && getFormConfrols.name.errors"
+              class="invalid-feedback"
+            >
+              <div
+                class="cst-error-style"
+                *ngIf="getFormConfrols.name.errors.required"
+              >
+                {{ 'Role Name Required Message' | translate }}
+              </div>
             </div>
           </div>
         </div>
         <div class="col-12 col-sm-6">
           <div class="mb-3">
-            <label class="form-label">{{'Description' | translate}}</label>
-            <input class="form-control custom-input" formControlName="description" type="text" id="description"
-              placeholder="{{'Description Placeholder' | translate}}">
+            <label class="form-label">{{ 'Description' | translate }}</label>
+            <input
+              class="form-control custom-input"
+              formControlName="description"
+              type="text"
+              id="description"
+              placeholder="{{ 'Description Placeholder' | translate }}"
+            />
           </div>
         </div>
       </div>
       <div class="text-end mt-5">
-        <hr>
+        <hr />
         <button routerLink="/showRoles" class="btn-black btn ms-3">
-          <i class="bi bi-chevron-left" aria-hidden="true"></i> {{'Back' | translate}}
+          <i class="bi bi-chevron-left" aria-hidden="true"></i>
+          {{ 'Back' | translate }}
         </button>
         <button (click)="saveData()" class="btn-blue btn">
           <ng-container *ngIf="!isEdit; else UpdateRole">
-            {{'Add Role' | translate}}
+            {{ 'Add Role' | translate }}
           </ng-container>
           <ng-template #UpdateRole>
-            {{'Update Role' | translate}}
+            {{ 'Update Role' | translate }}
           </ng-template>
         </button>
       </div>
@@ -51,5 +67,5 @@
   </div>
 </div>
 <div *ngIf="!isAllowed" class="main-wrapper-nodata">
-  {{'NoAccess' | translate}}
+  {{ 'NoAccess' | translate }}
 </div>

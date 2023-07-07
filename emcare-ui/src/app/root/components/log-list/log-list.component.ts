@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { AuthGuard } from 'src/app/auth/auth.guard';
 import { FhirService } from 'src/app/shared';
 import { environment } from 'src/environments/environment';
 
@@ -14,10 +15,12 @@ export class LogListComponent implements OnInit {
   logs = [];
   currentActive = 0;
   token;
+  isView: boolean;
 
   constructor(
     private readonly fhirService: FhirService,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly authGuard: AuthGuard
   ) { }
 
   ngOnInit(): void {
@@ -26,7 +29,16 @@ export class LogListComponent implements OnInit {
 
   prerequisite() {
     this.token = JSON.parse(localStorage.getItem('access_token'));
+    this.checkFeatures();
     this.getLogList();
+  }
+
+  checkFeatures() {
+    this.authGuard.getFeatureData().subscribe((res) => {
+      if (res.relatedFeature && res.relatedFeature.length > 0) {
+        this.isView = res.featureJSON['canView'];
+      }
+    });
   }
 
   getLogList() {

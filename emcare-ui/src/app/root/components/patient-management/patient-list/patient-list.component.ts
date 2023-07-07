@@ -28,7 +28,6 @@ export class PatientListComponent implements OnInit {
     totalCount = 0;
     tableSize = 10;
     isAPIBusy: boolean = true;
-    isLocationFilterOn: boolean = false;
     selectedId: any;
     searchTermChanged: Subject<string> = new Subject<string>();
     isView: boolean = true;
@@ -36,6 +35,14 @@ export class PatientListComponent implements OnInit {
     enableAll = false;
     exportAllPatient = false;
     filteredAllPatientData = [];
+    dateObj = {};
+    columnOrder = ['resource_id', 'identifier', 'givenName',
+        'familyName', 'gender', 'birthDate',
+        'facilityName', 'addressLine', 'organizationName',
+        'locationName', 'consultationDate'];
+    disableSaveButton: boolean;
+    showAllPatientCheckbox = false;
+    isExportFeatureAllowed = false;
 
     constructor(
         private readonly fhirService: FhirService,
@@ -50,19 +57,21 @@ export class PatientListComponent implements OnInit {
 
     prerequisite() {
         this.checkFeatures();
-        this.getPatientsByPageIndex(this.currentPage);
+        this.getPatientsBasedOnData(this.currentPage);
     }
 
     checkFeatures() {
         this.authGuard.getFeatureData().subscribe(res => {
             if (res.relatedFeature && res.relatedFeature.length > 0) {
                 this.isView = res.featureJSON['canView'];
+                this.isExportFeatureAllowed = res.featureJSON['canExport'];
             }
         });
     }
 
     manipulateResponse(res) {
         if (res && res['list']) {
+            this.filteredPatients = [];
             this.patients = res['list'];
             this.filteredPatients = this.patients;
             this.totalCount = res['totalCount'];
@@ -73,38 +82,24 @@ export class PatientListComponent implements OnInit {
         }
     }
 
-    getPatientsByPageIndex(index) {
+    getPatientsBasedOnData(index) {
+        const filterData = {
+            locationId: this.selectedId,
+            dateObj: this.dateObj,
+            searchString: this.searchString
+        };
         this.patients = [];
-        this.fhirService.getPatientsByPageIndex(index).subscribe(res => {
-            this.manipulateResponse(res);
-        });
-    }
-
-    getPatientsBasedOnLocationAndPageIndex(pageIndex) {
-        this.fhirService.getPatientsByLocationAndPageIndex(this.selectedId, pageIndex).subscribe(res => {
+        this.fhirService.getPatientsByData(index, filterData).subscribe(res => {
             if (res) {
-                this.filteredPatients = [];
-                this.filteredPatients = res['list'];
-                this.totalCount = res['totalCount'];
-                this.isAPIBusy = false;
+                this.manipulateResponse(res);
             }
         });
     }
 
     onIndexChange(event) {
+        this.enableAll = false;
         this.currentPage = event;
-        if (this.isLocationFilterOn) {
-            this.getPatientsBasedOnLocationAndPageIndex(event - 1);
-        } else {
-            if (this.searchString && this.searchString.length >= 1) {
-                this.patients = [];
-                this.fhirService.getPatientsByPageIndex(event - 1, this.searchString).subscribe(res => {
-                    this.manipulateResponse(res);
-                });
-            } else {
-                this.getPatientsByPageIndex(event - 1);
-            }
-        }
+        this.getPatientsBasedOnData(event - 1);
     }
 
     showPatientDetails(id) {
@@ -131,18 +126,7 @@ export class PatientListComponent implements OnInit {
                 if (this.exportAllPatient) {
                     this.exportAllPatient = !this.exportAllPatient;
                 }
-                if (this.searchString && this.searchString.length >= 1) {
-                    this.patients = [];
-                    this.fhirService.getPatientsByPageIndex(this.currentPage, this.searchString).subscribe(res => {
-                        this.manipulateResponse(res);
-                    });
-                } else {
-                    if (this.isLocationFilterOn) {
-                        this.getPatientsBasedOnLocationAndPageIndex(this.currentPage);
-                    } else {
-                        this.getPatientsByPageIndex(this.currentPage);
-                    }
-                }
+                this.getPatientsBasedOnData(this.currentPage);
             });
         }
         this.searchTermChanged.next(this.searchString);
@@ -156,21 +140,20 @@ export class PatientListComponent implements OnInit {
         if (this.exportAllPatient) {
             this.exportAllPatient = !this.exportAllPatient;
         }
-        this.selectedId = data;
-        if (this.selectedId) {
-            this.isLocationFilterOn = true;
-            this.resetPageIndex();
-            const pageIndex = this.currentPage == 0 ? this.currentPage : this.currentPage - 1;
-            this.getPatientsBasedOnLocationAndPageIndex(pageIndex);
-        } else {
-            this.toasterService.showToast('info', 'Please select Location!', 'EMCARE');
-        }
+
+        this.selectedId = data.locationId;
+        this.dateObj = data.dateObj;
+        this.resetPageIndex();
+        const pageIndex = this.currentPage == 0 ? this.currentPage : this.currentPage - 1;
+        this.getPatientsBasedOnData(pageIndex);
     }
 
     clearFilter(event) {
         if (event) {
+            this.selectedId = null;
+            this.dateObj = null;
             this.resetPageIndex();
-            this.getPatientsByPageIndex(this.currentPage);
+            this.getPatientsBasedOnData(this.currentPage);
         }
     }
 
@@ -178,7 +161,7 @@ export class PatientListComponent implements OnInit {
         const data = [];
         const patientName = `${patient.givenName} ${patient.familyName}`;
 
-        for (const k in patient) {
+        this.columnOrder.forEach(k => {
             if (k !== 'key') {
                 if (k === 'dob' || k === 'consultationDate') {
                     data.push({ key: k, value: patient[k] ? this.datePipe.transform(patient[k], 'yyyy-MM-dd') : 'NA' });
@@ -186,8 +169,7 @@ export class PatientListComponent implements OnInit {
                     data.push({ key: k, value: patient[k] ? patient[k] : 'NA' });
                 }
             }
-        }
-
+        });
         let workbook = new Workbook();
         let worksheet = workbook.addWorksheet(patientName);
 
@@ -222,8 +204,7 @@ export class PatientListComponent implements OnInit {
             data.push(obj);
         });
 
-        const dummyPatient = (selectedPatients[0]);
-        for (const k in dummyPatient) {
+        this.columnOrder.forEach(k => {
             if (k !== 'key') {
                 data.forEach((element, ind) => {
                     const patient = selectedPatients[ind];
@@ -235,7 +216,7 @@ export class PatientListComponent implements OnInit {
                 });
                 columns.push({ header: `${k}`, key: `${k}`, width: 35 })
             }
-        }
+        });
 
         worksheet.columns = columns;
         worksheet.addRows(data, "n");
@@ -251,7 +232,7 @@ export class PatientListComponent implements OnInit {
         let tableArr = [];
         data.push({ text: '                            ' });
 
-        for (const key in patient) {
+        this.columnOrder.forEach(key => {
             if (key !== 'key') {
                 if (key === 'dob' || key === 'consultationDate') {
                     tableArr.push([key, patient[key] ? this.datePipe.transform(patient[key], 'yyyy-MM-dd') : 'NA']);
@@ -259,7 +240,7 @@ export class PatientListComponent implements OnInit {
                     tableArr.push([key, patient[key] ? patient[key] : 'NA']);
                 }
             }
-        }
+        });
 
         let docDefinition = {
             content: [
@@ -308,7 +289,7 @@ export class PatientListComponent implements OnInit {
 
         selectedPatients.forEach(patient => {
             let tableArr = [];
-            for (const key in patient) {
+            this.columnOrder.forEach(key => {
                 if (key !== 'key') {
                     if (key === 'dob' || key === 'consultationDate') {
                         tableArr.push([key, patient[key] ? this.datePipe.transform(patient[key], 'yyyy-MM-dd') : 'NA']);
@@ -316,7 +297,7 @@ export class PatientListComponent implements OnInit {
                         tableArr.push([key, patient[key] ? patient[key] : 'NA']);
                     }
                 }
-            }
+            });
 
             let tableObj = {};
             tableObj = {
@@ -334,26 +315,40 @@ export class PatientListComponent implements OnInit {
     }
 
     onEnableSelectionClick() {
-        this.showCheckboxes = !this.showCheckboxes;
-        this.enableAll = false;
-        if (!this.showCheckboxes) {
-            this.filteredPatients.forEach(element => { element['isExcelPDF'] = false; });
+        this.showAllPatientCheckbox = !this.showAllPatientCheckbox;
+        if (this.exportAllPatient) {
+            this.exportAllPatient = false;
+        } else {
+            this.showCheckboxes = !this.showCheckboxes;
+            this.enableAll = false;
+            this.disableSaveButton = true;
+            if (!this.showCheckboxes) {
+                this.filteredPatients.forEach((element) => {
+                    element['isExcelPDF'] = false;
+                });
+            }
         }
     }
 
     enableAllBoxes() {
+        this.disableSaveButton = false;
         if (this.enableAll) {
             this.filteredPatients.forEach(element => { element['isExcelPDF'] = true; });
         } else {
+            this.disableSaveButton = true;
             this.filteredPatients.forEach(element => { element['isExcelPDF'] = false; });
         }
     }
 
     enableEachBox(patient) {
+        this.disableSaveButton = false;
+        const checkLength = this.filteredPatients.filter(element => element['isExcelPDF'] === true).length;
+        if (checkLength === 0) {
+            this.disableSaveButton = true;
+        }
         if (!patient.isExcelPDF) {
             this.enableAll = false;
         } else {
-            const checkLength = this.filteredPatients.filter(element => element['isExcelPDF'] === true).length;
             if (this.filteredPatients.length === checkLength) {
                 this.enableAll = true;
             }
@@ -361,8 +356,15 @@ export class PatientListComponent implements OnInit {
     }
 
     exportAllThePatients() {
-        this.enableAll = false;
-        this.showCheckboxes = false;
+        if (this.exportAllPatient) {
+            this.showCheckboxes = false;
+            this.enableAll = false;
+            this.enableAllBoxes();
+            this.disableSaveButton = false;
+        } else {
+            this.showCheckboxes = true;
+            this.disableSaveButton = true;
+        }
         this.fhirService.getAllPatientsForExport(this.searchString, this.selectedId).subscribe((res: any) => {
             if (res) {
                 this.filteredAllPatientData = res;

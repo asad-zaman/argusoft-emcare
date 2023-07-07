@@ -78,7 +78,7 @@ class TenantFilter implements Filter {
         }
         if (Objects.isNull(tenantId)) {
             throw new DataSourceLookupFailureException(
-                    "No DataSource with name '" + domain + "' registered");
+                "No DataSource with name '" + domain + "' registered");
         }
         if (req.getRequestURI().contains("/country")) {
             TenantContext.setCurrentTenant(defaultTenant);
@@ -91,6 +91,7 @@ class TenantFilter implements Filter {
         } catch (Exception ex) {
 
         } finally {
+//            tenantConfigRepository.removeIdeaConnection();
             TenantContext.clearTenant();
         }
     }

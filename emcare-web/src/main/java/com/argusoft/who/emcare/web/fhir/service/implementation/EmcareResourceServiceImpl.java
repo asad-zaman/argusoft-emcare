@@ -133,6 +133,10 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
     ObservationResourceRepository observationResourceRepository;
     @Autowired
     BinaryResourceService binaryResourceService;
+
+    @Autowired
+    AuditEventResourceService auditEventResourceService;
+
     @Autowired
     private LocationService locationService;
     @Autowired
@@ -305,6 +309,14 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
                     binaryResourceService.saveResource(parser.parseResource(Binary.class, resourceString));
                 }
                 break;
+            case CommonConstant.AUDITEVENT_TYPE_STRING:
+                AuditEvent auditEvent = auditEventResourceService.getResourceById(resourceId);
+                if (auditEvent != null) {
+                    auditEventResourceService.updateAuditEventResource(resource.getIdElement(), auditEvent);
+                } else {
+                    auditEventResourceService.saveResource(parser.parseResource(AuditEvent.class, resourceString));
+                }
+                break;
             default:
                 break;
         }
@@ -370,15 +382,22 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
             List<Integer> locationIds = locationMasterDao.getAllChildLocationId(facilityDto.getLocationId().intValue());
             childFacilityIds = locationResourceRepository.findResourceIdIn(locationIds);
         }
+        Date prodDate = new Date();
+        try {
+            String prodDateString = "31/05/2023";
+            prodDate = new SimpleDateFormat("dd/MM/yyyy").parse(prodDateString);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
 
         if (theDate == null && theId == null) {
-            return repository.findAllByType(type);
+            return repository.findAllByTypeAndCreatedOnGreaterThan(type, prodDate);
         } else if (theDate != null && theId == null) {
             return repository.getByDateAndType(theDate.getValue(), type);
         } else if (theDate == null) {
-            return repository.findByFacilityIdIn(childFacilityIds);
+            return repository.findByFacilityIdInAndCreatedOnGreaterThan(childFacilityIds, prodDate);
         } else {
-            return repository.findByTypeAndModifiedOnGreaterThanOrCreatedOnGreaterThanAndFacilityIdIn(type, theDate.getValue(), theDate.getValue(), childFacilityIds);
+            return repository.findByTypeAndModifiedOnGreaterThanOrCreatedOnGreaterThanAndFacilityIdInAndCreatedOnGreaterThan(type, theDate.getValue(), theDate.getValue(), childFacilityIds, prodDate);
         }
     }
 
@@ -393,36 +412,58 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
     }
 
     @Override
-    public PageDto getPatientUnderLocationId(Object locationId, Integer pageNo, Date startDate, Date endDate) {
+    public PageDto getPatientUnderLocationId(Object locationId, String searchString, Integer pageNo, String sDate, String eDate) {
+
         Long offSet = pageNo.longValue() * 10;
         List<Integer> locationIds;
         List<String> childFacilityIds = new ArrayList<>();
-        if (isNumeric(locationId.toString())) {
-            locationIds = locationMasterDao.getAllChildLocationId(Integer.parseInt(locationId.toString()));
-            childFacilityIds = locationResourceRepository.findResourceIdIn(locationIds);
-        } else {
-            childFacilityIds.add(locationId.toString());
+        if (Objects.nonNull(locationId)) {
+            if (isNumeric(locationId.toString())) {
+                locationIds = locationMasterDao.getAllChildLocationId(Integer.parseInt(locationId.toString()));
+                childFacilityIds = locationResourceRepository.findResourceIdIn(locationIds);
+            } else {
+                childFacilityIds.add(locationId.toString());
+            }
         }
+        Date startDate = null;
+        Date endDate = null;
         try {
-
-            if (Objects.isNull(startDate)) {
-                String sDate1 = "31/12/1998";
-                startDate = new SimpleDateFormat("dd/MM/yyyy").parse(sDate1);
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            if (Objects.isNull(sDate) || sDate.isEmpty()) {
+                String sDate1 = "1998-12-31";
+                sDate = sdf.format(sdf.parse(sDate1));
             }
-            if (Objects.isNull(endDate)) {
-                endDate = new Date();
+            if (Objects.isNull(eDate) || eDate.isEmpty()) {
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(new Date());
+                calendar.add(Calendar.DATE, 1);
+                eDate = new SimpleDateFormat("yyyy-MM-dd").format(calendar.getTime()).toString();
             }
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            startDate = simpleDateFormat.parse(sDate);
+            endDate = simpleDateFormat.parse(eDate);
         } catch (Exception e) {
             e.printStackTrace();
         }
         Long totalCount = 0L;
         List<Map<String, Object>> resourcesList = new ArrayList<>();
-        if (Objects.isNull(locationId)) {
-            totalCount = Long.valueOf(repository.getFilteredDateOnlyCount(startDate, endDate).size());
-            resourcesList = repository.getFilteredDateOnly(startDate, endDate, offSet);
+        if (Objects.isNull(locationId) || locationId.toString().isEmpty()) {
+            if (searchString != null && !searchString.isEmpty()) {
+                totalCount = Long.valueOf(repository.getFilteredDateAndSearchStringOnlyCount(searchString, startDate, endDate).size());
+                resourcesList = repository.getFilteredDateAndSearchString(searchString, startDate, endDate, offSet);
+            } else {
+                totalCount = Long.valueOf(repository.getFilteredDateOnlyCount(startDate, endDate).size());
+                resourcesList = repository.getFilteredDateOnly(startDate, endDate, offSet);
+            }
         } else {
-            totalCount = Long.valueOf(repository.getFilteredPatientsInCount(childFacilityIds, startDate, endDate).size());
-            resourcesList = repository.getFilteredPatientsIn(childFacilityIds, startDate, endDate, offSet);
+            if (searchString != null && !searchString.isEmpty()) {
+                totalCount = Long.valueOf(repository.getFilteredPatientsInAndSearchStringCount(childFacilityIds, searchString, startDate, endDate).size());
+                resourcesList = repository.getFilteredPatientsInAndSearchString(childFacilityIds, searchString, startDate, endDate, offSet);
+
+            } else {
+                totalCount = Long.valueOf(repository.getFilteredPatientsInCount(childFacilityIds, startDate, endDate).size());
+                resourcesList = repository.getFilteredPatientsIn(childFacilityIds, startDate, endDate, offSet);
+            }
         }
         PageDto pageDto = new PageDto();
         pageDto.setList(resourcesList);
@@ -433,8 +474,15 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
     @Override
     public List<String> getPatientIdsUnderFacility(String facilityId) {
         List<String> facilityIds = new ArrayList<>();
+        Date prodDate = new Date();
+        try {
+            String prodDateString = "31/05/2023";
+            prodDate = new SimpleDateFormat("dd/MM/yyyy").parse(prodDateString);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
         facilityIds = locationResourceService.getAllChildFacilityIds(facilityId);
-        List<EmcareResource> emcareResources = repository.findByFacilityIdIn(facilityIds);
+        List<EmcareResource> emcareResources = repository.findByFacilityIdInAndCreatedOnGreaterThan(facilityIds, prodDate);
         return emcareResources.stream().map(EmcareResource::getResourceId).collect(Collectors.toList());
     }
 

@@ -5,8 +5,13 @@ import com.argusoft.who.emcare.web.indicators.indicator.dto.IndicatorFilterDto;
 import com.argusoft.who.emcare.web.indicators.indicator.entity.Indicator;
 import com.argusoft.who.emcare.web.indicators.indicator.entity.IndicatorDenominatorEquation;
 import com.argusoft.who.emcare.web.indicators.indicator.entity.IndicatorNumeratorEquation;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.stereotype.Component;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -29,13 +34,13 @@ public class IndicatorQueryBuilder {
         query = query.append("(select obr.code as code, emr.resource_id as patient,");
         query = query.append(" obr.modified_on ");
         if (Objects.nonNull(indicatorNumeratorEquation.getValueType())) {
-            if(indicatorNumeratorEquation.getValueType().equalsIgnoreCase("Boolean")) {
+            if (indicatorNumeratorEquation.getValueType().equalsIgnoreCase("Boolean")) {
                 query = query.append(", cast(cast(cast(obr.text AS json)->>'" + getTypeValue(indicatorNumeratorEquation.getValueType()) + "' as text) AS "
-                        + getTypeKey(indicatorNumeratorEquation.getValueType()) + ") as valueText");
+                    + getTypeKey(indicatorNumeratorEquation.getValueType()) + ") as valueText");
             }
-            if(indicatorNumeratorEquation.getValueType().equalsIgnoreCase("Number")) {
+            if (indicatorNumeratorEquation.getValueType().equalsIgnoreCase("Number")) {
                 query = query.append(", cast(cast(cast(obr.text AS json)->>'" + getTypeValue(indicatorNumeratorEquation.getValueType()) + "' as INTEGER) AS "
-                        + getTypeKey(indicatorNumeratorEquation.getValueType()) + ") as valueText");
+                    + getTypeKey(indicatorNumeratorEquation.getValueType()) + ") as valueText");
             }
         }
         if (Objects.nonNull(indicatorFilterDto.getAge())) {
@@ -73,10 +78,10 @@ public class IndicatorQueryBuilder {
 
         if (Objects.nonNull(indicatorNumeratorEquation.getCondition()) || Objects.nonNull(indicatorNumeratorEquation.getValue())) {
             if (!indicatorNumeratorEquation.getCode().equalsIgnoreCase(CommonConstant.ALL_CODE)) {
-                if(indicatorNumeratorEquation.getValueType().equalsIgnoreCase("Boolean")) {
+                if (indicatorNumeratorEquation.getValueType().equalsIgnoreCase("Boolean")) {
                     query = query.append(" and valueText" + indicatorNumeratorEquation.getCondition() + " '" + indicatorNumeratorEquation.getValue() + "'");
                 }
-                if(indicatorNumeratorEquation.getValueType().equalsIgnoreCase("Number")) {
+                if (indicatorNumeratorEquation.getValueType().equalsIgnoreCase("Number")) {
                     query = query.append(" and valueText" + indicatorNumeratorEquation.getCondition() + " " + indicatorNumeratorEquation.getValue());
                 }
             } else {
@@ -94,13 +99,13 @@ public class IndicatorQueryBuilder {
         query = query.append("(select obr.code as code, emr.resource_id as patient, ");
         query = query.append(" obr.modified_on ");
         if (Objects.nonNull(indicatorDenominatorEquation.getValueType())) {
-            if(indicatorDenominatorEquation.getValueType().equalsIgnoreCase("Boolean")) {
+            if (indicatorDenominatorEquation.getValueType().equalsIgnoreCase("Boolean")) {
                 query = query.append(", cast(cast(cast(obr.text AS json)->>'" + getTypeValue(indicatorDenominatorEquation.getValueType()) + "' as text) AS "
-                        + getTypeKey(indicatorDenominatorEquation.getValueType()) + ") as valueText");
+                    + getTypeKey(indicatorDenominatorEquation.getValueType()) + ") as valueText");
             }
-            if(indicatorDenominatorEquation.getValueType().equalsIgnoreCase("Number")) {
+            if (indicatorDenominatorEquation.getValueType().equalsIgnoreCase("Number")) {
                 query = query.append(", cast(cast(cast(obr.text AS json)->>'" + getTypeValue(indicatorDenominatorEquation.getValueType()) + "' as INTEGER) AS "
-                        + getTypeKey(indicatorDenominatorEquation.getValueType()) + ") as valueText");
+                    + getTypeKey(indicatorDenominatorEquation.getValueType()) + ") as valueText");
             }
         }
         if (Objects.nonNull(indicatorFilterDto.getAge())) {
@@ -135,10 +140,10 @@ public class IndicatorQueryBuilder {
         }
         if (Objects.nonNull(indicatorDenominatorEquation.getCondition()) || Objects.nonNull(indicatorDenominatorEquation.getValue())) {
             if (!indicatorDenominatorEquation.getCode().equalsIgnoreCase(CommonConstant.ALL_CODE)) {
-                if(indicatorDenominatorEquation.getValueType().equalsIgnoreCase("Boolean")) {
+                if (indicatorDenominatorEquation.getValueType().equalsIgnoreCase("Boolean")) {
                     query = query.append(" and valueText" + indicatorDenominatorEquation.getCondition() + " '" + indicatorDenominatorEquation.getValue() + "'");
                 }
-                if(indicatorDenominatorEquation.getValueType().equalsIgnoreCase("Number")) {
+                if (indicatorDenominatorEquation.getValueType().equalsIgnoreCase("Number")) {
                     query = query.append(" and valueText" + indicatorDenominatorEquation.getCondition() + " " + indicatorDenominatorEquation.getValue());
                 }
             } else {
@@ -148,12 +153,62 @@ public class IndicatorQueryBuilder {
         return query.toString();
     }
 
+    public String changeQueryBasedOnFilterValueReplace(String facilityId,
+                                                       Indicator indicator,
+                                                       IndicatorFilterDto indicatorFilterDto) {
+
+        String query = indicator.getQuery();
+        ObjectMapper oMapper = new ObjectMapper();
+
+        String sDate = "";
+        String eDate = "";
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            if (Objects.isNull(indicatorFilterDto.getStartDate())) {
+                String sDate1 = "1998-12-31";
+                sDate = sdf.format(sdf.parse(sDate1));
+                indicatorFilterDto.setStartDate(sdf.parse(sDate));
+            }
+            if (Objects.isNull(indicatorFilterDto.getEndDate())) {
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(new Date());
+                calendar.add(Calendar.DATE, 1);
+                eDate = new SimpleDateFormat("yyyy-MM-dd").format(calendar.getTime()).toString();
+                indicatorFilterDto.setEndDate(sdf.parse(eDate));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        Map<String, Object> filterDtoMap = oMapper.convertValue(indicatorFilterDto, Map.class);
+        for (var entry : filterDtoMap.entrySet()) {
+            String value = "null";
+            if (Objects.nonNull(entry.getValue())) {
+                if (entry.getKey().equalsIgnoreCase("startDate") || entry.getKey().equalsIgnoreCase("endDate")) {
+                    value = new SimpleDateFormat("yyyy-MM-dd").format(entry.getValue());
+                } else {
+                    value = entry.getValue().toString();
+                }
+            } else {
+                if (entry.getKey().equalsIgnoreCase("age")) {
+                    value = ">= 0";
+                }
+            }
+            query = query.replaceAll(":" + entry.getKey(), value);
+
+        }
+        if (Objects.isNull(facilityId)) {
+            facilityId = "null";
+        }
+        query = query.replaceAll(":facilityId", facilityId);
+        return query;
+    }
+
     public String getTypeKey(String valueType) {
         String type = "TEXT";
         if (valueType.equals(CommonConstant.FHIR_TYPE_BOOLEAN_CONDITION)) {
             type = CommonConstant.FHIR_TYPE_BOOLEAN_KEY;
-        }
-        else if (valueType.equals(CommonConstant.FHIR_TYPE_INTEGER_CONDITION)) {
+        } else if (valueType.equals(CommonConstant.FHIR_TYPE_INTEGER_CONDITION)) {
             type = CommonConstant.FHIR_TYPE_INTEGER_KEY;
         }
         return type;
@@ -163,8 +218,7 @@ public class IndicatorQueryBuilder {
         String type = "TEXT";
         if (valueType.equalsIgnoreCase(CommonConstant.FHIR_TYPE_BOOLEAN_CONDITION)) {
             type = CommonConstant.FHIR_TYPE_BOOLEAN_VALUE;
-        }
-        else if (valueType.equalsIgnoreCase(CommonConstant.FHIR_TYPE_INTEGER_CONDITION)) {
+        } else if (valueType.equalsIgnoreCase(CommonConstant.FHIR_TYPE_INTEGER_CONDITION)) {
             type = CommonConstant.FHIR_TYPE_INTEGER_VALUE;
         }
         return type;

@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+
 @CrossOrigin(origins = "**")
 @RestController
 @RequestMapping("/api/language")
@@ -34,6 +36,11 @@ public class LanguageController {
     @PostMapping("/create")
     public ResponseEntity<Object> createNewLanguageTranslation(@RequestBody LanguageAddDto languageAddDto) {
         return ResponseEntity.ok(languageService.createNewLanguageTranslation(languageAddDto));
+    }
+
+    @GetMapping("/allKeys")
+    public String getAllKeys() throws IOException {
+        return languageService.getAllKeys();
     }
 
 }

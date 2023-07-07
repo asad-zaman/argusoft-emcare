@@ -2,6 +2,7 @@ package com.argusoft.who.emcare.web.questionnaireresponse.controller;
 
 import ca.uhn.fhir.rest.param.DateParam;
 import com.argusoft.who.emcare.web.common.constant.CommonConstant;
+import com.argusoft.who.emcare.web.common.dto.PageDto;
 import com.argusoft.who.emcare.web.questionnaireresponse.dto.QuestionnaireResponseRequestDto;
 import com.argusoft.who.emcare.web.questionnaireresponse.model.QuestionnaireResponse;
 import com.argusoft.who.emcare.web.questionnaireresponse.service.QuestionnaireResponseService;
@@ -57,5 +58,13 @@ public class QuestionnaireResponseController {
         return ResponseEntity.ok().body(questionnaireResponseService.getAllDataForExport());
     }
 
+    @GetMapping("/consultations/locationId")
+    public PageDto getAllPatientsUnderLocation(@Nullable @RequestParam(value = "locationId") Object locationId,
+                                               @RequestParam(value = "pageNo") Integer pageNo,
+                                               @Nullable @RequestParam(value = "startDate") String startDate,
+                                               @Nullable @RequestParam(value = "endDate") String endDate,
+                                               @Nullable @RequestParam(value = "searchString") String searchString){
+        return questionnaireResponseService.getConsultationsUnderLocationId(locationId, pageNo, startDate, endDate,searchString);
+    }
 
 }

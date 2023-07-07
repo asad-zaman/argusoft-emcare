@@ -157,13 +157,17 @@ export class IndicatorComponent implements OnInit {
       facility: this.getFacilityById(currentIndicator.facilityId),
       displayType: this.getDSTById(currentIndicator.displayType),
       numerators: currentIndicator.numeratorEquation.length > 0 ?
-        this.setNumerators(currentIndicator.numeratorEquation) : [],
+        this.setNumerators(currentIndicator.numeratorEquation) :
+        this.addNumerator(),
       denominators: currentIndicator.denominatorEquation.length > 0 ?
-        this.setDenominators(currentIndicator.denominatorEquation) : [],
+        this.setDenominators(currentIndicator.denominatorEquation) :
+        this.addDenominator(),
       numeratorEquation: numeratorEquation,
       denominatorEquation: denominatorEquation,
       colorArr: colorSchema.length > 0 ?
         this.setColorSchema(colorSchema) : [],
+      allowQueryBuilder: currentIndicator.isQueryConfigure,
+      query: currentIndicator.query
     });
     this.setNumeratorEquationArr();
     this.setDenominatorEquationArr();
@@ -263,7 +267,9 @@ export class IndicatorComponent implements OnInit {
         this.formBuilder.array([]) : this.formBuilder.array([this.newColorSectionAddition()]),
       gender: [''],
       ageCondition: [''],
-      ageValue: ['']
+      ageValue: [''],
+      allowQueryBuilder: [false],
+      query: ['']
     });
     this.checkEditParam();
   }
@@ -361,6 +367,8 @@ export class IndicatorComponent implements OnInit {
       }, () => {
         this.toasterService.showToast('error', 'Server issue!', 'EMCARE!');
       });
+    } else {
+      this.toasterService.showToast('info', "Please fill all the fields!", 'EM CARE!');
     }
   }
 
@@ -405,13 +413,15 @@ export class IndicatorComponent implements OnInit {
       "numeratorIndicatorEquation": this.getNumEquation(),
       "denominatorIndicatorEquation": this.getDenEquation(),
       "displayType": formValue.displayType.id,
-      "numeratorEquations": this.getNumeratorsBody(),
-      "denominatorEquations": this.getDenominatorsBody(),
-      "numeratorEquationString": JSON.stringify(this.numeratorEquationStringArr),
-      "denominatorEquationString": JSON.stringify(this.denominatorEquationStringArr),
+      "numeratorEquations": formValue.allowQueryBuilder ? [] : this.getNumeratorsBody(),
+      "denominatorEquations": formValue.allowQueryBuilder ? [] : this.getDenominatorsBody(),
+      "numeratorEquationString": formValue.allowQueryBuilder ? JSON.stringify([]) : JSON.stringify(this.numeratorEquationStringArr),
+      "denominatorEquationString": formValue.allowQueryBuilder ? JSON.stringify([]) : JSON.stringify(this.denominatorEquationStringArr),
       "colourSchema": JSON.stringify(this.getColorSchemaObj()),
       "gender": null,
-      "age": null
+      "age": null,
+      "isQueryConfigure": formValue.allowQueryBuilder,
+      "query": formValue.allowQueryBuilder ? formValue.query : null
     }
   }
 
@@ -645,7 +655,7 @@ export class IndicatorComponent implements OnInit {
     this.getColorSections().controls.forEach(element => {
       tempArr.push({
         minValue: element.value.minValue,
-        condition: element.value.condition.id,
+        condition: element.value.condition && element.value.condition.id,
         maxValue: element.value.maxValue,
         color: element.value.color
       });
@@ -657,5 +667,13 @@ export class IndicatorComponent implements OnInit {
     if (event.target.value > 100 || event.target.value < 0) {
       this.toasterService.showToast('error', 'Please enter value between 0 to 100!', 'EM CARE!');
     }
+  }
+
+  setAllowQueryBuilderTrue() {
+    this.indicatorForm.patchValue({ allowQueryBuilder: true });
+  }
+
+  setAllowQueryBuilderFalse() {
+    this.indicatorForm.patchValue({ allowQueryBuilder: false });
   }
 }

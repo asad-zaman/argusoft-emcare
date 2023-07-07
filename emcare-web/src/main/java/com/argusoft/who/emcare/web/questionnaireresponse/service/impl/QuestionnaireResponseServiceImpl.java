@@ -6,12 +6,10 @@ import com.argusoft.who.emcare.web.fhir.dao.EmcareResourceRepository;
 import com.argusoft.who.emcare.web.fhir.dao.EncounterResourceRepository;
 import com.argusoft.who.emcare.web.fhir.dao.LocationResourceRepository;
 import com.argusoft.who.emcare.web.fhir.dto.FacilityDto;
-import com.argusoft.who.emcare.web.fhir.dto.PatientDto;
 import com.argusoft.who.emcare.web.fhir.model.EmcareResource;
 import com.argusoft.who.emcare.web.fhir.model.EncounterResource;
 import com.argusoft.who.emcare.web.fhir.service.EmcareResourceService;
 import com.argusoft.who.emcare.web.location.dao.LocationMasterDao;
-import com.argusoft.who.emcare.web.questionnaireresponse.dto.MiniPatient;
 import com.argusoft.who.emcare.web.questionnaireresponse.dto.QuestionnaireResponseRequestDto;
 import com.argusoft.who.emcare.web.questionnaireresponse.mapper.QuestionnaireResponseMapper;
 import com.argusoft.who.emcare.web.questionnaireresponse.model.QuestionnaireResponse;
@@ -26,6 +24,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -75,9 +74,16 @@ public class QuestionnaireResponseServiceImpl implements QuestionnaireResponseSe
 
     @Override
     public List<QuestionnaireResponse> getQuestionnaireResponseByUserLocation(Date theDate) {
+        Date prodDate = new Date();
+        try {
+            String prodDateString = "31/05/2023";
+            prodDate = new SimpleDateFormat("dd/MM/yyyy").parse(prodDateString);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
         UserMasterDto userMasterDto = (UserMasterDto) userService.getCurrentUser().getBody();
         List<String> facilityIds = userMasterDto.getFacilities().stream().map(FacilityDto::getFacilityId).collect(Collectors.toList());
-        List<EmcareResource> patientList = emcareResourceRepository.findByFacilityIdIn(facilityIds);
+        List<EmcareResource> patientList = emcareResourceRepository.findByFacilityIdInAndCreatedOnGreaterThan(facilityIds, prodDate);
         List<String> patientIds = patientList.stream().map(EmcareResource::getResourceId).collect(Collectors.toList());
         List<QuestionnaireResponse> questionnaireResponses;
         if (Objects.nonNull(theDate)) {
@@ -91,30 +97,21 @@ public class QuestionnaireResponseServiceImpl implements QuestionnaireResponseSe
     @Override
     public PageDto getQuestionnaireResponsePage(Integer pageNo, String searchString) {
         Pageable page = PageRequest.of(pageNo, CommonConstant.PAGE_SIZE);
-        List<EmcareResource> resourcesList;
+//        List<EmcareResource> resourcesList;
+        List<Map<String, Object>> consultations;
         Integer totalCount = 0;
-        if (searchString != null && !searchString.isEmpty()) {
-            resourcesList = emcareResourceRepository.findByTypeContainingAndTextContainingIgnoreCaseOrderByCreatedOnDesc(CommonConstant.FHIR_PATIENT, searchString);
-        } else {
-            resourcesList = emcareResourceRepository.findAllByType(CommonConstant.FHIR_PATIENT);
-        }
-        List<String> resourceIds = resourcesList.stream().map(EmcareResource::getResourceId).collect(Collectors.toList());
-        List<MiniPatient> responseList = questionnaireResponseRepository.getDistinctPatientIdInAndConsultationDate(
-            resourceIds,
-            page);
-        List<String> patientIds = responseList.stream().map(MiniPatient::getPatientId).collect(Collectors.toList());
-        totalCount = questionnaireResponseRepository.findDistinctByPatientIdIn(resourceIds).size();
-        List<PatientDto> patientList = emcareResourceService.getPatientDtoByIds(patientIds);
-        for (PatientDto patientDto : patientList) {
-            for (MiniPatient miniPatient : responseList) {
-                if (patientDto.getId().equalsIgnoreCase(miniPatient.getPatientId())) {
-                    patientDto.setConsultationDate(miniPatient.getConsultationDate());
-                }
-            }
-        }
-        Collections.reverse(patientList);
         PageDto pageDto = new PageDto();
-        pageDto.setList(patientList);
+
+        if (searchString != null && !searchString.isEmpty()) {
+            consultations = emcareResourceRepository.findConsultationsBySearch(searchString, page);
+            totalCount = emcareResourceRepository.findConsultationsBySearchCount(searchString).size();
+        } else {
+            consultations = emcareResourceRepository.findAllConsultations(page);
+            totalCount = emcareResourceRepository.findAllConsultationsCount().size();
+        }
+
+
+        pageDto.setList(consultations);
         pageDto.setTotalCount(totalCount.longValue());
         return pageDto;
     }
@@ -127,7 +124,9 @@ public class QuestionnaireResponseServiceImpl implements QuestionnaireResponseSe
         Map<String, Object> responsesWithEncounter = new HashMap<>();
         for (Map.Entry<String, List<QuestionnaireResponse>> key : responses.entrySet()) {
             EncounterResource encounterResource = encounterResourceRepository.findByResourceId(key.getKey());
-            responsesWithEncounter.put(encounterResource.getCreatedOn().toString(), responses.get(key.getKey()));
+            if(encounterResource != null) {
+                responsesWithEncounter.put(encounterResource.getCreatedOn().toString(), responses.get(key.getKey()));
+            }
         }
         return responsesWithEncounter;
     }
@@ -149,6 +148,65 @@ public class QuestionnaireResponseServiceImpl implements QuestionnaireResponseSe
     }
 
     @Override
+    public PageDto getConsultationsUnderLocationId(Object locationId, Integer pageNo, String sDate, String eDate, String searchString) {
+        Long offSet = pageNo.longValue() * 10;
+        List<Integer> locationIds;
+        List<String> childFacilityIds = new ArrayList<>();
+        if (Objects.nonNull(locationId)) {
+            if (isNumeric(locationId.toString())) {
+                locationIds = locationMasterDao.getAllChildLocationId(Integer.parseInt(locationId.toString()));
+                childFacilityIds = locationResourceRepository.findResourceIdIn(locationIds);
+            } else {
+                childFacilityIds.add(locationId.toString());
+            }
+        }
+
+        Date startDate = null;
+        Date endDate = null;
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            if (Objects.isNull(sDate) || sDate.isEmpty()) {
+                String sDate1 = "1998-12-31";
+                sDate = sdf.format(sdf.parse(sDate1));
+            }
+            if (Objects.isNull(eDate) || eDate.isEmpty()) {
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(new Date());
+                calendar.add(Calendar.DATE, 1);
+                eDate = new SimpleDateFormat("yyyy-MM-dd").format(calendar.getTime()).toString();
+            }
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            startDate = simpleDateFormat.parse(sDate);
+            endDate = simpleDateFormat.parse(eDate);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Long totalCount = 0L;
+        List<Map<String, Object>> resourcesList = new ArrayList<>();
+        if (locationId.toString().isEmpty()) {
+            if (searchString != null && !searchString.isEmpty()) {
+                totalCount = Long.valueOf(questionnaireResponseRepository.getFilteredDateWithSearchCount(searchString, startDate, endDate).size());
+                resourcesList = questionnaireResponseRepository.getFilteredDateWithSearch(searchString, startDate, endDate, offSet);
+            } else {
+                totalCount = Long.valueOf(questionnaireResponseRepository.getFilteredDateOnlyCount(startDate, endDate).size());
+                resourcesList = questionnaireResponseRepository.getFilteredDateOnly(startDate, endDate, offSet);
+            }
+        } else {
+            if (searchString != null && !searchString.isEmpty()) {
+                totalCount = Long.valueOf(questionnaireResponseRepository.getFilteredConsultationWithSearchCount(searchString, childFacilityIds, startDate, endDate).size());
+                resourcesList = questionnaireResponseRepository.getFilteredConsultationWithSearch(searchString, childFacilityIds, startDate, endDate, offSet);
+            } else {
+                totalCount = Long.valueOf(questionnaireResponseRepository.getFilteredConsultationsInCount(childFacilityIds, startDate, endDate).size());
+                resourcesList = questionnaireResponseRepository.getFilteredConsultationsIn(childFacilityIds, startDate, endDate, offSet);
+            }
+        }
+        PageDto pageDto = new PageDto();
+        pageDto.setList(resourcesList);
+        pageDto.setTotalCount(totalCount);
+        return pageDto;
+    }
+
+    @Override
     public void logSyncAttempt() {
         UserMasterDto userMasterDto = (UserMasterDto) userService.getCurrentUser().getBody();
         UserSyncLog userSyncLog = new UserSyncLog();
@@ -156,4 +214,18 @@ public class QuestionnaireResponseServiceImpl implements QuestionnaireResponseSe
         userSyncLog.setUsername(userMasterDto.getUserName());
         userSyncLogRepository.save(userSyncLog);
     }
+
+    private boolean isNumeric(String strNum) {
+        if (strNum == null) {
+            return false;
+        }
+        try {
+            Integer.parseInt(strNum);
+        } catch (NumberFormatException nfe) {
+            return false;
+        }
+        return true;
+    }
+
+
 }

@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { Observable, Subscription } from 'rxjs';
 import { appConstants } from 'src/app/app.config';
 import { LocationService } from 'src/app/root/services/location.service';
-import { FhirService } from 'src/app/shared';
+import { FhirService, ToasterService } from 'src/app/shared';
 import { LocationSubjects } from '../LocationSubject';
 
 @Component({
@@ -40,7 +40,8 @@ export class LocationDropdownComponent implements OnInit, OnChanges {
     private readonly locationService: LocationService,
     private readonly fhirService: FhirService,
     private readonly cdr: ChangeDetectorRef,
-    private readonly locSubjects: LocationSubjects
+    private readonly locSubjects: LocationSubjects,
+    private readonly toasterService: ToasterService
   ) {
   }
 
@@ -131,7 +132,9 @@ export class LocationDropdownComponent implements OnInit, OnChanges {
       state: [''],
       city: [''],
       region: [''],
-      other: ['']
+      other: [''],
+      startDate: [''],
+      endDate: ['']
     });
   }
 
@@ -143,15 +146,19 @@ export class LocationDropdownComponent implements OnInit, OnChanges {
         this.typeNameArr.push(data['type']);
         // getting conuntries
         this.countryArr = res.filter(el => el['type'] === data['type']);
-        if (this.isPatientPage) {
-          const agent = localStorage.getItem(appConstants.localStorageKeys.ApplicationAgent);
-          const currCountry = this.countryArr.find(el => el.name === agent);
-          const eventObj = { value: { id: currCountry.id } };
-          this.locationFilterForm.patchValue({ country: currCountry });
-          this.onClicked(eventObj, 1);
-        }
+        this.checkPatientPage();
       }
     })
+  }
+
+  checkPatientPage() {
+    if (this.isPatientPage) {
+      const agent = localStorage.getItem(appConstants.localStorageKeys.ApplicationAgent);
+      const currCountry = this.countryArr.find(el => el.name === agent);
+      const eventObj = { value: { id: currCountry.id } };
+      this.locationFilterForm.patchValue({ country: currCountry });
+      this.onClicked(eventObj, 1);
+    }
   }
 
   getChildLocations(id, arr) {
@@ -229,14 +236,19 @@ export class LocationDropdownComponent implements OnInit, OnChanges {
   // as api is not ready yet so both things can not work together
   checkFacilityAndLocationAndRemoveFirstSelection() {
     if (this.currentSelection === 1) {
-      this.dropdownActiveArr = [true, false, false, false, false];
-      this.locationFilterForm.patchValue({
-        country: null,
-        state: null,
-        city: null,
-        region: null,
-        other: null
-      });
+      if (this.isPatientPage) {
+        this.dropdownActiveArr = [true, true, false, false, false];
+        this.locationFilterForm.patchValue({
+          state: null, city: null,
+          region: null, other: null
+        });
+      } else {
+        this.dropdownActiveArr = [true, false, false, false, false];
+        this.locationFilterForm.patchValue({
+          country: null, state: null,
+          city: null, region: null, other: null
+        });
+      }
     } else {
       this.locationFilterForm.patchValue({
         facility: null
@@ -255,6 +267,7 @@ export class LocationDropdownComponent implements OnInit, OnChanges {
   resetData() {
     this.locationFilterForm.reset();
     this.dropdownActiveArr = [true, false, false, false, false];
+    this.checkPatientPage();
   }
 
   getIdFromFormValue(formValue) {
@@ -264,13 +277,28 @@ export class LocationDropdownComponent implements OnInit, OnChanges {
       state: formValue.state ? formValue.state.id : '',
       city: formValue.city ? formValue.city.id : '',
       region: formValue.region ? formValue.region.id : '',
-      other: formValue.other ? formValue.other.id : ''
+      other: formValue.other ? formValue.other.id : '',
+      startDate: formValue.startDate ? formValue.startDate : '',
+      endDate: formValue.endDate ? formValue.endDate : ''
     }
   }
 
   ngOnDestroy() {
     if (this.isMultiplePage) {
       this.eventsSubscription.unsubscribe();
+    }
+  }
+
+  onDateSelection(num, index) {
+    const controls = this.locationFilterForm.controls;
+    const startDate = new Date(controls.startDate.value).getTime();
+    const endDate = new Date(controls.endDate.value).getTime();
+    // if both the dates have values then only we should check otherwise no checking
+    if ((endDate < startDate) && controls.startDate.value && controls.endDate.value) {
+      this.toasterService.showToast('error', 'End Date should be greater than start date!', 'EM CARE!');
+      num === 1 ? controls.startDate.setValue(null) : controls.endDate.setValue(null);
+    } else {
+      this.emitData();
     }
   }
 }

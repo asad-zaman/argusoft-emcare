@@ -51,7 +51,13 @@ export class LocationFilterComponent implements OnInit {
         selectedId = valueArr[index];
       }
     }
-    this.locationId.emit(selectedId);
+    if (this.isPatientPage) {
+      selectedId = this.formData.facility.id ? this.formData.facility.id : selectedId;
+      const dateObj = { startDate: this.formData.startDate, endDate: this.formData.endDate };
+      this.locationId.emit({ locationId: selectedId, dateObj: dateObj });
+    } else {
+      this.locationId.emit(selectedId);
+    }
     this.locSubjects.setClearLocation(false);
     this.sideMenu = false;
   }

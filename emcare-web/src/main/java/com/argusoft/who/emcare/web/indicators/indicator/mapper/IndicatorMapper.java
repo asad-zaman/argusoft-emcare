@@ -41,6 +41,8 @@ public class IndicatorMapper {
         indicator.setColourSchema(indicatorDto.getColourSchema());
         indicator.setAge(indicatorDto.getAge());
         indicator.setGender(indicatorDto.getGender());
+        indicator.setIsQueryConfigure(indicatorDto.getIsQueryConfigure());
+        indicator.setQuery(indicatorDto.getQuery());
         return indicator;
     }
 
