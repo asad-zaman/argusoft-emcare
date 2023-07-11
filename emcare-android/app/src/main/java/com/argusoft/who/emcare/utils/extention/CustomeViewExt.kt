@@ -77,7 +77,7 @@ inline fun <reified T> ApiResponse<T>?.handleListApiView(
         }
 
         is ApiResponse.Success -> {
-            progressLayout?.updateProgressUi(true, true)
+//            progressLayout?.updateProgressUi(true, true)
             if (isRequiredClear) {
                 adapter?.clearAllItems()
             }

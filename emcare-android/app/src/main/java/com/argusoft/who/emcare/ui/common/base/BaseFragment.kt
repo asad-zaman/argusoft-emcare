@@ -129,7 +129,7 @@ abstract class BaseFragment<B : ViewBinding> : Fragment(), View.OnClickListener 
             apiResponse.whenInProgress {
                 Log.d("it.total", it.first.toDouble().toString())
                 Log.d("it.progress", it.second.toDouble().toString())
-                if (it.second >= 100) {
+               /* if (it.second >= 100) {
                     loginViewModel.addDevice(
                         getDeviceName(),
                         getDeviceOS(),
@@ -140,7 +140,7 @@ abstract class BaseFragment<B : ViewBinding> : Fragment(), View.OnClickListener 
                     homeViewModel.loadLibraries(isRedirectToHome)
                     fhirResourcesViewModel.purgeAllAudits()
 
-                } else if (it.first > 0 && it.second <= 100) {
+                } else*/ if (it.first > 0 && it.second <= 100) {
                     val progress = it.second
                     "Synced $progress%".also {
                         progressLayout.showProgress(it)
@@ -155,19 +155,29 @@ abstract class BaseFragment<B : ViewBinding> : Fragment(), View.OnClickListener 
                         BuildConfig.VERSION_NAME
                     )
                     fhirResourcesViewModel.purgeAllAudits()
-                    if(isRedirectToHome) {
-                        if (preference.getFacilityId().isNotEmpty()) {
-                            homeViewModel.loadLibraries(isRedirectToHome)
-                        } else {
-                            progressLayout.hideProgressUi()
-                        }
-                    }else{
+                    if (preference.getFacilityId().isNotEmpty()) {
                         homeViewModel.loadLibraries(isRedirectToHome)
-//                        progressLayout.updateProgressUi(true, true)
+                    } else {
+                        progressLayout.hideProgressUi()
                     }
                 }
             }
 
+            apiResponse.whenSuccess {
+                when (it) {
+                    is SyncJobStatus.Finished -> {
+                        loginViewModel.addDevice(
+                            getDeviceName(),
+                            getDeviceOS(),
+                            getDeviceModel(),
+                            requireContext().getDeviceUUID().toString(),
+                            BuildConfig.VERSION_NAME
+                        )
+                        homeViewModel.loadLibraries(isRedirectToHome)
+                        fhirResourcesViewModel.purgeAllAudits()
+                    }
+                }
+            }
             apiResponse.handleListApiView(progressLayout) {
                 when (it) {
                     is SyncJobStatus.Failed -> {
@@ -190,7 +200,7 @@ abstract class BaseFragment<B : ViewBinding> : Fragment(), View.OnClickListener 
 
         observeNotNull(homeViewModel.librariesLoaded) {
             it.whenSuccess { value ->
-                if(value == 1){
+                if (value == 1) {
                     startActivity(Intent(requireContext(), HomeActivity::class.java))
                     requireActivity().finish()
                 }

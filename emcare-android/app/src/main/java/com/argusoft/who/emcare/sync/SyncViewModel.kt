@@ -64,19 +64,14 @@ class SyncViewModel @Inject constructor(
                     Executors.newSingleThreadScheduledExecutor().schedule({
                         //blank body
                     }, 1, TimeUnit.SECONDS)
-                    Log.d("syncJobStatus", syncJobStatus.toString())
                     if (syncJobStatus is SyncJobStatus.Finished /*&& emCareResult is SyncResult.Success*/) {
-                        Log.d("syncJobStatus Finished", syncJobStatus.toString())
-                        _syncState.value = (syncJobStatus is SyncJobStatus.Finished)?.let {
-                            ApiResponse.Success(syncJobStatus)
-                        }
-                        _syncState.value = ApiResponse.Success(null)
+                        _syncState.value = ApiResponse.Success(syncJobStatus)
                         preference.writeLastSyncTimestamp(lastSyncTime)
                     } else if (syncJobStatus is SyncJobStatus.InProgress) {
                         progress = syncJobStatus.completed.toDouble().div(syncJobStatus.total)
                             .times(100).toInt()
-                        if(syncJobStatus.total == 0)
-                            preference.writeLastSyncTimestamp(lastSyncTime)
+//                        if(syncJobStatus.total == 0)
+//                            preference.writeLastSyncTimestamp(lastSyncTime)
 
                         // fhir auto sync progress
                         autoSyncProgress(syncJobStatus)
@@ -85,7 +80,7 @@ class SyncViewModel @Inject constructor(
 //                        manualSyncProgress(syncJobStatus)
 
                     } else {
-                        _syncState.value = (syncJobStatus is SyncJobStatus.Failed)?.let {
+                        _syncState.value = (syncJobStatus is SyncJobStatus.Failed).let {
                             ApiResponse.ApiError(apiErrorMessageResId = R.string.msg_sync_failed)
                         }
                     }
@@ -101,9 +96,9 @@ class SyncViewModel @Inject constructor(
             )
         isFinished = syncJobStatus.total == 0
 
-        if (progress >= 100) {
-            preference.writeLastSyncTimestamp(lastSyncTime)
-        }
+//        if (progress >= 100) {
+//            preference.writeLastSyncTimestamp(lastSyncTime)
+//        }
     }
 
     private fun manualSyncProgress(syncJobStatus : SyncJobStatus.InProgress){
