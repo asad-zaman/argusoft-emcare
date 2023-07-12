@@ -1,4 +1,4 @@
-<div class="main-wrapper">
+<div class="main-wrapper-no-heading">
   <div class="form-wrapper">
     <form [formGroup]="currentUserForm" name="currentUserForm" novalidate>
       <div class="mb-5">
@@ -10,12 +10,12 @@
       <div class="row">
         <div class="col-12 col-sm-6">
           <div class="mb-3">
-            <label class="form-label">{{'First Name' | translate}}'</label>
+            <label class="form-label">{{'First Name' | translate}}</label>
             <input class="form-control custom-input" formControlName="firstName" type="text" id="firstName"
               placeholder="{{'FirstName Placeholder' | translate}}"
-              [ngClass]="{ 'is-invalid': submitted && f.firstName.errors }">
-            <div *ngIf="submitted && f.firstName.errors" class="invalid-feedback">
-              <div class="cst-error-style" *ngIf="f.firstName.errors.required">
+              [ngClass]="{ 'is-invalid': submitted && getFormConfrols.firstName.errors }">
+            <div *ngIf="submitted && getFormConfrols.firstName.errors" class="invalid-feedback">
+              <div class="cst-error-style" *ngIf="getFormConfrols.firstName.errors.required">
                 {{'FirstName Required Message' | translate}}
               </div>
             </div>
@@ -26,9 +26,9 @@
             <label class="form-label">{{'Last Name' | translate}}</label>
             <input class="form-control custom-input" formControlName="lastName" type="text" id="lastName"
               placeholder="{{'LastName Placeholder' | translate}}"
-              [ngClass]="{ 'is-invalid': submitted && f.lastName.errors }">
-            <div *ngIf="submitted && f.lastName.errors" class="invalid-feedback">
-              <div class="cst-error-style" *ngIf="f.lastName.errors.required">
+              [ngClass]="{ 'is-invalid': submitted && getFormConfrols.lastName.errors }">
+            <div *ngIf="submitted && getFormConfrols.lastName.errors" class="invalid-feedback">
+              <div class="cst-error-style" *ngIf="getFormConfrols.lastName.errors.required">
                 {{'LastName Required Message' | translate}}</div>
             </div>
           </div>
@@ -38,9 +38,9 @@
             <label class="form-label">{{'Email' | translate}}</label>
             <input class="form-control custom-input" formControlName="email" type="text" id="email"
               placeholder="{{'Email Placeholder' | translate}}"
-              [ngClass]="{ 'is-invalid': submitted && f.email.errors }" disabled="true">
-            <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
-              <div class="cst-error-style" *ngIf="f.email.errors.required">
+              [ngClass]="{ 'is-invalid': submitted && getFormConfrols.email.errors }" disabled="true">
+            <div *ngIf="submitted && getFormConfrols.email.errors" class="invalid-feedback">
+              <div class="cst-error-style" *ngIf="getFormConfrols.email.errors.required">
                 {{'Email Required Message' | translate}}</div>
             </div>
           </div>
@@ -70,7 +70,7 @@
       </div>
       <div class="text-end mt-5">
         <hr>
-        <button routerLink="/showUsers" class="btn-black btn ms-3">
+        <button (click)="checkSuperAdminAndNavigate()" class="btn-black btn ms-3">
           <i class="bi bi-chevron-left" aria-hidden="true"></i> {{'Back' | translate}}
         </button>
         <button (click)="saveData()" class="btn-blue btn">

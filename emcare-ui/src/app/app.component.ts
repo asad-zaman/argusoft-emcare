@@ -6,6 +6,7 @@ import { FhirService } from './shared';
 import { AuthenticationService } from './shared/services/authentication.service';
 import * as _ from 'lodash';
 import { AuthGuard } from './auth/auth.guard';
+import { appConstants } from './app.config';
 
 @Component({
   selector: 'app-root',
@@ -15,7 +16,8 @@ import { AuthGuard } from './auth/auth.guard';
 export class AppComponent implements OnInit {
 
   currentUrl: string = '';
-  userName: any;
+  firstName;
+  lastName;
   isSettingDropdownOpen: boolean = false;
   isUserDropdownOpen: boolean = false;
   isPatientDropdownOpen: boolean = false;
@@ -41,8 +43,11 @@ export class AppComponent implements OnInit {
     'Facility': 'bi bi-columns-gap nav-link_icon',
     'Advanced settings': 'bi bi-gear nav-link_icon',
     'Dashboard': 'bi bi-house-door nav-link_icon',
-    'Organizations': 'bi bi-border-outer nav-link_icon'
+    'Organizations': 'bi bi-border-outer nav-link_icon',
+    'Indicators': 'bi bi-app-indicator nav-link_icon'
   }
+  isSuperAdmin = false;
+  footerShow = true;
 
   constructor(
     private readonly router: Router,
@@ -69,6 +74,7 @@ export class AppComponent implements OnInit {
   }
 
   ngAfterViewChecked() {
+    this.checkSuperAdmin();
     this.checkCurrentUrlAndShowHeaderBar();
     this.cdr.detectChanges();
   }
@@ -77,6 +83,7 @@ export class AppComponent implements OnInit {
     this.getCurrentPage();
     this.checkTOkenExpiresOrNot();
     this.checkAPIStatus();
+    this.checkSuperAdmin();
     this.authenticationService.getIsLoggedIn().subscribe(result => {
       if (result) {
         this.setLoggedInUserData();
@@ -86,15 +93,22 @@ export class AppComponent implements OnInit {
       if (result && result.length > 0) {
         this.featureList = result;
       } else {
-        /*  on refreshing the page behaviour subject will be lost
-          so resetting the feature array to behaviour subject to render the sidebar again */
-        let userFeatures = localStorage.getItem('userFeatures');
-        if (userFeatures) {
-          this.authenticationService.setFeatures(this.featureArr);
+        //  as there are no features for superadmin so no need to call the service for behaviour subject
+        if (!this.isSuperAdmin) {
+          /*  on refreshing the page behaviour subject will be lost
+            so resetting the feature array to behaviour subject to render the sidebar again */
+          let userFeatures = localStorage.getItem('userFeatures');
+          if (userFeatures) {
+            this.authenticationService.setFeatures(this.featureArr);
+          }
         }
       }
     });
     this.detectLanChange();
+  }
+
+  checkSuperAdmin() {
+    this.isSuperAdmin = localStorage.getItem('isSuperAdmin') === 'true';
   }
 
   detectLanChange() {
@@ -155,8 +169,8 @@ export class AppComponent implements OnInit {
     });
   }
 
-  getUserCharLogo(username) {
-    return username.substring(0, 1).toUpperCase();
+  getUserCharLogo(firstName, lastName) {
+    return (firstName.substring(0,1).toUpperCase() + lastName.substring(0,1).toUpperCase());
   }
 
   setLoggedInUserData() {
@@ -192,8 +206,9 @@ export class AppComponent implements OnInit {
   }
 
   setUserDetails() {
-    this.userName = localStorage.getItem('Username');
-    this.userCharLogo = this.userName && this.getUserCharLogo(this.userName);
+    this.firstName = localStorage.getItem(appConstants.localStorageKeys.Firstname);
+    this.lastName = localStorage.getItem(appConstants.localStorageKeys.Lastname);
+    this.userCharLogo = this.getUserCharLogo(this.firstName, this.lastName);
   }
 
   hideCurrentDropdown(id) {
@@ -215,9 +230,11 @@ export class AppComponent implements OnInit {
 
   logout() {
     //  on logout direction should be set to ltr as it's english language
-    this.renderer.setAttribute(document.body, 'dir', 'ltr');
-    this.router.navigate(['/login']);
-    localStorage.clear();
+    this.authenticationService.deleteSession().subscribe(() => {
+      this.renderer.setAttribute(document.body, 'dir', 'ltr');
+      this.router.navigate(['/login']);
+      localStorage.clear();
+    });
   }
 
   hasAccess(feature: string) {
@@ -235,8 +252,11 @@ export class AppComponent implements OnInit {
   }
 
   checkCurrentUrlAndShowHeaderBar() {
-    const arr = ['/', '/login', '/signup', '/forgotPassword'];
+    const arr = ['/', '/login', '/signup', '/forgotPassword', '/termsAndConditions'];
     this.sidebarShow = !arr.includes(this.currentUrl);
+    this.footerShow = !(this.currentUrl === '/termsAndConditions'
+      || this.currentUrl === '/login'
+      || this.currentUrl === '/signup');
 
     //  if we hit the url and user is logged in then we should show the sidebar
     //  otherwise we should not as person is not logged in
@@ -288,11 +308,7 @@ export class AppComponent implements OnInit {
       feature['subMenuActive'] = true;
     }
     const routeArr = this.authGuard.getFeatureAndRedirectUser(featureName);
-    return routeArr.includes(this.currentUrl);
-  }
-
-  changeSidebarVar() {
-    this.isSidebarOpen = !this.isSidebarOpen;
+    return routeArr.includes(this.currentUrl.split('/').slice(0, 2).join('/'));
   }
 
   applySidebarChange() {
@@ -300,6 +316,28 @@ export class AppComponent implements OnInit {
       this.isSidebarOpen = false;
     } else {
       this.isSidebarOpen = true;
+    }
+  }
+
+  navigateToTenantConfig() {
+    this.router.navigate(['/tenantList']);
+  }
+
+  getApplicationAgent() {
+    return localStorage.getItem(appConstants.localStorageKeys.ApplicationAgent);
+  }
+
+  navigateToTermsAndConditionsPage() {
+    this.router.navigate(['/termsAndConditions']);
+  }
+
+  onClickSidebarBtn() {
+    this.isSidebarOpen = !this.isSidebarOpen;
+  }
+
+  redirectToDashboard() {
+    if (this.currentUrl !== '/home' && this.currentUrl !== '/dashboard') {
+      this.router.navigate(['/home']);
     }
   }
 }

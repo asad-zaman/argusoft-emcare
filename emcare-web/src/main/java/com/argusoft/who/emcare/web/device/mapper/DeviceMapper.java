@@ -24,6 +24,7 @@ public class DeviceMapper {
         master.setDeviceUUID(deviceDto.getDeviceUUID());
         master.setDeviceOs(deviceDto.getDeviceOs());
         master.setIsBlocked(deviceDto.getIsBlocked());
+        master.setIgVersion(deviceDto.getIgVersion());
         master.setUserName(userName);
 
         return master;
@@ -38,6 +39,7 @@ public class DeviceMapper {
         master.setMacAddress(deviceDto.getMacAddress());
         master.setLastLoggedInUser(deviceMaster.getLastLoggedInUser());
         master.setUserName(userName);
+        master.setIgVersion(deviceDto.getIgVersion());
         master.setIsBlocked(deviceDto.getIsBlocked());
 
         return master;
@@ -55,6 +57,7 @@ public class DeviceMapper {
         deviceWithUserDetails.setDeviceOs(deviceMaster.getDeviceOs());
         deviceWithUserDetails.setDeviceUUID(deviceMaster.getDeviceUUID());
         deviceWithUserDetails.setDeviceModel(deviceMaster.getDeviceModel());
+        deviceWithUserDetails.setIgVersion(deviceMaster.getIgVersion());
         deviceWithUserDetails.setDeviceName(deviceMaster.getDeviceName());
         deviceWithUserDetails.setUsersResource(user);
         return deviceWithUserDetails;

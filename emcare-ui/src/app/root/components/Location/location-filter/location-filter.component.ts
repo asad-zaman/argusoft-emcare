@@ -1,4 +1,5 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
+import { LocationSubjects } from './LocationSubject';
 @Component({
   selector: 'app-location-filter',
   templateUrl: './location-filter.component.html',
@@ -12,8 +13,13 @@ export class LocationFilterComponent implements OnInit {
   currentLan;
   formData;
   dropdownActiveArr = [];
+  @Input() isFacilityNotAllowed?: boolean;
+  @Input() isPatientPage?: boolean;
+  @Output() isClear = new EventEmitter<any>();
 
-  constructor() { }
+  constructor(
+    private readonly locSubjects: LocationSubjects
+  ) { }
 
   ngOnInit(): void {
     this.prerequisite();
@@ -23,6 +29,7 @@ export class LocationFilterComponent implements OnInit {
     const urlArr = location.href.split('/');
     this.currentUrl = urlArr[urlArr.length - 1];
     this.getAndSetCurrentLanguage();
+    this.locSubjects.setClearLocation(false);
   }
 
   getAndSetCurrentLanguage() {
@@ -44,12 +51,25 @@ export class LocationFilterComponent implements OnInit {
         selectedId = valueArr[index];
       }
     }
-    this.locationId.emit(selectedId);
+    if (this.isPatientPage) {
+      selectedId = this.formData.facility.id ? this.formData.facility.id : selectedId;
+      const dateObj = { startDate: this.formData.startDate, endDate: this.formData.endDate };
+      this.locationId.emit({ locationId: selectedId, dateObj: dateObj });
+    } else {
+      this.locationId.emit(selectedId);
+    }
+    this.locSubjects.setClearLocation(false);
     this.sideMenu = false;
   }
 
   getFormValue(event) {
     this.formData = event.formData;
     this.dropdownActiveArr = event.dropdownArr;
+  }
+
+  clearFilter() {
+    this.isClear.emit(true);
+    this.locSubjects.setClearLocation(true);
+    this.sideMenu = false;
   }
 }

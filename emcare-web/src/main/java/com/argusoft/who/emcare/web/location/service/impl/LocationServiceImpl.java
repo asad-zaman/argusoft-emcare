@@ -43,7 +43,7 @@ public class LocationServiceImpl implements LocationService {
 
     @Override
     public ResponseEntity<Object> createHierarchyMaster(HierarchyMasterDto hierarchyMasterDto) {
-        return ResponseEntity.ok(hierarchyMasterDao.save(HierarchyMasterMapper.dtoToEntityForHierarchyMasterCreate(hierarchyMasterDto)));
+        return ResponseEntity.ok(hierarchyMasterDao.saveAndFlush(HierarchyMasterMapper.dtoToEntityForHierarchyMasterCreate(hierarchyMasterDto)));
     }
 
     @Override
@@ -76,10 +76,10 @@ public class LocationServiceImpl implements LocationService {
     public ResponseEntity<Object> createOrUpdate(LocationMasterDto locationMasterDto) {
         List<LocationMaster> locations = locationMasterDao.findAll();
         if (locations.isEmpty()) {
-            return ResponseEntity.ok(locationMasterDao.save(LocationMasterMapper.firstEntity(locationMasterDto)));
+            return ResponseEntity.ok(locationMasterDao.saveAndFlush(LocationMasterMapper.firstEntity(locationMasterDto)));
         }
         LocationMaster locationMaster = LocationMasterMapper.dtoToEntityForLocationMasterCreate(locationMasterDto);
-        LocationMaster lm = locationMasterDao.save(locationMaster);
+        LocationMaster lm = locationMasterDao.saveAndFlush(locationMaster);
         return ResponseEntity.ok(lm);
     }
 
@@ -133,13 +133,16 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
-    public ResponseEntity<Object> getLocationByLocationFilter(Integer pageNo, Integer locationId) {
-        List<Integer> childIds = locationMasterDao.getAllChildLocationId(locationId);
+    public ResponseEntity<Object> getLocationByLocationFilter(Integer pageNo, Integer locationId,  String searchString) {
+        List<Integer> childIds = new ArrayList<>();
+        if(locationId != null){
+        childIds = locationMasterDao.getAllChildLocationId(locationId);
+        }
         Integer offset = (pageNo) * CommonConstant.PAGE_SIZE;
         Integer limit = CommonConstant.PAGE_SIZE;
-        List<LocationMaster> locationMasters = locationMasterDao.getLocationByLocationIds(childIds, limit, offset);
-        Long totalCount = locationMasterDao.getLocationByLocationIdsCount(childIds);
 
+        List<LocationMaster> locationMasters = locationMasterDao.getLocationByLocationIds(childIds, searchString, limit, offset);
+        Long totalCount = locationMasterDao.getLocationByLocationIdsCount(childIds, searchString);
         List<LocationaListDto> locationList = new ArrayList<>();
         for (LocationMaster locationMaster : locationMasters) {
             if (locationMaster.getParent() == null || locationMaster.getParent() == 0) {

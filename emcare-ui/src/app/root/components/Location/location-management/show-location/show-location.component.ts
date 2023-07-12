@@ -24,7 +24,6 @@ export class ShowLocationComponent implements OnInit {
   isEdit: boolean = true;
   isView: boolean = true;
   selectedId: any;
-  isLocationFilterOn: boolean = false;
 
   constructor(
     private readonly router: Router,
@@ -39,7 +38,19 @@ export class ShowLocationComponent implements OnInit {
 
   prerequisite() {
     this.checkFeatures();
-    this.getLocationsByPageIndex(this.currentPage);
+    this.getLocationsBasedOnData(this.currentPage);
+  }
+
+  getLocationsBasedOnData(pageIndex) {
+    const filterData = {
+      locationId: this.selectedId,
+      searchString: this.searchString
+    };
+    this.locationService.getLocationByData(pageIndex, filterData).subscribe(res => {
+      if (res) {
+        this.manipulateResponse(res);
+      }
+    });
   }
 
   checkFeatures() {
@@ -54,6 +65,7 @@ export class ShowLocationComponent implements OnInit {
 
   manipulateResponse(res) {
     if (res && res['list']) {
+      this.locationArr = [];
       this.locationArr = res['list'];
       this.filteredLocations = this.locationArr;
       this.isAPIBusy = false;
@@ -61,38 +73,9 @@ export class ShowLocationComponent implements OnInit {
     }
   }
 
-  getLocationsByPageIndex(index) {
-    this.locationArr = [];
-    this.locationService.getLocationsByPageIndex(index).subscribe(res => {
-      this.manipulateResponse(res);
-    });
-  }
-
   onIndexChange(event) {
     this.currentPage = event;
-    if (this.isLocationFilterOn) {
-      this.getLocationsBasedOnFilteredLocationAndPageIndex(event - 1);
-    } else {
-      if (this.searchString && this.searchString.length >= 1) {
-        this.locationArr = [];
-        this.locationService.getLocationsByPageIndex(event - 1, this.searchString).subscribe(res => {
-          this.manipulateResponse(res);
-        });
-      } else {
-        this.getLocationsByPageIndex(event - 1);
-      }
-    }
-  }
-
-  getLocationsBasedOnFilteredLocationAndPageIndex(pageIndex) {
-    this.locationService.getLocationBasedOnFilterAndPageIndex(this.selectedId, pageIndex).subscribe(res => {
-      if (res) {
-        this.filteredLocations = [];
-        this.filteredLocations = res['list'];
-        this.totalCount = res['totalCount'];
-        this.isAPIBusy = false;
-      }
-    });
+    this.getLocationsBasedOnData(event - 1);
   }
 
   resetCurrentPage() {
@@ -111,7 +94,7 @@ export class ShowLocationComponent implements OnInit {
     this.locationService.deleteLocationById(this.filteredLocations[index]['id']).subscribe(res => {
       this.toasterService.showToast('success', 'Location Deleted successfully!', 'EMCARE');
       this.resetCurrentPage();
-      this.getLocationsByPageIndex(this.currentPage);
+      this.getLocationsBasedOnData(this.currentPage);
     }, (err) => {
       alert(err.error);
     });
@@ -124,18 +107,7 @@ export class ShowLocationComponent implements OnInit {
         debounceTime(1000),
         distinctUntilChanged()
       ).subscribe(_term => {
-        if (this.searchString && this.searchString.length >= 1) {
-          this.locationArr = [];
-          this.locationService.getLocationsByPageIndex(this.currentPage, this.searchString).subscribe(res => {
-            this.manipulateResponse(res);
-          });
-        } else {
-          if (this.isLocationFilterOn) {
-            this.getLocationsBasedOnFilteredLocationAndPageIndex(this.currentPage);
-          } else {
-            this.getLocationsByPageIndex(this.currentPage);
-          }
-        }
+        this.getLocationsBasedOnData(this.currentPage);
       });
     }
     this.searchTermChanged.next(this.searchString);
@@ -148,11 +120,18 @@ export class ShowLocationComponent implements OnInit {
   getLocationId(data) {
     this.selectedId = data;
     if (this.selectedId) {
-      this.isLocationFilterOn = true;
       this.resetPageIndex();
-      this.getLocationsBasedOnFilteredLocationAndPageIndex(this.currentPage);
+      this.getLocationsBasedOnData(this.currentPage);
     } else {
       this.toasterService.showToast('info', 'Please select Location!', 'EMCARE')
+    }
+  }
+
+  clearFilter(event) {
+    if (event) {
+      this.resetPageIndex();
+      this.selectedId = null; 
+      this.getLocationsBasedOnData(this.currentPage);
     }
   }
 }

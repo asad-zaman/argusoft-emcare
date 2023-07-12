@@ -11,7 +11,7 @@ import java.io.Serializable;
 public class EmCareExceptionResponseEntity implements Serializable {
 
     private String message;
-    private Object data;
+    private transient Object data;
     private int errorCode;
 
     public EmCareExceptionResponseEntity(String message) {

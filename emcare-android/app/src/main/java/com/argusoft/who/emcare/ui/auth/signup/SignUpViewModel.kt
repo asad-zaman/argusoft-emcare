@@ -28,7 +28,7 @@ class SignUpViewModel @Inject constructor(
     val signupApiState: LiveData<ApiResponse<Any>> = _signupApiState
 
     private val _facilityAndRolesApiState = MutableLiveData<Pair<ApiResponse<List<Facility>>, ApiResponse<List<Role>>>>()
-    val facilityAndRolesApiState: LiveData<Pair<ApiResponse<List<Facility>>, ApiResponse<List<Role>>>> = _facilityAndRolesApiState
+//    val facilityAndRolesApiState: LiveData<Pair<ApiResponse<List<Facility>>, ApiResponse<List<Role>>>> = _facilityAndRolesApiState
 
     private val _facilityApiState = MutableLiveData<ApiResponse<List<Facility>>>()
     val facilityApiState: LiveData<ApiResponse<List<Facility>>> = _facilityApiState
@@ -51,7 +51,7 @@ class SignUpViewModel @Inject constructor(
 //        }
 //    }
 
-    public fun getFacilities() {
+    fun getFacilities() {
         _facilityAndRolesApiState.value = Pair(ApiResponse.Loading(), ApiResponse.Loading())
         viewModelScope.launch {
             signUpRepository.getFacilities().collect {

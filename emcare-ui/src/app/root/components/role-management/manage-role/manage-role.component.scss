@@ -1,0 +1,21 @@
+input[type="text"]#countryName{
+    -webkit-appearance: none!important;
+    // color: red;
+    text-align: center;
+    width: 90px;
+    // border: 1px solid gray;
+    // border-right: 0px;
+    margin: 0 0 0 -7px;
+    background: rgb(218, 216, 216);
+    font-weight: 800;
+}
+input[type="text"]#name{
+    -webkit-appearance: none!important;
+    // border: 1px solid gray;
+    border-left: 0px;
+    outline: none;
+}
+
+.roleName{
+    display: flex;
+}

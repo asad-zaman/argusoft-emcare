@@ -1,12 +1,18 @@
 <div *ngIf="isView" class="main-wrapper">
-  <h1 class="heading">{{'Facilities' | translate}}</h1>
-  <hr>
+  <div class="custom-header">
+    <h1 class="heading">{{'Facilities' | translate}}</h1>
+  </div>
   <div class="row align-items-center mb-3">
-    <div class=" col-lg-3 col-xxl-2 col-md-5 position-relative">
+    <div class="col-lg-3 col-xxl-2 col-md-5 position-relative">
       <input class="form-control custom-input h-35" id="exampleFormControlInput1" [(ngModel)]="searchString"
         (input)="searchFilter()" placeholder="{{'Search Placeholder' | translate}}">
     </div>
-    <div *ngIf="isAdd" class="col text-end"><button class=" btn btn-blue" routerLink="/addFacility">+
+    <div class="col-4 cst-d-flex">
+      <p-checkbox styleClass="form-label" [(ngModel)]="isInactive" label="Show Inactive & Suspended Facilities" [binary]="true"
+        inputId="binary" value="true" (onChange)="onChangeCheckboxForFacility()">
+      </p-checkbox>
+    </div>
+    <div *ngIf="isAdd" class="col text-end"><button class="btn btn-blue" routerLink="/addFacility">+
         {{'Add Facility' | translate}}</button></div>
   </div>
   <!--Table-->
@@ -36,12 +42,15 @@
                 {{data.locationName ? data.locationName : 'NA'}}
               </td>
               <td>
-                <span [ngClass]="(data.status !== 'Inactive') ? 'badges-red bg-green' : 'badges-red'">
+                <span class="badges-red" [ngClass]="{ 
+                  'bg-green' : data.status === 'Active',
+                  'bg-yellow' : data.status === 'Suspended'
+                }">
                   {{data.status}}
                 </span>
               </td>
               <td class="">
-                <i aria-hidden="true" *ngIf="isEdit" (click)="editFacility(i)"
+                <i aria-hidden=" true" *ngIf="isEdit" (click)="editFacility(i)"
                   class="bi bi-pencil-square cursor-pointer font-size-14"></i>
               </td>
             </tr>

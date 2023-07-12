@@ -1,0 +1,42 @@
+<div *ngIf="isView" class="main-wrapper cst-white" [ngClass]="{'cst-no-token': !this.token}">
+  <div class="custom-header" [ngClass]="{'cst-no-token-customheader': !this.token}">
+    <h1 class="heading">{{'Logs' | translate}}</h1>
+    <div *ngIf="this.token">
+      <button (click)="navigateToAddLog()" type="button" class="btn btn-blue">
+        +&nbsp;{{'Add Log' | translate}}</button>
+    </div>
+  </div>
+  <div class="loglist" [ngClass]="{'cst-no-token-loglist': !this.token}">
+    <h5 style="padding-left: 8px; font-size: 20px; font-weight: 600;">{{'Log List' | translate}}</h5>
+    <ul>
+      <ng-container *ngFor="let data of this.applicationData; let i=index">
+        <li [ngClass]="{'loglist-active' : this.currentActive === i}" (click)="navigateToSection(data.id, i)">
+          {{data.appName}} <span class="apk-date">{{data.date | date:'mediumDate'}}</span></li>
+      </ng-container>
+    </ul>
+  </div>
+  <div class="apk-download">
+    <h5 style="font-size: 20px; font-weight: 600;">{{'Log Description' | translate}}</h5>
+    <ng-container *ngFor="let data of this.applicationData; let i=index">
+      <div id="{{data.id}}" class="apk-text">
+        <h4>{{data.appName}}</h4>
+        <span class="apk-date">{{data.appVersion}} {{data.date | date:'mediumDate'}}</span>
+        <a class="float-right cst-link-style f-15 cursor-pointer" href="{{data.downloadUrl}}" target="_blank">
+          <i class="f-20 bi bi-download" aria-hidden="true"></i>
+        </a>
+        <ul>
+          <ng-container *ngFor="let log of data.logs">
+            <li>
+              <div class="chip">
+                <span class="f-15">{{log}}</span>
+              </div>
+            </li>
+          </ng-container>
+        </ul>
+      </div>
+    </ng-container>
+  </div>
+</div>
+<div *ngIf="!isView" class="main-wrapper-nodata">
+  {{'NoAccess' | translate}}
+</div>
