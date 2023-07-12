@@ -8,6 +8,7 @@ import com.argusoft.who.emcare.web.config.tenant.MultitenantDataSourceConfigurat
 import com.argusoft.who.emcare.web.config.tenant.TenantContext;
 import com.argusoft.who.emcare.web.exception.EmCareException;
 import com.argusoft.who.emcare.web.fhir.resourceprovider.OrganizationResourceProvider;
+import com.argusoft.who.emcare.web.language.dto.LanguageAddDto;
 import com.argusoft.who.emcare.web.language.dto.LanguageDto;
 import com.argusoft.who.emcare.web.language.service.LanguageService;
 import com.argusoft.who.emcare.web.location.dto.HierarchyMasterDto;
@@ -374,17 +375,19 @@ public class TenantServiceImpl implements TenantService {
 
     private void addLanguageInTenant(TenantDto tenantDto) {
         try {
+            String englishKeys = languageService.getAllKeys();
             LanguageDto languageDto = new LanguageDto();
+            LanguageAddDto languageAddDto = new LanguageAddDto();
             languageDto.setLanguageCode(CommonConstant.ENGLISH);
             languageDto.setLanguageName("English");
-            languageDto.setLanguageTranslation(tenantDto.getDefaultLanguage());
+            languageDto.setLanguageTranslation(englishKeys);
             languageService.addOrUpdateLanguageTranslation(languageDto);
 
-//                languageAddDto = tenantDto.getLanguage();
-//                if (Objects.nonNull(languageAddDto)) {
-//                    TenantContext.setCurrentTenant(tenantConfig.getTenantId());
-//                    languageService.createNewLanguageTranslation(languageAddDto);
-//                }
+                languageAddDto = tenantDto.getLanguage();
+                if (Objects.nonNull(languageAddDto)) {
+                    TenantContext.setCurrentTenant(tenantDto.getTenantId());
+                    languageService.createNewLanguageTranslation(languageAddDto);
+                }
         } catch (Exception ex) {
             throw new NullPointerException();
         }
