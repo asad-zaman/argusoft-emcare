@@ -1,15 +1,18 @@
-import { Component, OnInit, Output, EventEmitter, Input, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input, SimpleChanges, ChangeDetectorRef, ChangeDetectionStrategy, OnChanges } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Observable, Subscription } from 'rxjs';
+import { appConstants } from 'src/app/app.config';
 import { LocationService } from 'src/app/root/services/location.service';
-import { FhirService } from 'src/app/shared';
+import { FhirService, ToasterService } from 'src/app/shared';
+import { LocationSubjects } from '../LocationSubject';
 
 @Component({
   selector: 'app-location-dropdown',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './location-dropdown.component.html',
   styleUrls: ['./location-dropdown.component.scss']
 })
-export class LocationDropdownComponent implements OnInit {
+export class LocationDropdownComponent implements OnInit, OnChanges {
 
   locationFilterForm: FormGroup;
   countryArr: Array<any> = [];
@@ -20,20 +23,27 @@ export class LocationDropdownComponent implements OnInit {
   dropdownActiveArr = [true, false, false, false, false];
   locationArr = [];
   facilityArr = [];
+  typeNameArr = [];
 
   @Input() isMultiplePage?;
   @Input() idArr?: Array<any>;
-  @Input() isOtherPage?: boolean;
+  @Input() isFacilityNotAllowed?: boolean;
+  @Input() isPatientPage?: boolean;
   @Output() locationFormValueAndDropdownArr = new EventEmitter<any>();
 
   eventsSubscription: Subscription;
   @Input() events: Observable<boolean>;
+  currentSelection: number;
 
   constructor(
     private readonly formBuilder: FormBuilder,
     private readonly locationService: LocationService,
-    private readonly fhirService: FhirService
-  ) { }
+    private readonly fhirService: FhirService,
+    private readonly cdr: ChangeDetectorRef,
+    private readonly locSubjects: LocationSubjects,
+    private readonly toasterService: ToasterService
+  ) {
+  }
 
   ngOnInit(): void {
     this.prerequisite();
@@ -42,11 +52,21 @@ export class LocationDropdownComponent implements OnInit {
     }
   }
 
+  ngAfterViewChecked() {
+    this.cdr.detectChanges();
+  }
+
   ngOnChanges(changes: SimpleChanges) {
     // only run when property "data" changed
     if (changes['idArr']) {
       this.insertDataFromIdArr(changes['idArr'].currentValue);
     }
+    this.locSubjects.getClearLocation().subscribe(res => {
+      if (res === true) {
+        this.resetData();
+        this.cdr.detectChanges();
+      }
+    });
   }
 
   prerequisite() {
@@ -112,7 +132,9 @@ export class LocationDropdownComponent implements OnInit {
       state: [''],
       city: [''],
       region: [''],
-      other: ['']
+      other: [''],
+      startDate: [''],
+      endDate: ['']
     });
   }
 
@@ -120,36 +142,52 @@ export class LocationDropdownComponent implements OnInit {
     this.locationService.getAllLocations().subscribe((res: Array<Object>) => {
       if (res) {
         this.locationArr = res;
-        const data = res.find(el => el['parent'] === 0);
-        this.getAllLocationsByType(data['type'], true);
+        const data = res.find(el => (el['parent'] === null) || (el['parent'] === 0));
+        this.typeNameArr.push(data['type']);
+        // getting conuntries
+        this.countryArr = res.filter(el => el['type'] === data['type']);
+        this.checkPatientPage();
       }
     })
   }
 
-  getAllLocationsByType(type, isFirstDropdown) {
-    // getting locations by type
-    this.locationService.getAllLocationByType(type).subscribe((res: Array<Object>) => {
-      if (isFirstDropdown) {
-        this.countryArr = this.countryArr.concat(res);
-      }
-    });
+  checkPatientPage() {
+    if (this.isPatientPage) {
+      const agent = localStorage.getItem(appConstants.localStorageKeys.ApplicationAgent);
+      const currCountry = this.countryArr.find(el => el.name === agent);
+      const eventObj = { value: { id: currCountry.id } };
+      this.locationFilterForm.patchValue({ country: currCountry });
+      this.onClicked(eventObj, 1);
+    }
   }
 
   getChildLocations(id, arr) {
+    let typeName;
     // getting child locations by id
     this.locationService.getChildLocationById(id).subscribe((res: Array<Object>) => {
       if (res) {
         res.forEach(element => {
-          arr.push(element)
+          arr.push(element);
+          if (!this.typeNameArr.includes(element['type'])) {
+            this.typeNameArr.push(element['type']);
+          }
         });
       }
     });
   }
 
+  onChangeFacility() {
+    // 1 is for facility
+    this.currentSelection = 1;
+    this.checkFacilityAndLocationAndRemoveFirstSelection();
+  }
+
   onClicked(event, dropdownNum) {
-    const val = event.value.id;
+    // 2 is for location
+    this.currentSelection = 2;
+    const val = event.value ? event.value.id : null;
     // getting child locations based on dropdown
-    if (dropdownNum == 1 && val !== 'default') {
+    if (dropdownNum == 1 && val !== null) {
       this.dropdownActiveArr = [true, true, false, false, false];
       this.stateArr = [];
       this.locationFilterForm.patchValue({
@@ -159,7 +197,7 @@ export class LocationDropdownComponent implements OnInit {
         other: ''
       });
       this.getChildLocations(val, this.stateArr);
-    } else if (dropdownNum == 2 && val !== 'default') {
+    } else if (dropdownNum == 2 && val !== null) {
       this.dropdownActiveArr = [true, true, true, false, false];
       this.cityArr = [];
       this.locationFilterForm.patchValue({
@@ -168,7 +206,7 @@ export class LocationDropdownComponent implements OnInit {
         other: ''
       });
       this.getChildLocations(val, this.cityArr);
-    } else if (dropdownNum == 3 && val !== 'default') {
+    } else if (dropdownNum == 3 && val !== null) {
       this.dropdownActiveArr = [true, true, true, true, false];
       this.regionArr = [];
       this.locationFilterForm.patchValue({
@@ -176,7 +214,7 @@ export class LocationDropdownComponent implements OnInit {
         other: ''
       });
       this.getChildLocations(val, this.regionArr);
-    } else if (dropdownNum == 4 && val !== 'default') {
+    } else if (dropdownNum == 4 && val !== null) {
       this.dropdownActiveArr = [true, true, true, true, true];
       this.otherArr = [];
       this.locationFilterForm.patchValue({
@@ -185,10 +223,36 @@ export class LocationDropdownComponent implements OnInit {
       this.getChildLocations(val, this.otherArr);
     }
     // to remove dropdowns if value is reset
-    if (val === 'default') {
+    if (val === null) {
       for (let index = dropdownNum; index < this.dropdownActiveArr.length; index++) {
         this.dropdownActiveArr[index] = false;
       }
+    }
+    this.checkFacilityAndLocationAndRemoveFirstSelection();
+  }
+
+  // if facility is selected then location should be removed
+  // if location is selected then facility should be removed
+  // as api is not ready yet so both things can not work together
+  checkFacilityAndLocationAndRemoveFirstSelection() {
+    if (this.currentSelection === 1) {
+      if (this.isPatientPage) {
+        this.dropdownActiveArr = [true, true, false, false, false];
+        this.locationFilterForm.patchValue({
+          state: null, city: null,
+          region: null, other: null
+        });
+      } else {
+        this.dropdownActiveArr = [true, false, false, false, false];
+        this.locationFilterForm.patchValue({
+          country: null, state: null,
+          city: null, region: null, other: null
+        });
+      }
+    } else {
+      this.locationFilterForm.patchValue({
+        facility: null
+      });
     }
     this.emitData();
   }
@@ -203,22 +267,38 @@ export class LocationDropdownComponent implements OnInit {
   resetData() {
     this.locationFilterForm.reset();
     this.dropdownActiveArr = [true, false, false, false, false];
+    this.checkPatientPage();
   }
 
   getIdFromFormValue(formValue) {
     return {
-      facility: formValue.facility ? formValue.facility : '',  
+      facility: formValue.facility ? formValue.facility : '',
       country: formValue.country ? formValue.country.id : '',
       state: formValue.state ? formValue.state.id : '',
       city: formValue.city ? formValue.city.id : '',
       region: formValue.region ? formValue.region.id : '',
-      other: formValue.other ? formValue.other.id : ''
+      other: formValue.other ? formValue.other.id : '',
+      startDate: formValue.startDate ? formValue.startDate : '',
+      endDate: formValue.endDate ? formValue.endDate : ''
     }
   }
 
   ngOnDestroy() {
     if (this.isMultiplePage) {
       this.eventsSubscription.unsubscribe();
+    }
+  }
+
+  onDateSelection(num, index) {
+    const controls = this.locationFilterForm.controls;
+    const startDate = new Date(controls.startDate.value).getTime();
+    const endDate = new Date(controls.endDate.value).getTime();
+    // if both the dates have values then only we should check otherwise no checking
+    if ((endDate < startDate) && controls.startDate.value && controls.endDate.value) {
+      this.toasterService.showToast('error', 'End Date should be greater than start date!', 'EM CARE!');
+      num === 1 ? controls.startDate.setValue(null) : controls.endDate.setValue(null);
+    } else {
+      this.emitData();
     }
   }
 }

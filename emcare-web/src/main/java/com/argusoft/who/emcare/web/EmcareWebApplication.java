@@ -1,5 +1,6 @@
 package com.argusoft.who.emcare.web;
 
+import com.argusoft.who.emcare.web.config.tenant.TenantContext;
 import com.argusoft.who.emcare.web.language.service.impl.LanguageServiceImpl;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -8,6 +9,8 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+
+import java.util.List;
 
 @SpringBootApplication
 @EnableTransactionManagement
@@ -19,7 +22,11 @@ public class EmcareWebApplication extends SpringBootServletInitializer {
         ConfigurableApplicationContext context = SpringApplication.run(EmcareWebApplication.class, args);
 
 //        Translate Newly Added Label On Server Up
-        context.getBean(LanguageServiceImpl.class).translateNewlyAddedLabels();
+        List<String> tenantIds = context.getBean(LanguageServiceImpl.class).getMakeAllTenantTranslation();
+        for (String tenantId : tenantIds) {
+            TenantContext.setCurrentTenant(tenantId);
+            context.getBean(LanguageServiceImpl.class).translateNewlyAddedLabels();
+        }
     }
 
 }

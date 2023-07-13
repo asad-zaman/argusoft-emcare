@@ -91,7 +91,6 @@ export class DuplicatePatientsComponent implements OnInit {
   }
 
   selectedDuplicatePatient(index) {
-    console.log(this.tempararyPatientData[index]);
     this.selectedPatientIndex = index;
   }
 

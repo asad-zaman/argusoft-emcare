@@ -1,12 +1,15 @@
 package com.argusoft.who.emcare.web.user.service.impl;
 
-import com.argusoft.who.emcare.web.adminsetting.Entity.Settings;
+import com.argusoft.who.emcare.web.adminsetting.entity.Settings;
 import com.argusoft.who.emcare.web.adminsetting.repository.AdminSettingRepository;
 import com.argusoft.who.emcare.web.adminsetting.service.AdminSettingService;
 import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.common.dto.PageDto;
 import com.argusoft.who.emcare.web.common.response.Response;
+import com.argusoft.who.emcare.web.common.service.CommonService;
 import com.argusoft.who.emcare.web.config.KeyCloakConfig;
+import com.argusoft.who.emcare.web.config.tenant.TenantContext;
+import com.argusoft.who.emcare.web.fhir.dao.LocationResourceRepository;
 import com.argusoft.who.emcare.web.fhir.dto.FacilityDto;
 import com.argusoft.who.emcare.web.fhir.service.LocationResourceService;
 import com.argusoft.who.emcare.web.location.dao.LocationMasterDao;
@@ -23,13 +26,17 @@ import com.argusoft.who.emcare.web.menu.mapper.MenuConfigMapper;
 import com.argusoft.who.emcare.web.menu.model.MenuConfig;
 import com.argusoft.who.emcare.web.menu.model.UserMenuConfig;
 import com.argusoft.who.emcare.web.secuirty.EmCareSecurityUser;
+import com.argusoft.who.emcare.web.tenant.repository.TenantConfigRepository;
 import com.argusoft.who.emcare.web.user.cons.UserConst;
+import com.argusoft.who.emcare.web.user.dao.RoleEntityRepository;
 import com.argusoft.who.emcare.web.user.dto.*;
+import com.argusoft.who.emcare.web.user.entity.RoleEntity;
 import com.argusoft.who.emcare.web.user.mapper.UserMapper;
 import com.argusoft.who.emcare.web.user.service.UserService;
 import com.argusoft.who.emcare.web.userlocationmapping.dao.UserLocationMappingRepository;
 import com.argusoft.who.emcare.web.userlocationmapping.model.UserLocationMapping;
 import com.google.gson.Gson;
+import org.keycloak.TokenVerifier;
 import org.keycloak.admin.client.CreatedResponseUtil;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.resource.*;
@@ -37,13 +44,21 @@ import org.keycloak.representations.AccessToken;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
+import org.keycloak.representations.idm.UserSessionRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Scope;
+import org.springframework.core.env.Environment;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import javax.sql.DataSource;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
@@ -91,11 +106,58 @@ public class UserServiceImpl implements UserService {
     @Autowired
     LocationResourceService locationResourceService;
 
+    @Autowired
+    LocationResourceRepository locationResourceRepository;
+
+    @Autowired
+    RoleEntityRepository roleEntityRepository;
+
+    @Autowired
+    CommonService commonService;
+
+    @Autowired
+    Environment env;
+
+    @Value("${keycloak.realm}")
+    String realm;
+
+    @Value("${config.keycloak.clientId}")
+    String clientId;
+
+    @Value("${config.keycloak.clientSecret}")
+    String clientSecret;
+
+    @Value("${keycloak.auth-server-url}")
+    String keycloakServerURL;
+
+    @Value("${config.keycloak.login-server-url}")
+    String keycloakLoginURL;
+
+    @Value("${keycloak.realm}")
+    String keycloakrealm;
+
+    @Value("${defaultTenant}")
+    private String defaultTenant;
+
+    @Autowired
+    private DataSource dataSource;
+
+    @Autowired
+    private TenantConfigRepository tenantConfigRepository;
+
+    private static CredentialRepresentation createPasswordCredentials(String password) {
+        CredentialRepresentation passwordCredentials = new CredentialRepresentation();
+        passwordCredentials.setTemporary(false);
+        passwordCredentials.setType(CredentialRepresentation.PASSWORD);
+        passwordCredentials.setValue(password);
+        return passwordCredentials;
+    }
+
     @Override
-    public UserMasterDto getCurrentUser() {
+    public ResponseEntity getCurrentUser() {
         AccessToken user = emCareSecurityUser.getLoggedInUser();
         Keycloak keycloak = keyCloakConfig.getInstance();
-        UserRepresentation userInfo = keycloak.realm(KeyCloakConfig.REALM).users().get(user.getSubject()).toRepresentation();
+        UserRepresentation userInfo = keycloak.realm(realm).users().get(user.getSubject()).toRepresentation();
         List<UserLocationMapping> userLocationList = userLocationMappingRepository.findByUserId(user.getSubject());
         List<UserLocationMapping> fecilitys;
         List<FacilityDto> facilityDtos = new ArrayList<>();
@@ -105,24 +167,32 @@ public class UserServiceImpl implements UserService {
             for (String id : facilityIds)
                 facilityDtos.add(locationResourceService.getFacilityDto(id));
         }
+        if (!facilityDtos.isEmpty()) {
+            facilityDtos = facilityDtos.stream().filter(facilityDto -> facilityDto.getStatus().equalsIgnoreCase(CommonConstant.ACTIVE)).collect(Collectors.toList());
+            if (facilityDtos.isEmpty()) {
+                return new ResponseEntity<Response>(new Response("No Active Facilities Associated", HttpStatus.FORBIDDEN.value()), HttpStatus.FORBIDDEN);
+            }
+        }
         UserMasterDto masterUser = UserMapper.getMasterUser(user, facilityDtos, userInfo);
-        List<RoleRepresentation> roleRepresentationList = keycloak.realm(KeyCloakConfig.REALM).users().get(masterUser.getUserId()).roles().realmLevel().listAll();
+        List<RoleRepresentation> roleRepresentationList = keycloak.realm(realm).users().get(masterUser.getUserId()).roles().realmLevel().listAll();
         List<String> roleIds = new ArrayList<>();
         for (RoleRepresentation role : roleRepresentationList) {
             roleIds.add(role.getId());
         }
 
         masterUser.setFeature(getUserFeatureJson(roleIds, masterUser.getUserId()));
-        return masterUser;
+        return ResponseEntity.ok().body(masterUser);
     }
 
     @Override
     public List<UserListDto> getAllUser(HttpServletRequest request) {
         List<UserListDto> userList = new ArrayList<>();
         Keycloak keycloak = keyCloakConfig.getInstance();
-        List<UserRepresentation> userRepresentations = keycloak.realm(KeyCloakConfig.REALM).users().list();
+        List<String> countryUsers = userLocationMappingRepository.getDistinctUserId();
+        List<UserRepresentation> userRepresentations = keycloak.realm(realm).users().list();
+        userRepresentations = userRepresentations.stream().filter(userRepresentation -> countryUsers.contains(userRepresentation.getId())).collect(Collectors.toList());
         for (UserRepresentation representation : userRepresentations) {
-            List<RoleRepresentation> roleRepresentationList = keycloak.realm(KeyCloakConfig.REALM).users().get(representation.getId()).roles().realmLevel().listAll();
+            List<RoleRepresentation> roleRepresentationList = keycloak.realm(realm).users().get(representation.getId()).roles().realmLevel().listAll();
             List<String> roles = new ArrayList<>();
             for (RoleRepresentation roleRepresentation : roleRepresentationList) {
                 roles.add(roleRepresentation.getName());
@@ -140,9 +210,11 @@ public class UserServiceImpl implements UserService {
     public List<MultiLocationUserListDto> getAllUserWithMultiLocation(HttpServletRequest request) {
         List<MultiLocationUserListDto> userList = new ArrayList<>();
         Keycloak keycloak = keyCloakConfig.getInstance();
-        List<UserRepresentation> userRepresentations = keycloak.realm(KeyCloakConfig.REALM).users().list();
+        List<String> countryUsers = userLocationMappingRepository.getDistinctUserId();
+        List<UserRepresentation> userRepresentations = keycloak.realm(realm).users().list();
+        userRepresentations = userRepresentations.stream().filter(userRepresentation -> countryUsers.contains(userRepresentation.getId())).collect(Collectors.toList());
         for (UserRepresentation representation : userRepresentations) {
-            List<RoleRepresentation> roleRepresentationList = keycloak.realm(KeyCloakConfig.REALM).users().get(representation.getId()).roles().realmLevel().listAll();
+            List<RoleRepresentation> roleRepresentationList = keycloak.realm(realm).users().get(representation.getId()).roles().realmLevel().listAll();
             List<String> roles = new ArrayList<>();
             for (RoleRepresentation roleRepresentation : roleRepresentationList) {
                 roles.add(roleRepresentation.getName());
@@ -168,38 +240,30 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public PageDto getUserPage(HttpServletRequest request, Integer pageNo, String searchString) {
-        Integer pageSize = CommonConstant.PAGE_SIZE;
-        Integer startIndex = pageNo * pageSize;
-        Integer endIndex = (pageNo + 1) * pageSize;
+    public PageDto getUserPage(HttpServletRequest request, Integer pageNo, String searchString, Boolean filter) {
+        if (filter == null) {
+            filter = false;
+        }
+        filter = !filter;
         List<MultiLocationUserListDto> userList = new ArrayList<>();
         Keycloak keycloak = keyCloakConfig.getInstance();
-        Integer userTotalCount = keycloak.realm(KeyCloakConfig.REALM).users().list().size();
-        if (endIndex > userTotalCount) {
-            endIndex = userTotalCount;
-        }
-        List<UserRepresentation> userRepresentations;
-        if (searchString != null && !searchString.isEmpty()) {
-            userRepresentations = keycloak.realm(KeyCloakConfig.REALM).users().search(searchString, 0, 1000);
-            Collections.sort(userRepresentations, (rp1, rp2) -> rp2.getCreatedTimestamp().compareTo(rp1.getCreatedTimestamp()));
-            if (userRepresentations.size() <= endIndex) {
-                endIndex = userRepresentations.size();
-
-            }
-            userTotalCount = userRepresentations.size();
-            if (startIndex > endIndex) {
-                userRepresentations = new ArrayList<>();
-            } else {
-                userRepresentations = userRepresentations.subList(startIndex, endIndex);
-            }
+        Integer userTotalCount;
+        List<UserRepresentation> userRepresentations = new ArrayList<>();
+        List<String> userIds;
+        if (Objects.nonNull(searchString)) {
+            userTotalCount = userLocationMappingRepository.getUserPageDataWithSearchCount(searchString, filter).size();
+            userIds = userLocationMappingRepository.getUserPageDataWithSearch(searchString, filter, pageNo * CommonConstant.PAGE_SIZE);
         } else {
-            List<UserRepresentation> representations = keycloak.realm(KeyCloakConfig.REALM).users().list();
-            Collections.sort(representations, (rp1, rp2) -> rp2.getCreatedTimestamp().compareTo(rp1.getCreatedTimestamp()));
-            userRepresentations = representations.subList(startIndex, endIndex);
+            userTotalCount = userLocationMappingRepository.getUserPageDataWithoutSearchCount(filter).size();
+            userIds = userLocationMappingRepository.getUserPageDataWithoutSearch(filter, pageNo * CommonConstant.PAGE_SIZE);
+        }
+
+        for (String userId : userIds) {
+            userRepresentations.add(keycloak.realm(realm).users().get(userId).toRepresentation());
         }
 
         for (UserRepresentation representation : userRepresentations) {
-            List<RoleRepresentation> roleRepresentationList = keycloak.realm(KeyCloakConfig.REALM).users().get(representation.getId()).roles().realmLevel().listAll();
+            List<RoleRepresentation> roleRepresentationList = keycloak.realm(realm).users().get(representation.getId()).roles().realmLevel().listAll();
             List<String> roles = new ArrayList<>();
             for (RoleRepresentation roleRepresentation : roleRepresentationList) {
                 roles.add(roleRepresentation.getName());
@@ -216,7 +280,6 @@ public class UserServiceImpl implements UserService {
                         facilityDtos.add(locationResourceService.getFacilityDto(mapping.getFacilityId()));
                     }
                 }
-
                 userList.add(UserMapper.getMultiLocationUserListDto(representation, facilityDtos));
             } else {
                 userList.add(UserMapper.getMultiLocationUserListDto(representation, null));
@@ -233,7 +296,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserListDto> getAllSignedUpUser(HttpServletRequest request) {
         List<UserListDto> users = new ArrayList<>();
-        List<UserLocationMapping> newSignedUpUser = userLocationMappingRepository.findByIsFirst(true);
+        List<UserLocationMapping> newSignedUpUser = userLocationMappingRepository.findByIsFirstOrderByCreateDateDesc(true);
         for (UserLocationMapping userLocationMapping : newSignedUpUser) {
             UserListDto user = getUserDtoByIdAndLocation(userLocationMapping.getUserId(), userLocationMapping.getFacilityId());
             users.add(user);
@@ -243,29 +306,32 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<RoleRepresentation> getAllRoles(HttpServletRequest request) {
-        Keycloak keycloakInstance = keyCloakConfig.getInstanceByAuth();
-        return keycloakInstance.realm(KeyCloakConfig.REALM).roles().list();
+        Keycloak keycloakInstance = keyCloakConfig.getKeyCloakInstance();
+        List<RoleRepresentation> roleRepresentationList = keycloakInstance.realm(realm).roles().list();
+        List<String> countryRoleId = roleEntityRepository.findAll().stream().map(RoleEntity::getRoleId).collect(Collectors.toList());
+        roleRepresentationList = roleRepresentationList.stream().filter(roleRepresentation -> countryRoleId.contains(roleRepresentation.getId())).collect(Collectors.toList());
+        return roleRepresentationList;
     }
 
     @Override
     public RoleRepresentation getRoleByName(String roleId, HttpServletRequest request) {
-        Keycloak keycloakInstance = keyCloakConfig.getInstanceByAuth();
-        return keycloakInstance.realm(KeyCloakConfig.REALM).rolesById().getRole(roleId);
+        Keycloak keycloakInstance = keyCloakConfig.getKeyCloakInstance();
+        return keycloakInstance.realm(realm).rolesById().getRole(roleId);
     }
 
     @Override
     public RolesResource getAllRolesForSignUp(HttpServletRequest request) {
-        return getKeyCloakInstance().realm(KeyCloakConfig.REALM).roles();
+        return keyCloakConfig.getKeyCloakInstance().realm(realm).roles();
     }
 
     @Override
-    public ResponseEntity<Object> signUp(UserDto user) {
-        Keycloak keycloakInstance = getKeyCloakInstance();
+    public ResponseEntity<Object> signUp(UserDto user, HttpServletRequest request) {
+        Keycloak keycloakInstance = keyCloakConfig.getKeyCloakInstance();
 
 //        Get Realm Resource
-        RealmResource realmResource = keycloakInstance.realm(KeyCloakConfig.REALM);
+        RealmResource realmResource = keycloakInstance.realm(realm);
 //        Get User Resource
-        UsersResource usersResource = keycloakInstance.realm(KeyCloakConfig.REALM).users();
+        UsersResource usersResource = keycloakInstance.realm(realm).users();
 //        Generate Password
         CredentialRepresentation credentialRepresentation = createPasswordCredentials(user.getPassword());
 
@@ -275,7 +341,8 @@ public class UserServiceImpl implements UserService {
         if (usernameSetting.getValue().equals(CommonConstant.ACTIVE)) {
             kcUser.setUsername(user.getEmail());
         } else {
-            kcUser.setUsername(user.getUserName());
+
+            kcUser.setUsername(Objects.isNull(user.getUserName()) ? user.getEmail() : user.getUserName());
         }
         kcUser.setCredentials(Collections.singletonList(credentialRepresentation));
         kcUser.setFirstName(user.getFirstName());
@@ -283,16 +350,26 @@ public class UserServiceImpl implements UserService {
         kcUser.setEmail(user.getEmail());
         kcUser.setEnabled(Boolean.FALSE);
         kcUser.setEmailVerified(false);
+
+
+//        String tenantId = commonService.getTenantIdFromURL(request.getRequestURL().toString(), request.getRequestURI());
         Map<String, List<String>> attribute = new HashMap<>();
         attribute.put(CommonConstant.LANGUAGE_KEY, Arrays.asList(CommonConstant.ENGLISH));
         attribute.put(CommonConstant.PHONE_KEY, Arrays.asList(user.getPhone()));
         attribute.put(CommonConstant.COUNTRY_CODE, Arrays.asList(user.getCountryCode()));
+        attribute.put(CommonConstant.TENANT_ID, Arrays.asList(TenantContext.getCurrentTenant()));
         kcUser.setAttributes(attribute);
+
+        Map<String, Long> locationMap = new HashMap<>();
+        for (String facilityId : user.getFacilityIds()) {
+            FacilityDto facilityDto = locationResourceService.getFacilityDto(facilityId);
+            locationMap.put(facilityId, facilityDto.getLocationId());
+        }
 
         try {
             javax.ws.rs.core.Response response = usersResource.create(kcUser);
             String userId = CreatedResponseUtil.getCreatedId(response);
-            userLocationMappingRepository.saveAll(UserMapper.getUserMappingEntityPerLocation(user, userId));
+            userLocationMappingRepository.saveAll(UserMapper.getUserMappingEntityPerLocation(user, userId, locationMap, Boolean.TRUE));
             UserResource userResource = usersResource.get(userId);
 
 //        Set Realm Role
@@ -320,12 +397,94 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseEntity<Object> addUser(UserDto user) {
-        Keycloak keycloak = keyCloakConfig.getInstance();
+    public ResponseEntity<Object> userLogin(LoginRequestDto loginCred, HttpServletRequest request) {
+
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.add(CommonConstant.USERNAME, loginCred.getUsername());
+        map.add(CommonConstant.PASSWORD, loginCred.getPassword());
+        map.add(CommonConstant.GRANT_TYPE, CommonConstant.PASSWORD);
+        map.add(CommonConstant.CLIENT_ID, clientId);
+        map.add(CommonConstant.CLIENT_SECRET, clientSecret);
+        HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(map, headers);
+        ResponseEntity data = null;
+        try {
+            data = restTemplate.exchange(keycloakLoginURL, HttpMethod.POST, entity, Map.class);
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response("Invalid Credentials", HttpStatus.BAD_REQUEST.value()));
+        }
+        if (!data.getStatusCode().equals(HttpStatus.OK)) {
+            return data;
+        } else {
+//            List<TenantConfig> tenantConfigList = tenantConfigRepository.findAll();
+//            String domain = commonService.getDomainFormUrl(request.getRequestURL().toString(), request.getRequestURI());
+            Map<String, Object> loginResponse = (Map<String, Object>) data.getBody();
+            try {
+
+                AccessToken accessToken = TokenVerifier.create(loginResponse.get(CommonConstant.ACCESS_TOKEN).toString(), AccessToken.class).getToken();
+                String userId = accessToken.getSubject();
+                UserRepresentation userRepresentation = getUserByEmailId(loginCred.getUsername());
+                String tenantId = Objects.nonNull(userRepresentation.getAttributes().get(CommonConstant.TENANT_ID))
+                    ? userRepresentation.getAttributes().get(CommonConstant.TENANT_ID).get(0)
+                    : defaultTenant;
+                Set<String> roles = accessToken.getRealmAccess().getRoles();
+                TenantContext.clearTenant();
+                TenantContext.setCurrentTenant(tenantId);
+                List<UserLocationMapping> userLocationMappings = userLocationMappingRepository.findByUserId(userId);
+                loginResponse.put("Application-Agent", tenantId);
+                return ResponseEntity.ok().body(loginResponse);
+//                if (userLocationMappings.size() > 0) {
+//                    return ResponseEntity.ok().body(loginResponse);
+//                } else {
+//                    return ResponseEntity.ok().body(loginResponse);
+//                    if (roles.contains(CommonConstant.SUPER_ADMIN_ROLE)) {
+//                        return ResponseEntity.ok().body(loginResponse);
+//                    } else (roles.contains(tenantId + "_Admin") || roles.contains("admin_user")) {
+//                        return ResponseEntity.ok().body(loginResponse);
+//                    }
+//                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response("You don't have access for this domain", HttpStatus.BAD_REQUEST.value()));
+//                }
+            } catch (Exception ex) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response("You don't have access for this domain", HttpStatus.BAD_REQUEST.value()));
+            }
+        }
+
+    }
+
+    @Override
+    public ResponseEntity<Object> userLogOut(HttpServletRequest request) throws ServletException {
+        AccessToken user = emCareSecurityUser.getLoggedInUser();
+        Keycloak keycloak = keyCloakConfig.getKeyCloakInstance();
+        UserResource userResource = keycloak.realm(realm).users().get(user.getSubject());
+        List<UserSessionRepresentation> userSessionRepresentations = userResource.getUserSessions();
+
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.add(CommonConstant.GRANT_TYPE, CommonConstant.PASSWORD);
+        map.add(CommonConstant.CLIENT_ID, clientId);
+        map.add(CommonConstant.CLIENT_SECRET, clientSecret);
+        HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(map, headers);
+
+        for(UserSessionRepresentation sessionRepresentation : userSessionRepresentations){
+            keycloak.realm(realm).deleteSession(sessionRepresentation.getId());
+        }
+
+        return  null;
+    }
+
+    @Override
+    public ResponseEntity<Object> addUser(UserDto user, HttpServletRequest request) {
+        Keycloak keycloak = keyCloakConfig.getKeyCloakInstance();
 //        Get Realm Resource
-        RealmResource realmResource = keycloak.realm(KeyCloakConfig.REALM);
+        RealmResource realmResource = keycloak.realm(realm);
 //        Get User Resource
-        UsersResource usersResource = keycloak.realm(KeyCloakConfig.REALM).users();
+        UsersResource usersResource = keycloak.realm(realm).users();
 
         CredentialRepresentation credentialRepresentation = createPasswordCredentials(user.getPassword());
 //        Create User Representation
@@ -336,23 +495,31 @@ public class UserServiceImpl implements UserService {
         } else {
             kcUser.setUsername(user.getUserName());
         }
-        kcUser.setUsername(user.getUserName());
         kcUser.setCredentials(Collections.singletonList(credentialRepresentation));
         kcUser.setFirstName(user.getFirstName());
         kcUser.setLastName(user.getLastName());
         kcUser.setEmail(user.getEmail());
         kcUser.setEnabled(true);
         kcUser.setEmailVerified(false);
+//        String tenantId = commonService.getTenantIdFromURL(request.getRequestURL().toString(), request.getRequestURI());
         Map<String, List<String>> attribute = new HashMap<>();
         attribute.put(CommonConstant.LANGUAGE_KEY, Arrays.asList(CommonConstant.ENGLISH));
         attribute.put(CommonConstant.PHONE_KEY, Arrays.asList(user.getPhone()));
         attribute.put(CommonConstant.COUNTRY_CODE, Arrays.asList(user.getCountryCode()));
+        attribute.put(CommonConstant.TENANT_ID, Arrays.asList(TenantContext.getCurrentTenant()));
         kcUser.setAttributes(attribute);
 
         try {
+
+            Map<String, Long> locationMap = new HashMap<>();
+            for (String facilityId : user.getFacilityIds()) {
+                FacilityDto facilityDto = locationResourceService.getFacilityDto(facilityId);
+                locationMap.put(facilityId, facilityDto.getLocationId());
+            }
+
             javax.ws.rs.core.Response response = usersResource.create(kcUser);
             String userId = CreatedResponseUtil.getCreatedId(response);
-            userLocationMappingRepository.saveAll(UserMapper.getUserMappingEntityPerLocation(user, userId));
+            userLocationMappingRepository.saveAll(UserMapper.getUserMappingEntityPerLocation(user, userId, locationMap, Boolean.FALSE));
             UserResource userResource = usersResource.get(userId);
 
 //        Set Realm Role
@@ -367,8 +534,12 @@ public class UserServiceImpl implements UserService {
         CompletableFuture.runAsync(() -> {
             Settings settings = adminSettingService.getAdminSettingByName(CommonConstant.SETTING_TYPE_WELCOME_EMAIL);
             if (settings.getValue().equals(CommonConstant.ACTIVE)) {
+
                 MailDto mailDto = mailDataSetterService.mailSubjectSetter(CommonConstant.MAIL_FOR_ADD_USER);
-                String mailBody = mailDto.getBody() + " " + user.getEmail();
+                Map<String, Object> mailData = new HashMap<>();
+                mailData.put("firstName", user.getFirstName());
+                mailData.put("lastName", user.getLastName());
+                String mailBody = mailDataSetterService.emailBodyCreator(mailData, mailDto.getBody(), mailDto);
                 mailService.sendBasicMail(user.getEmail(), mailDto.getSubject(), mailBody);
             }
         });
@@ -378,23 +549,23 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void addRealmRole(RoleDto role) {
-        Keycloak keycloak = keyCloakConfig.getInstanceByAuth();
+        Keycloak keycloak = keyCloakConfig.getKeyCloakInstance();
         RoleRepresentation roleRep = new RoleRepresentation();
         roleRep.setName(role.getRoleName());
         roleRep.setDescription(role.getRoleDescription());
-        keycloak.realm(KeyCloakConfig.REALM).roles().create(roleRep);
-        RoleResource roleResource = keycloak.realm(KeyCloakConfig.REALM).roles().get(role.getRoleName());
+        keycloak.realm(realm).roles().create(roleRep);
+        RoleResource roleResource = keycloak.realm(realm).roles().get(role.getRoleName());
 //      ADD COMPOSITE ROLE
-        RoleRepresentation defaultRoleRepresentation = keycloak.realm(KeyCloakConfig.REALM).roles().get("default-roles-emcare").toRepresentation();
+        RoleRepresentation defaultRoleRepresentation = keycloak.realm(realm).roles().get("default-roles-emcare").toRepresentation();
         List<RoleRepresentation> compositeRoles = new ArrayList<>();
         compositeRoles.add(defaultRoleRepresentation);
         roleResource.addComposites(compositeRoles);
 
 //      ADD ALL MENU CONFIG FOR NEWLY ADDED ROLE
-        RoleRepresentation roleRepresentation = keycloak.realm(KeyCloakConfig.REALM).roles().get(role.getRoleName()).toRepresentation();
+        RoleRepresentation roleRepresentation = keycloak.realm(realm).roles().get(role.getRoleName()).toRepresentation();
         List<MenuConfig> menuList = menuConfigRepository.findAll();
         List<UserMenuConfig> userMenuConfigs = userMenuConfigRepository.findAll();
-        List<RoleRepresentation> roleRepresentationList = keycloak.realm(KeyCloakConfig.REALM).roles().list();
+        List<RoleRepresentation> roleRepresentationList = keycloak.realm(realm).roles().list();
         if (userMenuConfigs.isEmpty()) {
             for (MenuConfig menu : menuList) {
                 for (RoleRepresentation roleReps : roleRepresentationList) {
@@ -412,20 +583,27 @@ public class UserServiceImpl implements UserService {
                 userMenuConfigRepository.save(userMenuConfig);
             }
         }
+
+        RoleEntity roleEntity = new RoleEntity();
+        roleEntity.setRoleId(roleRepresentation.getId());
+        roleEntity.setRoleName(role.getRoleName());
+        roleEntityRepository.saveAndFlush(roleEntity);
     }
 
     @Override
     public ResponseEntity<Object> updateUserStatus(UserUpdateDto userUpdateDto) {
-        Keycloak keycloak = keyCloakConfig.getInstanceByAuth();
+        Keycloak keycloak = keyCloakConfig.getKeyCloakInstance();
 //        Get User Resource
-        UsersResource usersResource = keycloak.realm(KeyCloakConfig.REALM).users();
+        UsersResource usersResource = keycloak.realm(realm).users();
         UserRepresentation user = usersResource.get(userUpdateDto.getUserId()).toRepresentation();
         user.setEnabled(userUpdateDto.getIsEnabled());
         usersResource.get(userUpdateDto.getUserId()).update(user);
-        UserLocationMapping oldUser = userLocationMappingRepository.findByUserId(userUpdateDto.getUserId()).get(0);
-        oldUser.setState(userUpdateDto.getIsEnabled());
-        oldUser.setIsFirst(false);
-        userLocationMappingRepository.save(oldUser);
+        List<UserLocationMapping> userLocationMappings = userLocationMappingRepository.findByUserId(userUpdateDto.getUserId());
+        for (UserLocationMapping oldUser : userLocationMappings) {
+            oldUser.setState(userUpdateDto.getIsEnabled());
+            oldUser.setIsFirst(false);
+            userLocationMappingRepository.save(oldUser);
+        }
 
         if (userUpdateDto.getIsEnabled()) {
             CompletableFuture.runAsync(() -> {
@@ -453,40 +631,44 @@ public class UserServiceImpl implements UserService {
             });
         }
 
-        return ResponseEntity.ok(oldUser);
+        return ResponseEntity.ok(userLocationMappings);
 
     }
 
     @Override
     public ResponseEntity<Object> getUserRolesById(String userId) {
-        Keycloak keycloak = keyCloakConfig.getInstanceByAuth();
-        RoleMappingResource userRoles = keycloak.realm(KeyCloakConfig.REALM).users().get(userId).roles();
+        Keycloak keycloak = keyCloakConfig.getKeyCloakInstance();
+        RoleMappingResource userRoles = keycloak.realm(realm).users().get(userId).roles();
         return ResponseEntity.ok(userRoles.getAll());
     }
 
     @Override
     public ResponseEntity<Object> updateRole(RoleUpdateDto roleUpdateDto) {
-        Keycloak keycloak = keyCloakConfig.getInstance();
+        Keycloak keycloak = keyCloakConfig.getKeyCloakInstance();
         RoleRepresentation roleRep = new RoleRepresentation();
         roleRep.setName(roleUpdateDto.getName());
         roleRep.setDescription(roleUpdateDto.getDescription());
-        RoleResource roleResource = keycloak.realm(KeyCloakConfig.REALM).roles().get(roleUpdateDto.getOldRoleName());
+        RoleResource roleResource = keycloak.realm(realm).roles().get(roleUpdateDto.getOldRoleName());
         roleResource.update(roleRep);
+
+        RoleEntity roleEntity = roleEntityRepository.findByRoleName(roleUpdateDto.getOldRoleName());
+        roleEntity.setRoleName(roleUpdateDto.getName());
+        roleEntityRepository.saveAndFlush(roleEntity);
         return ResponseEntity.ok(roleUpdateDto);
     }
 
     @Override
     public String getRoleIdByName(String roleName) {
-        Keycloak keycloak = keyCloakConfig.getInstanceByAuth();
-        RoleResource roleResource = keycloak.realm(KeyCloakConfig.REALM).roles().get(roleName);
+        Keycloak keycloak = keyCloakConfig.getKeyCloakInstance();
+        RoleResource roleResource = keycloak.realm(realm).roles().get(roleName);
         return roleResource.toRepresentation().getId();
     }
 
     @Override
     public String getRoleNameById(String roleId) {
         String roleName = "";
-        Keycloak keycloak = keyCloakConfig.getInstanceByAuth();
-        RoleRepresentation roleResource = keycloak.realm(KeyCloakConfig.REALM).roles().list().stream().filter(role -> roleId.equals(role.getId())).findAny().orElse(null);
+        Keycloak keycloak = keyCloakConfig.getKeyCloakInstance();
+        RoleRepresentation roleResource = keycloak.realm(realm).roles().list().stream().filter(role -> roleId.equals(role.getId())).findAny().orElse(null);
         if (roleResource != null) {
             roleName = roleResource.getName();
         }
@@ -494,18 +676,52 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public PageDto getUsersUnderLocation(Integer locationId, Integer pageNo) {
+    public PageDto getUsersUnderLocation(Object locationId,String searchString, Integer pageNo, Boolean filter) {
         List<MultiLocationUserListDto> userList = new ArrayList<>();
+        Long totalCount = 0L;
+        List<String> allUsersIdUnderLocation = new ArrayList<>();
+        if (filter == null) {
+            filter = false;
+        }
+        filter = !filter;
+        List<Integer> locationIds;
+        List<String> childFacilityIds = new ArrayList<>();
+        if (Objects.nonNull(locationId)) {
+            if (isNumeric(locationId.toString())) {
+                locationIds = locationMasterDao.getAllChildLocationId(Integer.parseInt(locationId.toString()));
+                childFacilityIds = locationResourceRepository.findResourceIdIn(locationIds);
+            } else {
+                childFacilityIds.add(locationId.toString());
+            }
+        }
+        Keycloak keycloak = keyCloakConfig.getKeyCloakInstance();
+        if (Objects.isNull(locationId) || locationId.toString().isEmpty()){
+            if (Objects.nonNull(searchString) && !searchString.isEmpty()) {
+                totalCount = Long.valueOf(userLocationMappingRepository.getUserPageDataWithSearchCount(searchString, filter).size());
+                allUsersIdUnderLocation = userLocationMappingRepository.getUserPageDataWithSearch(searchString, filter, pageNo * CommonConstant.PAGE_SIZE);
+            } else {
+                totalCount = Long.valueOf(userLocationMappingRepository.getUserPageDataWithoutSearchCount(filter).size());
+                allUsersIdUnderLocation = userLocationMappingRepository.getUserPageDataWithoutSearch(filter, pageNo * CommonConstant.PAGE_SIZE);
+            }
 
-        Keycloak keycloak = keyCloakConfig.getInstance();
-        Integer totalCount = userLocationMappingRepository.getAllUserOnChildLocations(locationId).size();
-        List<String> allUsersIdUnderLocation = userLocationMappingRepository.getAllUserOnChildLocationsWithPage(locationId, pageNo, CommonConstant.PAGE_SIZE);
+        }else {
+            if (searchString != null && !searchString.isEmpty()){
+                totalCount = Long.valueOf(userLocationMappingRepository.getAllUserBasedOnFacilityAndSearchCount(childFacilityIds,searchString,filter).size());
+                allUsersIdUnderLocation = userLocationMappingRepository.getAllUserBasedOnFacilityAndSearch(childFacilityIds,searchString,filter,pageNo * 10);
+            }else {
+                totalCount = Long.valueOf(userLocationMappingRepository.getAllUserBasedOnFacilityIdCount(childFacilityIds, filter).size());
+                allUsersIdUnderLocation = userLocationMappingRepository.getAllUserBasedOnFacilityId(childFacilityIds, filter, pageNo * 10);
+            }
+        }
+
+
         List<UserRepresentation> userRepresentations = new ArrayList<>();
+
         for (String userId : allUsersIdUnderLocation) {
-            userRepresentations.add(getUserById(userId));
+            userRepresentations.add(keycloak.realm(realm).users().get(userId).toRepresentation());
         }
         for (UserRepresentation representation : userRepresentations) {
-            List<RoleRepresentation> roleRepresentationList = keycloak.realm(KeyCloakConfig.REALM).users().get(representation.getId()).roles().realmLevel().listAll();
+            List<RoleRepresentation> roleRepresentationList = keycloak.realm(realm).users().get(representation.getId()).roles().realmLevel().listAll();
             List<String> roles = new ArrayList<>();
             for (RoleRepresentation roleRepresentation : roleRepresentationList) {
                 roles.add(roleRepresentation.getName());
@@ -538,7 +754,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserRepresentation getUserByEmailId(String emailId) {
         Keycloak keycloak = keyCloakConfig.getInsideInstance();
-        UsersResource usersResource = keycloak.realm(KeyCloakConfig.REALM).users();
+        UsersResource usersResource = keycloak.realm(realm).users();
         List<UserRepresentation> userRepresentation = usersResource.search(emailId);
         if (!userRepresentation.isEmpty()) {
             return userRepresentation.get(0);
@@ -551,9 +767,9 @@ public class UserServiceImpl implements UserService {
     public UserRepresentation resetPassword(String emailId, String password) {
         Keycloak keycloak = keyCloakConfig.getInsideInstance();
         UserRepresentation userRepresentation = null;
-        UsersResource usersResource = keycloak.realm(KeyCloakConfig.REALM).users();
+        UsersResource usersResource = keycloak.realm(realm).users();
 
-        List<UserRepresentation> userRepresentations = keycloak.realm(KeyCloakConfig.REALM).users().search(emailId);
+        List<UserRepresentation> userRepresentations = keycloak.realm(realm).users().search(emailId);
         if (!userRepresentations.isEmpty()) {
             userRepresentation = userRepresentations.get(0);
             CredentialRepresentation credentialRepresentation = createPasswordCredentials(password);
@@ -564,20 +780,136 @@ public class UserServiceImpl implements UserService {
         return null;
     }
 
-    private static CredentialRepresentation createPasswordCredentials(String password) {
-        CredentialRepresentation passwordCredentials = new CredentialRepresentation();
-        passwordCredentials.setTemporary(false);
-        passwordCredentials.setType(CredentialRepresentation.PASSWORD);
-        passwordCredentials.setValue(password);
-        return passwordCredentials;
+    @Override
+    public Map<String, Object> checkEmailIdExist(String email) {
+        Keycloak keycloak = keyCloakConfig.getInsideInstance();
+        UserRepresentation userRepresentation = null;
+        UsersResource usersResource = keycloak.realm(realm).users();
+
+        List<UserRepresentation> userRepresentations = keycloak.realm(realm).users().search(email);
+        Map<String, Object> response = new HashMap<>();
+        if (userRepresentations.isEmpty()) {
+            response.put("status", HttpStatus.OK.value());
+            response.put("message", "Valid Email Address");
+        } else {
+            response.put("status", HttpStatus.BAD_REQUEST.value());
+            response.put("message", "Email Already Taken By User");
+        }
+        return response;
+    }
+
+    @Override
+    public ResponseEntity<Object> addUserForCountry(UserDto user, String tenantId) {
+        Keycloak keycloak = keyCloakConfig.getKeyCloakInstance();
+//        Get Realm Resource
+        RealmResource realmResource = keycloak.realm(realm);
+//        Get User Resource
+        UsersResource usersResource = keycloak.realm(realm).users();
+
+        CredentialRepresentation credentialRepresentation = createPasswordCredentials(user.getPassword());
+//        Create User Representation
+        UserRepresentation kcUser = new UserRepresentation();
+        Settings usernameSetting = adminSettingRepository.findByKey(CommonConstant.SETTING_TYPE_REGISTRATION_EMAIL_AS_USERNAME);
+        if (usernameSetting.getValue().equals(CommonConstant.ACTIVE)) {
+            kcUser.setUsername(user.getEmail());
+        } else {
+            kcUser.setUsername(user.getUserName());
+        }
+        kcUser.setUsername(user.getUserName());
+        kcUser.setCredentials(Collections.singletonList(credentialRepresentation));
+        kcUser.setFirstName(user.getFirstName());
+        kcUser.setLastName(user.getLastName());
+        kcUser.setEmail(user.getEmail());
+        kcUser.setEnabled(true);
+        kcUser.setEmailVerified(false);
+        Map<String, List<String>> attribute = new HashMap<>();
+        attribute.put(CommonConstant.LANGUAGE_KEY, Arrays.asList(CommonConstant.ENGLISH));
+        attribute.put(CommonConstant.PHONE_KEY, Arrays.asList(user.getPhone()));
+        attribute.put(CommonConstant.COUNTRY_CODE, Arrays.asList(user.getCountryCode()));
+        attribute.put(CommonConstant.TENANT_ID, Arrays.asList(tenantId));
+        kcUser.setAttributes(attribute);
+
+        try {
+
+            Map<String, Long> locationMap = new HashMap<>();
+//            for (String facilityId : user.getFacilityIds()) {
+//                FacilityDto facilityDto = locationResourceService.getFacilityDto(facilityId);
+//                locationMap.put(facilityId, facilityDto.getLocationId());
+//            }
+
+            javax.ws.rs.core.Response response = usersResource.create(kcUser);
+            String userId = CreatedResponseUtil.getCreatedId(response);
+            userLocationMappingRepository.saveAll(UserMapper.getUserMappingEntityPerLocationForTenant(user, userId, locationMap));
+            UserResource userResource = usersResource.get(userId);
+
+//        Set Realm Role
+            RoleRepresentation testerRealmRole = realmResource.roles().get(user.getRoleName()).toRepresentation();
+            RoleRepresentation defaultRole = realmResource.roles().get("default-roles-emcare").toRepresentation();
+            userResource.roles().realmLevel().add(Arrays.asList(testerRealmRole));
+            userResource.roles().realmLevel().remove(Arrays.asList(defaultRole));
+
+            List<MenuConfig> menuList = menuConfigRepository.findAll();
+            List<UserMenuConfig> userMenuConfigs = new ArrayList<>();
+            for (MenuConfig menu : menuList) {
+                UserMenuConfig userMenuConfig = new UserMenuConfig();
+                userMenuConfig.setMenuId(menu.getId());
+                userMenuConfig.setUserId(userId);
+                userMenuConfigs.add(userMenuConfig);
+            }
+            userMenuConfigRepository.saveAllAndFlush(userMenuConfigs);
+
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response(ex.getMessage(), HttpStatus.BAD_REQUEST.value()));
+        }
+
+        CompletableFuture.runAsync(() -> {
+            MailDto mailDto = mailDataSetterService.mailSubjectSetter(CommonConstant.MAIL_FOR_CONFIRMATION_EMAIL_APPROVED);
+            Map<String, Object> mailData = new HashMap<>();
+            mailData.put("firstName", user.getFirstName());
+            mailData.put("lastName", user.getLastName());
+            String mailBody = mailDataSetterService.emailBodyCreator(mailData, mailDto.getBody(), mailDto);
+            mailService.sendBasicMail(user.getEmail(), mailDto.getSubject(), mailBody);
+        });
+
+        return ResponseEntity.ok(new Response(CommonConstant.REGISTER_SUCCESS, HttpStatus.OK.value()));
+    }
+
+    @Override
+    public void removeRole(String roleName) throws Exception {
+        try {
+            Keycloak keycloak = keyCloakConfig.getKeyCloakInstance();
+            RealmResource realmResource = keycloak.realm(realm);
+            keycloak.realm(realm).roles().deleteRole(roleName);
+        } catch (Exception ex) {
+            throw new Exception();
+        }
+    }
+
+    @Override
+    public void removeUser(String email) throws Exception {
+        try {
+            Keycloak keycloak = keyCloakConfig.getKeyCloakInstance();
+            RealmResource realmResource = keycloak.realm(realm);
+            UserRepresentation userRepresentation = getUserByEmailId(email);
+            keycloak.realm(realm).users().delete(userRepresentation.getId());
+        } catch (Exception ex) {
+            throw new Exception();
+        }
+    }
+
+    @Override
+    public List<String> getCurrentUserFacility() {
+        String userId = emCareSecurityUser.getLoggedInUser().getSubject();
+        List<UserLocationMapping> locationMappings = userLocationMappingRepository.findByUserId(userId);
+        return locationMappings.stream().map(UserLocationMapping::getFacilityId).collect(Collectors.toList());
     }
 
     @Override
     public MultiLocationUserListDto getUserDtoById(String userId) {
-        Keycloak keycloak = keyCloakConfig.getInstanceByAuth();
+        Keycloak keycloak = keyCloakConfig.getKeyCloakInstance();
         MultiLocationUserListDto user;
-        UserRepresentation userRepresentation = keycloak.realm(KeyCloakConfig.REALM).users().get(userId).toRepresentation();
-        List<RoleRepresentation> roleRepresentationList = keycloak.realm(KeyCloakConfig.REALM).users().get(userRepresentation.getId()).roles().realmLevel().listAll();
+        UserRepresentation userRepresentation = keycloak.realm(realm).users().get(userId).toRepresentation();
+        List<RoleRepresentation> roleRepresentationList = keycloak.realm(realm).users().get(userRepresentation.getId()).roles().realmLevel().listAll();
         List<String> roles = new ArrayList<>();
         for (RoleRepresentation roleRepresentation : roleRepresentationList) {
             roles.add(roleRepresentation.getName());
@@ -602,16 +934,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Scope("request")
     public UserRepresentation getUserById(String userId) {
-        Keycloak keycloak = keyCloakConfig.getInstance();
-        return keycloak.realm(KeyCloakConfig.REALM).users().get(userId).toRepresentation();
+        Keycloak keycloak = keyCloakConfig.getKeyCloakInstance();
+        return keycloak.realm(realm).users().get(userId).toRepresentation();
     }
 
     @Override
-    public ResponseEntity<Object> updateUser(UserDto userDto, String userId) {
-        Keycloak keycloak = keyCloakConfig.getInstance();
-        RealmResource realmResource = keycloak.realm(KeyCloakConfig.REALM);
-        UserResource userResource = keycloak.realm(KeyCloakConfig.REALM).users().get(userId);
+    public ResponseEntity<Object> updateUser(UserDto userDto, String userId, HttpServletRequest request) {
+        Keycloak keycloak = keyCloakConfig.getKeyCloakInstance();
+        RealmResource realmResource = keycloak.realm(realm);
+        UserResource userResource = keycloak.realm(realm).users().get(userId);
         UserRepresentation newUser = userResource.toRepresentation();
 
         newUser.setFirstName(userDto.getFirstName());
@@ -635,11 +968,12 @@ public class UserServiceImpl implements UserService {
                 userLocationMappingRepository.save(ulm);
             }
         }
-
+//        String tenantId = commonService.getTenantIdFromURL(request.getRequestURL().toString(), request.getRequestURI());
         Map<String, List<String>> attribute = new HashMap<>();
         attribute.put(CommonConstant.LANGUAGE_KEY, Arrays.asList(userDto.getLanguage()));
         attribute.put(CommonConstant.PHONE_KEY, Arrays.asList(userDto.getPhone()));
         attribute.put(CommonConstant.COUNTRY_CODE, Arrays.asList(userDto.getCountryCode()));
+        attribute.put(CommonConstant.TENANT_ID, Arrays.asList(TenantContext.getCurrentTenant()));
 
         newUser.setAttributes(attribute);
         newUser.setEnabled(newUser.isEnabled());
@@ -657,8 +991,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseEntity<Object> updatePassword(UserDto userDto, String userId) {
-        Keycloak keycloak = keyCloakConfig.getInstance();
-        UserResource userResource = keycloak.realm(KeyCloakConfig.REALM).users().get(userId);
+        Keycloak keycloak = keyCloakConfig.getKeyCloakInstance();
+        UserResource userResource = keycloak.realm(realm).users().get(userId);
         UserRepresentation newUser = userResource.toRepresentation();
 
         if (userDto.getPassword() != null) {
@@ -682,7 +1016,8 @@ public class UserServiceImpl implements UserService {
                     String json = getMargedStringOfFeatureJson(list);
                     featureJsons.add(MenuConfigMapper.getCurrentUserFeatureJson(ufj, json));
                 } else {
-                    featureJsons.add(MenuConfigMapper.getCurrentUserFeatureJson(ufj, null));
+                    String json = getMargedStringOfFeatureJson(list);
+                    featureJsons.add(MenuConfigMapper.getCurrentUserFeatureJson(ufj, json));
                 }
             }
         }
@@ -705,11 +1040,29 @@ public class UserServiceImpl implements UserService {
     }
 
     private String getMargedStringOfFeatureJson(List<UserFeatureJson> featureJsonList) {
+        FeatureJSON featureJSON = new FeatureJSON(true, true, true, true,true);
+        Gson g = new Gson();
         if (featureJsonList.size() > 2) {
             return featureJsonList.get(0).getFeatureJson();
+        } else if(featureJsonList.size() == 1) {
+            FeatureJSON f = g.fromJson(featureJsonList.get(0).getFeatureJson(), FeatureJSON.class);
+            if (!f.getCanAdd().booleanValue()) {
+                featureJSON.setCanAdd(false);
+            }
+            if (!f.getCanDelete().booleanValue()) {
+                featureJSON.setCanDelete(false);
+            }
+            if (!f.getCanEdit().booleanValue()) {
+                featureJSON.setCanEdit(false);
+            }
+            if (!f.getCanView().booleanValue()) {
+                featureJSON.setCanView(false);
+            }
+            if(Objects.isNull(f.getCanExport()) || !f.getCanExport().booleanValue()) {
+                featureJSON.setCanExport(false);
+            }
+            return featureJSON.toString();
         } else {
-            FeatureJSON featureJSON = new FeatureJSON(true, true, true, true);
-            Gson g = new Gson();
             FeatureJSON f1 = g.fromJson(featureJsonList.get(0).getFeatureJson(), FeatureJSON.class);
             FeatureJSON f2 = g.fromJson(featureJsonList.get(1).getFeatureJson(), FeatureJSON.class);
             if (!f1.getCanAdd().booleanValue() && !f2.getCanAdd().booleanValue()) {
@@ -724,15 +1077,19 @@ public class UserServiceImpl implements UserService {
             if (!f1.getCanView().booleanValue() && !f2.getCanView().booleanValue()) {
                 featureJSON.setCanView(false);
             }
+            if (Objects.isNull(f1.getCanExport()) || Objects.isNull(f2.getCanExport()) ||
+                    !f1.getCanExport().booleanValue() && !f2.getCanExport().booleanValue()) {
+                featureJSON.setCanExport(false);
+            }
             return featureJSON.toString();
         }
     }
 
     private UserListDto getUserDtoByIdAndLocation(String userId, String facilityId) {
-        Keycloak keycloak = keyCloakConfig.getInstanceByAuth();
+        Keycloak keycloak = keyCloakConfig.getKeyCloakInstance();
         UserListDto user;
-        UserRepresentation userRepresentation = keycloak.realm(KeyCloakConfig.REALM).users().get(userId).toRepresentation();
-        List<RoleRepresentation> roleRepresentationList = keycloak.realm(KeyCloakConfig.REALM).users().get(userRepresentation.getId()).roles().realmLevel().listAll();
+        UserRepresentation userRepresentation = keycloak.realm(realm).users().get(userId).toRepresentation();
+        List<RoleRepresentation> roleRepresentationList = keycloak.realm(realm).users().get(userRepresentation.getId()).roles().realmLevel().listAll();
         List<String> roles = new ArrayList<>();
         for (RoleRepresentation roleRepresentation : roleRepresentationList) {
             roles.add(roleRepresentation.getName());
@@ -748,5 +1105,18 @@ public class UserServiceImpl implements UserService {
 
         return user;
     }
+
+    private boolean isNumeric(String strNum) {
+        if (strNum == null) {
+            return false;
+        }
+        try {
+            Integer.parseInt(strNum);
+        } catch (NumberFormatException nfe) {
+            return false;
+        }
+        return true;
+    }
+
 
 }

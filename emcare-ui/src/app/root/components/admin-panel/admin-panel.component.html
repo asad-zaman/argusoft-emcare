@@ -1,6 +1,7 @@
 <div *ngIf="isView" class="main-wrapper">
-  <h1 class="heading">Welcome, {{ userName }}!</h1>
-  <hr>
+  <div class="custom-header">
+    <h1 class="heading">{{'Welcome' | translate}}, {{firstName}} {{lastName}}!</h1>
+  </div>
   <div *ngIf="isEdit">
     <h5 class="my-4">{{'Manage Settings' | translate}}</h5>
     <p-accordion *ngIf="userSettingObj.length>0 && templateArr.length>0" [multiple]="true"

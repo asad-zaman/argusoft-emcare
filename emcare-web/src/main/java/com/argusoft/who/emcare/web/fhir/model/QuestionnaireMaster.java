@@ -2,6 +2,7 @@ package com.argusoft.who.emcare.web.fhir.model;
 
 import com.argusoft.who.emcare.web.common.model.EntityAuditInfo;
 import java.io.Serializable;
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -58,4 +59,17 @@ public class QuestionnaireMaster extends EntityAuditInfo implements Serializable
         this.version = version;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof QuestionnaireMaster)) return false;
+        if (!super.equals(o)) return false;
+        QuestionnaireMaster that = (QuestionnaireMaster) o;
+        return Objects.equals(getId(), that.getId()) && Objects.equals(getText(), that.getText()) && Objects.equals(getResourceId(), that.getResourceId()) && Objects.equals(getVersion(), that.getVersion());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), getId(), getText(), getResourceId(), getVersion());
+    }
 }

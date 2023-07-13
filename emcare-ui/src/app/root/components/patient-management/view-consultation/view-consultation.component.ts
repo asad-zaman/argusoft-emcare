@@ -14,7 +14,7 @@ export class ViewConsultationComponent implements OnInit {
   editId: string;
   isEdit: boolean = false;
   encounterKeys = [];
-  selectedEnKey = {};
+  selectedEnKey;
   selectedEncounterIcon = 0;
   data = [];
   currentObj = {};
@@ -72,19 +72,31 @@ export class ViewConsultationComponent implements OnInit {
   manipulateRes(res) {
     for (let key in res) {
       if (res.hasOwnProperty(key)) {
-        this.encounterKeys.push({ name: key, data: res[key] });
+        this.encounterKeys.push({ id: key, value: res[key] });
       }
     }
   }
 
   getEncounterData() {
-    const tempData = this.encounterKeys.find(el => el.id = this.selectedEnKey).data;
-    this.manipulateResAsPerKey(tempData);
+    const tempData = this.encounterKeys.find(el => el.id === this.selectedEnKey.id);
+    this.manipulateResAsPerKey(tempData.value);
+    this.selectedEncounterIcon = 0;
   }
 
   selectEncounter(index) {
     this.selectedEncounterIcon = index;
     this.currentObj = this.data[this.selectedEncounterIcon];
+    this.setUpTheObject(this.currentObj);
+  }
+
+  setUpTheObject(data) {
+    let tempArr = data.queAnsObj.filter(el => el.value !== true && el.value !== false);
+    let tempBoolArr = data.queAnsObj.filter(el => el.value == true || el.value == false);
+    const newArr = [
+      ...tempBoolArr.filter(c => c.value === true), ...tempBoolArr.filter(c => c.value === false)
+    ];
+    const queAnsArr = [...tempArr, ...newArr];
+    data.queAnsObj = queAnsArr;
   }
 
   manipulateResAsPerKey(tempkeyData) {
@@ -100,42 +112,27 @@ export class ViewConsultationComponent implements OnInit {
       if (el.resText) {
         el.resText.item.forEach(itemEl => {
           if (itemEl.text && itemEl.answer) {
-            if (itemEl.answer[0].valueCoding && itemEl.answer[0].valueCoding.display) {
-              queAnsObj.push({
-                label: itemEl.text,
-                value: itemEl.answer[0].valueCoding.display
-              });
-            } else if (itemEl.answer[0].valueBoolean && itemEl.answer[0].valueBoolean) {
-              queAnsObj.push({
-                label: itemEl.text,
-                value: itemEl.answer[0].valueBoolean
-              });
-            } else if (itemEl.answer[0].valueString && itemEl.answer[0].valueString) {
-              queAnsObj.push({
-                label: itemEl.text,
-                value: itemEl.answer[0].valueString
-              });
-            } else if (itemEl.answer[0].valueDate && itemEl.answer[0].valueDate) {
-              queAnsObj.push({
-                label: itemEl.text,
-                value: itemEl.answer[0].valueDate
-              });
-            } else if (itemEl.answer[0].valueQuantity && itemEl.answer[0].valueQuantity.value) {
-              queAnsObj.push({
-                label: itemEl.text,
-                value: itemEl.answer[0].valueQuantity.value
-              });
-            } else if (itemEl.answer[0].valueInteger && itemEl.answer[0].valueInteger) {
-              queAnsObj.push({
-                label: itemEl.text,
-                value: itemEl.answer[0].valueInteger
-              });
-            } else { }
+            for (const k in itemEl) {
+              if (k === 'answer') {
+                const answerObj = itemEl['answer'][0];
+                for (const a in answerObj) {
+                  if (a !== 'item' && a !== 'valueCoding' && a !== 'valueQuantity') {
+                    queAnsObj.push({ label: itemEl.text, value: answerObj[a] });
+                  } else {
+                    if (a !== 'item') {
+                      const val = answerObj[a].display ? answerObj[a].display : answerObj[a].value;
+                      queAnsObj.push({ label: itemEl.text, value: val });
+                    }
+                  }
+                }
+              }
+            }
           }
         });
       }
       el['queAnsObj'] = queAnsObj;
     });
+    this.data = [];
     for (let key in this.iconObjRes) {
       if (this.iconObjRes.hasOwnProperty(key)) {
         const item = tempDataArr.find(el => el.stage === this.iconObjRes[key]);
@@ -149,12 +146,20 @@ export class ViewConsultationComponent implements OnInit {
     this.fhirService.getPatientById(this.editId).subscribe(res => {
       if (res) {
         this.patientData['fLetter'] = res['givenName'] ? res['givenName'].substr(0, 1) : null;
-        this.patientData['name'] = `${res['givenName']} ${res['familyName']}`;
+        this.patientData['name'] = res['givenName'] || res['familyName'] ? `${res['givenName']} ${res['familyName']}` : 'NA';
         this.patientData['gender'] = res['gender'];
-        let ageDifMs = Date.now() - new Date(res['dob']).getTime();
-        let ageDate = new Date(ageDifMs);
-        this.patientData['age'] = Math.abs(ageDate.getUTCFullYear() - 1970);
-        console.log(this.patientData);
+        let diff: number = (new Date().getTime()) - res['dob'];
+        //millisecond in a day
+        let msDay: number = 24 * 60 * 60 * 1000;
+        //ml per year
+        let msYear: number = msDay * 365;
+        let ageYear: number = Math.floor(diff / msYear);
+        let ageMonth: number = Math.floor(diff % msYear / (msDay * 30));
+        let ageDay: number = Math.floor(((diff % msYear) % (msDay * 30)) / msDay);
+        let year: string = ageYear == 1 ? "Year" : "Years";
+        let month: string = ageMonth < 2 ? "Month" : "Months";
+        let day: string = ageDay < 2 ? "Day" : "Days";
+        this.patientData['age'] = ageYear === 0 && ageMonth === 0 ? ageDay.toString() + " " + day : ageYear === 0 ? ageMonth.toString() + " " + month + " " + ageDay.toString() + " " + day : ageYear.toString() + " " + year + " " + ageMonth.toString() + " " + month + " " + ageDay.toString() + " " + day;
       }
     });
   }

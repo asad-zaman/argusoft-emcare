@@ -3,7 +3,10 @@ package com.argusoft.who.emcare.web.commonapi.service;
 import com.argusoft.who.emcare.web.commonapi.dto.UserPasswordDto;
 import org.springframework.http.ResponseEntity;
 
+import javax.servlet.http.HttpServletRequest;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
+import java.util.Map;
 
 public interface OpenApiService {
 
@@ -14,4 +17,8 @@ public interface OpenApiService {
     public void invalidateOtp(String emailId, String otp);
 
     public ResponseEntity<Object> resetPassword(UserPasswordDto userPasswordDto);
+
+    public Map<String, String> getCurrentCountry(HttpServletRequest request);
+
+    public List<String> getCountryList();
 }

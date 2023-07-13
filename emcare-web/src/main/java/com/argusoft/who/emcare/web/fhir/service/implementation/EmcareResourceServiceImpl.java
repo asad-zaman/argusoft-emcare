@@ -6,6 +6,7 @@ import ca.uhn.fhir.rest.param.DateParam;
 import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.common.dto.PageDto;
 import com.argusoft.who.emcare.web.fhir.dao.*;
+import com.argusoft.who.emcare.web.fhir.dto.EmcareResourceDto;
 import com.argusoft.who.emcare.web.fhir.dto.FacilityDto;
 import com.argusoft.who.emcare.web.fhir.dto.PatientDto;
 import com.argusoft.who.emcare.web.fhir.mapper.EmcareResourceMapper;
@@ -21,10 +22,10 @@ import org.hl7.fhir.r4.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
@@ -37,79 +38,111 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
 
     private final FhirContext fhirCtx = FhirContext.forR4();
     private final IParser parser = fhirCtx.newJsonParser().setPrettyPrint(false);
+    private String searchString;
+
+    String query = "WITH MAX_CONSULTATION_DATE AS\n" +
+        "(SELECT PATIENT_ID,\n" +
+        "MAX(CONSULTATION_DATE) as cnslDate\n" +
+        "FROM QUESTIONNAIRE_RESPONSE\n" +
+        "GROUP BY PATIENT_ID)\n" +
+        "SELECT\n" +
+        "CONCAT('Patient',' ',row_number() over (ORDER BY emcare_resources.id)) as \"key\",\n" +
+        "EMCARE_RESOURCES.resource_id, \n" +
+        "cast((EMCARE_RESOURCES.text) as json) -> cast('identifier' as text) -> 0 ->> cast('value' as text) as \"identifier\",\n" +
+        "CONCAT(cast((EMCARE_RESOURCES.text) as json) -> cast('name' as text) -> 0 -> cast('given' as text) ->> 0, ' ', cast((EMCARE_RESOURCES.text) as json) -> cast('name' as text) -> 0 -> cast('given' as text) ->> 1) as \"givenName\",\n" +
+        "cast((EMCARE_RESOURCES.text) as json) -> cast('name' as text) -> 0 ->> cast('family' as text) as \"familyName\",\n" +
+        "cast((EMCARE_RESOURCES.text) as json) ->> cast('gender' as text) as \"gender\",\n" +
+        "cast((EMCARE_RESOURCES.text) as json) ->> cast('birthDate' as text) as \"birthDate\",\n" +
+        "cast((LOCATION_RESOURCES.text) as json) ->> cast('name' as text) as \"facilityName\",\n" +
+        "cast((LOCATION_RESOURCES.text) as json) -> cast('address' as text) -> cast('line' as text) ->> 0 as \"addressLine\",\n" +
+        "(LOCATION_RESOURCES.organization_name) as \"organizationName\",\n" +
+        "(LOCATION_RESOURCES.location_name) as \"locationName\",\n" +
+        "MAX_CONSULTATION_DATE.cnslDate as \"consultationDate\"\n" +
+        "FROM EMCARE_RESOURCES\n" +
+        "LEFT OUTER JOIN MAX_CONSULTATION_DATE ON EMCARE_RESOURCES.RESOURCE_ID = MAX_CONSULTATION_DATE.PATIENT_ID\n" +
+        "LEFT JOIN LOCATION_RESOURCES ON EMCARE_RESOURCES.facility_id = LOCATION_RESOURCES.resource_id ORDER BY EMCARE_RESOURCES.created_on DESC limit 10";
+
+
+    String queryForAll = "WITH MAX_CONSULTATION_DATE AS\n" +
+        "(SELECT PATIENT_ID,\n" +
+        "MAX(CONSULTATION_DATE) as cnslDate\n" +
+        "FROM QUESTIONNAIRE_RESPONSE\n" +
+        "GROUP BY PATIENT_ID)\n" +
+        "SELECT\n" +
+        "CONCAT('Patient',' ',row_number() over (ORDER BY emcare_resources.id)) as \"key\",\n" +
+        "EMCARE_RESOURCES.resource_id, \n" +
+        "cast((EMCARE_RESOURCES.text) as json) -> cast('identifier' as text) -> 0 ->> cast('value' as text) as \"identifier\",\n" +
+        "CONCAT(cast((EMCARE_RESOURCES.text) as json) -> cast('name' as text) -> 0 -> cast('given' as text) ->> 0, ' ', cast((EMCARE_RESOURCES.text) as json) -> cast('name' as text) -> 0 -> cast('given' as text) ->> 1) as \"givenName\",\n" +
+        "cast((EMCARE_RESOURCES.text) as json) -> cast('name' as text) -> 0 ->> cast('family' as text) as \"familyName\",\n" +
+        "cast((EMCARE_RESOURCES.text) as json) ->> cast('gender' as text) as \"gender\",\n" +
+        "cast((EMCARE_RESOURCES.text) as json) ->> cast('birthDate' as text) as \"birthDate\",\n" +
+        "cast((LOCATION_RESOURCES.text) as json) ->> cast('name' as text) as \"facilityName\",\n" +
+        "cast((LOCATION_RESOURCES.text) as json) -> cast('address' as text) -> cast('line' as text) ->> 0 as \"addressLine\",\n" +
+        "(LOCATION_RESOURCES.organization_name) as \"organizationName\",\n" +
+        "(LOCATION_RESOURCES.location_name) as \"locationName\",\n" +
+        "MAX_CONSULTATION_DATE.cnslDate as \"consultationDate\"\n" +
+        "FROM EMCARE_RESOURCES\n" +
+        "LEFT OUTER JOIN MAX_CONSULTATION_DATE ON EMCARE_RESOURCES.RESOURCE_ID = MAX_CONSULTATION_DATE.PATIENT_ID\n" +
+        "LEFT JOIN LOCATION_RESOURCES ON EMCARE_RESOURCES.facility_id = LOCATION_RESOURCES.resource_id ORDER BY EMCARE_RESOURCES.created_on DESC";
 
     @Autowired
     EmcareResourceRepository repository;
 
     @Autowired
+    EmcareResourceCustomRepository customRepository;
+
+    @Autowired
     LocationMasterDao locationMasterDao;
+    @Autowired
+    EmCareSecurityUser emCareSecurityUser;
+    @Autowired
+    UserLocationMappingRepository userLocationMappingRepository;
+    @Autowired
+    ActivityDefinitionResourceService activityDefinitionResourceService;
+    @Autowired
+    ActivityDefinitionResourceRepository activityDefinitionResourceRepository;
+    @Autowired
+    CodeSystemResourceService codeSystemResourceService;
+    @Autowired
+    LibraryResourceService libraryResourceService;
+    @Autowired
+    OperationDefinitionResourceService operationDefinitionResourceService;
+    @Autowired
+    PlanDefinitionResourceService planDefinitionResourceService;
+    @Autowired
+    QuestionnaireMasterService questionnaireMasterService;
+    @Autowired
+    QuestionnaireResourceProvider questionnaireResourceProvider;
+    @Autowired
+    StructureDefinitionService structureDefinitionService;
+    @Autowired
+    ValueSetResourceService valueSetResourceService;
+    @Autowired
+    EncounterResourceService encounterResourceService;
+    @Autowired
+    StructureMapResourceService structureMapResourceService;
+    @Autowired
+    ObservationResourceService observationResourceService;
+    @Autowired
+    RelatedPersonResourceService relatedPersonResourceService;
+    @Autowired
+    ConditionResourceService conditionResourceService;
+    @Autowired
+    EncounterResourceRepository encounterResourceRepository;
+    @Autowired
+    ObservationResourceRepository observationResourceRepository;
+    @Autowired
+    BinaryResourceService binaryResourceService;
+
+    @Autowired
+    AuditEventResourceService auditEventResourceService;
 
     @Autowired
     private LocationService locationService;
-
-    @Autowired
-    EmCareSecurityUser emCareSecurityUser;
-
-    @Autowired
-    UserLocationMappingRepository userLocationMappingRepository;
-
     @Autowired
     private LocationResourceService locationResourceService;
-
     @Autowired
     private LocationResourceRepository locationResourceRepository;
-
-    @Autowired
-    ActivityDefinitionResourceService activityDefinitionResourceService;
-
-    @Autowired
-    ActivityDefinitionResourceRepository activityDefinitionResourceRepository;
-
-    @Autowired
-    CodeSystemResourceService codeSystemResourceService;
-
-    @Autowired
-    LibraryResourceService libraryResourceService;
-
-    @Autowired
-    OperationDefinitionResourceService operationDefinitionResourceService;
-
-    @Autowired
-    PlanDefinitionResourceService planDefinitionResourceService;
-
-    @Autowired
-    QuestionnaireMasterService questionnaireMasterService;
-
-    @Autowired
-    QuestionnaireResourceProvider questionnaireResourceProvider;
-
-    @Autowired
-    StructureDefinitionService structureDefinitionService;
-
-    @Autowired
-    ValueSetResourceService valueSetResourceService;
-
-    @Autowired
-    EncounterResourceService encounterResourceService;
-
-    @Autowired
-    StructureMapResourceService structureMapResourceService;
-
-    @Autowired
-    ObservationResourceService observationResourceService;
-
-    @Autowired
-    RelatedPersonResourceService relatedPersonResourceService;
-
-    @Autowired
-    ConditionResourceService conditionResourceService;
-
-    @Autowired
-    EncounterResourceRepository encounterResourceRepository;
-
-    @Autowired
-    ObservationResourceRepository observationResourceRepository;
-
 
     @Override
     public EmcareResource saveResource(EmcareResource emcareResource) {
@@ -268,6 +301,22 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
                     structureMapResourceService.saveResource(parser.parseResource(StructureMap.class, resourceString));
                 }
                 break;
+            case CommonConstant.BINARY_TYPE_STRING:
+                Binary binary = binaryResourceService.getResourceById(resourceId);
+                if (binary != null) {
+                    binaryResourceService.updateBinaryResource(resource.getIdElement(), binary);
+                } else {
+                    binaryResourceService.saveResource(parser.parseResource(Binary.class, resourceString));
+                }
+                break;
+            case CommonConstant.AUDITEVENT_TYPE_STRING:
+                AuditEvent auditEvent = auditEventResourceService.getResourceById(resourceId);
+                if (auditEvent != null) {
+                    auditEventResourceService.updateAuditEventResource(resource.getIdElement(), auditEvent);
+                } else {
+                    auditEventResourceService.saveResource(parser.parseResource(AuditEvent.class, resourceString));
+                }
+                break;
             default:
                 break;
         }
@@ -282,53 +331,46 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
 
     @Override
     public PageDto getPatientsPage(Integer pageNo, String searchString) {
-        List<Patient> patientsList = new ArrayList<>();
-        List<PatientDto> patientDtosList;
+
         Integer totalCount = 0;
-        List<EmcareResource> resourcesList;
-        Sort sort = Sort.by("createdOn").descending();
-        Pageable page = PageRequest.of(pageNo, CommonConstant.PAGE_SIZE, sort);
-        if (searchString != null && !searchString.isEmpty()) {
-            totalCount = repository.findByTypeContainingAndTextContainingIgnoreCase(CommonConstant.FHIR_PATIENT, searchString).size();
-            resourcesList = repository.findByTypeContainingAndTextContainingIgnoreCase(CommonConstant.FHIR_PATIENT, searchString, page);
-        } else {
-            totalCount = repository.findAllByType(CommonConstant.FHIR_PATIENT).size();
-            resourcesList = repository.findAllByType(CommonConstant.FHIR_PATIENT, page);
-        }
-
-        for (EmcareResource emcareResource : resourcesList) {
-            Patient patient = parser.parseResource(Patient.class, emcareResource.getText());
-            patientsList.add(patient);
-        }
-
-        patientDtosList = EmcareResourceMapper.patientEntitiesToDtoMapper(patientsList);
-
-        //Converting caregiverId and locationid to name
-        for (PatientDto patientDto : patientDtosList) {
-
-            if (patientDto.getCaregiver() != null) {
-                RelatedPerson caregiver = relatedPersonResourceService.getResourceById(patientDto.getCaregiver());
-//                EmcareResource caregiverResource = findByResourceId(patientDto.getCaregiver());
-//                RelatedPerson caregiver = parser.parseResource(RelatedPerson.class, caregiverResource.getText());
-                if (caregiver != null) {
-                    patientDto.setCaregiver(caregiver.getNameFirstRep().getGiven().get(0) + " " + caregiver.getNameFirstRep().getFamily());
-                } else {
-                    patientDto.setCaregiver(null);
-                }
-            }
-
-            if (patientDto.getFacility() != null) {
-                FacilityDto facilityDto = locationResourceService.getFacilityDto(patientDto.getFacility());
-                if (facilityDto != null) {
-                    patientDto.setFacility(facilityDto.getFacilityName());
-                    patientDto.setOrganizationName(facilityDto.getOrganizationName());
-                    patientDto.setLocationName(facilityDto.getLocationName());
-                }
-            }
-        }
+        List<Map<String, Object>> resourcesList;
+        Pageable page = PageRequest.of(pageNo, CommonConstant.PAGE_SIZE);
+        this.searchString = searchString;
         PageDto pageDto = new PageDto();
-        pageDto.setList(patientDtosList);
+
+        if (searchString != null && !searchString.isEmpty()) {
+            totalCount = repository.getCountOfPatientsByTypeContainingAndTextContainingIgnoreCase(searchString);
+            List<EmcareResourceDto> patients = repository.getPatientsByTypeContainingAndTextContainingIgnoreCase(searchString, page);
+            pageDto.setList(patients);
+            pageDto.setTotalCount(totalCount.longValue());
+        } else {
+            totalCount = repository.getCountOfPatients();
+            resourcesList = customRepository.getPatientsList(query + " offset " + page.getOffset(), pageNo);
+            pageDto.setList(resourcesList);
+            pageDto.setTotalCount(totalCount.longValue());
+        }
+
+        return pageDto;
+    }
+
+    @Override
+    public PageDto getPatientsAllDataByFilter(String searchString, Object locationId) {
+
+        Integer totalCount = 0;
+        List<Map<String, Object>> resourcesList;
+        Pageable page = PageRequest.ofSize(CommonConstant.PAGE_SIZE);
+        this.searchString = searchString;
+        PageDto pageDto = new PageDto();
         pageDto.setTotalCount(totalCount.longValue());
+        if (searchString != null && !searchString.isEmpty()) {
+            List<EmcareResourceDto> patients = repository.getPatientForExportWithSearch(searchString);
+            pageDto.setList(patients);
+        } else {
+            resourcesList = customRepository.getPatientsList(queryForAll);
+            pageDto.setList(resourcesList);
+            pageDto.setTotalCount(totalCount.longValue());
+        }
+
         return pageDto;
     }
 
@@ -340,15 +382,22 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
             List<Integer> locationIds = locationMasterDao.getAllChildLocationId(facilityDto.getLocationId().intValue());
             childFacilityIds = locationResourceRepository.findResourceIdIn(locationIds);
         }
+        Date prodDate = new Date();
+        try {
+            String prodDateString = "31/05/2023";
+            prodDate = new SimpleDateFormat("dd/MM/yyyy").parse(prodDateString);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
 
         if (theDate == null && theId == null) {
-            return repository.findAllByType(type);
+            return repository.findAllByTypeAndCreatedOnGreaterThan(type, prodDate);
         } else if (theDate != null && theId == null) {
             return repository.getByDateAndType(theDate.getValue(), type);
         } else if (theDate == null) {
-            return repository.findByFacilityIdIn(childFacilityIds);
+            return repository.findByFacilityIdInAndCreatedOnGreaterThan(childFacilityIds, prodDate);
         } else {
-            return repository.findByTypeAndModifiedOnGreaterThanOrCreatedOnGreaterThanAndFacilityIdIn(type, theDate.getValue(), theDate.getValue(), childFacilityIds);
+            return repository.findByTypeAndModifiedOnGreaterThanOrCreatedOnGreaterThanAndFacilityIdInAndCreatedOnGreaterThan(type, theDate.getValue(), theDate.getValue(), childFacilityIds, prodDate);
         }
     }
 
@@ -363,47 +412,78 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
     }
 
     @Override
-    public PageDto getPatientUnderLocationId(Integer locationId, Integer pageNo) {
-        List<Patient> patientsList = new ArrayList<>();
-        Pageable page = PageRequest.of(pageNo, CommonConstant.PAGE_SIZE);
+    public PageDto getPatientUnderLocationId(Object locationId, String searchString, Integer pageNo, String sDate, String eDate) {
 
-        List<Integer> locationIds = locationMasterDao.getAllChildLocationId(locationId);
-        List<String> childFacilityIds = locationResourceRepository.findResourceIdIn(locationIds);
-
-
-        Long totalCount = Long.valueOf(repository.findByFacilityIdIn(childFacilityIds).size());
-        List<EmcareResource> resourcesList = repository.findByFacilityIdIn(childFacilityIds, page);
-        for (EmcareResource emcareResource : resourcesList) {
-            Patient patient = parser.parseResource(Patient.class, emcareResource.getText());
-            patientsList.add(patient);
-        }
-
-        List<PatientDto> patientDtosList = EmcareResourceMapper.patientEntitiesToDtoMapper(patientsList);
-        for (PatientDto patientDto : patientDtosList) {
-
-            if (patientDto.getCaregiver() != null) {
-                RelatedPerson caregiver = relatedPersonResourceService.getResourceById(patientDto.getCaregiver());
-//                EmcareResource caregiverResource = findByResourceId(patientDto.getCaregiver());
-//                RelatedPerson caregiver = parser.parseResource(RelatedPerson.class, caregiverResource.getText());
-                if (caregiver != null) {
-                    patientDto.setCaregiver(caregiver.getNameFirstRep().getGiven().get(0) + " " + caregiver.getNameFirstRep().getFamily());
-                } else {
-                    patientDto.setCaregiver(null);
-                }
-            }
-
-            if (patientDto.getFacility() != null) {
-                FacilityDto facilityDto = locationResourceService.getFacilityDto(patientDto.getFacility());
-                patientDto.setFacility(facilityDto.getFacilityName());
-                patientDto.setOrganizationName(facilityDto.getOrganizationName());
-                patientDto.setLocationName(facilityDto.getLocationName());
+        Long offSet = pageNo.longValue() * 10;
+        List<Integer> locationIds;
+        List<String> childFacilityIds = new ArrayList<>();
+        if (Objects.nonNull(locationId)) {
+            if (isNumeric(locationId.toString())) {
+                locationIds = locationMasterDao.getAllChildLocationId(Integer.parseInt(locationId.toString()));
+                childFacilityIds = locationResourceRepository.findResourceIdIn(locationIds);
+            } else {
+                childFacilityIds.add(locationId.toString());
             }
         }
+        Date startDate = null;
+        Date endDate = null;
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            if (Objects.isNull(sDate) || sDate.isEmpty()) {
+                String sDate1 = "1998-12-31";
+                sDate = sdf.format(sdf.parse(sDate1));
+            }
+            if (Objects.isNull(eDate) || eDate.isEmpty()) {
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(new Date());
+                calendar.add(Calendar.DATE, 1);
+                eDate = new SimpleDateFormat("yyyy-MM-dd").format(calendar.getTime()).toString();
+            }
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            startDate = simpleDateFormat.parse(sDate);
+            endDate = simpleDateFormat.parse(eDate);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Long totalCount = 0L;
+        List<Map<String, Object>> resourcesList = new ArrayList<>();
+        if (Objects.isNull(locationId) || locationId.toString().isEmpty()) {
+            if (searchString != null && !searchString.isEmpty()) {
+                totalCount = Long.valueOf(repository.getFilteredDateAndSearchStringOnlyCount(searchString, startDate, endDate).size());
+                resourcesList = repository.getFilteredDateAndSearchString(searchString, startDate, endDate, offSet);
+            } else {
+                totalCount = Long.valueOf(repository.getFilteredDateOnlyCount(startDate, endDate).size());
+                resourcesList = repository.getFilteredDateOnly(startDate, endDate, offSet);
+            }
+        } else {
+            if (searchString != null && !searchString.isEmpty()) {
+                totalCount = Long.valueOf(repository.getFilteredPatientsInAndSearchStringCount(childFacilityIds, searchString, startDate, endDate).size());
+                resourcesList = repository.getFilteredPatientsInAndSearchString(childFacilityIds, searchString, startDate, endDate, offSet);
 
+            } else {
+                totalCount = Long.valueOf(repository.getFilteredPatientsInCount(childFacilityIds, startDate, endDate).size());
+                resourcesList = repository.getFilteredPatientsIn(childFacilityIds, startDate, endDate, offSet);
+            }
+        }
         PageDto pageDto = new PageDto();
-        pageDto.setList(patientDtosList);
+        pageDto.setList(resourcesList);
         pageDto.setTotalCount(totalCount);
         return pageDto;
+    }
+
+    @Override
+    public List<String> getPatientIdsUnderFacility(String facilityId) {
+        List<String> facilityIds = new ArrayList<>();
+        Date prodDate = new Date();
+        try {
+            String prodDateString = "31/05/2023";
+            prodDate = new SimpleDateFormat("dd/MM/yyyy").parse(prodDateString);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        facilityIds = locationResourceService.getAllChildFacilityIds(facilityId);
+        List<EmcareResource> emcareResources = repository.findByFacilityIdInAndCreatedOnGreaterThan(facilityIds, prodDate);
+        return emcareResources.stream().map(EmcareResource::getResourceId).collect(Collectors.toList());
     }
 
     @Override
@@ -428,7 +508,6 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
             patientsList = patientsList.stream().filter(e -> childFacilityIds.contains(((Identifier) e.getExtension().get(0).getValue()).getValue())).collect(Collectors.toList());
         }
 
-//        patientsList =
         patientDtosList = EmcareResourceMapper.patientEntitiesToDtoMapper(patientsList);
 
         //Converting caregiverId and locationid to name
@@ -436,8 +515,6 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
 
             if (patientDto.getCaregiver() != null) {
                 RelatedPerson caregiver = relatedPersonResourceService.getResourceById(patientDto.getCaregiver());
-//                EmcareResource caregiverResource = findByResourceId(patientDto.getCaregiver());
-//                RelatedPerson caregiver = parser.parseResource(RelatedPerson.class, caregiverResource.getText());
                 if (caregiver != null) {
                     patientDto.setCaregiver(caregiver.getNameFirstRep().getGiven().get(0) + " " + caregiver.getNameFirstRep().getFamily());
                 } else {
@@ -480,8 +557,6 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
 
             if (patientDto.getCaregiver() != null) {
                 RelatedPerson caregiver = relatedPersonResourceService.getResourceById(patientDto.getCaregiver());
-//                EmcareResource caregiverResource = findByResourceId(patientDto.getCaregiver());
-//                RelatedPerson caregiver = parser.parseResource(RelatedPerson.class, caregiverResource.getText());
                 if (caregiver != null) {
                     patientDto.setCaregiver(caregiver.getNameFirstRep().getGiven().get(0) + " " + caregiver.getNameFirstRep().getFamily());
                 } else {
@@ -501,20 +576,11 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
     }
 
     @Override
-    public Map<String, Integer> getPatientAgeGroupCount() {
-        Map<String, Integer> map = new HashMap<>();
-
-        List<PatientDto> patientDtos = getAllPatientsForChart();
-        for (PatientDto patientDto : patientDtos) {
-            if (patientDto.getDob() != null) {
-                Integer age = calculateAge(patientDto.getDob());
-                String key = age.toString() + " to " + (age + 1) + " Years";
-                if (map.get(key) != null) {
-                    map.put(key, map.get(key) + 1);
-                } else {
-                    map.put(key, 1);
-                }
-            }
+    public Map<String, Object> getPatientAgeGroupCount() {
+        Map<String, Object> map = new HashMap<>();
+        List<Map<String, Object>> maps = repository.getPieChartDataBasedOnAgeGroup();
+        for (Map<String, Object> map1 : maps) {
+            map.put(map1.get("key").toString(), map1.get("value"));
         }
         return map;
     }
@@ -538,8 +604,6 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
 
             if (patientDto.getCaregiver() != null) {
                 RelatedPerson caregiver = relatedPersonResourceService.getResourceById(patientDto.getCaregiver());
-//                EmcareResource caregiverResource = findByResourceId(patientDto.getCaregiver());
-//                RelatedPerson caregiver = parser.parseResource(RelatedPerson.class, caregiverResource.getText());
                 if (caregiver != null) {
                     patientDto.setCaregiver(caregiver.getNameFirstRep().getGiven().get(0) + " " + caregiver.getNameFirstRep().getFamily());
                 } else {
@@ -591,6 +655,36 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
         return bundle;
     }
 
+    @Override
+    public Bundle getPatientCountBasedOnDate(String summaryType, DateParam theDate, String theId) {
+        List<String> facilityIds = new ArrayList<>();
+        if (!theId.isEmpty()) {
+            facilityIds = locationResourceService.getAllChildFacilityIds(theId);
+        }
+        Long count = 0l;
+        if (summaryType.equalsIgnoreCase(CommonConstant.SUMMARY_TYPE_COUNT)) {
+            if (Objects.isNull(theDate)) {
+                if (theId.isEmpty()) {
+                    count = repository.getCount();
+                } else {
+                    count = repository.getCountWithFacilityId(facilityIds);
+                }
+            } else {
+                if (Objects.isNull(theId)) {
+                    count = repository.getCountBasedOnDate(theDate.getValue());
+                } else {
+                    count = repository.getCountBasedOnDateWithFacilityId(theDate.getValue(), facilityIds);
+                }
+            }
+        } else {
+            return null;
+        }
+        Bundle bundle = new Bundle();
+        bundle.setTotal(count.intValue());
+        return bundle;
+
+    }
+
     private List<PatientDto> getAllPatientsForChart() {
         List<Patient> patientsList = new ArrayList<>();
         List<PatientDto> patientDtosList;
@@ -602,32 +696,7 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
             patientsList.add(patient);
         }
 
-        String loggedInUserId = emCareSecurityUser.getLoggedInUserId();
-        userLocationMappingRepository.findByUserId(loggedInUserId);
         patientDtosList = EmcareResourceMapper.patientEntitiesToDtoMapper(patientsList);
-
-        //Converting caregiverId and locationid to name
-        for (PatientDto patientDto : patientDtosList) {
-
-            if (patientDto.getCaregiver() != null) {
-                RelatedPerson caregiver = relatedPersonResourceService.getResourceById(patientDto.getCaregiver());
-//                EmcareResource caregiverResource = findByResourceId(patientDto.getCaregiver());
-//                RelatedPerson caregiver = parser.parseResource(RelatedPerson.class, caregiverResource.getText());
-                if (caregiver != null) {
-                    patientDto.setCaregiver(caregiver.getNameFirstRep().getGiven().get(0) + " " + caregiver.getNameFirstRep().getFamily());
-                } else {
-                    patientDto.setCaregiver(null);
-                }
-            }
-
-            if (patientDto.getFacility() != null) {
-                FacilityDto facilityDto = locationResourceService.getFacilityDto(patientDto.getFacility());
-                patientDto.setFacility(facilityDto.getFacilityName());
-                patientDto.setOrganizationName(facilityDto.getOrganizationName());
-                patientDto.setLocationName(facilityDto.getLocationName());
-            }
-        }
-
         return patientDtosList;
     }
 
@@ -635,6 +704,18 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
         LocalDate curDate = LocalDate.now();
         LocalDate date = dob.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         return Period.between(date, curDate).getYears();
+    }
+
+    private boolean isNumeric(String strNum) {
+        if (strNum == null) {
+            return false;
+        }
+        try {
+            Integer.parseInt(strNum);
+        } catch (NumberFormatException nfe) {
+            return false;
+        }
+        return true;
     }
 
 }

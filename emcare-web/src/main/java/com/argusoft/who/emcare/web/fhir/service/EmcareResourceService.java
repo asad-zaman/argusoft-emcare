@@ -9,6 +9,7 @@ import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Resource;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -22,13 +23,17 @@ public interface EmcareResourceService {
 
     public PageDto getPatientsPage(Integer pageNo, String searchString);
 
+    public PageDto getPatientsAllDataByFilter(String searchString, Object locationId);
+
     public List<EmcareResource> retrieveResourcesByType(String type, DateParam theDate, IdType theId);
 
     public EmcareResource findByResourceId(String resourceId);
 
     public void remove(EmcareResource emcareResource);
 
-    public PageDto getPatientUnderLocationId(Integer locationId, Integer pageNo);
+    public PageDto getPatientUnderLocationId(Object locationId,String searchString, Integer pageNo, String startDate, String endDate);
+
+    public List<String> getPatientIdsUnderFacility(String facilityId);
 
     public List<PatientDto> getAllPatients();
 
@@ -36,10 +41,12 @@ public interface EmcareResourceService {
 
     public List<PatientDto> getPatientDtoByPatient(List<Patient> patient);
 
-    public Map<String, Integer> getPatientAgeGroupCount();
+    public Map<String, Object> getPatientAgeGroupCount();
 
     public List<PatientDto> getPatientDtoByIds(List<String> ids);
 
     public Bundle getPatientBundle(String theId);
+
+    public Bundle getPatientCountBasedOnDate(String summaryType, DateParam theDate, String theId);
 
 }

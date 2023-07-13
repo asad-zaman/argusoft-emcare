@@ -78,7 +78,7 @@ export class SignupComponent implements OnInit {
     });
   }
 
-  get f() {
+  get getFormConfrols() {
     return this.signupForm.controls;
   }
 

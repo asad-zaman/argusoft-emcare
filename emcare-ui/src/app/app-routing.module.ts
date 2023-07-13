@@ -4,6 +4,8 @@ import { AuthGuard } from './auth/auth.guard';
 import { AdminPanelComponent } from './root/components/admin-panel/admin-panel.component';
 import { DuplicatePatientsComponent } from './root/components/duplicate-patients/duplicate-patients.component';
 import { HomeComponent } from './root/components/home/home.component';
+import { IndicatorListComponent } from './root/components/indicator-list/indicator-list.component';
+import { TermsConditionsComponent } from './root/components/terms-conditions/terms-conditions.component';
 import {
   LoginComponent,
   SignupComponent,
@@ -32,7 +34,14 @@ import {
   ManageOrganizationComponent,
   OrganizationListComponent,
   ConsultationListComponent,
-  ViewConsultationComponent
+  ViewConsultationComponent,
+  ManageCodeComponent,
+  CodeListComponent,
+  IndicatorComponent,
+  TenantListComponent,
+  ManageTenantComponent,
+  AddLogComponent,
+  LogListComponent
 } from './root/index';
 
 const routes: Routes = [
@@ -75,10 +84,27 @@ const routes: Routes = [
   { path: 'duplicatePatients', component: DuplicatePatientsComponent, canActivate: [AuthGuard] },
   { path: 'consultation-list', component: ConsultationListComponent, canActivate: [AuthGuard] },
   { path: 'view-consultation/:id', component: ViewConsultationComponent, canActivate: [AuthGuard] },
+  { path: 'manageCode', component: ManageCodeComponent, canActivate: [AuthGuard] },
+  { path: 'manageCode/:id', component: ManageCodeComponent, canActivate: [AuthGuard] },
+  { path: 'code-list', component: CodeListComponent, canActivate: [AuthGuard] },
+  { path: 'addIndicator', component: IndicatorComponent, canActivate: [AuthGuard] },
+  { path: 'indicator-list', component: IndicatorListComponent, canActivate: [AuthGuard] },
+  { path: 'editIndicator/:id', component: IndicatorComponent, canActivate: [AuthGuard] },
+  { path: 'tenantList', component: TenantListComponent, canActivate: [AuthGuard] },
+  { path: 'manageTenant', component: ManageTenantComponent, canActivate: [AuthGuard] },
+  { path: 'termsAndConditions', component: TermsConditionsComponent },
+  { path: 'addLog', component: AddLogComponent, canActivate: [AuthGuard] },
+  { path: 'logList', component: LogListComponent },
   { path: '**', redirectTo: 'dashboard' }
 ];
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes, {
+    useHash: true,
+    scrollPositionRestoration: 'enabled',
+    anchorScrolling: 'enabled',
+    onSameUrlNavigation: 'reload',
+    scrollOffset: [0, 130]
+  })],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }

@@ -49,7 +49,7 @@ export class ComparePatientComponent implements OnInit {
     });
   }
 
-  get f() {
+  get getFormConfrols() {
     return this.comparePatientForm.controls;
   }
 

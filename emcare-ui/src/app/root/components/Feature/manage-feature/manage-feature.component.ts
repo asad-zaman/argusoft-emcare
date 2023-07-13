@@ -7,6 +7,8 @@ import { RoleManagementService } from 'src/app/root/services/role-management.ser
 import { UserManagementService } from 'src/app/root/services/user-management.service';
 import { ToasterService } from 'src/app/shared';
 import { AuthenticationService } from 'src/app/shared/services/authentication.service';
+import { appConstants } from 'src/app/app.config';
+
 @Component({
   selector: 'app-manage-feature',
   templateUrl: './manage-feature.component.html',
@@ -26,6 +28,9 @@ export class ManageFeatureComponent implements OnInit {
   featureArr = ['canAdd', 'canEdit', 'canView', 'canDelete'];
   isAdd = true;
   isDelete = true;
+  featureArrForExport = ['All Patient', 'Consultations'];
+  isExportPage = false;
+  // isActionShow: boolean;
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -47,7 +52,20 @@ export class ManageFeatureComponent implements OnInit {
     this.featureId = this.route.snapshot.paramMap.get('id');
     this.route.queryParams.subscribe(params => {
       this.featureName = params.name;
-    })
+      this.isExportPage = this.featureArrForExport.includes(this.featureName);
+      if (this.isExportPage) {
+        this.featureArr.push('canExport');
+      }
+    });
+    /* currently we are not showing main features in list so commenting 
+      this code incase we need it then we can use it again else can remove it */
+    // this.featureSubject.getActionShow().subscribe(res => {
+    //   this.isActionShow = res;
+    // });
+    this.getFeatureConfigAndInitializeForm();
+  }
+
+  getFeatureConfigAndInitializeForm() {
     this.getFeatureConfig();
     this.initFeatureForm();
   }
@@ -66,7 +84,8 @@ export class ManageFeatureComponent implements OnInit {
       add: ['', []],
       edit: ['', []],
       view: ['', []],
-      delete: ['', []]
+      delete: ['', []],
+      export: ['', []]
     });
   }
 
@@ -114,7 +133,7 @@ export class ManageFeatureComponent implements OnInit {
       "featureJson": this.featureConfigList[index]['featureJson'],
       "menuId": this.featureConfigList[index]['menuId']
     }
-    this.featureService.updateFeatureConfig(data).subscribe(() => { 
+    this.featureService.updateFeatureConfig(data).subscribe(() => {
       this.toasterService.showToast('success', 'Feature changes have been saved!', 'EMCARE');
       /*  on change of anu particular feature api should be called again and features should
         be set again so that we can manage features properly  */
@@ -147,7 +166,7 @@ export class ManageFeatureComponent implements OnInit {
   deleteFeatureConfig(index) {
     this.featureService.deleteFeatureConfig(this.featureConfigList[index]['id']).subscribe(res => {
       this.toasterService.showToast('success', 'Feature deleted successfully!', 'EMCARE');
-      this.prerequisite();
+      this.getFeatureConfigAndInitializeForm();
       this.getFeatureList();
     });
   }
@@ -157,13 +176,13 @@ export class ManageFeatureComponent implements OnInit {
       "menuId": this.featureId,
       "userId": this.selectedUser && this.selectedUser.id,
       "roleId": this.selectedRole && this.selectedRole.id,
-      "featureJson": "{\"canAdd\":true,\"canEdit\":true,\"canView\":true,\"canDelete\":true}"
+      "featureJson": "{\"canAdd\":true,\"canEdit\":true,\"canView\":true,\"canDelete\":true,\"canExport\":false}"
     }
     this.featureService.addFeatureConfig(data).subscribe(_res => {
       this.toasterService.showToast('success', 'Feature added successfully!', 'EMCARE');
       this.selectedUser = null;
       this.selectedRole = null;
-      this.prerequisite();
+      this.getFeatureConfigAndInitializeForm();
       this.getFeatureList();
     });
   }
@@ -172,7 +191,7 @@ export class ManageFeatureComponent implements OnInit {
     this.authenticationService.getLoggedInUser().subscribe(res => {
       if (res) {
         const featureObj = { feature: res['feature'] };
-        localStorage.setItem('userFeatures', JSON.stringify(featureObj));
+        localStorage.setItem(appConstants.localStorageKeys.userFeatures, JSON.stringify(featureObj));
         this.authenticationService.setFeatures(res['feature']);
       }
     });

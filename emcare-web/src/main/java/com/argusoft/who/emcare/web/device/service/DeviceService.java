@@ -1,5 +1,6 @@
 package com.argusoft.who.emcare.web.device.service;
 
+import com.argusoft.who.emcare.web.common.dto.PageDto;
 import com.argusoft.who.emcare.web.device.dto.DeviceDto;
 import org.springframework.http.ResponseEntity;
 
@@ -20,6 +21,6 @@ public interface DeviceService {
 
     public ResponseEntity<Object> getAllDevice(HttpServletRequest request);
 
-    public ResponseEntity<Object> getDevicePage(HttpServletRequest request, Integer pageNo, String orderBy, String order, String searchString);
+    public PageDto getDevicePage(HttpServletRequest request, Integer pageNo, String orderBy, String order, String searchString);
 
 }

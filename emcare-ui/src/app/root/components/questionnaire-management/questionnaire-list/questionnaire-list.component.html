@@ -1,6 +1,7 @@
 <div *ngIf="isView" class="main-wrapper">
-  <h1 class="heading">{{'Questionnaires' | translate}}</h1>
-  <hr>
+  <div class="custom-header">
+    <h1 class="heading">{{'Questionnaires' | translate}}</h1>
+  </div>
   <div class="row align-items-center mb-3">
     <div class="col-lg-3 col-xxl-2 col-md-5 position-relative">
       <input class="form-control custom-input h-35" id="exampleFormControlInput1" [(ngModel)]="searchString"
@@ -34,7 +35,7 @@
               <td>{{questionnaire.description ? questionnaire.description : 'NA'}}
               <td *ngIf="isEdit">
                 <ul class="navigation" style="list-style-type: none;">
-                  <li class="dropdown mt-3 cursor-pointer">
+                  <li class="dropdown cursor-pointer">
                     <div class="d-flex align-items-center" data-bs-toggle="dropdown">
                       <i class="bi bi-three-dots-vertical ps-2" aria-hidden="true"></i>
                     </div>
@@ -60,7 +61,7 @@
       </tbody>
     </table>
     <div *ngIf="filteredQuestionnaireList && filteredQuestionnaireList.length > 0"
-      class="d-flex justify-content-end mt-3">
+      class="d-flex justify-content-end">
       <pagination-controls responsive="true" previousLabel="Prev" nextLabel="Next" (pageChange)="onIndexChange($event)">
       </pagination-controls>
     </div>

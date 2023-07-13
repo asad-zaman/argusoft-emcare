@@ -16,10 +16,12 @@ import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Questionnaire;
 import org.hl7.fhir.r4.model.RelatedPerson;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @CrossOrigin(origins = "**")
@@ -77,10 +79,19 @@ public class EmcareResourceController {
         return emcareResourceService.getPatientsPage(pageNo, searchString);
     }
 
-    @GetMapping("/patient/locationId/{locationId}")
-    public PageDto getAllPatientsUnderLocation(@PathVariable(value = "locationId") Integer locationId,
-                                               @RequestParam(value = "pageNo") Integer pageNo) {
-        return emcareResourceService.getPatientUnderLocationId(locationId, pageNo);
+    @GetMapping("/patient/page/all")
+    public PageDto getPatientsDataByFilter(@Nullable @RequestParam(value = "search", required = false) String searchString,
+                                           @Nullable @RequestParam(value = "locationId") Object locationId) {
+        return emcareResourceService.getPatientsAllDataByFilter(searchString, locationId);
+    }
+
+    @GetMapping("/patient/locationId")
+    public PageDto getAllPatientsUnderLocation(@Nullable @RequestParam(value = "locationId") Object locationId,
+                                               @Nullable @RequestParam(value = "searchString") String searchString,
+                                               @RequestParam(value = "pageNo") Integer pageNo,
+                                               @Nullable @RequestParam(value = "startDate") String startDate,
+                                               @Nullable @RequestParam(value = "endDate") String endDate) {
+        return emcareResourceService.getPatientUnderLocationId(locationId, searchString, pageNo, startDate, endDate);
     }
 
     @GetMapping("/patient/{patientId}")
@@ -92,7 +103,7 @@ public class EmcareResourceController {
             EmcareResource caregiverResource = emcareResourceService.findByResourceId(patientDto.getCaregiver());
             RelatedPerson caregiver = parser.parseResource(RelatedPerson.class, caregiverResource.getText());
             patientDto.setCaregiver(
-                    caregiver.getNameFirstRep().getGiven().get(0) + " " + caregiver.getNameFirstRep().getFamily());
+                caregiver.getNameFirstRep().getGiven().get(0) + " " + caregiver.getNameFirstRep().getFamily());
         }
 
         if (patientDto.getFacility() != null) {
@@ -171,8 +182,9 @@ public class EmcareResourceController {
 
     @GetMapping("/facility")
     public PageDto getFacilityPage(@RequiredParam(name = "pageNo") Integer pageNo,
-                                   @Nullable @RequiredParam(name = "search") String search) {
-        return locationResourceService.getEmCareLocationResourcePage(pageNo, search);
+                                   @Nullable @RequiredParam(name = "search") String search,
+                                   @RequiredParam(name="filter") Boolean filter) {
+        return locationResourceService.getEmCareLocationResourcePage(pageNo, search, filter);
     }
 
     @GetMapping("/library")
@@ -190,6 +202,11 @@ public class EmcareResourceController {
     @GetMapping("active/facility")
     public List<FacilityDto> getActiveFacility() {
         return locationResourceService.getActiveFacility();
+    }
+
+    @GetMapping("/facility/check")
+    public ResponseEntity<Object> checkFacilityDuplicates(@RequestParam(name = "facilityName") String facilityName) {
+        return locationResourceService.checkIfFacilityIsPresent(facilityName);
     }
 
 }

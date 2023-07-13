@@ -1,6 +1,6 @@
 package com.argusoft.who.emcare.web.adminsetting.service;
 
-import com.argusoft.who.emcare.web.adminsetting.Entity.Settings;
+import com.argusoft.who.emcare.web.adminsetting.entity.Settings;
 import com.argusoft.who.emcare.web.adminsetting.dto.SettingDto;
 import com.argusoft.who.emcare.web.mail.entity.EmailContent;
 

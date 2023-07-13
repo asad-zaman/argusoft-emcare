@@ -9,6 +9,7 @@ import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.fhir.dao.ValueSetResourceRepository;
 import com.argusoft.who.emcare.web.fhir.model.ValueSetResource;
 import com.argusoft.who.emcare.web.fhir.service.ValueSetResourceService;
+import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.Meta;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -134,5 +135,22 @@ public class ValueSetResourceServiceImpl implements ValueSetResourceService {
         retVal.setResource(valueSet);
 
         return retVal;
+    }
+
+    @Override
+    public Bundle getValueSetCountBasedOnDate(String summaryType, DateParam theDate) {
+        Long count = 0l;
+        if (summaryType.equalsIgnoreCase(CommonConstant.SUMMARY_TYPE_COUNT)) {
+            if (theDate.isEmpty()) {
+                count = valueSetResourceRepository.getCount();
+            } else {
+                count = valueSetResourceRepository.getCountBasedOnDate(theDate.getValue());
+            }
+        } else {
+            return null;
+        }
+        Bundle bundle = new Bundle();
+        bundle.setTotal(count.intValue());
+        return bundle;
     }
 }

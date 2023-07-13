@@ -3,6 +3,7 @@ import { HttpRequest, HttpHandler, HttpEvent, HttpInterceptor } from '@angular/c
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { catchError, finalize } from 'rxjs/operators';
 import { Router } from '@angular/router';
+import { appConstants } from '../app.config';
 @Injectable()
 export class LaunguageSubjects {
 
@@ -58,13 +59,21 @@ export class HTTPStatus {
 }
 @Injectable()
 export class TokenInterceptor implements HttpInterceptor {
-
+    
+    private totalRequests = 0;
     constructor(
         private readonly status: HTTPStatus,
         private readonly router: Router
     ) { }
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+        this.totalRequests++;
+
+        if (localStorage.getItem(appConstants.localStorageKeys.ApplicationAgent)) {
+            request = request.clone({
+                setHeaders: { 'Application-Agent': localStorage.getItem(appConstants.localStorageKeys.ApplicationAgent) }
+            });
+        }
         this.status.setHttpStatus(true);
         return next.handle(request).pipe(
             catchError((error: any) => {
@@ -83,6 +92,9 @@ export class TokenInterceptor implements HttpInterceptor {
     }
 
     private decreaseRequests() {
-        this.status.setHttpStatus(false);
+        this.totalRequests--;
+        if (this.totalRequests == 0) {
+            this.status.setHttpStatus(false);
+        }
     }
 }

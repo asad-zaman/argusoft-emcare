@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { appConstants } from 'src/app/app.config';
 import { AuthGuard } from 'src/app/auth/auth.guard';
 import { RoleManagementService } from 'src/app/root/services/role-management.service';
 import { ToasterService } from 'src/app/shared';
@@ -20,6 +21,7 @@ export class ManageRoleComponent implements OnInit {
   isAddFeature: boolean = true;
   isEditFeature: boolean = true;
   isAllowed: boolean = true;
+  cont: string = localStorage.getItem(appConstants.localStorageKeys.ApplicationAgent);
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -45,16 +47,10 @@ export class ManageRoleComponent implements OnInit {
       if (res.relatedFeature && res.relatedFeature.length > 0) {
         this.isAddFeature = res.featureJSON['canAdd'];
         this.isEditFeature = res.featureJSON['canEdit'];
-        if (this.isAddFeature && this.isEditFeature) {
-          this.isAllowed = true;
-        } else if (this.isAddFeature && !this.isEdit) {
-          this.isAllowed = true;
-        } else if (!this.isEditFeature && this.isEdit) {
-          this.isAllowed = false;
-        } else if (!this.isAddFeature && this.isEdit) {
-          this.isAllowed = true;
-        } else if (this.isEditFeature && this.isEdit) {
-          this.isAllowed = true;
+        if (this.isEdit) {
+          this.isAllowed = this.isEditFeature || !this.isAddFeature ? true : false;
+        } else if (this.isAddFeature) {
+          this.isAllowed = this.isEditFeature || !this.isEdit ? true : false;
         } else {
           this.isAllowed = false;
         }
@@ -68,9 +64,10 @@ export class ManageRoleComponent implements OnInit {
     if (this.editId) {
       this.isEdit = true;
       this.roleService.getRoleById(this.editId).subscribe(res => {
+        var prefix = `${this.cont}_`;
         if (res) {
           const obj = {
-            name: res['name'],
+            name: res['name'].startsWith(prefix) ? res['name'].replace(prefix,"") : res['name'],
             description: res['description']
           }
           this.oldRoleName = res['name'];
@@ -87,27 +84,30 @@ export class ManageRoleComponent implements OnInit {
     });
   }
 
-  get f() {
+  get getFormConfrols() {
     return this.roleForm.controls;
   }
 
   saveData() {
+    const con = localStorage.getItem(appConstants.localStorageKeys.ApplicationAgent);
     this.submitted = true;
     if (this.roleForm.valid) {
       if (this.isEdit) {
+
         const data = {
           "id": this.editId,
-          "name": this.roleForm.get('name').value,
-          "oldRoleName": this.oldRoleName,
+          "name": `${con}_${this.roleForm.get('name').value}`,
+          "oldRoleName": `${this.oldRoleName}`,
           "description": this.roleForm.get('description').value
         };
+        
         this.roleService.updateRole(data).subscribe(() => {
           this.toasterService.showToast('success', 'Role updated successfully!', 'EMCARE');
           this.showRoles();
         });
       } else {
         const data = {
-          "roleName": this.roleForm.get('name').value,
+          "roleName": `${con}_${this.roleForm.get('name').value}`,
           "roleDescription": this.roleForm.get('description').value
         };
         this.roleService.createRole(data).subscribe((_res) => {

@@ -21,6 +21,7 @@ public class PatientDto {
     private String addressPostalCode;
     private String organizationName;
     private String locationName;
+    private Date consultationDate;
 
 
     public PatientDto() {
@@ -137,5 +138,13 @@ public class PatientDto {
 
     public void setLocationName(String locationName) {
         this.locationName = locationName;
+    }
+
+    public Date getConsultationDate() {
+        return consultationDate;
+    }
+
+    public void setConsultationDate(Date consultationDate) {
+        this.consultationDate = consultationDate;
     }
 }

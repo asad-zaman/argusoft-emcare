@@ -1,0 +1,54 @@
+<div *ngIf="isView" class="main-wrapper">
+  <div class="custom-header">
+    <h1 class="heading">{{'Tenants' | translate}}</h1>
+  </div>
+  <div class="row align-items-center mb-3">
+    <div class=" col-lg-3 col-xxl-2 col-md-5 position-relative">
+      <input class="form-control custom-input h-35" id="exampleFormControlInput1" [(ngModel)]="searchString"
+        (input)="searchFilter()" placeholder="{{'Search Placeholder' | translate}}">
+    </div>
+    <div class="col text-end"> <button class="btn btn-blue" routerLink="/manageTenant">+
+        {{'Add Tenant' | translate}}</button>
+    </div>
+  </div>
+  <!--Table-->
+  <div *ngIf="!isAPIBusy" class="table-responsive">
+    <table class="data-table" aria-labelledby="tenant-list">
+      <thead>
+        <tr>
+          <th>{{'Sr. No' | translate}}</th>
+          <th>{{'Country' | translate}}</th>
+          <th>{{'Username' | translate}}</th>
+          <th>{{'Organization' | translate}}</th>
+          <th>{{'Domain' | translate}}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngIf="filteredTenants && filteredTenants.length > 0; else noRecords">
+          <ng-container *ngFor="let tenant of filteredTenants |
+          paginate : { itemsPerPage: tableSize, currentPage: currentPage, totalItems: totalCount }; let i=index">
+            <tr>
+              <td>{{currentPage == 0 ? ((currentPage)*10 + i + 1) : ((currentPage-1)*10 + i + 1)}}</td>
+              <td>{{tenant.tenantId}}</td>
+              <td>{{tenant.username}}</td>
+              <td>{{tenant.organization}}</td>
+              <td>{{tenant.domain}}</td>
+            </tr>
+          </ng-container>
+        </ng-container>
+        <ng-template #noRecords>
+          <div class="no-record">
+            {{'No Records' | translate}}
+          </div>
+        </ng-template>
+      </tbody>
+    </table>
+    <div *ngIf="filteredPatients && filteredPatients.length > 0" class="d-flex justify-content-end mt-3">
+      <pagination-controls responsive="true" previousLabel="Prev" nextLabel="Next" (pageChange)="onIndexChange($event)">
+      </pagination-controls>
+    </div>
+  </div>
+</div>
+<div *ngIf="!isView" class="main-wrapper-nodata">
+  {{'NoAccess' | translate}}
+</div>

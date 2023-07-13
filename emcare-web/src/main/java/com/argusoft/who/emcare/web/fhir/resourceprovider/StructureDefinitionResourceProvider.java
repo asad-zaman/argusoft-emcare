@@ -9,6 +9,7 @@ import ca.uhn.fhir.rest.server.IResourceProvider;
 import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.fhir.service.StructureDefinitionService;
 import org.hl7.fhir.instance.model.api.IBaseResource;
+import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.StructureDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +55,11 @@ public class StructureDefinitionResourceProvider implements IResourceProvider {
     @Search()
     public List<StructureDefinition> getAllStructureMap(@OptionalParam(name = CommonConstant.RESOURCE_LAST_UPDATED_AT) DateParam theDate) {
         return structureDefinitionService.getAllStructureMap(theDate);
+    }
+
+    @Search()
+    public Bundle getStructureDefinitionCountBasedOnDate(@RequiredParam(name = CommonConstant.SUMMARY) String type, @OptionalParam(name = CommonConstant.RESOURCE_LAST_UPDATED_AT) DateParam theDate) {
+        return structureDefinitionService.getStructureDefinitionCountBasedOnDate(type, theDate);
     }
 
 }

@@ -4,7 +4,7 @@ import * as _ from 'lodash';
 import { LaunguageSubjects } from 'src/app/auth/token-interceptor';
 import { forkJoin } from 'rxjs';
 import { AuthGuard } from 'src/app/auth/auth.guard';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 // import enTrans from '../../../../assets/i18n/en.json';
 @Component({
   selector: 'app-manage-translations',
@@ -35,7 +35,8 @@ export class ManageTranslationsComponent implements OnInit {
     private readonly toasterService: ToasterService,
     private readonly lanSubjects: LaunguageSubjects,
     private readonly authGuard: AuthGuard,
-    private readonly route: ActivatedRoute
+    private readonly route: ActivatedRoute,
+    private readonly router: Router
   ) { }
 
   ngOnInit(): void {
@@ -84,16 +85,10 @@ export class ManageTranslationsComponent implements OnInit {
       if (res.relatedFeature && res.relatedFeature.length > 0) {
         this.isAddFeature = res.featureJSON['canAdd'];
         this.isEditFeature = res.featureJSON['canEdit'];
-        if (this.isAddFeature && this.isEditFeature) {
-          this.isAllowed = true;
-        } else if (this.isAddFeature && !this.isEdit) {
-          this.isAllowed = true;
-        } else if (!this.isEditFeature && this.isEdit) {
-          this.isAllowed = false;
-        } else if (!this.isAddFeature && this.isEdit) {
-          this.isAllowed = true;
-        } else if (this.isEditFeature && this.isEdit) {
-          this.isAllowed = true;
+        if (this.isEdit) {
+          this.isAllowed = this.isEditFeature || !this.isAddFeature ? true : false;
+        } else if (this.isAddFeature) {
+          this.isAllowed = this.isEditFeature || !this.isEdit ? true : false;
         } else {
           this.isAllowed = false;
         }
@@ -211,6 +206,7 @@ export class ManageTranslationsComponent implements OnInit {
         this.availableLanguages = this.availableLanguages.filter(el => el.id !== this.newSelectedLanguage.id);
         this.newSelectedLanguage = null;
         this.toasterService.showToast('success', 'Launguage added successfully!', 'EMCARE');
+        this.router.navigate(['/language-list']);
       }
     }, (_error) => {
       this.toasterService.showToast('error', 'Launguage not added successfully!', 'EMCARE');

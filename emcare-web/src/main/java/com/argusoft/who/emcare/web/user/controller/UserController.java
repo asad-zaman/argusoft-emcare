@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Nullable;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -28,7 +29,7 @@ public class UserController {
 
     @GetMapping("/user")
     public ResponseEntity<Object> getCurrentLoggedInUser() {
-        return ResponseEntity.ok(userService.getCurrentUser());
+        return userService.getCurrentUser();
     }
 
     @GetMapping("/user/all")
@@ -39,8 +40,9 @@ public class UserController {
     @GetMapping("/user/page")
     public ResponseEntity<Object> getUserPage(HttpServletRequest request,
                                               @RequestParam(value = "pageNo") Integer pageNo,
-                                              @Nullable @RequestParam(value = "search",required = false) String searchString) {
-        return ResponseEntity.ok(userService.getUserPage(request, pageNo, searchString));
+                                              @Nullable @RequestParam(value = "search", required = false) String searchString,
+                                              @RequestParam(value = "filter", required = false) Boolean filter) {
+        return ResponseEntity.ok(userService.getUserPage(request, pageNo, searchString, filter));
     }
 
     @GetMapping("/user/signedup")
@@ -64,13 +66,23 @@ public class UserController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<Object> addUser(@RequestBody UserDto user) {
-        return userService.signUp(user);
+    public ResponseEntity<Object> addUser(@RequestBody UserDto user, HttpServletRequest request) {
+        return userService.signUp(user, request);
+    }
+
+    @PostMapping("/auth/login")
+    public ResponseEntity<Object> userLogin(@RequestBody LoginRequestDto loginCred, HttpServletRequest request) {
+        return userService.userLogin(loginCred, request);
+    }
+
+    @GetMapping("/auth/logout")
+    public ResponseEntity<Object> userLogOut(HttpServletRequest request) throws ServletException {
+       return userService.userLogOut(request);
     }
 
     @PostMapping("/user/add")
-    public ResponseEntity<Object> addUserFromWeb(@RequestBody UserDto user) {
-        return userService.addUser(user);
+    public ResponseEntity<Object> addUserFromWeb(@RequestBody UserDto user, HttpServletRequest request) {
+        return userService.addUser(user, request);
     }
 
     @PostMapping("/role/add")
@@ -90,8 +102,11 @@ public class UserController {
     }
 
     @PutMapping("/user/update/{userId}")
-    public ResponseEntity<Object> updateUser(@RequestBody UserDto userDto, @PathVariable(value = "userId") String userId) {
-        return userService.updateUser(userDto, userId);
+    public ResponseEntity<Object> updateUser(
+            @RequestBody UserDto userDto,
+            @PathVariable(value = "userId") String userId,
+            HttpServletRequest request) {
+        return userService.updateUser(userDto, userId, request);
     }
 
     @PutMapping("/user/update/password/{userId}")
@@ -114,9 +129,15 @@ public class UserController {
         return userService.updateUserStatus(userUpdateDto);
     }
 
-    @GetMapping("user/locationId/{locationId}")
-    public PageDto getUsersUnderLocation(@PathVariable(value = "locationId") Integer locationId,
-                                         @RequestParam(value = "pageNo") Integer pageNo) {
-        return userService.getUsersUnderLocation(locationId, pageNo);
+    @GetMapping("user/locationId")
+    public PageDto getUsersUnderLocation(@Nullable @RequestParam(value = "locationId") Object locationId,
+                                         @Nullable @RequestParam(value = "searchString")String searchString,
+                                         @RequestParam(value = "pageNo") Integer pageNo,@RequestParam(value = "filter", required = false) Boolean filter) {
+        return userService.getUsersUnderLocation(locationId,searchString, pageNo,filter);
+    }
+
+    @GetMapping("user/check/email")
+    public ResponseEntity checkEmailAlreadyExist(@RequestParam(value = "emailId") String emailId) {
+        return ResponseEntity.status(HttpStatus.OK).body(userService.checkEmailIdExist(emailId));
     }
 }

@@ -11,10 +11,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.sql.Date;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoField;
+import java.util.*;
 
 @Service
 public class DashboardServiceImpl implements DashboardService {
@@ -36,8 +38,10 @@ public class DashboardServiceImpl implements DashboardService {
     @Override
     public ResponseEntity<Object> getDashboardBarChartData() {
         List<ChartDto> pieData = userLocationMappingRepository.getDashboardPieChartData();
-        Map<String, Integer> ageData = emcareResourceService.getPatientAgeGroupCount();
-        List<ScatterCharDto> scatterCharDtos = userLocationMappingRepository.getDashboardScatterChartData();
+        Map<String, Object> ageData = emcareResourceService.getPatientAgeGroupCount();
+        Calendar calendar = Calendar.getInstance();
+        int currentWeekNumber = calendar.get(Calendar.WEEK_OF_YEAR);
+        List<ScatterCharDto> scatterCharDtos = userLocationMappingRepository.getDashboardScatterChartData(currentWeekNumber);
         Map<String, Object> listMap = new HashMap<>();
 
         List<Map<String, Object>> pieD = new ArrayList<>();
@@ -48,12 +52,14 @@ public class DashboardServiceImpl implements DashboardService {
             pie.put("count", chartDto.getCount());
             pieD.add(pie);
         }
-        List<List<Long>> scatterPoints = new ArrayList<>();
+        List<List<Object>> scatterPoints = new ArrayList<>();
         for (ScatterCharDto scatterCharDto : scatterCharDtos) {
-            List<Long> tuple = new ArrayList<>();
-            tuple.add(scatterCharDto.getWeekly());
+
+            List<Object> tuple = new ArrayList<>();
             tuple.add(scatterCharDto.getCount());
+            tuple.add(Date.valueOf(scatterCharDto.getDay()));
             scatterPoints.add(tuple);
+
         }
         listMap.put("consultationPerFacility", pieD);
         listMap.put("consultationByAgeGroup", ageData);
