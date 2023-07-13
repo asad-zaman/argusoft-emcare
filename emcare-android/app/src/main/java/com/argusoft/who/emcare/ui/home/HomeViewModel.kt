@@ -1,7 +1,6 @@
 package com.argusoft.who.emcare.ui.home
 
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -34,13 +33,10 @@ import com.google.android.fhir.datacapture.extensions.allItems
 import com.google.android.fhir.datacapture.extensions.asStringValue
 import com.google.android.fhir.datacapture.extensions.createQuestionnaireResponseItem
 import com.google.android.fhir.knowledge.KnowledgeManager
-import com.google.android.fhir.search.Order
-import com.google.android.fhir.search.search
 import com.google.android.fhir.workflow.FhirOperator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -51,7 +47,6 @@ import org.hl7.fhir.r4.model.Identifier
 import org.hl7.fhir.r4.model.Library
 import org.hl7.fhir.r4.model.Parameters
 import org.hl7.fhir.r4.model.Patient
-import org.hl7.fhir.r4.model.PlanDefinition
 import org.hl7.fhir.r4.model.Questionnaire
 import org.hl7.fhir.r4.model.QuestionnaireResponse
 import org.hl7.fhir.r4.model.QuestionnaireResponse.QuestionnaireResponseItemComponent
@@ -130,18 +125,17 @@ class HomeViewModel @Inject constructor(
     }
 
     fun loadLibraries(isReloadHomeActivity: Boolean) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.Default) {
 
             libraryRepository.getLibraries().collect {
                 val librariesList = it.data
-                runBlocking(Dispatchers.Default) {
+                runBlocking {
                     librariesList?.forEach { library ->
                         knowledgeManager.install(writeToFile(library))
                     }
                 }
-
             }.let {
-                _librariesLoaded.value = ApiResponse.Success(if (isReloadHomeActivity) 1 else 0)
+                _librariesLoaded.postValue(ApiResponse.Success(if (isReloadHomeActivity) 1 else 0))
             }
         }
     }

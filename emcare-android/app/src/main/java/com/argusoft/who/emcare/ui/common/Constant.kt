@@ -66,6 +66,7 @@ const val EMPTY_SPACE_TO_SCROLL_LINK_ID = "empty_space_to_scroll"
 const val START_AUDIT = "Procedure Record"
 const val END_AUDIT = "Procedure Record"
 const val DRAFT_AUDIT = "An operation on other objects"
+const val IS_LOAD_LIBRARIES = "is_load_libraries"
 
 val consultationFlowStageList = arrayListOf<String?>(
     CONSULTATION_STAGE_REGISTRATION_PATIENT,

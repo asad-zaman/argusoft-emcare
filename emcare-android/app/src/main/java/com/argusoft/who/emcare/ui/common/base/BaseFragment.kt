@@ -20,9 +20,9 @@ import androidx.viewbinding.ViewBinding
 import com.argusoft.who.emcare.BuildConfig
 import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.data.local.pref.Preference
-import com.argusoft.who.emcare.databinding.LayoutHeaderBinding
 import com.argusoft.who.emcare.sync.SyncViewModel
 import com.argusoft.who.emcare.ui.auth.login.LoginViewModel
+import com.argusoft.who.emcare.ui.common.IS_LOAD_LIBRARIES
 import com.argusoft.who.emcare.ui.home.HomeActivity
 import com.argusoft.who.emcare.ui.home.HomeViewModel
 import com.argusoft.who.emcare.ui.home.fhirResources.FhirResourcesViewModel
@@ -101,21 +101,6 @@ abstract class BaseFragment<B : ViewBinding> : Fragment(), View.OnClickListener 
 
     fun initObserverPurgeResources(progressLayout: ApiViewStateConstraintLayout, isRedirectToHome: Boolean) {
         observeNotNull(fhirResourcesViewModel.resourcesPurged) {
-//            Handler(Looper.getMainLooper()).postDelayed({
-//                progressLayout.updateProgressUi(true, true)
-//                loginViewModel.addDevice(
-//                    getDeviceName(),
-//                    getDeviceOS(),
-//                    getDeviceModel(),
-//                    requireContext().getDeviceUUID().toString(),
-//                    BuildConfig.VERSION_NAME
-//                )
-//                if(isRedirectToHome) {
-//                    startActivity(Intent(requireContext(), HomeActivity::class.java))
-//                    requireActivity().finish()
-//                }
-//            }, 5000)
-
         }
     }
     fun initObserverSync(progressLayout: ApiViewStateConstraintLayout, isRedirectToHome: Boolean) {
@@ -129,35 +114,14 @@ abstract class BaseFragment<B : ViewBinding> : Fragment(), View.OnClickListener 
             apiResponse.whenInProgress {
                 Log.d("it.total", it.first.toDouble().toString())
                 Log.d("it.progress", it.second.toDouble().toString())
-               /* if (it.second >= 100) {
-                    loginViewModel.addDevice(
-                        getDeviceName(),
-                        getDeviceOS(),
-                        getDeviceModel(),
-                        requireContext().getDeviceUUID().toString(),
-                        BuildConfig.VERSION_NAME
-                    )
-                    homeViewModel.loadLibraries(isRedirectToHome)
-                    fhirResourcesViewModel.purgeAllAudits()
-
-                } else*/ if (it.first > 0 && it.second <= 100) {
+               if (it.first > 0 && it.second <= 100) {
                     val progress = it.second
                     "Synced $progress%".also {
                         progressLayout.showProgress(it)
                         Log.d("Synced", "$progress%")
                     }
                 } else if (it.first == 0) {
-                    loginViewModel.addDevice(
-                        getDeviceName(),
-                        getDeviceOS(),
-                        getDeviceModel(),
-                        requireContext().getDeviceUUID().toString(),
-                        BuildConfig.VERSION_NAME
-                    )
-                    fhirResourcesViewModel.purgeAllAudits()
-                    if (preference.getFacilityId().isNotEmpty()) {
-                        homeViewModel.loadLibraries(isRedirectToHome)
-                    } else {
+                    if (preference.getFacilityId().isEmpty()) {
                         progressLayout.hideProgressUi()
                     }
                 }
@@ -200,11 +164,14 @@ abstract class BaseFragment<B : ViewBinding> : Fragment(), View.OnClickListener 
 
         observeNotNull(homeViewModel.librariesLoaded) {
             it.whenSuccess { value ->
+                progressLayout.updateProgressUi(isFinishing = true, isShowCompleted = true)
                 if (value == 1) {
-                    startActivity(Intent(requireContext(), HomeActivity::class.java))
+                    val intent = Intent(requireContext(), HomeActivity::class.java)
+                    intent.putExtra(IS_LOAD_LIBRARIES,false)
+                    startActivity(intent)
                     requireActivity().finish()
                 }
-                progressLayout.updateProgressUi(isFinishing = true, isShowCompleted = true)
+
 
             }
         }
