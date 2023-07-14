@@ -5,6 +5,7 @@ import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.rest.annotation.*;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.param.DateParam;
+import ca.uhn.fhir.rest.param.StringAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.fhir.service.ObservationResourceService;
@@ -65,5 +66,18 @@ public class ObservationResourceProvider implements IResourceProvider {
             @OptionalParam(name = CommonConstant.RESOURCE_LAST_UPDATED_AT) DateParam theDate,
             @OptionalParam(name = CommonConstant.RESOURCE_FACILITY_ID) String theId) {
         return observationResourceService.getObservationCountBasedOnDate(type, theDate, theId);
+    }
+
+    @Search(allowUnknownParams = true)
+    public Bundle getObservationDataForGoogleFhirDataPipes(
+            @OptionalParam(name = CommonConstant.SUMMARY) StringAndListParam type,
+            @OptionalParam(name = "_count") StringAndListParam count,
+            @OptionalParam(name = "_total") String total) {
+        String x = type.getValuesAsQueryTokens().get(0).getValuesAsQueryTokens().get(0).getValue();
+        return observationResourceService.getObservationDataForGoogleFhirDataPipes(
+                x,
+                10,
+                total
+        );
     }
 }

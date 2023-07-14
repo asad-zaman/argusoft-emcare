@@ -20,5 +20,5 @@ public interface EncounterResourceService {
 
     public Bundle getEncounterCountBasedOnDate(String summaryType, DateParam theDate, String theId);
 
-
+    public Bundle getEncounterDataForGoogleFhirDataPipes(String summaryType, Integer count, String total);
 }

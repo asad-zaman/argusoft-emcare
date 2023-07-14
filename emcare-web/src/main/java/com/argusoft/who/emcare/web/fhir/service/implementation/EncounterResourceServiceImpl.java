@@ -9,10 +9,7 @@ import com.argusoft.who.emcare.web.fhir.dao.EncounterResourceRepository;
 import com.argusoft.who.emcare.web.fhir.model.EncounterResource;
 import com.argusoft.who.emcare.web.fhir.service.EmcareResourceService;
 import com.argusoft.who.emcare.web.fhir.service.EncounterResourceService;
-import org.hl7.fhir.r4.model.Bundle;
-import org.hl7.fhir.r4.model.Encounter;
-import org.hl7.fhir.r4.model.IdType;
-import org.hl7.fhir.r4.model.Meta;
+import org.hl7.fhir.r4.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -156,5 +153,31 @@ public class EncounterResourceServiceImpl implements EncounterResourceService {
         Bundle bundle = new Bundle();
         bundle.setTotal(count.intValue());
         return bundle;
+    }
+
+    @Override
+    public Bundle getEncounterDataForGoogleFhirDataPipes(String summaryType, Integer count, String total) {
+        Bundle bundle = new Bundle();
+        switch(summaryType) {
+            case "count":
+                bundle.setTotal((int) encounterResourceRepository.count());
+                return bundle;
+            case "data":
+                List<EncounterResource> encounterResources = encounterResourceRepository.findAll();
+                int x = 0;
+                for (EncounterResource encounterResource : encounterResources) {
+                    if(x >= 10) break;
+                    x++;
+                    Encounter encounter = parser.parseResource(Encounter.class, encounterResource.getText());
+                    bundle.addEntry(
+                            new Bundle.BundleEntryComponent()
+                                    .setResource(encounter)
+                                    .setFullUrl("http://localhost:8080/fhir/" + encounter.getId().substring(0, 44))
+                    );
+                }
+                bundle.setTotal(Math.min(10, encounterResources.size()));
+                return bundle;
+        }
+        return null;
     }
 }

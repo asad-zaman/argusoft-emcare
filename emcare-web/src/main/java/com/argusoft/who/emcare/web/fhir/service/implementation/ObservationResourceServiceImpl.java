@@ -6,13 +6,11 @@ import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.param.DateParam;
 import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.fhir.dao.ObservationResourceRepository;
+import com.argusoft.who.emcare.web.fhir.model.EncounterResource;
 import com.argusoft.who.emcare.web.fhir.model.ObservationResource;
 import com.argusoft.who.emcare.web.fhir.service.EmcareResourceService;
 import com.argusoft.who.emcare.web.fhir.service.ObservationResourceService;
-import org.hl7.fhir.r4.model.Bundle;
-import org.hl7.fhir.r4.model.IdType;
-import org.hl7.fhir.r4.model.Meta;
-import org.hl7.fhir.r4.model.Observation;
+import org.hl7.fhir.r4.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -163,5 +161,30 @@ public class ObservationResourceServiceImpl implements ObservationResourceServic
     @Override
     public void deleteObservation(String theId) {
         observationResourceRepository.deleteByResourceId(theId);
+    }
+
+    public Bundle getObservationDataForGoogleFhirDataPipes(String summaryType, Integer count, String type) {
+        Bundle bundle = new Bundle();
+        switch(summaryType) {
+            case "count":
+                bundle.setTotal((int) observationResourceRepository.count());
+                return bundle;
+            case "data":
+                List<ObservationResource> observationResources = observationResourceRepository.findAll();
+                int x = 0;
+                for (ObservationResource observationResource : observationResources) {
+                    if(x >= 10) break;
+                    x++;
+                    Observation observation = parser.parseResource(Observation.class, observationResource.getText());
+                    bundle.addEntry(
+                            new Bundle.BundleEntryComponent()
+                                    .setResource(observation)
+                                    .setFullUrl("http://localhost:8080/fhir/" + observation.getId().substring(0, 44))
+                    );
+                }
+                bundle.setTotal(Math.min(10, observationResources.size()));
+                return bundle;
+        }
+        return null;
     }
 }

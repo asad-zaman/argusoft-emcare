@@ -3,8 +3,10 @@ package com.argusoft.who.emcare.web.fhir.resourceprovider;
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.rest.annotation.*;
+import ca.uhn.fhir.rest.annotation.Count;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.param.DateParam;
+import ca.uhn.fhir.rest.param.StringAndListParam;
 import ca.uhn.fhir.rest.param.StringParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
@@ -245,5 +247,18 @@ public class PatientResourceProvider implements IResourceProvider {
             @OptionalParam(name = CommonConstant.RESOURCE_LAST_UPDATED_AT) DateParam theDate,
             @OptionalParam(name = CommonConstant.RESOURCE_FACILITY_ID) String theId) {
         return emcareResourceService.getPatientCountBasedOnDate(type, theDate, theId);
+    }
+
+    @Search(allowUnknownParams = true)
+    public Bundle getPatientDataForGoogleFhirDataPipes(
+            @RequiredParam(name = CommonConstant.SUMMARY) StringAndListParam type,
+            @OptionalParam(name = "_count") StringAndListParam count,
+            @OptionalParam(name = "_total") String total) {
+        String x = type.getValuesAsQueryTokens().get(0).getValuesAsQueryTokens().get(0).getValue();
+        return emcareResourceService.getPatientDataForGoogleFhirDataPipes(
+                x,
+                10,
+                total
+        );
     }
 }

@@ -49,4 +49,6 @@ public interface EmcareResourceService {
 
     public Bundle getPatientCountBasedOnDate(String summaryType, DateParam theDate, String theId);
 
+    public Bundle getPatientDataForGoogleFhirDataPipes(String summaryType, Integer count, String total);
+
 }

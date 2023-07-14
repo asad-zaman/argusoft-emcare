@@ -22,4 +22,5 @@ public interface ObservationResourceService {
 
     public void deleteObservation(String theId);
 
+    public Bundle getObservationDataForGoogleFhirDataPipes(String summaryType, Integer count, String type);
 }

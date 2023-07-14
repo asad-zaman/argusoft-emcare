@@ -384,7 +384,7 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
         }
         Date prodDate = new Date();
         try {
-            String prodDateString = "31/05/2023";
+            String prodDateString = "31/05/2018";
             prodDate = new SimpleDateFormat("dd/MM/yyyy").parse(prodDateString);
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -716,6 +716,29 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public Bundle getPatientDataForGoogleFhirDataPipes(String summaryType, Integer count, String total) {
+        Bundle bundle = new Bundle();
+        switch(summaryType) {
+            case "count":
+                bundle.setTotal((int)repository.count());
+                return bundle;
+            case "data":
+                List<Patient> patients = getAllPatientResources();
+                bundle.setTotal(Math.min(10, patients.size()));
+
+                for(int i = 0; i < Math.min(10, patients.size()); i++) {
+                    bundle.addEntry(
+                            new Bundle.BundleEntryComponent()
+                                    .setResource(patients.get(i))
+                                    .setFullUrl("http://localhost:8080/fhir/" + patients.get(i).getId().substring(0, 44))
+                    );
+                }
+                return bundle;
+        }
+        return null;
     }
 
 }
