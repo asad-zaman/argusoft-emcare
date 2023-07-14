@@ -69,7 +69,7 @@ import { TooltipModule } from 'primeng/tooltip';
 import { AccordionModule } from 'primeng/accordion';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
-import { ChartModule } from 'angular-highcharts';
+import { ChartModule as primeCharts } from 'primeng/chart';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { NgxIntlTelInputModule } from 'ngx-intl-tel-input';
@@ -145,14 +145,14 @@ import { InputTextareaModule } from 'primeng/inputtextarea';
     AccordionModule,
     ButtonModule,
     CardModule,
-    ChartModule,
     ToastModule,
     NgxIntlTelInputModule,
     MessagesModule,
     MessageModule,
     ColorPickerModule,
     CalendarModule,
-    InputTextareaModule
+    InputTextareaModule,
+    primeCharts
   ],
   providers: [
     AuthenticationService,

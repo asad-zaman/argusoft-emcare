@@ -24,32 +24,35 @@
           <p>Number of consultations for last 15 days</p>
         </div>
         <div class="dashboard-card-body">
-          <div id="scatter-chart-container"
-            style="min-width: 310px; max-width: 800px; height: 300px; margin: 0 auto; top: -50px;">
+          <div class="">
+            <p-chart type="bar" [data]="scatterDataObj['basicData']" [options]="scatterDataObj['basicOptions']">
+            </p-chart>
           </div>
         </div>
       </div>
       <div class="row">
         <div class="col-12 col-md-6">
           <div class="dashboard-card pt-3 height___400">
-            <div class="dashboard-card-heading">
+            <div class="dashboard-card-heading mb-5">
               <h4>{{'Number of consultations per facility' | translate}}</h4>
             </div>
             <div class="dashboard-card-body">
               <div class="text-center">
-                <div id="consultationPerFacility" style="width:100%;"></div>
+                <p-chart type="pie" [data]="consultationPerFacilityObj['pieData']"
+                  [options]="consultationPerFacilityObj['pieOptions']"></p-chart>
               </div>
             </div>
           </div>
         </div>
         <div class="col-12 col-md-6 pl___7">
           <div class="dashboard-card pt-3 height___400">
-            <div class="dashboard-card-heading">
+            <div class="dashboard-card-heading mb-5">
               <h4>{{'Number of consultations by age group' | translate}}</h4>
             </div>
             <div class="dashboard-card-body">
               <div class="text-center">
-                <div id="consultationByAgeGroup" style="width:100%;"></div>
+                <p-chart type="pie" [data]="consultationByAgeGroupObj['pieData']"
+                  [options]="consultationByAgeGroupObj['pieOptions']"></p-chart>
               </div>
             </div>
           </div>
@@ -58,12 +61,12 @@
     </div>
     <!--left-grid-END-->
     <!--right-grid-->
-    <div class="col-12 col-md-12 col-lg-12 col-xl-6 pl___7">
+    <div class="col-12 col-md-12 col-lg-12 col-xl-6 pl___7 dashboard-card">
+      <div class="dashboard-card-heading">
+        <h3>{{'Indicators' | translate}}</h3>
+      </div>
       <ng-container *ngIf="!this.indicatorApiBusy; else showSpinner">
-        <div *ngIf="this.indicatorArr.length > 0; else noData" class="dashboard-card">
-          <div class="dashboard-card-heading">
-            <h3>{{'Indicators' | translate}}</h3>
-          </div>
+        <div *ngIf="this.indicatorArr.length > 0; else noData">
           <div class="dashboard-card-body indicators_scroll">
             <div class="table-responsive">
               <table class="data-table">
@@ -74,8 +77,8 @@
                     <td class="cst-table-style">
                       {{indicator.indicatorName}}</td>
                     <td><i (click)="enableFilter(i)" class="bi bi-filter-square chart-icon" aria-hidden="true"></i></td>
-                    <td><i *ngIf="indicator.indicatorType === 'filter'" class="bi bi-graph-up-arrow chart-icon"
-                        aria-hidden="true"></i></td>
+                    <td><i (click)="enableChart(i)" class="ml-3 bi bi-graph-up-arrow chart-icon" aria-hidden="true"></i>
+                    </td>
                   </tr>
                   <tr *ngIf="indicator.showFilter">
                     <td colspan="2">
@@ -160,6 +163,14 @@
                             </div>
                           </div>
                         </form>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr *ngIf="indicator.showChart">
+                    <td colspan="2">
+                      <div class="">
+                        <p-chart type="bar" [data]="filterBarChartObj['basicData']"
+                          [options]="filterBarChartObj['basicOptions']"></p-chart>
                       </div>
                     </td>
                   </tr>

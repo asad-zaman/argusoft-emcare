@@ -23,6 +23,7 @@ NoData(Highcharts);
   styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent implements OnInit {
+
   dashboardData: any = {};
   isView = true;
   facilityArr = [];
@@ -35,6 +36,12 @@ export class HomeComponent implements OnInit {
   genderArr = appConstants.genderArr;
   conditionArrForAgeAndColor = appConstants.conditionArrForAgeAndColor;
   indicatorFilterForm: FormGroup;
+  showChartData = false;
+
+  consultationPerFacilityObj = {};
+  consultationByAgeGroupObj = {};
+  scatterDataObj = {};
+  filterBarChartObj = {};
 
   @ViewChild('mapRef', { static: true }) mapElement: ElementRef;
   @ViewChildren('iValues') iValues: QueryList<ElementRef>;
@@ -46,7 +53,7 @@ export class HomeComponent implements OnInit {
     private readonly cdr: ChangeDetectorRef,
     private readonly formBuilder: FormBuilder,
     private readonly toasterService: ToasterService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.prerequisite();
@@ -81,84 +88,29 @@ export class HomeComponent implements OnInit {
   }
 
   barChart() {
-    let options = {
-      chart: {
-        type: 'column',
-        margin: [50, 50, 60, 80],
-        events: {
-          click: function (e) {
-            let x = Math.round(e.xAxis[0].value);
-            let y = Math.round(e.yAxis[0].value);
-          },
-        },
+    this.scatterDataObj = {
+      basicData: {
+        labels: this.scatterData.map(el => el.d),
+        datasets: [{ barThickness: 10, data: this.scatterData.map(el => el.y), borderWidth: 0 }]
       },
-      title: {
-        text: undefined,
+      basicOptions: {
+        plugins: { legend: { display: false } },
+        scales: { y: { beginAtZero: true } }
+      }
+    }
+  }
+
+  getFilterBarChart() {
+    this.filterBarChartObj = {
+      basicData: {
+        labels: ['10 Nov 2022', '10 Dec 2022', '10 Jan 2023', '10 Feb 2023'],
+        datasets: [{ barThickness: 10, data: [540, 325, 702, 620], borderWidth: 0 }]
       },
-      accessibility: {
-        announceNewData: {
-          enabled: true,
-        },
-      },
-      tooltip: {
-        enabled: false,
-        headerFormat: undefined,
-        pointFormat: `<b>Date = {point.d}</b>  <br> <br> <b>Consultations = {point.y}</b>`,
-      },
-      xAxis: {
-        labels: {
-          rotation: -45,
-          format: '{value:%e-%b-%y}',
-        },
-        title: {
-          text: undefined,
-        },
-        // startOnTick: false,
-        // endOnTick: true,
-        tickInterval: 24 * 3600 * 1000,
-      },
-      yAxis: {
-        title: {
-          text: undefined,
-        },
-        minPadding: 0.2,
-        maxPadding: 0.2,
-        maxZoom: 6,
-        plotLines: [
-          {
-            value: 0,
-            width: 1,
-            color: '#808080',
-          },
-        ],
-      },
-      legend: {
-        enabled: false,
-      },
-      credits: {
-        enabled: false,
-      },
-      exporting: {
-        enabled: false,
-      },
-      plotOptions: {
-        column: {
-          dataLabels: {
-            enabled: true,
-            format: '{y}',
-            // verticalAlign: 'top',
-            // inside: true
-          },
-        },
-      },
-      series: [
-        {
-          type: undefined,
-          data: this.scatterData,
-        },
-      ],
-    };
-    Highcharts.chart('scatter-chart-container', options);
+      basicOptions: {
+        plugins: { legend: { display: false } },
+        scales: { y: { beginAtZero: true } }
+      }
+    }
   }
 
   getChartData() {
@@ -195,6 +147,7 @@ export class HomeComponent implements OnInit {
         this.barChart();
         this.consultationPerFacilityChart();
         this.consultationByAgeGroupChart();
+        this.getFilterBarChart();
       }
     });
   }
@@ -212,72 +165,28 @@ export class HomeComponent implements OnInit {
   }
 
   consultationPerFacilityChart() {
-    Highcharts.chart('consultationPerFacility', {
-      chart: {
-        plotBackgroundColor: null,
-        plotBorderWidth: null,
-        plotShadow: false,
-        type: 'pie'
+    this.consultationPerFacilityObj = {
+      pieData: {
+        labels: this.consultationPerFacility.map(el => el.name),
+        datasets: [{ data: this.consultationPerFacility.map(el => el.y), }]
       },
-      title: {
-        text: ''
-      },
-      tooltip: {
-        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-      },
-      plotOptions: {
-        pie: {
-          size: '90%',
-          allowPointSelect: true,
-          cursor: 'pointer',
-          dataLabels: {
-            enabled: false,
-            format: '<b>{point.name}</b>: {point.percentage:.1f} %'
-          }
-        }
-      },
-      series: [{
-        name: 'Location',
-        colorByPoint: true,
-        type: undefined,
-        data: this.consultationPerFacility
-      }]
-    });
+      pieOptions: { plugins: { legend: { display: false, labels: { usePointStyle: false } } } }
+    }
   }
 
   consultationByAgeGroupChart() {
-    Highcharts.chart('consultationByAgeGroup', {
-      chart: {
-        plotBackgroundColor: null,
-        plotBorderWidth: null,
-        plotShadow: false,
-        type: 'pie'
-      },
-      title: {
-        text: ''
-      },
-      colors: ['#A4D2D3', '#44A9A8'],
-      tooltip: {
-        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-      },
-      plotOptions: {
-        pie: {
-          size: '90%',
-          allowPointSelect: true,
-          cursor: 'pointer',
-          dataLabels: {
-            enabled: false,
-            format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+    this.consultationByAgeGroupObj = {
+      pieData: {
+        labels: this.consultationByAgeGroup.map(el => el.name),
+        datasets: [
+          {
+            data: this.consultationByAgeGroup.map(el => el.y),
+            backgroundColor: ['#BDEBEC', '#5DC2C1'], hoverBackgroundColor: ['#BDEBEC', '#5DC2C1']
           }
-        }
+        ]
       },
-      series: [{
-        name: 'Location',
-        colorByPoint: true,
-        type: undefined,
-        data: this.consultationByAgeGroup
-      }]
-    });
+      pieOptions: { plugins: { legend: { display: false, labels: { usePointStyle: false } } } }
+    }
   }
 
   loadMap = () => {
@@ -358,6 +267,7 @@ export class HomeComponent implements OnInit {
             });
           }
           el['showFilter'] = false;
+          el['showChart'] = false;
           this.getIndicators().push(this.newIndicatorAddition(el));
         });
         this.iValues.changes.subscribe(c => {
@@ -404,6 +314,15 @@ export class HomeComponent implements OnInit {
       }
     });
     this.indicatorArr[index].showFilter = !this.indicatorArr[index].showFilter;
+  }
+
+  enableChart(index) {
+    this.indicatorArr.forEach((el, i) => {
+      if (i !== index) {
+        el['showChart'] = false;
+      }
+    });
+    this.indicatorArr[index].showChart = !this.indicatorArr[index].showChart;
   }
 
   filterIndicator(index) {
