@@ -8,6 +8,7 @@ import com.argusoft.who.emcare.web.config.tenant.MultitenantDataSourceConfigurat
 import com.argusoft.who.emcare.web.config.tenant.TenantContext;
 import com.argusoft.who.emcare.web.exception.EmCareException;
 import com.argusoft.who.emcare.web.fhir.resourceprovider.OrganizationResourceProvider;
+import com.argusoft.who.emcare.web.language.dto.LanguageAddDto;
 import com.argusoft.who.emcare.web.language.dto.LanguageDto;
 import com.argusoft.who.emcare.web.language.service.LanguageService;
 import com.argusoft.who.emcare.web.location.dto.HierarchyMasterDto;
@@ -111,8 +112,10 @@ public class TenantServiceImpl implements TenantService {
             System.out.println("Database Connection Checked +++++++++++++++++++++++++++++++++++++++++++");
 
             //    Select Database If create
+            multitenantDataSourceConfiguration.setRunFlyWay(Boolean.FALSE);
             tenantConfig = tenantConfigRepository.save(tenantConfig);
             multitenantDataSourceConfiguration.addDataSourceDynamic();
+            multitenantDataSourceConfiguration.setRunFlyWay(Boolean.TRUE);
             TenantContext.clearTenant();
             TenantContext.setCurrentTenant(tenantConfig.getTenantId());
 
@@ -135,6 +138,10 @@ public class TenantServiceImpl implements TenantService {
             System.out.println("=======================================================================");
             addOrganizationInDatabase(tenantDto);
             System.out.println("Organization added ++++++++++++++++++++++++++++++++++++++++++++++++++++");
+            //    Add Flyway Migrations in DB
+            System.out.println("=======================================================================");
+            multitenantDataSourceConfiguration.addDataSourceForNewTenant();
+            System.out.println("Flyway Migration Done ++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
             //    Add Role in DB
             System.out.println("=======================================================================");
             addRoleForTenant(tenantDto);
@@ -267,6 +274,9 @@ public class TenantServiceImpl implements TenantService {
                     CommonConstant.POSTGRESQL_DEFAULT_DATABASE,
                     tenantConfig.getPassword());
 
+            statement = connection.createStatement();
+            statement.execute("SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = " + "'" + tenantConfig.getDatabaseName() + "'");
+
             statement.executeUpdate("DROP DATABASE " + tenantConfig.getDatabaseName());
         } catch (Exception ex) {
             System.out.println("Database Doesn't drop Properly Because ==========>");
@@ -365,17 +375,19 @@ public class TenantServiceImpl implements TenantService {
 
     private void addLanguageInTenant(TenantDto tenantDto) {
         try {
+            String englishKeys = languageService.getAllKeys();
             LanguageDto languageDto = new LanguageDto();
+            LanguageAddDto languageAddDto = new LanguageAddDto();
             languageDto.setLanguageCode(CommonConstant.ENGLISH);
             languageDto.setLanguageName("English");
-            languageDto.setLanguageTranslation(tenantDto.getDefaultLanguage());
+            languageDto.setLanguageTranslation(englishKeys);
             languageService.addOrUpdateLanguageTranslation(languageDto);
 
-//                languageAddDto = tenantDto.getLanguage();
-//                if (Objects.nonNull(languageAddDto)) {
-//                    TenantContext.setCurrentTenant(tenantConfig.getTenantId());
-//                    languageService.createNewLanguageTranslation(languageAddDto);
-//                }
+                languageAddDto = tenantDto.getLanguage();
+                if (Objects.nonNull(languageAddDto)) {
+                    TenantContext.setCurrentTenant(tenantDto.getTenantId());
+                    languageService.createNewLanguageTranslation(languageAddDto);
+                }
         } catch (Exception ex) {
             throw new NullPointerException();
         }
