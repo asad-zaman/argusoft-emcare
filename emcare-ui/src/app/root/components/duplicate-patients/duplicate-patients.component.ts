@@ -72,17 +72,11 @@ export class DuplicatePatientsComponent implements OnInit {
 
   getPatientName(index) {
     let pName = '';
-    this.duplicatePatientArr[index].map((p, j) => {
-      if (p.givenName && p.familyName) {
-        pName += `${p.givenName} ${p.familyName}`;
-      } else {
-        pName += 'NA';
-      }
-      if (j !== this.duplicatePatientArr[index].length - 1) {
-        pName += ' - '; 
-      }
-    });
+
+    pName = (this.duplicatePatientArr[index][0].givenName && this.duplicatePatientArr[index][0]) ?  this.duplicatePatientArr[index][0].givenName + " " + this.duplicatePatientArr[index][0].familyName : "NA";
+    
     return pName;
+    
   }
 
   openModal(index) {
