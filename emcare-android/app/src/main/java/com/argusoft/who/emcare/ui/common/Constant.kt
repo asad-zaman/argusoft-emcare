@@ -62,6 +62,12 @@ const val END_CONSULTATION_CODING_VALUE =  "EmCare.B7-B8-B9.DE03"
 
 const val EMPTY_SPACE_TO_SCROLL_LINK_ID = "empty_space_to_scroll"
 
+//Audits
+const val START_AUDIT = "Procedure Record"
+const val END_AUDIT = "Procedure Record"
+const val DRAFT_AUDIT = "An operation on other objects"
+const val IS_LOAD_LIBRARIES = "is_load_libraries"
+
 val consultationFlowStageList = arrayListOf<String?>(
     CONSULTATION_STAGE_REGISTRATION_PATIENT,
     CONSULTATION_STAGE_REGISTRATION_ENCOUNTER,

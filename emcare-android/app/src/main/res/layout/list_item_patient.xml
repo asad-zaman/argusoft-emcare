@@ -26,6 +26,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/nameTextView"
             style="@style/TextView.Medium.Black"
@@ -37,11 +38,30 @@
             android:inputType="textNoSuggestions"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:paddingEnd="@dimen/dimen_4dp"
             android:layout_marginStart="@dimen/_12sdp"
-            app:layout_constraintEnd_toStartOf="@id/rightArrowImageView"
+            app:layout_constraintEnd_toStartOf="@id/syncStateTextView"
             app:layout_constraintStart_toEndOf="@+id/statusImageView"
             app:layout_constraintTop_toTopOf="@+id/statusImageView"
             tools:text="Name" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/syncStateTextView"
+            style="@style/TextView.Small.Black"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/color_dark_green"
+            android:drawableLeft="@drawable/ic_synced"
+            android:drawablePadding="@dimen/_1sdp"
+            android:textSize="@dimen/_9sdp"
+            android:paddingStart="@dimen/dimen_8dp"
+            android:paddingEnd="@dimen/dimen_8dp"
+            android:paddingTop="@dimen/dimen_2dp"
+            android:paddingBottom="@dimen/dimen_2dp"
+            android:layout_marginVertical="@dimen/dimen_2dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:background="@drawable/selector_bg_light_green"/>
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/idTextView"
@@ -52,19 +72,18 @@
             app:layout_constraintStart_toStartOf="@+id/nameTextView"
             app:layout_constraintTop_toBottomOf="@+id/nameTextView"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginBottom="@dimen/_12sdp"
             tools:text="Id" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/rightArrowImageView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
             android:contentDescription="@string/description_arrow"
             android:gravity="center_vertical"
             android:src="@drawable/right_arrow_icon"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginBottom="@dimen/_12sdp"/>
+            app:layout_constraintTop_toBottomOf="@id/syncStateTextView"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

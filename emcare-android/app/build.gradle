@@ -5,6 +5,8 @@ plugins {
     id 'kotlin-parcelize'
     id 'kotlin-kapt'
     id "androidx.navigation.safeargs.kotlin"
+    id 'com.google.gms.google-services'
+    id 'com.google.firebase.crashlytics'
 }
 
 android {
@@ -15,7 +17,7 @@ android {
         minSdkVersion 26
         targetSdkVersion 31
         versionCode 6
-        versionName "1.1.9"
+        versionName "1.2.2"
         vectorDrawables.useSupportLibrary = true
         javaCompileOptions {
             annotationProcessorOptions {
@@ -225,7 +227,7 @@ dependencies {
     implementation "androidx.work:work-runtime-ktx:2.7.1"
 
     //Fhir
-//Local Build Link: https://drive.google.com/file/d/1EqcdIdqRrd_f4RF3xnDRiLvRRvNr-mye/view?usp=share_link
+    //Local Build Link: https://drive.google.com/file/d/1bMO2iusef2cypuG5fVX2zYYghjmQ14LD/view?usp=drive_link
     implementation "com.google.android.fhir:engine:0.1.0-beta03"
     implementation "com.google.android.fhir:data-capture:1.0.0"
     implementation "com.google.android.fhir:workflow:0.1.0-alpha02"
@@ -240,4 +242,9 @@ dependencies {
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+
+    //Firebase crash analytics
+    implementation platform('com.google.firebase:firebase-bom:32.1.1')
+    implementation 'com.google.firebase:firebase-crashlytics-ktx'
+
 }

@@ -29,31 +29,51 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/_12sdp"
+            android:paddingEnd="@dimen/dimen_4dp"
             android:layout_marginVertical="@dimen/auto_complete_item_gap"
+            app:layout_constraintEnd_toStartOf="@id/syncStateTextView"
             app:layout_constraintStart_toEndOf="@+id/consultationImageView"
+            app:layout_constraintTop_toTopOf="@id/consultationImageView" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/syncStateTextView"
+            style="@style/TextView.Small.Black"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/color_dark_green"
+            android:drawableLeft="@drawable/ic_synced"
+            android:drawablePadding="@dimen/_1sdp"
+            android:textSize="@dimen/_9sdp"
+            android:paddingStart="@dimen/dimen_8dp"
+            android:paddingEnd="@dimen/dimen_8dp"
+            android:paddingTop="@dimen/dimen_2dp"
+            android:paddingBottom="@dimen/dimen_2dp"
+            android:layout_marginVertical="@dimen/dimen_2dp"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:text="Sick Child, Follow Up" />
+            android:background="@drawable/selector_bg_light_green"/>
+
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/dateTextView"
             style="@style/TextView.Small.Black"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layout_constraintEnd_toStartOf="@id/rightArrowImageView"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="@id/consultationNameTextView"
+            app:layout_constraintTop_toBottomOf="@id/consultationNameTextView"
             app:layout_constraintBottom_toBottomOf="parent"
             tools:text="21/06/1999" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/rightArrowImageView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
             android:contentDescription="@string/description_arrow"
             android:gravity="center_vertical"
             android:src="@drawable/right_arrow_icon"
+            app:layout_constraintTop_toBottomOf="@id/syncStateTextView"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintBottom_toBottomOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

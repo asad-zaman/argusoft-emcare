@@ -10,8 +10,10 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupWithNavController
 import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.databinding.ActivityHomeBinding
+import com.argusoft.who.emcare.ui.common.IS_LOAD_LIBRARIES
 import com.argusoft.who.emcare.ui.common.base.BaseActivity
 import com.argusoft.who.emcare.utils.extention.alertDialog
+import com.argusoft.who.emcare.utils.extention.dismissProgressDialog
 import com.argusoft.who.emcare.utils.extention.observeNotNull
 import com.argusoft.who.emcare.utils.extention.whenSuccess
 import com.google.android.material.navigation.NavigationView
@@ -28,6 +30,11 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
 
     override fun initView() {
 //        signUpViewModel.getLocationsAndRoles()
+
+        if(!intent.hasExtra(IS_LOAD_LIBRARIES) ||
+            (intent.hasExtra(IS_LOAD_LIBRARIES) && intent.getBooleanExtra(IS_LOAD_LIBRARIES, false))){
+            homeViewModel.loadLibraries(true)
+        }
         val drawerLayout: DrawerLayout = binding.drawerLayout
         val navView: NavigationView = binding.navView
         navHostFragment = supportFragmentManager.findFragmentById(R.id.navHostFragment) as NavHostFragment
@@ -52,7 +59,6 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
                                                                                         binding.navView.menu.getItem(4).title = "Logout"
         sidepaneAdapter = SidepaneAdapter(onClickListener = this, navHostFragment = navHostFragment)
         setupSidepane()
-        homeViewModel.loadLibraries(applicationContext)
     }
 
     fun openDrawer() {
@@ -93,7 +99,6 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
             }
             return@setNavigationItemSelectedListener true
         }
-
     }
 
     fun toggleSidepane() {
@@ -128,6 +133,12 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
                 }
             }
         }
+        observeNotNull(homeViewModel.librariesLoaded) {
+            it.whenSuccess {
+                dismissProgressDialog()
+            }
+        }
+
     }
 
     override fun onSupportNavigateUp(): Boolean {

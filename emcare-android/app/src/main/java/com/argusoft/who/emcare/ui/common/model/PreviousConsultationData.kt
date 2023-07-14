@@ -13,4 +13,5 @@ data class PreviousConsultationData(
     val structureMapId: String? = null,
     val questionnaireResponseText: String? = null,
     val isActive: Boolean = false,
+    val isSynced: Boolean = true,
 )

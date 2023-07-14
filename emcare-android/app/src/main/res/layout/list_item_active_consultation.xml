@@ -28,10 +28,29 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/_8sdp"
-            app:layout_constraintEnd_toStartOf="@id/rightArrowImageView"
+            android:layout_marginEnd="@dimen/dimen_4dp"
+            app:layout_constraintEnd_toStartOf="@id/syncStateTextView"
             app:layout_constraintStart_toEndOf="@id/statusImageView"
             app:layout_constraintTop_toTopOf="@id/statusImageView"
             tools:text="Consultation Name" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/syncStateTextView"
+            style="@style/TextView.Small.Black"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/color_dark_green"
+            android:drawableLeft="@drawable/ic_synced"
+            android:drawablePadding="@dimen/_1sdp"
+            android:textSize="@dimen/_9sdp"
+            android:paddingStart="@dimen/dimen_8dp"
+            android:paddingEnd="@dimen/dimen_8dp"
+            android:paddingTop="@dimen/dimen_2dp"
+            android:paddingBottom="@dimen/dimen_2dp"
+            android:layout_marginVertical="@dimen/dimen_2dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:background="@drawable/selector_bg_light_green"/>
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/dateTextViewLabel"
@@ -40,7 +59,8 @@
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="@id/consultationNameTextView"
             app:layout_constraintTop_toBottomOf="@id/consultationNameTextView"
-            android:text="Visit Date :" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:text="@string/text_label_visit_date" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/dateTextView"
@@ -50,6 +70,7 @@
             android:layout_marginStart="@dimen/_4sdp"
             app:layout_constraintStart_toEndOf="@id/dateTextViewLabel"
             app:layout_constraintTop_toBottomOf="@id/consultationNameTextView"
+            app:layout_constraintBottom_toBottomOf="parent"
             tools:text="21/06/1999" />
 
         <com.google.android.material.textview.MaterialTextView
@@ -58,19 +79,21 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toStartOf="@id/rightArrowImageView"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/syncStateTextView"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:text="Continue" />
+            android:text="@string/button_continue" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/rightArrowImageView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
             android:contentDescription="@string/description_arrow"
             android:gravity="center_vertical"
             android:src="@drawable/right_arrow_icon"
+            app:layout_constraintTop_toBottomOf="@id/syncStateTextView"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>
