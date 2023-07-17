@@ -64,7 +64,7 @@
           <div class="dashboard-card-heading d-flex  justify-content-between">
             <h3>{{'Indicators' | translate}}</h3>
             <div>
-              <span class="mx-1"><i _ngcontent-fdv-c120="" aria-hidden="true" class="bi bi-cursor nav-link_icon"></i></span>
+              <span class="mx-1"><i aria-hidden="true" class="bi bi-cursor nav-link_icon"></i></span>
               <span>{{FacilityName}}</span>
             </div>
           </div>
@@ -77,9 +77,8 @@
                       {{this.getIndicators().controls[i].value.indicatorValue}}%</td>
                     <td class="cst-table-style">
                       {{indicator.indicatorName}}</td>
-                    <td><i _ngcontent-vwn-c113="" aria-hidden="true" class="px-2 bi bi-info-circle" 
-                      style="cursor: pointer; padding-left: 3px; font-size: 16px;"  
-                      pTooltip="Facility : {{indicator.facilityIds ?indicator.facilityIds  : 'All' }},
+                    <td><i aria-hidden="true" class="px-2 bi bi-info-circle"   
+                       pTooltip="Facility : {{indicator.facilityIds ? indicator.facilityIds  : 'All' }},
                        Gender : {{indicator.gender ? indicator.gender : 'Not Applied' }},
                        Age : {{indicator.age ? indicator.age : 'Not Applied' }},
                        Start Date : {{indicator.startDate ? indicator.startDate : 'Not Applied' }},

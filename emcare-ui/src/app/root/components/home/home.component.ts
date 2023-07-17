@@ -37,6 +37,8 @@ export class HomeComponent implements OnInit {
   indicatorFilterForm: FormGroup;
   indicatorInfo: any = [];
   FacilityName: String;
+  month = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+  dateFormat: Date;
 
   @ViewChild('mapRef', { static: true }) mapElement: ElementRef;
   @ViewChildren('iValues') iValues: QueryList<ElementRef>;
@@ -347,12 +349,8 @@ export class HomeComponent implements OnInit {
         this.indicatorArr = res;        
         this.indicatorArr.forEach(el => {
           el.facilityIds = this.FacilityName;
-          let sdate = new Date(el.startDate);
-          const month = ["January", "February", "March", "April", "May", "June",
-          "July", "August", "September", "October", "November", "December"];
-          el.startDate = sdate.getDate() + ' ' + month[sdate.getMonth()] + ' ' + sdate.getFullYear();
-          let edate = new Date(el.endDate);
-          el.endDate = edate.getDate() + ' ' + month[edate.getMonth()] + ' ' + edate.getFullYear();
+          el.startDate = this.getDateFormat(el.startDate);
+          el.endDate = this.getDateFormat(el.endDate); 
           const indicatorValue = el.indicatorValue;
           const colorSchema = el['colorSchema'] !== null ? JSON.parse(el['colorSchema']) : [];
           if (colorSchema.length === 0 || parseInt(indicatorValue) === 0) {
@@ -444,12 +442,8 @@ export class HomeComponent implements OnInit {
             const selectedFacility = this.getSelectedFilters(i).split(","); 
             this.indicatorInfo[0].facilityIds = selectedFacility.length==1 ? selectedFacility[0] : selectedFacility[0]+" and "+(selectedFacility.length-1) +" more";
             }
-            let sdate = new Date(this.indicatorInfo[0].startDate);
-            const month = ["January", "February", "March", "April", "May", "June",
-            "July", "August", "September", "October", "November", "December"];
-            this.indicatorInfo[0].startDate = sdate.getDate() + ' ' + month[sdate.getMonth()] + ' ' + sdate.getFullYear();
-            let edate = new Date(this.indicatorInfo[0].endDate);
-            this.indicatorInfo[0].endDate = edate.getDate() + ' ' + month[edate.getMonth()] + ' ' + edate.getFullYear();                        
+            this.indicatorInfo[0].startDate = this.getDateFormat(this.indicatorInfo[0].startDate);
+            this.indicatorInfo[0].endDate = this.getDateFormat(this.indicatorInfo[0].endDate);                        
             this.indicatorArr[i] = this.indicatorInfo[0];
             break;
           }
@@ -477,5 +471,10 @@ export class HomeComponent implements OnInit {
     } else {
       this.getIndicators().controls[i].patchValue({ isShowBetween: false });
     }
+  }
+
+  getDateFormat(seconds: number){
+    this.dateFormat = new Date(seconds);
+    return `${this.dateFormat.getDate()} ${this.month[this.dateFormat.getMonth()]} ${this.dateFormat.getFullYear()}`;
   }
 }

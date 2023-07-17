@@ -10,7 +10,8 @@ export const appConstants = {
         Username: 'Username',
         Firstname: 'Firstname',
         Lastname: 'Lastname',
-        ApplicationAgent: 'ApplicationAgent'
+        ApplicationAgent: 'ApplicationAgent',
+        FacilityName: 'FacilityName'
     },
     EMailAsUsername: "REGISTRATION_EMAIL_AS_USERNAME",
     genderArr: [
