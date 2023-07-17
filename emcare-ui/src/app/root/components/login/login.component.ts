@@ -160,6 +160,10 @@ export class LoginComponent implements OnInit {
           appConstants.localStorageKeys.Lastname,
           res.lastName
         );
+        localStorage.setItem(
+          appConstants.localStorageKeys.FacilityName,
+          res.facilities[0].facilityName
+        );
         localStorage.setItem('userFeatures', JSON.stringify(featureObj));
         localStorage.setItem('language', res['language']);
         const isSuperAdmin =

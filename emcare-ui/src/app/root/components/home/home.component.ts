@@ -27,7 +27,7 @@ export class HomeComponent implements OnInit {
   isView = true;
   facilityArr = [];
   lastScDate = `${new Date().toDateString()} ${new Date().toLocaleTimeString()}`;
-  indicatorArr = [];
+  indicatorArr: any = [];
   scatterData = [];
   consultationPerFacility = [];
   consultationByAgeGroup = [];
@@ -35,6 +35,8 @@ export class HomeComponent implements OnInit {
   genderArr = appConstants.genderArr;
   conditionArrForAgeAndColor = appConstants.conditionArrForAgeAndColor;
   indicatorFilterForm: FormGroup;
+  indicatorInfo: any = [];
+  FacilityName: String;
 
   @ViewChild('mapRef', { static: true }) mapElement: ElementRef;
   @ViewChildren('iValues') iValues: QueryList<ElementRef>;
@@ -64,12 +66,16 @@ export class HomeComponent implements OnInit {
     if (!this.conditionArrForAgeAndColor.find(el => el.id === 'bw')) {
       this.conditionArrForAgeAndColor.push({ id: 'bw', name: 'between' });
     }
+    this.FacilityName = localStorage.getItem('FacilityName');
   }
 
   getDashboardData() {
     this.fhirService.getDashboardData().subscribe((res) => {
       this.dashboardData = res;
     });
+  }
+  getSelectedFilters(i:number):string{
+    return this.getIndicators().controls[i].value.facility?.map(object=>object.name).join(',')
   }
 
   checkFeatures() {
@@ -338,8 +344,15 @@ export class HomeComponent implements OnInit {
       this.indicatorApiBusy = false;
       this.initIndicatorFilterForm();
       if (res && res.length > 0) {
-        this.indicatorArr = res;
+        this.indicatorArr = res;        
         this.indicatorArr.forEach(el => {
+          el.facilityIds = this.FacilityName;
+          let sdate = new Date(el.startDate);
+          const month = ["January", "February", "March", "April", "May", "June",
+          "July", "August", "September", "October", "November", "December"];
+          el.startDate = sdate.getDate() + ' ' + month[sdate.getMonth()] + ' ' + sdate.getFullYear();
+          let edate = new Date(el.endDate);
+          el.endDate = edate.getDate() + ' ' + month[edate.getMonth()] + ' ' + edate.getFullYear();
           const indicatorValue = el.indicatorValue;
           const colorSchema = el['colorSchema'] !== null ? JSON.parse(el['colorSchema']) : [];
           if (colorSchema.length === 0 || parseInt(indicatorValue) === 0) {
@@ -423,7 +436,24 @@ export class HomeComponent implements OnInit {
     }
     this.fhirService.filterIndicatorValue(data).subscribe(res => {
       if (res) {
+        this.indicatorInfo = res;  
         controls.patchValue({ indicatorValue: res[0].indicatorValue });
+        for(let i = 0; i < this.indicatorArr.length; ++i){
+          if(this.indicatorArr[i].indicatorId == this.indicatorInfo[0].indicatorId){
+            if(this.getSelectedFilters(i)){              
+            const selectedFacility = this.getSelectedFilters(i).split(","); 
+            this.indicatorInfo[0].facilityIds = selectedFacility.length==1 ? selectedFacility[0] : selectedFacility[0]+" and "+(selectedFacility.length-1) +" more";
+            }
+            let sdate = new Date(this.indicatorInfo[0].startDate);
+            const month = ["January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"];
+            this.indicatorInfo[0].startDate = sdate.getDate() + ' ' + month[sdate.getMonth()] + ' ' + sdate.getFullYear();
+            let edate = new Date(this.indicatorInfo[0].endDate);
+            this.indicatorInfo[0].endDate = edate.getDate() + ' ' + month[edate.getMonth()] + ' ' + edate.getFullYear();                        
+            this.indicatorArr[i] = this.indicatorInfo[0];
+            break;
+          }
+        }
       }
     });
 
@@ -443,7 +473,7 @@ export class HomeComponent implements OnInit {
 
   checkForInBetween(event, i) {
     if (event.value && event.value.id === 'bw') {
-      this.getIndicators().controls[i].patchValue({ isShowBetween: true });
+      this.getIndicators().controls[i].patchValue({ isShowgetSelectedFiltersBetween: true });
     } else {
       this.getIndicators().controls[i].patchValue({ isShowBetween: false });
     }
