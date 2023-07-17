@@ -73,8 +73,8 @@ export class DuplicatePatientsComponent implements OnInit {
   getPatientName(index) {
     let pName = '';
 
-    pName = (this.duplicatePatientArr[index][0].givenName && this.duplicatePatientArr[index][0]) ?  this.duplicatePatientArr[index][0].givenName + " " + this.duplicatePatientArr[index][0].familyName : "NA";
-    
+    pName = (this.duplicatePatientArr[index][0].givenName && this.duplicatePatientArr[index][0].familyName) ? `${this.duplicatePatientArr[index][0].givenName} ${this.duplicatePatientArr[index][0].familyName}` : `NA`;
+
     return pName;
     
   }
