@@ -5,10 +5,12 @@ import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.rest.annotation.*;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.param.DateParam;
+import ca.uhn.fhir.rest.param.StringAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.fhir.service.CodeSystemResourceService;
 import org.hl7.fhir.instance.model.api.IBaseResource;
+import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.CodeSystem;
 import org.hl7.fhir.r4.model.IdType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,5 +54,22 @@ public class CodeSystemResourceProvider implements IResourceProvider {
     @Search()
     public List<CodeSystem> getAllStructureMap(@OptionalParam(name = CommonConstant.RESOURCE_LAST_UPDATED_AT) DateParam theDate) {
         return codeSystemResourceService.getAllCodeSystem(theDate);
+    }
+
+    @Search(allowUnknownParams = true)
+    public Bundle getCodeSystemDataForGoogleFhirDataPipes(
+            @RequiredParam(name = CommonConstant.SUMMARY) StringAndListParam type,
+            @OptionalParam(name = "_count") StringAndListParam count,
+            @OptionalParam(name = "_total") String total) {
+        String x = type.getValuesAsQueryTokens().get(0).getValuesAsQueryTokens().get(0).getValue();
+        String _count = "10";
+        if(count != null) {
+            _count = count.getValuesAsQueryTokens().get(0).getValuesAsQueryTokens().get(0).getValue();
+        }
+        return codeSystemResourceService.getCodeSystemDataForGoogleFhirDataPipes(
+                x,
+                Integer.parseInt(_count),
+                total
+        );
     }
 }

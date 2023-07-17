@@ -8,9 +8,7 @@ import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.fhir.dao.ConditionResourceRepository;
 import com.argusoft.who.emcare.web.fhir.model.ConditionResource;
 import com.argusoft.who.emcare.web.fhir.service.ConditionResourceService;
-import org.hl7.fhir.r4.model.Condition;
-import org.hl7.fhir.r4.model.IdType;
-import org.hl7.fhir.r4.model.Meta;
+import org.hl7.fhir.r4.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -127,5 +125,27 @@ public class ConditionResourceServiceImpl implements ConditionResourceService {
             conditions.add(condition);
         }
         return conditions;
+    }
+
+    public Bundle getConditionDataForGoogleFhirDataPipes(String summaryType, Integer count, String total) {
+        Bundle bundle = new Bundle();
+        switch(summaryType) {
+            case "count":
+                bundle.setTotal((int)conditionResourceRepository.count());
+                return bundle;
+            case "data":
+                List<Condition> conditions = getAllCondition(null, null);
+                bundle.setTotal(Math.min(count, conditions.size()));
+
+                for(int i = 0; i < Math.min(count, conditions.size()); i++) {
+                    bundle.addEntry(
+                            new Bundle.BundleEntryComponent()
+                                    .setResource(conditions.get(i))
+                                    .setFullUrl("http://localhost:8080/fhir/" + conditions.get(i).getId().substring(0, 44))
+                    );
+                }
+                return bundle;
+        }
+        return null;
     }
 }

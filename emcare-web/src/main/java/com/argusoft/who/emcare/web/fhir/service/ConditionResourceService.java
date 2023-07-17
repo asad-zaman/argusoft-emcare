@@ -2,6 +2,7 @@ package com.argusoft.who.emcare.web.fhir.service;
 
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.param.DateParam;
+import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Condition;
 import org.hl7.fhir.r4.model.IdType;
 
@@ -18,4 +19,6 @@ public interface ConditionResourceService {
     public List<Condition> getAllCondition(DateParam theDate, String searchText);
 
     public List<Condition> getByPatientId(String patientId);
+
+    public Bundle getConditionDataForGoogleFhirDataPipes(String summaryType, Integer count, String total);
 }

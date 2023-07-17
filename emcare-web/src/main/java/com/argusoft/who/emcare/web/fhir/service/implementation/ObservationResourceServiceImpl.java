@@ -173,7 +173,7 @@ public class ObservationResourceServiceImpl implements ObservationResourceServic
                 List<ObservationResource> observationResources = observationResourceRepository.findAll();
                 int x = 0;
                 for (ObservationResource observationResource : observationResources) {
-                    if(x >= 10) break;
+                    if(x >= count) break;
                     x++;
                     Observation observation = parser.parseResource(Observation.class, observationResource.getText());
                     bundle.addEntry(
@@ -182,7 +182,7 @@ public class ObservationResourceServiceImpl implements ObservationResourceServic
                                     .setFullUrl("http://localhost:8080/fhir/" + observation.getId().substring(0, 44))
                     );
                 }
-                bundle.setTotal(Math.min(10, observationResources.size()));
+                bundle.setTotal(Math.min(count, observationResources.size()));
                 return bundle;
         }
         return null;

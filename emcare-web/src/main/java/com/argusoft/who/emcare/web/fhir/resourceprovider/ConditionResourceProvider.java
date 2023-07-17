@@ -5,10 +5,12 @@ import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.rest.annotation.*;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.param.DateParam;
+import ca.uhn.fhir.rest.param.StringAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.fhir.service.ConditionResourceService;
 import org.hl7.fhir.instance.model.api.IBaseResource;
+import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Condition;
 import org.hl7.fhir.r4.model.IdType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,5 +62,20 @@ public class ConditionResourceProvider implements IResourceProvider {
         return conditionResourceService.getByPatientId(theId);
     }
 
-
+    @Search(allowUnknownParams = true)
+    public Bundle getConditionDataForGoogleFhirDataPipes(
+            @RequiredParam(name = CommonConstant.SUMMARY) StringAndListParam type,
+            @OptionalParam(name = "_count") StringAndListParam count,
+            @OptionalParam(name = "_total") String total) {
+        String x = type.getValuesAsQueryTokens().get(0).getValuesAsQueryTokens().get(0).getValue();
+        String _count = "10";
+        if(count != null) {
+            _count = count.getValuesAsQueryTokens().get(0).getValuesAsQueryTokens().get(0).getValue();
+        }
+        return conditionResourceService.getConditionDataForGoogleFhirDataPipes(
+                x,
+                Integer.parseInt(_count),
+                total
+        );
+    }
 }

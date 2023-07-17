@@ -255,9 +255,13 @@ public class PatientResourceProvider implements IResourceProvider {
             @OptionalParam(name = "_count") StringAndListParam count,
             @OptionalParam(name = "_total") String total) {
         String x = type.getValuesAsQueryTokens().get(0).getValuesAsQueryTokens().get(0).getValue();
+        String _count = "10";
+        if(count != null) {
+            _count = count.getValuesAsQueryTokens().get(0).getValuesAsQueryTokens().get(0).getValue();
+        }
         return emcareResourceService.getPatientDataForGoogleFhirDataPipes(
                 x,
-                10,
+                Integer.parseInt(_count),
                 total
         );
     }

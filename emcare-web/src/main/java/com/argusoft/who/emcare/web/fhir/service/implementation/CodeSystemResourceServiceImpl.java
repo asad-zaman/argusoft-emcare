@@ -11,9 +11,7 @@ import com.argusoft.who.emcare.web.fhir.dto.CodeSystemDto;
 import com.argusoft.who.emcare.web.fhir.mapper.EmcareResourceMapper;
 import com.argusoft.who.emcare.web.fhir.model.CodeSystemResource;
 import com.argusoft.who.emcare.web.fhir.service.CodeSystemResourceService;
-import org.hl7.fhir.r4.model.CodeSystem;
-import org.hl7.fhir.r4.model.IdType;
-import org.hl7.fhir.r4.model.Meta;
+import org.hl7.fhir.r4.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -134,5 +132,27 @@ public class CodeSystemResourceServiceImpl implements CodeSystemResourceService 
         pageDto.setTotalCount(count);
 
         return pageDto;
+    }
+
+    public Bundle getCodeSystemDataForGoogleFhirDataPipes(String summaryType, Integer count, String total) {
+        Bundle bundle = new Bundle();
+        switch(summaryType) {
+            case "count":
+                bundle.setTotal((int)codeSystemResourceRepository.count());
+                return bundle;
+            case "data":
+                List<CodeSystem> codeSystems = getAllCodeSystem(null);
+                bundle.setTotal(Math.min(count, codeSystems.size()));
+
+                for(int i = 0; i < Math.min(count, codeSystems.size()); i++) {
+                    bundle.addEntry(
+                            new Bundle.BundleEntryComponent()
+                                    .setResource(codeSystems.get(i))
+                                    .setFullUrl("http://localhost:8080/fhir/" + codeSystems.get(i).getId().substring(0, 44))
+                    );
+                }
+                return bundle;
+        }
+        return null;
     }
 }

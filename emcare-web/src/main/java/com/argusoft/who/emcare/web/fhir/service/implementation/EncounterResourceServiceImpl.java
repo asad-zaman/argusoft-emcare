@@ -166,7 +166,7 @@ public class EncounterResourceServiceImpl implements EncounterResourceService {
                 List<EncounterResource> encounterResources = encounterResourceRepository.findAll();
                 int x = 0;
                 for (EncounterResource encounterResource : encounterResources) {
-                    if(x >= 10) break;
+                    if(x >= count) break;
                     x++;
                     Encounter encounter = parser.parseResource(Encounter.class, encounterResource.getText());
                     bundle.addEntry(
@@ -175,7 +175,7 @@ public class EncounterResourceServiceImpl implements EncounterResourceService {
                                     .setFullUrl("http://localhost:8080/fhir/" + encounter.getId().substring(0, 44))
                     );
                 }
-                bundle.setTotal(Math.min(10, encounterResources.size()));
+                bundle.setTotal(Math.min(count, encounterResources.size()));
                 return bundle;
         }
         return null;

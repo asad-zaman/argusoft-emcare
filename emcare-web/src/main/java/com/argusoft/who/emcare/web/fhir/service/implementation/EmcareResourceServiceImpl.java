@@ -727,9 +727,9 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
                 return bundle;
             case "data":
                 List<Patient> patients = getAllPatientResources();
-                bundle.setTotal(Math.min(10, patients.size()));
+                bundle.setTotal(Math.min(count, patients.size()));
 
-                for(int i = 0; i < Math.min(10, patients.size()); i++) {
+                for(int i = 0; i < Math.min(count, patients.size()); i++) {
                     bundle.addEntry(
                             new Bundle.BundleEntryComponent()
                                     .setResource(patients.get(i))
