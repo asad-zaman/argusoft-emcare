@@ -179,7 +179,7 @@ public class ObservationResourceServiceImpl implements ObservationResourceServic
                     bundle.addEntry(
                             new Bundle.BundleEntryComponent()
                                     .setResource(observation)
-                                    .setFullUrl("http://localhost:8080/fhir/" + observation.getId().substring(0, 44))
+                                    .setFullUrl("http://localhost:8080/fhir/" + observation.getId().split("/_history")[0])
                     );
                 }
                 bundle.setTotal(Math.min(count, observationResources.size()));

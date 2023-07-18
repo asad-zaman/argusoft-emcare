@@ -733,7 +733,7 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
                     bundle.addEntry(
                             new Bundle.BundleEntryComponent()
                                     .setResource(patients.get(i))
-                                    .setFullUrl("http://localhost:8080/fhir/" + patients.get(i).getId().substring(0, 44))
+                                    .setFullUrl("http://localhost:8080/fhir/" + patients.get(i).getId().split("/_history")[0])
                     );
                 }
                 return bundle;

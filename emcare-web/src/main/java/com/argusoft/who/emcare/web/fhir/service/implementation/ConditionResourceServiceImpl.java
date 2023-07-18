@@ -141,7 +141,7 @@ public class ConditionResourceServiceImpl implements ConditionResourceService {
                     bundle.addEntry(
                             new Bundle.BundleEntryComponent()
                                     .setResource(conditions.get(i))
-                                    .setFullUrl("http://localhost:8080/fhir/" + conditions.get(i).getId().substring(0, 44))
+                                    .setFullUrl("http://localhost:8080/fhir/" + conditions.get(i).getId().split("/_history")[0])
                     );
                 }
                 return bundle;

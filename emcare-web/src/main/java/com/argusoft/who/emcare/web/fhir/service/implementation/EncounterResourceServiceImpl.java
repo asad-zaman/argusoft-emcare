@@ -172,7 +172,7 @@ public class EncounterResourceServiceImpl implements EncounterResourceService {
                     bundle.addEntry(
                             new Bundle.BundleEntryComponent()
                                     .setResource(encounter)
-                                    .setFullUrl("http://localhost:8080/fhir/" + encounter.getId().substring(0, 44))
+                                    .setFullUrl("http://localhost:8080/fhir/" + encounter.getId().split("/_history")[0])
                     );
                 }
                 bundle.setTotal(Math.min(count, encounterResources.size()));

@@ -148,7 +148,7 @@ public class CodeSystemResourceServiceImpl implements CodeSystemResourceService 
                     bundle.addEntry(
                             new Bundle.BundleEntryComponent()
                                     .setResource(codeSystems.get(i))
-                                    .setFullUrl("http://localhost:8080/fhir/" + codeSystems.get(i).getId().substring(0, 44))
+                                    .setFullUrl("http://localhost:8080/fhir/" + codeSystems.get(i).getId().split("/_history")[0])
                     );
                 }
                 return bundle;
