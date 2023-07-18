@@ -36,6 +36,7 @@ export class HomeComponent implements OnInit {
   conditionArrForAgeAndColor = appConstants.conditionArrForAgeAndColor;
   indicatorFilterForm: FormGroup;
   indicatorInfo: any = [];
+  userFacilityName: string;
   FacilityName: String;
   month = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
   dateFormat: Date;
@@ -68,7 +69,8 @@ export class HomeComponent implements OnInit {
     if (!this.conditionArrForAgeAndColor.find(el => el.id === 'bw')) {
       this.conditionArrForAgeAndColor.push({ id: 'bw', name: 'between' });
     }
-    this.FacilityName = localStorage.getItem('FacilityName');
+    this.userFacilityName = JSON.parse(localStorage.getItem('FacilityName'));
+    this.FacilityName = this.userFacilityName.length == 1 ? this.userFacilityName : `${this.userFacilityName[0]} and ${this.userFacilityName.length-1}  more`;
   }
 
   getDashboardData() {

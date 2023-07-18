@@ -65,7 +65,7 @@
             <h3>{{'Indicators' | translate}}</h3>
             <div>
               <span class="mx-1"><i aria-hidden="true" class="bi bi-cursor nav-link_icon"></i></span>
-              <span>{{FacilityName}}</span>
+              <span pTooltip="{{userFacilityName.length > 1 ? userFacilityName : null}}" tooltipPosition="bottom" placeholder="Bottom">{{FacilityName}}</span>
             </div>
           </div>
           <div class="dashboard-card-body indicators_scroll">
