@@ -100,6 +100,9 @@ public class CommonConstant {
     public static final String TENANT_ADMIN_ROLE_POSTFIX = "_Admin";
     public static final String INDICATOR_VALUE = "indicatorValue";
 
+    public static final String CHART_DATA = "chartData";
+    public static final String NUMERATOR_DATA = "numeratorData";
+    public static final String DENOMINATOR_DATA = "denominatorData";
 
     private CommonConstant() {
     }

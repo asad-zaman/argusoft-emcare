@@ -29,4 +29,7 @@ public interface IndicatorService {
     public ResponseEntity<Object> getIndicatorsCompileValue(List<Long> indicatorIds);
     public ResponseEntity<Object> getIndicatorFilteredCompileValue(IndicatorFilterDto indicatorFilterDto);
 
+    public ResponseEntity<Object> getChartIndicatorsCompileValue(List<Long> indicatorIds);
+    public ResponseEntity<Object> getIndicatorBarChartData(IndicatorFilterDto indicatorFilterDto);
+
 }
