@@ -59,12 +59,12 @@ public class IndicatorController {
         return indicatorService.getIndicatorFilteredCompileValue(indicatorFilterDto);
     }
 
-    @PostMapping("/chart/value")
+    @PostMapping("/chart/compile/value")
     public ResponseEntity<Object> getChartIndicatorsCompileValue(@RequestBody List<Long> indicatorIds) {
         return indicatorService.getChartIndicatorsCompileValue(indicatorIds);
     }
 
-    @PostMapping("/chart")
+    @PostMapping("/chart/filter/value")
     public ResponseEntity<Object> getIndicatorBarChartData(@RequestBody IndicatorFilterDto indicatorFilterDto) {
         return indicatorService.getIndicatorBarChartData(indicatorFilterDto);
     }
