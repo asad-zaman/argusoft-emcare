@@ -66,6 +66,6 @@ public class IndicatorController {
 
     @PostMapping("/chart/filter/value")
     public ResponseEntity<Object> getIndicatorBarChartData(@RequestBody IndicatorFilterDto indicatorFilterDto) {
-        return indicatorService.getIndicatorBarChartData(indicatorFilterDto);
+        return indicatorService.getChartIndicatorsFilteredCompileValue(indicatorFilterDto);
     }
 }

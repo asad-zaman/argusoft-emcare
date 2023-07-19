@@ -30,6 +30,6 @@ public interface IndicatorService {
     public ResponseEntity<Object> getIndicatorFilteredCompileValue(IndicatorFilterDto indicatorFilterDto);
 
     public ResponseEntity<Object> getChartIndicatorsCompileValue(List<Long> indicatorIds);
-    public ResponseEntity<Object> getIndicatorBarChartData(IndicatorFilterDto indicatorFilterDto);
+    public ResponseEntity<Object> getChartIndicatorsFilteredCompileValue(IndicatorFilterDto indicatorFilterDto);
 
 }

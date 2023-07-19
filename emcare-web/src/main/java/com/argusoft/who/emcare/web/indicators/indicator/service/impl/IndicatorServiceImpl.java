@@ -301,7 +301,7 @@ public class IndicatorServiceImpl implements IndicatorService {
     }
 
     @Override
-    public ResponseEntity<Object> getIndicatorBarChartData(IndicatorFilterDto indicatorFilterDto) {
+    public ResponseEntity<Object> getChartIndicatorsFilteredCompileValue(IndicatorFilterDto indicatorFilterDto) {
         Optional<Indicator> optionalIndicator = indicatorRepository.findById(indicatorFilterDto.getIndicatorId());
         if (optionalIndicator.isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response("Indicator Not Found", HttpStatus.BAD_REQUEST.value()));
