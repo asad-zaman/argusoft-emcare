@@ -487,6 +487,23 @@ public class EmcareResourceServiceImpl implements EmcareResourceService {
     }
 
     @Override
+    public List<PatientDto> getAllPatientsList(){
+        List<Patient> patientsList = new ArrayList<>();
+        List<PatientDto> patientDtosList;
+
+        List<EmcareResource> resourcesList = retrieveResourcesByType(CommonConstant.FHIR_PATIENT, null, null);
+
+        for (EmcareResource emcareResource : resourcesList) {
+            Patient patient = parser.parseResource(Patient.class, emcareResource.getText());
+            patientsList.add(patient);
+        }
+
+        patientDtosList = EmcareResourceMapper.patientEntitiesToDtoMapper(patientsList);
+        return patientDtosList;
+    }
+
+
+    @Override
     public List<PatientDto> getAllPatients() {
         List<Patient> patientsList = new ArrayList<>();
         List<PatientDto> patientDtosList;
