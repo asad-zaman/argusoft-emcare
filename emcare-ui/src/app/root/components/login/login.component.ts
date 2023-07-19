@@ -22,6 +22,7 @@ export class LoginComponent implements OnInit {
   country;
   countryData;
   downloadURL;
+  userFacilityName = [];
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -159,6 +160,13 @@ export class LoginComponent implements OnInit {
         localStorage.setItem(
           appConstants.localStorageKeys.Lastname,
           res.lastName
+        );
+        res.facilities.forEach((data)=>{
+          this.userFacilityName.push(data.facilityName)
+        });        
+        localStorage.setItem(
+          appConstants.localStorageKeys.FacilityName,
+          JSON.stringify(this.userFacilityName)
         );
         localStorage.setItem('userFeatures', JSON.stringify(featureObj));
         localStorage.setItem('language', res['language']);
