@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "key": "REGISTRATION_EMAIL_AS_USERNAME",
+    "name": "Registration email as username",
+    "value": "Inactive"
+  },
+  {
+    "id": 2,
+    "key": "WELCOME_EMAIL",
+    "name": "Welcome email",
+    "value": "Active"
+  },
+  {
+    "id": 3,
+    "key": "SEND_CONFIRMATION_EMAIL",
+    "name": "Send confirmation email",
+    "value": "Active"
+  }
+]
