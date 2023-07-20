@@ -256,7 +256,7 @@ export class HomeComponent implements OnInit {
       this.indicatorApiBusy = false;
       this.initIndicatorFilterForm();
       if (res && res.length > 0) {
-        this.indicatorArr = res;        
+        this.indicatorArr = res;
         this.indicatorArr.forEach(el => {
           el.facilityIds = this.FacilityName;
           el.startDate = this.getDateFormat(el.startDate);
