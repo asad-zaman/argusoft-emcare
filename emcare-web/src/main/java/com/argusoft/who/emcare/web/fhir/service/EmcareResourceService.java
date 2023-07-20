@@ -35,6 +35,8 @@ public interface EmcareResourceService {
 
     public List<String> getPatientIdsUnderFacility(String facilityId);
 
+    public List<PatientDto> getAllPatientsList();
+
     public List<PatientDto> getAllPatients();
 
     public List<Patient> getAllPatientResources();

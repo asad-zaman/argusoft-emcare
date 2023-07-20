@@ -105,22 +105,6 @@ object CustomBooleanChoiceViewHolderFactory :
                 yesRadioButton.setLayoutParamsByOrientation(choiceOrientation)
                 noRadioButton.setLayoutParamsByOrientation(choiceOrientation)
 
-                when (questionnaireViewItem.answers.singleOrNull()?.valueBooleanType?.value) {
-                    true -> {
-                        yesRadioButton.isChecked = true
-                        noRadioButton.isChecked = false
-                    }
-
-                    false -> {
-                        noRadioButton.isChecked = true
-                        yesRadioButton.isChecked = false
-                    }
-
-                    null -> {
-                        yesRadioButton.isChecked = false
-                        noRadioButton.isChecked = false
-                    }
-                }
 
                 questionnaireViewItem.answerOption
                     .map { answerOption -> View.generateViewId() to answerOption }
