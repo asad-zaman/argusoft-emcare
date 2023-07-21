@@ -244,36 +244,44 @@ export class HomeComponent implements OnInit {
           el.endDate = this.getDateFormat(el.endDate);
           const indicatorValue = this.getIndicatorPercentageValue(el.chartData);
           el.indicatorValue = indicatorValue;
-          //  color swction
-          const colorSchema = el['colorSchema'] !== null ? JSON.parse(el['colorSchema']) : [];
-          if (colorSchema.length === 0 || indicatorValue === 0) {
-            // default colot
-            el['color'] = "green";
-          } else {
-            colorSchema.forEach(cel => {
-              if (cel.minValue < indicatorValue && indicatorValue < cel.maxValue) {
-                el['color'] = cel.color;
-              } else {
-                if (!Object(el).hasOwnProperty('color')) {
-                  // when range is not applied in any color scheme
-                  el['color'] = 'black';
-                }
-              }
-            });
-          }
+          this.setElementColor(el, indicatorValue);
           el['showFilter'] = false;
           el['showChart'] = false;
           this.getIndicators().push(this.newIndicatorAddition(el));
         });
-        this.iValues.changes.subscribe(c => {
-          c.toArray().forEach((item, i) => {
-            item.nativeElement.style.color = this.indicatorArr[i].color;
-          });
-        });
+        this.setColorStyle();
       }
     }, () => {
       this.indicatorApiBusy = false;
     });
+  }
+
+  setColorStyle() {
+    this.iValues.changes.subscribe(c => {
+      c.toArray().forEach((item, i) => {
+        item.nativeElement.style.color = this.indicatorArr[i].color;
+      });
+    });
+  }
+
+  setElementColor(el, indicatorValue) {
+    //  color swction
+    const colorSchema = el['colorSchema'] !== null ? JSON.parse(el['colorSchema']) : [];
+    if (colorSchema.length === 0 || indicatorValue === 0) {
+      // default colot
+      el['color'] = "green";
+    } else {
+      colorSchema.forEach(cel => {
+        if (cel.minValue < indicatorValue && indicatorValue < cel.maxValue) {
+          el['color'] = cel.color;
+        } else {
+          if (!Object(el).hasOwnProperty('color')) {
+            // when range is not applied in any color scheme
+            el['color'] = 'black';
+          }
+        }
+      });
+    }
   }
 
   getIndicatorPercentageValue(chartData) {
@@ -364,8 +372,10 @@ export class HomeComponent implements OnInit {
     }
     this.fhirService.filterIndicatorValue(data).subscribe(res => {
       if (res) {
-        controls.patchValue({ indicatorValue: this.getIndicatorPercentageValue(res[0].chartData) });
+        const indicatorPercentage = this.getIndicatorPercentageValue(res[0].chartData);
+        controls.patchValue({ indicatorValue: indicatorPercentage });
         const indicatorInfo = res[0];
+        this.setElementColor(indicatorInfo, indicatorPercentage);
         const selectedFacilities = controls.value.facility ? controls.value.facility : null;
         if (selectedFacilities) {
           indicatorInfo.facilityIds = selectedFacilities.length == 1 ?
@@ -378,6 +388,7 @@ export class HomeComponent implements OnInit {
         //  saving information
         const index = this.indicatorArr.findIndex(el => el.indicatorId === indicatorInfo.indicatorId);
         this.indicatorArr[index] = indicatorInfo;
+        this.setColorStyle();
       }
     });
   }
