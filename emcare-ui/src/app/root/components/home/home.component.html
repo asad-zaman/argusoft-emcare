@@ -62,16 +62,14 @@
     <!--left-grid-END-->
     <!--right-grid-->
     <div class="col-12 col-md-12 col-lg-12 col-xl-6 pl___7 dashboard-card">
-      <div class="dashboard-card-heading">
-        <h3>{{'Indicators' | translate}}</h3>
-      </div>
       <ng-container *ngIf="!this.indicatorApiBusy; else showSpinner">
         <div *ngIf="this.indicatorArr.length > 0; else noData" class="dashboard-card">
           <div class="dashboard-card-heading d-flex  justify-content-between">
             <h3>{{'Indicators' | translate}}</h3>
             <div>
               <span class="mx-1"><i aria-hidden="true" class="bi bi-cursor nav-link_icon"></i></span>
-              <span pTooltip="{{userFacilityName.length > 1 ? userFacilityName : null}}" tooltipPosition="bottom" placeholder="Bottom">{{FacilityName}}</span>
+              <span pTooltip="{{FacilityName}}" tooltipPosition="bottom"
+                placeholder="Bottom">{{FacilityName}}</span>
             </div>
           </div>
           <div class="dashboard-card-body indicators_scroll">
@@ -83,12 +81,12 @@
                       {{this.getIndicators().controls[i].value.indicatorValue}}%</td>
                     <td class="cst-table-style">
                       {{indicator.indicatorName}}</td>
-                    <td><i aria-hidden="true" class="px-2 bi bi-info-circle"   
-                       pTooltip="Facility : {{indicator.facilityIds ? indicator.facilityIds  : 'All' }},
+                    <td><i aria-hidden="true" class="px-3 bi bi-info-circle" pTooltip="Facility : {{indicator.facilityIds ? indicator.facilityIds  : 'All' }},
                        Gender : {{indicator.gender ? indicator.gender : 'Not Applied' }},
                        Age : {{indicator.age ? indicator.age : 'Not Applied' }},
                        Start Date : {{indicator.startDate ? indicator.startDate : 'Not Applied' }},
-                       End Date : {{indicator.endDate ? indicator.endDate : 'Not Applied' }}  " tooltipPosition="bottom"  placeholder="Bottom"></i></td>
+                       End Date : {{indicator.endDate ? indicator.endDate : 'Not Applied' }}  "
+                        tooltipPosition="bottom" placeholder="Bottom"></i></td>
                     <td><i (click)="enableFilter(i)" class="bi bi-filter-square chart-icon" aria-hidden="true"></i></td>
                     <td><i (click)="enableChart(i)" class="ml-3 bi bi-graph-up-arrow chart-icon" aria-hidden="true"></i>
                     </td>

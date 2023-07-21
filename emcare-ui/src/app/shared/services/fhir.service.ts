@@ -254,7 +254,7 @@ export class FhirService {
     }
 
     getIndicatorCompileValue(codeIdArr) {
-        const url = `${environment.apiUrl}/api/indicator/compile/value`;
+        const url = `${environment.apiUrl}/api/indicator/chart/compile/value`;
         return this.http.post(url, codeIdArr, this.getHeaders());
     }
 
@@ -334,7 +334,7 @@ export class FhirService {
     }
 
     filterIndicatorValue(data) {
-        let url = `${environment.apiUrl}/api/indicator/filter/value`;
+        let url = `${environment.apiUrl}/api/indicator/chart/filter/value`;
         return this.http.post(url, data, this.getHeaders());
     }
 

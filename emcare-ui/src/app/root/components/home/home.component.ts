@@ -41,11 +41,8 @@ export class HomeComponent implements OnInit {
   consultationByAgeGroupObj = {};
   scatterDataObj = {};
   filterBarChartObj = {};
-  indicatorInfo: any = [];
-  userFacilityName: string;
   FacilityName: String;
   month = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-  dateFormat: Date;
 
   @ViewChild('mapRef', { static: true }) mapElement: ElementRef;
   @ViewChildren('iValues') iValues: QueryList<ElementRef>;
@@ -75,17 +72,15 @@ export class HomeComponent implements OnInit {
     if (!this.conditionArrForAgeAndColor.find(el => el.id === 'bw')) {
       this.conditionArrForAgeAndColor.push({ id: 'bw', name: 'between' });
     }
-    this.userFacilityName = JSON.parse(localStorage.getItem('FacilityName'));
-    this.FacilityName = this.userFacilityName.length == 1 ? this.userFacilityName : `${this.userFacilityName[0]} and ${this.userFacilityName.length-1}  more`;
+    const userFacilityName = JSON.parse(localStorage.getItem(appConstants.localStorageKeys.FacilityName));
+    this.FacilityName = userFacilityName.length == 1 ?
+      userFacilityName[0] : `${userFacilityName[0]} and ${userFacilityName.length - 1}  more`;
   }
 
   getDashboardData() {
     this.fhirService.getDashboardData().subscribe((res) => {
       this.dashboardData = res;
     });
-  }
-  getSelectedFilters(i:number):string{
-    return this.getIndicators().controls[i].value.facility?.map(object=>object.name).join(',')
   }
 
   checkFeatures() {
@@ -101,19 +96,6 @@ export class HomeComponent implements OnInit {
       basicData: {
         labels: this.scatterData.map(el => el.d),
         datasets: [{ barThickness: 10, data: this.scatterData.map(el => el.y), borderWidth: 0 }]
-      },
-      basicOptions: {
-        plugins: { legend: { display: false } },
-        scales: { y: { beginAtZero: true } }
-      }
-    }
-  }
-
-  getFilterBarChart() {
-    this.filterBarChartObj = {
-      basicData: {
-        labels: ['10 Nov 2022', '10 Dec 2022', '10 Jan 2023', '10 Feb 2023'],
-        datasets: [{ barThickness: 10, data: [540, 325, 702, 620], borderWidth: 0 }]
       },
       basicOptions: {
         plugins: { legend: { display: false } },
@@ -156,7 +138,6 @@ export class HomeComponent implements OnInit {
         this.barChart();
         this.consultationPerFacilityChart();
         this.consultationByAgeGroupChart();
-        this.getFilterBarChart();
       }
     });
   }
@@ -251,7 +232,7 @@ export class HomeComponent implements OnInit {
   }
 
   getIndicatorCompileValue() {
-    const codeArr = [3843];
+    const codeArr = [];
     this.fhirService.getIndicatorCompileValue(codeArr).subscribe((res: any) => {
       this.indicatorApiBusy = false;
       this.initIndicatorFilterForm();
@@ -260,10 +241,12 @@ export class HomeComponent implements OnInit {
         this.indicatorArr.forEach(el => {
           el.facilityIds = this.FacilityName;
           el.startDate = this.getDateFormat(el.startDate);
-          el.endDate = this.getDateFormat(el.endDate); 
-          const indicatorValue = el.indicatorValue;
+          el.endDate = this.getDateFormat(el.endDate);
+          const indicatorValue = this.getIndicatorPercentageValue(el.chartData);
+          el.indicatorValue = indicatorValue;
+          //  color swction
           const colorSchema = el['colorSchema'] !== null ? JSON.parse(el['colorSchema']) : [];
-          if (colorSchema.length === 0 || parseInt(indicatorValue) === 0) {
+          if (colorSchema.length === 0 || indicatorValue === 0) {
             // default colot
             el['color'] = "green";
           } else {
@@ -291,6 +274,18 @@ export class HomeComponent implements OnInit {
     }, () => {
       this.indicatorApiBusy = false;
     });
+  }
+
+  getIndicatorPercentageValue(chartData) {
+    if (chartData.length !== 0) {
+      let numerator = 0;
+      const denominator = chartData[0].count;
+      chartData.forEach(el => numerator += el.patientwithcondition);
+      //  percentage      
+      return (numerator / denominator).toFixed(2);
+    } else {
+      return 0;
+    }
   }
 
   initIndicatorFilterForm() {
@@ -335,6 +330,21 @@ export class HomeComponent implements OnInit {
       }
     });
     this.indicatorArr[index].showChart = !this.indicatorArr[index].showChart;
+    //  preparing each chart
+    this.filterBarChartObj = {
+      basicData: {
+        labels: this.indicatorArr[index].chartData.map(el => new Date(el.admissiondate).toJSON().slice(0,10)),
+        datasets: [{
+          barThickness: 10,
+          data: this.indicatorArr[index].chartData.map(el => el.patientwithcondition),
+          borderWidth: 0
+        }]
+      },
+      basicOptions: {
+        plugins: { legend: { display: false } },
+        scales: { y: { beginAtZero: true } }
+      }
+    }
   }
 
   filterIndicator(index) {
@@ -354,23 +364,22 @@ export class HomeComponent implements OnInit {
     }
     this.fhirService.filterIndicatorValue(data).subscribe(res => {
       if (res) {
-        this.indicatorInfo = res;  
-        controls.patchValue({ indicatorValue: res[0].indicatorValue });
-        for(let i = 0; i < this.indicatorArr.length; ++i){
-          if(this.indicatorArr[i].indicatorId == this.indicatorInfo[0].indicatorId){
-            if(this.getSelectedFilters(i)){              
-            const selectedFacility = this.getSelectedFilters(i).split(","); 
-            this.indicatorInfo[0].facilityIds = selectedFacility.length==1 ? selectedFacility[0] : selectedFacility[0]+" and "+(selectedFacility.length-1) +" more";
-            }
-            this.indicatorInfo[0].startDate = this.getDateFormat(this.indicatorInfo[0].startDate);
-            this.indicatorInfo[0].endDate = this.getDateFormat(this.indicatorInfo[0].endDate);                        
-            this.indicatorArr[i] = this.indicatorInfo[0];
-            break;
-          }
+        controls.patchValue({ indicatorValue: this.getIndicatorPercentageValue(res[0].chartData) });
+        const indicatorInfo = res[0];
+        const selectedFacilities = controls.value.facility ? controls.value.facility : null;
+        if (selectedFacilities) {
+          indicatorInfo.facilityIds = selectedFacilities.length == 1 ?
+            selectedFacilities[0].name : selectedFacilities[0].name + " and " + (selectedFacilities.length - 1) + " more";
+        } else {
+          indicatorInfo.facilityIds = null;
         }
+        indicatorInfo.startDate = this.getDateFormat(indicatorInfo.startDate);
+        indicatorInfo.endDate = this.getDateFormat(indicatorInfo.endDate);
+        //  saving information
+        const index = this.indicatorArr.findIndex(el => el.indicatorId === indicatorInfo.indicatorId);
+        this.indicatorArr[index] = indicatorInfo;
       }
     });
-
   }
 
   onDateSelection(num, index) {
@@ -387,14 +396,14 @@ export class HomeComponent implements OnInit {
 
   checkForInBetween(event, i) {
     if (event.value && event.value.id === 'bw') {
-      this.getIndicators().controls[i].patchValue({ isShowgetSelectedFiltersBetween: true });
+      this.getIndicators().controls[i].patchValue({ isShowBetween: true });
     } else {
       this.getIndicators().controls[i].patchValue({ isShowBetween: false });
     }
   }
 
-  getDateFormat(seconds: number){
-    this.dateFormat = new Date(seconds);
-    return `${this.dateFormat.getDate()} ${this.month[this.dateFormat.getMonth()]} ${this.dateFormat.getFullYear()}`;
+  getDateFormat(seconds: number) {
+    const dateFormat = new Date(seconds);
+    return `${dateFormat.getDate()} ${this.month[dateFormat.getMonth()]} ${dateFormat.getFullYear()}`;
   }
 }
