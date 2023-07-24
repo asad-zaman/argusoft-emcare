@@ -289,8 +289,8 @@ export class HomeComponent implements OnInit {
       let numerator = 0;
       const denominator = chartData[0].count;
       chartData.forEach(el => numerator += el.patientwithcondition);
-      //  percentage      
-      return (numerator / denominator).toFixed(2);
+      //  percentage
+      return (numerator * 100 / denominator).toFixed(2);
     } else {
       return 0;
     }
@@ -341,7 +341,7 @@ export class HomeComponent implements OnInit {
     //  preparing each chart
     this.filterBarChartObj = {
       basicData: {
-        labels: this.indicatorArr[index].chartData.map(el => new Date(el.admissiondate).toJSON().slice(0,10)),
+        labels: this.indicatorArr[index].chartData.map(el => new Date(el.admissiondate).toLocaleDateString()),
         datasets: [{
           barThickness: 10,
           data: this.indicatorArr[index].chartData.map(el => el.patientwithcondition),
@@ -358,6 +358,7 @@ export class HomeComponent implements OnInit {
   filterIndicator(index) {
     const controls = this.getIndicators().controls[index];
     const data = {
+      facilityIds: controls.value.facility.map(el => el.id),
       indicatorId: controls.value.indicatorId,
       gender: controls.value.gender ? controls.value.gender.id : null,
       age: controls.value.isShowBetween ? (
