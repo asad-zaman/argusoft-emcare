@@ -1,0 +1,62 @@
+[
+  {
+    "organizationName": "WHO",
+    "facilityName": "WHO Test",
+    "address": "test",
+    "organizationId": "13a3fba4-0be6-4b1c-abac-c26cf66c2f37",
+    "facilityId": "1a7f0458-196d-4b76-89ca-f723cad06248",
+    "locationName": "Geneva",
+    "locationId": 124,
+    "status": "Active",
+    "latitude": "33.2233",
+    "longitude": "43.6794"
+  },
+  {
+    "organizationName": "Iraq Health Ministry",
+    "facilityName": "Tammoz",
+    "address": "Tammoz street",
+    "organizationId": "13a3fba4-0be6-4b1c-abac-c26cf66c2f37",
+    "facilityId": "ed52aa7d-8515-4e52-9d7e-711cba34fadc",
+    "locationName": "AL-Aymen",
+    "locationId": 1452,
+    "status": "Active",
+    "latitude": "33.30135300142959",
+    "longitude": "44.361567780761405"
+  },
+  {
+    "organizationName": "Iraq Health Ministry",
+    "facilityName": "AL-Jameea",
+    "address": "AL-Jameea street",
+    "organizationId": "13a3fba4-0be6-4b1c-abac-c26cf66c2f37",
+    "facilityId": "fe189e5f-7f62-4ef1-928b-39798de67126",
+    "locationName": "AL-Adoura",
+    "locationId": 1448,
+    "status": "Active",
+    "latitude": "33.3999142814339",
+    "longitude": "44.4069036443254"
+  },
+  {
+    "organizationName": "Iraq Health Ministry",
+    "facilityName": "Sulaiman AL-Faidhee",
+    "address": "Sulaiman AL-Faidhee street",
+    "organizationId": "13a3fba4-0be6-4b1c-abac-c26cf66c2f37",
+    "facilityId": "adad81f6-ea1b-44ec-9452-1dd212f00e23",
+    "locationName": "AL-Shaab",
+    "locationId": 1451,
+    "status": "Active",
+    "latitude": "33.399878453527414",
+    "longitude": "44.40686072885849"
+  },
+  {
+    "organizationName": "Iraq Health Ministry",
+    "facilityName": "Al-Rabee-Test",
+    "address": "Al-Rabee-Test",
+    "organizationId": "13a3fba4-0be6-4b1c-abac-c26cf66c2f37",
+    "facilityId": "ec00fb95-0d15-47e8-8fe4-ebdcbb373c93",
+    "locationName": "AL -Yarmook",
+    "locationId": 1455,
+    "status": "Active",
+    "latitude": "23",
+    "longitude": "21"
+  }
+]
