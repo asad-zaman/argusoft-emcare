@@ -68,8 +68,7 @@
             <h3>{{'Indicators' | translate}}</h3>
             <div>
               <span class="mx-1"><i aria-hidden="true" class="bi bi-cursor nav-link_icon"></i></span>
-              <span pTooltip="{{FacilityName}}" tooltipPosition="bottom"
-                placeholder="Bottom">{{FacilityName}}</span>
+              <span pTooltip="{{FacilityName}}" tooltipPosition="bottom" placeholder="Bottom">{{FacilityName}}</span>
             </div>
           </div>
           <div class="dashboard-card-body indicators_scroll">
@@ -88,11 +87,12 @@
                        End Date : {{indicator.endDate ? indicator.endDate : 'Not Applied' }}  "
                         tooltipPosition="bottom" placeholder="Bottom"></i></td>
                     <td><i (click)="enableFilter(i)" class="bi bi-filter-square chart-icon" aria-hidden="true"></i></td>
-                    <td><i (click)="enableChart(i)" class="ml-3 bi bi-graph-up-arrow chart-icon" aria-hidden="true"></i>
+                    <td>
+                      <i (click)="enableChart(i)" class="ml-3 bi bi-graph-up-arrow chart-icon" aria-hidden="true"></i>
                     </td>
                   </tr>
                   <tr *ngIf="indicator.showFilter">
-                    <td colspan="2">
+                    <td colspan="6">
                       <div class="filter-content mt-3">
                         <form [formGroup]="indicatorFilterForm" name="indicatorFilterForm" novalidate>
                           <div formArrayName="indicators">
@@ -178,10 +178,13 @@
                     </td>
                   </tr>
                   <tr *ngIf="indicator.showChart">
-                    <td colspan="2">
-                      <div class="">
+                    <td colspan="6">
+                      <div *ngIf="indicator.indicatorValue">
                         <p-chart type="bar" [data]="filterBarChartObj['basicData']"
                           [options]="filterBarChartObj['basicOptions']"></p-chart>
+                      </div>
+                      <div *ngIf="!indicator.indicatorValue">
+                        <h5 class="mx-2 my-3">Sorry, there is no data!</h5>
                       </div>
                     </td>
                   </tr>
