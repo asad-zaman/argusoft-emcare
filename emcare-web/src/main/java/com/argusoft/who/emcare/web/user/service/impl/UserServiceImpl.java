@@ -553,7 +553,12 @@ public class UserServiceImpl implements UserService {
         RoleRepresentation roleRep = new RoleRepresentation();
         roleRep.setName(role.getRoleName());
         roleRep.setDescription(role.getRoleDescription());
-        keycloak.realm(realm).roles().create(roleRep);
+        try {
+            keycloak.realm(realm).roles().create(roleRep);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
         RoleResource roleResource = keycloak.realm(realm).roles().get(role.getRoleName());
 //      ADD COMPOSITE ROLE
         RoleRepresentation defaultRoleRepresentation = keycloak.realm(realm).roles().get("default-roles-emcare").toRepresentation();

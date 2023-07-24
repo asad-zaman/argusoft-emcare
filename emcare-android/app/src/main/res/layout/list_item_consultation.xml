@@ -84,6 +84,24 @@
             tools:text="21/06/1999" />
 
         <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/syncStateTextView"
+            style="@style/TextView.Small.Black"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_4sdp"
+            android:textColor="@color/color_dark_green"
+            android:drawableLeft="@drawable/ic_synced"
+            android:drawablePadding="@dimen/_1sdp"
+            android:textSize="@dimen/_9sdp"
+            android:paddingStart="@dimen/dimen_8dp"
+            android:paddingEnd="@dimen/dimen_8dp"
+            android:paddingTop="@dimen/dimen_2dp"
+            android:paddingBottom="@dimen/dimen_2dp"
+            app:layout_constraintStart_toStartOf="@id/nameTextView"
+            app:layout_constraintTop_toBottomOf="@+id/consultationDateTextView"
+            android:background="@drawable/selector_bg_light_green"/>
+
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/badgeTextView"
             android:layout_width="@dimen/_70sdp"
             android:layout_height="match_parent"

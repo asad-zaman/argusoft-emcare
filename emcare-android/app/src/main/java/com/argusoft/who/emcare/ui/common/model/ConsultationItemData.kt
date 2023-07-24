@@ -16,5 +16,6 @@ data class ConsultationItemData(
     val structureMapId: String? = null,
     val consultationStage: String? = null,
     val questionnaireResponseText: String? = null,
-    val isActive: Boolean = true
+    val isActive: Boolean = true,
+    val isSynced: Boolean = true
 )

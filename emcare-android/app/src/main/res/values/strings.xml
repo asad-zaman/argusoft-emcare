@@ -234,6 +234,8 @@
         name="questionnaire_validation_error_supporting_text"
         >Please answer all mandatory questions:</string>
     <string name="questionnaire_validation_error_submit_button_text">
-
   </string>
+    <string name="text_label_visit_date">Visit Date :</string>
+    <string name="text_synced">Synced</string>
+    <string name="text_not_synced">Not synced</string>
 </resources>

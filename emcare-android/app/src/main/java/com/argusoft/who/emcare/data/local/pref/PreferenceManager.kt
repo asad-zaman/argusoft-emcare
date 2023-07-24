@@ -22,6 +22,9 @@ class PreferenceManager(private val sharedPreferences: EncPref) : Preference {
         private const val SUBMITTED_RESOURCE = "SUBMITTED_RESOURCE"
         private const val THEME = "THEME"
         private const val COUNTRY = "COUNTRY"
+        private const val START_AUDIT = "START_AUDIT"
+        private const val END_AUDIT = "END_AUDIT"
+        private const val CURRENT_IG_VERSION = "CURRENT_IG_VERSION"
 
     }
 
@@ -119,6 +122,30 @@ class PreferenceManager(private val sharedPreferences: EncPref) : Preference {
 
     override fun getCountry(): String {
         return sharedPreferences.getString(COUNTRY, "")
+    }
+
+    override fun setStartAudit(startAudit: String) {
+        sharedPreferences.putString(START_AUDIT, startAudit)
+    }
+
+    override fun getStartAudit(): String {
+        return sharedPreferences.getString(START_AUDIT, "")
+    }
+
+    override fun setEndAudit(endAudit: String) {
+        sharedPreferences.putString(END_AUDIT, endAudit)
+    }
+
+    override fun getEndAudit(): String {
+        return sharedPreferences.getString(END_AUDIT, "")
+    }
+
+    override fun getCurrentIGVersion(): String {
+        return sharedPreferences.getString(CURRENT_IG_VERSION, "")
+    }
+
+    override fun setCurrentIGVersion(currentIGVersion: String) {
+        sharedPreferences.putString(CURRENT_IG_VERSION, currentIGVersion)
     }
 
     override fun clear() {

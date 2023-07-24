@@ -32,5 +32,7 @@ class AboutFragment : BaseFragment<FragmentAboutBinding>() {
         }
 
         initObserverSync(binding.progressLayout, false)
+        initObserverPurgeResources(binding.progressLayout, false)
+
     }
 }

@@ -43,6 +43,7 @@ public class IndicatorQueryBuilder {
                     + getTypeKey(indicatorNumeratorEquation.getValueType()) + ") as valueText");
             }
         }
+        query=query.append(", TO_DATE(cast(cast(cast(obr.text AS json)->>'issued' as text) AS TEXT ),'YYYY-MM-DD') as admissiondate");
         if (Objects.nonNull(indicatorFilterDto.getAge())) {
             query = query.append(" , cast(EXTRACT('year' from age(now(), TO_DATE(cast(cast(emr.text AS json)->>'birthDate' as text),'YYYY-MM-DD'))) * 12 as INTEGER) +\n" +
                 "   cast(EXTRACT('mons' from age(now(), TO_DATE(cast(cast(emr.text AS json)->>'birthDate' as text),'YYYY-MM-DD'))) as INTEGER) as age");
@@ -54,7 +55,7 @@ public class IndicatorQueryBuilder {
         if (facilityId != null && !facilityId.isEmpty()) {
             query = query.append(" where emr.facility_id in ('" + facilityId + "')");
         }
-        query = query.append(") select distinct(patient) from custom_code ");
+        query = query.append(") select count(distinct(patient)) as patientcount, admissiondate from custom_code ");
         if (!indicatorNumeratorEquation.getCode().equalsIgnoreCase(CommonConstant.ALL_CODE)) {
             query = query.append("where code = '" + indicatorNumeratorEquation.getCode() + "' ");
         }
@@ -88,6 +89,8 @@ public class IndicatorQueryBuilder {
                 query = query.append(" where valueText" + indicatorNumeratorEquation.getCondition() + " '" + indicatorNumeratorEquation.getValue() + "'");
             }
         }
+        query = query.append(" GROUP BY admissiondate");
+        query = query.append(" ORDER BY admissiondate");
         return query.toString();
     }
 
@@ -108,6 +111,7 @@ public class IndicatorQueryBuilder {
                     + getTypeKey(indicatorDenominatorEquation.getValueType()) + ") as valueText");
             }
         }
+        query=query.append(", TO_DATE(cast(cast(cast(obr.text AS json)->>'issued' as text) AS TEXT ),'YYYY-MM-DD') as admissiondate");
         if (Objects.nonNull(indicatorFilterDto.getAge())) {
             query = query.append(" , cast(EXTRACT('year' from age(now(), TO_DATE(cast(cast(emr.text AS json)->>'birthDate' as text),'YYYY-MM-DD'))) * 12 as INTEGER) +\n" +
                 "   cast(EXTRACT('mons' from age(now(), TO_DATE(cast(cast(emr.text AS json)->>'birthDate' as text),'YYYY-MM-DD'))) as INTEGER) as age");
@@ -119,7 +123,7 @@ public class IndicatorQueryBuilder {
         if (facilityId != null && !facilityId.isEmpty()) {
             query = query.append(" where emr.facility_id in ('" + facilityId + "')");
         }
-        query = query.append(") select distinct(patient) from custom_code where 1=1");
+        query = query.append(") select count(distinct(patient)) as patientcount, admissiondate from custom_code where 1=1 ");
         if (!indicatorDenominatorEquation.getCode().equalsIgnoreCase(CommonConstant.ALL_CODE)) {
             query = query.append("and code = '" + indicatorDenominatorEquation.getCode() + "' ");
         }
@@ -150,6 +154,8 @@ public class IndicatorQueryBuilder {
                 query = query.append(" and valueText" + indicatorDenominatorEquation.getCondition() + " '" + indicatorDenominatorEquation.getValue() + "'");
             }
         }
+        query = query.append(" GROUP BY admissiondate");
+        query = query.append(" ORDER BY admissiondate");
         return query.toString();
     }
 
@@ -206,9 +212,9 @@ public class IndicatorQueryBuilder {
 
     public String getTypeKey(String valueType) {
         String type = "TEXT";
-        if (valueType.equals(CommonConstant.FHIR_TYPE_BOOLEAN_CONDITION)) {
+        if (valueType.equalsIgnoreCase(CommonConstant.FHIR_TYPE_BOOLEAN_CONDITION)) {
             type = CommonConstant.FHIR_TYPE_BOOLEAN_KEY;
-        } else if (valueType.equals(CommonConstant.FHIR_TYPE_INTEGER_CONDITION)) {
+        } else if (valueType.equalsIgnoreCase(CommonConstant.FHIR_TYPE_INTEGER_CONDITION)) {
             type = CommonConstant.FHIR_TYPE_INTEGER_KEY;
         }
         return type;

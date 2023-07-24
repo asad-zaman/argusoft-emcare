@@ -58,6 +58,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(){
 
     override fun initObserver() {
 
-        initObserverSync(binding.rootLayout, false)
+        initObserverSync(binding.rootLayout, true)
+        initObserverPurgeResources(binding.rootLayout, true)
     }
 }

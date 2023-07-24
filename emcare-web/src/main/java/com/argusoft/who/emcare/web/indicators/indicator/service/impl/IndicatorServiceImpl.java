@@ -245,7 +245,6 @@ public class IndicatorServiceImpl implements IndicatorService {
         }
         String facilityId = getCommaSepratedFacilityIdsWithFullString(facilityIds);
         String query = indicatorQueryBuilder.changeQueryBasedOnFilterValueReplace(facilityId, indicator, indicatorFilterDto);
-        System.out.println("====="+query);
         List<Map<String, Object>> observationResources = observationCustomResourceRepository.findByPublished(query);
 
         Map<String, Object> stringObjectMap = new HashMap<>();
@@ -299,5 +298,124 @@ public class IndicatorServiceImpl implements IndicatorService {
         } else {
             return "'" + String.join("','", facilityIds) + "'";
         }
+    }
+
+    @Override
+    public ResponseEntity<Object> getChartIndicatorsFilteredCompileValue(IndicatorFilterDto indicatorFilterDto) {
+        Optional<Indicator> optionalIndicator = indicatorRepository.findById(indicatorFilterDto.getIndicatorId());
+        if (optionalIndicator.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response("Indicator Not Found", HttpStatus.BAD_REQUEST.value()));
+        }
+        Indicator indicator = optionalIndicator.get();
+        List<Map<String, Object>> responseList = new ArrayList<>();
+        Map<String, List<Map<String, Object>>> numeratorChart = new HashMap<>();
+        Map<String, List<Map<String, Object>>> denominatorChart = new HashMap<>();
+            if (Boolean.TRUE.equals(indicator.getIsQueryConfigure())) {
+                getChartDataByDirectQuery(indicator, responseList, indicatorFilterDto, true);
+            } else {
+                getChartIndicatorValue(indicator, numeratorChart, denominatorChart, responseList, indicatorFilterDto, true);
+            }
+        return ResponseEntity.status(HttpStatus.OK).body(responseList);
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<Object> getChartIndicatorsCompileValue(List<Long> indicatorIds) {
+        List<Indicator> indicators = indicatorRepository.findAll();
+
+        List<Map<String, Object>> responseList = new ArrayList<>();
+        for (Indicator indicator : indicators) {
+            Map<String, List<Map<String, Object>>> numeratorChart = new HashMap<>();
+            Map<String, List<Map<String, Object>>> denominatorChart = new HashMap<>();
+            IndicatorFilterDto indicatorFilterDto = new IndicatorFilterDto();
+            indicatorFilterDto.setAge(indicator.getAge());
+            indicatorFilterDto.setGender(indicator.getGender());
+            if (indicator.getDisplayType().equalsIgnoreCase(CommonConstant.INDICATOR_DISPLAY_TYPE_COUNT)) {
+                if (Boolean.TRUE.equals(indicator.getIsQueryConfigure())) {
+                    getChartDataByDirectQuery(indicator, responseList, indicatorFilterDto, false);
+                } else {
+                    getChartIndicatorValue(indicator, numeratorChart, denominatorChart, responseList, indicatorFilterDto, false);
+                }
+            }
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(responseList);
+    }
+
+    private void getChartIndicatorValue(Indicator indicator, final Map<String, List<Map<String, Object>>> numeratorChart, final Map<String, List<Map<String, Object>>> denominatorChart, final List<Map<String, Object>> responseList, IndicatorFilterDto indicatorFilterDto, Boolean isFilter) {
+        List<String> facilityIds;
+
+        if (Boolean.FALSE.equals(isFilter)) {
+            facilityIds = userService.getCurrentUserFacility();
+            if (facilityIds.isEmpty() || Objects.isNull(facilityIds) || Objects.isNull(facilityIds.get(0))) {
+                facilityIds = locationResourceService.getActiveFacility().stream().map(FacilityDto::getFacilityId).collect(Collectors.toList());
+            }
+        } else {
+            facilityIds = indicatorFilterDto.getFacilityIds();
+        }
+        for (IndicatorNumeratorEquation indicatorNumeratorEquation : indicator.getNumeratorEquation()) {
+            String query = indicatorQueryBuilder.getQueryForIndicatorNumeratorEquation(indicatorNumeratorEquation, getCommaSepratedFacilityIds(facilityIds), indicator, indicatorFilterDto);
+            List<Map<String, Object>> observationResources = observationCustomResourceRepository.findByPublished(query);
+            numeratorChart.put(indicatorNumeratorEquation.getEqIdentifier(), observationResources);
+        }
+
+        for (IndicatorDenominatorEquation indicatorDenominatorEquation : indicator.getDenominatorEquation()) {
+            String query = indicatorQueryBuilder.getQueryForIndicatorDenominatorEquation(indicatorDenominatorEquation, getCommaSepratedFacilityIds(facilityIds), indicator, indicatorFilterDto);
+            List<Map<String, Object>> observationResources = observationCustomResourceRepository.findByPublished(query);
+            denominatorChart.put(indicatorDenominatorEquation.getEqIdentifier(), observationResources);
+        }
+
+        Map<String, Object> chartData = new HashMap<>();;
+        chartData.put(CommonConstant.NUMERATOR_DATA,numeratorChart);
+        chartData.put(CommonConstant.DENOMINATOR_DATA,denominatorChart);
+
+        Map<String, Object> stringObjectMap = new HashMap<>();
+        DecimalFormat df = new DecimalFormat("0.0");
+        stringObjectMap.put("indicatorCode", indicator.getIndicatorCode());
+        stringObjectMap.put("indicatorId", indicator.getIndicatorId());
+        stringObjectMap.put("age", indicatorFilterDto.getAge());
+        stringObjectMap.put("facilityIds", indicatorFilterDto.getFacilityIds());
+        stringObjectMap.put("gender", indicatorFilterDto.getGender());
+        stringObjectMap.put("startDate", indicatorFilterDto.getStartDate());
+        stringObjectMap.put("endDate", indicatorFilterDto.getEndDate());
+        stringObjectMap.put("indicatorName", indicator.getIndicatorName());
+        stringObjectMap.put("indicatorType", indicator.getDisplayType());
+        stringObjectMap.put("colorSchema", indicator.getColourSchema());
+        stringObjectMap.put(CommonConstant.CHART_DATA, chartData);
+        responseList.add(stringObjectMap);
+    }
+
+    private void getChartDataByDirectQuery(Indicator indicator,
+                                       final List<Map<String, Object>> responseList,
+                                       IndicatorFilterDto indicatorFilterDto,
+                                       Boolean isFilter) {
+        List<String> facilityIds;
+        if (Boolean.FALSE.equals(isFilter)) {
+            facilityIds = userService.getCurrentUserFacility();
+            if (facilityIds.isEmpty() || Objects.isNull(facilityIds) || Objects.isNull(facilityIds.get(0))) {
+                facilityIds = locationResourceService.getActiveFacility().stream().map(FacilityDto::getFacilityId).collect(Collectors.toList());
+            }
+        } else {
+            facilityIds = indicatorFilterDto.getFacilityIds();
+        }
+        System.out.println(indicator.getIndicatorName());
+        String facilityId = getCommaSepratedFacilityIdsWithFullString(facilityIds);
+        String query = indicatorQueryBuilder.changeQueryBasedOnFilterValueReplace(facilityId, indicator, indicatorFilterDto);
+        System.out.println("====="+query);
+        List<Map<String, Object>> observationResources = observationCustomResourceRepository.findByPublished(query);
+
+        Map<String, Object> stringObjectMap = new HashMap<>();
+        DecimalFormat df = new DecimalFormat("0.0");
+        stringObjectMap.put("indicatorCode", indicator.getIndicatorCode());
+        stringObjectMap.put("indicatorId", indicator.getIndicatorId());
+        stringObjectMap.put("age", indicatorFilterDto.getAge());
+        stringObjectMap.put("facilityIds", indicatorFilterDto.getFacilityIds());
+        stringObjectMap.put("gender", indicatorFilterDto.getGender());
+        stringObjectMap.put("startDate", indicatorFilterDto.getStartDate());
+        stringObjectMap.put("endDate", indicatorFilterDto.getEndDate());
+        stringObjectMap.put("indicatorName", indicator.getIndicatorName());
+        stringObjectMap.put("indicatorType", indicator.getDisplayType());
+        stringObjectMap.put("colorSchema", indicator.getColourSchema());
+        stringObjectMap.put(CommonConstant.CHART_DATA, observationResources);
+        responseList.add(stringObjectMap);
     }
 }

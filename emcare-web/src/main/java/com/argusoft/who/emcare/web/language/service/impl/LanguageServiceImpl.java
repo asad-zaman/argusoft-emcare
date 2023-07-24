@@ -86,9 +86,10 @@ public class LanguageServiceImpl implements LanguageService {
 
         TranslateOptions translateOptions = new TranslateOptions.Builder().text(translateLabel).modelId(translateTo).build();
 
-        result = languageTranslator.translate(translateOptions).execute().getResult().getTranslations();
+
 
         try {
+            result = languageTranslator.translate(translateOptions).execute().getResult().getTranslations();
             for (int i = 0; i < actualList.size(); i++) {
                 newJson.put(actualList.get(i), result.get(i).getTranslation());
             }

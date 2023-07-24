@@ -23,11 +23,12 @@ NoData(Highcharts);
   styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent implements OnInit {
+
   dashboardData: any = {};
   isView = true;
   facilityArr = [];
   lastScDate = `${new Date().toDateString()} ${new Date().toLocaleTimeString()}`;
-  indicatorArr = [];
+  indicatorArr: any = [];
   scatterData = [];
   consultationPerFacility = [];
   consultationByAgeGroup = [];
@@ -35,6 +36,13 @@ export class HomeComponent implements OnInit {
   genderArr = appConstants.genderArr;
   conditionArrForAgeAndColor = appConstants.conditionArrForAgeAndColor;
   indicatorFilterForm: FormGroup;
+  showChartData = false;
+  consultationPerFacilityObj = {};
+  consultationByAgeGroupObj = {};
+  scatterDataObj = {};
+  filterBarChartObj = {};
+  FacilityName: String;
+  month = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
   @ViewChild('mapRef', { static: true }) mapElement: ElementRef;
   @ViewChildren('iValues') iValues: QueryList<ElementRef>;
@@ -46,7 +54,7 @@ export class HomeComponent implements OnInit {
     private readonly cdr: ChangeDetectorRef,
     private readonly formBuilder: FormBuilder,
     private readonly toasterService: ToasterService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.prerequisite();
@@ -64,6 +72,9 @@ export class HomeComponent implements OnInit {
     if (!this.conditionArrForAgeAndColor.find(el => el.id === 'bw')) {
       this.conditionArrForAgeAndColor.push({ id: 'bw', name: 'between' });
     }
+    const userFacilityName = JSON.parse(localStorage.getItem(appConstants.localStorageKeys.FacilityName));
+    this.FacilityName = userFacilityName.length == 1 ?
+      userFacilityName[0] : `${userFacilityName[0]} and ${userFacilityName.length - 1}  more`;
   }
 
   getDashboardData() {
@@ -81,84 +92,16 @@ export class HomeComponent implements OnInit {
   }
 
   barChart() {
-    let options = {
-      chart: {
-        type: 'column',
-        margin: [50, 50, 60, 80],
-        events: {
-          click: function (e) {
-            let x = Math.round(e.xAxis[0].value);
-            let y = Math.round(e.yAxis[0].value);
-          },
-        },
+    this.scatterDataObj = {
+      basicData: {
+        labels: this.scatterData.map(el => el.d),
+        datasets: [{ barThickness: 10, data: this.scatterData.map(el => el.y), borderWidth: 0 }]
       },
-      title: {
-        text: undefined,
-      },
-      accessibility: {
-        announceNewData: {
-          enabled: true,
-        },
-      },
-      tooltip: {
-        enabled: false,
-        headerFormat: undefined,
-        pointFormat: `<b>Date = {point.d}</b>  <br> <br> <b>Consultations = {point.y}</b>`,
-      },
-      xAxis: {
-        labels: {
-          rotation: -45,
-          format: '{value:%e-%b-%y}',
-        },
-        title: {
-          text: undefined,
-        },
-        // startOnTick: false,
-        // endOnTick: true,
-        tickInterval: 24 * 3600 * 1000,
-      },
-      yAxis: {
-        title: {
-          text: undefined,
-        },
-        minPadding: 0.2,
-        maxPadding: 0.2,
-        maxZoom: 6,
-        plotLines: [
-          {
-            value: 0,
-            width: 1,
-            color: '#808080',
-          },
-        ],
-      },
-      legend: {
-        enabled: false,
-      },
-      credits: {
-        enabled: false,
-      },
-      exporting: {
-        enabled: false,
-      },
-      plotOptions: {
-        column: {
-          dataLabels: {
-            enabled: true,
-            format: '{y}',
-            // verticalAlign: 'top',
-            // inside: true
-          },
-        },
-      },
-      series: [
-        {
-          type: undefined,
-          data: this.scatterData,
-        },
-      ],
-    };
-    Highcharts.chart('scatter-chart-container', options);
+      basicOptions: {
+        plugins: { legend: { display: false } },
+        scales: { y: { beginAtZero: true } }
+      }
+    }
   }
 
   getChartData() {
@@ -212,72 +155,28 @@ export class HomeComponent implements OnInit {
   }
 
   consultationPerFacilityChart() {
-    Highcharts.chart('consultationPerFacility', {
-      chart: {
-        plotBackgroundColor: null,
-        plotBorderWidth: null,
-        plotShadow: false,
-        type: 'pie'
+    this.consultationPerFacilityObj = {
+      pieData: {
+        labels: this.consultationPerFacility.map(el => el.name),
+        datasets: [{ data: this.consultationPerFacility.map(el => el.y), }]
       },
-      title: {
-        text: ''
-      },
-      tooltip: {
-        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-      },
-      plotOptions: {
-        pie: {
-          size: '90%',
-          allowPointSelect: true,
-          cursor: 'pointer',
-          dataLabels: {
-            enabled: false,
-            format: '<b>{point.name}</b>: {point.percentage:.1f} %'
-          }
-        }
-      },
-      series: [{
-        name: 'Location',
-        colorByPoint: true,
-        type: undefined,
-        data: this.consultationPerFacility
-      }]
-    });
+      pieOptions: { plugins: { legend: { display: false, labels: { usePointStyle: false } } } }
+    }
   }
 
   consultationByAgeGroupChart() {
-    Highcharts.chart('consultationByAgeGroup', {
-      chart: {
-        plotBackgroundColor: null,
-        plotBorderWidth: null,
-        plotShadow: false,
-        type: 'pie'
-      },
-      title: {
-        text: ''
-      },
-      colors: ['#A4D2D3', '#44A9A8'],
-      tooltip: {
-        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-      },
-      plotOptions: {
-        pie: {
-          size: '90%',
-          allowPointSelect: true,
-          cursor: 'pointer',
-          dataLabels: {
-            enabled: false,
-            format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+    this.consultationByAgeGroupObj = {
+      pieData: {
+        labels: this.consultationByAgeGroup.map(el => el.name),
+        datasets: [
+          {
+            data: this.consultationByAgeGroup.map(el => el.y),
+            backgroundColor: ['#BDEBEC', '#5DC2C1'], hoverBackgroundColor: ['#BDEBEC', '#5DC2C1']
           }
-        }
+        ]
       },
-      series: [{
-        name: 'Location',
-        colorByPoint: true,
-        type: undefined,
-        data: this.consultationByAgeGroup
-      }]
-    });
+      pieOptions: { plugins: { legend: { display: false, labels: { usePointStyle: false } } } }
+    }
   }
 
   loadMap = () => {
@@ -333,42 +232,68 @@ export class HomeComponent implements OnInit {
   }
 
   getIndicatorCompileValue() {
-    const codeArr = [3843];
+    const codeArr = [];
     this.fhirService.getIndicatorCompileValue(codeArr).subscribe((res: any) => {
       this.indicatorApiBusy = false;
       this.initIndicatorFilterForm();
       if (res && res.length > 0) {
         this.indicatorArr = res;
         this.indicatorArr.forEach(el => {
-          const indicatorValue = el.indicatorValue;
-          const colorSchema = el['colorSchema'] !== null ? JSON.parse(el['colorSchema']) : [];
-          if (colorSchema.length === 0 || parseInt(indicatorValue) === 0) {
-            // default colot
-            el['color'] = "green";
-          } else {
-            colorSchema.forEach(cel => {
-              if (cel.minValue < indicatorValue && indicatorValue < cel.maxValue) {
-                el['color'] = cel.color;
-              } else {
-                if (!Object(el).hasOwnProperty('color')) {
-                  // when range is not applied in any color scheme
-                  el['color'] = 'black';
-                }
-              }
-            });
-          }
+          el.facilityIds = this.FacilityName;
+          el.startDate = this.getDateFormat(el.startDate);
+          el.endDate = this.getDateFormat(el.endDate);
+          const indicatorValue = this.getIndicatorPercentageValue(el.chartData);
+          el.indicatorValue = indicatorValue;
+          this.setElementColor(el, indicatorValue);
           el['showFilter'] = false;
+          el['showChart'] = false;
           this.getIndicators().push(this.newIndicatorAddition(el));
         });
-        this.iValues.changes.subscribe(c => {
-          c.toArray().forEach((item, i) => {
-            item.nativeElement.style.color = this.indicatorArr[i].color;
-          });
-        });
+        this.setColorStyle();
       }
     }, () => {
       this.indicatorApiBusy = false;
     });
+  }
+
+  setColorStyle() {
+    this.iValues.changes.subscribe(c => {
+      c.toArray().forEach((item, i) => {
+        item.nativeElement.style.color = this.indicatorArr[i].color;
+      });
+    });
+  }
+
+  setElementColor(el, indicatorValue) {
+    //  color swction
+    const colorSchema = el['colorSchema'] !== null ? JSON.parse(el['colorSchema']) : [];
+    if (colorSchema.length === 0 || indicatorValue === 0) {
+      // default colot
+      el['color'] = "green";
+    } else {
+      colorSchema.forEach(cel => {
+        if (cel.minValue < indicatorValue && indicatorValue < cel.maxValue) {
+          el['color'] = cel.color;
+        } else {
+          if (!Object(el).hasOwnProperty('color')) {
+            // when range is not applied in any color scheme
+            el['color'] = 'black';
+          }
+        }
+      });
+    }
+  }
+
+  getIndicatorPercentageValue(chartData) {
+    if (chartData.length !== 0) {
+      let numerator = 0;
+      const denominator = chartData[0].count;
+      chartData.forEach(el => numerator += el.patientwithcondition);
+      //  percentage      
+      return (numerator / denominator).toFixed(2);
+    } else {
+      return 0;
+    }
   }
 
   initIndicatorFilterForm() {
@@ -406,6 +331,30 @@ export class HomeComponent implements OnInit {
     this.indicatorArr[index].showFilter = !this.indicatorArr[index].showFilter;
   }
 
+  enableChart(index) {
+    this.indicatorArr.forEach((el, i) => {
+      if (i !== index) {
+        el['showChart'] = false;
+      }
+    });
+    this.indicatorArr[index].showChart = !this.indicatorArr[index].showChart;
+    //  preparing each chart
+    this.filterBarChartObj = {
+      basicData: {
+        labels: this.indicatorArr[index].chartData.map(el => new Date(el.admissiondate).toJSON().slice(0,10)),
+        datasets: [{
+          barThickness: 10,
+          data: this.indicatorArr[index].chartData.map(el => el.patientwithcondition),
+          borderWidth: 0
+        }]
+      },
+      basicOptions: {
+        plugins: { legend: { display: false } },
+        scales: { y: { beginAtZero: true } }
+      }
+    }
+  }
+
   filterIndicator(index) {
     const controls = this.getIndicators().controls[index];
     const data = {
@@ -423,10 +372,25 @@ export class HomeComponent implements OnInit {
     }
     this.fhirService.filterIndicatorValue(data).subscribe(res => {
       if (res) {
-        controls.patchValue({ indicatorValue: res[0].indicatorValue });
+        const indicatorPercentage = this.getIndicatorPercentageValue(res[0].chartData);
+        controls.patchValue({ indicatorValue: indicatorPercentage });
+        const indicatorInfo = res[0];
+        this.setElementColor(indicatorInfo, indicatorPercentage);
+        const selectedFacilities = controls.value.facility ? controls.value.facility : null;
+        if (selectedFacilities) {
+          indicatorInfo.facilityIds = selectedFacilities.length == 1 ?
+            selectedFacilities[0].name : selectedFacilities[0].name + " and " + (selectedFacilities.length - 1) + " more";
+        } else {
+          indicatorInfo.facilityIds = null;
+        }
+        indicatorInfo.startDate = this.getDateFormat(indicatorInfo.startDate);
+        indicatorInfo.endDate = this.getDateFormat(indicatorInfo.endDate);
+        //  saving information
+        const index = this.indicatorArr.findIndex(el => el.indicatorId === indicatorInfo.indicatorId);
+        this.indicatorArr[index] = indicatorInfo;
+        this.setColorStyle();
       }
     });
-
   }
 
   onDateSelection(num, index) {
@@ -447,5 +411,10 @@ export class HomeComponent implements OnInit {
     } else {
       this.getIndicators().controls[i].patchValue({ isShowBetween: false });
     }
+  }
+
+  getDateFormat(seconds: number) {
+    const dateFormat = new Date(seconds);
+    return `${dateFormat.getDate()} ${this.month[dateFormat.getMonth()]} ${dateFormat.getFullYear()}`;
   }
 }

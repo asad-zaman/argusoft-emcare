@@ -52,16 +52,24 @@ public class DeduplicationServiceImpl implements DeduplicationService {
 
     @Override
     public ResponseEntity<Object> getAllDuplicatePatientRecords() {
-        List<List<Patient>> duplicateEntries = new ArrayList<>();
-        List<List<PatientDto>> duplicateDtoEntries = new ArrayList<>();
+        List<List<PatientDto>> duplicateEntries = new ArrayList<>();
 
-        List<Patient> patients = emcareResourceService.getAllPatientResources();
-        List<Patient> patientDuplicates = new ArrayList<>(patients);
+        List<PatientDto> patients = emcareResourceService.getAllPatientsList();
 
-        for (Patient p1 : patients) {
-            List<Patient> duplicate = new ArrayList<>();
-            for (Patient p2 : patientDuplicates) {
-                if (!Objects.equals(p1.getIdElement().getIdPart(), p2.getIdElement().getIdPart()) && Boolean.TRUE.equals(comparePatients(p1, p2))) {
+        List<PatientDto> patientDuplicates = new ArrayList<>(patients);
+
+        for (PatientDto p1 : patients) {
+            List<PatientDto> duplicate = new ArrayList<>();
+            for (PatientDto p2 : patientDuplicates) {
+
+                if (!Objects.equals(p1.getId(), p2.getId()) &&
+                    Objects.equals(p1.getIdentifier(),p2.getIdentifier()) &&
+                    Objects.equals(p1.getGivenName(),p2.getGivenName()) &&
+                    Objects.equals(p1.getFamilyName(),p2.getFamilyName()) &&
+                    Objects.equals(p1.getGender(),p2.getGender()) &&
+                    Objects.equals(p1.getDob(),p2.getDob()) &&
+                    Objects.equals(p1.getFacility(),p2.getFacility())
+                ){
                     duplicate.add(p2);
                 }
             }
@@ -72,11 +80,7 @@ public class DeduplicationServiceImpl implements DeduplicationService {
             }
         }
 
-        for (List<Patient> entry : duplicateEntries) {
-            duplicateDtoEntries.add(emcareResourceService.getPatientDtoByPatient(entry));
-        }
-
-        return ResponseEntity.ok().body(duplicateDtoEntries);
+        return ResponseEntity.ok().body(duplicateEntries);
     }
 
 }
