@@ -151,6 +151,8 @@ class PatientProfileFragment : BaseFragment<FragmentPatientProfileBinding>() {
                             isError = true
                         )
                     }
+
+                    else -> {}
                 }
             }
         }
