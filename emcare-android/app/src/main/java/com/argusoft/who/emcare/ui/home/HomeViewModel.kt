@@ -403,10 +403,12 @@ class HomeViewModel @Inject constructor(
                 } else {
                     var questionnaireResponse: QuestionnaireResponse = QuestionnaireResponse()
                     questionnaireResponse = if (isPreviouslySavedConsultation) {
-                        addHiddenQuestionnaireItemsWithNestedItems(
+                        FhirContext.forCached(FhirVersionEnum.R4).newJsonParser()
+                                .parseResource(QuestionnaireResponse::class.java, previousQuestionnaireResponse)
+                        /*addHiddenQuestionnaireItemsWithNestedItems(
                             previousQuestionnaireResponse!!,
                             questionnaireJsonWithQR
-                        )
+                        )*/
                     } else
                         generateQuestionnaireResponseWithPatientIdAndEncounterId(
                             questionnaireJsonWithQR,
@@ -588,86 +590,29 @@ class HomeViewModel @Inject constructor(
     }
 
 
-    private fun addHiddenQuestionnaireItems(
-        previousQuestionnaireResponse: String,
-        questionnaire: Questionnaire
-    ): QuestionnaireResponse {
-        val previousQuestionnaireResponseObject =
-            FhirContext.forCached(FhirVersionEnum.R4).newJsonParser()
-                .parseResource(QuestionnaireResponse::class.java, previousQuestionnaireResponse)
+    private fun addHiddenQuestionnaireItems(previousQuestionnaireResponse: String, questionnaire: Questionnaire): QuestionnaireResponse {
+        val previousQuestionnaireResponseObject = FhirContext.forCached(FhirVersionEnum.R4).newJsonParser().parseResource(QuestionnaireResponse::class.java, previousQuestionnaireResponse)
         val questionnaireLinkIdList = mutableListOf<String>()
-        val groupLinkIdMap = mutableMapOf<String, MutableList<String>>()
+
         //Adding link id of all questionnaire items
         questionnaire.item.forEach { item ->
             questionnaireLinkIdList.add(item.linkId)
-            if (item.type.equals("group") && item.hasItem()) {
-                item.item.forEach { nestedItem ->
-                    val groupLinkIdList: MutableList<String> =
-                        if (groupLinkIdMap.containsKey(item.linkId)) groupLinkIdMap[item.linkId]!! else mutableListOf<String>()
-                    groupLinkIdList.add(nestedItem.linkId)
-                    groupLinkIdMap[item.linkId] = groupLinkIdList
-                }
-            }
         }
 
         //Fetching list of all questionnaire items
-        val questionnaireResponseItemsList = mutableListOf<QuestionnaireResponseItemComponent>()
+        val questionnaireResponseItemsList = mutableListOf<QuestionnaireResponse.QuestionnaireResponseItemComponent>()
         questionnaireResponseItemsList.addAll(previousQuestionnaireResponseObject.allItems)
 
-        val finalQuestionnaireResponseItemsList =
-            mutableListOf<QuestionnaireResponseItemComponent>()
+        val finalQuestionnaireResponseItemsList = mutableListOf<QuestionnaireResponse.QuestionnaireResponseItemComponent>()
 
-        //Setting items with previously answered questions through link id
         questionnaireLinkIdList.forEachIndexed { index, linkId ->
-            try {
-                val matchingQuestionnaireResponseItem =
-                    questionnaireResponseItemsList.firstOrNull { questionnaireResponseItem ->
-                        linkId == questionnaireResponseItem.linkId
-                    }
-                if (matchingQuestionnaireResponseItem != null) {
-                    if (groupLinkIdMap[linkId] != null) {
-                        groupLinkIdMap[linkId]?.forEach { nestedItemLinkId ->
-                            val nestedItem =
-                                matchingQuestionnaireResponseItem.item.firstOrNull { _ ->
-                                    linkId == nestedItemLinkId
-                                }
-                            if (nestedItem == null) {
-                                matchingQuestionnaireResponseItem.addItem(
-                                    QuestionnaireResponseItemComponent(StringType(linkId))
-                                )
-                            }
-                        }
-                    }
-                    finalQuestionnaireResponseItemsList.add(matchingQuestionnaireResponseItem)
-                } else {
-                    val questionnaireResponseItemToAdd =
-                        QuestionnaireResponseItemComponent(StringType(linkId))
-                    if (groupLinkIdMap[linkId] != null) {
-                        groupLinkIdMap[linkId]?.forEach { nestedItemLinkId ->
-                            questionnaireResponseItemToAdd.addItem(
-                                QuestionnaireResponseItemComponent(StringType(nestedItemLinkId))
-                            )
-                        }
-                    }
-                    questionnaireResponseItemsList.add(index, questionnaireResponseItemToAdd)
-                    finalQuestionnaireResponseItemsList.add(questionnaireResponseItemToAdd)
-                }
-            } catch (e: java.lang.IndexOutOfBoundsException) {
-                val questionnaireResponseItemToAdd =
-                    QuestionnaireResponseItemComponent(StringType(linkId))
-                if (groupLinkIdMap[linkId] != null) {
-                    groupLinkIdMap[linkId]?.forEach { nestedItemLinkId ->
-                        questionnaireResponseItemToAdd.addItem(
-                            QuestionnaireResponseItemComponent(StringType(nestedItemLinkId))
-                        )
-                    }
-                }
-                questionnaireResponseItemsList.add(index, questionnaireResponseItemToAdd)
-                finalQuestionnaireResponseItemsList.add(questionnaireResponseItemToAdd)
+            if(questionnaireResponseItemsList[index].linkId.equals(linkId)){
+                finalQuestionnaireResponseItemsList.add(questionnaireResponseItemsList[index])
+            } else {
+                questionnaireResponseItemsList.add(index, QuestionnaireResponse.QuestionnaireResponseItemComponent(StringType(linkId)))
+                finalQuestionnaireResponseItemsList.add(QuestionnaireResponse.QuestionnaireResponseItemComponent(StringType(linkId)))
             }
         }
-
-
 
         previousQuestionnaireResponseObject.item = finalQuestionnaireResponseItemsList
         return previousQuestionnaireResponseObject

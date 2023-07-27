@@ -49,7 +49,7 @@
         <item name="appThemeButtonStyle">@style/QuestionnaireEnlarged.CustomButtonStyle</item>
     </style>
 
-    <style name="SplashTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+    <style name="SplashTheme" parent="Theme.Material3.Light.NoActionBar">
         <item name="android:windowBackground">@drawable/splash_backgorund</item>
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
@@ -193,6 +193,7 @@
         <item name="questionnaireGroupTypeQuestionTextStyle">@style/Questionnaire.QuestionTextStyle</item>
         <item name="questionnaireEditButtonStyle">@style/Questionnaire.EditButtonStyle</item>
         <item name="questionnaireTextInputEditTextStyle">@style/Questionnaire.TextInputEditText</item>
+        <item name="questionnaireQuestionHeaderStyle">@style/Questionnaire.QuestionHeaderStyle</item>
         <item name="questionnaireQuestionTextStyle">@style/Questionnaire.QuestionTextStyle</item>
         <item name="questionnaireCheckBoxStyle">@style/Questionnaire.CheckBoxStyle</item>
         <item name="questionnaireRadioButtonStyle">@style/Questionnaire.RadioButton</item>
@@ -274,6 +275,10 @@
         <item name="android:textSize">@dimen/_18sdp</item>
     </style>
 
+    <style name="Questionnaire.QuestionHeaderStyle">
+        <item name="android:paddingBottom">@dimen/header_padding_bottom</item>
+    </style>
+
     <style name="Questionnaire.EditButtonStyle">
         <item name="android:textSize">@dimen/_16sdp</item>
         <item name="android:text">@string/edit_button_text</item>
@@ -301,6 +306,7 @@
         <item name="questionnaireGroupTypeQuestionTextStyle">@style/QuestionnaireCompact.QuestionTextStyle</item>
         <item name="questionnaireEditButtonStyle">@style/QuestionnaireCompact.EditButtonStyle</item>
         <item name="questionnaireTextInputEditTextStyle">@style/QuestionnaireCompact.TextInputEditText</item>
+        <item name="questionnaireQuestionHeaderStyle">@style/QuestionnaireCompact.QuestionHeaderStyle</item>
         <item name="questionnaireQuestionTextStyle">@style/QuestionnaireCompact.QuestionTextStyle</item>
         <item name="questionnaireCheckBoxStyle">@style/QuestionnaireCompact.CheckBoxStyle</item>
         <item name="questionnaireRadioButtonStyle">@style/QuestionnaireCompact.RadioButton</item>
@@ -356,6 +362,10 @@
         <item name="android:textSize">@dimen/_12sdp</item>
     </style>
 
+    <style name="QuestionnaireCompact.QuestionHeaderStyle">
+        <item name="android:paddingBottom">@dimen/header_padding_bottom</item>
+    </style>
+
     <style name="QuestionnaireCompact.QuestionTextStyle">
         <item name="android:textSize">@dimen/_16sdp</item>
     </style>
@@ -378,6 +388,7 @@
         <item name="questionnaireGroupTypeQuestionTextStyle">@style/QuestionnaireEnlarged.QuestionTextStyle</item>
         <item name="questionnaireEditButtonStyle">@style/QuestionnaireEnlarged.EditButtonStyle</item>
         <item name="questionnaireTextInputEditTextStyle">@style/QuestionnaireEnlarged.TextInputEditText</item>
+        <item name="questionnaireQuestionHeaderStyle">@style/QuestionnaireEnlarged.QuestionHeaderStyle</item>
         <item name="questionnaireQuestionTextStyle">@style/QuestionnaireEnlarged.QuestionTextStyle</item>
         <item name="questionnaireCheckBoxStyle">@style/QuestionnaireEnlarged.CheckBoxStyle</item>
         <item name="questionnaireRadioButtonStyle">@style/QuestionnaireEnlarged.RadioButton</item>
@@ -429,6 +440,10 @@
 
     <style name="QuestionnaireEnlarged.SubtitleTextStyle" parent="Questionnaire.SubtitleTextStyle">
         <item name="android:textSize">@dimen/_16sdp</item>
+    </style>
+
+    <style name="QuestionnaireEnlarged.QuestionHeaderStyle">
+        <item name="android:paddingBottom">@dimen/header_padding_bottom</item>
     </style>
 
     <style name="QuestionnaireEnlarged.QuestionTextStyle">

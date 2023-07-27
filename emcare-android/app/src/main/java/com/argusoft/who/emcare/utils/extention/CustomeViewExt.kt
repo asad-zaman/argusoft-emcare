@@ -50,6 +50,8 @@ fun <T> ApiResponse<T>?.handleApiView(
                 isError = true
             )
         }
+
+        else -> {}
     }
 }
 
@@ -159,6 +161,8 @@ inline fun <reified T> ApiResponse<T>?.handleListApiView(
                 )
             }
         }
+
+        else -> {}
     }
 }
 
@@ -168,6 +172,8 @@ inline fun <T> ApiResponse<T>.whenLoading(function: () -> Unit): ApiResponse<T> 
         is ApiResponse.Loading -> {
             function()
         }
+
+        else -> {}
     }
     return this
 }
@@ -177,6 +183,8 @@ inline fun <T> ApiResponse<T>.whenInProgress(function: (Pair<Int, Int>) -> Unit)
         is ApiResponse.InProgress -> {
             function(Pair(total,progressCount))
         }
+
+        else -> {}
     }
     return this
 }
@@ -186,6 +194,8 @@ inline fun <T> ApiResponse<T>.whenSuccess(function: (T) -> Unit): ApiResponse<T>
         is ApiResponse.Success -> {
             data?.let { function(it) }
         }
+
+        else -> {}
     }
     return this
 }

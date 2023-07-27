@@ -5,7 +5,6 @@ import androidx.activity.addCallback
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.argusoft.who.emcare.EmCareApplication_HiltComponents.ViewModelC
 import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.databinding.FragmentAddPatientBinding
 import com.argusoft.who.emcare.ui.common.*
