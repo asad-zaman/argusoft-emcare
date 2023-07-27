@@ -106,7 +106,7 @@ object CustomBooleanChoiceViewHolderFactory :
                 noRadioButton.setLayoutParamsByOrientation(choiceOrientation)
 
 
-                questionnaireViewItem.answerOption
+                questionnaireViewItem.enabledAnswerOptions
                     .map { answerOption -> View.generateViewId() to answerOption }
                     .onEach { populateViewWithAnswerOption(it.first, it.second, choiceOrientation) }
                     .map { it.first }
