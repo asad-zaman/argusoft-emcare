@@ -22,7 +22,7 @@ android {
         minSdkVersion 26
         targetSdkVersion 33
         versionCode 6
-        versionName "1.2.3"
+        versionName "1.2.4"
         vectorDrawables.useSupportLibrary = true
         javaCompileOptions {
             annotationProcessorOptions {
