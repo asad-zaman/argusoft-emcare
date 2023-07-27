@@ -31,7 +31,6 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ContextConfiguration(classes = {DashboardServiceImpl.class})
@@ -68,25 +67,19 @@ class DashboardServiceTest {
     void getDashboardData() throws IOException {
         DashboardDto dashboardDto = getDashboardDTODemoData();
 
-        mock(UserLocationMappingRepository.class);
-
         when(userLocationMappingRepository.getDashboardData()).thenReturn(dashboardDto);
 
         ResponseEntity<Object> response = dashboardService.getDashboardData();
         DashboardDto body = (DashboardDto) response.getBody();
 
         assertNotNull(body);
-        assertTrue(body.getPendingRequest() == dashboardDto.getPendingRequest());
-        assertTrue(body.getTotalUser() == dashboardDto.getTotalUser());
-        assertTrue(body.getTotalPatient() == dashboardDto.getTotalPatient());
+        assertSame(body.getPendingRequest(), dashboardDto.getPendingRequest());
+        assertSame(body.getTotalUser(), dashboardDto.getTotalUser());
+        assertSame(body.getTotalPatient(), dashboardDto.getTotalPatient());
     }
 
     @Test
     void getDashboardBarChartData() throws IOException {
-        mock(UserLocationMappingRepository.class);
-        mock(EmcareResourceService.class);
-        mock(LocationResourceService.class);
-
         List<ChartDto> demoPieChartData = getDemoPieChartData();
         Map<String, Object> demoAgeData = getDemoAgeData();
         List<ScatterCharDto> demoScatterCharData = getDemoScatterCharData();
@@ -145,9 +138,9 @@ class DashboardServiceTest {
 
     FacilityDto getDemoFacilityDto(String facilityId) throws IOException {
         List<FacilityDto> facilityDtoList = getDemoFacilityData();
-        for(int i = 0; i < facilityDtoList.size(); i++) {
-            if(facilityDtoList.get(i).getFacilityId().equals(facilityId)) {
-                return facilityDtoList.get(i);
+        for (FacilityDto facilityDto : facilityDtoList) {
+            if (facilityDto.getFacilityId().equals(facilityId)) {
+                return facilityDto;
             }
         }
         return null;

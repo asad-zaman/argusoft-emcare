@@ -1,0 +1,30 @@
+[
+  {
+    "id": 1580,
+    "menuId": 1,
+    "roleId": "7868b46d-a4fb-4d87-b939-729f381cbb37",
+    "userId": null,
+    "featureJson": "{ \"canEdit\": true, \"canDelete\": true, \"canAdd\": true, \"canView\": true, \"canExport\": true }"
+  },
+  {
+    "id": 84,
+    "menuId": 1,
+    "roleId": "7868b46d-a4fb-4d87-b939-729f381cbb37",
+    "userId": null,
+    "featureJson": "{ \"canAdd\": true, \"canEdit\": true, \"canView\": true, \"canDelete\": true }"
+  },
+  {
+    "id": 12573,
+    "menuId": 1,
+    "roleId": null,
+    "userId": "34e85fd5-e155-4243-ab5e-a95ba4d60647",
+    "featureJson": "{ \"canAdd\": true, \"canEdit\": true, \"canView\": true, \"canDelete\": true, \"canExport\": false }"
+  },
+  {
+    "id": 1568,
+    "menuId": 1,
+    "roleId": null,
+    "userId": "adc23b74-d643-499f-8204-494ef74ec833",
+    "featureJson": "{ \"canAdd\": true, \"canEdit\": true, \"canView\": true, \"canDelete\": true }"
+  }
+]

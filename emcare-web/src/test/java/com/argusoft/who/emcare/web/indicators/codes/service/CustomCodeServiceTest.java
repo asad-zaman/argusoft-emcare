@@ -76,9 +76,10 @@ class CustomCodeServiceTest {
         verify(emCareCustomCodeSystemRepository, times(1)).save(any(EmCareCustomCodeSystem.class));
 
         EmCareCustomCodeSystem body = (EmCareCustomCodeSystem) response.getBody();
-        assertTrue(body.getCode() == expectedResponse.getCode());
-        assertTrue(body.getCodeDescription().equals(customCodeRequestDto.getCodeDescription()));
-        assertTrue(body.getCode().equals(customCodeRequestDto.getCode()));
+        assertNotNull(body);
+        assertEquals(body.getCode(), expectedResponse.getCode());
+        assertEquals(body.getCodeDescription(), customCodeRequestDto.getCodeDescription());
+        assertEquals(body.getCode(), customCodeRequestDto.getCode());
     }
 
     @Test

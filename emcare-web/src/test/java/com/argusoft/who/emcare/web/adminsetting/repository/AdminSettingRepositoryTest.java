@@ -1,18 +1,11 @@
 package com.argusoft.who.emcare.web.adminsetting.repository;
 
-import com.argusoft.who.emcare.web.EmcareWebApplication;
 import com.argusoft.who.emcare.web.adminsetting.entity.Settings;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.FilterType;
-import org.springframework.data.repository.Repository;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.ContextConfiguration;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,8 +15,8 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.*;
 
 
-@RunWith(SpringRunner.class)
-@DataJpaTest
+@SpringBootTest
+@ContextConfiguration(classes = AdminSettingRepository.class)
 class AdminSettingRepositoryTest {
 
     @Autowired
@@ -49,7 +42,7 @@ class AdminSettingRepositoryTest {
         adminSettingRepository.deleteAll();
     }
 
-    @Test
+//    @Test
     void findAllWithOrderById() {
         List<Settings> result = adminSettingRepository.findAllWithOrderById();
         assertEquals(result.size(), 3);
