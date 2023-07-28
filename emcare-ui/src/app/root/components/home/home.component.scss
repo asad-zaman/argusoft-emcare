@@ -168,6 +168,42 @@
     overflow: hidden;
 }
 
+@media screen and (min-width: 1400px) {
+    .height___350 {
+        height: 400px;
+        overflow: hidden;
+    }
+
+    .height___400 {
+        height: 450px;
+        overflow: hidden;
+    }
+}
+
+@media screen and (min-width: 1600px) {
+    .height___350 {
+        height: 450px;
+        overflow: hidden;
+    }
+
+    .height___400 {
+        height: 500px;
+        overflow: hidden;
+    }
+}
+
+@media screen and (min-width: 1800px) {
+    .height___350 {
+        height: 500px;
+        overflow: hidden;
+    }
+
+    .height___400 {
+        height: 550px;
+        overflow: hidden;
+    }
+}
+
 .pl___7 {
     padding-left: 7px;
 }
