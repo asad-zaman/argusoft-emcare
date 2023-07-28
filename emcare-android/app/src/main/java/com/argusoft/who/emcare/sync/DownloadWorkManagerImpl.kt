@@ -18,8 +18,8 @@ package com.argusoft.who.emcare.sync
 
 import android.util.Log
 import com.argusoft.who.emcare.data.local.pref.Preference
+import com.google.android.fhir.sync.DownloadRequest
 import com.google.android.fhir.sync.DownloadWorkManager
-import com.google.android.fhir.sync.Request
 import com.google.android.fhir.sync.SyncDataParams
 import org.hl7.fhir.exceptions.FHIRException
 import org.hl7.fhir.r4.model.*
@@ -45,7 +45,7 @@ class DownloadWorkManagerImpl constructor(
     }
   }
 
-  override suspend fun getNextRequest(): Request? {
+  override suspend fun getNextRequest(): DownloadRequest? {
     Log.d("Sync Called","Inside getNextRequest")
     getGmtTimeFromLastSyncTime()
     var url = urls.poll() ?: return null
@@ -62,7 +62,7 @@ class DownloadWorkManagerImpl constructor(
 //      }
     }
 
-    return Request.of(url)
+    return DownloadRequest.of(url)
   }
 
   override suspend fun getSummaryRequestUrls(): Map<ResourceType, String> {
