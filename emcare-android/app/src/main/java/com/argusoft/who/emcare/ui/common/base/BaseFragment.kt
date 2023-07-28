@@ -140,6 +140,8 @@ abstract class BaseFragment<B : ViewBinding> : Fragment(), View.OnClickListener 
                         homeViewModel.loadLibraries(isRedirectToHome)
                         fhirResourcesViewModel.purgeAllAudits()
                     }
+
+                    else -> {}
                 }
             }
             apiResponse.handleListApiView(progressLayout) {
@@ -158,6 +160,8 @@ abstract class BaseFragment<B : ViewBinding> : Fragment(), View.OnClickListener 
                             requireActivity().finish()
                         }
                     }
+
+                    else -> {}
                 }
             }
         }

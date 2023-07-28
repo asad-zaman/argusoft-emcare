@@ -239,6 +239,7 @@ export class HomeComponent implements OnInit {
       if (res && res.length > 0) {
         this.indicatorArr = res;
         this.indicatorArr.forEach(el => {
+          //  this facilityIds indicates selected facilities 
           el.facilityIds = this.FacilityName;
           el.startDate = this.getDateFormat(el.startDate);
           el.endDate = this.getDateFormat(el.endDate);
@@ -316,7 +317,8 @@ export class HomeComponent implements OnInit {
       ageValue: data.age ? this.fhirService.getAgeConditionAndValue(data.age).value : null,
       startDate: data.startDate,
       endDate: data.endDate,
-      facility: [],
+      //  as there is a default facility so it needs to be stored when initialization
+      facility: data.facilityIds ? [this.facilityArr.filter(el => el.name === data.facilityIds)] : [],
       isShowBetween: false,
       ageExtraValue: ''
     });
@@ -358,7 +360,7 @@ export class HomeComponent implements OnInit {
   filterIndicator(index) {
     const controls = this.getIndicators().controls[index];
     const data = {
-      facilityIds: controls.value.facility.map(el => el.id),
+      facilityIds: controls.value.facility && controls.value.facility.map(el => el.id),
       indicatorId: controls.value.indicatorId,
       gender: controls.value.gender ? controls.value.gender.id : null,
       age: controls.value.isShowBetween ? (
@@ -378,7 +380,7 @@ export class HomeComponent implements OnInit {
         const indicatorInfo = res[0];
         this.setElementColor(indicatorInfo, indicatorPercentage);
         const selectedFacilities = controls.value.facility ? controls.value.facility : null;
-        if (selectedFacilities) {
+        if (selectedFacilities.length > 0) {
           indicatorInfo.facilityIds = selectedFacilities.length == 1 ?
             selectedFacilities[0].name : selectedFacilities[0].name + " and " + (selectedFacilities.length - 1) + " more";
         } else {
