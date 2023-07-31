@@ -170,7 +170,6 @@ class MenuServiceTest {
     @Test
     void deleteMenuConfig_NonExistingMenuConfigId() {
         String expectedExceptionMessage = "MenuUserConfig Doesn't Exists";
-        int expectedExceptionHashCode = 404;
 
         EmptyResultDataAccessException mockException = mock(EmptyResultDataAccessException.class);
         when(mockException.getMessage()).thenReturn(expectedExceptionMessage);
