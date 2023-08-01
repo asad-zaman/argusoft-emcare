@@ -1,0 +1,14 @@
+[
+  {
+    "id": 1,
+    "name" : "India",
+    "type" : "PHC",
+    "parent" : null
+  },
+  {
+    "id": 2,
+    "name": "PHC",
+    "type": "PHC",
+    "parent": null
+  }
+]

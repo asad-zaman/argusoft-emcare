@@ -18,10 +18,19 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ContextConfiguration;
+import org.testcontainers.shaded.com.fasterxml.jackson.core.type.TypeReference;
+import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
+import org.testcontainers.shaded.org.apache.commons.io.IOUtils;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -543,5 +552,64 @@ public class LocationServiceTest {
         assertEquals(0L, pageDto.getTotalCount());
     }
 
+    private List<LocationMaster> getLocationData(String fileName) throws IOException {
+        File file = new File("src/test/resources/mockdata/location/" + fileName + ".json");
+        InputStream fileInputStream = new FileInputStream(file);
+        String jsonString = IOUtils.toString(fileInputStream, StandardCharsets.UTF_8);
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.readValue(jsonString, new TypeReference<List<LocationMaster>>(){});
+    }
 
+
+    @Test
+    public void testGetLocationPage_desc_orderByName_withSearchString_nullParent() throws IOException {
+        List<LocationMaster> locationMasters = getLocationData("locationMaster1");
+
+        int pageNo = 0;
+        String searchString = "PHC";
+        String orderBy = "name";
+        String order = "DESC";
+        Sort sort = Sort.by(orderBy).descending();
+        Pageable page = PageRequest.of(pageNo, CommonConstant.PAGE_SIZE, sort);
+        Page<LocationMaster> locationMasterPage = new PageImpl<>(locationMasters);
+
+        when(locationMasterDao.findByNameContainingIgnoreCaseOrTypeContainingIgnoreCase(searchString,searchString,page)).thenReturn(locationMasterPage);
+        when(locationMasterDao.findByNameContainingIgnoreCaseOrTypeContainingIgnoreCase(searchString,searchString)).thenReturn(locationMasters);
+        ResponseEntity<Object> response = locationService.getLocationPage(pageNo,orderBy,order,searchString);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertTrue(response.getBody() instanceof PageDto);
+        PageDto pageDto = (PageDto) response.getBody();
+        assertNotNull(pageDto.getList());
+        assertEquals(2L,pageDto.getTotalCount());
+
+    }
+
+    @Test
+    public void testGetLocationPage_orderByNull_withoutSerachString_ExistingParent() throws IOException {
+        List<LocationMaster> locationMasters = getLocationData("locationMaster2");
+
+        int pageNo = 0;
+        String orderBy = "name";
+        String searchString = null;
+        String order = "ASC";
+        Sort sort = Sort.by(orderBy).ascending();
+        Pageable page = PageRequest.of(pageNo, CommonConstant.PAGE_SIZE, sort);
+        Page<LocationMaster> locationMasterPage = new PageImpl<>(locationMasters);
+
+        when(locationMasterDao.findAll()).thenReturn(locationMasters);
+        when(locationMasterDao.findAll(page)).thenReturn(locationMasterPage);
+        when(locationMasterDao.findById(1)).thenReturn(Optional.ofNullable(locationMasters.get(1)));
+
+        ResponseEntity<Object> response = locationService.getLocationPage(pageNo,orderBy,order,searchString);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertTrue(response.getBody() instanceof PageDto);
+        PageDto pageDto = (PageDto) response.getBody();
+        assertNotNull(pageDto.getList());
+        assertEquals(2L,pageDto.getTotalCount());
+ 
+    }
 }

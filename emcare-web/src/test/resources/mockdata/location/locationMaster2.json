@@ -1,0 +1,14 @@
+[
+  {
+    "id": 1,
+    "name" : "India",
+    "type" : "Country",
+    "parent" : 1
+  },
+  {
+    "id": 2,
+    "name": "Gujarat",
+    "type": "State",
+    "parent": 1
+  }
+]
