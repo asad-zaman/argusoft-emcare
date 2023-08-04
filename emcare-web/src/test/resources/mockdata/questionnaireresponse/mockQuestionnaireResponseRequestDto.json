@@ -1,0 +1,23 @@
+[
+  {
+    "id": "a6a75596-9fa2-4ee9-8628-8dfb4c4e45c3",
+    "consultationStage": "REGISTRATION_ENCOUNTER",
+    "patientId": "deeda9b4-0caa-49eb-b0e9-e9e92a095776",
+    "encounterId": "c00356f9-3bf7-4c13-8100-4b023c6038b9",
+    "questionnaireId": "emcareb.registration.e",
+    "structureMapId": "emcareb.registration.e",
+    "questionnaireResponseText": "",
+    "isActive": true,
+    "consultationDate": "2022-10-04T08:45:29.875"
+  },
+  {
+    "consultationStage": "REGISTRATION_ENCOUNTER",
+    "patientId": "deeda9b4-0caa-49eb-b0e9-e9e92a095776",
+    "encounterId": "c00356f9-3bf7-4c13-8100-4b023c6038b9",
+    "questionnaireId": "emcareb.registration.e",
+    "structureMapId": "emcareb.registration.e",
+    "questionnaireResponseText": "",
+    "isActive": true,
+    "consultationDate": "2022-10-04T08:45:29.875"
+  }
+]
