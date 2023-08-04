@@ -270,7 +270,6 @@ public class LocationServiceTest {
 
         ResponseEntity<Object> response = locationService.updateLocation(invalidLocationDto);
 
-//        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         assertNull(response.getBody());
     }
 
@@ -280,7 +279,6 @@ public class LocationServiceTest {
 
         ResponseEntity<Object> response = locationService.updateLocation(emptyLocationDto);
 
-//        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertNull(response.getBody());
     }
 

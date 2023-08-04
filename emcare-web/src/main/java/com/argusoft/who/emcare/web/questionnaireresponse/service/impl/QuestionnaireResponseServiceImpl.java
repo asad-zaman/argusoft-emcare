@@ -97,7 +97,6 @@ public class QuestionnaireResponseServiceImpl implements QuestionnaireResponseSe
     @Override
     public PageDto getQuestionnaireResponsePage(Integer pageNo, String searchString) {
         Pageable page = PageRequest.of(pageNo, CommonConstant.PAGE_SIZE);
-//        List<EmcareResource> resourcesList;
         List<Map<String, Object>> consultations;
         Integer totalCount = 0;
         PageDto pageDto = new PageDto();
