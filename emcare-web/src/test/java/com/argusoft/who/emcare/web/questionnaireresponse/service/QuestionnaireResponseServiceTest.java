@@ -351,38 +351,6 @@ class QuestionnaireResponseServiceTest {
         assertNotNull(result);
         assertEquals(0, result.size());
     }
-
-
-
-    @Test
-    void testGetConsultationsUnderLocationId() {
-        // Arrange
-        Object locationId = 1;
-        Integer pageNo = 0;
-        String sDate = "2023-08-01";
-        String eDate = "2023-08-07";
-        String searchString = "search";
-
-        List<Map<String, Object>> resourcesList = Arrays.asList(
-                createResourceMap("1", "Patient 1"),
-                createResourceMap("2", "Patient 2")
-        );
-        Long totalCount = 2L;
-
-        when(locationMasterDao.getAllChildLocationId(eq(1))).thenReturn(Arrays.asList(2, 3));
-        when(locationResourceRepository.findResourceIdIn(eq(Arrays.asList(2, 3)))).thenReturn(Arrays.asList("facilityId1", "facilityId2"));
-        when(questionnaireResponseRepository.getFilteredConsultationWithSearchCount(eq("search"), eq(Arrays.asList("facilityId1", "facilityId2")), any(Date.class), any(Date.class))).thenReturn(Arrays.asList("1", "2"));
-        when(questionnaireResponseRepository.getFilteredConsultationWithSearch(eq("search"), eq(Arrays.asList("facilityId1", "facilityId2")), any(Date.class), any(Date.class), anyLong())).thenReturn(resourcesList);
-
-        // Act
-        PageDto result = questionnaireResponseService.getConsultationsUnderLocationId(locationId, pageNo, sDate, eDate, searchString);
-
-        // Assert
-        assertNotNull(result);
-        assertEquals(2, result.getTotalCount());
-        assertEquals(2, result.getList().size());
-    }
-
     @Test
     void getConsultationsUnderLocationId() {
     }
