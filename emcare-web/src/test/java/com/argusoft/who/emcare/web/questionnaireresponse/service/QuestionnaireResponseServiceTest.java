@@ -34,12 +34,17 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.stream.Collectors;
+import org.codehaus.jackson.map.ObjectMapper;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
 @ContextConfiguration(classes = {QuestionnaireResponseService.class})
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -69,7 +74,10 @@ class QuestionnaireResponseServiceTest {
     @InjectMocks
     private QuestionnaireResponseServiceImpl questionnaireResponseService;
 
+
     AutoCloseable autoCloseable;
+
+    ObjectMapper objectMapper = new ObjectMapper();
 
     @BeforeEach
     void setUp() {
@@ -79,36 +87,6 @@ class QuestionnaireResponseServiceTest {
     @AfterEach
     void tearDown() throws Exception {
         autoCloseable.close();
-    }
-
-    @Test
-    public void testGetQuestionnaireResponseByUserLocation() throws ParseException {
-
-        Date theDate = new Date();
-        String prodDateString = "31/05/2023";
-        Date prodDate = new SimpleDateFormat("dd/MM/yyyy").parse(prodDateString);
-
-        List<QuestionnaireResponse> questionnaireResponseList = new ArrayList<>();
-
-
-//        Date prodDate = new Date();
-//        try {
-//            String prodDateString = "31/05/2023";
-//            prodDate = new SimpleDateFormat("dd/MM/yyyy").parse(prodDateString);
-//        } catch (Exception ex) {
-//            ex.printStackTrace();
-//        }
-//        UserMasterDto userMasterDto = (UserMasterDto) userService.getCurrentUser().getBody();
-//        List<String> facilityIds = userMasterDto.getFacilities().stream().map(FacilityDto::getFacilityId).collect(Collectors.toList());
-//        List<EmcareResource> patientList = emcareResourceRepository.findByFacilityIdInAndCreatedOnGreaterThan(facilityIds, prodDate);
-//        List<String> patientIds = patientList.stream().map(EmcareResource::getResourceId).collect(Collectors.toList());
-//        List<QuestionnaireResponse> questionnaireResponses;
-//        if (Objects.nonNull(theDate)) {
-//            questionnaireResponses = questionnaireResponseRepository.findByPatientIdInAndConsultationDateGreaterThan(patientIds, theDate);
-//        } else {
-//            questionnaireResponses = questionnaireResponseRepository.findByPatientIdIn(patientIds);
-//        }
-//        return questionnaireResponses;
     }
 
     @Test
@@ -230,6 +208,90 @@ class QuestionnaireResponseServiceTest {
     }
 
     @Test
+    void getQuestionnaireResponseByUserLocationWithLaterDate() throws ParseException {
+        UserMasterDto userMasterDto = new UserMasterDto();
+        userMasterDto.setFacilities(getMockFacilities());
+        when(userService.getCurrentUser()).thenReturn(ResponseEntity.ok().body(userMasterDto));
+        when(
+                emcareResourceRepository.findByFacilityIdInAndCreatedOnGreaterThan(anyList(), any(Date.class))
+        ).thenAnswer(i -> getMockEmcareResourceByFacilityIdInAndCreatedOnGreaterThan(i.getArgument(0), i.getArgument(1)));
+
+        when(
+                questionnaireResponseRepository.findByPatientIdInAndConsultationDateGreaterThan(anyList(), any(Date.class))
+        ).thenAnswer(i -> getMockQuestionnaireResponse(i.getArgument(0), i.getArgument(1)));
+
+        when(questionnaireResponseRepository.findByPatientIdIn(anyList())).thenAnswer(i -> getMockQuestionnaireResponse(i.getArgument(0), null));
+
+        List<QuestionnaireResponse> actualQuestionnaireResponse = questionnaireResponseService.getQuestionnaireResponseByUserLocation(new SimpleDateFormat("dd/MM/yyyy").parse("01/09/2023"));
+
+        assertNotNull(actualQuestionnaireResponse);
+        assertEquals(0, actualQuestionnaireResponse.size());
+    }
+
+    @Test
+    void getQuestionnaireResponseByUserLocationWithMidDate() throws ParseException {
+        UserMasterDto userMasterDto = new UserMasterDto();
+        userMasterDto.setFacilities(getMockFacilities());
+        when(userService.getCurrentUser()).thenReturn(ResponseEntity.ok().body(userMasterDto));
+        when(
+                emcareResourceRepository.findByFacilityIdInAndCreatedOnGreaterThan(anyList(), any(Date.class))
+        ).thenAnswer(i -> getMockEmcareResourceByFacilityIdInAndCreatedOnGreaterThan(i.getArgument(0), i.getArgument(1)));
+
+        when(
+                questionnaireResponseRepository.findByPatientIdInAndConsultationDateGreaterThan(anyList(), any(Date.class))
+        ).thenAnswer(i -> getMockQuestionnaireResponse(i.getArgument(0), i.getArgument(1)));
+
+        when(questionnaireResponseRepository.findByPatientIdIn(anyList())).thenAnswer(i -> getMockQuestionnaireResponse(i.getArgument(0), null));
+
+        List<QuestionnaireResponse> actualQuestionnaireResponse = questionnaireResponseService.getQuestionnaireResponseByUserLocation(new SimpleDateFormat("dd/MM/yyyy").parse("02/08/2023"));
+
+        assertNotNull(actualQuestionnaireResponse);
+        assertEquals(2, actualQuestionnaireResponse.size());
+    }
+
+    @Test
+    void getQuestionnaireResponseByUserLocationWithEarlyDate() throws ParseException {
+        UserMasterDto userMasterDto = new UserMasterDto();
+        userMasterDto.setFacilities(getMockFacilities());
+        when(userService.getCurrentUser()).thenReturn(ResponseEntity.ok().body(userMasterDto));
+        when(
+                emcareResourceRepository.findByFacilityIdInAndCreatedOnGreaterThan(anyList(), any(Date.class))
+        ).thenAnswer(i -> getMockEmcareResourceByFacilityIdInAndCreatedOnGreaterThan(i.getArgument(0), i.getArgument(1)));
+
+        when(
+                questionnaireResponseRepository.findByPatientIdInAndConsultationDateGreaterThan(anyList(), any(Date.class))
+        ).thenAnswer(i -> getMockQuestionnaireResponse(i.getArgument(0), i.getArgument(1)));
+
+        when(questionnaireResponseRepository.findByPatientIdIn(anyList())).thenAnswer(i -> getMockQuestionnaireResponse(i.getArgument(0), null));
+
+        List<QuestionnaireResponse> actualQuestionnaireResponse = questionnaireResponseService.getQuestionnaireResponseByUserLocation(new SimpleDateFormat("dd/MM/yyyy").parse("01/07/2023"));
+
+        assertNotNull(actualQuestionnaireResponse);
+        assertEquals(4, actualQuestionnaireResponse.size());
+    }
+
+    @Test
+    void getQuestionnaireResponseByUserLocationWithoutDate() throws ParseException {
+        UserMasterDto userMasterDto = new UserMasterDto();
+        userMasterDto.setFacilities(getMockFacilities());
+        when(userService.getCurrentUser()).thenReturn(ResponseEntity.ok().body(userMasterDto));
+        when(
+                emcareResourceRepository.findByFacilityIdInAndCreatedOnGreaterThan(anyList(), any(Date.class))
+        ).thenAnswer(i -> getMockEmcareResourceByFacilityIdInAndCreatedOnGreaterThan(i.getArgument(0), i.getArgument(1)));
+
+        when(
+                questionnaireResponseRepository.findByPatientIdInAndConsultationDateGreaterThan(anyList(), any(Date.class))
+        ).thenAnswer(i -> getMockQuestionnaireResponse(i.getArgument(0), i.getArgument(1)));
+
+        when(questionnaireResponseRepository.findByPatientIdIn(anyList())).thenAnswer(i -> getMockQuestionnaireResponse(i.getArgument(0), null));
+
+        List<QuestionnaireResponse> actualQuestionnaireResponse = questionnaireResponseService.getQuestionnaireResponseByUserLocation(null);
+
+        assertNotNull(actualQuestionnaireResponse);
+        assertEquals(4, actualQuestionnaireResponse.size());
+    }
+
+    @Test
     public void testSaveOrUpdateQuestionnaireResponse_WithExistingId() {
         // Prepare test data with an existing ID
         List<QuestionnaireResponseRequestDto> requestDtoList = new ArrayList<>();
@@ -259,7 +321,6 @@ class QuestionnaireResponseServiceTest {
         assertEquals("Response with Existing ID", result.get(0).getQuestionnaireResponseText());
     }
 
-
     @Test
     public void testSaveOrUpdateQuestionnaireResponse_WithNullValues() {
         // Prepare test data with null values
@@ -276,9 +337,6 @@ class QuestionnaireResponseServiceTest {
         // Verify the size of the returned list is 0
         assertEquals(0, result.size());
     }
-
-
-
 
     @Test
     void testGetDataForExport() {
@@ -351,6 +409,7 @@ class QuestionnaireResponseServiceTest {
         assertNotNull(result);
         assertEquals(0, result.size());
     }
+    
     @Test
     void getConsultationsUnderLocationId() {
     }
@@ -375,5 +434,96 @@ class QuestionnaireResponseServiceTest {
         UserSyncLog capturedUserSyncLog = userSyncLogCaptor.getValue();
         assertNotNull(capturedUserSyncLog.getSyncAttemptTime());
         assertEquals("testuser", capturedUserSyncLog.getUsername());
+    }
+
+    // =============================================================
+    // ======================== Mock Data Fn =======================
+    // =============================================================
+
+    List<FacilityDto> getMockFacilities() {
+        FacilityDto f1 = new FacilityDto();
+        FacilityDto f2 = new FacilityDto();
+        FacilityDto f3 = new FacilityDto();
+        f1.setFacilityId("f1");
+        f2.setFacilityId("f2");
+        f3.setFacilityId("f3");
+        return List.of(f1, f2, f3);
+    }
+
+    List<EmcareResource> getMockEmcareResourceByFacilityIdInAndCreatedOnGreaterThan(List<String> facilityIds, Date d) throws ParseException {
+        EmcareResource e1 = new EmcareResource();
+        e1.setResourceId("r1");
+        e1.setFacilityId("f1");
+        e1.setCreatedOn(new SimpleDateFormat("dd/MM/yyyy").parse("01/08/2023"));
+
+        EmcareResource e2 = new EmcareResource();
+        e2.setResourceId("r2");
+        e2.setFacilityId("f1");
+        e2.setCreatedOn(new SimpleDateFormat("dd/MM/yyyy").parse("02/08/2023"));
+
+        EmcareResource e3 = new EmcareResource();
+        e3.setResourceId("r3");
+        e3.setFacilityId("f2");
+        e3.setCreatedOn(new SimpleDateFormat("dd/MM/yyyy").parse("03/08/2023"));
+
+        EmcareResource e4 = new EmcareResource();
+        e4.setResourceId("r4");
+        e4.setFacilityId("f2");
+        e4.setCreatedOn(new SimpleDateFormat("dd/MM/yyyy").parse("04/08/2023"));
+
+        EmcareResource e5 = new EmcareResource();
+        e5.setResourceId("r5");
+        e5.setFacilityId("f5");
+        e5.setCreatedOn(new SimpleDateFormat("dd/MM/yyyy").parse("05/08/2023"));
+
+        List<EmcareResource> emcareResourceList = List.of(e1, e2, e3, e4, e5);
+
+        List<EmcareResource> emcareResourceListFiltered = new ArrayList<>();
+
+
+        for(EmcareResource em: emcareResourceList) {
+            if(d != null && !em.getCreatedOn().after(d)) continue;
+            for(String facilityId: facilityIds) {
+                if(em.getFacilityId() == facilityId) {
+                    emcareResourceListFiltered.add(em);
+                }
+            }
+        }
+        return  emcareResourceListFiltered;
+    }
+
+    List<QuestionnaireResponse> getMockQuestionnaireResponse(List<String> patientIds, Date d) throws ParseException {
+        QuestionnaireResponse q1 = new QuestionnaireResponse();
+        q1.setPatientId("r1");
+        q1.setConsultationDate(new SimpleDateFormat("dd/MM/yyyy").parse("01/08/2023"));
+
+        QuestionnaireResponse q2 = new QuestionnaireResponse();
+        q2.setPatientId("r1");
+        q2.setConsultationDate(new SimpleDateFormat("dd/MM/yyyy").parse("02/08/2023"));
+
+        QuestionnaireResponse q3 = new QuestionnaireResponse();
+        q3.setPatientId("r2");
+        q3.setConsultationDate(new SimpleDateFormat("dd/MM/yyyy").parse("03/08/2023"));
+
+        QuestionnaireResponse q4 = new QuestionnaireResponse();
+        q4.setPatientId("r3");
+        q4.setConsultationDate(new SimpleDateFormat("dd/MM/yyyy").parse("04/08/2023"));
+
+        QuestionnaireResponse q5 = new QuestionnaireResponse();
+        q5.setPatientId("r5");
+        q5.setConsultationDate(new SimpleDateFormat("dd/MM/yyyy").parse("05/08/2023"));
+
+        List<QuestionnaireResponse> questionnaireResponseList = List.of(q1, q2, q3, q4, q5);
+
+        List<QuestionnaireResponse> questionnaireResponseListFiltered = new ArrayList<>();
+
+        for(QuestionnaireResponse qr: questionnaireResponseList) {
+            if(d != null && !qr.getConsultationDate().after(d)) continue;
+            for(String patientId: patientIds) {
+                if(qr.getPatientId() == patientId) questionnaireResponseListFiltered.add(qr);
+            }
+        }
+
+        return  questionnaireResponseListFiltered;
     }
 }
