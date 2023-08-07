@@ -45,6 +45,12 @@ public class QuestionnaireResponse extends EntityAuditInfo implements Serializab
     @Column(name = "consultation_date")
     private Date consultationDate;
 
+    public QuestionnaireResponse(){}
+
+    public QuestionnaireResponse(String number, String patientId, String s) {
+        super();
+    }
+
 
     public String getId() {
         return id;
