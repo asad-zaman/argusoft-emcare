@@ -17,9 +17,7 @@ import com.argusoft.who.emcare.web.questionnaireresponse.respository.UserSyncLog
 import com.argusoft.who.emcare.web.questionnaireresponse.service.impl.QuestionnaireResponseServiceImpl;
 import com.argusoft.who.emcare.web.user.dto.UserMasterDto;
 import com.argusoft.who.emcare.web.user.service.UserService;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
@@ -34,6 +32,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+
 import org.codehaus.jackson.map.ObjectMapper;
 
 import java.util.ArrayList;
@@ -95,9 +94,9 @@ class QuestionnaireResponseServiceTest {
         String searchString = "test";
         List<Map<String, Object>> consultations = new ArrayList<>();
         Map<String, Object> map1 = new HashMap<>();
-        map1.put("name1","test1");
+        map1.put("name1", "test1");
         Map<String, Object> map2 = new HashMap<>();
-        map2.put("name2","test2");
+        map2.put("name2", "test2");
 
         consultations.add(map1);
         consultations.add(map2);
@@ -120,9 +119,9 @@ class QuestionnaireResponseServiceTest {
         String searchString = null;
         List<Map<String, Object>> consultations = new ArrayList<>();
         Map<String, Object> map1 = new HashMap<>();
-        map1.put("name1","name");
+        map1.put("name1", "name");
         Map<String, Object> map2 = new HashMap<>();
-        map2.put("name2","name");
+        map2.put("name2", "name");
 
         consultations.add(map1);
         consultations.add(map2);
@@ -381,9 +380,191 @@ class QuestionnaireResponseServiceTest {
         assertNotNull(result);
         assertEquals(0, result.size());
     }
-    
-    @Test
-    void getConsultationsUnderLocationId() {
+
+    @Nested
+    class TestGetConsultationsUnderLocationId {
+        @BeforeEach
+        void setup() {
+            when(locationMasterDao.getAllChildLocationId(anyInt()))
+                    .thenAnswer(i -> getAllMockChildLocationIds(i.getArgument(0)));
+
+            when(locationResourceRepository.findResourceIdIn(anyList()))
+                    .thenAnswer(i -> getAllMockResourceIdsByLocationIds(i.getArgument(0)));
+
+            when(questionnaireResponseRepository.getFilteredDateWithSearchCount(anyString(), any(Date.class), any(Date.class)))
+                    .thenAnswer(i -> getMockResourceDataWithFilters(i.getArgument(0), null, i.getArgument(1), i.getArgument(2)));
+            when(questionnaireResponseRepository.getFilteredDateWithSearch(anyString(), any(Date.class), any(Date.class), anyLong()))
+                    .thenAnswer(i -> {
+                        List<Map<String, Object>> ans = new ArrayList<>();
+                        List<Map<String, Object>> data = getMockResourceDataWithFilters(i.getArgument(0), null, i.getArgument(1), i.getArgument(2));
+                        Long x = i.getArgument(3);
+                        long limit = x + 10;
+                        while ((x < data.size()) && (x < limit)) {
+                            ans.add(data.get(x.intValue()));
+                            ++x;
+                        }
+                        return ans;
+                    });
+
+            when(questionnaireResponseRepository.getFilteredDateOnlyCount(any(Date.class), any(Date.class)))
+                    .thenAnswer(i -> getMockResourceDataWithFilters(null, null, i.getArgument(0), i.getArgument(1)));
+            when(questionnaireResponseRepository.getFilteredDateOnly(any(Date.class), any(Date.class), anyLong()))
+                    .thenAnswer(i -> {
+                        List<Map<String, Object>> ans = new ArrayList<>();
+                        List<Map<String, Object>> data = getMockResourceDataWithFilters(null, null, i.getArgument(0), i.getArgument(1));
+                        Long x = i.getArgument(2);
+                        long limit = x + 10;
+                        while ((x < data.size()) && (x < limit)) {
+                            ans.add(data.get(x.intValue()));
+                            ++x;
+                        }
+                        return ans;
+                    });
+
+            when(questionnaireResponseRepository.getFilteredConsultationWithSearchCount(anyString(), anyList(), any(Date.class), any(Date.class)))
+                    .thenAnswer(i -> getMockResourceDataWithFilters(i.getArgument(0), i.getArgument(1), i.getArgument(2), i.getArgument(3)));
+            when(questionnaireResponseRepository.getFilteredConsultationWithSearch(anyString(), anyList(), any(Date.class), any(Date.class), anyLong()))
+                    .thenAnswer(i -> {
+                        List<Map<String, Object>> ans = new ArrayList<>();
+                        List<Map<String, Object>> data = getMockResourceDataWithFilters(i.getArgument(0), i.getArgument(1), i.getArgument(2), i.getArgument(3));
+                        Long x = i.getArgument(4);
+                        long limit = x + 10;
+                        while ((x < data.size()) && (x < limit)) {
+                            ans.add(data.get(x.intValue()));
+                            ++x;
+                        }
+                        return ans;
+                    });
+
+            when(questionnaireResponseRepository.getFilteredConsultationsInCount(anyList(), any(Date.class), any(Date.class)))
+                    .thenAnswer(i -> getMockResourceDataWithFilters(null, i.getArgument(0), i.getArgument(1), i.getArgument(2)));
+            when(questionnaireResponseRepository.getFilteredConsultationsIn(anyList(), any(Date.class), any(Date.class), anyLong()))
+                    .thenAnswer(i -> {
+                        List<Map<String, Object>> ans = new ArrayList<>();
+                        List<Map<String, Object>> data = getMockResourceDataWithFilters(null, i.getArgument(0), i.getArgument(1), i.getArgument(2));
+                        Long x = i.getArgument(3);
+                        long limit = x + 10;
+                        while ((x < data.size()) && (x < limit)) {
+                            ans.add(data.get(x.intValue()));
+                            ++x;
+                        }
+                        return ans;
+                    });
+        }
+
+        @Test
+        void onlyLocationId() {
+            PageDto actualPage = questionnaireResponseService.getConsultationsUnderLocationId(1, 0, null, null, null);
+            assertNotNull(actualPage);
+            assertEquals(9, actualPage.getTotalCount());
+            assertEquals(9, actualPage.getList().size());
+        }
+
+        @Test
+        void withLocationIdAndSearch() {
+            PageDto actualPage = questionnaireResponseService.getConsultationsUnderLocationId(1, 0, null, null, "JOHN");
+            assertNotNull(actualPage);
+            assertEquals(1, actualPage.getTotalCount());
+            assertEquals(1, actualPage.getList().size());
+        }
+
+        @Test
+        void withLocationIdAndDates() throws ParseException {
+            PageDto actualPage = questionnaireResponseService.getConsultationsUnderLocationId(
+                    2,
+                    0,
+                    "2023-08-03",
+                    "2023-08-05",
+                    null
+            );
+            assertNotNull(actualPage);
+            assertEquals(1, actualPage.getTotalCount());
+            assertEquals(1, actualPage.getList().size());
+        }
+
+        @Test
+        void withLocationIdAndSearchAndDates() throws ParseException {
+            PageDto actualPage = questionnaireResponseService.getConsultationsUnderLocationId(
+                    1,
+                    0,
+                    "2023-07-01",
+                    "2023-08-03",
+                    "BRAD"
+            );
+            assertNotNull(actualPage);
+            assertEquals(1, actualPage.getTotalCount());
+            assertEquals(1, actualPage.getList().size());
+        }
+
+        @Test
+        void onlyPageNo() throws ParseException {
+            PageDto actualPage = questionnaireResponseService.getConsultationsUnderLocationId(
+                    "",
+                    1,
+                    null,
+                    null,
+                    null
+            );
+            assertNotNull(actualPage);
+            assertEquals(10, actualPage.getTotalCount());
+            assertEquals(0, actualPage.getList().size());
+        }
+
+        @Test
+        void onlyBadSearch() throws ParseException {
+            PageDto actualPage = questionnaireResponseService.getConsultationsUnderLocationId(
+                    "",
+                    0,
+                    null,
+                    null,
+                    "NOT A GOOD SEARCH"
+            );
+            assertNotNull(actualPage);
+            assertEquals(0, actualPage.getTotalCount());
+            assertEquals(0, actualPage.getList().size());
+        }
+
+        @Test
+        void onlyLocationAndEndDate() throws ParseException {
+            PageDto actualPage = questionnaireResponseService.getConsultationsUnderLocationId(
+                    "2",
+                    0,
+                    null,
+                    "2023-08-02",
+                    null
+            );
+            assertNotNull(actualPage);
+            assertEquals(0, actualPage.getTotalCount());
+            assertEquals(0, actualPage.getList().size());
+        }
+
+        @Test
+        void onlyLocationAndEndDateCheckForInclusive() throws ParseException {
+            PageDto actualPage = questionnaireResponseService.getConsultationsUnderLocationId(
+                    "2",
+                    0,
+                    null,
+                    "2023-08-03",
+                    null
+            );
+            assertNotNull(actualPage);
+            assertEquals(1, actualPage.getTotalCount());
+            assertEquals(1, actualPage.getList().size());
+        }
+
+        @Test
+        void onlyStartDate() throws ParseException {
+            PageDto actualPage = questionnaireResponseService.getConsultationsUnderLocationId(
+                    "",
+                    0,
+                    "2023-08-04",
+                    null,
+                    null
+            );
+            assertNotNull(actualPage);
+            assertEquals(2, actualPage.getTotalCount());
+            assertEquals(2, actualPage.getList().size());
+        }
     }
 
     @Test
@@ -449,15 +630,15 @@ class QuestionnaireResponseServiceTest {
         List<EmcareResource> emcareResourceListFiltered = new ArrayList<>();
 
 
-        for(EmcareResource em: emcareResourceList) {
-            if(d != null && !em.getCreatedOn().after(d)) continue;
-            for(String facilityId: facilityIds) {
-                if(em.getFacilityId() == facilityId) {
+        for (EmcareResource em : emcareResourceList) {
+            if (d != null && !em.getCreatedOn().after(d)) continue;
+            for (String facilityId : facilityIds) {
+                if (em.getFacilityId() == facilityId) {
                     emcareResourceListFiltered.add(em);
                 }
             }
         }
-        return  emcareResourceListFiltered;
+        return emcareResourceListFiltered;
     }
 
     List<QuestionnaireResponse> getMockQuestionnaireResponse(List<String> patientIds, Date d) throws ParseException {
@@ -485,13 +666,106 @@ class QuestionnaireResponseServiceTest {
 
         List<QuestionnaireResponse> questionnaireResponseListFiltered = new ArrayList<>();
 
-        for(QuestionnaireResponse qr: questionnaireResponseList) {
-            if(d != null && !qr.getConsultationDate().after(d)) continue;
-            for(String patientId: patientIds) {
-                if(qr.getPatientId() == patientId) questionnaireResponseListFiltered.add(qr);
+        for (QuestionnaireResponse qr : questionnaireResponseList) {
+            if (d != null && !qr.getConsultationDate().after(d)) continue;
+            for (String patientId : patientIds) {
+                if (qr.getPatientId() == patientId) questionnaireResponseListFiltered.add(qr);
             }
         }
 
-        return  questionnaireResponseListFiltered;
+        return questionnaireResponseListFiltered;
     }
+
+    List<Integer> getAllMockChildLocationIds(Integer i) {
+        if (i == 1) return List.of(1, 2, 3);
+        if (i == 2) return List.of(4, 5);
+        return List.of();
+    }
+
+    List<String> getAllMockResourceIdsByLocationIds(List<Integer> locationIds) {
+        Map<Integer, List<String>> locationResourceMap = new HashMap<>();
+        locationResourceMap.put(1, List.of("f1", "f2", "f3"));
+        locationResourceMap.put(2, List.of());
+        locationResourceMap.put(3, List.of("f4", "f5"));
+        locationResourceMap.put(4, List.of("f6"));
+        locationResourceMap.put(5, List.of("f7"));
+        List<String> rs = new ArrayList<>();
+        for (Integer locationId : locationIds) {
+            rs.addAll(locationResourceMap.get(locationId));
+        }
+        return rs;
+    }
+
+    List<Map<String, Object>> getMockResourceDataWithFilters(String searchString, List<String> facilityIds, Date startDate, Date endDate) throws ParseException {
+        Map<String, Object> er0 = new HashMap<>();
+        Map<String, Object> er1 = new HashMap<>();
+        Map<String, Object> er2 = new HashMap<>();
+        Map<String, Object> er3 = new HashMap<>();
+        Map<String, Object> er4 = new HashMap<>();
+        Map<String, Object> er5 = new HashMap<>();
+        Map<String, Object> er6 = new HashMap<>();
+        Map<String, Object> er7 = new HashMap<>();
+        Map<String, Object> er8 = new HashMap<>();
+        Map<String, Object> er9 = new HashMap<>();
+
+        er0.put("name", "JOHN");
+        er1.put("name", "BRAD");
+        er2.put("name", "PHIL");
+        er3.put("name", "ESTY");
+        er4.put("name", "LUCK");
+        er5.put("name", "THOR");
+        er6.put("name", "SAIF");
+        er7.put("name", "PARK");
+        er8.put("name", "LOST");
+        er9.put("name", "TANG");
+
+        er0.put("facilityId", "f1");
+        er1.put("facilityId", "f2");
+        er2.put("facilityId", "f3");
+        er3.put("facilityId", "f7");
+        er4.put("facilityId", "f2");
+        er5.put("facilityId", "f4");
+        er6.put("facilityId", "f5");
+        er7.put("facilityId", "f2");
+        er8.put("facilityId", "f3");
+        er9.put("facilityId", "f1");
+
+        er0.put("consultationDate", new SimpleDateFormat("dd/MM/yyyy").parse("01/08/2023"));
+        er1.put("consultationDate", new SimpleDateFormat("dd/MM/yyyy").parse("02/08/2023"));
+        er2.put("consultationDate", new SimpleDateFormat("dd/MM/yyyy").parse("01/08/2023"));
+        er3.put("consultationDate", new SimpleDateFormat("dd/MM/yyyy").parse("03/08/2023"));
+        er4.put("consultationDate", new SimpleDateFormat("dd/MM/yyyy").parse("01/08/2023"));
+        er5.put("consultationDate", new SimpleDateFormat("dd/MM/yyyy").parse("04/08/2023"));
+        er6.put("consultationDate", new SimpleDateFormat("dd/MM/yyyy").parse("02/08/2023"));
+        er7.put("consultationDate", new SimpleDateFormat("dd/MM/yyyy").parse("03/08/2023"));
+        er8.put("consultationDate", new SimpleDateFormat("dd/MM/yyyy").parse("01/08/2023"));
+        er9.put("consultationDate", new SimpleDateFormat("dd/MM/yyyy").parse("05/08/2023"));
+
+        List<Map<String, Object>> emcareResources = List.of(er0, er1, er2, er3, er4, er5, er6, er7, er8, er9);
+        List<Map<String, Object>> filteredEmcareResources = new ArrayList<>();
+        Set<String> facilitySet = new HashSet<>();
+        if (facilityIds != null) facilitySet.addAll(facilityIds);
+
+        for (Map<String, Object> emcareResource : emcareResources) {
+            if (searchString != null && !searchString.isEmpty() && !((String) emcareResource.get("name")).contains(searchString))
+                continue;
+            if (facilityIds != null && !facilitySet.contains(emcareResource.get("facilityId").toString())) continue;
+            if (startDate.after((Date) emcareResource.get("consultationDate")) || endDate.before((Date) emcareResource.get("consultationDate")))
+                continue;
+            filteredEmcareResources.add(emcareResource);
+        }
+        return filteredEmcareResources;
+    }
+
+    // 1. SettingDto, Settings Entity
+    // 2. UserPasswordDto, OTP Entity
+    // 3. DeviceWithUserDetails, DeviceDto, DeviceMapper, DeviceMaster Entity
+    // 4. MailDto, EmailContent Entity
+
+    // 5. IndicatorDenominatorEquationDto, IndicatorDto, IndicatorFilterDto, IndicatorNumeratorEquationDto, IndicatorMapper
+    // 6. Indicator Entity, IndicatorDenominatorEquation Entity, IndicatorNumeratorEquation Entity
+    // 7. LanguageAddDto, LanguageDto, LanguageMapper
+
+    // 8. LoginRequestDto, MultiLocationUserListDto, RoleDto, RoleUpdateDto, UserDto, UserListDto, UserMasterDto, UserUpdateDto
+    // 9. RoleEntity, UserMapper
 }
