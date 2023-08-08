@@ -89,9 +89,10 @@ class PatientRepository @Inject constructor(
         }
         for (patientItem in list){
             patientItem.resourceId?.let {
-                fhirEngine.getLocalChange(ResourceType.Patient, it)?.let {
-                    patientItem.isSynced = false
+                fhirEngine.getLocalChanges(ResourceType.Patient, it).let {localChanges ->
+                    patientItem.isSynced = localChanges.isEmpty()
                 }
+
             }
         }
         emit(ApiResponse.Success(data = list))

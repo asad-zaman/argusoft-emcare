@@ -234,10 +234,10 @@ dependencies {
     implementation "androidx.work:work-runtime-ktx:2.8.1"
 
     //Fhir
-    //Local Build Link: https://drive.google.com/file/d/1PuwGEh1W1iMIe40cUzWMD0pIBfcF8Sfg/view?usp=drive_link
+    //Local Build Link: https://drive.google.com/file/d/12NJZBYdm9T_VIYnkkWcziHlyZ4LERPdB/view?usp=drive_link
     implementation "com.google.android.fhir:engine:0.1.0-beta03"
     implementation "com.google.android.fhir:data-capture:1.0.0"
-    implementation "com.google.android.fhir:workflow:0.1.0-alpha02"
+    implementation "com.google.android.fhir:workflow:0.1.0-alpha03"
     implementation "com.google.android.fhir:knowledge:0.1.0-alpha01"
     //EventBus
     implementation("org.greenrobot:eventbus:3.3.1")
