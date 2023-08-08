@@ -173,7 +173,7 @@ class QuestionnaireResponseServiceTest {
 
     @Test
     public void testSaveOrUpdateQuestionnaireResponse() {
-        // Prepare test data
+        // test data
         List<QuestionnaireResponseRequestDto> requestDtoList = new ArrayList<>();
         QuestionnaireResponseRequestDto requestDto1 = new QuestionnaireResponseRequestDto();
         requestDto1.setQuestionnaireResponseText("Response 1");
@@ -182,7 +182,7 @@ class QuestionnaireResponseServiceTest {
         requestDtoList.add(requestDto1);
         requestDtoList.add(requestDto2);
 
-        // Define the expected behavior of the mock repository
+        //expected behavior of the mock repository
         QuestionnaireResponse savedResponse1 = new QuestionnaireResponse();
         savedResponse1.setId(UUID.randomUUID().toString());
         savedResponse1.setQuestionnaireResponseText("Response 1"); // Set the expected response text for the first DTO
@@ -191,18 +191,12 @@ class QuestionnaireResponseServiceTest {
         savedResponse2.setQuestionnaireResponseText("Response 2"); // Set the expected response text for the second DTO
         when(questionnaireResponseRepository.save(any(QuestionnaireResponse.class))).thenReturn(savedResponse1, savedResponse2);
 
-        // Call the service method
         List<QuestionnaireResponse> result = questionnaireResponseService.saveOrUpdateQuestionnaireResponse(requestDtoList);
 
-        // Assertions
-        // Verify that the repository save method was called twice with the correct arguments
         verify(questionnaireResponseRepository, times(2)).save(any(QuestionnaireResponse.class));
-        // Verify the size of the returned list matches the size of the input list
         assertEquals(requestDtoList.size(), result.size());
-        // Verify that the IDs of the saved responses are not null
         assertNotNull(result.get(0).getId());
         assertNotNull(result.get(1).getId());
-        // Verify the questionnaire response text for each saved response
         assertEquals("Response 1", result.get(0).getQuestionnaireResponseText());
         assertEquals("Response 2", result.get(1).getQuestionnaireResponseText());
     }
@@ -293,7 +287,7 @@ class QuestionnaireResponseServiceTest {
 
     @Test
     public void testSaveOrUpdateQuestionnaireResponse_WithExistingId() {
-        // Prepare test data with an existing ID
+        // test data with an existing ID
         List<QuestionnaireResponseRequestDto> requestDtoList = new ArrayList<>();
         QuestionnaireResponseRequestDto requestDto1 = new QuestionnaireResponseRequestDto();
         String existingId = UUID.randomUUID().toString();
@@ -301,40 +295,29 @@ class QuestionnaireResponseServiceTest {
         requestDto1.setQuestionnaireResponseText("Response with Existing ID");
         requestDtoList.add(requestDto1);
 
-        // Define the expected behavior of the mock repository
+        //expected behavior of the mock repository
         QuestionnaireResponse savedResponse1 = new QuestionnaireResponse();
         savedResponse1.setId(existingId); // Set the same ID as in the DTO
         savedResponse1.setQuestionnaireResponseText("Response with Existing ID"); // Set the expected response text
         when(questionnaireResponseRepository.save(any(QuestionnaireResponse.class))).thenReturn(savedResponse1);
 
-        // Call the service method
         List<QuestionnaireResponse> result = questionnaireResponseService.saveOrUpdateQuestionnaireResponse(requestDtoList);
 
-        // Assertions
-        // Verify that the repository save method was called once with the correct arguments
         verify(questionnaireResponseRepository, times(1)).save(any(QuestionnaireResponse.class));
-        // Verify the size of the returned list is 1
         assertEquals(1, result.size());
-        // Verify that the ID of the saved response matches the ID in the DTO
         assertEquals(existingId, result.get(0).getId());
-        // Verify the questionnaire response text for the saved response
         assertEquals("Response with Existing ID", result.get(0).getQuestionnaireResponseText());
     }
 
     @Test
     public void testSaveOrUpdateQuestionnaireResponse_WithNullValues() {
-        // Prepare test data with null values
+        //test data with null values
         List<QuestionnaireResponseRequestDto> requestDtoList = new ArrayList<>();
         QuestionnaireResponseRequestDto requestDto1 = new QuestionnaireResponseRequestDto();
-        // Leave all fields in the DTO as null
 
-        // Call the service method
         List<QuestionnaireResponse> result = questionnaireResponseService.saveOrUpdateQuestionnaireResponse(requestDtoList);
 
-        // Assertions
-        // Verify that the repository save method was not called
         verify(questionnaireResponseRepository, times(0)).save(any(QuestionnaireResponse.class));
-        // Verify the size of the returned list is 0
         assertEquals(0, result.size());
     }
 
@@ -349,13 +332,9 @@ class QuestionnaireResponseServiceTest {
         // Mocking the behavior of the repository method to return the desired questionnaireResponses
         when(questionnaireResponseRepository.findByPatientId(patientId)).thenReturn(questionnaireResponses);
 
-        // Act
         List<String> result = questionnaireResponseService.getDataForExport(patientId);
 
-        // Assert
-        // Verifying that the repository method is called with the correct patientId
         verify(questionnaireResponseRepository, times(1)).findByPatientId(patientId);
-        // Assertions for the result
         assertNotNull(result);
         assertEquals(2, result.size());
     }
@@ -379,19 +358,15 @@ class QuestionnaireResponseServiceTest {
         when(questionnaireResponseRepository.findByPatientId(patientId1)).thenReturn(questionnaireResponses1);
         when(questionnaireResponseRepository.findByPatientId(patientId2)).thenReturn(questionnaireResponses2);
 
-        // Act
         Map<String, Object> result = questionnaireResponseService.getAllDataForExport();
 
-        // Assert
         assertNotNull(result);
         assertEquals(2, result.size());
 
-        // Check patientId1 data
         assertTrue(result.containsKey(patientId1));
         List<String> patientData1 = (List<String>) result.get(patientId1);
         assertEquals(2, patientData1.size());
 
-        // Check patientId2 data
         assertTrue(result.containsKey(patientId2));
         List<String> patientData2 = (List<String>) result.get(patientId2);
         assertEquals(2, patientData2.size());
@@ -399,13 +374,10 @@ class QuestionnaireResponseServiceTest {
 
     @Test
     void testGetAllDataForExport_NoData() {
-        // Arrange
         when(questionnaireResponseRepository.findDistinctPatientIdd()).thenReturn(Collections.emptyList());
 
-        // Act
         Map<String, Object> result = questionnaireResponseService.getAllDataForExport();
 
-        // Assert
         assertNotNull(result);
         assertEquals(0, result.size());
     }
@@ -420,17 +392,13 @@ class QuestionnaireResponseServiceTest {
         UserMasterDto userMasterDto = new UserMasterDto();
         userMasterDto.setUserName("testuser");
 
-        // Mock the behavior of userService.getCurrentUser() to return the mock UserMasterDto
         when(userService.getCurrentUser()).thenReturn(ResponseEntity.ok(userMasterDto));
 
-        // Call the method
         questionnaireResponseService.logSyncAttempt();
 
-        // Verify that save method was called on userSyncLogRepository with the correct UserSyncLog object
         ArgumentCaptor<UserSyncLog> userSyncLogCaptor = ArgumentCaptor.forClass(UserSyncLog.class);
         verify(userSyncLogRepository).save(userSyncLogCaptor.capture());
 
-        // Get the captured UserSyncLog object and check its values
         UserSyncLog capturedUserSyncLog = userSyncLogCaptor.getValue();
         assertNotNull(capturedUserSyncLog.getSyncAttemptTime());
         assertEquals("testuser", capturedUserSyncLog.getUsername());
