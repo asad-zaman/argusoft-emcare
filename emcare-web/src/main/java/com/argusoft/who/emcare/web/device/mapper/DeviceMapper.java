@@ -9,7 +9,7 @@ import com.argusoft.who.emcare.web.user.dto.MultiLocationUserListDto;
  * @author jay
  */
 public class DeviceMapper {
-    private DeviceMapper() {
+    DeviceMapper() {
     }
 
     public static DeviceMaster getDeviceMatserFromDto(DeviceDto deviceDto, String userId, String userName) {
