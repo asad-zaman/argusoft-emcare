@@ -36,34 +36,26 @@ class ApplicationLogRepositoryTest {
     }
 
     @Test
-    void getAllApplicationLogs() {
+    void testGetAllApplicationLogs() {
 
-        // Mocking the repository method to return multiple logs in descending order
         when(applicationLogRepository.findAllByOrderByCreatedOnDesc()).thenReturn(applicationLogs);
 
-
-        // Call the repository method
         List<ApplicationLog> result = applicationLogRepository.findAllByOrderByCreatedOnDesc();
 
-
-        // Assertions
         assertThat(result).isNotNull();
         assertEquals(2,result.get(0).getId());
     }
     @Test
-    void getLatestApplicationLog(){
-        // Mocking the repository method to return multiple logs in descending order
+    void testGetLatestApplicationLog(){
         when(applicationLogRepository.getLatestOne()).thenReturn(applicationLogs.get(0));
 
-        // Call the repository method
         ApplicationLog result1 = applicationLogRepository.getLatestOne();
 
-        // Assertions
         assertThat(result1).isNotNull();
         assertEquals(2, result1.getId());
 
     }
-    // Helper method to create a mock ApplicationLog object
+
     private ApplicationLog createMockApplicationLog(Integer id, String log, Date createdOn) {
         ApplicationLog applicationLog = new ApplicationLog();
         applicationLog.setId(id);

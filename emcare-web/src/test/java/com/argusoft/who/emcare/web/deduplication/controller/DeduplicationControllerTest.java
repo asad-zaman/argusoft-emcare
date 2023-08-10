@@ -56,10 +56,8 @@ class DeduplicationControllerTest {
     void testCheckPatientDuplicates() throws IOException {
         Patient patientData1 = getPatientDataToPatient(patient1);
 
-        // Mocking the behavior of the deduplicationService
         when(deduplicationService.checkPatientDuplicates(any(Patient.class))).thenReturn(true);
 
-        // Call the API endpoint
         Boolean result = deduplicationController.checkPatientDuplicates(patientData1);
 
         // Verify the result
@@ -68,14 +66,11 @@ class DeduplicationControllerTest {
 
     @Test
     void testGetAllDuplicatePatientEntry() {
-        // Mocking the behavior of the deduplicationService
         String expectedResult = "{\"result\": \"some data\"}";
         when(deduplicationService.getAllDuplicatePatientRecords()).thenReturn(ResponseEntity.ok(expectedResult));
 
-        // Call the API endpoint
         ResponseEntity<Object> response = deduplicationController.getAllDuplicatePatientEntry();
 
-        // Verify the result
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(expectedResult, response.getBody());
     }

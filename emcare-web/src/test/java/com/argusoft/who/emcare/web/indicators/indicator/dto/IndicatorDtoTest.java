@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 class IndicatorDtoTest {
 
     @Test
-    void testSetterAndGetters() {
+    void testGettersAndSetters() {
         IndicatorDto dto = new IndicatorDto();
 
         dto.setIndicatorId(1L);

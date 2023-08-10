@@ -11,7 +11,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @ExtendWith(MockitoExtension.class)
 public class ApplicationLogTest {
 
-
     private ApplicationLog applicationLog;
 
     @BeforeEach

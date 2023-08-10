@@ -181,13 +181,12 @@ class QuestionnaireResponseServiceTest {
         requestDtoList.add(requestDto1);
         requestDtoList.add(requestDto2);
 
-        //expected behavior of the mock repository
         QuestionnaireResponse savedResponse1 = new QuestionnaireResponse();
         savedResponse1.setId(UUID.randomUUID().toString());
-        savedResponse1.setQuestionnaireResponseText("Response 1"); // Set the expected response text for the first DTO
+        savedResponse1.setQuestionnaireResponseText("Response 1");
         QuestionnaireResponse savedResponse2 = new QuestionnaireResponse();
         savedResponse2.setId(UUID.randomUUID().toString());
-        savedResponse2.setQuestionnaireResponseText("Response 2"); // Set the expected response text for the second DTO
+        savedResponse2.setQuestionnaireResponseText("Response 2");
         when(questionnaireResponseRepository.save(any(QuestionnaireResponse.class))).thenReturn(savedResponse1, savedResponse2);
 
         List<QuestionnaireResponse> result = questionnaireResponseService.saveOrUpdateQuestionnaireResponse(requestDtoList);
@@ -201,7 +200,7 @@ class QuestionnaireResponseServiceTest {
     }
 
     @Test
-    void getQuestionnaireResponseByUserLocationWithLaterDate() throws ParseException {
+    void testGetQuestionnaireResponseByUserLocationWithLaterDate() throws ParseException {
         UserMasterDto userMasterDto = new UserMasterDto();
         userMasterDto.setFacilities(getMockFacilities());
         when(userService.getCurrentUser()).thenReturn(ResponseEntity.ok().body(userMasterDto));
@@ -222,7 +221,7 @@ class QuestionnaireResponseServiceTest {
     }
 
     @Test
-    void getQuestionnaireResponseByUserLocationWithMidDate() throws ParseException {
+    void testGetQuestionnaireResponseByUserLocationWithMidDate() throws ParseException {
         UserMasterDto userMasterDto = new UserMasterDto();
         userMasterDto.setFacilities(getMockFacilities());
         when(userService.getCurrentUser()).thenReturn(ResponseEntity.ok().body(userMasterDto));
@@ -243,7 +242,7 @@ class QuestionnaireResponseServiceTest {
     }
 
     @Test
-    void getQuestionnaireResponseByUserLocationWithEarlyDate() throws ParseException {
+    void testGetQuestionnaireResponseByUserLocationWithEarlyDate() throws ParseException {
         UserMasterDto userMasterDto = new UserMasterDto();
         userMasterDto.setFacilities(getMockFacilities());
         when(userService.getCurrentUser()).thenReturn(ResponseEntity.ok().body(userMasterDto));
@@ -264,7 +263,7 @@ class QuestionnaireResponseServiceTest {
     }
 
     @Test
-    void getQuestionnaireResponseByUserLocationWithoutDate() throws ParseException {
+    void testGetQuestionnaireResponseByUserLocationWithoutDate() throws ParseException {
         UserMasterDto userMasterDto = new UserMasterDto();
         userMasterDto.setFacilities(getMockFacilities());
         when(userService.getCurrentUser()).thenReturn(ResponseEntity.ok().body(userMasterDto));
@@ -382,7 +381,7 @@ class QuestionnaireResponseServiceTest {
     }
 
     @Nested
-    class TestGetConsultationsUnderLocationId {
+    class testGetConsultationsUnderLocationId {
         @BeforeEach
         void setup() {
             when(locationMasterDao.getAllChildLocationId(anyInt()))

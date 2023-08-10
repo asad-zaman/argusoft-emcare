@@ -123,7 +123,6 @@
 
             assertNotNull(equation);
 
-            // Assert each property of the DTO matches the corresponding property of the entity
             assertEquals(dto.getNumeratorId(), equation.getNumeratorId());
             assertEquals(dto.getCodeId(), equation.getCodeId());
             assertEquals(dto.getCode(), equation.getCode());

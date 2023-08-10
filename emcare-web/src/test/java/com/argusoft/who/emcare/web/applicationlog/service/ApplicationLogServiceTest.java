@@ -40,53 +40,43 @@ class ApplicationLogServiceTest {
     }
 
     @Test
-    void getAllApplicationLogs() {
+    void testGetAllApplicationLogs() {
 
         // Mock data
         List<ApplicationLog> mockLogs = new ArrayList<>();
         mockLogs.add(createMockApplicationLog(1, "Log 1"));
         mockLogs.add(createMockApplicationLog(2, "Log 2"));
 
-        // Mocking the repository method
         when(applicationLogRepository.findAllByOrderByCreatedOnDesc()).thenReturn(mockLogs);
 
-        // Call the service method
         List<ApplicationLog> result = applicationLogService.getAllApplicationLogs();
 
-        // Assertions
         assertEquals(2, result.size());
         assertEquals("Log 1", result.get(0).getLogs()[0]);
         assertEquals("Log 2", result.get(1).getLogs()[0]);
 
-        // Check if the logs are in descending order of createdOn
         for (int i = 1; i < result.size(); i++) {
             assertThat(result.get(i).getCreatedOn()).isBeforeOrEqualTo(result.get(i - 1).getCreatedOn());
         }
 
-        // Verify that the repository method was called
         verify(applicationLogRepository, times(1)).findAllByOrderByCreatedOnDesc();
     }
 
     @Test
-    void getLatestApplicationLogs() {
+    void testGetLatestApplicationLogs() {
         // Mock data
         ApplicationLog mockLog = createMockApplicationLog(1, "Latest Log");
 
-        // Mocking the repository method
         when(applicationLogRepository.getLatestOne()).thenReturn(mockLog);
 
-        // Call the service method
         ApplicationLog result = applicationLogService.getLatestApplicationLogs();
 
-        // Assertions
         assertEquals("Latest Log", result.getLogs()[0]);
 
-        // Verify that the repository method was called
         verify(applicationLogRepository, times(1)).getLatestOne();
 
     }
 
-    // Helper method to create a mock ApplicationLog object
     private ApplicationLog createMockApplicationLog(Integer id, String log) {
         ApplicationLog applicationLog = new ApplicationLog();
         applicationLog.setId(id);

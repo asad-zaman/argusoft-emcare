@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 class IndicatorNumeratorEquationDtoTest {
 
     @Test
-    void testSetterAndGetters() {
+    void testGettersAndSetters() {
         IndicatorNumeratorEquationDto dto = new IndicatorNumeratorEquationDto();
 
         dto.setNumeratorId(1L);

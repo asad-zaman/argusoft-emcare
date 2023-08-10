@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 class IndicatorFilterDtoTest {
 
     @Test
-    void testSetterAndGetters() {
+    void testGettersAndSetters() {
         IndicatorFilterDto dto = new IndicatorFilterDto();
 
         dto.setIndicatorId(1L);

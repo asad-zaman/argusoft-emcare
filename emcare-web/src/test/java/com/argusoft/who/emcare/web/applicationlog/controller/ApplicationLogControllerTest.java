@@ -35,16 +35,13 @@ class ApplicationLogControllerTest {
 
     @Test
     void testAddNewApplication() throws Exception {
-        // Mocking the service behavior
         String logData = "{\"message\":\"Application Log Data\"}";
         MultipartFile multipartFile = new MockMultipartFile("file", "test.txt",
                 "text/plain", "Test data".getBytes(StandardCharsets.UTF_8));
         when(applicationLogService.addApplicationLog(any(), any())).thenReturn(ResponseEntity.ok().body("Successfully Uploaded"));
 
-        // Perform the test
         ResponseEntity<Object> response = applicationLogController.addNewApplication(multipartFile, logData);
 
-        // Verify the results
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals("Successfully Uploaded", response.getBody());
         verify(applicationLogService, times(1)).addApplicationLog(any(), any());
@@ -52,17 +49,14 @@ class ApplicationLogControllerTest {
 
     @Test
     void testGetAllApplicationLog() throws Exception {
-        // Mocking the service behavior
         List<ApplicationLog> applicationLogs = List.of(
                 createApplicationLog("Application 1", "log data 1"),
                 createApplicationLog("Application 2", "log data 2")
         );
         when(applicationLogService.getAllApplicationLogs()).thenReturn(applicationLogs);
 
-        // Perform the test
         ResponseEntity<Object> response = applicationLogController.getAllApplicationLog();
 
-        // Verify the results
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(applicationLogs, response.getBody());
         verify(applicationLogService, times(1)).getAllApplicationLogs();

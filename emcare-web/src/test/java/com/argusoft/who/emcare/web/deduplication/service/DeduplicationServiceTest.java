@@ -55,7 +55,7 @@ class DeduplicationServiceTest {
 
 
     @Test
-    void comparePatients() throws IOException {
+    void testComparePatients() throws IOException {
         Patient patientData1 = getPatientData(patient1);
         Patient patientData2 = getPatientData(patient2);
         Patient patientData3 = getPatientData(patient3);
@@ -83,16 +83,13 @@ class DeduplicationServiceTest {
         Patient patientData2 = getPatientData(patient2);
         Patient patientData3 = getPatientData(patient3);
 
-        // Mock the getAllPatientResources method to return the test patients
         List<Patient> patients = new ArrayList<>();
         patients.add(patientData1);
         patients.add(patientData2);
         patients.add(patientData3);
         when(emcareResourceService.getAllPatientResources()).thenReturn(patients);
 
-        // Call the method under test
         ResponseEntity<Object> response = deduplicationService.getAllDuplicatePatientRecords();
-        System.out.println(response);
         assertNotNull(response);
     }
 
