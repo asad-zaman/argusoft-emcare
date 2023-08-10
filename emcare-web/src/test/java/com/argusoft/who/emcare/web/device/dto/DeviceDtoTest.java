@@ -1,6 +1,5 @@
 package com.argusoft.who.emcare.web.device.dto;
 
-import com.argusoft.who.emcare.web.user.dto.MultiLocationUserListDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.ContextConfiguration;
@@ -92,5 +91,4 @@ public class DeviceDtoTest {
         deviceDto.setUserId(userId);
         assertEquals(userId, deviceDto.getUserId());
     }
-
 }

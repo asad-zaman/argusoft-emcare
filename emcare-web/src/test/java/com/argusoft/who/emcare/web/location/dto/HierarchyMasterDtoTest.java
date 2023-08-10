@@ -8,9 +8,7 @@ public class HierarchyMasterDtoTest {
 
     @Test
     public void testGettersAndSetters(){
-
         HierarchyMasterDto dto = new HierarchyMasterDto();
-
         dto.setHierarchyType("Region");
         dto.setName("Region 1");
         dto.setCode("REG001");
@@ -33,7 +31,6 @@ public class HierarchyMasterDtoTest {
         dto2.setCode("REG001");
 
         assertEquals(dto1, dto2);
-
         assertEquals(dto1.hashCode(), dto2.hashCode());
     }
 

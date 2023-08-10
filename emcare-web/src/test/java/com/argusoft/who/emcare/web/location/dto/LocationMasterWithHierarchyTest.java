@@ -24,5 +24,4 @@ public class LocationMasterWithHierarchyTest {
         assertEquals(Long.valueOf(10L), dto.getParent());
         assertEquals("Region > City > Suburb", dto.getHierarch());
     }
-
 }

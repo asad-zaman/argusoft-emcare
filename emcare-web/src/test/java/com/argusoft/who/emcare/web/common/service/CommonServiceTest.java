@@ -32,8 +32,8 @@ class CommonServiceTest {
     AutoCloseable autoCloseable;
 
     private final String defaultTenant = "Kambezi";
-
-    private final String defaultTenantDomain = "localhost:8080";
+    private final String url = "https://example.com/api/users";
+    private final String uri = "/api/users";
 
     @BeforeEach
     void setUp() {
@@ -47,24 +47,17 @@ class CommonServiceTest {
 
     @Test
     void testGetDomainFormUrl() {
-
-        String url = "https://example.com/api/users";
-        String uri = "/api/users";
         String expectedDomain = "example.com";
 
         String actualDomain = commonService.getDomainFormUrl(url,uri);
 
         assertEquals(expectedDomain, actualDomain);
-
     }
 
     @Test
     void testGetTenantIdFromURL_ExistingDomain() {
-        String url = "https://example.com/api/users";
-        String uri = "/api/users";
         String domain = "example.com";
         String tenantId = "tenant123";
-
 
         TenantConfig tenantConfig = new TenantConfig();
         tenantConfig.setTenantId(tenantId);
@@ -78,28 +71,10 @@ class CommonServiceTest {
 
     @Test
     void testGetTenantIdFromURL_NonExistingDomain() {
-        String url = "https://nonexisting.com/api/users";
-        String uri = "/api/users";
-
         when(tenantConfigRepository.findByDomain(anyString())).thenReturn(Optional.empty());
 
         String actualTenantId = commonService.getTenantIdFromURL(url, uri);
 
         assertEquals(defaultTenant, actualTenantId);
     }
-
-    @Test
-    void testGetTenantIdFromURL_DefaultTenant() {
-        String url = "https://example.com/api/users";
-        String uri = "/api/users";
-        String domain = "example.com";
-
-
-        when(tenantConfigRepository.findByDomain(domain)).thenReturn(Optional.empty());
-
-        String actualTenantId = commonService.getTenantIdFromURL(url, uri);
-
-        assertEquals(defaultTenant, actualTenantId);
-    }
-
 }

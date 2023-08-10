@@ -61,6 +61,4 @@ public class EmailContentTest {
         emailContent.setCreatedAt(date);
         assertEquals(date, emailContent.getCreatedAt());
     }
-
-
 }

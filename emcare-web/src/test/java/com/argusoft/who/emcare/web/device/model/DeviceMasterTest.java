@@ -130,15 +130,13 @@ public class DeviceMasterTest {
         device2.setImeiNumber("imei1");
         device2.setMacAddress("mac1");
 
-        assertTrue(device1.equals(device2));
+        assertEquals(device1, device2);
 
         assertEquals(device1.hashCode(), device2.hashCode());
 
         DeviceMaster differentDevice = new DeviceMaster();
         differentDevice.setDeviceId(3);
 
-        assertFalse(device1.equals(differentDevice));
-
+        assertNotEquals(device1, differentDevice);
     }
-
 }

@@ -1,8 +1,6 @@
 package com.argusoft.who.emcare.web.common.dto;
 
-import com.argusoft.who.emcare.web.common.service.impl.CommonServiceImpl;
 import org.junit.jupiter.api.Test;
-import org.springframework.test.context.ContextConfiguration;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -11,47 +9,22 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-@ContextConfiguration(classes = {CommonServiceImpl.class})
 public class PageDtoTest {
 
     @Test
-    void testGetList() {
-
+    void testSetAndGetList() {
         List<String> testData = Arrays.asList("Item 1", "Item 2", "Item 3");
         PageDto pageDto = new PageDto();
         pageDto.setList(testData);
 
-        List<?> resultList = pageDto.getList();
-
-        assertEquals(testData, resultList);
+        assertEquals(testData,  pageDto.getList());
     }
 
-    @Test
-    void testSetList() {
-        List<String> testData = Arrays.asList("Item 1", "Item 2", "Item 3");
-        PageDto pageDto = new PageDto();
-
-        pageDto.setList(testData);
-
-        assertEquals(testData, pageDto.getList());
-    }
 
     @Test
-    void testGetTotalCount() {
+    void testSetAndGetTotalCount() {
         Long totalCount = 10L;
         PageDto pageDto = new PageDto();
-        pageDto.setTotalCount(totalCount);
-
-        Long resultTotalCount = pageDto.getTotalCount();
-
-        assertEquals(totalCount, resultTotalCount);
-    }
-
-    @Test
-    void testSetTotalCount() {
-        Long totalCount = 10L;
-        PageDto pageDto = new PageDto();
-
         pageDto.setTotalCount(totalCount);
 
         assertEquals(totalCount, pageDto.getTotalCount());
@@ -78,11 +51,10 @@ public class PageDtoTest {
     void testPageDtoWithEmptyList() {
         PageDto pageDto = new PageDto();
         List<?> emptyList = Collections.emptyList();
-        pageDto.setList(emptyList);
+        pageDto.setList(Collections.emptyList());
         pageDto.setTotalCount(0L);
 
         assertEquals(emptyList, pageDto.getList());
         assertEquals(0L, pageDto.getTotalCount());
     }
-
 }

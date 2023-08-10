@@ -1,5 +1,6 @@
 package com.argusoft.who.emcare.web.common.dao;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -22,9 +23,16 @@ public class GenericRepositoryImplTest {
     @InjectMocks
     private GenericRepositoryImpl genericRepository;
 
+    AutoCloseable autoCloseable;
+
     @BeforeEach
     public void setUp() {
-        MockitoAnnotations.openMocks(this);
+        autoCloseable = MockitoAnnotations.openMocks(this);
+    }
+
+    @AfterEach
+    void tearDown() throws Exception {
+        autoCloseable.close();
     }
 
     @Test

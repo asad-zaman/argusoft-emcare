@@ -1,6 +1,5 @@
 package com.argusoft.who.emcare.web.adminsetting.entity;
 
-import com.argusoft.who.emcare.web.adminsetting.entity.Settings;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.ContextConfiguration;
@@ -17,20 +16,7 @@ public class SettingsTest {
     }
 
     @Test
-    public void TestSetId(){
-
-        Long id = 1L;
-        settings.setId(id);
-
-        Long resultId = settings.getId();
-
-        assertEquals(id, resultId);
-
-    }
-
-    @Test
-    public void testGetId(){
-
+    public void testSetAndGetId(){
         Long id = 1L;
         settings.setId(id);
 
@@ -38,20 +24,7 @@ public class SettingsTest {
     }
 
     @Test
-    public void testSetName(){
-
-        String name = "Name1";
-        settings.setName(name);
-
-        String resultName = settings.getName();
-
-        assertEquals(name, resultName);
-
-    }
-
-    @Test
-    public void testGetName(){
-
+    public void testSetAndGetName(){
         String name = "Name1";
         settings.setName(name);
 
@@ -59,17 +32,7 @@ public class SettingsTest {
     }
 
     @Test
-    public void testSetKey(){
-        String key = "Key1";
-        settings.setKey(key);
-
-        String resultKey = settings.getKey();
-
-        assertEquals(key, resultKey);
-    }
-
-    @Test
-    public void testGetKey(){
+    public void testSetAndGetKey(){
         String key = "Key1";
         settings.setKey(key);
 
@@ -77,17 +40,7 @@ public class SettingsTest {
     }
 
     @Test
-    public void testSetValue(){
-        String value = "Value1";
-        settings.setValue(value);
-
-        String resultValue = settings.getValue();
-
-        assertEquals(value, resultValue);
-    }
-
-    @Test
-    public void testGetValue(){
+    public void testSetAndGetValue(){
         String value = "Value1";
         settings.setValue(value);
 

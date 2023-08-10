@@ -18,20 +18,7 @@ public class SettingDtoTest {
     }
 
     @Test
-    public void TestSetId(){
-
-        Long id = 1L;
-        settingDto.setId(id);
-
-        Long resultId = settingDto.getId();
-
-        assertEquals(id, resultId);
-
-    }
-
-    @Test
-    public void testGetId(){
-
+    public void testSetAndGetId(){
         Long id = 1L;
         settingDto.setId(id);
 
@@ -39,20 +26,7 @@ public class SettingDtoTest {
     }
 
     @Test
-    public void testSetName(){
-
-        String name = "Name1";
-        settingDto.setName(name);
-
-        String resultName = settingDto.getName();
-
-        assertEquals(name, resultName);
-
-    }
-
-    @Test
-    public void testGetName(){
-
+    public void testSetAndGetName(){
         String name = "Name1";
         settingDto.setName(name);
 
@@ -60,17 +34,7 @@ public class SettingDtoTest {
     }
 
     @Test
-    public void testSetKey(){
-        String key = "Key1";
-        settingDto.setKey(key);
-
-        String resultKey = settingDto.getKey();
-
-        assertEquals(key, resultKey);
-    }
-
-    @Test
-    public void testGetKey(){
+    public void testSetAndGetKey(){
         String key = "Key1";
         settingDto.setKey(key);
 
@@ -78,17 +42,7 @@ public class SettingDtoTest {
     }
 
     @Test
-    public void testSetValue(){
-        String value = "Value1";
-        settingDto.setValue(value);
-
-        String resultValue = settingDto.getValue();
-
-        assertEquals(value, resultValue);
-    }
-
-    @Test
-    public void testGetValue(){
+    public void testSetAndGetValue(){
         String value = "Value1";
         settingDto.setValue(value);
 
