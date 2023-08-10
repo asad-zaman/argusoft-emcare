@@ -24,7 +24,7 @@ class UserFeatureJsonTest {
     }
 
     @Test
-    void dtoGetterSetterTestWithNoNullFields() {
+    void testDtoGetterSetterWithNoNullFields() {
         UserFeatureJson mockDTO = mock(UserFeatureJson.class);
         when(mockDTO.getId()).thenReturn("id");
         when(mockDTO.getFeatureJson()).thenReturn("featureJSON");
@@ -40,7 +40,7 @@ class UserFeatureJsonTest {
     }
 
     @Test
-    void dtoGetterSetterTestWithPartialNullFields() {
+    void testDtoGetterSettertWithPartialNullFields() {
         UserFeatureJson mockDTO = mock(UserFeatureJson.class);
         when(mockDTO.getId()).thenReturn("id");
         when(mockDTO.getFeatureJson()).thenReturn("featureJSON");

@@ -6,8 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.meanbean.test.BeanTester;
 import org.mockito.MockitoAnnotations;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class MenuConfigDtoTest {
     AutoCloseable autoCloseable;
 
@@ -22,7 +20,7 @@ class MenuConfigDtoTest {
     }
 
     @Test
-    void dtoGetterSetterTest() {
+    void testDtoGetterSetter() {
         BeanTester beanTester = new BeanTester();
         beanTester.testBean(MenuConfigDto.class);
     }

@@ -90,7 +90,7 @@ class MenuServiceTest {
     }
 
     @Test
-    void getMenuConfigByMenuId_ValidMenuId() throws IOException {
+    void testGetMenuConfigByMenuId_ValidMenuId() throws IOException {
         List<UserMenuConfig> demoUserMenuConfigData = getDemoUserMenuConfigData();
         Map<Integer, Boolean> userMenuConfigHasRoleId = new HashMap<>();
         Map<Integer, Boolean> userMenuConfigHasUserId = new HashMap<>();
@@ -124,7 +124,7 @@ class MenuServiceTest {
     }
 
     @Test
-    void getMenuConfigByMenuId_InvalidMenuId() {
+    void testGetMenuConfigByMenuId_InvalidMenuId() {
         List<UserMenuConfig> demoUserMenuConfigData = new ArrayList<>();
         when(userMenuConfigRepository.getMenuConfigByMenuId(anyInt())).thenReturn(demoUserMenuConfigData);
 
@@ -135,7 +135,7 @@ class MenuServiceTest {
     }
 
     @Test
-    void addMenuConfiguration() {
+    void testAddMenuConfiguration() {
         MenuConfigDto mockMenuConfigDto = new MenuConfigDto();
         mockMenuConfigDto.setId(1);
         mockMenuConfigDto.setMenuId(1);
@@ -157,7 +157,7 @@ class MenuServiceTest {
     }
 
     @Test
-    void deleteMenuConfig_ExistingMenuConfigId() {
+    void testDeleteMenuConfig_ExistingMenuConfigId() {
         doNothing().when(userMenuConfigRepository).deleteById(anyInt());
         Response actualResponse = menuService.deleteMenuConfig(1);
 
@@ -168,7 +168,7 @@ class MenuServiceTest {
     }
 
     @Test
-    void deleteMenuConfig_NonExistingMenuConfigId() {
+    void testDeleteMenuConfig_NonExistingMenuConfigId() {
         String expectedExceptionMessage = "MenuUserConfig Doesn't Exists";
 
         EmptyResultDataAccessException mockException = mock(EmptyResultDataAccessException.class);

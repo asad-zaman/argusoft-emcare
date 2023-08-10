@@ -64,7 +64,7 @@ class DashboardServiceTest {
     }
 
     @Test
-    void getDashboardData() throws IOException {
+    void testGetDashboardData() throws IOException {
         DashboardDto dashboardDto = getDashboardDTODemoData();
 
         when(userLocationMappingRepository.getDashboardData()).thenReturn(dashboardDto);
@@ -79,7 +79,7 @@ class DashboardServiceTest {
     }
 
     @Test
-    void getDashboardBarChartData() throws IOException {
+    void testGetDashboardBarChartData() throws IOException {
         List<ChartDto> demoPieChartData = getDemoPieChartData();
         Map<String, Object> demoAgeData = getDemoAgeData();
         List<ScatterCharDto> demoScatterCharData = getDemoScatterCharData();
@@ -96,19 +96,19 @@ class DashboardServiceTest {
 
         assertNotNull(listMap);
         assertNotNull(listMap.get("consultationPerFacility"));
-        assertTrue(((List<Object>) listMap.get("consultationPerFacility")).size() == demoPieChartData.size());
+        assertEquals(((List<Object>) listMap.get("consultationPerFacility")).size(), demoPieChartData.size());
 
         assertNotNull(listMap.get("consultationByAgeGroup"));
         Map<String, Object> responseAgeData = (Map<String, Object>)listMap.get("consultationByAgeGroup");
         demoAgeData.forEach((k, v) -> {
-            assertTrue(((Number)responseAgeData.get(k)).longValue() == ((Number)v).longValue());
+            assertEquals(((Number) responseAgeData.get(k)).longValue(), ((Number) v).longValue());
         });
 
         assertNotNull(listMap.get("scatterChart"));
-        assertTrue(((List<Object>)listMap.get("scatterChart")).size() == demoScatterCharData.size());
+        assertEquals(((List<Object>) listMap.get("scatterChart")).size(), demoScatterCharData.size());
 
         assertNotNull(listMap.get("mapView"));
-        assertTrue(((List<Object>)listMap.get("mapView")).size() == demoFacilityMapData.size());
+        assertEquals(((List<Object>) listMap.get("mapView")).size(), demoFacilityMapData.size());
     }
 
     // Functions to fill demo data

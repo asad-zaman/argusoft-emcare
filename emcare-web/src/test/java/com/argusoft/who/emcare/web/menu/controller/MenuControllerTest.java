@@ -64,7 +64,7 @@ class MenuControllerTest {
         autoCloseable.close();
     }
     @Test
-    void getAllMenu() throws Exception {
+    void testGetAllMenu() throws Exception {
         List<MenuConfig> mockMenuConfigs = getDemoMenuConfigData();
         mockMenuConfigs.sort(Comparator.comparing(MenuConfig::getMenuName));
 
@@ -90,7 +90,7 @@ class MenuControllerTest {
     }
 
     @Test
-    void getMenuConfigByIdWithValidExistingMenuID() throws Exception {
+    void testGetMenuConfigByIdWithValidExistingMenuID() throws Exception {
         List<MenuConfigDto> mockMenuConfigDTOs = getMockMenuConfigDTOs();
 
         when(menuService.getMenuConfigByMenuId(1)).thenReturn(mockMenuConfigDTOs);
@@ -111,7 +111,7 @@ class MenuControllerTest {
     }
 
     @Test
-    void getMenuConfigByIdWithValidNonExistingMenuID() throws Exception {
+    void testGetMenuConfigByIdWithValidNonExistingMenuID() throws Exception {
         when(menuService.getMenuConfigByMenuId(anyInt())).thenReturn(new ArrayList<>());
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/api/menu/menuconfig/2").accept(MediaType.APPLICATION_JSON);
@@ -126,7 +126,7 @@ class MenuControllerTest {
     }
 
     @Test
-    void getMenuConfigByIdWithInvalidNonExistingMenuID() throws Exception {
+    void testGetMenuConfigByIdWithInvalidNonExistingMenuID() throws Exception {
         when(menuService.getMenuConfigByMenuId(anyInt())).thenReturn(new ArrayList<>());
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/api/menu/menuconfig/invalid").accept(MediaType.APPLICATION_JSON);
@@ -135,7 +135,7 @@ class MenuControllerTest {
     }
 
     @Test
-    void addMenuConfigWithValidDataAndAllNotNullField() throws Exception {
+    void testAddMenuConfigWithValidDataAndAllNotNullField() throws Exception {
         MenuConfigDto mockMenuConfig = new MenuConfigDto();
         mockMenuConfig.setMenuId(1);
         mockMenuConfig.setFeatureJson("{ \"canAdd\": true, \"canEdit\": true, \"canView\": true, \"canDelete\": true }");
@@ -173,7 +173,7 @@ class MenuControllerTest {
     }
 
     @Test
-    void addMenuConfigWithInvalidDataAndNullField() throws Exception {
+    void testAddMenuConfigWithInvalidDataAndNullField() throws Exception {
         MenuConfigDto mockMenuConfig = new MenuConfigDto();
         mockMenuConfig.setMenuId(null);
         mockMenuConfig.setFeatureJson(null);
@@ -200,7 +200,7 @@ class MenuControllerTest {
     }
 
     @Test
-    void addMenuConfigWithInvalidDataAndInvalidFieldValue() throws Exception {
+    void testAddMenuConfigWithInvalidDataAndInvalidFieldValue() throws Exception {
         MenuConfigDto mockMenuConfig = new MenuConfigDto();
         mockMenuConfig.setMenuId(1);
         mockMenuConfig.setFeatureJson("Not a json & should fail");
@@ -227,7 +227,7 @@ class MenuControllerTest {
     }
 
     @Test
-    void deleteMenuConfigWithValidID() throws Exception {
+    void testDeleteMenuConfigWithValidID() throws Exception {
         Response mockResponse = new Response("Successfully Deleted", HttpStatus.OK.value());
 
         when(menuService.deleteMenuConfig(anyInt())).thenReturn(mockResponse);
@@ -250,7 +250,7 @@ class MenuControllerTest {
     }
 
     @Test
-    void deleteMenuConfigWithNonExistingID() throws Exception {
+    void testDeleteMenuConfigWithNonExistingID() throws Exception {
         Response mockResponse = new Response(
                 "No class com.argusoft.who.emcare.web.menu.model.UserMenuConfig entity with id 123 exists!",
                 2144591659
@@ -280,7 +280,7 @@ class MenuControllerTest {
     }
 
     @Test
-    void deleteMenuConfigWithInvalidID() throws Exception {
+    void testDeleteMenuConfigWithInvalidID() throws Exception {
         Response mockResponse = new Response(
                 "No class com.argusoft.who.emcare.web.menu.model.UserMenuConfig entity with id 123 exists!",
                 2144591659
@@ -294,7 +294,7 @@ class MenuControllerTest {
     }
 
     @Test
-    void updateMenuConfigWithValidIDAndFields() throws Exception {
+    void testUpdateMenuConfigWithValidIDAndFields() throws Exception {
         MenuConfigDto mockUpdateMenuConfig = new MenuConfigDto();
         mockUpdateMenuConfig.setId(1);
         mockUpdateMenuConfig.setMenuId(1);
@@ -328,7 +328,7 @@ class MenuControllerTest {
     }
 
     @Test
-    void updateMenuConfigWithInvalidField() throws Exception {
+    void testUpdateMenuConfigWithInvalidField() throws Exception {
         MenuConfigDto mockUpdateMenuConfig = new MenuConfigDto();
         // Invalid ID
         mockUpdateMenuConfig.setId(null);

@@ -56,7 +56,7 @@ class DashboardControllerTest {
     }
 
     @Test
-    void getDashboardData() throws Exception {
+    void testGetDashboardData() throws Exception {
         DashboardDtoImpl mockDashboardDto = new DashboardDtoImpl();
         mockDashboardDto.setTotalPatient(100L);
         mockDashboardDto.setPendingRequest(100L);
@@ -82,7 +82,7 @@ class DashboardControllerTest {
     }
 
     @Test
-    void getDashboardBarChartData() throws Exception {
+    void testGetDashboardBarChartData() throws Exception {
         HashMap<String, Object> mockBarChartData = new HashMap<>();
 
         List<String> mockMapViewData = new ArrayList<>();

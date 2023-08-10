@@ -13,7 +13,7 @@ import static org.mockito.Mockito.when;
 class MenuConfigMapperTest {
 
     @Test
-    void getMenuConfigDtoNoNullFields() {
+    void testGetMenuConfigDtoNoNullFields() {
         UserMenuConfig mockUserMenuConfig = new UserMenuConfig();
         mockUserMenuConfig.setId(1);
         mockUserMenuConfig.setMenuId(1);
@@ -37,7 +37,7 @@ class MenuConfigMapperTest {
     }
 
     @Test
-    void getMenuConfigDtoPartialNullFields() {
+    void testGetMenuConfigDtoPartialNullFields() {
         UserMenuConfig mockUserMenuConfig = new UserMenuConfig();
         mockUserMenuConfig.setId(1);
         mockUserMenuConfig.setMenuId(1);
@@ -60,7 +60,7 @@ class MenuConfigMapperTest {
     }
 
     @Test
-    void getUserMenuConfigEntityNoNullFields() {
+    void testGetUserMenuConfigEntityNoNullFields() {
         MenuConfigDto mockMenuConfig = new MenuConfigDto();
         mockMenuConfig.setId(1);
         mockMenuConfig.setMenuId(1);
@@ -81,7 +81,7 @@ class MenuConfigMapperTest {
     }
 
     @Test
-    void getUserMenuConfigEntityPartialNullFields() {
+    void testGetUserMenuConfigEntityPartialNullFields() {
         MenuConfigDto mockMenuConfig = new MenuConfigDto();
         mockMenuConfig.setId(1);
         mockMenuConfig.setMenuId(1);
@@ -102,7 +102,7 @@ class MenuConfigMapperTest {
     }
 
     @Test
-    void getCurrentUserFeatureJsonNoNullFields() {
+    void testGetCurrentUserFeatureJsonNoNullFields() {
         UserFeatureJson mockUserFeatureJson = mock(UserFeatureJson.class);
         when(mockUserFeatureJson.getId()).thenReturn("1");
         when(mockUserFeatureJson.getOrderNumber()).thenReturn(1L);
@@ -122,7 +122,7 @@ class MenuConfigMapperTest {
     }
 
     @Test
-    void getCurrentUserFeatureJsonPartialNullFields() {
+    void testGetCurrentUserFeatureJsonPartialNullFields() {
         UserFeatureJson mockUserFeatureJson = mock(UserFeatureJson.class);
         when(mockUserFeatureJson.getId()).thenReturn("1");
         when(mockUserFeatureJson.getOrderNumber()).thenReturn(1L);

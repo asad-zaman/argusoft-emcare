@@ -24,7 +24,7 @@ class CurrentUserFeatureJsonTest {
     }
 
     @Test
-    void dtoGetterSetterTest() {
+    void testDtoGetterSetter() {
         BeanTester beanTester = new BeanTester();
         beanTester.testBean(CurrentUserFeatureJson.class);
     }
