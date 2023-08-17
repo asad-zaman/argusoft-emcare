@@ -3,14 +3,19 @@ package com.argusoft.who.emcare.ui.home
 import android.os.Bundle
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.DiffUtil
 import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.databinding.FragmentConsultationListBinding
 import com.argusoft.who.emcare.ui.common.base.BaseFragment
+import com.argusoft.who.emcare.ui.common.model.ConsultationItemData
 import com.argusoft.who.emcare.utils.extention.handleListApiView
 import com.argusoft.who.emcare.utils.extention.observeNotNull
 import com.argusoft.who.emcare.utils.glide.GlideApp
 import com.argusoft.who.emcare.utils.glide.GlideRequests
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class ConsultationListFragment: BaseFragment<FragmentConsultationListBinding>(), SearchView.OnQueryTextListener {
@@ -21,12 +26,19 @@ class ConsultationListFragment: BaseFragment<FragmentConsultationListBinding>(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         glideRequests = GlideApp.with(this)
-        consultationAdapter = ConsultationAdapter(onClickListener = this)
+        consultationAdapter = ConsultationAdapter(onClickListener = this, diffCallBack = ConsultationItemComparator)
     }
 
     override fun onResume() {
         super.onResume()
-        homeViewModel.getConsultations((this.parentFragment)?.view?.findViewById<SearchView>(R.id.searchView)?.query.toString(), consultationAdapter.isNotEmpty())
+        viewLifecycleOwner.lifecycleScope.launch {
+            consultationAdapter.refresh()
+            homeViewModel.getConsultationItems().collectLatest { pagingData ->
+                binding.progressLayout.swipeRefreshLayout?.isRefreshing = false
+                consultationAdapter.submitData(pagingData)
+            }
+
+        }
         (this.parentFragment)?.view?.findViewById<SearchView>(R.id.searchView)?.setOnQueryTextListener(this)
     }
     override fun initView() {
@@ -42,7 +54,14 @@ class ConsultationListFragment: BaseFragment<FragmentConsultationListBinding>(),
     }
 
     override fun onQueryTextChange(newText: String?): Boolean {
-        homeViewModel.getConsultations((this.parentFragment)?.view?.findViewById<SearchView>(R.id.searchView)?.query.toString(), consultationAdapter.isNotEmpty())
+        val search: String = (this.parentFragment)?.view?.findViewById<SearchView>(R.id.searchView)?.query.toString()
+        viewLifecycleOwner.lifecycleScope.launch {
+            consultationAdapter.refresh()
+            homeViewModel.getConsultationItems(search).collectLatest { pagingData ->
+                consultationAdapter.submitData(pagingData)
+            }
+
+        }
         return true
     }
 
@@ -63,7 +82,25 @@ class ConsultationListFragment: BaseFragment<FragmentConsultationListBinding>(),
         binding.progressLayout.swipeRefreshLayout = binding.swipeRefreshLayout
         binding.recyclerView.adapter = consultationAdapter
         binding.progressLayout.setOnSwipeRefreshLayout {
-            homeViewModel.getConsultations((this.parentFragment)?.view?.findViewById<SearchView>(R.id.searchView)?.query.toString(), consultationAdapter.isNotEmpty())
+            viewLifecycleOwner.lifecycleScope.launch {
+                consultationAdapter.refresh()
+                homeViewModel.getConsultationItems().collectLatest { pagingData ->
+                    binding.progressLayout?.swipeRefreshLayout?.isRefreshing = false
+                    consultationAdapter.submitData(pagingData)
+                }
+            }
+        }
+    }
+
+    object ConsultationItemComparator : DiffUtil.ItemCallback<ConsultationItemData>() {
+        override fun areItemsTheSame(oldItem: ConsultationItemData, newItem: ConsultationItemData): Boolean {
+            // Id is unique.
+            return oldItem.consultationFlowItemId == newItem.consultationFlowItemId
+                    && oldItem.consultationStage == newItem.consultationStage
+        }
+
+        override fun areContentsTheSame(oldItem: ConsultationItemData, newItem: ConsultationItemData): Boolean {
+            return oldItem == newItem
         }
     }
 
