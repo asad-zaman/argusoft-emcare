@@ -38,6 +38,11 @@ class ConsultationFlowRepository @Inject constructor(
         emit(ApiResponse.Success(data = list))
     }
 
+    fun getAllLatestActiveConsultationsPaginated(limit: Int, offset: Int) = flow {
+        val list = database.getAllLatestActiveConsultationsPaginated(limit, offset)
+        emit(ApiResponse.Success(data = list))
+    }
+
     fun getAllConsultationsByEncounterId(encounterId: String) = flow {
         val list = database.getAllConsultationsByEncounterId(encounterId)
         emit(ApiResponse.Success(data = list))

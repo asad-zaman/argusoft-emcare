@@ -5,6 +5,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import ca.uhn.fhir.context.FhirContext
 import ca.uhn.fhir.context.FhirVersionEnum
 import com.argusoft.who.emcare.R
@@ -38,6 +42,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
@@ -115,14 +120,14 @@ class HomeViewModel @Inject constructor(
     private val _unsyncedResourcesCount = SingleLiveEvent<ApiResponse<Int>>()
     val unsyncedResourcesCount: LiveData<ApiResponse<Int>> = _unsyncedResourcesCount
 
-    fun getPatients(search: String? = null, facilityId: String?, isRefresh: Boolean = false) {
-        _patients.value = ApiResponse.Loading(isRefresh)
-        viewModelScope.launch {
-            patientRepository.getPatients(search, facilityId).collect {
-                _patients.value = it
-            }
-        }
-    }
+//    fun getPatients(search: String? = null, facilityId: String?, isRefresh: Boolean = false) {
+//        _patients.value = ApiResponse.Loading(isRefresh)
+//        viewModelScope.launch {
+//            patientRepository.getPatients(search, facilityId).collect {
+//                _patients.value = it
+//            }
+//        }
+//    }
 
     fun loadLibraries(isReloadHomeActivity: Boolean) {
         viewModelScope.launch(Dispatchers.Default) {
@@ -140,9 +145,9 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private suspend fun clearKnowledgeManagerDatabase() = withContext(dispatcher) {
-        knowledgeManager.clearDatabase()
-    }
+//    private suspend fun clearKnowledgeManagerDatabase() = withContext(dispatcher) {
+//        knowledgeManager.clearDatabase()
+//    }
 
     private fun writeToFile(library: Library): File {
         return File(
@@ -278,11 +283,36 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun getConsultations(search: String? = null, isRefresh: Boolean = false) {
+    fun getConsultationItems(search: String? = null): Flow<PagingData<ConsultationItemData>> {
+        return Pager(
+            config = PagingConfig(pageSize = 10),
+            pagingSourceFactory = {ConsultationListPagingSource(consultationFlowRepository, patientRepository, search)}
+        ).flow.cachedIn(viewModelScope)
+    }
+    fun getRefreshedConsultationItems(search: String? = null): Flow<PagingData<ConsultationItemData>> {
+        return Pager(
+            config = PagingConfig(pageSize = 10),
+            pagingSourceFactory = {ConsultationListPagingSource(consultationFlowRepository, patientRepository, search)}
+        ).flow.cachedIn(viewModelScope)
+    }
+
+    fun getPatientItems(facilityId: String?, search: String? = null): Flow<PagingData<PatientItem>> {
+        return Pager(
+            config = PagingConfig(pageSize = 10),
+            pagingSourceFactory = {PatientListPagingSource(patientRepository, facilityId, search)}
+        ).flow.cachedIn(viewModelScope)
+    }
+
+    fun getConsultations(search: String? = null,limit: Int, offset: Int, isRefresh: Boolean = false) {
         _consultations.value = ApiResponse.Loading(isRefresh)
         val consultationsArrayList = mutableListOf<ConsultationItemData>()
         viewModelScope.launch {
-            consultationFlowRepository.getAllLatestActiveConsultations().collect {
+            if(search.isNullOrEmpty()){
+                consultationFlowRepository.getAllLatestActiveConsultationsPaginated(limit, offset)
+            } else {
+                consultationFlowRepository.getAllLatestActiveConsultations()
+            }
+            .collect {
                 it.data?.forEach { consultationFlowItem ->
                     consultationFlowRepository.getConsultationSyncState(consultationFlowItem)
                         .collect { isSynced ->
