@@ -1,31 +1,42 @@
 package com.argusoft.who.emcare.web.adminsetting.service;
 
+import com.argusoft.who.emcare.web.adminsetting.dto.SettingDto;
 import com.argusoft.who.emcare.web.adminsetting.entity.Settings;
 import com.argusoft.who.emcare.web.adminsetting.repository.AdminSettingRepository;
 import com.argusoft.who.emcare.web.adminsetting.service.impl.AdminSettingServiceImpl;
+import com.argusoft.who.emcare.web.common.constant.CommonConstant;
 import com.argusoft.who.emcare.web.config.KeyCloakConfig;
 import com.argusoft.who.emcare.web.mail.dao.MailRepository;
 import com.argusoft.who.emcare.web.mail.entity.EmailContent;
-import com.argusoft.who.emcare.web.user.service.UserService;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
+import org.keycloak.admin.client.Keycloak;
+import org.keycloak.admin.client.resource.RealmResource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
+@ContextConfiguration(classes = {AdminSettingServiceImpl.class})
+@RunWith(SpringJUnit4ClassRunner.class)
 class AdminSettingServiceTest {
     @Mock
-    private AdminSettingRepository adminSettingRepository;
-
-    @Mock
-    UserService userService;
+    AdminSettingRepository adminSettingRepository;
 
     @Mock
     KeyCloakConfig keyCloakConfig;
@@ -33,15 +44,21 @@ class AdminSettingServiceTest {
     @Mock
     MailRepository mailRepository;
 
-    @Mock
-    Settings settings;
-
     @InjectMocks
-    private AdminSettingServiceImpl adminSettingService;
+    @Spy
+    AdminSettingServiceImpl adminSettingService;
+
+    AutoCloseable autoCloseable;
 
     @BeforeEach
-    void setUp(){
-        MockitoAnnotations.openMocks(this);
+    void setUp() {
+        autoCloseable = MockitoAnnotations.openMocks(this);
+        ReflectionTestUtils.setField(adminSettingService, "realm", "master");
+    }
+
+    @AfterEach
+    void tearDown() throws Exception {
+        autoCloseable.close();
     }
 
     @Test
@@ -72,9 +89,80 @@ class AdminSettingServiceTest {
         assertEquals(2L,result.get(1).getId());
     }
 
-    @Test
-    void updateAdminSettings() {
+    @Nested
+    class testUpdateAdminSettings {
+        Keycloak mockKeyCloak;
+        RealmResource mockRealmResource;
+        @BeforeEach
+        void updateAdminSettingsSetUp () {
+             mockKeyCloak = mock(Keycloak.class);
+             mockRealmResource = mock(RealmResource.class);
+            when(keyCloakConfig.getKeyCloakInstance()).thenReturn(mockKeyCloak);
+            when(mockKeyCloak.realm(anyString())).thenReturn(mockRealmResource);
+            when(adminSettingRepository.save(any(Settings.class))).thenAnswer(i -> i.getArgument(0));
+        }
+        @Test
+        void updateWithREGISTRATION_EMAIL_AS_USERNAME() {
+            SettingDto mockSettingDto = new SettingDto();
+            mockSettingDto.setId(1L);
+            mockSettingDto.setKey(CommonConstant.SETTING_TYPE_REGISTRATION_EMAIL_AS_USERNAME);
+            mockSettingDto.setName("name");
+            mockSettingDto.setValue("value");
 
+            Settings actualSettings = adminSettingService.updateAdminSettings(mockSettingDto);
+            verify(adminSettingRepository, times(1)).save(any(Settings.class));
+            verify(mockRealmResource, times(1)).update(any());
+            assertEquals(actualSettings.getId(), mockSettingDto.getId());
+            assertEquals(actualSettings.getValue(), mockSettingDto.getValue());
+            assertEquals(actualSettings.getKey(), mockSettingDto.getKey());
+            assertEquals(actualSettings.getName(), mockSettingDto.getName());
+        }
+
+        @Test
+        void updateWithWELCOME_EMAIL() {
+            SettingDto mockSettingDto = new SettingDto();
+            mockSettingDto.setId(1L);
+            mockSettingDto.setKey(CommonConstant.SETTING_TYPE_WELCOME_EMAIL);
+            mockSettingDto.setName("name");
+            mockSettingDto.setValue("value");
+
+            Keycloak mockKeyCloak = mock(Keycloak.class);
+            RealmResource mockRealmResource = mock(RealmResource.class);
+            when(keyCloakConfig.getKeyCloakInstance()).thenReturn(mockKeyCloak);
+            when(mockKeyCloak.realm(anyString())).thenReturn(mockRealmResource);
+            when(adminSettingRepository.save(any(Settings.class))).thenAnswer(i -> i.getArgument(0));
+
+            Settings actualSettings = adminSettingService.updateAdminSettings(mockSettingDto);
+            verify(adminSettingRepository, times(1)).save(any(Settings.class));
+            verify(mockRealmResource, never()).update(any());
+            assertEquals(actualSettings.getId(), mockSettingDto.getId());
+            assertEquals(actualSettings.getValue(), mockSettingDto.getValue());
+            assertEquals(actualSettings.getKey(), mockSettingDto.getKey());
+            assertEquals(actualSettings.getName(), mockSettingDto.getName());
+        }
+
+        @Test
+        void updateWithSEND_CONFIRMATION_EMAIL() {
+            SettingDto mockSettingDto = new SettingDto();
+            mockSettingDto.setId(1L);
+            mockSettingDto.setKey(CommonConstant.SETTING_TYPE_SEND_CONFIRMATION_EMAIL);
+            mockSettingDto.setName("name");
+            mockSettingDto.setValue("value");
+
+            Keycloak mockKeyCloak = mock(Keycloak.class);
+            RealmResource mockRealmResource = mock(RealmResource.class);
+            when(keyCloakConfig.getKeyCloakInstance()).thenReturn(mockKeyCloak);
+            when(mockKeyCloak.realm(anyString())).thenReturn(mockRealmResource);
+            when(adminSettingRepository.save(any(Settings.class))).thenAnswer(i -> i.getArgument(0));
+
+            Settings actualSettings = adminSettingService.updateAdminSettings(mockSettingDto);
+            verify(adminSettingRepository, times(1)).save(any(Settings.class));
+            verify(mockRealmResource, never()).update(any());
+            assertEquals(actualSettings.getId(), mockSettingDto.getId());
+            assertEquals(actualSettings.getValue(), mockSettingDto.getValue());
+            assertEquals(actualSettings.getKey(), mockSettingDto.getKey());
+            assertEquals(actualSettings.getName(), mockSettingDto.getName());
+        }
     }
 
     @Test
@@ -135,10 +223,5 @@ class AdminSettingServiceTest {
         assertEquals(list1,result);
         verify(adminSettingRepository,times(1)).findByKey(settingName);
         assertEquals(1L,result.getId());
-    }
-
-    @Test
-    void testUpdateRegistrationEmailAsUsername(){
-
     }
 }
