@@ -293,6 +293,152 @@ public class EmcareResourceMapperTest {
         assertEquals("Sample Publisher", libraryDto.getPublisher());
         assertEquals("Active", libraryDto.getStatus()); // Check the status
     }
+    @Test
+    void testGetOperationDefinitionDto() {
+        OperationDefinition operationDefinition = new OperationDefinition();
+        operationDefinition.setId("operation1");
+        operationDefinition.setName("Sample Operation");
+        operationDefinition.setDescription("Sample Description");
+        operationDefinition.setTitle("Sample Title");
+        operationDefinition.setPublisher("Sample Publisher");
+        operationDefinition.setStatus(Enumerations.PublicationStatus.ACTIVE);
+
+        OperationDefinitionDto operationDefinitionDto = EmcareResourceMapper.getOperationDefinitionDto(operationDefinition);
+
+        assertEquals("operation1", operationDefinitionDto.getId());
+        assertEquals("Sample Operation", operationDefinitionDto.getName());
+        assertEquals("Sample Description", operationDefinitionDto.getDescription());
+        assertEquals("Sample Title", operationDefinitionDto.getTitle());
+        assertEquals("Sample Publisher", operationDefinitionDto.getPublisher());
+        assertEquals("Active", operationDefinitionDto.getStatus()); // Check the status
+    }
+
+    @Test
+    void testGetFacilityMapDto() {
+        Location location = new Location();
+        location.setId("example");
+        location.setName("Sample Facility");
+        location.setStatus(Location.LocationStatus.ACTIVE); // Set the status to ACTIVE
+
+        Address address = new Address();
+        address.addLine("123 Facility Street");
+        location.setAddress(address);
+
+        Reference managingOrganization = new Reference();
+        managingOrganization.setId("org1");
+        managingOrganization.setDisplay("Sample Organization");
+        location.setManagingOrganization(managingOrganization);
+
+        Location.LocationPositionComponent position = new Location.LocationPositionComponent();
+        position.setLatitude(42.123456);
+        position.setLongitude(-71.987654);
+        location.setPosition(position);
+
+        LocationResource locationResource = new LocationResource();
+        locationResource.setLocationName("LocationResource Name");
+        locationResource.setLocationId(1L);
+
+        FacilityMapDto facilityMapDto = EmcareResourceMapper.getFacilityMapDto(location, locationResource);
+
+        assertEquals("Sample Facility", facilityMapDto.getFacilityName());
+        assertEquals("example", facilityMapDto.getFacilityId());
+        assertEquals("123 Facility Street", facilityMapDto.getAddress());
+        assertEquals("org1", facilityMapDto.getOrganizationId());
+        assertEquals("Sample Organization", facilityMapDto.getOrganizationName());
+        assertEquals("LocationResource Name", facilityMapDto.getLocationName());
+        assertEquals(1L, facilityMapDto.getLocationId());
+        assertEquals("Active", facilityMapDto.getStatus()); // Check the status
+        assertEquals("42.123456", facilityMapDto.getLatitude());
+        assertEquals("-71.987654", facilityMapDto.getLongitude());
+    }
+
+    @Test
+    void testGetMedicationDto() {
+        // Create a sample Medication object
+        Medication medication = new Medication();
+        medication.setId("med1");
+        medication.setStatus(Medication.MedicationStatus.ACTIVE); // Set the status to ACTIVE
+
+        // Create a list of sample Coding objects for code
+        List<Coding> codeCodings = new ArrayList<>();
+        Coding codeCoding1 = new Coding();
+        codeCoding1.setCode("code1");
+        codeCoding1.setDisplay("Display 1");
+        codeCodings.add(codeCoding1);
+
+        Coding codeCoding2 = new Coding();
+        codeCoding2.setCode("code2");
+        codeCoding2.setDisplay("Display 2");
+        codeCodings.add(codeCoding2);
+
+        // Set the code
+        medication.getCode().setCoding(codeCodings);
+
+        // Create a list of sample Coding objects for form
+        List<Coding> formCodings = new ArrayList<>();
+        Coding formCoding1 = new Coding();
+        formCoding1.setCode("formCode1");
+        formCoding1.setDisplay("Form Display 1");
+        formCodings.add(formCoding1);
+
+        Coding formCoding2 = new Coding();
+        formCoding2.setCode("formCode2");
+        formCoding2.setDisplay("Form Display 2");
+        formCodings.add(formCoding2);
+
+        // Set the form
+        medication.getForm().setCoding(formCodings);
+
+        // Map Medication object to MedicationDto
+        MedicationDto medicationDto = EmcareResourceMapper.getMedicationDto(medication);
+
+        // Assertions
+        assertEquals("med1", medicationDto.getId());
+        assertEquals("Active", medicationDto.getStatus()); // Check the status
+
+        List<MedicationCodeDto> codeDtos = medicationDto.getCode();
+        assertEquals(2, codeDtos.size());
+
+        MedicationCodeDto codeDto1 = codeDtos.get(0);
+        assertEquals("code1", codeDto1.getCode());
+        assertEquals("Display 1", codeDto1.getDisplay());
+
+        MedicationCodeDto codeDto2 = codeDtos.get(1);
+        assertEquals("code2", codeDto2.getCode());
+        assertEquals("Display 2", codeDto2.getDisplay());
+
+        List<MedicationCodeDto> formDtos = medicationDto.getForm();
+        assertEquals(2, formDtos.size());
+
+        MedicationCodeDto formDto1 = formDtos.get(0);
+        assertEquals("formCode1", formDto1.getCode());
+        assertEquals("Form Display 1", formDto1.getDisplay());
+
+        MedicationCodeDto formDto2 = formDtos.get(1);
+        assertEquals("formCode2", formDto2.getCode());
+        assertEquals("Form Display 2", formDto2.getDisplay());
+    }
+    @Test
+    void testGetMedicationCodeDtoList() {
+        List<Coding> codings = new ArrayList<>();
+        Coding coding1 = new Coding();
+        coding1.setCode("code1");
+        coding1.setDisplay("Display 1");
+        codings.add(coding1);
+
+        Coding coding2 = new Coding();
+        coding2.setCode("code2");
+        coding2.setDisplay("Display 2");
+        codings.add(coding2);
+
+        List<MedicationCodeDto> result = EmcareResourceMapper.getMedicationCodeDtoList(codings);
+
+        assertEquals(2, result.size());
+        assertEquals("code1", result.get(0).getCode());
+        assertEquals("Display 1", result.get(0).getDisplay());
+        assertEquals("code2", result.get(1).getCode());
+        assertEquals("Display 2", result.get(1).getDisplay());
+    }
 
     private static Questionnaire getQuestionnaire(String id,String name,String title,String description) {
         Questionnaire questionnaire = new Questionnaire();
