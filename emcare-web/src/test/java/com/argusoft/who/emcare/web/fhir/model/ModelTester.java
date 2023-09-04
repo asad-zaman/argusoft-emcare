@@ -29,5 +29,6 @@ public class ModelTester {
         beanTester.testBean(StructureDefinitionResource.class);
         beanTester.testBean(StructureMapResource.class);
         beanTester.testBean(ValueSetResource.class);
+        beanTester.testBean(OrganizationResource.class);
     }
 }
