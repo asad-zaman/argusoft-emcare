@@ -83,24 +83,26 @@ class AdminSettingServiceTest {
 
         List<Settings> result = adminSettingService.getAdminSetting();
 
-        assertEquals(settingsList,result);
-        verify(adminSettingRepository,times(1)).findAllWithOrderById();
-        assertEquals(1L,result.get(0).getId());
-        assertEquals(2L,result.get(1).getId());
+        assertEquals(settingsList, result);
+        verify(adminSettingRepository, times(1)).findAllWithOrderById();
+        assertEquals(1L, result.get(0).getId());
+        assertEquals(2L, result.get(1).getId());
     }
 
     @Nested
     class testUpdateAdminSettings {
         Keycloak mockKeyCloak;
         RealmResource mockRealmResource;
+
         @BeforeEach
-        void updateAdminSettingsSetUp () {
-             mockKeyCloak = mock(Keycloak.class);
-             mockRealmResource = mock(RealmResource.class);
+        void updateAdminSettingsSetUp() {
+            mockKeyCloak = mock(Keycloak.class);
+            mockRealmResource = mock(RealmResource.class);
             when(keyCloakConfig.getKeyCloakInstance()).thenReturn(mockKeyCloak);
             when(mockKeyCloak.realm(anyString())).thenReturn(mockRealmResource);
             when(adminSettingRepository.save(any(Settings.class))).thenAnswer(i -> i.getArgument(0));
         }
+
         @Test
         void updateWithREGISTRATION_EMAIL_AS_USERNAME() {
             SettingDto mockSettingDto = new SettingDto();
@@ -190,10 +192,10 @@ class AdminSettingServiceTest {
         when(mailRepository.findAll()).thenReturn(emailContentList);
 
         List<EmailContent> result = adminSettingService.getAllMailTemplate();
-        assertEquals(emailContentList,result);
-        verify(mailRepository,times(1)).findAll();
-        assertEquals(1L,result.get(0).getId());
-        assertEquals(2L,result.get(1).getId());
+        assertEquals(emailContentList, result);
+        verify(mailRepository, times(1)).findAll();
+        assertEquals(1L, result.get(0).getId());
+        assertEquals(2L, result.get(1).getId());
     }
 
     @Test
@@ -220,8 +222,8 @@ class AdminSettingServiceTest {
 
         Settings result = adminSettingService.getAdminSettingByName(settingName);
 
-        assertEquals(list1,result);
-        verify(adminSettingRepository,times(1)).findByKey(settingName);
-        assertEquals(1L,result.getId());
+        assertEquals(list1, result);
+        verify(adminSettingRepository, times(1)).findByKey(settingName);
+        assertEquals(1L, result.getId());
     }
 }

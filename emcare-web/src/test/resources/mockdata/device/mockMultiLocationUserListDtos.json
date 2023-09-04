@@ -1,0 +1,1369 @@
+[
+  {
+    "id": "fc4b8010-f89e-4edb-ae94-62499646fd52",
+    "firstName": "Abdul",
+    "lastName": "Rahim",
+    "userName": "abdul@yahoo.com",
+    "email": "abdul@yahoo.com",
+    "phone": "09979937839",
+    "countryCode": "IN",
+    "language": "en",
+    "enabled": true,
+    "realmRoles": [
+      "Global_Admin"
+    ],
+    "locations": null,
+    "facilities": [
+      {
+        "organizationName": "Iraq Health Ministry",
+        "facilityName": "Sulaiman AL-Faidhee",
+        "address": "Sulaiman AL-Faidhee street",
+        "organizationId": "13a3fba4-0be6-4b1c-abac-c26cf66c2f37",
+        "facilityId": "adad81f6-ea1b-44ec-9452-1dd212f00e23",
+        "locationName": "AL-Shaab",
+        "locationId": 1451,
+        "status": "Active"
+      }
+    ]
+  },
+  {
+    "id": "0b460c23-aa91-4ae6-8334-50949912b8a1",
+    "firstName": "Dr.Ala'a",
+    "lastName": "Abid",
+    "userName": "alaaabd2005@gmail.com",
+    "email": "alaaabd2005@gmail.com",
+    "phone": "0790 332 8851",
+    "countryCode": "IQ",
+    "language": "en",
+    "enabled": true,
+    "realmRoles": [
+      "user"
+    ],
+    "locations": null,
+    "facilities": [
+      {
+        "organizationName": "Iraq Health Ministry",
+        "facilityName": "Bab Al- muadam",
+        "address": "Bab Al- muadam street",
+        "organizationId": "13a3fba4-0be6-4b1c-abac-c26cf66c2f37",
+        "facilityId": "f356c365-97b8-4ee4-8665-967ddb79bbc5",
+        "locationName": "Al- Rasafa",
+        "locationId": 1450,
+        "status": "Active"
+      }
+    ]
+  },
+  {
+    "id": "ceb0e275-5151-4a05-8b21-4d3b8ebe619e",
+    "firstName": "Mohammedsabri",
+    "lastName": "Alghrairi",
+    "userName": "alghrairim@who.int",
+    "email": "alghrairim@who.int",
+    "phone": "07740892893",
+    "countryCode": "IQ",
+    "language": "en",
+    "enabled": true,
+    "realmRoles": [
+      "user"
+    ],
+    "locations": null,
+    "facilities": [
+      {
+        "organizationName": "Iraq Health Ministry",
+        "facilityName": "Tammoz - 2",
+        "address": "Tammoz street",
+        "organizationId": "13a3fba4-0be6-4b1c-abac-c26cf66c2f37",
+        "facilityId": "5d83a13e-20dd-43d7-b8aa-17cb9497692d",
+        "locationName": "AL-Aymen",
+        "locationId": 1452,
+        "status": "Active"
+      }
+    ]
+  },
+  {
+    "id": "3ca22a43-460f-4bd6-9316-00552244bea6",
+    "firstName": "Aravind",
+    "lastName": "Madagam",
+    "userName": "amadagam@argusoft.in",
+    "email": "amadagam@argusoft.in",
+    "phone": "098409 50242",
+    "countryCode": "IN",
+    "language": "en",
+    "enabled": true,
+    "realmRoles": [
+      "Global_Admin"
+    ],
+    "locations": null,
+    "facilities": [
+      {
+        "organizationName": "Iraq Health Ministry",
+        "facilityName": "WHO Test",
+        "address": "test",
+        "organizationId": "13a3fba4-0be6-4b1c-abac-c26cf66c2f37",
+        "facilityId": "1a7f0458-196d-4b76-89ca-f723cad06248",
+        "locationName": "Geneva",
+        "locationId": 124,
+        "status": "Active"
+      }
+    ]
+  },
+  {
+    "id": "27b18e76-489e-4986-85fa-e6bfa240b8fa",
+    "firstName": "Anwar",
+    "lastName": "Jasim",
+    "userName": "anwar.bajalan@yahoo.com",
+    "email": "anwar.bajalan@yahoo.com",
+    "phone": "Anwar",
+    "countryCode": "IQ",
+    "language": "en",
+    "enabled": false,
+    "realmRoles": [
+      "user"
+    ],
+    "locations": null,
+    "facilities": [
+      {
+        "organizationName": "Iraq Health Ministry",
+        "facilityName": "Bab Al- muadam",
+        "address": "Bab Al- muadam street",
+        "organizationId": "13a3fba4-0be6-4b1c-abac-c26cf66c2f37",
+        "facilityId": "f356c365-97b8-4ee4-8665-967ddb79bbc5",
+        "locationName": "Al- Rasafa",
+        "locationId": 1450,
+        "status": "Active"
+      }
+    ]
+  },
+  {
+    "id": "8525a53e-d6f0-482e-9b6a-a694ea8a9902",
+    "firstName": "Argus",
+    "lastName": "user1",
+    "userName": "aravindsai0@gmail.com",
+    "email": "aravindsai0@gmail.com",
+    "phone": "098409 50242",
+    "countryCode": "IN",
+    "language": "en",
+    "enabled": true,
+    "realmRoles": [
+      "Iraq_Admin"
+    ],
+    "locations": null,
+    "facilities": [
+      {
+        "organizationName": "Iraq Health Ministry",
+        "facilityName": "Al-Rabee",
+        "address": "Al-Rabee",
+        "organizationId": "13a3fba4-0be6-4b1c-abac-c26cf66c2f37",
+        "facilityId": "d5baa292-a7e1-42f4-9f42-428c6fa441fa",
+        "locationName": "Al-Rabee",
+        "locationId": 1768,
+        "status": "Active"
+      },
+      {
+        "organizationName": "Iraq Health Ministry",
+        "facilityName": "WHO Test",
+        "address": "test",
+        "organizationId": "13a3fba4-0be6-4b1c-abac-c26cf66c2f37",
+        "facilityId": "1a7f0458-196d-4b76-89ca-f723cad06248",
+        "locationName": "Geneva",
+        "locationId": 124,
+        "status": "Active"
+      }
+    ]
+  },
+  {
+    "id": "4b7c8b0d-7c67-4f3a-a5f6-8032109ed102",
+    "firstName": "Argus",
+    "lastName": "user4",
+    "userName": "argususer4",
+    "email": "arguuser4@gmail.com",
+    "phone": "01 234 5678",
+    "countryCode": "IQ",
+    "language": "en",
+    "enabled": true,
+    "realmRoles": [
+      "Iraq_User"
+    ],
+    "locations": null,
+    "facilities": [
+      {
+        "organizationName": "Iraq Health Ministry",
+        "facilityName": "WHO Test",
+        "address": "test",
+        "organizationId": "13a3fba4-0be6-4b1c-abac-c26cf66c2f37",
+        "facilityId": "1a7f0458-196d-4b76-89ca-f723cad06248",
+        "locationName": "Geneva",
+        "locationId": 124,
+        "status": "Active"
+      },
+      {
+        "organizationName": "Iraq Health Ministry",
+        "facilityName": "Al-Rabee",
+        "address": "Al-Rabee",
+        "organizationId": "13a3fba4-0be6-4b1c-abac-c26cf66c2f37",
+        "facilityId": "d5baa292-a7e1-42f4-9f42-428c6fa441fa",
+        "locationName": "Al-Rabee",
+        "locationId": 1768,
+        "status": "Active"
+      }
+    ]
+  },
+  {
+    "id": "a3e829c6-da14-4e0f-ace6-a55af90f44b5",
+    "firstName": "Ban",
+    "lastName": "Nimat",
+    "userName": "bannimat6@gmail.com",
+    "email": "bannimat6@gmail.com",
+    "phone": "0751 761 6882",
+    "countryCode": "IQ",
+    "language": "en",
+    "enabled": true,
+    "realmRoles": [
+      "user"
+    ],
+    "locations": null,
+    "facilities": [
+      {
+        "organizationName": "Iraq Health Ministry",
+        "facilityName": "Al-Jazear",
+        "address": "Al-Jazear",
+        "organizationId": "13a3fba4-0be6-4b1c-abac-c26cf66c2f37",
+        "facilityId": "69189461-d1f3-4c0f-b5de-b877c5fc763c",
+        "locationName": "AL-Jazaer",
+        "locationId": 1762,
+        "status": "Active"
+      }
+    ]
+  },
+  {
+    "id": "c5a8ad2b-9011-4732-84db-865dad05ace3",
+    "firstName": "shayma",
+    "lastName": "Ghalib",
+    "userName": "dr.shymaghalib@yahoo.com",
+    "email": "dr.shymaghalib@yahoo.com",
+    "phone": "+9647801791614",
+    "countryCode": "IQ",
+    "language": "en",
+    "enabled": true,
+    "realmRoles": [
+      "user"
+    ],
+    "locations": null,
+    "facilities": [
+      {
+        "organizationName": "Iraq Health Ministry",
+        "facilityName": "Sulaiman AL-Faidhee",
+        "address": "Sulaiman AL-Faidhee street",
+        "organizationId": "13a3fba4-0be6-4b1c-abac-c26cf66c2f37",
+        "facilityId": "adad81f6-ea1b-44ec-9452-1dd212f00e23",
+        "locationName": "AL-Shaab",
+        "locationId": 1451,
+        "status": "Active"
+      }
+    ]
+  },
+  {
+    "id": "a40608ef-787e-455a-9d79-bd1c2d150855",
+    "firstName": "Dr suhair",
+    "lastName": "Alrawi",
+    "userName": "drsuhairalrawi@gmail.com",
+    "email": "drsuhairalrawi@gmail.com",
+    "phone": "0770 997 2662",
+    "countryCode": "IQ",
+    "language": "en",
+    "enabled": true,
+    "realmRoles": [
+      "user"
+    ],
+    "locations": null,
+    "facilities": [
+      {
+        "organizationName": "Iraq Health Ministry",
+        "facilityName": "AL-Faysalia",
+        "address": "AL-Faysalia",
+        "organizationId": "13a3fba4-0be6-4b1c-abac-c26cf66c2f37",
+        "facilityId": "0889737a-5079-4cc4-9a66-685b013947ce",
+        "locationName": "AL-Faysalia",
+        "locationId": 1765,
+        "status": "Active"
+      }
+    ]
+  },
+  {
+    "id": "f7f8c65e-f588-4bad-99b5-702703a8e9cf",
+    "firstName": "Ellen",
+    "lastName": "Egan",
+    "userName": "egane@who.int",
+    "email": "egane@who.int",
+    "phone": "079 477 17 23",
+    "countryCode": "CH",
+    "language": "en",
+    "enabled": true,
+    "realmRoles": [
+      "user"
+    ],
+    "locations": null,
+    "facilities": [
+      {
+        "organizationName": "Iraq Health Ministry",
+        "facilityName": "WHO Test",
+        "address": "test",
+        "organizationId": "13a3fba4-0be6-4b1c-abac-c26cf66c2f37",
+        "facilityId": "1a7f0458-196d-4b76-89ca-f723cad06248",
+        "locationName": "Geneva",
+        "locationId": 124,
+        "status": "Active"
+      }
+    ]
+  },
+  {
+    "id": "7bcb35cf-9013-44eb-b100-aa5d9ab5a8d5",
+    "firstName": "Emcare",
+    "lastName": "UserOne",
+    "userName": "emc_user1@gmail.com",
+    "email": "emc_user1@gmail.com",
+    "phone": "01 234 4567",
+    "countryCode": "IQ",
+    "language": "en",
+    "enabled": true,
+    "realmRoles": [
+      "Global_Admin"
+    ],
+    "locations": null,
+    "facilities": [
+      {
+        "organizationName": "Iraq Health Ministry",
+        "facilityName": "Bab Al- muadam",
+        "address": "Bab Al- muadam street",
+        "organizationId": "13a3fba4-0be6-4b1c-abac-c26cf66c2f37",
+        "facilityId": "f356c365-97b8-4ee4-8665-967ddb79bbc5",
+        "locationName": "Al- Rasafa",
+        "locationId": 1450,
+        "status": "Active"
+      }
+    ]
+  },
+  {
+    "id": "74b51961-1def-4144-a0ab-2933c10e1cd1",
+    "firstName": "Emcare",
+    "lastName": "UserTwo",
+    "userName": "emc_user2@gmail.com",
+    "email": "emc_user2@gmail.com",
+    "phone": "01 234 5678",
+    "countryCode": "IQ",
+    "language": "en",
+    "enabled": true,
+    "realmRoles": [
+      "Global_Admin"
+    ],
+    "locations": null,
+    "facilities": [
+      {
+        "organizationName": "Iraq Health Ministry",
+        "facilityName": "Sulaiman AL-Faidhee",
+        "address": "Sulaiman AL-Faidhee street",
+        "organizationId": "13a3fba4-0be6-4b1c-abac-c26cf66c2f37",
+        "facilityId": "adad81f6-ea1b-44ec-9452-1dd212f00e23",
+        "locationName": "AL-Shaab",
+        "locationId": 1451,
+        "status": "Active"
+      }
+    ]
+  },
+  {
+    "id": "252d7b31-7a52-42a8-b00d-820a1b89ef60",
+    "firstName": "Emcare",
+    "lastName": "UserThree",
+    "userName": "emc_user3@gmail.com",
+    "email": "emc_user3@gmail.com",
+    "phone": "01 234 5678",
+    "countryCode": "IQ",
+    "language": "en",
+    "enabled": true,
+    "realmRoles": [
+      "Global_Admin"
+    ],
+    "locations": null,
+    "facilities": [
+      {
+        "organizationName": "Iraq Health Ministry",
+        "facilityName": "Bab AL-Beedh",
+        "address": "Bab AL-Beedh street",
+        "organizationId": "13a3fba4-0be6-4b1c-abac-c26cf66c2f37",
+        "facilityId": "7896a082-bd80-48fc-b30b-2e9caebed9c7",
+        "locationName": "AL-Aymen",
+        "locationId": 1452,
+        "status": "Active"
+      }
+    ]
+  },
+  {
+    "id": "34e85fd5-e155-4243-ab5e-a95ba4d60647",
+    "firstName": "EM",
+    "lastName": "Care",
+    "userName": "emcare@gmail.com",
+    "email": "emcare@gmail.com",
+    "phone": "033 775 523",
+    "countryCode": "IQ",
+    "language": "en",
+    "enabled": true,
+    "realmRoles": [
+      "Iraq_Admin"
+    ],
+    "locations": null,
+    "facilities": [
+      {
+        "organizationName": "Iraq Health Ministry",
+        "facilityName": "AL -Yarmook",
+        "address": "Yarmook street",
+        "organizationId": "13a3fba4-0be6-4b1c-abac-c26cf66c2f37",
+        "facilityId": "ea5f0cab-b493-42ec-815c-a1f52d6b9552",
+        "locationName": "AL-Karkh",
+        "locationId": 1447,
+        "status": "Active"
+      }
+    ]
+  },
+  {
+    "id": "3b3f8ffa-febe-4c6e-a5e8-1cca2a8a23f7",
+    "firstName": "Gillian",
+    "lastName": "Levine",
+    "userName": "gillian.levine@swisstph.ch",
+    "email": "gillian.levine@swisstph.ch",
+    "phone": "+41765335174",
+    "countryCode": "IQ",
+    "language": "en",
+    "enabled": true,
+    "realmRoles": [
+      "user"
+    ],
+    "locations": null,
+    "facilities": [
+      {
+        "organizationName": "Iraq Health Ministry",
+        "facilityName": "WHO Test",
+        "address": "test",
+        "organizationId": "13a3fba4-0be6-4b1c-abac-c26cf66c2f37",
+        "facilityId": "1a7f0458-196d-4b76-89ca-f723cad06248",
+        "locationName": "Geneva",
+        "locationId": 124,
+        "status": "Active"
+      }
+    ]
+  },
+  {
+    "id": "7ee1b771-5dd8-4e7a-b46b-570f3be501c9",
+    "firstName": "Christopher",
+    "lastName": "Haskew",
+    "userName": "haskewc@who.int",
+    "email": "haskewc@who.int",
+    "phone": "01 234 5678",
+    "countryCode": "IQ",
+    "language": "en",
+    "enabled": true,
+    "realmRoles": [
+      "Global_Admin"
+    ],
+    "locations": null,
+    "facilities": [
+      {
+        "organizationName": "Iraq Health Ministry",
+        "facilityName": "Tammoz",
+        "address": "Tammoz street",
+        "organizationId": "13a3fba4-0be6-4b1c-abac-c26cf66c2f37",
+        "facilityId": "ed52aa7d-8515-4e52-9d7e-711cba34fadc",
+        "locationName": "AL-Aymen",
+        "locationId": 1452,
+        "status": "Active"
+      }
+    ]
+  },
+  {
+    "id": "3f7090b8-969b-4d38-b4db-dac2113a9129",
+    "firstName": "Harikrashna",
+    "lastName": "Parikh",
+    "userName": "hparikh@argusoft.com",
+    "email": "hparikh@argusoft.com",
+    "phone": "01 234 5678",
+    "countryCode": "IQ",
+    "language": "en",
+    "enabled": true,
+    "realmRoles": [
+      "Global_Admin"
+    ],
+    "locations": null,
+    "facilities": [
+      {
+        "organizationName": "Iraq Health Ministry",
+        "facilityName": "WHO Test",
+        "address": "test",
+        "organizationId": "13a3fba4-0be6-4b1c-abac-c26cf66c2f37",
+        "facilityId": "1a7f0458-196d-4b76-89ca-f723cad06248",
+        "locationName": "Geneva",
+        "locationId": 124,
+        "status": "Active"
+      }
+    ]
+  },
+  {
+    "id": "b9484263-8603-4bdb-a4db-36a967fa017c",
+    "firstName": "hadeel",
+    "lastName": "saadoon",
+    "userName": "hsarainbow1111@gmail.com",
+    "email": "hsarainbow1111@gmail.com",
+    "phone": "07711296655",
+    "countryCode": "IQ",
+    "language": "en",
+    "enabled": true,
+    "realmRoles": [
+      "user"
+    ],
+    "locations": null,
+    "facilities": [
+      {
+        "organizationName": "Iraq Health Ministry",
+        "facilityName": "AL-Doura",
+        "address": "AL-Doura street",
+        "organizationId": "13a3fba4-0be6-4b1c-abac-c26cf66c2f37",
+        "facilityId": "ebdc2118-346c-4f05-a598-c2de73b44909",
+        "locationName": "AL-Adoura",
+        "locationId": 1448,
+        "status": "Active"
+      }
+    ]
+  },
+  {
+    "id": "e2935f3a-ef4d-4a47-bdca-6f9ce896e880",
+    "firstName": "Jay",
+    "lastName": "Kalariya",
+    "userName": "jaykalariya100@gmail.com",
+    "email": "jaykalariya100@gmail.com",
+    "phone": "099799 43100",
+    "countryCode": "IN",
+    "language": "en",
+    "enabled": true,
+    "realmRoles": [
+      "user"
+    ],
+    "locations": null,
+    "facilities": [
+      {
+        "organizationName": "Iraq Health Ministry",
+        "facilityName": "WHO Test",
+        "address": "test",
+        "organizationId": "13a3fba4-0be6-4b1c-abac-c26cf66c2f37",
+        "facilityId": "1a7f0458-196d-4b76-89ca-f723cad06248",
+        "locationName": "Geneva",
+        "locationId": 124,
+        "status": "Active"
+      }
+    ]
+  },
+  {
+    "id": "5af1ed85-de51-4c6d-8cf9-b70cf1fc0756",
+    "firstName": "Joshua",
+    "lastName": "Bress",
+    "userName": "josh.bress@globalstrategies.org",
+    "email": "josh.bress@globalstrategies.org",
+    "phone": "(617) 256-5621",
+    "countryCode": "US",
+    "language": "en",
+    "enabled": false,
+    "realmRoles": [
+      "user"
+    ],
+    "locations": null,
+    "facilities": [
+      {
+        "organizationName": "Iraq Health Ministry",
+        "facilityName": "WHO Test",
+        "address": "test",
+        "organizationId": "13a3fba4-0be6-4b1c-abac-c26cf66c2f37",
+        "facilityId": "1a7f0458-196d-4b76-89ca-f723cad06248",
+        "locationName": "Geneva",
+        "locationId": 124,
+        "status": "Active"
+      }
+    ]
+  },
+  {
+    "id": "f0edd58b-8539-4965-b2d0-e54c951957fd",
+    "firstName": "dipti",
+    "lastName": "kale",
+    "userName": "kale.dipti88@gmail.com",
+    "email": "kale.dipti88@gmail.com",
+    "phone": "9970365086",
+    "countryCode": "IQ",
+    "language": "en",
+    "enabled": true,
+    "realmRoles": [
+      "user"
+    ],
+    "locations": null,
+    "facilities": [
+      {
+        "organizationName": "Iraq Health Ministry",
+        "facilityName": "WHO Test",
+        "address": "test",
+        "organizationId": "13a3fba4-0be6-4b1c-abac-c26cf66c2f37",
+        "facilityId": "1a7f0458-196d-4b76-89ca-f723cad06248",
+        "locationName": "Geneva",
+        "locationId": 124,
+        "status": "Active"
+      }
+    ]
+  },
+  {
+    "id": "a9785995-b00d-4b8f-ba83-bc89b1c5cc0f",
+    "firstName": "Khyati",
+    "lastName": "Vyas",
+    "userName": "khyativ@argusoft.com",
+    "email": "khyativ@argusoft.com",
+    "phone": "961651032156",
+    "countryCode": "IQ",
+    "language": "en",
+    "enabled": true,
+    "realmRoles": [
+      "user"
+    ],
+    "locations": null,
+    "facilities": [
+      {
+        "organizationName": "Iraq Health Ministry",
+        "facilityName": "AL-Qadisia",
+        "address": "AL-Qadisia street",
+        "organizationId": "13a3fba4-0be6-4b1c-abac-c26cf66c2f37",
+        "facilityId": "35144776-16bb-4d71-bd07-08ca332b43de",
+        "locationName": "AL-Ayser",
+        "locationId": 1453,
+        "status": "Active"
+      }
+    ]
+  },
+  {
+    "id": "7ecf87ff-a2c3-4db5-9883-1eb50607e77b",
+    "firstName": "Kunjan",
+    "lastName": "Patel",
+    "userName": "kunjanp@argusoft.com",
+    "email": "kunjanp@argusoft.com",
+    "phone": "088668 85883",
+    "countryCode": "IN",
+    "language": "en",
+    "enabled": true,
+    "realmRoles": [
+      "Global_Admin"
+    ],
+    "locations": null,
+    "facilities": [
+      {
+        "organizationName": "Iraq Health Ministry",
+        "facilityName": "WHO Test",
+        "address": "test",
+        "organizationId": "13a3fba4-0be6-4b1c-abac-c26cf66c2f37",
+        "facilityId": "1a7f0458-196d-4b76-89ca-f723cad06248",
+        "locationName": "Geneva",
+        "locationId": 124,
+        "status": "Active"
+      }
+    ]
+  },
+  {
+    "id": "deda30e9-1f72-4620-aa8e-ced131b32e5b",
+    "firstName": "kunjan",
+    "lastName": "patel",
+    "userName": "kunjanp@yahoo.com",
+    "email": "kunjanp@yahoo.com",
+    "phone": null,
+    "countryCode": null,
+    "language": "en",
+    "enabled": true,
+    "realmRoles": [
+      "user"
+    ],
+    "locations": null,
+    "facilities": [
+      {
+        "organizationName": "Iraq Health Ministry",
+        "facilityName": "AL-Selaik Al Thany",
+        "address": "AL-Selaik Al Thany street",
+        "organizationId": "13a3fba4-0be6-4b1c-abac-c26cf66c2f37",
+        "facilityId": "213fe79b-4a30-40da-a320-9ebba3bafded",
+        "locationName": "Al- Adamia",
+        "locationId": 1449,
+        "status": "Active"
+      }
+    ]
+  },
+  {
+    "id": "8c3478a4-4bc5-499f-a359-884af122944c",
+    "firstName": "maha",
+    "lastName": "taha",
+    "userName": "mahataha00764@yahoo.com",
+    "email": "mahataha00764@yahoo.com",
+    "phone": "07702872800",
+    "countryCode": "IQ",
+    "language": "en",
+    "enabled": true,
+    "realmRoles": [
+      "user"
+    ],
+    "locations": null,
+    "facilities": [
+      {
+        "organizationName": "Iraq Health Ministry",
+        "facilityName": "AL-Jameea",
+        "address": "AL-Jameea street",
+        "organizationId": "13a3fba4-0be6-4b1c-abac-c26cf66c2f37",
+        "facilityId": "fe189e5f-7f62-4ef1-928b-39798de67126",
+        "locationName": "AL-Adoura",
+        "locationId": 1448,
+        "status": "Active"
+      }
+    ]
+  },
+  {
+    "id": "4911ddc5-55f6-416c-a039-67fd3b261129",
+    "firstName": "Majd",
+    "lastName": "Basim",
+    "userName": "majdglory19@gmail.com",
+    "email": "majdglory19@gmail.com",
+    "phone": "07703284409",
+    "countryCode": "IQ",
+    "language": "en",
+    "enabled": true,
+    "realmRoles": [
+      "user"
+    ],
+    "locations": null,
+    "facilities": [
+      {
+        "organizationName": "Iraq Health Ministry",
+        "facilityName": "Debaka",
+        "address": "Debaka street",
+        "organizationId": "13a3fba4-0be6-4b1c-abac-c26cf66c2f37",
+        "facilityId": "8451a275-b1d8-4321-a903-1efc20ad84bb",
+        "locationName": "Makhmour",
+        "locationId": 1454,
+        "status": "Active"
+      }
+    ]
+  },
+  {
+    "id": "2a8ab0d4-8b42-4e04-a0b4-0e8c65b85f1e",
+    "firstName": "maryam",
+    "lastName": "ayad",
+    "userName": "maryam.9320@gmail.com",
+    "email": "maryam.9320@gmail.com",
+    "phone": "07704262160",
+    "countryCode": "IQ",
+    "language": "en",
+    "enabled": true,
+    "realmRoles": [
+      "user"
+    ],
+    "locations": null,
+    "facilities": [
+      {
+        "organizationName": "Iraq Health Ministry",
+        "facilityName": "AL-Doura",
+        "address": "AL-Doura street",
+        "organizationId": "13a3fba4-0be6-4b1c-abac-c26cf66c2f37",
+        "facilityId": "ebdc2118-346c-4f05-a598-c2de73b44909",
+        "locationName": "AL-Adoura",
+        "locationId": 1448,
+        "status": "Active"
+      }
+    ]
+  },
+  {
+    "id": "9a9eb328-729e-4594-9abe-08655bda558f",
+    "firstName": "noora",
+    "lastName": "noor",
+    "userName": "nooralzubady89@gmail.com",
+    "email": "nooralzubady89@gmail.com",
+    "phone": "07736978226",
+    "countryCode": "IQ",
+    "language": "en",
+    "enabled": true,
+    "realmRoles": [
+      "user"
+    ],
+    "locations": null,
+    "facilities": [
+      {
+        "organizationName": "Iraq Health Ministry",
+        "facilityName": "AL-Jameea",
+        "address": "AL-Jameea street",
+        "organizationId": "13a3fba4-0be6-4b1c-abac-c26cf66c2f37",
+        "facilityId": "fe189e5f-7f62-4ef1-928b-39798de67126",
+        "locationName": "AL-Adoura",
+        "locationId": 1448,
+        "status": "Active"
+      }
+    ]
+  },
+  {
+    "id": "59ad3ded-16e8-45d9-823b-1b50c880fb6d",
+    "firstName": "Ammar",
+    "lastName": "Sabah",
+    "userName": "norea@who.int",
+    "email": "norea@who.int",
+    "phone": "009647504545295",
+    "countryCode": "IQ",
+    "language": "en",
+    "enabled": true,
+    "realmRoles": [
+      "user"
+    ],
+    "locations": null,
+    "facilities": [
+      {
+        "organizationName": "Iraq Health Ministry",
+        "facilityName": "AL-Doura",
+        "address": "AL-Doura street",
+        "organizationId": "13a3fba4-0be6-4b1c-abac-c26cf66c2f37",
+        "facilityId": "ebdc2118-346c-4f05-a598-c2de73b44909",
+        "locationName": "AL-Adoura",
+        "locationId": 1448,
+        "status": "Active"
+      }
+    ]
+  },
+  {
+    "id": "7a02be55-327f-42bf-97b1-7cf0f9b62bdc",
+    "firstName": "Mohamed",
+    "lastName": "Nour",
+    "userName": "nourm@who.int",
+    "email": "nourm@who.int",
+    "phone": "+201555898673",
+    "countryCode": "IQ",
+    "language": "en",
+    "enabled": true,
+    "realmRoles": [
+      "user"
+    ],
+    "locations": null,
+    "facilities": [
+      {
+        "organizationName": "Iraq Health Ministry",
+        "facilityName": "AL -Yarmook",
+        "address": "Yarmook street",
+        "organizationId": "13a3fba4-0be6-4b1c-abac-c26cf66c2f37",
+        "facilityId": "ea5f0cab-b493-42ec-815c-a1f52d6b9552",
+        "locationName": "AL-Karkh",
+        "locationId": 1447,
+        "status": "Active"
+      }
+    ]
+  },
+  {
+    "id": "d26026e1-4f4f-4f2d-9db7-fd9599d905c4",
+    "firstName": "Parth",
+    "lastName": "Panchal",
+    "userName": "parthgeek@gmail.com",
+    "email": "parthgeek@gmail.com",
+    "phone": "9978864646",
+    "countryCode": "IQ",
+    "language": "en",
+    "enabled": true,
+    "realmRoles": [
+      "user"
+    ],
+    "locations": null,
+    "facilities": [
+      {
+        "organizationName": "Iraq Health Ministry",
+        "facilityName": "Al-Yarmook-2",
+        "address": "Yarmook street",
+        "organizationId": "13a3fba4-0be6-4b1c-abac-c26cf66c2f37",
+        "facilityId": "fc5490e1-f01d-4ad4-98a2-2944966d950d",
+        "locationName": "AL-Karkh",
+        "locationId": 1447,
+        "status": "Active"
+      }
+    ]
+  },
+  {
+    "id": "d61c4388-407f-4d31-98e0-82ea94fb638e",
+    "firstName": "Prince",
+    "lastName": "Kalariya",
+    "userName": "pkalariya@gmail.com",
+    "email": "pkalariya@gmail.com",
+    "phone": "088665 70096",
+    "countryCode": "IN",
+    "language": "en",
+    "enabled": true,
+    "realmRoles": [
+      "user"
+    ],
+    "locations": null,
+    "facilities": [
+      {
+        "organizationName": "Iraq Health Ministry",
+        "facilityName": "WHO Test",
+        "address": "test",
+        "organizationId": "13a3fba4-0be6-4b1c-abac-c26cf66c2f37",
+        "facilityId": "1a7f0458-196d-4b76-89ca-f723cad06248",
+        "locationName": "Geneva",
+        "locationId": 124,
+        "status": "Active"
+      }
+    ]
+  },
+  {
+    "id": "8982468c-0614-42f9-8089-f39c0bf645ab",
+    "firstName": "Qa test",
+    "lastName": "user1",
+    "userName": "qatestuser1",
+    "email": "argususer1@gmail.com",
+    "phone": "089314 56525",
+    "countryCode": "IN",
+    "language": "en",
+    "enabled": true,
+    "realmRoles": [
+      "Global_Admin"
+    ],
+    "locations": null,
+    "facilities": [
+      {
+        "organizationName": "Iraq Health Ministry",
+        "facilityName": "AL-Doura",
+        "address": "AL-Doura street",
+        "organizationId": "13a3fba4-0be6-4b1c-abac-c26cf66c2f37",
+        "facilityId": "ebdc2118-346c-4f05-a598-c2de73b44909",
+        "locationName": "AL-Adoura",
+        "locationId": 1448,
+        "status": "Active"
+      },
+      {
+        "organizationName": "Iraq Health Ministry",
+        "facilityName": "WHO Test",
+        "address": "test",
+        "organizationId": "13a3fba4-0be6-4b1c-abac-c26cf66c2f37",
+        "facilityId": "1a7f0458-196d-4b76-89ca-f723cad06248",
+        "locationName": "Geneva",
+        "locationId": 124,
+        "status": "Active"
+      }
+    ]
+  },
+  {
+    "id": "adc23b74-d643-499f-8204-494ef74ec833",
+    "firstName": "Aishwarya",
+    "lastName": "Raghuraman",
+    "userName": "raghuraman@who.int",
+    "email": "raghuraman@who.int",
+    "phone": "076 247 77 40",
+    "countryCode": "CH",
+    "language": "en",
+    "enabled": true,
+    "realmRoles": [
+      "Iraq_TEST1"
+    ],
+    "locations": null,
+    "facilities": [
+      {
+        "organizationName": "Iraq Health Ministry",
+        "facilityName": "WHO Test",
+        "address": "test",
+        "organizationId": "13a3fba4-0be6-4b1c-abac-c26cf66c2f37",
+        "facilityId": "1a7f0458-196d-4b76-89ca-f723cad06248",
+        "locationName": "Geneva",
+        "locationId": 124,
+        "status": "Active"
+      }
+    ]
+  },
+  {
+    "id": "15a00d4b-b5b7-4b2a-934b-a1e414395cdd",
+    "firstName": "Rainer",
+    "lastName": "Tan",
+    "userName": "rainer.tan@swisstph.ch",
+    "email": "rainer.tan@swisstph.ch",
+    "phone": "01 452 7896",
+    "countryCode": "IQ",
+    "language": "en",
+    "enabled": true,
+    "realmRoles": [
+      "Iraq_TEST1"
+    ],
+    "locations": null,
+    "facilities": [
+      {
+        "organizationName": "Iraq Health Ministry",
+        "facilityName": "AL-Jameea",
+        "address": "AL-Jameea street",
+        "organizationId": "13a3fba4-0be6-4b1c-abac-c26cf66c2f37",
+        "facilityId": "fe189e5f-7f62-4ef1-928b-39798de67126",
+        "locationName": "AL-Adoura",
+        "locationId": 1448,
+        "status": "Active"
+      }
+    ]
+  },
+  {
+    "id": "5e4204e0-aa71-4ca8-99d3-8ecd51a46bb5",
+    "firstName": "Shahad",
+    "lastName": "Nasih",
+    "userName": "shahadnasih@gmail.com",
+    "email": "shahadnasih@gmail.com",
+    "phone": "0772 141 1212",
+    "countryCode": "IQ",
+    "language": "en",
+    "enabled": true,
+    "realmRoles": [
+      "user"
+    ],
+    "locations": null,
+    "facilities": [
+      {
+        "organizationName": "Iraq Health Ministry",
+        "facilityName": "AL -Yarmook",
+        "address": "Yarmook street",
+        "organizationId": "13a3fba4-0be6-4b1c-abac-c26cf66c2f37",
+        "facilityId": "ea5f0cab-b493-42ec-815c-a1f52d6b9552",
+        "locationName": "AL-Karkh",
+        "locationId": 1447,
+        "status": "Active"
+      }
+    ]
+  },
+  {
+    "id": "5faf24d9-d3cd-4608-985f-9a7164210714",
+    "firstName": "Ronald",
+    "lastName": "Munjoma",
+    "userName": "simbiso@gmail.com",
+    "email": "simbiso@gmail.com",
+    "phone": "077 562 5283",
+    "countryCode": "ZW",
+    "language": "en",
+    "enabled": true,
+    "realmRoles": [],
+    "locations": null,
+    "facilities": [
+      {
+        "organizationName": "Iraq Health Ministry",
+        "facilityName": "WHO Test",
+        "address": "test",
+        "organizationId": "13a3fba4-0be6-4b1c-abac-c26cf66c2f37",
+        "facilityId": "1a7f0458-196d-4b76-89ca-f723cad06248",
+        "locationName": "Geneva",
+        "locationId": 124,
+        "status": "Active"
+      }
+    ]
+  },
+  {
+    "id": "e8629c78-e115-4855-9faf-7351c9d8b936",
+    "firstName": "Shubham",
+    "lastName": "Kaurav",
+    "userName": "skaurav@argusoft.com",
+    "email": "skaurav@argusoft.com",
+    "phone": "01 234 5678",
+    "countryCode": "IQ",
+    "language": "en",
+    "enabled": true,
+    "realmRoles": [
+      "Iraq_Admin"
+    ],
+    "locations": null,
+    "facilities": [
+      {
+        "organizationName": "Iraq Health Ministry",
+        "facilityName": "AL-Doura",
+        "address": "AL-Doura street",
+        "organizationId": "13a3fba4-0be6-4b1c-abac-c26cf66c2f37",
+        "facilityId": "ebdc2118-346c-4f05-a598-c2de73b44909",
+        "locationName": "AL-Adoura",
+        "locationId": 1448,
+        "status": "Active"
+      },
+      {
+        "organizationName": "Iraq Health Ministry",
+        "facilityName": "WHO Test",
+        "address": "test",
+        "organizationId": "13a3fba4-0be6-4b1c-abac-c26cf66c2f37",
+        "facilityId": "1a7f0458-196d-4b76-89ca-f723cad06248",
+        "locationName": "Geneva",
+        "locationId": 124,
+        "status": "Active"
+      },
+      {
+        "organizationName": "Iraq Health Ministry",
+        "facilityName": "Tammoz",
+        "address": "Tammoz street",
+        "organizationId": "13a3fba4-0be6-4b1c-abac-c26cf66c2f37",
+        "facilityId": "ed52aa7d-8515-4e52-9d7e-711cba34fadc",
+        "locationName": "AL-Aymen",
+        "locationId": 1452,
+        "status": "Active"
+      }
+    ]
+  },
+  {
+    "id": "6b4f3b1f-c818-4435-b32d-b256dfcea2fc",
+    "firstName": "Shobha",
+    "lastName": "Mistry",
+    "userName": "smistry@argusoft.com",
+    "email": "smistry@argusoft.com",
+    "phone": "01 234 5678",
+    "countryCode": "IQ",
+    "language": "en",
+    "enabled": true,
+    "realmRoles": [
+      "Iraq_Admin"
+    ],
+    "locations": null,
+    "facilities": [
+      {
+        "organizationName": "Iraq Health Ministry",
+        "facilityName": "AL -Yarmook",
+        "address": "Yarmook street",
+        "organizationId": "13a3fba4-0be6-4b1c-abac-c26cf66c2f37",
+        "facilityId": "ea5f0cab-b493-42ec-815c-a1f52d6b9552",
+        "locationName": "AL-Karkh",
+        "locationId": 1447,
+        "status": "Active"
+      },
+      {
+        "organizationName": "Iraq Health Ministry",
+        "facilityName": "WHO Test",
+        "address": "test",
+        "organizationId": "13a3fba4-0be6-4b1c-abac-c26cf66c2f37",
+        "facilityId": "1a7f0458-196d-4b76-89ca-f723cad06248",
+        "locationName": "Geneva",
+        "locationId": 124,
+        "status": "Active"
+      },
+      {
+        "organizationName": "Iraq Health Ministry",
+        "facilityName": "Tammoz",
+        "address": "Tammoz street",
+        "organizationId": "13a3fba4-0be6-4b1c-abac-c26cf66c2f37",
+        "facilityId": "ed52aa7d-8515-4e52-9d7e-711cba34fadc",
+        "locationName": "AL-Aymen",
+        "locationId": 1452,
+        "status": "Active"
+      }
+    ]
+  },
+  {
+    "id": "6d31a694-10de-46d5-9292-a5450212e76c",
+    "firstName": "test",
+    "lastName": "test",
+    "userName": "test@gm.com",
+    "email": "test@gm.com",
+    "phone": "0741 852 9632",
+    "countryCode": "IQ",
+    "language": "en",
+    "enabled": true,
+    "realmRoles": [
+      "Iraq_User"
+    ],
+    "locations": null,
+    "facilities": [
+      {
+        "organizationName": "Iraq Health Ministry",
+        "facilityName": "WHO Test",
+        "address": "test",
+        "organizationId": "13a3fba4-0be6-4b1c-abac-c26cf66c2f37",
+        "facilityId": "1a7f0458-196d-4b76-89ca-f723cad06248",
+        "locationName": "Geneva",
+        "locationId": 124,
+        "status": "Active"
+      }
+    ]
+  },
+  {
+    "id": "76490671-e946-4235-a90b-bc439f2f6ce4",
+    "firstName": "test",
+    "lastName": "userqa1",
+    "userName": "testuserqa1",
+    "email": "testuserqa1@gmail.com",
+    "phone": "098451 58621",
+    "countryCode": "IN",
+    "language": "en",
+    "enabled": true,
+    "realmRoles": [
+      "Global_Admin"
+    ],
+    "locations": null,
+    "facilities": [
+      {
+        "organizationName": "Iraq Health Ministry",
+        "facilityName": "Tammoz",
+        "address": "Tammoz street",
+        "organizationId": "13a3fba4-0be6-4b1c-abac-c26cf66c2f37",
+        "facilityId": "ed52aa7d-8515-4e52-9d7e-711cba34fadc",
+        "locationName": "AL-Aymen",
+        "locationId": 1452,
+        "status": "Active"
+      },
+      {
+        "organizationName": "Iraq Health Ministry",
+        "facilityName": "WHO Test",
+        "address": "test",
+        "organizationId": "13a3fba4-0be6-4b1c-abac-c26cf66c2f37",
+        "facilityId": "1a7f0458-196d-4b76-89ca-f723cad06248",
+        "locationName": "Geneva",
+        "locationId": 124,
+        "status": "Active"
+      },
+      {
+        "organizationName": "Iraq Health Ministry",
+        "facilityName": "AL-Doura",
+        "address": "AL-Doura street",
+        "organizationId": "13a3fba4-0be6-4b1c-abac-c26cf66c2f37",
+        "facilityId": "ebdc2118-346c-4f05-a598-c2de73b44909",
+        "locationName": "AL-Adoura",
+        "locationId": 1448,
+        "status": "Active"
+      }
+    ]
+  },
+  {
+    "id": "2c2e0682-2356-4725-a7bf-0197e8a87477",
+    "firstName": "trushil",
+    "lastName": "patel",
+    "userName": "trushilp@gmail.com",
+    "email": "trushilp@gmail.com",
+    "phone": "99754646991",
+    "countryCode": "IQ",
+    "language": "en",
+    "enabled": false,
+    "realmRoles": [
+      "user"
+    ],
+    "locations": null,
+    "facilities": [
+      {
+        "organizationName": "Iraq Health Ministry",
+        "facilityName": "AL-Jameea",
+        "address": "AL-Jameea street",
+        "organizationId": "13a3fba4-0be6-4b1c-abac-c26cf66c2f37",
+        "facilityId": "fe189e5f-7f62-4ef1-928b-39798de67126",
+        "locationName": "AL-Adoura",
+        "locationId": 1448,
+        "status": "Active"
+      }
+    ]
+  },
+  {
+    "id": "e5023df7-19e6-430b-97a9-2c5ee3fa5370",
+    "firstName": "Vishal",
+    "lastName": "Soni",
+    "userName": "vs.user@gmail.com",
+    "email": "vs.user@gmail.com",
+    "phone": "099799 43200",
+    "countryCode": "IN",
+    "language": "en",
+    "enabled": true,
+    "realmRoles": [
+      "user"
+    ],
+    "locations": null,
+    "facilities": [
+      {
+        "organizationName": "Iraq Health Ministry",
+        "facilityName": "AL -Yarmook",
+        "address": "Yarmook street",
+        "organizationId": "13a3fba4-0be6-4b1c-abac-c26cf66c2f37",
+        "facilityId": "ea5f0cab-b493-42ec-815c-a1f52d6b9552",
+        "locationName": "AL-Karkh",
+        "locationId": 1447,
+        "status": "Active"
+      }
+    ]
+  },
+  {
+    "id": "63d8e51f-78ab-4ae1-875b-9e1879553a8d",
+    "firstName": "Raghad",
+    "lastName": "Muiasr",
+    "userName": "watersilk11@gmail.com",
+    "email": "watersilk11@gmail.com",
+    "phone": "0770 189 3442",
+    "countryCode": "IQ",
+    "language": "en",
+    "enabled": true,
+    "realmRoles": [
+      "user"
+    ],
+    "locations": null,
+    "facilities": [
+      {
+        "organizationName": "Iraq Health Ministry",
+        "facilityName": "Al-Rabee",
+        "address": "Al-Rabee",
+        "organizationId": "13a3fba4-0be6-4b1c-abac-c26cf66c2f37",
+        "facilityId": "d5baa292-a7e1-42f4-9f42-428c6fa441fa",
+        "locationName": "Al-Rabee",
+        "locationId": 1768,
+        "status": "Active"
+      }
+    ]
+  },
+  {
+    "id": "707a45fe-0a3b-4a2f-8e4d-6cd20ac43609",
+    "firstName": "who",
+    "lastName": "emcare",
+    "userName": "who.emcare@gmail.com",
+    "email": "who.emcare@gmail.com",
+    "phone": "01 234 5678",
+    "countryCode": "IQ",
+    "language": "en",
+    "enabled": true,
+    "realmRoles": [
+      "user"
+    ],
+    "locations": null,
+    "facilities": [
+      {
+        "organizationName": "Iraq Health Ministry",
+        "facilityName": "AL-Doura",
+        "address": "AL-Doura street",
+        "organizationId": "13a3fba4-0be6-4b1c-abac-c26cf66c2f37",
+        "facilityId": "ebdc2118-346c-4f05-a598-c2de73b44909",
+        "locationName": "AL-Adoura",
+        "locationId": 1448,
+        "status": "Active"
+      },
+      {
+        "organizationName": "Iraq Health Ministry",
+        "facilityName": "AL -Yarmook",
+        "address": "Yarmook street",
+        "organizationId": "13a3fba4-0be6-4b1c-abac-c26cf66c2f37",
+        "facilityId": "ea5f0cab-b493-42ec-815c-a1f52d6b9552",
+        "locationName": "AL-Karkh",
+        "locationId": 1447,
+        "status": "Active"
+      }
+    ]
+  },
+  {
+    "id": "905ee1b7-25b5-4e38-91bb-759928ab1b90",
+    "firstName": "zainab",
+    "lastName": "salim",
+    "userName": "zainabsk2004@yahoo.com",
+    "email": "zainabsk2004@yahoo.com",
+    "phone": "0781 376 3230",
+    "countryCode": "IQ",
+    "language": "en",
+    "enabled": true,
+    "realmRoles": [
+      "user"
+    ],
+    "locations": null,
+    "facilities": [
+      {
+        "organizationName": "Iraq Health Ministry",
+        "facilityName": "Bab AL-Beedh",
+        "address": "Bab AL-Beedh street",
+        "organizationId": "13a3fba4-0be6-4b1c-abac-c26cf66c2f37",
+        "facilityId": "7896a082-bd80-48fc-b30b-2e9caebed9c7",
+        "locationName": "AL-Aymen",
+        "locationId": 1452,
+        "status": "Active"
+      }
+    ]
+  }
+]
