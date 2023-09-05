@@ -81,9 +81,9 @@ class PatientRepository @Inject constructor(
                     from = offsetOrFrom
                 }
         ).filter {
-            (it.getExtensionByUrl(LOCATION_EXTENSION_URL)?.value as? Identifier)?.value == facilityId
+            (it.resource.getExtensionByUrl(LOCATION_EXTENSION_URL)?.value as? Identifier)?.value == facilityId
         }.mapIndexed { index, fhirPatient ->
-            fhirPatient.toPatientItem(index + 1)
+            fhirPatient.resource.toPatientItem(index + 1)
         }
         for (patientItem in list){
             patientItem.resourceId?.let {
@@ -137,11 +137,11 @@ class PatientRepository @Inject constructor(
                 StructureMapExtractionContext(context = application.applicationContext) { _, _ -> structureMap
                 }
             )
-         /*   withContext(Dispatchers.IO) {
+            withContext(Dispatchers.IO) {
                 val careplan = fhirOperator.generateCarePlan("emcaredt01",patientId, encounterId)
                 print(careplan)
                 print(careplan)
-            }*/
+            }
 
             saveResourcesFromBundle(extractedBundle, patientId, encounterId, facilityId, consultationFlowItemId)
             //update QuestionnarieResponse in currentConsultation and createNext Consultation
@@ -297,13 +297,13 @@ class PatientRepository @Inject constructor(
         //Fetch observations using encounterId and after consultationDate
         val observations = fhirEngine.search<Observation> {
         }.filter { observation ->
-            observation.encounter.id == encounterId
+            observation.resource.encounter.id == encounterId
         }.filter { observation ->
-            observation.hasNote() && consultationFlowItemIdList.contains(observation.noteFirstRep.text)
+            observation.resource.hasNote() && consultationFlowItemIdList.contains(observation.resource.noteFirstRep.text)
         }
         //delete the observations
         observations.forEach { observation ->
-            fhirEngine.delete(ResourceType.Observation, observation.logicalId)
+            fhirEngine.delete(ResourceType.Observation, observation.resource.logicalId)
         }
     }
 

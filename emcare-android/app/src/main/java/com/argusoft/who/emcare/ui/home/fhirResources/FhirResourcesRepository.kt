@@ -40,7 +40,7 @@ class FhirResourcesRepository @Inject constructor(
              val allAudits = fhirEngine.search<AuditEvent> {}
             allAudits.forEach {
                 try{
-                    fhirEngine.purge(type = ResourceType.AuditEvent, id = it.id.removePrefix("AuditEvent/"))
+                    fhirEngine.purge(type = ResourceType.AuditEvent, id = it.resource.id.removePrefix("AuditEvent/"))
                 } catch (e: Exception) {
                     print(e.localizedMessage)
                 }

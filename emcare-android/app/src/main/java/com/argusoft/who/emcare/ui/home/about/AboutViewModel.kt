@@ -29,7 +29,7 @@ class AboutViewModel @Inject constructor(
                 sort(PlanDefinition.DATE, Order.ASCENDING)
             }
             if(planDefinitions.isNotEmpty())
-                _bundleVersion.value = ApiResponse.Success(planDefinitions.last().version)
+                _bundleVersion.value = ApiResponse.Success(planDefinitions.last().resource.version)
         }
     }
 }
