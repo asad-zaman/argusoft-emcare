@@ -110,13 +110,13 @@ public class EmcareResourceMapperTest {
         List<QuestionnaireDto> result = EmcareResourceMapper.questionnaireEntitiesToDtoMapper(questionnaireList);
 
         assertNotNull(result);
-        //test for questionnaire
+        //test for questionnaireData1
         assertEquals("1",result.get(0).getId());
         assertEquals("Sample",result.get(0).getName());
         assertEquals("Sample Title",result.get(0).getTitle());
         assertEquals("Description123",result.get(0).getDescription());
 
-        //test for questionnaire2
+        //test for questionnaireData2
         assertEquals("2",result.get(1).getId());
         assertEquals("Test",result.get(1).getName());
         assertEquals("TestTitle",result.get(1).getTitle());
@@ -189,10 +189,8 @@ public class EmcareResourceMapperTest {
         activityDefinitionData.setStatus(Enumerations.PublicationStatus.ACTIVE);
         activityDefinitionData.setSubtitle("Sample Subtitle");
 
-        // Map ActivityDefinition object to DTO
         ActivityDefinitionDto activityDefinitionDto = EmcareResourceMapper.getStructureMapDto(activityDefinitionData);
 
-        // Assertions
         assertEquals("example", activityDefinitionDto.getId());
         assertEquals("SampleActivityDefinition", activityDefinitionDto.getName());
         assertEquals("Sample Title", activityDefinitionDto.getTitle());
@@ -359,7 +357,6 @@ public class EmcareResourceMapperTest {
         medication.setId("med1");
         medication.setStatus(Medication.MedicationStatus.ACTIVE); // Set the status to ACTIVE
 
-        // Create a list of sample Coding objects for code
         List<Coding> codeCodings = new ArrayList<>();
         Coding codeCoding1 = new Coding();
         codeCoding1.setCode("code1");
@@ -371,10 +368,8 @@ public class EmcareResourceMapperTest {
         codeCoding2.setDisplay("Display 2");
         codeCodings.add(codeCoding2);
 
-        // Set the code
         medication.getCode().setCoding(codeCodings);
 
-        // Create a list of sample Coding objects for form
         List<Coding> formCodings = new ArrayList<>();
         Coding formCoding1 = new Coding();
         formCoding1.setCode("formCode1");
@@ -386,15 +381,12 @@ public class EmcareResourceMapperTest {
         formCoding2.setDisplay("Form Display 2");
         formCodings.add(formCoding2);
 
-        // Set the form
         medication.getForm().setCoding(formCodings);
 
-        // Map Medication object to MedicationDto
         MedicationDto medicationDto = EmcareResourceMapper.getMedicationDto(medication);
 
-        // Assertions
         assertEquals("med1", medicationDto.getId());
-        assertEquals("Active", medicationDto.getStatus()); // Check the status
+        assertEquals("Active", medicationDto.getStatus());
 
         List<MedicationCodeDto> codeDtos = medicationDto.getCode();
         assertEquals(2, codeDtos.size());
