@@ -14,7 +14,7 @@ import com.argusoft.who.emcare.web.tenant.entity.TenantConfig;
  */
 public class TenantMapper {
 
-    private TenantMapper() {
+    TenantMapper() {
     }
 
     public static TenantConfig getTenantConfig(TenantDto tenantDto, String orgName) {
