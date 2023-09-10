@@ -124,7 +124,7 @@ class LoginRepository @Inject constructor(
                     sort(PlanDefinition.DATE, Order.ASCENDING)
                 }
                 if (planDefinitions.isNotEmpty())
-                    deviceDetails.igVersion = planDefinitions.last().version
+                    deviceDetails.igVersion = planDefinitions.last().resource.version
                 api.addDevice(deviceDetails)
             }
         }

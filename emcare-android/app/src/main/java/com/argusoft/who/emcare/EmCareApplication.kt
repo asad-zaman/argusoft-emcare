@@ -61,7 +61,7 @@ class EmCareApplication : Application(), Configuration.Provider, DataCaptureConf
                     return lookupCodesFromDb(uri)
                 }
             },
-            xFhirQueryResolver = { FhirEngineProvider.getInstance(this).search(it) },
+            xFhirQueryResolver = XFhirQueryResolver{ FhirEngineProvider.getInstance(this).search(it).map {it.resource} },
             urlResolver = ReferenceUrlResolver(this@EmCareApplication as Context),
             questionnaireItemViewHolderFactoryMatchersProviderFactory = QuestionnaireItemViewHolderFactoryMatchersProviderFactoryImpl
         )
@@ -102,7 +102,7 @@ class EmCareApplication : Application(), Configuration.Provider, DataCaptureConf
         Returns List of Coding from ValueSets stored in the fhirEngine
      */
     private suspend fun lookupCodesFromDb(uri: String): List<Coding> {
-        val valueSets: List<ValueSet> = FhirEngineProvider.getInstance(this).search {
+        val valueSets = FhirEngineProvider.getInstance(this).search<ValueSet> {
             filter(
                 ValueSet.URL,
                 {
@@ -115,9 +115,9 @@ class EmCareApplication : Application(), Configuration.Provider, DataCaptureConf
         if (valueSets.isEmpty()) {
             return listOf()
         } else {
-            val valueSet = valueSets.get(0)
+            val valueSet = valueSets[0]
             val codingList = mutableListOf<Coding>()
-            valueSet.compose.include.forEach { includeObj ->
+            valueSet.resource.compose.include.forEach { includeObj ->
                 run {
                     includeObj.concept.forEach { conceptObj ->
                         codingList.add(

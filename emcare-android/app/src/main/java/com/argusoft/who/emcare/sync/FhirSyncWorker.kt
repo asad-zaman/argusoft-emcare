@@ -19,19 +19,15 @@ package com.argusoft.who.emcare.sync
 import android.content.Context
 import androidx.work.WorkerParameters
 import com.argusoft.who.emcare.EmCareApplication
-import com.argusoft.who.emcare.data.local.pref.Preference
 import com.google.android.fhir.FhirEngineProvider
 import com.google.android.fhir.sync.AcceptLocalConflictResolver
 import com.google.android.fhir.sync.DownloadWorkManager
 import com.google.android.fhir.sync.FhirSyncWorker
-import com.google.android.fhir.sync.UploadWorkManager
-import com.google.android.fhir.sync.upload.SquashedChangesUploadWorkManager
-import javax.inject.Inject
 
 class FhirSyncWorker (appContext: Context, workerParams: WorkerParameters) :
   FhirSyncWorker(appContext, workerParams) {
 
-  val emCareApplication = applicationContext as EmCareApplication
+  private val emCareApplication = applicationContext as EmCareApplication
 
   override fun getDownloadWorkManager(): DownloadWorkManager {
     return DownloadWorkManagerImpl(emCareApplication.preference)
@@ -41,5 +37,4 @@ class FhirSyncWorker (appContext: Context, workerParams: WorkerParameters) :
 
   override fun getFhirEngine() = FhirEngineProvider.getInstance(applicationContext)
 
-  override fun getUploadWorkManager(): UploadWorkManager = SquashedChangesUploadWorkManager()
 }
