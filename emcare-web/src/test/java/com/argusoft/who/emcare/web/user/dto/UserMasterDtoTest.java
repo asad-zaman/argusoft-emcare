@@ -44,9 +44,15 @@ class UserMasterDtoTest {
         List<FacilityDto> facilities = new ArrayList<>();
         facilities.add(facilityDto);
 
+        List<CurrentUserFeatureJson> currentUserFeatureJsonList = new ArrayList<>();
+
+        CurrentUserFeatureJson testFeature = new CurrentUserFeatureJson(1,"testMenu","testFeatureJSON",123L,123L,new ArrayList<>());
+        currentUserFeatureJsonList.add(testFeature);
+
         userMasterDto.setUserId(userId);
         userMasterDto.setUserName(userName);
         userMasterDto.setEmail(email);
+        userMasterDto.setFeature(currentUserFeatureJsonList);
         userMasterDto.setLanguage(language);
         userMasterDto.setRoles(roles);
         userMasterDto.setFirstName(firstName);
@@ -58,6 +64,7 @@ class UserMasterDtoTest {
         assertThat(userMasterDto.getUserId()).isEqualTo(userId);
         assertThat(userMasterDto.getUserName()).isEqualTo(userName);
         assertThat(userMasterDto.getEmail()).isEqualTo(email);
+        assertThat(userMasterDto.getFeature()).isEqualTo(currentUserFeatureJsonList);
         assertThat(userMasterDto.getLanguage()).isEqualTo(language);
         assertThat(userMasterDto.getRoles()).isEqualTo(roles);
         assertThat(userMasterDto.getFirstName()).isEqualTo(firstName);

@@ -15,6 +15,18 @@ public class CurrentUserFeatureJson {
         return id;
     }
 
+    public CurrentUserFeatureJson() {
+    }
+
+    public CurrentUserFeatureJson(Integer id, String menuName, String featureJson, Long parent, Long orderNumber, List<CurrentUserFeatureJson> subMenu) {
+        this.id = id;
+        this.menuName = menuName;
+        this.featureJson = featureJson;
+        this.parent = parent;
+        this.orderNumber = orderNumber;
+        this.subMenu = subMenu;
+    }
+
     public void setId(Integer id) {
         this.id = id;
     }

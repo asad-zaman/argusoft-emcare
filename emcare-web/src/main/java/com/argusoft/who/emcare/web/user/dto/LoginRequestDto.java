@@ -1,5 +1,6 @@
 package com.argusoft.who.emcare.web.user.dto;
 
+import lombok.Data;
 import lombok.Getter;
 
 /**
@@ -11,7 +12,7 @@ import lombok.Getter;
  * @author - jaykalariya
  * @since - 16/02/23  5:08 pm
  */
-@Getter
+@Data
 public class LoginRequestDto {
 
     private String username;

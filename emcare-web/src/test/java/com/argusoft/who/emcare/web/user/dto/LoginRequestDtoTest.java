@@ -1,17 +1,33 @@
 package com.argusoft.who.emcare.web.user.dto;
 
-import com.argusoft.who.emcare.web.tenant.dto.TenantDto;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.meanbean.test.BeanTester;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoAnnotations;
 
-@ExtendWith(MockitoExtension.class)
+import static org.junit.Assert.assertEquals;
+
 public class LoginRequestDtoTest {
+    AutoCloseable autoCloseable;
+
+    @BeforeEach
+    void setUp() {
+        autoCloseable = MockitoAnnotations.openMocks(this);
+    }
+
+    @AfterEach
+    void tearDown() throws Exception {
+        autoCloseable.close();
+    }
+
 
     @Test
-    public void testTenantDto() {
-        BeanTester beanTester = new BeanTester();
-        beanTester.testBean(LoginRequestDto.class);
+    public void testGetters() {
+        LoginRequestDto loginRequestDto = new LoginRequestDto();
+        loginRequestDto.setUsername("testUser");
+        loginRequestDto.setPassword("testPassword");
+
+        assertEquals("testUser", loginRequestDto.getUsername());
+        assertEquals("testPassword", loginRequestDto.getPassword());
     }
 }
