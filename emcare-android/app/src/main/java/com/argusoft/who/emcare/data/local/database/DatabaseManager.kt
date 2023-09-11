@@ -133,4 +133,8 @@ class DatabaseManager(roomDatabase: RoomDatabase) : Database {
     override suspend fun getConsultationCountAfterTimestamp(timestamp: String): Int {
         return dao.getConsultationCountAfterTimestamp(timestamp)
     }
+
+    override suspend fun getConsultationFlowItemsForReview(encounterId: String): List<ConsultationFlowItem?> {
+        return dao.getConsultationFlowItemsForReview(encounterId)
+    }
 }

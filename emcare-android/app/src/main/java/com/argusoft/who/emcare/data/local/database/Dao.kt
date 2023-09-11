@@ -102,4 +102,7 @@ interface Dao {
 
     @Query("SELECT COUNT(*) FROM consultationflowitem WHERE consultationDate > :timestamp")
     suspend fun getConsultationCountAfterTimestamp(timestamp: String): Int
+
+    @Query("SELECT * FROM consultationflowitem WHERE encounterId=:encounterId ORDER BY consultationDate ASC")
+    suspend fun getConsultationFlowItemsForReview(encounterId: String): List<ConsultationFlowItem?>
 }

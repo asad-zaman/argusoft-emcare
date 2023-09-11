@@ -6,6 +6,7 @@
     <string name="title_patient">Registered Patients</string>
     <string name="title_patient_detail">SamplePatient Detail</string>
     <string name="patient">Patient</string>
+    <string name="review">Review</string>
     <string name="title_patient_details">Patient Details</string>
     <string name="title_patient_actions">Patient Actions</string>
     <string name="title_patient_profile">Patient Profile</string>

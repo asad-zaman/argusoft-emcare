@@ -78,7 +78,32 @@
             app:launchSingleTop="true"
             />
         <action
+            android:id="@+id/action_patientQuestionnaireFragment_to_consultationReviewFragment"
+            app:popUpToInclusive="true"
+            app:popUpTo="@id/consultationReviewFragment"
+            app:destination="@id/consultationReviewFragment"
+            app:launchSingleTop="true"
+            />
+        <action
             android:id="@+id/action_patientQuestionnaireFragment_to_homeFragment"
+            app:popUpToInclusive="true"
+            app:popUpTo="@id/homeFragment"
+            app:destination="@id/homeFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/consultationReviewFragment"
+        android:name="com.argusoft.who.emcare.ui.home.patient.review.ConsultationReviewFragment"
+        tools:layout="@layout/fragment_consultation_review_fragment" >
+        <action
+            android:id="@+id/action_consultationReviewFragment_to_patientQuestionnaireFragment"
+            app:popUpToInclusive="true"
+            app:popUpTo="@id/patientQuestionnaireFragment"
+            app:destination="@id/patientQuestionnaireFragment"
+            app:launchSingleTop="true"
+            />
+        <action
+            android:id="@+id/action_consultationReviewFragment_to_homeFragment"
             app:popUpToInclusive="true"
             app:popUpTo="@id/homeFragment"
             app:destination="@id/homeFragment" />

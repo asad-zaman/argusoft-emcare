@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<com.argusoft.who.emcare.widget.ApiViewStateConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/questionnaireBackground"
+    android:id="@+id/progressLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include
+        android:id="@+id/headerLayout"
+        layout="@layout/layout_header" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/patientDetailsConstraintLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/questionnaireBackground"
+        app:layout_constraintTop_toBottomOf="@id/headerLayout"
+        app:layout_constraintStart_toStartOf="parent"
+        >
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/childImageView"
+            android:layout_width="@dimen/_40sdp"
+            android:layout_height="@dimen/_40sdp"
+            android:gravity="center_vertical"
+            android:layout_marginStart="@dimen/_24sdp"
+            android:src="@drawable/baby_boy"
+            android:layout_marginTop="@dimen/_8sdp"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/nameTextView"
+            style="@style/TextView.Medium.Black"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_12sdp"
+            android:layout_marginBottom="@dimen/_4sdp"
+            app:layout_constraintStart_toEndOf="@+id/childImageView"
+            app:layout_constraintBottom_toTopOf="@+id/dobTextViewLabel"
+            tools:text="Parth Panchal" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/dobTextViewLabel"
+            style="@style/TextView.Small.Black"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="@+id/nameTextView"
+            app:layout_constraintBottom_toBottomOf="@id/childImageView"
+            android:visibility="gone"
+            android:text="@string/dob_label" />
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/dobTextView"
+            style="@style/TextView.Small.Black"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_4sdp"
+            app:layout_constraintStart_toEndOf="@id/dobTextViewLabel"
+            app:layout_constraintBottom_toBottomOf="@id/childImageView"
+            tools:text="21/06/1999" />
+
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginBottom="@dimen/_4sdp"
+            android:layout_marginHorizontal="@dimen/_12sdp"
+            app:layout_constraintTop_toBottomOf="@id/dobTextViewLabel"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/registrationStageTextView"
+        style="@style/TextView.Medium.Black"
+        android:visibility="gone"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_12sdp"
+        android:layout_marginBottom="@dimen/_4sdp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/patientDetailsConstraintLayout"
+        tools:text="Registration" />
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/registrationFragmentContainerView"
+        android:background="@color/questionnaireBackground"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:paddingTop="@dimen/_8sdp"
+        app:layout_constraintTop_toBottomOf="@id/registrationStageTextView" />
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/dangerSignsStageTextView"
+        style="@style/TextView.Medium.Black"
+        android:visibility="gone"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_12sdp"
+        android:layout_marginBottom="@dimen/_4sdp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/registrationFragmentContainerView"
+        tools:text="Danger Signs" />
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/dangerSignsFragmentContainerView"
+        android:background="@color/questionnaireBackground"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:paddingTop="@dimen/_8sdp"
+        app:layout_constraintTop_toBottomOf="@id/dangerSignsStageTextView" />
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/measurementsStageTextView"
+        style="@style/TextView.Medium.Black"
+        android:visibility="gone"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_12sdp"
+        android:layout_marginBottom="@dimen/_4sdp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dangerSignsFragmentContainerView"
+        tools:text="Measurements" />
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/measurementsFragmentContainerView"
+        android:background="@color/questionnaireBackground"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:paddingTop="@dimen/_8sdp"
+        app:layout_constraintTop_toBottomOf="@id/measurementsStageTextView" />
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/symptomsStageTextView"
+        style="@style/TextView.Medium.Black"
+        android:visibility="gone"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_12sdp"
+        android:layout_marginBottom="@dimen/_4sdp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/measurementsFragmentContainerView"
+        tools:text="Symptoms" />
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/symptomsFragmentContainerView"
+        android:background="@color/questionnaireBackground"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:paddingTop="@dimen/_8sdp"
+        app:layout_constraintTop_toBottomOf="@id/symptomsStageTextView" />
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/signsStageTextView"
+        style="@style/TextView.Medium.Black"
+        android:visibility="gone"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_12sdp"
+        android:layout_marginBottom="@dimen/_4sdp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/symptomsFragmentContainerView"
+        tools:text="Signs" />
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/signsFragmentContainerView"
+        android:visibility="gone"
+        android:background="@color/questionnaireBackground"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:paddingTop="@dimen/_8sdp"
+        app:layout_constraintTop_toBottomOf="@id/signsStageTextView" />
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/assessmentsStageTextView"
+        android:visibility="gone"
+        style="@style/TextView.Medium.Black"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_12sdp"
+        android:layout_marginBottom="@dimen/_4sdp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/signsFragmentContainerView"
+        tools:text="Assessments" />
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/assessmentsFragmentContainerView"
+        android:visibility="gone"
+        android:background="@color/questionnaireBackground"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:paddingTop="@dimen/_8sdp"
+        app:layout_constraintTop_toBottomOf="@id/assessmentsStageTextView" />
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/classificationsStageTextView"
+        android:visibility="gone"
+        style="@style/TextView.Medium.Black"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_12sdp"
+        android:layout_marginBottom="@dimen/_4sdp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/assessmentsFragmentContainerView"
+        tools:text="Classifications" />
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/classificationsFragmentContainerView"
+        android:visibility="gone"
+        android:background="@color/questionnaireBackground"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:paddingTop="@dimen/_8sdp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/classificationsStageTextView" />
+</com.argusoft.who.emcare.widget.ApiViewStateConstraintLayout>

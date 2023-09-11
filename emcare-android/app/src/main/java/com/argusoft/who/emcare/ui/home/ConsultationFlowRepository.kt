@@ -115,5 +115,9 @@ class ConsultationFlowRepository @Inject constructor(
         emit(ApiResponse.Success(data = count))
     }
 
+    fun getConsultationFlowItemsForReview(encounterId: String) = flow {
+        val consultations = database.getConsultationFlowItemsForReview(encounterId)
+        emit(ApiResponse.Success(data = consultations))
+    }
 
 }

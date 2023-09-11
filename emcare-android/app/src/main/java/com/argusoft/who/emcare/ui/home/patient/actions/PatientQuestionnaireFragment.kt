@@ -242,15 +242,24 @@ class PatientQuestionnaireFragment : BaseFragment<FragmentPatientQuestionnaireBi
         observeNotNull(homeViewModel.saveQuestionnaire) { apiResponse ->
             apiResponse.handleApiView(binding.progressLayout, skipIds = listOf(R.id.headerLayout)) {
                 if (it is ConsultationFlowItem) {
-                    navigate(R.id.action_patientQuestionnaireFragment_to_patientQuestionnaireFragment) {
-                        putString(INTENT_EXTRA_QUESTIONNAIRE_ID, it.questionnaireId)
-                        putString(INTENT_EXTRA_STRUCTUREMAP_ID, it.structureMapId)
-                        putString(INTENT_EXTRA_QUESTIONNAIRE_HEADER, stageToBadgeMap[it.consultationStage])
-                        putString(INTENT_EXTRA_CONSULTATION_FLOW_ITEM_ID, it.id)
-                        putString(INTENT_EXTRA_PATIENT_ID, it.patientId)
-                        putString(INTENT_EXTRA_ENCOUNTER_ID, it.encounterId)
-                        putString(INTENT_EXTRA_CONSULTATION_STAGE, it.consultationStage)
-                        putString(INTENT_EXTRA_QUESTIONNAIRE_RESPONSE, it.questionnaireResponseText)
+                    if(it.consultationStage.equals(CONSULTATION_STAGE_TREATMENTS)){
+                        navigate(R.id.action_patientQuestionnaireFragment_to_consultationReviewFragment) {
+                            putString(INTENT_EXTRA_PATIENT_ID, it.patientId)
+                            putString(INTENT_EXTRA_ENCOUNTER_ID, it.encounterId)
+                            putString(INTENT_EXTRA_CONSULTATION_FLOW_ITEM_ID, it.id)
+
+                        }
+                    } else {
+                        navigate(R.id.action_patientQuestionnaireFragment_to_patientQuestionnaireFragment) {
+                            putString(INTENT_EXTRA_QUESTIONNAIRE_ID, it.questionnaireId)
+                            putString(INTENT_EXTRA_STRUCTUREMAP_ID, it.structureMapId)
+                            putString(INTENT_EXTRA_QUESTIONNAIRE_HEADER, stageToBadgeMap[it.consultationStage])
+                            putString(INTENT_EXTRA_CONSULTATION_FLOW_ITEM_ID, it.id)
+                            putString(INTENT_EXTRA_PATIENT_ID, it.patientId)
+                            putString(INTENT_EXTRA_ENCOUNTER_ID, it.encounterId)
+                            putString(INTENT_EXTRA_CONSULTATION_STAGE, it.consultationStage)
+                            putString(INTENT_EXTRA_QUESTIONNAIRE_RESPONSE, it.questionnaireResponseText)
+                        }
                     }
                 } else {
                     navigate(R.id.action_patientQuestionnaireFragment_to_homeFragment)
