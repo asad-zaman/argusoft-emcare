@@ -11,4 +11,4 @@ Build:
     - git branch
     - cd emcare-web/
     - sudo mvn clean install
-    - cd target
+    
