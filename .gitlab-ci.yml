@@ -2,10 +2,10 @@
 stages:
     - Test
 
-run_tests:
+Build:
     stage: Test
     tags:
-        - EmCare 
+        - EmCare
     # image: amazoncorretto:17.0.8-al2023-headless
     # before_script:
     #     - apt install openjdk-17-jdk -y
