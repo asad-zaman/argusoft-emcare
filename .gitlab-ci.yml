@@ -1,4 +1,4 @@
-image: amazoncorretto:17.0.8-al2023-headless
+# image: amazoncorretto:17.0.8-al2023-headless
 stages:
     - Test
 
@@ -8,7 +8,9 @@ run_tests:
         - EmCare 
     # image: amazoncorretto:17.0.8-al2023-headless
     before_script:
-        - yum -y install wget tar gzip
+        - apt install openjdk-17-jdk -y
+        - apt install openjdk-17-jre -y
+        - apt install wget tar gzip -y
         - wget https://mirrors.estointernet.in/apache/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz
         - tar -xvf apache-maven-3.6.3-bin.tar.gz
         - mv apache-maven-3.6.3 /opt/
