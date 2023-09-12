@@ -1,20 +1,14 @@
-# image: amazoncorretto:17.0.8-al2023-headless
 stages:
-    - Test
+  - Build
 
 Build:
-    stage: Test
-    tags:
-        - EmCare
-    # image: amazoncorretto:17.0.8-al2023-headless
-    # before_script:
-    #     - apt install openjdk-17-jdk -y
-    #     - apt install openjdk-17-jre -y
-    #     - apt install wget tar gzip -y
-    #     - wget https://mirrors.estointernet.in/apache/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz
-    #     - tar -xvf apache-maven-3.6.3-bin.tar.gz
-    #     - mv apache-maven-3.6.3 /opt/
-    #     - M2_HOME='/opt/apache-maven-3.6.3'
-    #     - PATH="$M2_HOME/bin:$PATH"
-    #     - export PATH
-    script: java -version
+  stage: Build
+  tags: 
+    - EmCare
+  script:
+    - git clone "https://oauth2:$EmCare_Dev@argusgit.argusoft.com/who-public/emcare.git"
+    - git checkout add-ci-cd
+    - git branch
+    - cd emcare-web/
+    - sudo mvn clean install
+    - cd target
