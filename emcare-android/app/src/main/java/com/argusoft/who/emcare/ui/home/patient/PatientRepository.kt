@@ -20,10 +20,16 @@ import com.google.android.fhir.datacapture.validation.QuestionnaireResponseValid
 import com.google.android.fhir.delete
 import com.google.android.fhir.get
 import com.google.android.fhir.logicalId
+import com.google.android.fhir.search.LOCAL_LAST_UPDATED_PARAM
 import com.google.android.fhir.search.Operation
+import com.google.android.fhir.search.Order
+import com.google.android.fhir.search.Search
 import com.google.android.fhir.search.StringFilterModifier
 import com.google.android.fhir.search.search
+import com.google.android.fhir.workflow.FhirOperator
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.withContext
 import org.hl7.fhir.r4.model.*
 import java.time.Instant
 import java.time.ZoneId
@@ -36,7 +42,8 @@ class PatientRepository @Inject constructor(
     private val application: Application,
     private val consultationFlowRepository: ConsultationFlowRepository,
     private val fhirResourcesRepository: FhirResourcesRepository,
-    private val preference: Preference
+    private val preference: Preference,
+    private val fhirOperator: FhirOperator
 ) {
 
     private val Z_UTC = "Z[UTC]"
@@ -49,49 +56,41 @@ class PatientRepository @Inject constructor(
         emit(ApiResponse.Success(data = fhirEngine.get<Patient>(patientId)))
     }
 
-    fun getPatients(search: String? = null, facilityId: String?) = flow {
-        val list = fhirEngine.search<Patient> {
-            if (!search.isNullOrEmpty()) {
-                filter(
-                    Patient.NAME,
-                    {
-                        modifier = StringFilterModifier.CONTAINS
-                        value = search
+    fun getPatients(search: String? = null, facilityId: String?, limitOrCount :Int, offsetOrFrom: Int) = flow {
+        val list = fhirEngine.search<Patient>(
+            Search(ResourceType.Patient)
+                .apply {
+                    if (!search.isNullOrEmpty()) {
+                        filter(
+                            Patient.NAME,
+                            {
+                                modifier = StringFilterModifier.CONTAINS
+                                value = search
+                            }
+                        )
+                        filter(
+                            Patient.IDENTIFIER,
+                            {
+                                value = of(Identifier().apply { value = search })
+                            }
+                        )
+                        operation = Operation.OR
                     }
-                )
-                filter(
-                    Patient.IDENTIFIER,
-                    {
-                        value = of(Identifier().apply { value = search })
-                    }
-                )
-                operation = Operation.OR
-            }
-        }.filter {
-            (it.getExtensionByUrl(LOCATION_EXTENSION_URL)?.value as? Identifier)?.value == facilityId
-        }.sortedWith(kotlin.Comparator { o1, o2 ->
-            if(o1.hasMeta() && !o2.hasMeta()){
-                return@Comparator 1
-            } else  if(!o1.hasMeta() && o2.hasMeta()){
-                return@Comparator -1
-            } else if(o1.hasMeta() && o2.hasMeta()){
-                if(o1.meta.lastUpdated!! < o2.meta.lastUpdated){
-                    return@Comparator 1
-                } else {
-                    return@Comparator -1
+                    sort(LOCAL_LAST_UPDATED_PARAM, Order.DESCENDING)
+                    count = limitOrCount
+                    from = offsetOrFrom
                 }
-            } else {
-                return@Comparator -1
-            }
-
-        }).mapIndexed { index, fhirPatient ->
+        ).filter {
+            (it.getExtensionByUrl(LOCATION_EXTENSION_URL)?.value as? Identifier)?.value == facilityId
+        }.mapIndexed { index, fhirPatient ->
             fhirPatient.toPatientItem(index + 1)
         }
         for (patientItem in list){
             patientItem.resourceId?.let {
-                fhirEngine.getLocalChange(ResourceType.Patient, it)?.let {
-                    patientItem.isSynced = false
+                fhirEngine.getLocalChanges(ResourceType.Patient, it).let {localChanges ->
+                    patientItem.isSynced = localChanges.isEmpty()
                 }
+
             }
         }
         emit(ApiResponse.Success(data = list))
@@ -138,6 +137,12 @@ class PatientRepository @Inject constructor(
                 StructureMapExtractionContext(context = application.applicationContext) { _, _ -> structureMap
                 }
             )
+         /*   withContext(Dispatchers.IO) {
+                val careplan = fhirOperator.generateCarePlan("emcaredt01",patientId, encounterId)
+                print(careplan)
+                print(careplan)
+            }*/
+
             saveResourcesFromBundle(extractedBundle, patientId, encounterId, facilityId, consultationFlowItemId)
             //update QuestionnarieResponse in currentConsultation and createNext Consultation
             if(consultationFlowItemId != null) {

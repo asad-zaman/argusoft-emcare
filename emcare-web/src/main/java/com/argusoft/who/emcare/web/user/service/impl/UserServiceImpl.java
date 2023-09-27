@@ -158,11 +158,11 @@ public class UserServiceImpl implements UserService {
         AccessToken user = emCareSecurityUser.getLoggedInUser();
         Keycloak keycloak = keyCloakConfig.getInstance();
         UserRepresentation userInfo = keycloak.realm(realm).users().get(user.getSubject()).toRepresentation();
-        List<UserLocationMapping> userLocationList = userLocationMappingRepository.findByUserId(user.getSubject());
+        List<UserLocationMapping> userLocationList = userLocationMappingRepository.findByUserIdAndLocationIdNotNull(user.getSubject());
         List<UserLocationMapping> fecilitys;
         List<FacilityDto> facilityDtos = new ArrayList<>();
         if (!userLocationList.isEmpty()) {
-            fecilitys = userLocationMappingRepository.findByUserId(user.getSubject());
+            fecilitys = userLocationMappingRepository.findByUserIdAndLocationIdNotNull(user.getSubject());
             Iterable<String> facilityIds = fecilitys.stream().map(UserLocationMapping::getFacilityId).collect(Collectors.toList());
             for (String id : facilityIds)
                 facilityDtos.add(locationResourceService.getFacilityDto(id));
@@ -815,12 +815,7 @@ public class UserServiceImpl implements UserService {
 //        Create User Representation
         UserRepresentation kcUser = new UserRepresentation();
         Settings usernameSetting = adminSettingRepository.findByKey(CommonConstant.SETTING_TYPE_REGISTRATION_EMAIL_AS_USERNAME);
-        if (usernameSetting.getValue().equals(CommonConstant.ACTIVE)) {
-            kcUser.setUsername(user.getEmail());
-        } else {
-            kcUser.setUsername(user.getUserName());
-        }
-        kcUser.setUsername(user.getUserName());
+        kcUser.setUsername(user.getEmail());
         kcUser.setCredentials(Collections.singletonList(credentialRepresentation));
         kcUser.setFirstName(user.getFirstName());
         kcUser.setLastName(user.getLastName());
@@ -837,11 +832,6 @@ public class UserServiceImpl implements UserService {
         try {
 
             Map<String, Long> locationMap = new HashMap<>();
-//            for (String facilityId : user.getFacilityIds()) {
-//                FacilityDto facilityDto = locationResourceService.getFacilityDto(facilityId);
-//                locationMap.put(facilityId, facilityDto.getLocationId());
-//            }
-
             javax.ws.rs.core.Response response = usersResource.create(kcUser);
             String userId = CreatedResponseUtil.getCreatedId(response);
             userLocationMappingRepository.saveAll(UserMapper.getUserMappingEntityPerLocationForTenant(user, userId, locationMap));

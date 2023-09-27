@@ -67,6 +67,9 @@ interface Dao {
     @Query("SELECT * from consultationflowitem where isActive=1 AND consultationDate in (SELECT MAX(consultationDate) from consultationflowitem group by encounterId) ORDER BY consultationDate DESC")
     suspend fun getAllLatestActiveConsultations(): List<ConsultationFlowItem>?
 
+    @Query("SELECT * from consultationflowitem where isActive=1 AND consultationDate in (SELECT MAX(consultationDate) from consultationflowitem group by encounterId) ORDER BY consultationDate DESC LIMIT :limit OFFSET :offset")
+    suspend fun getAllLatestActiveConsultationsPaginated(limit: Int, offset: Int): List<ConsultationFlowItem>?
+
     @Query("SELECT * from consultationflowitem where isActive=1 AND patientId=:patientId AND consultationDate in (SELECT MAX(consultationDate) from consultationflowitem group by encounterId) ORDER BY consultationDate DESC")
     suspend fun getAllLatestActiveConsultationsByPatientId(patientId: String): List<ConsultationFlowItem>?
 
