@@ -14,6 +14,7 @@ import java.util.Map;
 public interface UserLocationMappingRepository extends JpaRepository<UserLocationMapping, Integer> {
 
     List<UserLocationMapping> findByUserId(String userId);
+    List<UserLocationMapping> findByUserIdAndLocationIdNotNull(String userId);
 
     @Query(value = "WITH RECURSIVE CHILD AS\n" +
         " (SELECT *\n" +
