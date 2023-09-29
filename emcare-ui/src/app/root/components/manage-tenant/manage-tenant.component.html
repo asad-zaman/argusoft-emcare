@@ -101,7 +101,11 @@
                         [ngClass]="{ 'is-invalid': (submitted[0] && getFormConfrols.dbName.errors) }">
                       <div *ngIf="submitted[0] && getFormConfrols.dbName.errors" class="invalid-feedback">
                         <div class="cst-error-style" *ngIf="getFormConfrols.dbName.errors.required">
-                          {{'Database Name Required Message' | translate}}</div>
+                          {{'Database Name Required Message' | translate}}
+                        </div>
+                        <div class="cst-error-style" *ngIf="getFormConfrols.dbName.errors.pattern">
+                            {{"Special Character is not allowed in Database Name" | translate}}
+                        </div>
                       </div>
                     </div>
                   </div>

@@ -124,7 +124,7 @@ export class ManageTenantComponent implements OnInit {
       username: ['', [Validators.required]],
       tenantPassword: ['', [Validators.required]],
       domain: ['', [Validators.required]],
-      dbName: ['', [Validators.required]],
+      dbName: ['', [Validators.required,  Validators.pattern('^[a-zA-Z0-9]*')]],
       dbPort: ['', [Validators.required]],
       // Organization
       organizationName: ['', [Validators.required]],
