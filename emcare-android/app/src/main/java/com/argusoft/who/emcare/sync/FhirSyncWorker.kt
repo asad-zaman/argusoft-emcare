@@ -24,8 +24,8 @@ import com.google.android.fhir.FhirEngineProvider
 import com.google.android.fhir.sync.AcceptLocalConflictResolver
 import com.google.android.fhir.sync.DownloadWorkManager
 import com.google.android.fhir.sync.FhirSyncWorker
-import com.google.android.fhir.sync.UploadWorkManager
-import com.google.android.fhir.sync.upload.SquashedChangesUploadWorkManager
+//import com.google.android.fhir.sync.UploadWorkManager
+//import com.google.android.fhir.sync.upload.SquashedChangesUploadWorkManager
 import javax.inject.Inject
 
 class FhirSyncWorker (appContext: Context, workerParams: WorkerParameters) :
@@ -41,5 +41,5 @@ class FhirSyncWorker (appContext: Context, workerParams: WorkerParameters) :
 
   override fun getFhirEngine() = FhirEngineProvider.getInstance(applicationContext)
 
-  override fun getUploadWorkManager(): UploadWorkManager = SquashedChangesUploadWorkManager()
+//  override fun getUploadWorkManager(): UploadWorkManager = SquashedChangesUploadWorkManager()
 }

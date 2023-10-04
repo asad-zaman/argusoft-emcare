@@ -24,4 +24,5 @@
     </declare-styleable>
 
     <attr name="appThemeButtonStyle" format="reference" />
+    <attr name="questionnaireQuestionHeaderStyle" format="reference"/>
 </resources>

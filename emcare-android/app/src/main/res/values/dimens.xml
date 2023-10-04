@@ -186,6 +186,9 @@
     <dimen name="small_text_margin">2dp</dimen>
     <dimen name="status_margin_top">0dp</dimen>
     <dimen name="header_height">170dp</dimen>
+    <dimen name="header_padding_bottom">4dp</dimen>
+    <dimen name="auto_complete_chip_margin">10dp</dimen>
+    <dimen name="error_text_at_header_margin_top">4dp</dimen>
 
     <!--additional dimens -->
     <dimen name="recyclerview_bottom_padding">64dp</dimen>

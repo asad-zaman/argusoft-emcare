@@ -19,8 +19,8 @@ package com.argusoft.who.emcare.sync
 import android.util.Log
 import com.argusoft.who.emcare.data.local.pref.Preference
 import com.google.android.fhir.sync.DownloadWorkManager
-import com.google.android.fhir.sync.DownloadRequest
 import com.google.android.fhir.sync.SyncDataParams
+import com.google.android.fhir.sync.download.DownloadRequest
 import org.hl7.fhir.exceptions.FHIRException
 import org.hl7.fhir.r4.model.*
 import java.text.DateFormat

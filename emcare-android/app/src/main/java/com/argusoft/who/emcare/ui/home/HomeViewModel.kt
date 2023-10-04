@@ -136,7 +136,7 @@ class HomeViewModel @Inject constructor(
                 val librariesList = it.data
                 runBlocking {
                     librariesList?.forEach { library ->
-                        knowledgeManager.install(writeToFile(library))
+                        knowledgeManager.install(writeToFile(library.resource))
                     }
                 }
             }.let {
@@ -715,7 +715,7 @@ class HomeViewModel @Inject constructor(
                         }
                     )
                 }
-                //Evaluating Library
+//                //Evaluating Library
                 val parameters = fhirOperator.evaluateLibrary(
                     cqlLibraryURL,
                     patientId,

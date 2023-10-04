@@ -236,8 +236,8 @@ dependencies {
     implementation "androidx.work:work-runtime-ktx:2.8.1"
 
     //Fhir
-    //Local Build Link: https://drive.google.com/file/d/1TtgDzVDiPmxuNVw2SJCDWGso3MCMhk48/view?usp=drive_link
-    implementation "com.google.android.fhir:engine:0.1.0-beta03"
+    //Local Build Link: https://drive.google.com/file/d/1O74-OiwFUa7IJTWVsvXrmHtm2a37RDlc/view?usp=drive_link
+    implementation "com.google.android.fhir:engine:0.1.0-beta04"
     implementation "com.google.android.fhir:data-capture:1.0.0"
     implementation "com.google.android.fhir:workflow:0.1.0-alpha03"
     implementation "com.google.android.fhir:knowledge:0.1.0-alpha01"
