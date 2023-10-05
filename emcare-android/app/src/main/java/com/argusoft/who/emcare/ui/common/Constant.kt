@@ -115,7 +115,7 @@ val stageToIconMap = mapOf(
 )
 
 val stageToQuestionnaireId = mapOf(
-    CONSULTATION_STAGE_REGISTRATION_PATIENT to "emcarea.registration.p",
+    CONSULTATION_STAGE_REGISTRATION_PATIENT to "Questionnaire-IMMZCRegisterClient",
     CONSULTATION_STAGE_REGISTRATION_ENCOUNTER to "emcareb.registration.e",
     CONSULTATION_STAGE_DANGER_SIGNS to "emcare.b7.lti-dangersigns",
     CONSULTATION_STAGE_MEASUREMENTS to "emcare.b6.measurements",
@@ -127,7 +127,7 @@ val stageToQuestionnaireId = mapOf(
 )
 
 val stageToStructureMapId = mapOf(
-    CONSULTATION_STAGE_REGISTRATION_PATIENT to "emcarea.registration.p",
+    CONSULTATION_STAGE_REGISTRATION_PATIENT to "IMMZCLMToPatient",
     CONSULTATION_STAGE_REGISTRATION_ENCOUNTER to "emcareb.registration.e",
     CONSULTATION_STAGE_DANGER_SIGNS to "emcare.b7.lti-dangersigns",
     CONSULTATION_STAGE_MEASUREMENTS to "emcare.b6.measurements",
@@ -139,7 +139,7 @@ val stageToStructureMapId = mapOf(
     )
 
 val stageToQuestionnaireIdUnderTwoMonths = mapOf(
-    CONSULTATION_STAGE_REGISTRATION_PATIENT to "emcarea.registration.p",
+    CONSULTATION_STAGE_REGISTRATION_PATIENT to "Questionnaire-IMMZCRegisterClient",
     CONSULTATION_STAGE_REGISTRATION_ENCOUNTER to "emcareb.registration.e",
     CONSULTATION_STAGE_DANGER_SIGNS to "emcare.b7.lti-dangersigns",
     CONSULTATION_STAGE_MEASUREMENTS to "emcare.b6.measurements",
@@ -151,7 +151,7 @@ val stageToQuestionnaireIdUnderTwoMonths = mapOf(
 )
 
 val stageToStructureMapIdUnderTwoMonths = mapOf(
-    CONSULTATION_STAGE_REGISTRATION_PATIENT to "emcarea.registration.p",
+    CONSULTATION_STAGE_REGISTRATION_PATIENT to "IMMZCLMToPatient",
     CONSULTATION_STAGE_REGISTRATION_ENCOUNTER to "emcareb.registration.e",
     CONSULTATION_STAGE_DANGER_SIGNS to "emcare.b7.lti-dangersigns",
     CONSULTATION_STAGE_MEASUREMENTS to "emcare.b6.measurements",
