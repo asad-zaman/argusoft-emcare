@@ -137,14 +137,22 @@ class PatientRepository @Inject constructor(
                 StructureMapExtractionContext(context = application.applicationContext) { _, _ -> structureMap
                 }
             )
-           /* withContext(Dispatchers.IO) {
-                val careplan = fhirOperator.generateCarePlan("Plan-Definition-Example",
-                    patientId)
-                print("**careplan**")
-                print(careplan)
-            }*/
+            if(consultationStage.equals(CONSULTATION_STAGE_REGISTRATION_PATIENT)) {
+                extractedBundle.addEntry(Bundle.BundleEntryComponent().setResource(
+                    FhirContext.forR4().newJsonParser().parseResource(Patient::class.java, PATIENT_STATIC_RESOURCE.replace("<PATIENT_ID>", patientId))
+                ))
+            }
 
             saveResourcesFromBundle(extractedBundle, patientId, encounterId, facilityId, consultationFlowItemId)
+//            withContext(Dispatchers.IO) {
+//                val careplan = fhirOperator.generateCarePlan(
+//                    stageToCareplan[consultationStage]!!,
+//                    patientId)
+//                print("**careplan**")
+//                print(careplan)
+//                print(careplan)
+//            }
+            val careplan = FhirContext.forR4().newJsonParser().parseResource(CarePlan::class.java, CAREPLAN_PATIENT_REGISTRATION)
             //update QuestionnarieResponse in currentConsultation and createNext Consultation
             if(consultationFlowItemId != null) {
                 consultationFlowRepository.updateConsultationQuestionnaireResponseText(consultationFlowItemId, parser.encodeResourceToString(questionnaireResponse), ZonedDateTime.now(ZoneId.of("UTC")).toString().removeSuffix(Z_UTC))
@@ -161,63 +169,36 @@ class PatientRepository @Inject constructor(
                     consultationDate = ZonedDateTime.now(ZoneId.of("UTC")).toString().removeSuffix(Z_UTC),
                 ))
             }.collect {
-                //Current implementation of stage order by questionnaire list
-                var consultationStageIndex = consultationFlowStageList.indexOf(consultationStage)
-                if(consultationFlowStageList.last().equals(consultationStage, true)){
-                    //End of consultation
+                //Logic for the flow.
+                if(consultationStage.equals(CONSULTATION_STAGE_REGISTRATION_PATIENT)
+                    && careplan.hasActivity() && careplan.activityFirstRep.reference.reference.contains("IMMZD2DTMeasles")) {
+                    //To generate next consultation flow.
+                    var consultationStageIndex = consultationFlowStageList.indexOf(consultationStage)
+                    var nextConsultationStage = consultationFlowStageList[consultationStageIndex + 1]
+
+                    var questionnaireId = stageToQuestionnaireId[nextConsultationStage]
+                    var structureMapId = stageToStructureMapId[nextConsultationStage]
+
+                    val nextConsultationFlowItem = ConsultationFlowItem(
+                        consultationStage = nextConsultationStage,
+                        patientId = patientId,
+                        encounterId = encounterId,
+                        questionnaireId = questionnaireId,
+                        structureMapId = structureMapId,
+                        questionnaireResponseText = "",
+                        isActive = true,
+                        consultationDate = ZonedDateTime.now(ZoneId.of("UTC")).toString().removeSuffix(Z_UTC),
+                    )
+                    consultationFlowRepository.saveConsultation(nextConsultationFlowItem).collect{
+                        emit(it)
+                    }
+                } else if (consultationStage.equals(CONSULTATION_STAGE_REGISTRATION_PATIENT)){
+                    //End consultation with just that no need for immunisation.
                     consultationFlowRepository.updateConsultationFlowInactiveByEncounterId(encounterId).collect {
                         emit(ApiResponse.Success(null))
                     }
                 } else {
-                    var exitConsultation = false
-
-                    if(consultationStage.equals(CONSULTATION_STAGE_DANGER_SIGNS)) {
-                        if(questionnaireResponse.hasItem()){
-                            questionnaireResponse.item.forEach { item ->
-                                if(item.linkId.equals(ASSESS_SICK_CHILD_LINK_ID) && item.hasAnswer()
-                                    && item.answerFirstRep.valueCoding.code.equals(END_CONSULTATION_CODING_VALUE)) {
-                                    exitConsultation = true
-
-                                }
-                            }
-                        }
-                    }
-
-                    if(exitConsultation) {
-                        consultationFlowRepository.updateConsultationFlowInactiveByEncounterId(encounterId).collect {
-                            emit(ApiResponse.Success(null))
-                        }
-                    } else {
-                        var nextConsultationStage = consultationFlowStageList[consultationStageIndex + 1]
-
-                        val patient = fhirEngine.get<Patient>(patientId)
-                        var questionnaireId = stageToQuestionnaireId[nextConsultationStage]
-                        var structureMapId = stageToStructureMapId[nextConsultationStage]
-                        if(patient.hasBirthDate()) {
-                            val isAgeUnderTwoMonths = patient.birthDate.toInstant().isAfter(Instant.now().minusSeconds(3600*24*60))
-                            if(isAgeUnderTwoMonths) {
-                                consultationStageIndex = consultationFlowStageListUnderTwoMonths.indexOf(consultationStage)
-                                nextConsultationStage = consultationFlowStageListUnderTwoMonths[consultationStageIndex + 1]
-                                questionnaireId = stageToQuestionnaireIdUnderTwoMonths[nextConsultationStage]
-                                structureMapId = stageToStructureMapIdUnderTwoMonths[nextConsultationStage]
-                            }
-                        }
-
-                        //create nextConsultationItem
-                        val nextConsultationFlowItem = ConsultationFlowItem(
-                            consultationStage = nextConsultationStage,
-                            patientId = patientId,
-                            encounterId = encounterId,
-                            questionnaireId = questionnaireId,
-                            structureMapId = structureMapId,
-                            questionnaireResponseText = "",
-                            isActive = true,
-                            consultationDate = ZonedDateTime.now(ZoneId.of("UTC")).toString().removeSuffix(Z_UTC),
-                        )
-                        consultationFlowRepository.saveConsultation(nextConsultationFlowItem).collect{
-                            emit(it)
-                        }
-                    }
+                    //TODO: Logic for next consultation stages
                 }
             }
 
