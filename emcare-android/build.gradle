@@ -29,10 +29,14 @@ buildscript {
 allprojects {
     repositories {
         maven {
-            url "file:///home/khyati/Downloads/maven-repository"
+            url "file:///home/parth/Downloads/maven-repository"
         }
         google()
         mavenCentral()
+        maven {
+            url "https://oss.sonatype.org/content/repositories/snapshots"
+        }
+        gradlePluginPortal()
     }
 }
 

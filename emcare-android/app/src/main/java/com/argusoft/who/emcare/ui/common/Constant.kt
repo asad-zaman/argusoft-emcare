@@ -103,7 +103,7 @@ val stageToIconMap = mapOf(
 
 val stageToQuestionnaireId = mapOf(
     CONSULTATION_STAGE_REGISTRATION_PATIENT to "Questionnaire-IMMZCRegisterClient",
-    CONSULTATION_STAGE_REGISTRATION_ENCOUNTER to "emcareb.registration.e", // TODO: update name to IMMZD4CheckContraindicationsMeasles
+    CONSULTATION_STAGE_REGISTRATION_ENCOUNTER to "IMMZD4CheckContraindicationsMeasles", 
     CONSULTATION_STAGE_DANGER_SIGNS to "emcare.b7.lti-dangersigns",
     CONSULTATION_STAGE_MEASUREMENTS to "emcare.b6.measurements",
     CONSULTATION_STAGE_SYMPTOMS to "emcare.b10-14.symptoms.2m.p",

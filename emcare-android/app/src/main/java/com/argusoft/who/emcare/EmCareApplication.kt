@@ -23,7 +23,9 @@ import com.google.android.fhir.sync.remote.HttpLogger
 import dagger.hilt.android.HiltAndroidApp
 import org.hl7.fhir.r4.model.Coding
 import org.hl7.fhir.r4.model.ValueSet
+import org.hl7.fhir.utilities.npm.NpmPackage
 import timber.log.Timber
+import java.io.File
 import javax.inject.Inject
 
 @HiltAndroidApp
@@ -61,6 +63,7 @@ class EmCareApplication : Application(), Configuration.Provider, DataCaptureConf
                     return lookupCodesFromDb(uri)
                 }
             },
+            npmPackage = NpmPackage.fromPackage(applicationContext.assets.open("package.r44.tgz")),
             xFhirQueryResolver = { FhirEngineProvider.getInstance(this).search(it).map { it.resource} },
             urlResolver = ReferenceUrlResolver(this@EmCareApplication as Context),
             questionnaireItemViewHolderFactoryMatchersProviderFactory = QuestionnaireItemViewHolderFactoryMatchersProviderFactoryImpl
