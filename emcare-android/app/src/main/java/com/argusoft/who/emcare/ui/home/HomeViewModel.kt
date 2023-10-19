@@ -730,7 +730,7 @@ class HomeViewModel @Inject constructor(
                         //inject value in the QuestionnaireItem as InitialComponent
                         if (value != null)
                             item.initial =
-                                mutableListOf(Questionnaire.QuestionnaireItemInitialComponent(value))
+                                mutableListOf(Questionnaire.QuestionnaireItemInitialComponent(value.value))
                     }
                 }
             }
