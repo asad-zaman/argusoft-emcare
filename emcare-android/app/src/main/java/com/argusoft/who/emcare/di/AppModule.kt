@@ -18,7 +18,6 @@ import com.google.android.fhir.FhirEngine
 import com.google.android.fhir.FhirEngineProvider
 import com.google.android.fhir.knowledge.KnowledgeManager
 import com.google.android.fhir.workflow.FhirOperator
-import com.google.android.fhir.workflow.FhirOperatorBuilder
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -80,10 +79,10 @@ class AppModule {
     @Singleton
     @Provides
     fun provideAppFhirOperator(@ApplicationContext context: Context, fhirEngine: FhirEngine, knowledgeManager: KnowledgeManager): FhirOperator {
-        return FhirOperatorBuilder(context)
-            .withFhirContext(FhirContext.forCached(FhirVersionEnum.R4))
-            .withFhirEngine(fhirEngine)
-            .withIgManager(knowledgeManager)
+        return FhirOperator.Builder(context)
+            .fhirContext(FhirContext.forCached(FhirVersionEnum.R4))
+            .fhirEngine(fhirEngine)
+            .knowledgeManager(knowledgeManager)
             .build()
     }
 

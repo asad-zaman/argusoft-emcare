@@ -159,6 +159,8 @@ android {
             force 'com.github.ben-manes.caffeine:caffeine:2.9.1'
             force 'ca.uhn.hapi.fhir:org.hl7.fhir.r4:5.6.36'
         }
+
+        exclude module: 'commons-logging'
     }
 
 }
@@ -237,10 +239,10 @@ dependencies {
 
     //Fhir
     //Local Build Link: https://drive.google.com/file/d/1O74-OiwFUa7IJTWVsvXrmHtm2a37RDlc/view?usp=drive_link
-    implementation "com.google.android.fhir:engine:0.1.0-beta04"
+    implementation "com.google.android.fhir:engine:0.1.0-beta05"
     implementation "com.google.android.fhir:data-capture:1.0.0"
     implementation "com.google.android.fhir:workflow:0.1.0-alpha03"
-    implementation "com.google.android.fhir:knowledge:0.1.0-alpha01"
+    implementation "com.google.android.fhir:knowledge:0.1.0-alpha02"
     //EventBus
     implementation("org.greenrobot:eventbus:3.3.1")
 
