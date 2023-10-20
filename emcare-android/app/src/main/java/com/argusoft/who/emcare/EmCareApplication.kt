@@ -63,7 +63,7 @@ class EmCareApplication : Application(), Configuration.Provider, DataCaptureConf
                     return lookupCodesFromDb(uri)
                 }
             },
-            npmPackage = NpmPackage.fromPackage(applicationContext.assets.open("package.r44.tgz")),
+            npmPackage = NpmPackage.fromPackage(applicationContext.assets.open("package.r4.tgz")),
             xFhirQueryResolver = { FhirEngineProvider.getInstance(this).search(it).map { it.resource} },
             urlResolver = ReferenceUrlResolver(this@EmCareApplication as Context),
             questionnaireItemViewHolderFactoryMatchersProviderFactory = QuestionnaireItemViewHolderFactoryMatchersProviderFactoryImpl
