@@ -13,6 +13,7 @@ import com.argusoft.who.emcare.ui.common.model.PatientItem
 import com.argusoft.who.emcare.ui.home.ConsultationFlowRepository
 import com.argusoft.who.emcare.ui.home.fhirResources.FhirResourcesRepository
 import com.argusoft.who.emcare.utils.TransformSupportServices
+import com.argusoft.who.emcare.utils.TransformSupportServicesMatchBox
 import com.argusoft.who.emcare.utils.extention.toPatientItem
 import com.google.android.fhir.FhirEngine
 import com.google.android.fhir.datacapture.mapping.ResourceMapper
@@ -138,17 +139,22 @@ class PatientRepository @Inject constructor(
 
             val contextR4 =
                 SimpleWorkerContext.fromPackage(
-                    NpmPackage.fromPackage(application.applicationContext.assets.open("package.r4.2.tgz")),true).apply {
+                    NpmPackage.fromPackage(application.applicationContext.assets.open("package.r4.tgz")),true).apply {
                     setExpansionProfile(Parameters())
                     isCanRunWithoutTerminology = true
                 }
-            val transformSupportServices = TransformSupportServices(contextR4)
+            val outputs = mutableListOf<Base>()
+            val transformSupportServices =
+                TransformSupportServicesMatchBox(
+                    contextR4,
+                    outputs
+                )
             val structureMapUtilities =
                 org.hl7.fhir.r4.utils.StructureMapUtilities(contextR4, transformSupportServices)
-            val extractedBundle = Bundle()
+            val extractedPatient = Patient()
 
 
-            structureMapUtilities.transform(contextR4, questionnaireResponse, structureMap, extractedBundle)
+            structureMapUtilities.transform(contextR4, questionnaireResponse, structureMap, extractedPatient)
 //            val extractedBundle = ResourceMapper.extract(
 //                questionnaireResource,
 //                questionnaireResponse,
@@ -156,15 +162,14 @@ class PatientRepository @Inject constructor(
 //                }
 //            )
 //            val extractedBundle = Bundle()
-            if(consultationStage.equals(CONSULTATION_STAGE_REGISTRATION_PATIENT)) {
-                extractedBundle.addEntry(Bundle.BundleEntryComponent().setResource(
-                    FhirContext.forR4().newJsonParser().parseResource(Patient::class.java, PATIENT_STATIC_RESOURCE.replace("<PATIENT_ID>", patientId))
-                ))
-//                saveResourcesFromBundle(extractedBundle, patientId, encounterId, facilityId, consultationFlowItemId)
-
-            }
-            saveResourcesFromBundle(extractedBundle, patientId, encounterId, facilityId, consultationFlowItemId)
-
+//            if(consultationStage.equals(CONSULTATION_STAGE_REGISTRATION_PATIENT)) {
+//                extractedBundle.addEntry(Bundle.BundleEntryComponent().setResource(
+//                    FhirContext.forR4().newJsonParser().parseResource(Patient::class.java, PATIENT_STATIC_RESOURCE.replace("<PATIENT_ID>", patientId))
+//                ))
+////                saveResourcesFromBundle(extractedBundle, patientId, encounterId, facilityId, consultationFlowItemId)
+//
+//            }
+//            saveResourcesFromBundle(extractedBundle, patientId, encounterId, facilityId, consultationFlowItemId)
 //            withContext(Dispatchers.IO) {
 //                val careplan = fhirOperator.generateCarePlan(
 //                    stageToCareplan[consultationStage]!!,
