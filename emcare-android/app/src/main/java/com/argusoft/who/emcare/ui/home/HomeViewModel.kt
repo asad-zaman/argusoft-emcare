@@ -15,7 +15,7 @@ import com.argusoft.who.emcare.R
 import com.argusoft.who.emcare.data.local.pref.Preference
 import com.argusoft.who.emcare.data.remote.ApiResponse
 import com.argusoft.who.emcare.di.AppModule
-import com.argusoft.who.emcare.ui.common.CONSULTATION_STAGE_REGISTRATION_ENCOUNTER
+import com.argusoft.who.emcare.ui.common.CONSULTATION_STAGE_CLIENT_HISTORY
 import com.argusoft.who.emcare.ui.common.CONSULTATION_STAGE_REGISTRATION_PATIENT
 import com.argusoft.who.emcare.ui.common.DATE_FORMAT
 import com.argusoft.who.emcare.ui.common.EMPTY_SPACE_TO_SCROLL_LINK_ID
@@ -203,7 +203,7 @@ class HomeViewModel @Inject constructor(
                     var currentConsultationFLowList = consultationFlowStageList
                     val encounterConsultationItem = it.data?.filter { consultationFlowItem ->
                         consultationFlowItem.consultationStage.equals(
-                            CONSULTATION_STAGE_REGISTRATION_ENCOUNTER
+                            CONSULTATION_STAGE_CLIENT_HISTORY
                         )
                     }
                     if (patientItem.hasBirthDate()) {

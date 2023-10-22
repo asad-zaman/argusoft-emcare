@@ -4,7 +4,6 @@ import android.app.Application
 import com.argusoft.who.emcare.R
 import ca.uhn.fhir.context.FhirContext
 import ca.uhn.fhir.context.FhirVersionEnum
-import ca.uhn.fhir.parser.IParser
 import com.argusoft.who.emcare.data.local.pref.Preference
 import com.argusoft.who.emcare.data.remote.ApiResponse
 import com.argusoft.who.emcare.ui.common.*
@@ -12,12 +11,9 @@ import com.argusoft.who.emcare.ui.common.model.ConsultationFlowItem
 import com.argusoft.who.emcare.ui.common.model.PatientItem
 import com.argusoft.who.emcare.ui.home.ConsultationFlowRepository
 import com.argusoft.who.emcare.ui.home.fhirResources.FhirResourcesRepository
-import com.argusoft.who.emcare.utils.TransformSupportServices
 import com.argusoft.who.emcare.utils.TransformSupportServicesMatchBox
 import com.argusoft.who.emcare.utils.extention.toPatientItem
 import com.google.android.fhir.FhirEngine
-import com.google.android.fhir.datacapture.mapping.ResourceMapper
-import com.google.android.fhir.datacapture.mapping.StructureMapExtractionContext
 import com.google.android.fhir.datacapture.validation.Invalid
 import com.google.android.fhir.datacapture.validation.QuestionnaireResponseValidator
 import com.google.android.fhir.delete
@@ -30,13 +26,10 @@ import com.google.android.fhir.search.Search
 import com.google.android.fhir.search.StringFilterModifier
 import com.google.android.fhir.search.search
 import com.google.android.fhir.workflow.FhirOperator
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.withContext
 import org.hl7.fhir.r4.context.SimpleWorkerContext
 import org.hl7.fhir.r4.model.*
 import org.hl7.fhir.utilities.npm.NpmPackage
-import org.hl7.fhir.utilities.npm.ToolsVersion
 import java.time.Instant
 import java.time.ZoneId
 import java.time.ZonedDateTime
@@ -246,7 +239,7 @@ class PatientRepository @Inject constructor(
         }
     }
 
-    fun saveNewConsultation(questionnaireResponse: QuestionnaireResponse, consultationStage: String? = CONSULTATION_STAGE_REGISTRATION_ENCOUNTER) = flow {
+    fun saveNewConsultation(questionnaireResponse: QuestionnaireResponse, consultationStage: String? = CONSULTATION_STAGE_CLIENT_HISTORY) = flow {
 
         val patientId = questionnaireResponse.subject.identifier.value
         val encounterId = questionnaireResponse.encounter.id

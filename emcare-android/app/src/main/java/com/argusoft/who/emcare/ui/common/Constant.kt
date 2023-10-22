@@ -46,8 +46,8 @@ val dashboardList = arrayListOf<Dashboard?>(
 
 //Consultation flow
 const val CONSULTATION_STAGE_REGISTRATION_PATIENT = "REGISTRATION_PATIENT"
-const val CONSULTATION_STAGE_REGISTRATION_ENCOUNTER = "REGISTRATION_ENCOUNTER"
-const val CONSULTATION_STAGE_DANGER_SIGNS = "DANGER_SIGNS"
+const val CONSULTATION_STAGE_CLIENT_HISTORY = "REGISTRATION_ENCOUNTER"
+const val CONSULTATION_STAGE_CONTRAINDICATIONS = "DANGER_SIGNS"
 const val CONSULTATION_STAGE_MEASUREMENTS = "MEASUREMENTS"
 const val CONSULTATION_STAGE_SYMPTOMS = "SYMPTOMS"
 const val CONSULTATION_STAGE_SIGNS = "SIGNS"
@@ -70,19 +70,21 @@ const val IS_LOAD_LIBRARIES = "is_load_libraries"
 
 val consultationFlowStageList = arrayListOf<String?>(
     CONSULTATION_STAGE_REGISTRATION_PATIENT,
-    CONSULTATION_STAGE_REGISTRATION_ENCOUNTER,
-    CONSULTATION_STAGE_DANGER_SIGNS
+    CONSULTATION_STAGE_CLIENT_HISTORY,
+    CONSULTATION_STAGE_CONTRAINDICATIONS
 )
 val consultationFlowStageListUnderTwoMonths = arrayListOf<String?>(
     CONSULTATION_STAGE_REGISTRATION_PATIENT,
-    CONSULTATION_STAGE_REGISTRATION_ENCOUNTER,
-    CONSULTATION_STAGE_DANGER_SIGNS
+    CONSULTATION_STAGE_CLIENT_HISTORY,
+    CONSULTATION_STAGE_CONTRAINDICATIONS
 )
 
 val stageToBadgeMap = mapOf(
     CONSULTATION_STAGE_REGISTRATION_PATIENT to "Registration Patient",
-    CONSULTATION_STAGE_REGISTRATION_ENCOUNTER to "Client History",
-    CONSULTATION_STAGE_DANGER_SIGNS to "Contraindications",
+    CONSULTATION_STAGE_CLIENT_HISTORY to "Client History",
+    CONSULTATION_STAGE_CONTRAINDICATIONS to "Contraindications",
+
+    //UNUSED IN IMMUNISATION CONTEXT
     CONSULTATION_STAGE_MEASUREMENTS to "Measurements",
     CONSULTATION_STAGE_SYMPTOMS to "Symptoms",
     CONSULTATION_STAGE_SIGNS to "Signs",
@@ -93,8 +95,8 @@ val stageToBadgeMap = mapOf(
 
 val stageToIconMap = mapOf(
     CONSULTATION_STAGE_REGISTRATION_PATIENT to R.drawable.registration_icon,
-    CONSULTATION_STAGE_REGISTRATION_ENCOUNTER to R.drawable.registration_icon,
-    CONSULTATION_STAGE_DANGER_SIGNS to R.drawable.danger_sign_icon,
+    CONSULTATION_STAGE_CLIENT_HISTORY to R.drawable.registration_icon,
+    CONSULTATION_STAGE_CONTRAINDICATIONS to R.drawable.danger_sign_icon,
     CONSULTATION_STAGE_MEASUREMENTS to R.drawable.measurements_icon,
     CONSULTATION_STAGE_SYMPTOMS to R.drawable.symptoms_icon,
     CONSULTATION_STAGE_SIGNS to R.drawable.sign_icon,
@@ -105,8 +107,10 @@ val stageToIconMap = mapOf(
 
 val stageToQuestionnaireId = mapOf(
     CONSULTATION_STAGE_REGISTRATION_PATIENT to "Questionnaire-IMMZCRegisterClient",
-    CONSULTATION_STAGE_REGISTRATION_ENCOUNTER to "IMMZD1ClientHistoryMeasles",
-    CONSULTATION_STAGE_DANGER_SIGNS to "IMMZD4CheckContraindicationsMeasles",
+    CONSULTATION_STAGE_CLIENT_HISTORY to "IMMZD1ClientHistoryMeasles",
+    CONSULTATION_STAGE_CONTRAINDICATIONS to "IMMZD4CheckContraindicationsMeasles",
+
+    //UNUSED IN IMMUNISATION CONTEXT
     CONSULTATION_STAGE_MEASUREMENTS to "emcare.b6.measurements",
     CONSULTATION_STAGE_SYMPTOMS to "emcare.b10-14.symptoms.2m.p",
     CONSULTATION_STAGE_SIGNS to "emcare.b10-16.signs.2m.p",
@@ -117,13 +121,13 @@ val stageToQuestionnaireId = mapOf(
 
 val stageToCareplan = mapOf(
     CONSULTATION_STAGE_REGISTRATION_PATIENT to "IMMZ-DT-08-Measles",
-    CONSULTATION_STAGE_REGISTRATION_ENCOUNTER to "IMMZ.D2.DT.Measles.Contraindication"
+    CONSULTATION_STAGE_CLIENT_HISTORY to "IMMZ.D2.DT.Measles.Contraindication"
 )
 
 val stageToStructureMapId = mapOf(
     CONSULTATION_STAGE_REGISTRATION_PATIENT to "IMMZCQRToPatient",
-    CONSULTATION_STAGE_REGISTRATION_ENCOUNTER to "IMMZD1QRToResources",
-    CONSULTATION_STAGE_DANGER_SIGNS to "emcare.b7.lti-dangersigns",
+    CONSULTATION_STAGE_CLIENT_HISTORY to "IMMZD1QRToResources",
+    CONSULTATION_STAGE_CONTRAINDICATIONS to "emcare.b7.lti-dangersigns",
     CONSULTATION_STAGE_MEASUREMENTS to "emcare.b6.measurements",
     CONSULTATION_STAGE_SYMPTOMS to "emcare.b10-14.symptoms.2m.p",
     CONSULTATION_STAGE_SIGNS to "emcare.b10-16.signs.2m.p",
@@ -134,8 +138,8 @@ val stageToStructureMapId = mapOf(
 
 val stageToQuestionnaireIdUnderTwoMonths = mapOf(
     CONSULTATION_STAGE_REGISTRATION_PATIENT to "Questionnaire-IMMZCRegisterClient",
-    CONSULTATION_STAGE_REGISTRATION_ENCOUNTER to "IMMZD1QRToResources",
-    CONSULTATION_STAGE_DANGER_SIGNS to "IMMZD4CheckContraindicationsMeasles",
+    CONSULTATION_STAGE_CLIENT_HISTORY to "IMMZD1QRToResources",
+    CONSULTATION_STAGE_CONTRAINDICATIONS to "IMMZD4CheckContraindicationsMeasles",
     CONSULTATION_STAGE_MEASUREMENTS to "emcare.b6.measurements",
     CONSULTATION_STAGE_SYMPTOMS to "emcare.b18-21.symptoms.2m.m",
     CONSULTATION_STAGE_SIGNS to "emcare.b18-21.signs.2m.m",
@@ -146,8 +150,10 @@ val stageToQuestionnaireIdUnderTwoMonths = mapOf(
 
 val stageToStructureMapIdUnderTwoMonths = mapOf(
     CONSULTATION_STAGE_REGISTRATION_PATIENT to "IMMZCQRToPatient",
-    CONSULTATION_STAGE_REGISTRATION_ENCOUNTER to "IMMZD1QRToResources",
-    CONSULTATION_STAGE_DANGER_SIGNS to "emcare.b7.lti-dangersigns",
+    CONSULTATION_STAGE_CLIENT_HISTORY to "IMMZD1QRToResources",
+    CONSULTATION_STAGE_CONTRAINDICATIONS to "emcare.b7.lti-dangersigns",
+
+    //UNUSED IN IMMUNISATION CONTEXT
     CONSULTATION_STAGE_MEASUREMENTS to "emcare.b6.measurements",
     CONSULTATION_STAGE_SYMPTOMS to "emcare.b18-21.symptoms.2m.m",
     CONSULTATION_STAGE_SIGNS to "emcare.b18-21.signs.2m.m",
