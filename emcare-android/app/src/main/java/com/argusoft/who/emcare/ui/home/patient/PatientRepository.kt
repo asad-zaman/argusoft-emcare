@@ -11,7 +11,9 @@ import com.argusoft.who.emcare.ui.common.model.ConsultationFlowItem
 import com.argusoft.who.emcare.ui.common.model.PatientItem
 import com.argusoft.who.emcare.ui.home.ConsultationFlowRepository
 import com.argusoft.who.emcare.ui.home.fhirResources.FhirResourcesRepository
+import com.argusoft.who.emcare.utils.ComplexWorkerContext
 import com.argusoft.who.emcare.utils.TransformSupportServicesMatchBox
+import com.argusoft.who.emcare.utils.extention.toJson
 import com.argusoft.who.emcare.utils.extention.toPatientItem
 import com.google.android.fhir.FhirEngine
 import com.google.android.fhir.datacapture.validation.Invalid
@@ -35,7 +37,6 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.util.*
 import javax.inject.Inject
-import kotlin.reflect.typeOf
 
 class PatientRepository @Inject constructor(
     private val fhirEngine: FhirEngine,
@@ -56,7 +57,12 @@ class PatientRepository @Inject constructor(
         emit(ApiResponse.Success(data = fhirEngine.get<Patient>(patientId)))
     }
 
-    fun getPatients(search: String? = null, facilityId: String?, limitOrCount :Int, offsetOrFrom: Int) = flow {
+    fun getPatients(
+        search: String? = null,
+        facilityId: String?,
+        limitOrCount: Int,
+        offsetOrFrom: Int
+    ) = flow {
         val list = fhirEngine.search<Patient>(
             Search(ResourceType.Patient)
                 .apply {
@@ -85,9 +91,9 @@ class PatientRepository @Inject constructor(
         }.mapIndexed { index, fhirPatient ->
             fhirPatient.resource.toPatientItem(index + 1)
         }
-        for (patientItem in list){
+        for (patientItem in list) {
             patientItem.resourceId?.let {
-                fhirEngine.getLocalChanges(ResourceType.Patient, it).let {localChanges ->
+                fhirEngine.getLocalChanges(ResourceType.Patient, it).let { localChanges ->
                     patientItem.isSynced = localChanges.isEmpty()
                 }
 
@@ -98,7 +104,11 @@ class PatientRepository @Inject constructor(
 
     fun getPatientDetails(patientId: String?) = flow {
         if (patientId != null) {
-            emit(ApiResponse.Success(fhirEngine.get<Patient>(patientId).convertPatientToPatientItem()))
+            emit(
+                ApiResponse.Success(
+                    fhirEngine.get<Patient>(patientId).convertPatientToPatientItem()
+                )
+            )
         }
     }
 
@@ -108,10 +118,19 @@ class PatientRepository @Inject constructor(
         }
     }
 
-    fun saveQuestionnaire(questionnaireResponse: QuestionnaireResponse, questionnaire: String, facilityId: String, structureMapId: String = "", consultationFlowItemId: String? = null,consultationStage: String? = null) = flow {
+    fun saveQuestionnaire(
+        questionnaireResponse: QuestionnaireResponse,
+        questionnaire: String,
+        facilityId: String,
+        structureMapId: String = "",
+        consultationFlowItemId: String? = null,
+        consultationStage: String? = null
+    ) = flow {
         val parser = FhirContext.forCached(FhirVersionEnum.R4).newJsonParser()
-        val questionnaireResource: Questionnaire = parser.parseResource(questionnaire) as Questionnaire
-        val questionnaireResponseItems = questionnaireResponse.item //Removing the empty blank space item from QR.
+        val questionnaireResource: Questionnaire =
+            parser.parseResource(questionnaire) as Questionnaire
+        val questionnaireResponseItems =
+            questionnaireResponse.item //Removing the empty blank space item from QR.
         questionnaireResponse.item = questionnaireResponseItems.dropLast(1)
         try {
             if (QuestionnaireResponseValidator.validateQuestionnaireResponse(
@@ -126,17 +145,35 @@ class PatientRepository @Inject constructor(
                 throw InputMismatchException()
             }
 
-            val structureMap = if (structureMapId.isEmpty()) fhirEngine.get<StructureMap>(questionnaireResource.id) else fhirEngine.get<StructureMap>(structureMapId)
+            val structureMap =
+                if (structureMapId.isEmpty()) fhirEngine.get<StructureMap>(questionnaireResource.id) else fhirEngine.get<StructureMap>(
+                    structureMapId
+                )
 
             val patientId = questionnaireResponse.subject.identifier.value
             val encounterId = questionnaireResponse.encounter.id
 
             val contextR4 =
                 SimpleWorkerContext.fromPackage(
-                    NpmPackage.fromPackage(application.applicationContext.assets.open("package.r4.tgz")),true).apply {
+                    NpmPackage.fromPackage(application.applicationContext.assets.open("package.r4.tgz")),
+                    true
+                ).apply {
                     setExpansionProfile(Parameters())
                     isCanRunWithoutTerminology = true
                 }
+
+            /*@Parth - this is the code we need to use if we are importing two packages */
+
+//            val contextR4New = ComplexWorkerContext()
+//            val package1 = NpmPackage.fromPackage(application.applicationContext.assets.open("package.r4.tgz"))
+//            val package2 = NpmPackage.fromPackage(application.applicationContext.assets.open("package.r4.tgz"))
+//
+//            val packages = listOf(package1, package2)
+//            contextR4New?.apply {
+//                loadFromMultiplePackages(packages, true)
+//                println("**** created contextR4")
+//            }
+
             val outputs = mutableListOf<Base>()
             val transformSupportServices =
                 TransformSupportServicesMatchBox(
@@ -146,14 +183,34 @@ class PatientRepository @Inject constructor(
             val structureMapUtilities =
                 org.hl7.fhir.r4.utils.StructureMapUtilities(contextR4, transformSupportServices)
 
-            var extractedResource: Resource = if(consultationStage.equals(CONSULTATION_STAGE_REGISTRATION_PATIENT))
-                Patient()
-            else
-                Bundle()
+            var extractedResource: Resource =
+                if (consultationStage.equals(CONSULTATION_STAGE_REGISTRATION_PATIENT))
+                    Patient()
+                else
+                    Bundle()
+            val jsonParserQR = FhirContext.forCached(FhirVersionEnum.R4).newJsonParser()
+                .encodeResourceToString(questionnaireResponse)
+            val jsonParserSM = FhirContext.forCached(FhirVersionEnum.R4).newJsonParser()
+                .encodeResourceToString(structureMap)
+            val jsonParserER = FhirContext.forCached(FhirVersionEnum.R4).newJsonParser()
+                .encodeResourceToString(extractedResource)
 
-            structureMapUtilities.transform(contextR4, questionnaireResponse, structureMap, extractedResource)
-            saveResourcesFromBundle(extractedResource, patientId, encounterId, facilityId, consultationFlowItemId)
-
+//            println("quesResp:"+jsonParserQR.toJson())
+//            println("structMap:"+jsonParserSM.toJson())
+//            println("ExtractedResource"+jsonParserER.toJson())
+            structureMapUtilities.transform(
+                contextR4,
+                questionnaireResponse,
+                structureMap,
+                extractedResource
+            )
+            saveResourcesFromBundle(
+                extractedResource,
+                patientId,
+                encounterId,
+                facilityId,
+                consultationFlowItemId
+            )
 //            val extractedBundle = ResourceMapper.extract(
 //                questionnaireResource,
 //                questionnaireResponse,
@@ -176,52 +233,66 @@ class PatientRepository @Inject constructor(
 //                print(careplan)
 //                print(careplan)
 //            }
-//            val careplan = FhirContext.forR4().newJsonParser().parseResource(CarePlan::class.java, CAREPLAN_PATIENT_REGISTRATION)
+            val careplan = FhirContext.forR4().newJsonParser()
+                .parseResource(CarePlan::class.java, CAREPLAN_PATIENT_REGISTRATION)
             //update QuestionnarieResponse in currentConsultation and createNext Consultation
-            if(consultationFlowItemId != null) {
-                consultationFlowRepository.updateConsultationQuestionnaireResponseText(consultationFlowItemId, parser.encodeResourceToString(questionnaireResponse), ZonedDateTime.now(ZoneId.of("UTC")).toString().removeSuffix(Z_UTC))
+            if (consultationFlowItemId != null) {
+                consultationFlowRepository.updateConsultationQuestionnaireResponseText(
+                    consultationFlowItemId,
+                    parser.encodeResourceToString(questionnaireResponse),
+                    ZonedDateTime.now(ZoneId.of("UTC")).toString().removeSuffix(Z_UTC)
+                )
             } else {
                 //Save first consultationFlowItem after creation
-                consultationFlowRepository.saveConsultation(ConsultationFlowItem(
-                    consultationStage = consultationStage,
-                    patientId = patientId,
-                    encounterId = encounterId,
-                    questionnaireId = stageToQuestionnaireId[consultationStage],
-                    structureMapId = stageToStructureMapId[consultationStage],
-                    questionnaireResponseText = parser.encodeResourceToString(questionnaireResponse),
-                    isActive = true,
-                    consultationDate = ZonedDateTime.now(ZoneId.of("UTC")).toString().removeSuffix(Z_UTC),
-                ))
+                consultationFlowRepository.saveConsultation(
+                    ConsultationFlowItem(
+                        consultationStage = consultationStage,
+                        patientId = patientId,
+                        encounterId = encounterId,
+                        questionnaireId = stageToQuestionnaireId[consultationStage],
+                        structureMapId = stageToStructureMapId[consultationStage],
+                        questionnaireResponseText = parser.encodeResourceToString(
+                            questionnaireResponse
+                        ),
+                        isActive = true,
+                        consultationDate = ZonedDateTime.now(ZoneId.of("UTC")).toString()
+                            .removeSuffix(Z_UTC),
+                    )
+                )
             }.collect {
                 //Logic for the flow.
 //                if(consultationStage.equals(CONSULTATION_STAGE_REGISTRATION_PATIENT)
 //                    && careplan.hasActivity() && careplan.activityFirstRep.reference.reference.contains("IMMZD2DTMeasles")) {
 //                    //To generate next consultation flow.
-                    var consultationStageIndex = consultationFlowStageList.indexOf(consultationStage)
-                   if(consultationStageIndex < consultationFlowStageList.size - 1){
-                       var nextConsultationStage = consultationFlowStageList[consultationStageIndex + 1]
+                var consultationStageIndex = consultationFlowStageList.indexOf(consultationStage)
+                if (consultationStageIndex < consultationFlowStageList.size - 1) {
+                    var nextConsultationStage =
+                        consultationFlowStageList[consultationStageIndex + 1]
 
-                       var questionnaireId = stageToQuestionnaireId[nextConsultationStage]
-                       var structureMapId = stageToStructureMapId[nextConsultationStage]
+                    var questionnaireId = stageToQuestionnaireId[nextConsultationStage]
+                    var structureMapId = stageToStructureMapId[nextConsultationStage]
 
-                       val nextConsultationFlowItem = ConsultationFlowItem(
-                           consultationStage = nextConsultationStage,
-                           patientId = patientId,
-                           encounterId = encounterId,
-                           questionnaireId = questionnaireId,
-                           structureMapId = structureMapId,
-                           questionnaireResponseText = "",
-                           isActive = true,
-                           consultationDate = ZonedDateTime.now(ZoneId.of("UTC")).toString().removeSuffix(Z_UTC),
-                       )
-                       consultationFlowRepository.saveConsultation(nextConsultationFlowItem).collect{
-                           emit(it)
-                       }
-                   } else {
-                       consultationFlowRepository.updateConsultationFlowInactiveByEncounterId(encounterId).collect {
-                           emit(ApiResponse.Success(null))
-                       }
-                   }
+                    val nextConsultationFlowItem = ConsultationFlowItem(
+                        consultationStage = nextConsultationStage,
+                        patientId = patientId,
+                        encounterId = encounterId,
+                        questionnaireId = questionnaireId,
+                        structureMapId = structureMapId,
+                        questionnaireResponseText = "",
+                        isActive = true,
+                        consultationDate = ZonedDateTime.now(ZoneId.of("UTC")).toString()
+                            .removeSuffix(Z_UTC),
+                    )
+                    consultationFlowRepository.saveConsultation(nextConsultationFlowItem).collect {
+                        emit(it)
+                    }
+                } else {
+                    consultationFlowRepository.updateConsultationFlowInactiveByEncounterId(
+                        encounterId
+                    ).collect {
+                        emit(ApiResponse.Success(null))
+                    }
+                }
 
 //                } else if (consultationStage.equals(CONSULTATION_STAGE_REGISTRATION_PATIENT)){
 //                    //End consultation with just that no need for immunisation.
@@ -233,18 +304,21 @@ class PatientRepository @Inject constructor(
 //                }
             }
 
-        } catch(ex: InputMismatchException){
+        } catch (ex: InputMismatchException) {
             emit(ApiResponse.ApiError(apiErrorMessageResId = R.string.error_valid_data))
-        }
-        catch (e: Exception) {
+        } catch (e: Exception) {
             e.printStackTrace()
-            fhirResourcesRepository.purgeStartEndAuditsOnException().collect{
+            fhirResourcesRepository.purgeStartEndAuditsOnException()
+                .collect{
                 emit(ApiResponse.ApiError(apiErrorMessageResId = R.string.error_saving_resource))
             }
         }
     }
 
-    fun saveNewConsultation(questionnaireResponse: QuestionnaireResponse, consultationStage: String? = CONSULTATION_STAGE_CLIENT_HISTORY) = flow {
+    fun saveNewConsultation(
+        questionnaireResponse: QuestionnaireResponse,
+        consultationStage: String? = CONSULTATION_STAGE_CLIENT_HISTORY
+    ) = flow {
 
         val patientId = questionnaireResponse.subject.identifier.value
         val encounterId = questionnaireResponse.encounter.id
@@ -253,35 +327,50 @@ class PatientRepository @Inject constructor(
         val patient = fhirEngine.get<Patient>(patientId)
         var questionnaireId = stageToQuestionnaireId[consultationStage]
         var structureMapId = stageToStructureMapId[consultationStage]
-        if(patient.hasBirthDate()) {
-            val isAgeUnderTwoMonths = patient.birthDate.toInstant().isAfter(Instant.now().minusSeconds(3600*24*60))
-            if(isAgeUnderTwoMonths) {
+        if (patient.hasBirthDate()) {
+            val isAgeUnderTwoMonths =
+                patient.birthDate.toInstant().isAfter(Instant.now().minusSeconds(3600 * 24 * 60))
+            if (isAgeUnderTwoMonths) {
                 questionnaireId = stageToQuestionnaireIdUnderTwoMonths[consultationStage]
                 structureMapId = stageToStructureMapIdUnderTwoMonths[consultationStage]
             }
         }
-        consultationFlowRepository.saveConsultation(ConsultationFlowItem(
-            consultationStage = consultationStage,
-            patientId = patientId,
-            encounterId = encounterId,
-            questionnaireId = questionnaireId,
-            structureMapId = structureMapId,
-            questionnaireResponseText = parser.encodeResourceToString(questionnaireResponse),
-            isActive = true,
-            consultationDate = ZonedDateTime.now(ZoneId.of("UTC")).toString().removeSuffix(Z_UTC),
-        )).collect {
+        consultationFlowRepository.saveConsultation(
+            ConsultationFlowItem(
+                consultationStage = consultationStage,
+                patientId = patientId,
+                encounterId = encounterId,
+                questionnaireId = questionnaireId,
+                structureMapId = structureMapId,
+                questionnaireResponseText = parser.encodeResourceToString(questionnaireResponse),
+                isActive = true,
+                consultationDate = ZonedDateTime.now(ZoneId.of("UTC")).toString()
+                    .removeSuffix(Z_UTC),
+            )
+        ).collect {
             emit(it.data?.id)
         }
     }
 
-    fun updateConsultationQuestionnaireResponse(consultationFlowItemId: String, questionnaireResponse: QuestionnaireResponse? = null) = flow {
+    fun updateConsultationQuestionnaireResponse(
+        consultationFlowItemId: String,
+        questionnaireResponse: QuestionnaireResponse? = null
+    ) = flow {
         val parser = FhirContext.forCached(FhirVersionEnum.R4).newJsonParser()
-        if(questionnaireResponse != null){
-            consultationFlowRepository.updateConsultationQuestionnaireResponseText(consultationFlowItemId, parser.encodeResourceToString(questionnaireResponse), ZonedDateTime.now(ZoneId.of("UTC")).toString().removeSuffix(Z_UTC)).collect {
+        if (questionnaireResponse != null) {
+            consultationFlowRepository.updateConsultationQuestionnaireResponseText(
+                consultationFlowItemId,
+                parser.encodeResourceToString(questionnaireResponse),
+                ZonedDateTime.now(ZoneId.of("UTC")).toString().removeSuffix(Z_UTC)
+            ).collect {
                 emit(ApiResponse.Success(it.data))
             }
         } else {
-            consultationFlowRepository.updateConsultationQuestionnaireResponseText(consultationFlowItemId, "", ZonedDateTime.now(ZoneId.of("UTC")).toString().removeSuffix(Z_UTC)).collect {
+            consultationFlowRepository.updateConsultationQuestionnaireResponseText(
+                consultationFlowItemId,
+                "",
+                ZonedDateTime.now(ZoneId.of("UTC")).toString().removeSuffix(Z_UTC)
+            ).collect {
                 emit(ApiResponse.Success(it.data))
             }
         }
@@ -293,20 +382,27 @@ class PatientRepository @Inject constructor(
      deletes next consultations
      */
     fun deleteNextConsultations(consultationFlowItemId: String, encounterId: String) = flow {
-        consultationFlowRepository.getNextConsultationFlowItemIds(consultationFlowItemId, encounterId).collect{ consultationFlowItemIdListResponse ->
+        consultationFlowRepository.getNextConsultationFlowItemIds(
+            consultationFlowItemId,
+            encounterId
+        ).collect { consultationFlowItemIdListResponse ->
             val consultationIds = mutableListOf(consultationFlowItemId)
-            if(consultationFlowItemIdListResponse.data != null)
+            if (consultationFlowItemIdListResponse.data != null)
                 consultationIds.addAll(consultationFlowItemIdListResponse.data)
             //Delete Next consultations
-            consultationFlowRepository.deleteNextConsultations(consultationFlowItemId, encounterId).collect {
-                deleteObservations(encounterId,consultationIds).apply {
-                    emit(ApiResponse.Success("Deleted"))
+            consultationFlowRepository.deleteNextConsultations(consultationFlowItemId, encounterId)
+                .collect {
+                    deleteObservations(encounterId, consultationIds).apply {
+                        emit(ApiResponse.Success("Deleted"))
+                    }
                 }
-            }
         }
     }
 
-    private suspend fun deleteObservations(encounterId: String, consultationFlowItemIdList: List<String>) {
+    private suspend fun deleteObservations(
+        encounterId: String,
+        consultationFlowItemIdList: List<String>
+    ) {
         //Fetch observations using encounterId and after consultationDate
         val observations = fhirEngine.search<Observation> {
         }.filter { observation ->
@@ -327,20 +423,26 @@ class PatientRepository @Inject constructor(
         emit(ApiResponse.Success(1))
     }
 
-    private suspend fun saveResourcesFromBundle(bundle: Resource, patientId: String, encounterId: String, facilityId: String, consultationFlowItemId: String?): Boolean {
+    private suspend fun saveResourcesFromBundle(
+        bundle: Resource,
+        patientId: String,
+        encounterId: String,
+        facilityId: String,
+        consultationFlowItemId: String?
+    ): Boolean {
         val clipboardBundle = preference.getSubmittedResource() ?: Bundle()
         var saveBundle = Bundle()
-        if(bundle !is Bundle){
+        if (bundle !is Bundle) {
             saveBundle.addEntry(Bundle.BundleEntryComponent().setResource(bundle))
-        } else{
+        } else {
             saveBundle = bundle
         }
 
 
         saveBundle.entry.forEach { entry ->
-            if(entry.hasResource()){
+            if (entry.hasResource()) {
                 val resource = entry.resource
-                when(resource.resourceType) {
+                when (resource.resourceType) {
                     ResourceType.Patient -> {
                         //Setting id
                         resource.id = patientId
@@ -352,22 +454,26 @@ class PatientRepository @Inject constructor(
                             }
                         ).setUrl(LOCATION_EXTENSION_URL))
                     }
+
                     ResourceType.RelatedPerson -> {
                         //setting id
                         resource.id = entry.request.url.substringAfterLast("/")
                     }
+
                     ResourceType.Encounter -> {
                         resource.id = encounterId
                     }
+
                     ResourceType.Observation -> {
                         resource.id = UUID.randomUUID().toString()
-                        if(consultationFlowItemId != null) {
+                        if (consultationFlowItemId != null) {
                             (resource as Observation).addNote(Annotation().apply {
                                 text = consultationFlowItemId
                             })
                         }
                         (resource as Observation).issuedElement = InstantType.now()
                     }
+
                     else -> {
                         resource.id = UUID.randomUUID().toString()
                     }
@@ -384,7 +490,7 @@ class PatientRepository @Inject constructor(
                     preference.setSubmittedResource(clipboardBundle)
                     return true
                 }
-            } catch(e: Exception) {
+            } catch (e: Exception) {
                 preference.setSubmittedResource(clipboardBundle)
                 return true
             }
@@ -398,7 +504,8 @@ class PatientRepository @Inject constructor(
         val gender = if (hasGenderElement()) genderElement.valueAsString else ""
         val dob = if (hasBirthDateElement()) birthDateElement.valueAsString else ""
         val identifier = if (hasIdentifier()) identifier[0].value else ""
-        val line = if (hasAddress() && address[0].line.isNotEmpty()) address[0].line[0].toString() else ""
+        val line =
+            if (hasAddress() && address[0].line.isNotEmpty()) address[0].line[0].toString() else ""
         val city = if (hasAddress()) address[0].city else ""
         val country = if (hasAddress()) address[0].country else ""
         val isActive = active
