@@ -35,6 +35,7 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.util.*
 import javax.inject.Inject
+import kotlin.reflect.typeOf
 
 class PatientRepository @Inject constructor(
     private val fhirEngine: FhirEngine,
@@ -144,10 +145,15 @@ class PatientRepository @Inject constructor(
                 )
             val structureMapUtilities =
                 org.hl7.fhir.r4.utils.StructureMapUtilities(contextR4, transformSupportServices)
-            val extractedPatient = Patient()
 
+            var extractedResource: Resource = if(consultationStage.equals(CONSULTATION_STAGE_REGISTRATION_PATIENT))
+                Patient()
+            else
+                Bundle()
 
-            structureMapUtilities.transform(contextR4, questionnaireResponse, structureMap, extractedPatient)
+            structureMapUtilities.transform(contextR4, questionnaireResponse, structureMap, extractedResource)
+            saveResourcesFromBundle(extractedResource, patientId, encounterId, facilityId, consultationFlowItemId)
+
 //            val extractedBundle = ResourceMapper.extract(
 //                questionnaireResource,
 //                questionnaireResponse,
@@ -162,7 +168,6 @@ class PatientRepository @Inject constructor(
 ////                saveResourcesFromBundle(extractedBundle, patientId, encounterId, facilityId, consultationFlowItemId)
 //
 //            }
-//            saveResourcesFromBundle(extractedBundle, patientId, encounterId, facilityId, consultationFlowItemId)
 //            withContext(Dispatchers.IO) {
 //                val careplan = fhirOperator.generateCarePlan(
 //                    stageToCareplan[consultationStage]!!,
@@ -322,9 +327,17 @@ class PatientRepository @Inject constructor(
         emit(ApiResponse.Success(1))
     }
 
-    private suspend fun saveResourcesFromBundle(bundle: Bundle, patientId: String, encounterId: String, facilityId: String, consultationFlowItemId: String?): Boolean {
+    private suspend fun saveResourcesFromBundle(bundle: Resource, patientId: String, encounterId: String, facilityId: String, consultationFlowItemId: String?): Boolean {
         val clipboardBundle = preference.getSubmittedResource() ?: Bundle()
-        bundle.entry.forEach { entry ->
+        var saveBundle = Bundle()
+        if(bundle !is Bundle){
+            saveBundle.addEntry(Bundle.BundleEntryComponent().setResource(bundle))
+        } else{
+            saveBundle = bundle
+        }
+
+
+        saveBundle.entry.forEach { entry ->
             if(entry.hasResource()){
                 val resource = entry.resource
                 when(resource.resourceType) {
