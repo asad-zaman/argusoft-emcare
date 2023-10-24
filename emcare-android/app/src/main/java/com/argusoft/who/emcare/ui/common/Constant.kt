@@ -127,7 +127,7 @@ val stageToCareplan = mapOf(
 val stageToStructureMapId = mapOf(
     CONSULTATION_STAGE_REGISTRATION_PATIENT to "IMMZCQRToPatient",
     CONSULTATION_STAGE_CLIENT_HISTORY to "IMMZD1QRToResources",
-    CONSULTATION_STAGE_CONTRAINDICATIONS to "emcare.b7.lti-dangersigns",
+    CONSULTATION_STAGE_CONTRAINDICATIONS to "IMMZD4QRToResources",
     CONSULTATION_STAGE_MEASUREMENTS to "emcare.b6.measurements",
     CONSULTATION_STAGE_SYMPTOMS to "emcare.b10-14.symptoms.2m.p",
     CONSULTATION_STAGE_SIGNS to "emcare.b10-16.signs.2m.p",
@@ -139,7 +139,7 @@ val stageToStructureMapId = mapOf(
 val stageToQuestionnaireIdUnderTwoMonths = mapOf(
     CONSULTATION_STAGE_REGISTRATION_PATIENT to "Questionnaire-IMMZCRegisterClient",
     CONSULTATION_STAGE_CLIENT_HISTORY to "IMMZD1QRToResources",
-    CONSULTATION_STAGE_CONTRAINDICATIONS to "IMMZD4CheckContraindicationsMeasles",
+    CONSULTATION_STAGE_CONTRAINDICATIONS to "IMMZD4QRToResources",
     CONSULTATION_STAGE_MEASUREMENTS to "emcare.b6.measurements",
     CONSULTATION_STAGE_SYMPTOMS to "emcare.b18-21.symptoms.2m.m",
     CONSULTATION_STAGE_SIGNS to "emcare.b18-21.signs.2m.m",

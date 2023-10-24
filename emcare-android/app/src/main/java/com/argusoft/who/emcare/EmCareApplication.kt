@@ -9,6 +9,8 @@ import com.argusoft.who.emcare.data.local.database.Database
 import com.argusoft.who.emcare.data.local.pref.Preference
 import com.argusoft.who.emcare.data.remote.Api
 import com.argusoft.who.emcare.sync.EmcareAuthenticator
+import com.argusoft.who.emcare.ui.home.ValueSetResolver
+import com.argusoft.who.emcare.utils.ComplexWorkerContext
 import com.argusoft.who.emcare.widget.CustomBooleanChoiceViewHolderFactory
 import com.argusoft.who.emcare.widget.CustomDisplayViewHolderFactory
 import com.google.android.fhir.*
@@ -21,6 +23,10 @@ import com.google.android.fhir.search.StringFilterModifier
 import com.google.android.fhir.search.search
 import com.google.android.fhir.sync.remote.HttpLogger
 import dagger.hilt.android.HiltAndroidApp
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import org.hl7.fhir.r4.model.Coding
 import org.hl7.fhir.r4.model.ValueSet
 import org.hl7.fhir.utilities.npm.NpmPackage
@@ -43,6 +49,8 @@ class EmCareApplication : Application(), Configuration.Provider, DataCaptureConf
     @Inject
     lateinit var workerFactory: HiltWorkerFactory
 
+    var contextR4 : ComplexWorkerContext? = null
+
     //Work Manager for EmcareSync Functionality
     override fun getWorkManagerConfiguration() =
         Configuration.Builder()
@@ -57,16 +65,40 @@ class EmCareApplication : Application(), Configuration.Provider, DataCaptureConf
      */
     private val dataCaptureConfiguration by lazy {
         DataCaptureConfig(
-            valueSetResolverExternal =
-            object : ExternalAnswerValueSetResolver {
-                override suspend fun resolve(uri: String): List<Coding> {
-                    return lookupCodesFromDb(uri)
-                }
-            },
+            valueSetResolverExternal = object : ValueSetResolver(){},
             xFhirQueryResolver = { FhirEngineProvider.getInstance(this).search(it).map { it.resource} },
             urlResolver = ReferenceUrlResolver(this@EmCareApplication as Context),
             questionnaireItemViewHolderFactoryMatchersProviderFactory = QuestionnaireItemViewHolderFactoryMatchersProviderFactoryImpl
         )
+    }
+
+    private fun constructR4Context() = CoroutineScope(Dispatchers.IO).launch {
+        println("**** creating contextR4")
+
+        val measlesIg = async {
+            NpmPackage.fromPackage(
+                assets.open("package.r4.tgz")
+            )
+        }
+
+        val baseIg = async {
+            NpmPackage.fromPackage(
+                assets.open("package.r4b.tgz")
+            )
+        }
+
+        val packages = arrayListOf<NpmPackage>(
+            measlesIg.await(),
+            baseIg.await()
+        )
+        println("**** read assets contextR4")
+
+        contextR4 = ComplexWorkerContext()
+        contextR4?.apply {
+            loadFromMultiplePackages(packages, true)
+            println("**** created contextR4")
+            ValueSetResolver.init(this@EmCareApplication, this)
+        }
     }
 
 
@@ -76,6 +108,7 @@ class EmCareApplication : Application(), Configuration.Provider, DataCaptureConf
     }
 
     override fun onCreate() {
+        instance = this
         super.onCreate()
         if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
@@ -98,6 +131,7 @@ class EmCareApplication : Application(), Configuration.Provider, DataCaptureConf
                 )
             )
         )
+        constructR4Context()
     }
 
     /*
@@ -171,5 +205,11 @@ class EmCareApplication : Application(), Configuration.Provider, DataCaptureConf
                 }
             }
         )
+    }
+
+    companion object {
+        lateinit var instance: Application
+            private set
+        fun contextR4(context: Context) = (context.applicationContext as EmCareApplication).contextR4
     }
 }

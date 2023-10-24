@@ -4,6 +4,7 @@ import android.app.Application
 import com.argusoft.who.emcare.R
 import ca.uhn.fhir.context.FhirContext
 import ca.uhn.fhir.context.FhirVersionEnum
+import com.argusoft.who.emcare.EmCareApplication
 import com.argusoft.who.emcare.data.local.pref.Preference
 import com.argusoft.who.emcare.data.remote.ApiResponse
 import com.argusoft.who.emcare.ui.common.*
@@ -153,27 +154,25 @@ class PatientRepository @Inject constructor(
             val patientId = questionnaireResponse.subject.identifier.value
             val encounterId = questionnaireResponse.encounter.id
 
-            val contextR4 =
-                SimpleWorkerContext.fromPackage(
-                    NpmPackage.fromPackage(application.applicationContext.assets.open("package.r4.tgz")),
-                    true
-                ).apply {
-                    setExpansionProfile(Parameters())
-                    isCanRunWithoutTerminology = true
-                }
+//            val contextR4 =
+//                SimpleWorkerContext.fromPackage(
+//                    NpmPackage.fromPackage(application.applicationContext.assets.open("package.r4.tgz")),
+//                    true
+//                ).apply {
+//                    setExpansionProfile(Parameters())
+//                    isCanRunWithoutTerminology = true
+//                }
 
-            /*@Parth - this is the code we need to use if we are importing two packages */
-
-//            val contextR4New = ComplexWorkerContext()
+//            val contextR4 = ComplexWorkerContext()
 //            val package1 = NpmPackage.fromPackage(application.applicationContext.assets.open("package.r4.tgz"))
-//            val package2 = NpmPackage.fromPackage(application.applicationContext.assets.open("package.r4.tgz"))
+//            val package2 = NpmPackage.fromPackage(application.applicationContext.assets.open("package.r4b.tgz"))
 //
 //            val packages = listOf(package1, package2)
-//            contextR4New?.apply {
+//            contextR4?.apply {
 //                loadFromMultiplePackages(packages, true)
 //                println("**** created contextR4")
 //            }
-
+            val contextR4 = EmCareApplication.contextR4(application.applicationContext)
             val outputs = mutableListOf<Base>()
             val transformSupportServices =
                 TransformSupportServicesMatchBox(
