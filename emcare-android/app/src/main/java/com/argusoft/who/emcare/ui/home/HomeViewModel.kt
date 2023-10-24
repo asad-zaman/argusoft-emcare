@@ -504,22 +504,22 @@ class HomeViewModel @Inject constructor(
         }
 
         //Inject patientId as subject & encounterId as Encounter.
-//        questionnaireResponse.subject = Reference().apply {
-//            id = IdType(patientId).id
-//            reference = "/Patient/${patientId}"
-//            type = ResourceType.Patient.name
-//            identifier = Identifier().apply {
-//                value = patientId
-//            }
-//        }
-//        questionnaireResponse.encounter = Reference().apply {
-//            id = encounterId
-//            reference = "/Encounter/${encounterId}"
-//            type = ResourceType.Encounter.name
-//            identifier = Identifier().apply {
-//                value = encounterId
-//            }
-//        }
+        questionnaireResponse.subject = Reference().apply {
+            id = IdType(patientId).id
+            reference = "/Patient/${patientId}"
+            type = ResourceType.Patient.name
+            identifier = Identifier().apply {
+                value = patientId
+            }
+        }
+        questionnaireResponse.encounter = Reference().apply {
+            id = encounterId
+            reference = "/Encounter/${encounterId}"
+            type = ResourceType.Encounter.name
+            identifier = Identifier().apply {
+                value = encounterId
+            }
+        }
 
         return questionnaireResponse
     }

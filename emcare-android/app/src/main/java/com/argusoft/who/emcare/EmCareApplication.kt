@@ -113,6 +113,7 @@ class EmCareApplication : Application(), Configuration.Provider, DataCaptureConf
         if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
         }
+        constructR4Context()
 
         //Initializing Fhir Engine
         FhirEngineProvider.init(
@@ -131,7 +132,6 @@ class EmCareApplication : Application(), Configuration.Provider, DataCaptureConf
                 )
             )
         )
-        constructR4Context()
     }
 
     /*
