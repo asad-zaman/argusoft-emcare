@@ -83,7 +83,7 @@ class EmCareApplication : Application(), Configuration.Provider, DataCaptureConf
 
         val baseIg = async {
             NpmPackage.fromPackage(
-                assets.open("package.r4b.tgz")
+                assets.open("package.tgz")
             )
         }
 
