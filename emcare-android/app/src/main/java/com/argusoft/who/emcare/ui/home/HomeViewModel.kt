@@ -36,7 +36,9 @@ import com.google.android.fhir.FhirEngine
 import com.google.android.fhir.datacapture.extensions.allItems
 import com.google.android.fhir.datacapture.extensions.asStringValue
 import com.google.android.fhir.datacapture.extensions.createQuestionnaireResponseItem
+import com.google.android.fhir.knowledge.FhirNpmPackage
 import com.google.android.fhir.knowledge.KnowledgeManager
+import com.google.android.fhir.testing.jsonParser
 import com.google.android.fhir.workflow.FhirOperator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -49,16 +51,20 @@ import kotlinx.coroutines.withContext
 import org.hl7.fhir.r4.model.Expression
 import org.hl7.fhir.r4.model.IdType
 import org.hl7.fhir.r4.model.Identifier
-import org.hl7.fhir.r4.model.Library
+import org.hl7.fhir.r4.model.Meta
+import org.hl7.fhir.r4.model.MetadataResource
 import org.hl7.fhir.r4.model.Parameters
 import org.hl7.fhir.r4.model.Patient
 import org.hl7.fhir.r4.model.Questionnaire
 import org.hl7.fhir.r4.model.QuestionnaireResponse
 import org.hl7.fhir.r4.model.QuestionnaireResponse.QuestionnaireResponseItemComponent
 import org.hl7.fhir.r4.model.Reference
+import org.hl7.fhir.r4.model.Resource
 import org.hl7.fhir.r4.model.ResourceType
 import org.hl7.fhir.r4.model.StringType
 import java.io.File
+import java.io.FileOutputStream
+import java.io.OutputStream
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.time.Instant
@@ -67,6 +73,7 @@ import java.time.format.DateTimeFormatter
 import java.util.TimeZone
 import java.util.UUID
 import javax.inject.Inject
+
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
@@ -131,8 +138,18 @@ class HomeViewModel @Inject constructor(
 
     fun loadLibraries(isReloadHomeActivity: Boolean) {
         viewModelScope.launch(Dispatchers.Default) {
-
-            libraryRepository.getLibraries().collect {
+//            val rootDirectory = File("${context.cacheDir}/smart-imm").apply { writeBytes(context.assets.open("package.r4.tgz").readBytes()) }
+//            knowledgeManager.install(
+//                FhirNpmPackage(
+//                    "who.fhir.immunization",
+//                    "1.0.0",
+//                    "https://github.com/WorldHealthOrganization/smart-immunizations",
+//                ),
+//                rootDirectory,
+//            ).let {
+//                _librariesLoaded.postValue(ApiResponse.Success(if (isReloadHomeActivity) 1 else 0))
+//            }
+            libraryRepository.getPlanDefinitions().collect {
                 val librariesList = it.data
                 runBlocking {
                     librariesList?.forEach { library ->
@@ -140,7 +157,34 @@ class HomeViewModel @Inject constructor(
                     }
                 }
             }.let {
-                _librariesLoaded.postValue(ApiResponse.Success(if (isReloadHomeActivity) 1 else 0))
+                libraryRepository.getLibraries().collect {
+                    val librariesList = it.data
+                    runBlocking {
+                        librariesList?.forEach { planDef ->
+                            knowledgeManager.install(writeToFile(planDef.resource))
+                        }
+                    }
+                }.let {
+                    libraryRepository.getValueSets().collect {
+                        val librariesList = it.data
+                        runBlocking {
+                            librariesList?.forEach { valueSet ->
+                                knowledgeManager.install(writeToFile(valueSet.resource))
+                            }
+                        }
+                    }.let {
+                        libraryRepository.getActivtityDefinitions().collect {
+                            val librariesList = it.data
+                            runBlocking {
+                                librariesList?.forEach { activityDef ->
+                                    knowledgeManager.install(writeToFile(activityDef.resource))
+                                }
+                            }
+                        }.let {
+                            _librariesLoaded.postValue(ApiResponse.Success(if (isReloadHomeActivity) 1 else 0))
+                        }
+                    }
+                }
             }
         }
     }
@@ -149,14 +193,25 @@ class HomeViewModel @Inject constructor(
 //        knowledgeManager.clearDatabase()
 //    }
 
-    private fun writeToFile(library: Library): File {
+    private fun writeToFile(resource: Resource): File {
+        val fileName =
+            if(resource is MetadataResource && resource.name != null){
+                if(resource.version != null ){
+                    resource.name + "-" + resource.version
+                } else {
+                    resource.name
+                }
+            } else {
+                resource.idElement.toString()
+            }
         return File(
             context.filesDir,
-            if (library.name == null) library.title else library.name
+            fileName
         ).apply {
-            writeText(FhirContext.forR4().newJsonParser().encodeResourceToString(library))
+            writeText(FhirContext.forR4().newJsonParser().encodeResourceToString(resource))
         }
     }
+
 
     private fun getGmtTimeFromLastSyncTime(): String {
         val formatStringGmt: DateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS")

@@ -241,8 +241,8 @@ dependencies {
     //Local Build Link: https://drive.google.com/file/d/1Btbbn04MUKdl1N3wKd2lRkJ2S1u6644r/view?usp=share_link
     implementation "com.google.android.fhir:engine:0.1.0-beta05"
     implementation "com.google.android.fhir:data-capture:1.0.0"
-    implementation "com.google.android.fhir:workflow:0.1.0-alpha03"
-    implementation "com.google.android.fhir:knowledge:0.1.0-alpha02"
+    implementation "com.google.android.fhir:workflow:0.1.0-alpha04"
+    implementation "com.google.android.fhir:knowledge:0.1.0-alpha03"
     //EventBus
     implementation("org.greenrobot:eventbus:3.3.1")
 

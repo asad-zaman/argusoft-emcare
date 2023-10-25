@@ -29,7 +29,9 @@ import com.google.android.fhir.search.Search
 import com.google.android.fhir.search.StringFilterModifier
 import com.google.android.fhir.search.search
 import com.google.android.fhir.workflow.FhirOperator
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.withContext
 import org.hl7.fhir.r4.context.SimpleWorkerContext
 import org.hl7.fhir.r4.model.*
 import org.hl7.fhir.utilities.npm.NpmPackage
@@ -182,11 +184,7 @@ class PatientRepository @Inject constructor(
             val structureMapUtilities =
                 org.hl7.fhir.r4.utils.StructureMapUtilities(contextR4, transformSupportServices)
 
-            var extractedResource: Resource =
-                if (consultationStage.equals(CONSULTATION_STAGE_REGISTRATION_PATIENT))
-                    Patient()
-                else
-                    Bundle()
+            var extractedResource = Bundle()
             val jsonParserQR = FhirContext.forCached(FhirVersionEnum.R4).newJsonParser()
                 .encodeResourceToString(questionnaireResponse)
             val jsonParserSM = FhirContext.forCached(FhirVersionEnum.R4).newJsonParser()
@@ -224,16 +222,19 @@ class PatientRepository @Inject constructor(
 ////                saveResourcesFromBundle(extractedBundle, patientId, encounterId, facilityId, consultationFlowItemId)
 //
 //            }
-//            withContext(Dispatchers.IO) {
-//                val careplan = fhirOperator.generateCarePlan(
-//                    stageToCareplan[consultationStage]!!,
-//                    patientId)
-//                print("**careplan**")
-//                print(careplan)
-//                print(careplan)
-//            }
-            val careplan = FhirContext.forR4().newJsonParser()
-                .parseResource(CarePlan::class.java, CAREPLAN_PATIENT_REGISTRATION)
+            var careplan:CarePlan
+            if(stageToCareplan[consultationStage] != null){
+                withContext(Dispatchers.IO) {
+                    careplan = fhirOperator.generateCarePlan(
+                        CanonicalType(stageToCareplan[consultationStage]!!),
+                        "Patient/$patientId") as CarePlan
+                    print("**careplan**")
+                    print(careplan)
+                    print(careplan)
+                }
+
+            }
+
             //update QuestionnarieResponse in currentConsultation and createNext Consultation
             if (consultationFlowItemId != null) {
                 consultationFlowRepository.updateConsultationQuestionnaireResponseText(

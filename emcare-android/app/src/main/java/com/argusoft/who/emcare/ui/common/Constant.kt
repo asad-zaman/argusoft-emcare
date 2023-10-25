@@ -120,8 +120,8 @@ val stageToQuestionnaireId = mapOf(
 )
 
 val stageToCareplan = mapOf(
-    CONSULTATION_STAGE_REGISTRATION_PATIENT to "IMMZ-DT-08-Measles",
-    CONSULTATION_STAGE_CLIENT_HISTORY to "IMMZ.D2.DT.Measles.Contraindication"
+    CONSULTATION_STAGE_CLIENT_HISTORY to "http://smart.who.int/ig/smart-immunizations-measles/PlanDefinition/IMMZD2DTMeasles2",
+    CONSULTATION_STAGE_CONTRAINDICATIONS to "http://smart.who.int/ig/smart-immunizations-measles/PlanDefinition/IMMZD2DTMeaslesCI"
 )
 
 val stageToStructureMapId = mapOf(

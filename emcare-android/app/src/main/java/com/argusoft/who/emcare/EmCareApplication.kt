@@ -65,7 +65,12 @@ class EmCareApplication : Application(), Configuration.Provider, DataCaptureConf
      */
     private val dataCaptureConfiguration by lazy {
         DataCaptureConfig(
-            valueSetResolverExternal = object : ValueSetResolver(){},
+//            valueSetResolverExternal = object : ValueSetResolver(){},
+            valueSetResolverExternal = object: ExternalAnswerValueSetResolver{
+                override suspend fun resolve(uri: String): List<Coding> {
+                    return lookupCodesFromDb(uri)
+                }
+             },
             xFhirQueryResolver = { FhirEngineProvider.getInstance(this).search(it).map { it.resource} },
             urlResolver = ReferenceUrlResolver(this@EmCareApplication as Context),
             questionnaireItemViewHolderFactoryMatchersProviderFactory = QuestionnaireItemViewHolderFactoryMatchersProviderFactoryImpl
