@@ -20,6 +20,7 @@ import com.google.android.fhir.FhirEngine
 import com.google.android.fhir.FhirEngineProvider
 import com.google.android.fhir.datacapture.ExternalAnswerValueSetResolver
 import com.google.android.fhir.search.search
+import com.google.android.fhir.testing.jsonParser
 import org.hl7.fhir.r4.context.SimpleWorkerContext
 import org.hl7.fhir.r4.model.Coding
 import org.hl7.fhir.r4.model.ValueSet
@@ -36,12 +37,12 @@ abstract class ValueSetResolver : ExternalAnswerValueSetResolver {
         }
 
         fun init(context: Context, workerContext: SimpleWorkerContext) {
-            Timber.d("init")
+            println("init")
             fhirEngine = FhirEngineProvider.getInstance(context)
             Companion.workerContext = workerContext
         }
 
-        private suspend fun fetchValueSetFromDb(uri: String): List<Coding> {
+        suspend fun fetchValueSetFromDb(uri: String): List<Coding> {
             val valueSets = fhirEngine.search<ValueSet> { filter(ValueSet.URL, { value = uri }) }
 
             if (valueSets.isEmpty())
@@ -63,12 +64,36 @@ abstract class ValueSetResolver : ExternalAnswerValueSetResolver {
             }
         }
 
-        private fun fetchValuesSetFromWorkerContext(uri: String): List<Coding> {
-            if(!this::workerContext.isInitialized) return emptyList()
+        private suspend fun fetchValuesSetFromWorkerContext(uri: String): List<Coding> {
+            val valueSets = fhirEngine.search<ValueSet> { filter(ValueSet.URL, { value = uri }) }
+            println("ValueSets found: ${jsonParser.encodeResourceToString(valueSets.first().resource)}")
+
+            // Ideally, loop over include then if concept generate coding with include system, if no concept use the codesystem + filter
+            // loop over expansion to inject other Valueset
+
+            val systemUri = workerContext.fetchResource(
+                ValueSet::class.java,
+                uri
+            )?.compose?.include?.firstOrNull()?.system
+            val listValues = workerContext.fetchResource(
+                ValueSet::class.java,
+                uri
+            )?.compose?.include?.firstOrNull()?.concept?.map { Coding().apply {
+                code = it.code
+                display = it.display
+                system = systemUri
+            } } ?: emptyList()
+
+            println(listValues.size)
+
+            if (listValues.isNotEmpty()) return listValues
+
             val systemUrl = workerContext.fetchResource(
                 ValueSet::class.java,
                 uri
             )?.compose?.include?.firstOrNull()?.system
+
+            println("ValueSetResolver: $systemUrl")
 
             val list = workerContext.fetchCodeSystem(systemUrl)?.concept?.map {
                 Coding().apply {
@@ -78,8 +103,12 @@ abstract class ValueSetResolver : ExternalAnswerValueSetResolver {
                 }
             } ?: emptyList()
 
+            println(list)
+
             if (list.isNotEmpty()) return list
 
+            println("${workerContext
+                .fetchResource(ValueSet::class.java, uri).expansion}")
             return workerContext
                 .fetchResource(ValueSet::class.java, uri)
                 .expansion?.contains?.map {
@@ -90,6 +119,7 @@ abstract class ValueSetResolver : ExternalAnswerValueSetResolver {
                     }
                 } ?: emptyList()
         }
+
     }
 
     override suspend fun resolve(uri: String): List<Coding> {
