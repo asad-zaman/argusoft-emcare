@@ -202,8 +202,9 @@ class HomeViewModel @Inject constructor(
                     resource.name
                 }
             } else {
-                resource.idElement.toString()
+                resource.idElement.idPart
             }
+
         return File(
             context.filesDir,
             fileName
