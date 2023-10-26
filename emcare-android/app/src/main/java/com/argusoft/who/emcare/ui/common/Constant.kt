@@ -85,9 +85,9 @@ val stageToBadgeMap = mapOf(
     CONSULTATION_STAGE_REGISTRATION_PATIENT to "Registration Patient",
     CONSULTATION_STAGE_CLIENT_HISTORY to "Client History",
     CONSULTATION_STAGE_CONTRAINDICATIONS to "Contraindications",
+    CONSULTATION_STAGE_ADMINISTER_VACCINE to "Administer Vaccine",
 
     //UNUSED IN IMMUNISATION CONTEXT
-    CONSULTATION_STAGE_ADMINISTER_VACCINE to "Measurements",
     CONSULTATION_STAGE_SYMPTOMS to "Symptoms",
     CONSULTATION_STAGE_SIGNS to "Signs",
     CONSULTATION_STAGE_ASSESSMENTS to "Assessments",
@@ -98,12 +98,12 @@ val stageToBadgeMap = mapOf(
 val stageToIconMap = mapOf(
     CONSULTATION_STAGE_REGISTRATION_PATIENT to R.drawable.registration_icon,
     CONSULTATION_STAGE_CLIENT_HISTORY to R.drawable.registration_icon,
-    CONSULTATION_STAGE_CONTRAINDICATIONS to R.drawable.danger_sign_icon,
-    CONSULTATION_STAGE_ADMINISTER_VACCINE to R.drawable.measurements_icon,
+    CONSULTATION_STAGE_CONTRAINDICATIONS to R.drawable.closed_consultation_icon_dark,
+    CONSULTATION_STAGE_ADMINISTER_VACCINE to R.drawable.danger_sign_icon,
     CONSULTATION_STAGE_SYMPTOMS to R.drawable.symptoms_icon,
     CONSULTATION_STAGE_SIGNS to R.drawable.sign_icon,
     CONSULTATION_STAGE_ASSESSMENTS to R.drawable.tests_icon,
-    CONSULTATION_STAGE_CLASSIFICATIONS to R.drawable.closed_consultation_icon_dark,
+    CONSULTATION_STAGE_CLASSIFICATIONS to R.drawable.measurements_icon,
     CONSULTATION_STAGE_TREATMENTS to R.drawable.treatment_icon
 )
 

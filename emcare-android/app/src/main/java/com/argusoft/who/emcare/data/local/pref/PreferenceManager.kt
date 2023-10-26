@@ -25,6 +25,7 @@ class PreferenceManager(private val sharedPreferences: EncPref) : Preference {
         private const val START_AUDIT = "START_AUDIT"
         private const val END_AUDIT = "END_AUDIT"
         private const val CURRENT_IG_VERSION = "CURRENT_IG_VERSION"
+        private const val ADMINISTER_VACCINE = "ADMINISTER_VACCINE"
 
     }
 
@@ -44,6 +45,14 @@ class PreferenceManager(private val sharedPreferences: EncPref) : Preference {
 
     override fun getToken(): String {
         return sharedPreferences.getString(TOKEN, "")
+    }
+
+    override fun setAdministerVaccine(vaccine: String) {
+        sharedPreferences.putString(ADMINISTER_VACCINE, vaccine)
+    }
+
+    override fun getAdministerVaccine(): String {
+        return sharedPreferences.getString(ADMINISTER_VACCINE, "")
     }
 
     override fun setUser(user: User) {

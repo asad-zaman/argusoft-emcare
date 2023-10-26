@@ -14,6 +14,10 @@ interface Preference {
 
     fun getToken(): String
 
+    fun setAdministerVaccine(vaccine: String)
+
+    fun getAdministerVaccine(): String
+
     fun setFacilityId(facilityId: String)
 
     fun getFacilityId(): String

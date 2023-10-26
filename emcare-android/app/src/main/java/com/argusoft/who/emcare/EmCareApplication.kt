@@ -2,6 +2,8 @@ package com.argusoft.who.emcare
 
 import android.app.Application
 import android.content.Context
+import android.os.Looper
+import android.widget.Toast
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
 import com.argusoft.who.emcare.data.local.ReferenceUrlResolver
@@ -11,6 +13,7 @@ import com.argusoft.who.emcare.data.remote.Api
 import com.argusoft.who.emcare.sync.EmcareAuthenticator
 import com.argusoft.who.emcare.ui.home.ValueSetResolver
 import com.argusoft.who.emcare.utils.ComplexWorkerContext
+import com.argusoft.who.emcare.utils.extention.showToast
 import com.argusoft.who.emcare.widget.CustomBooleanChoiceViewHolderFactory
 import com.argusoft.who.emcare.widget.CustomDisplayViewHolderFactory
 import com.google.android.fhir.*
@@ -66,9 +69,9 @@ class EmCareApplication : Application(), Configuration.Provider, DataCaptureConf
     private val dataCaptureConfiguration by lazy {
         DataCaptureConfig(
 //            valueSetResolverExternal = object : ValueSetResolver(){},
-            valueSetResolverExternal = object: ValueSetResolver() {
+            valueSetResolverExternal = object: ExternalAnswerValueSetResolver {
                 override suspend fun resolve(uri: String): List<Coding> {
-                    return fetchValueSetFromDb(uri)
+                    return lookupCodesFromDb(uri)
                 }
              },
             xFhirQueryResolver = { FhirEngineProvider.getInstance(this).search(it).map { it.resource} },
@@ -101,8 +104,10 @@ class EmCareApplication : Application(), Configuration.Provider, DataCaptureConf
         contextR4 = ComplexWorkerContext()
         contextR4?.apply {
             loadFromMultiplePackages(packages, true)
+            Looper.prepare()
+            showToast(message = "ContextR4 Created!", duration = Toast.LENGTH_LONG)
             println("**** created contextR4")
-            ValueSetResolver.init(this@EmCareApplication, this)
+//            ValueSetResolver.init(this@EmCareApplication, this)
         }
     }
 

@@ -149,9 +149,14 @@ class PatientRepository @Inject constructor(
             }
 
             val structureMap =
-                if (structureMapId.isEmpty()) fhirEngine.get<StructureMap>(questionnaireResource.id) else fhirEngine.get<StructureMap>(
-                    structureMapId
-                )
+                try{
+                    if (structureMapId.isEmpty()) fhirEngine.get<StructureMap>(questionnaireResource.id) else fhirEngine.get<StructureMap>(
+                        structureMapId
+                    )
+                } catch (e: Exception) {
+                    null
+                }
+
 
             val patientId = questionnaireResponse.subject.identifier.value
             val encounterId = questionnaireResponse.encounter.id
@@ -174,63 +179,47 @@ class PatientRepository @Inject constructor(
 //                loadFromMultiplePackages(packages, true)
 //                println("**** created contextR4")
 //            }
-            val contextR4 = EmCareApplication.contextR4(application.applicationContext)
-            val outputs = mutableListOf<Base>()
-            val transformSupportServices =
-                TransformSupportServicesMatchBox(
+            if(structureMap != null) {
+                val contextR4 = EmCareApplication.contextR4(application.applicationContext)
+                val outputs = mutableListOf<Base>()
+                val transformSupportServices =
+                    TransformSupportServicesMatchBox(
+                        contextR4,
+                        outputs
+                    )
+                val structureMapUtilities =
+                    org.hl7.fhir.r4.utils.StructureMapUtilities(contextR4, transformSupportServices)
+
+                var extractedResource = Bundle()
+
+                structureMapUtilities.transform(
                     contextR4,
-                    outputs
+                    questionnaireResponse,
+                    structureMap,
+                    extractedResource
                 )
-            val structureMapUtilities =
-                org.hl7.fhir.r4.utils.StructureMapUtilities(contextR4, transformSupportServices)
-
-            var extractedResource = Bundle()
-            val jsonParserQR = FhirContext.forCached(FhirVersionEnum.R4).newJsonParser()
-                .encodeResourceToString(questionnaireResponse)
-            val jsonParserSM = FhirContext.forCached(FhirVersionEnum.R4).newJsonParser()
-                .encodeResourceToString(structureMap)
-            val jsonParserER = FhirContext.forCached(FhirVersionEnum.R4).newJsonParser()
-                .encodeResourceToString(extractedResource)
-
-//            println("quesResp:"+jsonParserQR.toJson())
-//            println("structMap:"+jsonParserSM.toJson())
-//            println("ExtractedResource"+jsonParserER.toJson())
-            structureMapUtilities.transform(
-                contextR4,
-                questionnaireResponse,
-                structureMap,
-                extractedResource
-            )
-            saveResourcesFromBundle(
-                extractedResource,
-                patientId,
-                encounterId,
-                facilityId,
-                consultationFlowItemId
-            )
-//            val extractedBundle = ResourceMapper.extract(
-//                questionnaireResource,
-//                questionnaireResponse,
-//                StructureMapExtractionContext(workerContext = application.wo) { _, _ -> structureMap
-//                }
-//            )
-//            val extractedBundle = Bundle()
-//            if(consultationStage.equals(CONSULTATION_STAGE_REGISTRATION_PATIENT)) {
-//                extractedBundle.addEntry(Bundle.BundleEntryComponent().setResource(
-//                    FhirContext.forR4().newJsonParser().parseResource(Patient::class.java, PATIENT_STATIC_RESOURCE.replace("<PATIENT_ID>", patientId))
-//                ))
-////                saveResourcesFromBundle(extractedBundle, patientId, encounterId, facilityId, consultationFlowItemId)
-//
-//            }
+                saveResourcesFromBundle(
+                    extractedResource,
+                    patientId,
+                    encounterId,
+                    facilityId,
+                    consultationFlowItemId
+                )
+            }
+            var exitStage = false
             var careplan:CarePlan
             if(stageToCareplan[consultationStage] != null){
                 withContext(Dispatchers.IO) {
                     careplan = fhirOperator.generateCarePlan(
                         CanonicalType(stageToCareplan[consultationStage]!!),
                         "Patient/$patientId") as CarePlan
-                    print("**careplan**")
-                    print(careplan)
-                    print(careplan)
+                }.let {
+                    careplan.contained.forEach { resource ->
+                        if(resource is MedicationRequest) {
+                            preference.setAdministerVaccine(resource.medicationCodeableConcept.codingFirstRep.display)
+                            exitStage = resource.doNotPerform
+                        }
+                    }
                 }
 
             }
@@ -265,7 +254,7 @@ class PatientRepository @Inject constructor(
 //                    && careplan.hasActivity() && careplan.activityFirstRep.reference.reference.contains("IMMZD2DTMeasles")) {
 //                    //To generate next consultation flow.
                 var consultationStageIndex = consultationFlowStageList.indexOf(consultationStage)
-                if (consultationStageIndex < consultationFlowStageList.size - 1) {
+                if (!exitStage && consultationStageIndex < consultationFlowStageList.size - 1) {
                     var nextConsultationStage =
                         consultationFlowStageList[consultationStageIndex + 1]
 
@@ -293,15 +282,6 @@ class PatientRepository @Inject constructor(
                         emit(ApiResponse.Success(null))
                     }
                 }
-
-//                } else if (consultationStage.equals(CONSULTATION_STAGE_REGISTRATION_PATIENT)){
-//                    //End consultation with just that no need for immunisation.
-//                    consultationFlowRepository.updateConsultationFlowInactiveByEncounterId(encounterId).collect {
-//                        emit(ApiResponse.Success(null))
-//                    }
-//                } else {
-//                    //TODO: Logic for next consultation stages
-//                }
             }
 
         } catch (ex: InputMismatchException) {

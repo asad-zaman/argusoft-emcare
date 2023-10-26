@@ -24,6 +24,7 @@ import com.argusoft.who.emcare.ui.home.HomeViewModel
 import com.argusoft.who.emcare.ui.home.fhirResources.FhirResourcesViewModel
 import com.argusoft.who.emcare.utils.extention.*
 import com.google.android.fhir.datacapture.QuestionnaireFragment
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import org.hl7.fhir.r4.model.Bundle
 import java.text.SimpleDateFormat
@@ -253,7 +254,30 @@ class PatientQuestionnaireFragment : BaseFragment<FragmentPatientQuestionnaireBi
                         putString(INTENT_EXTRA_QUESTIONNAIRE_RESPONSE, it.questionnaireResponseText)
                     }
                 } else {
-                    navigate(R.id.action_patientQuestionnaireFragment_to_homeFragment)
+                    if(requireArguments().getString(INTENT_EXTRA_CONSULTATION_STAGE).equals(
+                            CONSULTATION_STAGE_CLIENT_HISTORY)) {
+                        activity?.alertDialog {
+                            setMessage("No immunisation required!")
+                            setPositiveButton("Acknowledged") { _, _ ->
+                                navigate(R.id.action_patientQuestionnaireFragment_to_homeFragment)
+                            }
+                        }?.show()
+                    } else if(requireArguments().getString(INTENT_EXTRA_CONSULTATION_STAGE).equals(
+                            CONSULTATION_STAGE_CONTRAINDICATIONS)) {
+                            activity?.alertDialog {
+                                setMessage("There are contraindications. \nPLease arrange for medical review!")
+                                setPositiveButton("Okay") { _, _ ->
+                                    navigate(R.id.action_patientQuestionnaireFragment_to_homeFragment)
+                                }
+                            }?.show()
+                    } else {
+                        showSnackBar(
+                            binding.progressLayout,
+                            preference.getAdministerVaccine() + " administered successfully!",
+                            Snackbar.LENGTH_LONG
+                        )
+                        navigate(R.id.action_patientQuestionnaireFragment_to_homeFragment)
+                    }
                 }
             }
         }
